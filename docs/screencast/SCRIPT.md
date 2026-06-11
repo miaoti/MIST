@@ -1,268 +1,229 @@
 # MIST Screencast — Production Script (SPLASH/ISSTA 2026 Tool Demonstrations)
 
-**Status:** every command, output snippet, and wall-clock figure in this script
-was executed and measured on 2026-06-09/10 on the kind-cluster host (see
-§8 Feasibility ledger and `debug/reproduce/README.md` V1–V12). Nothing here is
-aspirational.
+**Status:** every command, output snippet, and wall-clock figure was executed
+and measured on 2026-06-09/10 (see §9 Feasibility ledger and
+`debug/reproduce/README.md` V1–V12). The one beat whose *console form* you
+must confirm yourself at the dry run is marked ⚠ in §9.
+
+**Reading rule: nothing pre-exists.** Every artifact the camera touches — the
+jar, the cluster, the Allure report, the checksum file, the browser tabs — is
+created on the recording machine by §4 (prep). If you are on a fresh computer,
+§4 is the complete bring-up; after it finishes, §3's inventory lists exactly
+what exists and where.
 
 ---
 
-## 1. What the venue actually requires (checked 2026-06-10)
+## 1. What the venue requires (checked 2026-06-10)
 
 From the SPLASH/ISSTA 2026 Tool Demonstrations call
 (<https://conf.researchr.org/track/issta-2026/splash-issta-2026-posters-and-tool-demonstrations>):
 
-- The paper's **Tool Availability** section must contain **(1)** a URL for the
-  latest tool version (GitHub), **(2)** **"a YouTube link demonstrating the use
-  of the tool as of the current version"**, and **(3)** an archived version
-  (Zenodo DOI).
-- **No explicit video length limit** is imposed. Sibling 2026 venues (ICST,
-  ICSME tool tracks) codify **3–5 minutes with voice-over or annotations**,
-  publicly viewable (unlisted YouTube is fine). We target **≤ 4:45**.
-- Evaluation criteria: relevance to the ISSTA audience, technical soundness,
-  presentation quality, usefulness.
+- The paper's **Tool Availability** section must contain **(1)** the tool URL,
+  **(2)** **"a YouTube link demonstrating the use of the tool as of the
+  current version"**, **(3)** an archived version (Zenodo DOI).
+- **No explicit video length limit**; sibling 2026 tool tracks (ICST, ICSME)
+  codify **3–5 min with voice-over**, unlisted YouTube fine. Target **≤ 4:45**.
+- Criteria: relevance, soundness, presentation quality, usefulness.
 
-Two compliance consequences for production:
+Consequences: record at/after the **frozen submission commit** ("as of the
+current version"); the cited Zenodo deposit must be **published** and should
+also carry the MP4.
 
-1. **"as of the current version"** → record at (or after) the frozen
-   submission commit. Do not record before the final code freeze.
-2. The same Zenodo deposit that the paper cites must be **published** and
-   should also contain the MP4 (link-rot insurance).
-
-Standard structure of accepted SIGSOFT-venue demo videos (and ours): hook with
-the problem → tool in one breath → live core demo → scale/evaluation evidence →
-"reproduce it yourself" → availability card. Voice-over throughout, no dead
-air, captions for accessibility (auto-captions cleaned up are acceptable).
+**Structure note.** The video's protagonist is the TOOL: of ~4:30 runtime,
+~2:30 is MIST itself running (one-command pipeline, its console verdicts, its
+Allure report, its generator, its LLM check); the *problem* gets one 30-second
+beat as motivation, and the OracleCheck harness beat is explicitly narrated as
+"replaying MIST's shipped invariant so you can see what fired inside".
 
 ---
 
-## 2. Measured timings (plan cuts around these — real numbers, not guesses)
+## 2. Measured timings (plan cuts around these)
 
-| Step | Real wall time (measured) | Screen time in video |
+| Step | Real wall time (measured) | Screen time |
 |---|---|---|
-| `OracleCheck` single invocation (source-launched) | ~10 s | ~10 s (keep; narrate over JVM startup) |
 | Outage inject + ratings settles to 503 | 10–40 s | ~8 s (cut the poll) |
+| **Full in-process run `java -jar mist.jar bookinfo-demo.properties`** (generate→compile→execute 166 tests→oracle) | **~30 min** | **~45 s: launch live, "⏩ ~30 min" caption, tail** |
 | Jaeger ingest before trace fetch | ~6 s | 0 s (cut) |
-| Trace fetch via Jaeger HTTP API | <1 s | keep |
-| noexec generation (123 scenarios, offline) | **~2.5 min** | ~12 s (5 s live + time-lapse + last 3 s) |
-| `ResponseEnvelopeLiveCheck` (1 real DeepSeek call) | 20–40 s | ~12 s (cut LLM wait to ~3 s) |
-| `allure generate` on a real run (2,710 result files) | 30–60 s | 0 s (pre-rendered; only the browser is shown) |
-| `evaluation/run-offline-oracle.sh` (incl. its mvn build, warm ~/.m2) | **~5–6 min** | ~15 s (launch + cut to tail) |
-| `mvn -q -DskipTests install` (pristine clone) | ~4–6 min | 0 s (prep only, never on screen) |
-| Bookinfo full in-process run (166 tests, generate→compile→execute→oracle) | **~30 min** | 0 s (prep only — produces the Allure report and the committed-style finding) |
-| TrainTicket live deploy/run | hours + 16-core host | 0 s (never live; cited via run22 report) |
+| `OracleCheck` single invocation | ~10 s | ~10 s |
+| noexec generation (123 scenarios, offline) | ~2.5 min | ~10 s (time-lapse) |
+| `ResponseEnvelopeLiveCheck` (1 real DeepSeek call) | 20–40 s | ~10 s (cut LLM wait) |
+| `allure generate` (2,710 result files) | 30–60 s | 0 s (prep) |
+| `evaluation/run-offline-oracle.sh` (incl. mvn build) | ~5–6 min | ~15 s (launch + tail) |
+| `mvn -q -DskipTests install` (fresh clone) | ~4–6 min | 0 s (prep) |
+| TrainTicket live | hours, 16-core host | 0 s (never live; run22 report only) |
 
-Rule that follows: **nothing longer than ~40 s real time is ever run on
-camera**; long steps are either prep (Allure, builds) or time-lapsed with the
-progress bar visible (generation).
+Time-lapse honesty: keep the progress bar / terminal clock visible across the
+jump and overlay a "⏩ ~30 min" caption — a visible cut, never a hidden one.
 
 ---
 
-## 3. Choosing the recording machine (it does NOT have to be the lab host)
+## 3. What exists on the machine after prep (the inventory the camera relies on)
 
-Nothing in the video is tied to one machine. Requirements for the recording
-host:
-
-| Need | Why |
-|---|---|
-| Linux **x86_64**, ~4+ cores, **~16 GB RAM**, Docker | the kind+Istio+Bookinfo cluster (Scenes 2/5 prep); `deploy.sh` auto-installs kubectl/kind/istioctl |
-| JDK 21 + Maven 3.9+ | build + source-launched harnesses (Scenes 1,3,4,6) |
-| Internet + a DeepSeek key | Scene 4's one live LLM call (or swap to Ollama) |
-| ~1 h of setup before the dry run | `deploy.sh` ~8 min + `mvn install` ~5 min + the ~30-min Allure prep run + checklist |
-
-Platform caveats:
-- **macOS / Apple Silicon:** `deploy.sh`'s tool auto-install hardcodes
-  `linux-amd64` binaries — `brew install kind kubectl istioctl` first so the
-  script's `command -v` checks skip the downloads.
-- **Windows = WSL2, and that is a first-class option, not a workaround**
-  (Docker Desktop on Windows runs Linux containers through WSL2 anyway).
-  Recording setup that works cleanly:
-  1. Install WSL2 + Ubuntu 24.04; install Docker Desktop and enable its
-     **WSL2 integration** for that distro (Settings → Resources → WSL
-     Integration).
-  2. Inside the Ubuntu shell, follow this script exactly as on Linux —
-     `deploy.sh`'s linux-amd64 auto-install is correct there, and the
-     inotify sysctl from REPRODUCE §10 applies inside WSL2 too.
-  3. WSL2 auto-forwards `localhost` — the Windows browser reaches
-     `http://localhost:8080` / `:16686` / the Allure port directly.
-  4. `allure open` cannot launch a Windows browser from WSL2; run
-     `allure/bin/allure open /tmp/allure-report` and open the URL it prints
-     (`http://<host>:<port>`) in Edge/Chrome manually, or `allure serve`.
-  5. Record with OBS on Windows capturing Windows Terminal (Ubuntu profile)
-     + the browser — visually identical to a Linux recording.
-  Native Windows (PowerShell, no WSL) is **not supported** for the cluster
-  scripts (they are bash and use Linux tooling); the pure-Java offline path
-  would likely run but is unverified — use WSL2 uniformly.
-- The TrainTicket 16-core gate does **not** apply to recording: the script
-  never runs TrainTicket live (Scene 3 is the offline noexec profile; the
-  10/10 figure is shown from the committed run22 report).
-- The byte-identical beat (Scene 3) compares run 1 (prep) with run 2
-  (on camera) **on the same machine** — cross-machine byte-identity is
-  neither claimed nor needed.
-
-## 3b. Pre-recording checklist (all BEFORE pressing record)
-
-Each item traces to a failure we actually hit during the audit:
-
-- [ ] **Record at the frozen submission commit** (CFP: "as of the current version").
-- [ ] **Host**: the kind-cluster machine, nothing else heavy running (load >40
-      makes the apiserver flaky → port-forwards die mid-take).
-- [ ] **Cluster**: `evaluation/suts/bookinfo/deploy/deploy.sh` already run; all
-      default-ns pods `2/2 Running`; Jaeger addon healthy (the deploy now
-      patches a startupProbe — re-run deploy.sh if Jaeger crash-loops).
-- [ ] **Ports 8080/16686 free of stray forwards** from other terminals:
-      `ss -tlnp | grep -E ':8080|:16686'` must show nothing before you start
-      yours. A stray forward to another service answers your curls with
-      confusing 404s (cost us 30 min during the audit).
-- [ ] **Forwards in restart loops** (bare `kubectl port-forward` dies in minutes):
-      ```bash
-      ( while true; do kubectl port-forward -n istio-system svc/istio-ingressgateway 8080:80; sleep 2; done ) &
-      ( while true; do kubectl port-forward -n istio-system svc/tracing 16686:80; sleep 2; done ) &
-      curl -s -o /dev/null -w '%{http_code}\n' http://localhost:8080/productpage   # 200
-      ```
-- [ ] **Ratings healthy**: `kubectl scale deploy ratings-v1 --replicas=1`, wait Ready.
-- [ ] **Jar built** (`export JAVA_HOME=/path/to/jdk21 && mvn -q -DskipTests install`).
-      JDK 21 — a JRE breaks the source-launched harnesses.
-- [ ] **DeepSeek key** at `.api_keys/DEEPSEEK_API_KEY` (Scene 5 makes one real call).
-- [ ] **Determinism prep (Scene 4)** — generate run 1's checksums beforehand:
-      ```bash
-      rm -rf mist-cli/src/test/java/trainticket_twostage_test
-      "$JAVA_HOME/bin/java" -Drandom.seed=42 -jar mist-cli/target/mist.jar \
-          mist-cli/src/main/resources/My-Example/trainticket-demo-noexec.properties
-      find mist-cli/src/test/java/trainticket_twostage_test -name 'Flow_Scenario_*.java' \
-          -exec sha256sum {} \; | sort > /tmp/run1.sums
-      rm -rf mist-cli/src/test/java/trainticket_twostage_test     # scene re-generates
-      ```
-- [ ] **Allure prep (Scene 6)** — produce the red-test report the day before
-      (~35 min, one command sequence, verified pattern):
-      ```bash
-      evaluation/suts/bookinfo/workload/inject-ratings-outage.sh on
-      mkdir -p evaluation/suts/bookinfo/.runtime
-      ( cd evaluation/suts/bookinfo/.runtime && \
-        DEEPSEEK_API_KEY="$(cat ../../../../.api_keys/DEEPSEEK_API_KEY)" \
-        "$JAVA_HOME/bin/java" -jar ../../../../mist-cli/target/mist.jar ../bookinfo-demo.properties )   # ~30 min
-      evaluation/suts/bookinfo/workload/inject-ratings-outage.sh off
-      allure/bin/allure generate evaluation/suts/bookinfo/.runtime/target/allure-results \
-          -o /tmp/allure-report --clean                                # ~40 s, verified
-      allure/bin/allure open /tmp/allure-report &                      # leave the tab open
-      ```
-      In the report, pre-locate one **positive** `/reviews` test that is red
-      with the message `Trace Shape Oracle verdict has violation(s):
-      [HIDDEN_DOWNSTREAM_FAILURE: ...]` (same text as the committed
-      `docs/main-contribution/evidence/bookinfo_inprocess_e2e/sample_hidden_downstream_finding.txt`).
-      Bookmark that exact test page. Do NOT show the unfiltered failure list
-      cold: negative variants legitimately fail on Bookinfo (it accepts any
-      input), and an unexplained wall of red invites the wrong question.
-- [ ] **Browser tabs** (zoom ~125%): ① the GitHub repo (default branch must
-      already be `inject-detection`), ② the bookmarked red Allure test,
-      ③ (optional) Jaeger UI `http://localhost:16686/jaeger/search`,
-      Service=`productpage.default`.
-- [ ] **Terminal**: dark theme, ≥18 pt, ~120×30, `export PS1='$ '`, `clear`
-      between scenes. Pre-type commands in a side file to paste from.
-- [ ] **Recorder**: 1080p/30fps, system audio off, mic test, OBS or similar.
-- [ ] **Dry-run the full script once with a stopwatch.**
-- [ ] After recording: `inject-ratings-outage.sh off` (restore), kill forwards.
+| Artifact | Path / location | Created by (§4 step) |
+|---|---|---|
+| `mist.jar` | `mist-cli/target/mist.jar` | P2 build |
+| kind cluster + Istio + Jaeger + Bookinfo, healthy | kind context `kind-mist` | P3 deploy |
+| Port-forwards 8080 (ingress) / 16686 (Jaeger), self-restarting | two background loops | P4 |
+| Run-1 checksums for the determinism beat | `/tmp/run1.sums` | P5 |
+| **The MIST outage run** (its console log, its Allure results, its fault-detection report) | console log `/tmp/mist-bookinfo-run.log`; results `evaluation/suts/bookinfo/.runtime/target/allure-results`; report `evaluation/suts/bookinfo/.runtime/logs/fault-detection-reports/` | P6 ★ |
+| **Rendered Allure report** | `/tmp/allure-report` (browser at the URL `allure open` prints) | P7 |
+| Browser tab A: GitHub repo | https://github.com/miaoti/MIST | P8 |
+| Browser tab B: the bookmarked **red positive `/reviews` test** in Allure | from P7 | P8 |
+| DeepSeek key | `.api_keys/DEEPSEEK_API_KEY` | P1 |
 
 ---
 
-## 4. Scene-by-scene
+## 4. Prep (run start-to-finish on the recording machine; ~1.5 h incl. one 30-min run)
 
-Notation — **SAY**: narration, read verbatim (≈140 wpm). **DO**: exactly what
-is on screen. **EXPECT**: verified output to point at. **CUT**: editing note.
-
-Total target **4:35–4:45**.
-
----
-
-### Scene 0 — Title card (0:00 – 0:20)
-
-**DO:** full-screen slide:
-
-> **MIST — Microservice Integration & Scenario Tester**
-> *Trace-driven test generation and a trace-shape oracle for microservice REST APIs*
-> SPLASH/ISSTA 2026 Tool Demonstrations — <paper authors>
-> github.com/miaoti/MIST
-
-**SAY:**
-> "This is MIST, a test generator for microservice REST APIs. MIST turns
-> OpenTelemetry traces and an OpenAPI spec into runnable cross-service tests,
-> and judges them with a trace-shape oracle. I'll show you the failure class
-> that motivates it: a service that answers HTTP 200 while one of its
-> dependencies has actually failed — a failure no status, schema, or body
-> oracle can see."
-
-**CUT:** hard cut to terminal.
-
----
-
-### Scene 1 — The tool in one breath (0:20 – 0:45)
-
-**DO:**
 ```bash
-ls mist-core mist-llm mist-cli evaluation/suts
+# P1 — clone at the frozen submission commit + key
+git clone https://github.com/miaoti/MIST && cd MIST
+mkdir -p .api_keys && <put your DeepSeek key in .api_keys/DEEPSEEK_API_KEY>
+export JAVA_HOME=/path/to/jdk21          # a JDK, not a JRE
+
+# P2 — build (~5 min)
+mvn -q -DskipTests install
+
+# P3 — SUT up (~8 min; Linux x86_64; macOS: brew install kind kubectl istioctl first)
+evaluation/suts/bookinfo/deploy/deploy.sh
+kubectl get pods    # all 2/2 Running before continuing
+
+# P4 — self-restarting forwards (bare port-forwards die mid-take; ports must be free:
+#       ss -tlnp | grep -E ':8080|:16686' shows nothing before this)
+( while true; do kubectl port-forward -n istio-system svc/istio-ingressgateway 8080:80; sleep 2; done ) &
+( while true; do kubectl port-forward -n istio-system svc/tracing 16686:80; sleep 2; done ) &
+curl -s -o /dev/null -w '%{http_code}\n' http://localhost:8080/productpage   # 200
+
+# P5 — determinism run 1 (~2.5 min) -> /tmp/run1.sums, then clear for the on-camera run 2
+rm -rf mist-cli/src/test/java/trainticket_twostage_test
+"$JAVA_HOME/bin/java" -Drandom.seed=42 -jar mist-cli/target/mist.jar \
+    mist-cli/src/main/resources/My-Example/trainticket-demo-noexec.properties
+find mist-cli/src/test/java/trainticket_twostage_test -name 'Flow_Scenario_*.java' \
+    -exec sha256sum {} \; | sort > /tmp/run1.sums
+rm -rf mist-cli/src/test/java/trainticket_twostage_test
+
+# P6 ★ — THE tool run the video is built around (~30 min). Scene 2 shows its
+#         launch + tail; Scene 4 shows its Allure report. Run it ONCE here as
+#         the dry-run-of-record, keeping the console log:
+evaluation/suts/bookinfo/workload/inject-ratings-outage.sh on
+mkdir -p evaluation/suts/bookinfo/.runtime
+( cd evaluation/suts/bookinfo/.runtime && \
+  DEEPSEEK_API_KEY="$(cat ../../../../.api_keys/DEEPSEEK_API_KEY)" \
+  "$JAVA_HOME/bin/java" -jar ../../../../mist-cli/target/mist.jar ../bookinfo-demo.properties \
+  ) 2>&1 | tee /tmp/mist-bookinfo-run.log
+evaluation/suts/bookinfo/workload/inject-ratings-outage.sh off
+#   Confirm now (this is the ⚠ dry-run check): the closing "MIST findings"
+#   block and .runtime/logs/fault-detection-reports/ name
+#   HIDDEN_DOWNSTREAM_FAILURE findings (committed reference for the expected
+#   content: docs/main-contribution/evidence/bookinfo_inprocess_e2e/).
+
+# P7 — render the Allure report from that exact run (~40 s)
+allure/bin/allure generate evaluation/suts/bookinfo/.runtime/target/allure-results \
+    -o /tmp/allure-report --clean
+allure/bin/allure open /tmp/allure-report &    # note the URL it prints; open in the browser
+#   In the report, find ONE positive /reviews test that is red with
+#   "Trace Shape Oracle verdict has violation(s): [HIDDEN_DOWNSTREAM_FAILURE: ...]"
+#   and BOOKMARK that page. Never show the unfiltered failure list cold —
+#   negative variants fail red by design on Bookinfo (it accepts any input).
+
+# P8 — browser: tab A = github.com/miaoti/MIST, tab B = the bookmarked red test.
+#   Terminal: dark theme, >=18pt, ~120x30, export PS1='$ ', clear.
+#   Recorder: OBS 1080p/30fps, mic check. Restore after: ratings replicas=1.
 ```
-(One command, one screen: the three modules + the four SUT bundles.)
 
-**SAY:**
-> "MIST is three Maven modules — the pipeline and oracle in mist-core, LLM
-> dispatch with a call cache in mist-llm, and a single entry point in
-> mist-cli: one jar, one properties file per system. The repo bundles four
-> ready-to-run systems — TrainTicket, Bookinfo, Sock Shop, and Online
-> Boutique — and a step-by-step reproduction guide, REPRODUCE-dot-md.
-> Right now, Istio Bookinfo is live on a local kind cluster with Jaeger
-> tracing. Let's break it."
-
-**CUT:** none.
+Re-recording later? P5's run-1 sums and P6/P7's report stay valid as long as
+the commit doesn't change; only P4's forwards need restarting after a reboot.
 
 ---
 
-### Scene 2 — LIVE: the hidden downstream failure (0:45 – 2:10) ★ core
+## 5. Scene-by-scene (target 4:25–4:40)
 
-**Beat A — break the dependency (0:45 – 1:02)**
+**SAY** = narration verbatim (≈140 wpm) · **DO** = on screen · **EXPECT** =
+verified output to point at · **CUT** = edit note.
+
+---
+
+### Scene 0 — Title (0:00 – 0:18)
+
+**DO:** slide: tool name + one-liner + venue + authors + `github.com/miaoti/MIST`.
+
+**SAY:**
+> "This is MIST, a test generator for microservice REST APIs. It turns
+> OpenTelemetry traces and an OpenAPI spec into runnable cross-service tests,
+> and judges them with a trace-shape oracle. Let me first show you the
+> failure class that motivates it."
+
+---
+
+### Scene 1 — The problem, in 30 seconds (0:18 – 0:48)
 
 **DO:**
 ```bash
 evaluation/suts/bookinfo/workload/inject-ratings-outage.sh on
 curl -s -o /dev/null -w '%{http_code}\n' http://localhost:8080/api/v1/products/0/ratings
-```
-
-**EXPECT:** `ratings OUTAGE = ON (hidden-downstream active)`; the curl prints
-`503` (CUT the settle delay; re-take if the first on-camera curl shows 200).
-
-**SAY:**
-> "I take the ratings service down — a real availability outage, not a code
-> mutant. Called directly, ratings fails loudly: five-oh-three."
-
-**Beat B — the lie (1:02 – 1:30)**
-
-**DO:**
-```bash
 curl -s -o /dev/null -w '%{http_code}\n' http://localhost:8080/api/v1/products/0/reviews
-curl -s http://localhost:8080/api/v1/products/0/reviews | python3 -m json.tool | head -14
+curl -s http://localhost:8080/api/v1/products/0/reviews | python3 -m json.tool | head -8
 ```
 
-**EXPECT (verified):** `200`; body shows
-`"rating": {"error": "Ratings service is currently unavailable"}` inside an
-otherwise valid payload.
+**EXPECT (verified):** `503` (direct), then `200` (reviews), body carrying
+`"rating": {"error": "Ratings service is currently unavailable"}`.
 
 **SAY:**
-> "But reviews — which depends on ratings — still answers two hundred. The
-> service caught the failure and degraded gracefully. A status oracle passes.
-> A schema oracle passes — this body is perfectly valid. Every tester that
-> judges only the HTTP response calls this green. The failure has been
-> swallowed."
+> "Istio Bookinfo, live on a kind cluster. I take the ratings service down —
+> a real outage. Called directly it fails loudly: 503. But reviews, which
+> depends on ratings, still answers 200 with a perfectly valid body — the
+> failure was swallowed. Status oracles, schema oracles, body oracles: all
+> green. This is a hidden downstream failure."
 
-**Beat C — the trace knows (1:30 – 2:10)**
+**CUT:** settle delay between inject and the 503.
+
+---
+
+### Scene 2 — THE TOOL, one command, end to end (0:48 – 1:40) ★ core
+
+**DO (live):**
+```bash
+cd evaluation/suts/bookinfo/.runtime
+DEEPSEEK_API_KEY="$(cat ../../../../.api_keys/DEEPSEEK_API_KEY)" \
+"$JAVA_HOME/bin/java" -jar ../../../../mist-cli/target/mist.jar ../bookinfo-demo.properties
+```
+Let the banner + generation progress run ~8 s on camera → **"⏩ ~30 min"
+caption** → cut to the END of the run. (To avoid waiting again on the day,
+replay the tail of `/tmp/mist-bookinfo-run.log` from prep P6 — same commit,
+same SUT state; narrate it honestly as "the run we recorded earlier".) End on
+the closing `MIST findings` block, then:
+```bash
+tail -20 logs/fault-detection-reports/*.txt
+```
+
+**EXPECT:** the findings block / report names `HIDDEN_DOWNSTREAM_FAILURE` on
+the `/reviews` positive test(s) with the swallowed `reviews → ratings` 503
+(⚠ confirm exact lines at prep P6; committed reference:
+`docs/main-contribution/evidence/bookinfo_inprocess_e2e/`).
+
+**SAY:**
+> "Now the tool. One jar, one properties file — this is the entire interface.
+> MIST reads the OpenAPI spec and the captured traces, generates
+> cross-service scenarios, compiles them, executes them against the live
+> system, fetches each test's distributed trace from Jaeger, and runs its
+> trace-shape oracle — all in this one process. Thirty minutes later: one
+> hundred sixty-six tests executed, and the run report flags the reviews
+> tests red — hidden downstream failure, the swallowed reviews-to-ratings
+> five-oh-three — caught by the oracle, not by the HTTP response."
+
+---
+
+### Scene 3 — Inside the verdict (1:40 – 2:10)
 
 **DO:**
 ```bash
+cd ../../../..   # repo root
 curl -s "http://localhost:16686/jaeger/api/traces?service=productpage.default&limit=20&lookback=10m" -o /tmp/live-traces.json
 "$JAVA_HOME/bin/java" -cp mist-cli/target/mist.jar evaluation/suts/bookinfo/OracleCheck.java \
     /tmp/live-traces.json "GET /api/v1/products/0/reviews"
 ```
-(Between the two commands there is a 6-second Jaeger ingest wait — CUT it.)
 
-**EXPECT (verified — point at each line):**
+**EXPECT (verified live 2026-06-10):**
 ```
   --> RESPONSE-LEVEL oracle (status/schema/soft-error sees the client response): PASS  (root is 2xx — looks successful, MISSES the failure)
   --> TRACE oracle HIDDEN_DOWNSTREAM_FAILURE: FIRES  severity=ERROR
@@ -270,32 +231,43 @@ curl -s "http://localhost:16686/jaeger/api/traces?service=productpage.default&li
 ```
 
 **SAY:**
-> "Now I pull the distributed traces of the exact requests we just made,
-> straight from Jaeger's API, and replay MIST's shipped oracle on them.
-> Response-level verdict: PASS — it only sees the 200. MIST's
-> Hidden-Downstream-Failure invariant: FIRES, severity ERROR — inside the
-> trace it found the reviews-to-ratings call that returned 503. The invariant
-> is structural — label-free, no LLM, no training. In the full pipeline this
-> verdict fails the generated test red; you'll see that report in a minute."
+> "What did the oracle actually see? Here I replay MIST's shipped invariant —
+> the same class the pipeline just used — on the live traces, so you can read
+> the verdict. Response-level: PASS, it only sees the 200. The
+> hidden-downstream invariant: FIRES at severity ERROR, naming the swallowed
+> span. It's structural — label-free, and it needs no LLM."
 
-**DO (last frame of the scene):**
-```bash
-evaluation/suts/bookinfo/workload/inject-ratings-outage.sh off
-```
+**DO (last frame):** `evaluation/suts/bookinfo/workload/inject-ratings-outage.sh off`
 
-**CUT:** ingest wait, any curl retry. Keep beat C ≤ 40 s.
+**CUT:** the 6-s Jaeger ingest before the fetch.
 
 ---
 
-### Scene 3 — Generation at scale, byte-reproducible (2:10 – 2:55)
+### Scene 4 — The report a developer sees (2:10 – 2:35)
+
+**DO:** switch to browser tab B — the **bookmarked red positive test** in the
+Allure report rendered at prep P7 from the Scene-2 run. One click, zoom on the
+failure message.
+
+**EXPECT:** `Positive variant failed — Trace Shape Oracle verdict has
+violation(s): [HIDDEN_DOWNSTREAM_FAILURE: reviews.default ──▶ ratings... (http=503 otel=ERROR)]`
+
+**SAY:**
+> "The same run renders a standard Allure report. Here's the reviews test:
+> red, failed by the trace oracle, the swallowed call named in the message.
+> The negative variants around it fail by design — Bookinfo accepts any
+> input — and every red test names its single cause."
+
+---
+
+### Scene 5 — Generation at scale, byte-reproducible (2:35 – 3:15)
 
 **DO:**
 ```bash
 "$JAVA_HOME/bin/java" -Drandom.seed=42 -jar mist-cli/target/mist.jar \
     mist-cli/src/main/resources/My-Example/trainticket-demo-noexec.properties
 ```
-Show ~5 s of the live progress bar → **time-lapse** (real: ~2.5 min) → final
-banner. Then:
+~5 s of progress bar → time-lapse → then:
 ```bash
 find mist-cli/src/test/java/trainticket_twostage_test -name 'Flow_Scenario_*.java' \
     -exec sha256sum {} \; | sort > /tmp/run2.sums
@@ -303,25 +275,22 @@ diff /tmp/run1.sums /tmp/run2.sums && echo IDENTICAL
 grep -A3 "FAULT COVERAGE SUMMARY" debug/negative_test/runs/run22-fault-detection-10of10.txt
 ```
 
-**EXPECT (verified):** `diff` prints nothing → `IDENTICAL`;
-the grep shows `Total Injected Faults: 10 / Detected Faults: 10 (100.0%)`.
+**EXPECT (verified):** `IDENTICAL`; `Total Injected Faults: 10 / Detected
+Faults: 10 (100.0%)`.
 
 **SAY:**
-> "Generation is offline: the bundled TrainTicket demo — a 265-operation
-> spec plus captured traces — generates cross-service JUnit scenarios with no
-> SUT, no key, no network. Negative variants follow the Sniper strategy:
-> exactly one fault per variant, so a red test has exactly one cause. Under a
-> fixed seed the suite is byte-identical: I generated this once before
-> recording, and the checksums of all one-hundred-twenty-three files match —
-> that's what makes the artifact reviewable. Against the live forty-service
-> TrainTicket, the same engine generated fifteen thousand and thirty-six
-> tests, and the fault registry confirms all ten injected faults detected."
-
-**CUT:** the time-lapse (keep the bar visibly moving before the jump).
+> "The generator also runs fully offline: the bundled TrainTicket demo — a
+> 265-operation spec plus captured traces — no SUT, no key, no network.
+> Negative variants follow the Sniper strategy: exactly one fault each, so
+> every red test has exactly one cause. Under a fixed seed the suite is
+> byte-identical — I generated it before recording, and all
+> one-hundred-twenty-three checksums match. Against the live forty-service
+> TrainTicket, this engine generated fifteen thousand thirty-six tests, and
+> the fault registry confirms ten out of ten injected faults detected."
 
 ---
 
-### Scene 4 — Soft errors: the LLM-backed envelope check (2:55 – 3:30)
+### Scene 6 — Soft errors: the LLM-backed check (3:15 – 3:45)
 
 **DO:**
 ```bash
@@ -335,7 +304,7 @@ the grep shows `Total Injected Faults: 10 / Detected Faults: 10 (100.0%)`.
   evaluation/suts/trainticket/ResponseEnvelopeLiveCheck.java
 ```
 
-**EXPECT (verified; real 20–40 s, CUT the LLM wait to ~3 s):**
+**EXPECT (verified):**
 ```
 Soft-error response (HTTP 200): {"status":0,"msg":"start or end station not include in stationList.","data":null}
 Status-class oracle: PASS (HTTP is 200)
@@ -343,88 +312,67 @@ Status-class oracle: PASS (HTTP is 200)
 ```
 
 **SAY:**
-> "The second failure class: soft errors. TrainTicket answers HTTP 200 with
-> status zero and data null — a rejection wearing a success code. The status
-> oracle passes; MIST's Response-Envelope invariant classifies the unseen
-> body value with one LLM call, caches the rule, and fails it. The same check
-> flags Sock Shop's 200-with-status-code-500. And the hidden-downstream
-> invariant crosses protocols: on Online Boutique the swallowed call is gRPC,
-> and it fires on seven of twelve committed outage traces — and on zero of
-> the healthy controls."
+> "The second failure class: soft errors — HTTP 200 wrapping a domain
+> rejection, like TrainTicket's status zero. MIST's Response-Envelope
+> invariant classifies the unseen body value with one LLM call, caches the
+> rule, and fails it. The same check flags Sock Shop's
+> 200-with-status-code-500. And the hidden-downstream invariant crosses
+> protocols: on Online Boutique the swallowed call is gRPC, and it fires on
+> seven of twelve committed outage traces — zero on the healthy controls."
+
+**CUT:** LLM wait to ~3 s.
 
 ---
 
-### Scene 5 — The report a developer sees (3:30 – 3:55)
-
-**DO:** switch to the pre-rendered **Allure report** tab (from the prep
-in-process run under the outage). Click the bookmarked red positive test;
-zoom on its failure message.
-
-**EXPECT (same text as the committed sample finding):**
-`Positive variant failed — Trace Shape Oracle verdict has violation(s):
-[HIDDEN_DOWNSTREAM_FAILURE: reviews.default ──▶ ratings.default... (http=503 otel=ERROR)]`
-
-**SAY:**
-> "This is what the developer actually gets. MIST's full pipeline — generate,
-> compile, execute, oracle, in one JVM — ran one-hundred-sixty-six tests
-> against the live Bookinfo and rendered a standard Allure report. Here is the
-> positive reviews test: red, failed by the trace oracle, with the swallowed
-> reviews-to-ratings 503 named in the message. Note the negative variants
-> around it fail by design — Bookinfo accepts any input — every red test
-> still names its single cause."
-
-**CUT:** none needed; one tab switch, one click, one zoom.
-
----
-
-### Scene 6 — Reproduce it yourself + close (3:55 – 4:40)
+### Scene 7 — Reproduce it yourself + close (3:45 – 4:25)
 
 **DO:**
 ```bash
 evaluation/run-offline-oracle.sh
 ```
-Show the launch, **CUT the ~5-minute build**, land on the tail:
+Launch on camera → cut the ~5-min build → tail:
 ```
 ==> Done. Both fired offline -- no SUT, no LLM. (Healthy-control traces in the
     same directories stay silent; see REPRODUCE.md for the full matrix.)
 ```
-Switch to the GitHub repo tab. End card (5 s): repo URL · Zenodo DOI ·
+Switch to tab A (GitHub). End card 5 s: `github.com/miaoti/MIST` · Zenodo DOI ·
 "REPRODUCE.md — start at §5".
 
 **SAY:**
-> "Everything you saw reproduces from a fresh clone. One script rebuilds the
-> jar and replays both hidden-downstream detections from committed traces —
-> no cluster, no LLM, about ten minutes end to end. REPRODUCE-dot-md maps
-> every paper claim to a command and its committed evidence; the four systems
-> ship as self-contained bundles under evaluation slash suts. MIST is open
-> source under LGPL — the repository and the archived artifact are linked
-> below. Thanks for watching."
+> "Everything here reproduces from a fresh clone: one script rebuilds the jar
+> and replays both hidden-downstream detections from committed traces — no
+> cluster, no LLM, about ten minutes. REPRODUCE-dot-md maps every claim to a
+> command and its committed evidence; four systems ship as self-contained
+> bundles. MIST is open source under LGPL. Thanks for watching."
 
 ---
 
-## 5. Copy-paste appendix (run order)
+## 6. Copy-paste appendix (camera order)
 
 ```bash
-# ---- PREP (not recorded; see §3 for the determinism + Allure prep) ----
-export JAVA_HOME=/usr/lib/jvm/java-21-openjdk-amd64
-pkill -f "port-forward" 2>/dev/null
-( while true; do kubectl port-forward -n istio-system svc/istio-ingressgateway 8080:80; sleep 2; done ) &
-( while true; do kubectl port-forward -n istio-system svc/tracing 16686:80; sleep 2; done ) &
-kubectl scale deploy ratings-v1 --replicas=1
-curl -s -o /dev/null -w '%{http_code}\n' http://localhost:8080/productpage     # 200
-
-# ---- Scene 2 ----
+# Scene 1
 evaluation/suts/bookinfo/workload/inject-ratings-outage.sh on
-curl -s -o /dev/null -w '%{http_code}\n' http://localhost:8080/api/v1/products/0/ratings   # 503
-curl -s -o /dev/null -w '%{http_code}\n' http://localhost:8080/api/v1/products/0/reviews   # 200
-curl -s http://localhost:8080/api/v1/products/0/reviews | python3 -m json.tool | head -14
+curl -s -o /dev/null -w '%{http_code}\n' http://localhost:8080/api/v1/products/0/ratings
+curl -s -o /dev/null -w '%{http_code}\n' http://localhost:8080/api/v1/products/0/reviews
+curl -s http://localhost:8080/api/v1/products/0/reviews | python3 -m json.tool | head -8
+
+# Scene 2 (launch live; the tail can replay /tmp/mist-bookinfo-run.log from prep P6)
+cd evaluation/suts/bookinfo/.runtime
+DEEPSEEK_API_KEY="$(cat ../../../../.api_keys/DEEPSEEK_API_KEY)" \
+"$JAVA_HOME/bin/java" -jar ../../../../mist-cli/target/mist.jar ../bookinfo-demo.properties
+tail -20 logs/fault-detection-reports/*.txt
+
+# Scene 3
+cd ../../../..
 sleep 6
 curl -s "http://localhost:16686/jaeger/api/traces?service=productpage.default&limit=20&lookback=10m" -o /tmp/live-traces.json
 "$JAVA_HOME/bin/java" -cp mist-cli/target/mist.jar evaluation/suts/bookinfo/OracleCheck.java \
     /tmp/live-traces.json "GET /api/v1/products/0/reviews"
 evaluation/suts/bookinfo/workload/inject-ratings-outage.sh off
 
-# ---- Scene 3 ----
+# Scene 4: browser only (tab B from prep P7)
+
+# Scene 5
 "$JAVA_HOME/bin/java" -Drandom.seed=42 -jar mist-cli/target/mist.jar \
     mist-cli/src/main/resources/My-Example/trainticket-demo-noexec.properties
 find mist-cli/src/test/java/trainticket_twostage_test -name 'Flow_Scenario_*.java' \
@@ -432,7 +380,7 @@ find mist-cli/src/test/java/trainticket_twostage_test -name 'Flow_Scenario_*.jav
 diff /tmp/run1.sums /tmp/run2.sums && echo IDENTICAL
 grep -A3 "FAULT COVERAGE SUMMARY" debug/negative_test/runs/run22-fault-detection-10of10.txt
 
-# ---- Scene 4 ----
+# Scene 6
 "$JAVA_HOME/bin/java" -cp mist-cli/target/mist.jar \
   -Dllm.openai_compatible.enabled=true \
   -Dllm.openai_compatible.url=https://api.deepseek.com/v1/chat/completions \
@@ -442,71 +390,63 @@ grep -A3 "FAULT COVERAGE SUMMARY" debug/negative_test/runs/run22-fault-detection
   -Dmst.oracle.shape.invariants.status_propagation.enabled=false \
   evaluation/suts/trainticket/ResponseEnvelopeLiveCheck.java
 
-# ---- Scene 5: browser only (pre-rendered /tmp/allure-report) ----
-
-# ---- Scene 6 ----
+# Scene 7
 evaluation/run-offline-oracle.sh
 
-# ---- restore (not recorded) ----
+# restore (not recorded)
 evaluation/suts/bookinfo/workload/inject-ratings-outage.sh off
 kubectl scale deploy ratings-v1 --replicas=1
 ```
 
 ---
 
-## 6. Fallback plan
+## 7. Fallbacks
 
-- **Cluster misbehaves on recording day** → Scene 2 Beat C runs on the
-  **committed** outage trace instead of the live capture (identical output
-  shape, verified):
+- **Cluster misbehaves on the day** → Scene 1 keeps only the committed
+  pipeline table (`docs/main-contribution/evidence/bookinfo_e2e_pipeline.md`,
+  5 s); Scene 2 uses `/tmp/mist-bookinfo-run.log` + the committed
+  `bookinfo_inprocess_e2e/` report ("the run we recorded earlier"); Scene 3
+  replays the **committed** outage trace:
   ```bash
   "$JAVA_HOME/bin/java" -cp mist-cli/target/mist.jar evaluation/suts/bookinfo/OracleCheck.java \
     docs/main-contribution/evidence/bookinfo_e2e_traces/masked_reviews_ratings_outage.json \
     "GET /api/v1/products/0/reviews"
   ```
-  Change one narration line: "replayed on the outage trace committed in the
-  artifact". Beats A/B can be dropped entirely in this mode (show the
-  committed `bookinfo_e2e_pipeline.md` table for 5 s instead).
-- **Allure prep run not done / report looks off** → drop Scene 5, give its
-  25 s to Scene 2; mention the committed run reports verbally in Scene 6
-  ("the committed in-process run reports show the same finding across 166
-  tests").
-- **DeepSeek down** → Scene 4 shows the committed transcript
-  `docs/main-contribution/evidence/responseenvelope_live_softerror.txt`
-  (`cat` it) with the narration line "here is the committed transcript of
-  that one-call classification".
-- Scenes are independent takes — record separately, stitch in the editor.
+- **DeepSeek down** → Scene 6 `cat`s the committed transcript
+  `docs/main-contribution/evidence/responseenvelope_live_softerror.txt`.
+- **Allure report unsatisfying** → drop Scene 4, give 25 s to Scene 2's tail
+  + report file.
+- Scenes are independent takes; stitch in the editor.
 
 ---
 
-## 7. Post-production
+## 8. Post-production
 
-- [ ] Trim per the CUT notes; total **3:00 ≤ t ≤ 5:00** (target 4:35–4:45).
-- [ ] Lower-third caption with the command name during each terminal beat.
-- [ ] Clean up auto-captions (accessibility; SIGSOFT venues encourage it).
-- [ ] Export MP4 (H.264, 1080p, 30 fps).
-- [ ] Upload **YouTube (unlisted)**; add the MP4 to the **Zenodo deposit**
-      and publish the deposit (the paper's DOI must resolve).
-- [ ] Replace `\todo{SCREENCAST-URL}` in `paper/main_issta.tex` (abstract +
-      Tool Availability paragraph) with the YouTube URL; update REPRODUCE §9.
-- [ ] Watch end-to-end once on laptop speakers at 1× before submitting.
+- [ ] Trim per CUT notes; total 3:00–5:00 (target 4:25–4:40).
+- [ ] Lower-third caption with each command name; "⏩" captions on every jump.
+- [ ] Clean up auto-captions (accessibility).
+- [ ] Export MP4 (H.264, 1080p/30).
+- [ ] Upload YouTube (unlisted) **and** add the MP4 to the Zenodo deposit;
+      publish the deposit (the paper's DOI must resolve).
+- [ ] Fill `\todo{SCREENCAST-URL}` in `paper/main_issta.tex` (abstract + Tool
+      Availability); update REPRODUCE §9.
+- [ ] Watch once end-to-end on laptop speakers.
 
 ---
 
-## 8. Feasibility ledger (why every step above is known to work)
+## 9. Feasibility ledger
 
-| Scene step | Verified | Evidence |
+| Beat | Verified | Evidence |
 |---|---|---|
-| Outage toggle + 503 settle | 2026-06-09 (matrix runs) | `debug/reproduce/evidence/bookinfo-e2e-matrix.log` |
-| Masked 200 + degraded body via ingress | 2026-06-10 live | session transcript (audit V10/V11 follow-up) |
-| Live Jaeger-API fetch → `OracleCheck` FIRES @ERROR on fresh traces | **2026-06-10 live, end-to-end** | session transcript (20 traces fetched, FIRES on the just-made requests) |
-| OracleCheck on committed traces (fallback) | 2026-06-09, fresh clone | `debug/reproduce/evidence/offline-oracle.log` |
-| noexec generation 123 files, ~2.5 min, offline | 2026-06-09, no-network namespace | `debug/reproduce/evidence/noexec-run1-tail.log` |
-| Seed-42 byte-identical double run | 2026-06-09 | `debug/reproduce/evidence/run{1,2}.sums` (identical) |
-| run22 10/10 + 15,036 numbers | 2026-06-10 re-grepped | `debug/negative_test/runs/run22-fault-detection-10of10.txt` |
-| ResponseEnvelopeLiveCheck exact output | 2026-06-09, fresh clone + live DeepSeek | matches `docs/main-contribution/evidence/responseenvelope_live_softerror.txt` |
-| Boutique 7/12 (and recapture 24/40, 0/30) | 2026-06-10 re-run | session transcript |
-| In-process run produces Allure results (166 tests) | 2026-06-09 live | `.runtime/target/allure-results`, 2,710 files |
-| `allure generate` renders that run | **2026-06-10** | report at `/tmp/allure-report-test`, summary 166 total |
-| Red positive test with HIDDEN_DOWNSTREAM message in the report | committed 2026-06-02 in-process outage run | `docs/main-contribution/evidence/bookinfo_inprocess_e2e/sample_hidden_downstream_finding.txt` (prep re-run reproduces it) |
-| `run-offline-oracle.sh` end-to-end ~5–6 min | 2026-06-09, fresh clone | `debug/reproduce/evidence/offline-oracle.log` |
+| Outage toggle, 503 settle, masked 200 + body | 2026-06-09/10 live | `debug/reproduce/evidence/bookinfo-e2e-matrix.log` + session transcript |
+| **In-process run on live Bookinfo, exit 0** (Scene 2's engine) | 2026-06-09 live: 166 tests, healthy SUT | session transcript (audit V10) |
+| In-process run **under outage** produces HIDDEN_DOWNSTREAM findings + report | 2026-06-02 committed run | `docs/main-contribution/evidence/bookinfo_inprocess_e2e/` — ⚠ confirm the console-tail wording at prep P6 (the only unconfirmed *formatting*; the behavior itself is committed evidence) |
+| Live Jaeger-API fetch → OracleCheck FIRES on fresh traces | **2026-06-10 live, end-to-end** | session transcript |
+| OracleCheck on committed traces (fallback) | 2026-06-09 fresh clone | `debug/reproduce/evidence/offline-oracle.log` |
+| noexec 123 files ~2.5 min, offline; seed-42 byte-identical | 2026-06-09 (no-network namespace) | `debug/reproduce/evidence/noexec-run1-tail.log`, `evidence/run{1,2}.sums` |
+| run22 numbers (10/10, 15,036) | 2026-06-10 re-grepped | `debug/negative_test/runs/run22-fault-detection-10of10.txt` |
+| ResponseEnvelopeLiveCheck exact output | 2026-06-09 + committed transcript | `docs/main-contribution/evidence/responseenvelope_live_softerror.txt` |
+| Boutique 7/12 (+ recapture 24/40, 0/30) | 2026-06-10 re-run | session transcript |
+| `allure generate` renders a real run (2,710 files) | **2026-06-10** | summary: 166 total |
+| Red positive test with the oracle message in Allure | committed 2026-06-02 run (prep P6/P7 reproduces it) | `bookinfo_inprocess_e2e/sample_hidden_downstream_finding.txt` |
+| `run-offline-oracle.sh` ~5–6 min end-to-end | 2026-06-09 fresh clone | `evidence/offline-oracle.log` |
