@@ -1,0 +1,59 @@
+{
+  "metadata": {
+    "total_faults": 10,
+    "generated_at": "Wed Dec 10 15:59:41 CST 2025",
+    "version": "1.0"
+  },
+  "injected_faults": [
+    {
+      "service": "ts-admin-order-service",
+      "api": "POST /api/v1/adminorderservice/adminorder` AND `PUT /api/v1/adminorderservice/adminorder",
+      "faultName": "INVALID_CONTACTS_NAME_FAULT"
+    },
+    {
+      "service": "ts-admin-order-service",
+      "api": "POST /api/v1/adminorderservice/adminorder` AND `PUT /api/v1/adminorderservice/adminorder",
+      "faultName": "INVALID_SEAT_NUMBER_FAULT"
+    },
+    {
+      "service": "ts-admin-basic-info-service",
+      "api": "POST /api/v1/adminbasicservice/adminbasic/prices",
+      "faultName": "INVALID_PRICE_RATE_FAULT"
+    },
+    {
+      "service": "ts-admin-basic-info-service",
+      "api": "POST /api/v1/adminbasicservice/adminbasic/prices",
+      "faultName": "INVALID_ROUTE_ID_FAULT"
+    },
+    {
+      "service": "ts-travel-plan-service",
+      "api": "POST /api/v1/travelplanservice/travelPlan/minStation",
+      "faultName": "INVALID_STATION_NAME_FAULT"
+    },
+    {
+      "service": "ts-travel-plan-service",
+      "api": "POST /api/v1/travelplanservice/travelPlan/minStation",
+      "faultName": "INVALID_STATION_LENGTH_FAULT"
+    },
+    {
+      "service": "ts-admin-travel-service",
+      "api": "DELETE /api/v1/admintravelservice/admintravel/{tripId}",
+      "faultName": "INVALID_TRIP_ID_FORMAT_FAULT"
+    },
+    {
+      "service": "ts-admin-travel-service",
+      "api": "DELETE /api/v1/admintravelservice/admintravel/{tripId}",
+      "faultName": "INVALID_TRIP_ID_LENGTH_FAULT"
+    },
+    {
+      "service": "ts-admin-route-service",
+      "api": "POST /api/v1/adminrouteservice/adminroute",
+      "faultName": "INSUFFICIENT_STATIONS_FAULT"
+    },
+    {
+      "service": "ts-admin-route-service",
+      "api": "POST /api/v1/adminrouteservice/adminroute",
+      "faultName": "INVALID_STATION_NAME_LENGTH_FAULT"
+    }
+  ]
+}

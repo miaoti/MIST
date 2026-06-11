@@ -1,0 +1,32 @@
+# Optional curated Inter-Parameter Dependency rules for D2.
+#
+# TrainTicket's OpenAPI spec does NOT declare IDL extensions, so D2 is
+# reported as N/A by default. To enable D2, copy this file to
+# `curated_idl.yaml` (without the `.example` suffix) and add rules.
+#
+# Each rule is checked against every generated payload for the matching
+# operation. A payload satisfies an IDL rule when:
+#   - 'requires': if all 'antecedent' key=value pairs are present and matching,
+#                 then every 'consequent' parameter must be present and non-empty
+#   - 'only_one': exactly one of the 'parameters' may be present and non-empty
+#   - 'all_or_none': either all of 'parameters' are present or none of them
+#   - 'or':       at least one of 'parameters' must be present
+#   - 'zero_or_one': zero or one of 'parameters' may be present
+#
+# Example rules below are illustrative — adapt them to your spec.
+
+rules:
+  - operation: POST /api/v1/orderOtherService/orderOther/refresh
+    rule: requires
+    antecedent: {enableBoughtDateQuery: true}
+    consequent: [boughtDateStart, boughtDateEnd]
+
+  - operation: POST /api/v1/orderOtherService/orderOther/refresh
+    rule: requires
+    antecedent: {enableTravelDateQuery: true}
+    consequent: [travelDateStart, travelDateEnd]
+
+  - operation: POST /api/v1/orderOtherService/orderOther/refresh
+    rule: requires
+    antecedent: {enableStateQuery: true}
+    consequent: [state]

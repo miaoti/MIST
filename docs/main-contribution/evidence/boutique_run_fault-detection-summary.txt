@@ -1,0 +1,66 @@
+================================================================================
+                    FAULT DETECTION SUMMARY REPORT
+================================================================================
+
+Experiment:         boutique_hidden_downstream_1780164710192
+Generated:          2026-05-30 13:27:50
+Tracking Started:   2026-05-30 13:11:50
+Total Test Cases:   38
+
+================================================================================
+FAULT COVERAGE SUMMARY
+================================================================================
+
+Total Injected Faults:    0
+Detected Faults:          0 (0.0%)
+Undetected Faults:        0 (100.0%)
+
+Detection Progress:
+[░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░] 0.0%
+
+================================================================================
+TEST CASES EXECUTED (38)
+================================================================================
+
+1. boutique_hidden_downstream.BoutiqueTest_1780164710192.Flow_Scenario_1.test_positive_flow_S1_v1
+2. boutique_hidden_downstream.BoutiqueTest_1780164710192.Flow_Scenario_1.test_positive_flow_S1_v1_explore_200
+3. boutique_hidden_downstream.BoutiqueTest_1780164710192.Flow_Scenario_1.test_positive_flow_S1_v1_explore_302
+4. boutique_hidden_downstream.BoutiqueTest_1780164710192.Flow_Scenario_1.test_positive_flow_S1_v1_explore_400
+5. boutique_hidden_downstream.BoutiqueTest_1780164710192.Flow_Scenario_10.test_positive_flow_S10_v1
+6. boutique_hidden_downstream.BoutiqueTest_1780164710192.Flow_Scenario_11.test_positive_flow_S11_v1
+7. boutique_hidden_downstream.BoutiqueTest_1780164710192.Flow_Scenario_12.test_positive_flow_S12_v1
+8. boutique_hidden_downstream.BoutiqueTest_1780164710192.Flow_Scenario_13.test_positive_flow_S13_v1
+9. boutique_hidden_downstream.BoutiqueTest_1780164710192.Flow_Scenario_14.test_positive_flow_S14_v1
+10. boutique_hidden_downstream.BoutiqueTest_1780164710192.Flow_Scenario_15.test_positive_flow_S15_v1
+11. boutique_hidden_downstream.BoutiqueTest_1780164710192.Flow_Scenario_16.test_positive_flow_S16_v1
+12. boutique_hidden_downstream.BoutiqueTest_1780164710192.Flow_Scenario_17.test_positive_flow_S17_v1
+13. boutique_hidden_downstream.BoutiqueTest_1780164710192.Flow_Scenario_18.test_positive_flow_S18_v1
+14. boutique_hidden_downstream.BoutiqueTest_1780164710192.Flow_Scenario_19.test_positive_flow_S19_v1
+15. boutique_hidden_downstream.BoutiqueTest_1780164710192.Flow_Scenario_2.test_positive_flow_S2_v1
+16. boutique_hidden_downstream.BoutiqueTest_1780164710192.Flow_Scenario_2.test_positive_flow_S2_v1_explore_405
+17. boutique_hidden_downstream.BoutiqueTest_1780164710192.Flow_Scenario_2.test_positive_flow_S2_v1_explore_500
+18. boutique_hidden_downstream.BoutiqueTest_1780164710192.Flow_Scenario_20.test_positive_flow_S20_v1
+19. boutique_hidden_downstream.BoutiqueTest_1780164710192.Flow_Scenario_21.test_positive_flow_S21_v1
+20. boutique_hidden_downstream.BoutiqueTest_1780164710192.Flow_Scenario_22.test_positive_flow_S22_v1
+21. boutique_hidden_downstream.BoutiqueTest_1780164710192.Flow_Scenario_22.test_positive_flow_S22_v1_explore_201
+22. boutique_hidden_downstream.BoutiqueTest_1780164710192.Flow_Scenario_22.test_positive_flow_S22_v1_explore_204
+23. boutique_hidden_downstream.BoutiqueTest_1780164710192.Flow_Scenario_22.test_positive_flow_S22_v1_explore_405
+24. boutique_hidden_downstream.BoutiqueTest_1780164710192.Flow_Scenario_3.test_positive_flow_S3_v1
+25. boutique_hidden_downstream.BoutiqueTest_1780164710192.Flow_Scenario_4.test_positive_flow_S4_v1
+26. boutique_hidden_downstream.BoutiqueTest_1780164710192.Flow_Scenario_4.test_positive_flow_S4_v1_explore_429
+27. boutique_hidden_downstream.BoutiqueTest_1780164710192.Flow_Scenario_4.test_positive_flow_S4_v1_explore_503
+28. boutique_hidden_downstream.BoutiqueTest_1780164710192.Flow_Scenario_5.test_positive_flow_S5_v1
+29. boutique_hidden_downstream.BoutiqueTest_1780164710192.Flow_Scenario_6.test_positive_flow_S6_v1
+30. boutique_hidden_downstream.BoutiqueTest_1780164710192.Flow_Scenario_6.test_positive_flow_S6_v1_explore_200
+31. boutique_hidden_downstream.BoutiqueTest_1780164710192.Flow_Scenario_6.test_positive_flow_S6_v1_explore_400
+32. boutique_hidden_downstream.BoutiqueTest_1780164710192.Flow_Scenario_6.test_positive_flow_S6_v1_explore_404
+33. boutique_hidden_downstream.BoutiqueTest_1780164710192.Flow_Scenario_7.test_positive_flow_S7_v1
+34. boutique_hidden_downstream.BoutiqueTest_1780164710192.Flow_Scenario_8.test_positive_flow_S8_v1
+35. boutique_hidden_downstream.BoutiqueTest_1780164710192.Flow_Scenario_8.test_positive_flow_S8_v1_explore_400
+36. boutique_hidden_downstream.BoutiqueTest_1780164710192.Flow_Scenario_8.test_positive_flow_S8_v1_explore_401
+37. boutique_hidden_downstream.BoutiqueTest_1780164710192.Flow_Scenario_8.test_positive_flow_S8_v1_explore_404
+38. boutique_hidden_downstream.BoutiqueTest_1780164710192.Flow_Scenario_9.test_positive_flow_S9_v1
+
+================================================================================
+                          END OF REPORT
+================================================================================

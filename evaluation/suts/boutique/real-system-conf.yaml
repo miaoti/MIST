@@ -1,0 +1,60 @@
+testConfiguration:
+  services:
+    frontend:
+    - expectedResponse: 200
+      method: get
+      operationId: home
+      testPath: /
+      testParameters: null
+    - expectedResponse: 200
+      method: get
+      operationId: healthz
+      testPath: /_healthz
+      testParameters: null
+    - expectedResponse: 200
+      method: get
+      operationId: viewCart
+      testPath: /cart
+      testParameters: null
+    - expectedResponse: 200
+      method: post
+      operationId: addToCart
+      testPath: /cart
+      testParameters: null
+    - expectedResponse: 200
+      method: post
+      operationId: placeOrder
+      testPath: /cart/checkout
+      testParameters: null
+    - expectedResponse: 200
+      method: post
+      operationId: emptyCart
+      testPath: /cart/empty
+      testParameters: null
+    - expectedResponse: 200
+      method: get
+      operationId: logout
+      testPath: /logout
+      testParameters: null
+    - expectedResponse: 200
+      method: get
+      operationId: getProduct
+      testPath: /product/{id}
+      testParameters:
+      - name: id
+        in: path
+        weight: null
+        description: product id (e.g. OLJCESPC7Z)
+        type: string
+        required: true
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: length
+            values:
+            - '10'
+    - expectedResponse: 200
+      method: post
+      operationId: setCurrency
+      testPath: /setCurrency
+      testParameters: null

@@ -1,0 +1,135 @@
+# Ignore everything inside .idea/ except the shared MIST run
+# configurations — those are checked in so a fresh IntelliJ open
+# gets the right Working Directory + program arguments.
+/.idea/*
+!/.idea/runConfigurations/
+# Claude Code's per-agent worktrees / scratch state.
+/.claude/
+/.settings/
+/.vscode/
+/.classpath/
+/.project/
+/bin/
+/target
+# Stage 1.C: Maven reactor — also ignore target/ inside every module
+**/target/
+/logs/
+# Stage 1.C: Maven reactor — also ignore logs/ inside every module
+**/logs/
+# MIST runtime state (LLM cache, etc.). Survives `mvn clean`; un-ignore
+# for artifact bundles to commit a blessed cache for reproducibility.
+/.mist/
+# Stage 1.C: Maven reactor — also ignore .mist/ inside every module
+**/.mist/
+/log/*
+
+/allure-results/
+/src/test/resources/csvData/csvSample.csv
+/src/test/resources/csvData/coverage-results.csv
+/src/test/resources/csvData/test-cases.csv
+/src/test/resources/csvData/test-cases-coverage.csv
+/src/test/resources/csvData/test-results.csv
+/src/test/resources/csvData/test-results-coverage.csv
+/src/test/resources/csvData/test-coverage.json
+/src/test/resources/csvData/test-coverage.csv
+# Stage 1.C: Maven reactor — generated csvData artifacts inside every module
+**/src/test/resources/csvData/csvSample.csv
+**/src/test/resources/csvData/coverage-results.csv
+**/src/test/resources/csvData/test-cases.csv
+**/src/test/resources/csvData/test-cases-coverage.csv
+**/src/test/resources/csvData/test-results.csv
+**/src/test/resources/csvData/test-results-coverage.csv
+**/src/test/resources/csvData/test-coverage.json
+**/src/test/resources/csvData/test-coverage.csv
+/src/test/resources/auth/*
+/src/test/resources/auth/Sample
+/src/test/resources/auth/Sample/*
+/src/test/resources/auth/Sample/apikeys.json
+/src/test/resources/auth/Sample/headers.json
+/src/test/resources/auth/Sample/oauth.json
+/src/test/resources/auth/Sample/oauth_wrong.json
+/src/test/resources/auth/Sample/oauth_short_expiration.json
+
+/idl_aux_files
+src/test/resources/file-manager/*
+
+src/main/resources/TestConfigurationMetamodel/configuration-model-output.yaml
+src/test/resources/restest-test-resources/compare2.postman_collection.json
+src/test/resources/restest-test-resources/test_collection.postman_collection.json
+src/test/resources/restest-test-resources/test_collection_urlencoded.postman_collection.json
+# Stage 1.C: Maven reactor — generated postman exports inside every module
+**/src/test/resources/restest-test-resources/compare2.postman_collection.json
+**/src/test/resources/restest-test-resources/test_collection.postman_collection.json
+**/src/test/resources/restest-test-resources/test_collection_urlencoded.postman_collection.json
+src/main/resources/GoogleNews-vectors-negative300.bin
+src/main/resources/GoogleNews-vectors-negative300.zip
+src/main/resources/ml/model.onnx
+
+src/main/resources/My-Example/trainticket/traces
+
+stateful_data.json
+/src/main/resources/TestData/Generated/
+
+/src/main/resources/Examples/Ex1_RandomGeneration/test_cases/
+/src/main/resources/Examples/Ex2_CreateTestConf/default_test_conf.yaml
+/src/main/resources/Examples/Ex3_CBTGeneration/test_cases/
+/src/main/resources/Examples/Ex4_ARTestGeneration/test_cases/
+/src/main/resources/Examples/Ex5_CBTGenerationAuth/test_cases/
+/src/main/resources/Examples/Ex6_RandomGeneration_DataMutation/test_cases/
+/src/main/resources/Examples/Ex9_Generation_Execution/allure_report/anApiOfIceAndFire/
+/src/main/resources/Examples/Ex9_Generation_Execution/csv_report/anApiOfIceAndFire/
+/src/main/resources/Examples/Ex10_Iterative_Generation_Execution/allure_report/anApiOfIceAndFire/
+src/main/resources/ml/model.onnx
+
+# Environment variables with API keys
+.env
+
+# Local copies of LLM properties that may carry literal API keys.
+# The committed templates use ${ENV_VAR} resolution; if you create a copy
+# with the literal key, name it *-local.properties or *-secret.properties
+# so it stays out of the repo.
+*-local.properties
+*-secret.properties
+
+# Project-local API-key files read by LLMConfig.resolveEnvPlaceholder when
+# IntelliJ env-var injection or shell exports aren't available. Each file is
+# named after the env var it stands in for (e.g. .api_keys/DEEPSEEK_API_KEY)
+# and contains just the secret on a single line.
+.api_keys/
+src/main/resources/My-Example/trainticket/traces/traces-1759191634608.json
+src/main/resources/My-Example/trainticket/traces/traces-1759192358887.json
+src/main/resources/My-Example/trainticket/traces/traces-1759192396059.json
+src/main/resources/My-Example/trainticket/tests/traces-1759192426876.json
+src/main/resources/My-Example/trainticket/traces/traces-1759192441410.json
+src/main/resources/My-Example/trainticket/traces/traces-1759192455981.json
+src/main/resources/My-Example/trainticket/traces/traces-1759192477682.json
+src/main/resources/My-Example/trainticket/traces/traces-1759192489270.json
+src/main/resources/My-Example/trainticket/traces/traces-1759192494952.json
+src/main/resources/My-Example/trainticket/traces/traces-1759192502912.json
+src/main/resources/My-Example/trainticket/traces/traces-1759192514835.json
+src/main/resources/My-Example/trainticket/traces/traces-1759192524737.json
+src/main/resources/My-Example/trainticket/traces/traces-1759192530103.json
+src/main/resources/My-Example/trainticket/traces/traces-1759192558645.json
+src/main/resources/My-Example/trainticket/traces/traces-1759192566256.json
+src/main/resources/My-Example/trainticket/traces/traces-1759192571460.json
+src/main/resources/My-Example/trainticket/traces/traces-1759192576798.json
+src/main/resources/My-Example/trainticket/traces/traces-1759192590782.json
+src/main/resources/My-Example/trainticket/traces/traces-1759192597788.json
+src/main/resources/My-Example/trainticket/traces/traces-1759192607236.json
+src/main/resources/My-Example/trainticket/traces/traces-1759192647565.json
+src/main/resources/My-Example/trainticket/traces/traces-1759192663045.json
+src/main/resources/My-Example/trainticket/traces/traces-1759192669037.json
+.api_keys
+
+# Generated demo outputs — written by MistRunner during a run, never edited by hand
+mist-cli/src/test/java/trainticket_twostage_test/
+
+# JVM heap dumps and per-SUT runtime scratch (logs, .mist) — never artifacts
+*.hprof
+**/.runtime/
+
+# Generated Allure HTML report — regenerated per run, not a source artifact
+allure-report/
+
+# Allure report assets (build output)
+/allure/

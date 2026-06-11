@@ -1,0 +1,166 @@
+{
+  "metric": "D8 Pool Shannon Entropy + Simpson Index",
+  "include_negatives": false,
+  "rows_total": 18961,
+  "rows_kept": 664,
+  "rows_fallback_skipped": 439,
+  "pools_total": 67,
+  "pools_gated": 49,
+  "mean_shannon_normalised": 0.3537581733954693,
+  "mean_simpson": 0.43928455736035915,
+  "shannon_threshold_pass": false,
+  "simpson_threshold_pass": false,
+  "worst_pools": [
+    {
+      "operation": "POST /api/v1/adminorderservice/adminorder",
+      "parameter": "from",
+      "location": "body",
+      "total": 3,
+      "distinct": 1,
+      "shannon": 0.0,
+      "shannon_normalised": 0.0,
+      "simpson": 0.0
+    },
+    {
+      "operation": "POST /api/v1/adminorderservice/adminorder",
+      "parameter": "travelTime",
+      "location": "body",
+      "total": 5,
+      "distinct": 1,
+      "shannon": 0.0,
+      "shannon_normalised": 0.0,
+      "simpson": 0.0
+    },
+    {
+      "operation": "POST /api/v1/adminrouteservice/adminroute",
+      "parameter": "distanceList",
+      "location": "body",
+      "total": 15,
+      "distinct": 1,
+      "shannon": 0.0,
+      "shannon_normalised": 0.0,
+      "simpson": 0.0
+    },
+    {
+      "operation": "POST /api/v1/adminrouteservice/adminroute",
+      "parameter": "loginId",
+      "location": "body",
+      "total": 15,
+      "distinct": 1,
+      "shannon": 0.0,
+      "shannon_normalised": 0.0,
+      "simpson": 0.0
+    },
+    {
+      "operation": "POST /api/v1/orderOtherService/orderOther/refresh",
+      "parameter": "travelDateStart",
+      "location": "body",
+      "total": 3,
+      "distinct": 1,
+      "shannon": 0.0,
+      "shannon_normalised": 0.0,
+      "simpson": 0.0
+    },
+    {
+      "operation": "PUT /api/v1/adminbasicservice/adminbasic/trains",
+      "parameter": "confortClass",
+      "location": "body",
+      "total": 4,
+      "distinct": 1,
+      "shannon": 0.0,
+      "shannon_normalised": 0.0,
+      "simpson": 0.0
+    },
+    {
+      "operation": "PUT /api/v1/adminbasicservice/adminbasic/trains",
+      "parameter": "economyClass",
+      "location": "body",
+      "total": 4,
+      "distinct": 1,
+      "shannon": 0.0,
+      "shannon_normalised": 0.0,
+      "simpson": 0.0
+    },
+    {
+      "operation": "PUT /api/v1/adminbasicservice/adminbasic/trains",
+      "parameter": "name",
+      "location": "body",
+      "total": 4,
+      "distinct": 1,
+      "shannon": 0.0,
+      "shannon_normalised": 0.0,
+      "simpson": 0.0
+    },
+    {
+      "operation": "PUT /api/v1/consignservice/consigns",
+      "parameter": "orderId",
+      "location": "body",
+      "total": 20,
+      "distinct": 1,
+      "shannon": 0.0,
+      "shannon_normalised": 0.0,
+      "simpson": 0.0
+    },
+    {
+      "operation": "PUT /api/v1/consignservice/consigns",
+      "parameter": "phone",
+      "location": "body",
+      "total": 20,
+      "distinct": 1,
+      "shannon": 0.0,
+      "shannon_normalised": 0.0,
+      "simpson": 0.0
+    },
+    {
+      "operation": "PUT /api/v1/consignservice/consigns",
+      "parameter": "weight",
+      "location": "body",
+      "total": 20,
+      "distinct": 1,
+      "shannon": 0.0,
+      "shannon_normalised": 0.0,
+      "simpson": 0.0
+    },
+    {
+      "operation": "POST /api/v1/orderOtherService/orderOther/refresh",
+      "parameter": "enableTravelDateQuery",
+      "location": "body",
+      "total": 20,
+      "distinct": 2,
+      "shannon": 0.6098403047164004,
+      "shannon_normalised": 0.14110376001808378,
+      "simpson": 0.2550000000000001
+    },
+    {
+      "operation": "PUT /api/v1/consignservice/consigns",
+      "parameter": "within",
+      "location": "body",
+      "total": 20,
+      "distinct": 2,
+      "shannon": 0.6098403047164004,
+      "shannon_normalised": 0.14110376001808378,
+      "simpson": 0.2550000000000001
+    },
+    {
+      "operation": "PUT /api/v1/consignservice/consigns",
+      "parameter": "consignee",
+      "location": "body",
+      "total": 20,
+      "distinct": 2,
+      "shannon": 0.7219280948873623,
+      "shannon_normalised": 0.16703843262486695,
+      "simpson": 0.31999999999999984
+    },
+    {
+      "operation": "PUT /api/v1/consignservice/consigns",
+      "parameter": "handleDate",
+      "location": "body",
+      "total": 20,
+      "distinct": 2,
+      "shannon": 0.8112781244591328,
+      "shannon_normalised": 0.18771208281295484,
+      "simpson": 0.375
+    }
+  ],
+  "computed_at": "2026-05-06T03:28:06Z"
+}

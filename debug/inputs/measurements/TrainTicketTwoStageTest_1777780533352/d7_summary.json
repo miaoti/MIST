@@ -1,0 +1,76 @@
+{
+  "metric": "D7 Realism Score",
+  "definition": "fraction of NLP-typed positive-variant values that match a known entity in the realism oracle",
+  "oracle_mode": "offline",
+  "entities_loaded": 732,
+  "online_calls": 0,
+  "online_hits": 0,
+  "total_inputs_seen": 32198,
+  "nlp_typed_inputs": 192,
+  "realistic": 186,
+  "unrealistic": 6,
+  "empty": 0,
+  "fallback_skipped": 8,
+  "by_lookup_source": {
+    "offline": 110,
+    "token": 75,
+    "unknown": 6,
+    "suffix_stripped": 1
+  },
+  "realism": 0.96875,
+  "realism_threshold_pass": true,
+  "worst_parameters": [
+    {
+      "parameter": "startStation",
+      "total": 20,
+      "realistic": 17,
+      "realism": 0.85,
+      "unrealistic_examples": [
+        "empirestatebuilding",
+        "12345678901",
+        "empirestatebuilding"
+      ]
+    },
+    {
+      "parameter": "endPlace",
+      "total": 58,
+      "realistic": 56,
+      "realism": 0.9655172413793104,
+      "unrealistic_examples": [
+        "New York City",
+        "New York City"
+      ]
+    },
+    {
+      "parameter": "startPlace",
+      "total": 56,
+      "realistic": 55,
+      "realism": 0.9821428571428571,
+      "unrealistic_examples": [
+        "New York City"
+      ]
+    },
+    {
+      "parameter": "contactsName",
+      "total": 18,
+      "realistic": 18,
+      "realism": 1.0,
+      "unrealistic_examples": []
+    },
+    {
+      "parameter": "endStation",
+      "total": 20,
+      "realistic": 20,
+      "realism": 1.0,
+      "unrealistic_examples": []
+    },
+    {
+      "parameter": "stationList",
+      "total": 20,
+      "realistic": 20,
+      "realism": 1.0,
+      "unrealistic_examples": []
+    }
+  ],
+  "computed_at": "2026-05-05T05:06:08Z"
+}

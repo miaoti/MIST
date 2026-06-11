@@ -1,0 +1,25 @@
+{
+  "sut": "bookinfo",
+  "source": "Istio Bookinfo sample (istio-1.30.0/samples/bookinfo) on kind + Istio + Jaeger; see ../deploy/deploy.sh",
+  "capture_date": "2026-05-29",
+  "capture_method": "Traffic driven through the Istio ingress gateway (workload/traffic.sh or a marked curl). Masked captured with ratings scaled to 0 (workload/inject-ratings-outage.sh on); healthy with ratings restored. Pulled from the Jaeger query API GET /jaeger/api/traces/<id> (marker-first, W3C traceparent).",
+  "trace_format": "Jaeger query-API JSON ({\"data\":[{\"traceID\",\"spans\",\"processes\"}]}); consumed by io.mist.core.oracle.shape.TraceModel.fromJaegerJson and io.mist.core.workflow.TraceWorkflowExtractor (reads concrete paths from the http.url/http.target span tags, not the route-aggregated operationName).",
+  "oracle_evidence_traces": {
+    "role": "Direct-oracle A/B for the /productpage BFF (see docs/main-contribution/evidence/bookinfo_hidden_downstream.md). The oracle is run directly on these via OracleCheck.java.",
+    "traces": [
+      {"file": "traces/masked_ratings_outage_f13dbc33d5858c49da37f039a0243c3a.json", "kind": "masked", "note": "8 spans: ingressgateway/productpage 200, reviews->ratings 503/ERROR/UH (swallowed). HIDDEN_DOWNSTREAM_FAILURE fires (ERROR)."},
+      {"file": "traces/masked_ratings_outage_c80623f59e318b99bc556c41f818e5b2.json", "kind": "masked", "note": "same shape; second instance."},
+      {"file": "traces/healthy_3c613a26a5388abff9cb10726dbd8b47.json", "kind": "healthy", "note": "9 spans, all 2xx (ratings restored). Oracle silent — the control."}
+    ]
+  },
+  "generation_input_traces": {
+    "role": "MIST generation input (trace.file.path=traces). Healthy /api/v1 API-workflow traces that TraceWorkflowExtractor turns into scenarios; MistGenerator then emits a JUnit test per conf operation. The /api/v1/products/{id}/reviews root is what masks at execution time. End-to-end pipeline evidence: docs/main-contribution/evidence/bookinfo_e2e_pipeline.md.",
+    "traces": [
+      {"file": "traces/gen_api_products.json", "kind": "healthy", "endpoint": "GET /api/v1/products", "note": "collection; no ratings dependency."},
+      {"file": "traces/gen_api_product_id.json", "kind": "healthy", "endpoint": "GET /api/v1/products/{id}", "note": "details only."},
+      {"file": "traces/gen_api_reviews.json", "kind": "healthy", "endpoint": "GET /api/v1/products/{id}/reviews", "note": "productpage->reviews->ratings; the endpoint that MASKS under a ratings outage."},
+      {"file": "traces/gen_api_ratings.json", "kind": "healthy", "endpoint": "GET /api/v1/products/{id}/ratings", "note": "direct ratings call; fails LOUD (503) under outage."}
+    ]
+  },
+  "note": "Small demonstrative corpus. The /productpage masked+healthy traces are the direct-oracle A/B; the gen_api_* traces are the generation input for the full-pipeline e2e demo (run-oracle-e2e.sh). A >=100-trace nominal corpus (SP1) comes from a sustained workload run; not required for the phenomenon demonstration."
+}

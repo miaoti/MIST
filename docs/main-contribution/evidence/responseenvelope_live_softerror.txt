@@ -1,0 +1,18 @@
+# Live evidence — ResponseEnvelope (LLM-backed) flips a soft error to FAIL
+# Date 2026-06-01. MIST's shipped Trace Shape Oracle + the real DeepSeek classifier,
+# run on the TrainTicket adminroute soft-error response of the motivating example.
+# Harness: evaluation/ResponseEnvelopeLiveCheck.java (single-file, runs on mist.jar).
+# Reproduce: java -cp mist-cli/target/mist.jar -Dllm.openai_compatible.enabled=true \
+#   -Dllm.openai_compatible.url=https://api.deepseek.com/v1/chat/completions \
+#   -Dllm.openai_compatible.model=deepseek-chat \
+#   -Dllm.openai_compatible.api.key=$(cat .api_keys/DEEPSEEK_API_KEY) \
+#   -Dmst.oracle.shape.invariants.span_tree.enabled=false \
+#   -Dmst.oracle.shape.invariants.status_propagation.enabled=false \
+#   evaluation/ResponseEnvelopeLiveCheck.java
+# ---------------------------------------------------------------------------
+WARNING: sun.reflect.Reflection.getCallerClass is not supported. This will impact performance.
+Soft-error response (HTTP 200): {"status":0,"msg":"start or end station not include in stationList.","data":null}
+Root API: POST /api/v1/adminrouteservice/adminroute
+Status-class oracle: PASS (HTTP is 200)
+Trace Shape Oracle overall passed: false
+  RESPONSE_ENVELOPE: FAIL  severity=ERROR  detail=status=0 classified as failure (LLM, cached)

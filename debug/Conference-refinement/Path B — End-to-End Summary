@@ -1,0 +1,39 @@
+Path B — End-to-End Summary
+Path B rebuilt RESTest into MIST: cleanly separated the entry point, the test-case generator, and the new oracle/fault-taxonomy work into a 4-module Maven reactor, and added the production wiring those modules were missing.
+
+Phase 1 — Decouple MIST from RESTest (d163359e)
+Introduced a MIST-owned entry point (MistMain / MistRunner) so the orchestrator no longer lives in the RESTest namespace.
+Why: the project shipped under the legacy RESTest brand even though every code path was MIST-shaped. Example: a user running java -jar restest.jar … had no way to tell which tool they were actually invoking.
+
+Phase 2 — Trace Shape Oracle scaffolding (2a822611, b017530a deleted the legacy SoftErrorRuleCache)
+Added mist-core/io.mist.core.oracle.shape.*: TraceShapeOracle, TraceShapeLearner, ShapeInvariantStore, and four invariants (SpanTreeShapeInvariant, StatusPropagationInvariant, TimingEnvelopeInvariant, ResponseEnvelopeInvariant).
+Why: faults were judged purely by HTTP response shape. Example: a 200 OK whose downstream tree silently skipped the payment service used to slip through — now SPAN_TREE_SHAPE flags the missing edge.
+
+Phase 3 — Adaptive Fault Taxonomy scaffolding (d6ac2b87, cd45aa41 retired the InvalidInputType enum)
+Replaced the hard-coded enum with FaultTypeRegistry + ApplicabilityMatrix, all keyed by MistInvalidInputPool.
+Why: InvalidInputType was a closed enum — adding a new fault required code change + recompile. Example: a domain-specific STALE_JWT fault is now a registry entry, not a Java edit.
+
+Stage 1.C — Split into reactor (ea60d114)
+Broke the monolith into mist-parent / mist-core / mist-llm / mist-restest-adapter / mist-cli.
+Why: mist-cli previously pulled in the entire RESTest writer just to load an OpenAPI spec. Now the CLI depends only on mist-core.
+
+Stage 1.D — Byte-identical gate (5889149f, 2151c9e7)
+Made MistMain produce byte-for-byte identical generator output to the legacy entry point; pinned snakeyaml; seeded the LLM-fallback placeholder.
+Why: if the new entry point silently changed even one byte of the generated test code, we couldn't claim a clean migration.
+
+Usability fixes (fe207b5e, 93ed4337, 3d878f6d)
+INPUT paths now resolve relative to the .properties file; MistRunner's test-class lookup honours inputs.targetDirJava; IntelliJ run configs are checked in.
+Why: example — inputs.openAPISpec=api.yaml used to resolve against the JVM CWD (random, depending on how you launched), so it broke whenever you ran from anywhere other than the repo root.
+
+CLI tool replacement (8d82bffb)
+MicroserviceConfBuilderMain (RESTest-flavoured) replaced by io.mist.cli.MistConfGenMain.
+
+Docs + scrub (a3694b6e, 714d09c5, fe0a66d7, 583908b9)
+README rewritten MIST-first; user-visible "RESTest-core" wording scrubbed; seed-trace-labels.json explained.
+
+Follow-up round — production wiring (three sibling branches off 714d09c5)
+
+c916ddfd — moved the LLM SPI (LLMClient, LLMCallCache) into the now-empty mist-llm module so the CLI can call LLMs without dragging in the RESTest writer.
+1744d735 — replaced the hard-coded 3-entry FaultMiner stub with a real LLM-driven miner that reads FaultDetectionTracker history, prompts the configured client, and caches by SHA-256 for reproducibility.
+0711a4f6 — wired TraceShapeOracle into MistRunner + MultiServiceRESTAssuredWriter (Allure verdict attachment, negative-variant FAIL→PASS on RESPONSE_ENVELOPE, positive-variant fail on any ERROR violation). Bridged Jaeger JSON via the new TraceShapeAdapter.
+All commits attributed to miaoti <miaotingshuo@gmail.com>. The three follow-up branches are pushed but not yet merged into mist-2.x/path-b — they sit as siblings so you can review each independently before fast-forwarding.

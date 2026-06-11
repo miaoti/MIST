@@ -1,0 +1,91 @@
+{
+  "metric": "D4 Smart-Fetch Hit Rate",
+  "definition": "fraction of ID-typed positive-variant inputs whose value came from a real upstream response",
+  "total_inputs_seen": 18961,
+  "id_typed_inputs": 178,
+  "by_classification": {
+    "smart_fetch": 104,
+    "shared_pool_draw": 74,
+    "llm": 0,
+    "negative": 0,
+    "unknown": 0
+  },
+  "sfhr_conservative": 0.5842696629213483,
+  "sfhr_upper": 1.0,
+  "sfhr_threshold_pass": false,
+  "coverage_caveat": "RESTest's shared-pool-fill path does not log each pooled value's originating source. Values appearing only in 'Shared Pool (Step 1)' lines have ambiguous provenance. We report a conservative SFHR (SMART_FETCH-only) and an upper bound (SMART_FETCH + SHARED_POOL_DRAW).",
+  "worst_parameters": [
+    {
+      "parameter": "loginId",
+      "total": 35,
+      "smart_fetch": 16,
+      "sfhr_conservative": 0.45714285714285713,
+      "sfhr_upper": 1.0,
+      "examples": [
+        {
+          "value": "FALLBACK_loginId_11",
+          "provenance": "SHARED_POOL_DRAW"
+        },
+        {
+          "value": "FALLBACK_loginId_7",
+          "provenance": "SHARED_POOL_DRAW"
+        },
+        {
+          "value": "FALLBACK_loginId_3",
+          "provenance": "SHARED_POOL_DRAW"
+        }
+      ]
+    },
+    {
+      "parameter": "accountId",
+      "total": 40,
+      "smart_fetch": 22,
+      "sfhr_conservative": 0.55,
+      "sfhr_upper": 1.0,
+      "examples": [
+        {
+          "value": "FALLBACK_accountId_8",
+          "provenance": "SHARED_POOL_DRAW"
+        },
+        {
+          "value": "FALLBACK_accountId_9",
+          "provenance": "SHARED_POOL_DRAW"
+        },
+        {
+          "value": "FALLBACK_accountId_9",
+          "provenance": "SHARED_POOL_DRAW"
+        }
+      ]
+    },
+    {
+      "parameter": "id",
+      "total": 83,
+      "smart_fetch": 46,
+      "sfhr_conservative": 0.5542168674698795,
+      "sfhr_upper": 1.0,
+      "examples": [
+        {
+          "value": "FALLBACK_id_5",
+          "provenance": "SHARED_POOL_DRAW"
+        },
+        {
+          "value": "FALLBACK_id_3",
+          "provenance": "SHARED_POOL_DRAW"
+        },
+        {
+          "value": "FALLBACK_id_12",
+          "provenance": "SHARED_POOL_DRAW"
+        }
+      ]
+    },
+    {
+      "parameter": "orderId",
+      "total": 20,
+      "smart_fetch": 20,
+      "sfhr_conservative": 1.0,
+      "sfhr_upper": 1.0,
+      "examples": []
+    }
+  ],
+  "computed_at": "2026-05-06T03:28:05Z"
+}

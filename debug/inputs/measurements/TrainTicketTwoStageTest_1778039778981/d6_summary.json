@@ -1,0 +1,16 @@
+{
+  "metric": "D6 Chain Resolution Rate",
+  "definition": "fraction of multi-step sequences in which every ID consumer was produced by an earlier step of the same sequence",
+  "min_steps_for_inclusion": 2,
+  "sequences_considered": 0,
+  "sequences_skipped_single_step": 339,
+  "sequences_fully_resolved": 0,
+  "sequences_partial": 0,
+  "id_inputs_total": 0,
+  "id_inputs_resolved": 0,
+  "violations": 0,
+  "crr": null,
+  "id_input_resolution_rate": null,
+  "crr_threshold_pass": false,
+  "computed_at": "2026-05-07T18:48:34Z"
+}

@@ -1,0 +1,783 @@
+%====================================================================
+% Trace‑Driven Multi‑Service Workflow Testing for Microservice Architectures
+%====================================================================
+\documentclass[conference]{IEEEtran}
+
+% ---------- Packages ------------
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{hyperref}
+\usepackage{amsmath}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{algorithm}
+\usepackage{algorithmicx}
+\usepackage{algpseudocode}
+\usepackage{url}
+\usepackage{doi} 
+
+% ---------- Metadata ------------
+\title{AI‑Enhanced Trace‑Driven API Testing with Comprehensive Microservice Validation}
+
+\author{\IEEEauthorblockN{Tingshuo Miao}\IEEEauthorblockA{Department of Computer Science\\Baylor University, USA\\Email: tingshuo\_miao2@baylor.edu}}
+
+%====================================================================
+\begin{document}
+\maketitle
+
+% ---------------- Abstract ----------------
+\begin{abstract}
+Microservice architectures present unique testing challenges where failures often emerge through complex service interactions rather than individual API faults. Traditional workflow-based testing approaches face fundamental execution challenges: replaying multi-step sequences as separate client requests fails to capture ephemeral in-memory data dependencies and creates misleading test oracles. This paper presents an AI-enhanced, trace-driven extension to RESTest that employs \emph{Root API Mode} testing: (i) extracting publicly accessible API endpoints from distributed traces, (ii) generating diverse test cases targeting these entry points using smart input fetching and large language model synthesis, and (iii) performing comprehensive post-execution trace analysis to validate complete microservice interaction chains triggered by single API calls. Our approach integrates \textit{TraceErrorAnalyzer} with LLM-powered failure diagnosis to provide actionable root cause analysis for complex distributed failures. The system combines \textit{SmartInputFetcher} for realistic parameter generation with \textit{AiDrivenLLMGenerator} for exploratory testing, executing tests through enhanced Allure reporting that visualizes complete service interaction hierarchies. This Root API Mode methodology achieves comprehensive microservice validation with superior efficiency and accuracy compared to traditional workflow replication while providing unprecedented failure diagnosis capabilities through AI-enhanced trace analysis.
+\end{abstract}
+
+\begin{IEEEkeywords}
+Microservices, REST API testing, Root API Mode, distributed tracing, automated test generation, trace analysis, AI-enhanced testing, RESTest.
+\end{IEEEkeywords}
+
+%====================================================================
+\section{Introduction}
+The microservice architectural style has become the \emph{de-facto}
+standard for cloud-native software because it promises independent
+deployment, elastic scaling, and organisational agility.  Yet this
+fine-grained decomposition comes at a price: many faults emerge only
+when several services collaborate along an end-to-end workflow, whereas
+most automated tools still exercise each API in isolation.
+
+\subsection*{Why is Testing Microservices Hard?}
+Industry surveys and mapping studies consistently identify testing as
+one of the costliest and most error-prone activities in
+microservice-based development
+\cite{waseem2020testing,miao2025sms}.  
+Three challenges appear throughout the literature:
+
+\begin{enumerate}[leftmargin=*,label=\roman*)]
+  \item \textbf{API correctness} — Every service publishes an
+        independent REST/gRPC/GraphQL contract whose input domain must be
+        explored thoroughly; malformed requests or untested edge cases
+        can propagate faults to upstream clients.
+  \item \textbf{Workflow integrity} — Real business transactions
+        traverse \emph{multiple} services.  
+        Integration-relevant failures such as data-flow mismatches,
+        missing authentication tokens, or out-of-order requests
+        represent a substantial share of production incidents
+        \cite{zhou2018microservice}.
+  \item \textbf{Resilience under partial failure} — Network partitions,
+        container restarts, and eventual-consistency delays mandate
+        fault-injection (a.k.a.\ chaos) testing, yet fewer than one
+        third of automated tools provide built-in resilience validation
+        \cite{waseem2020testing}.
+\end{enumerate}
+
+A recent \emph{Systematic Mapping Study of Test Generation for
+Microservices} \cite{miao2025sms} groups existing work into
+\textit{consumer-driven contract}, \textit{search-based input
+generation}, and \textit{resilience testing}.  Crucially, it concludes
+that no current tool unifies these approaches into a single,
+workflow-aware framework—leaving integration faults largely
+undetected.
+
+\subsection*{Problem Statement}
+\textsc{RESTest}~\cite{martin2019restest} epitomises the state of the
+art in automated REST API testing: it generates HTTP requests that
+achieve high structural and semantic coverage for \emph{single}
+endpoints.  However, \textsc{RESTest} and comparable tools cannot
+validate the complex microservice interactions that occur when external clients invoke publicly accessible API endpoints.
+
+\subsection*{Objective}
+We aim to extend \textsc{RESTest} to automatically identify and test \emph{root API endpoints}—the externally accessible entry points that trigger comprehensive microservice interactions—while providing deep visibility into the complete service interaction chains through post-execution trace analysis.
+
+\subsection*{Approach Overview}
+Our key insight is to exploit \emph{distributed traces} to identify the publicly accessible API endpoints that serve as entry points to complex microservice ecosystems. By analyzing these traces, we extract root APIs and their parameter patterns, generate diverse test variants targeting these entry points, and then perform comprehensive post-execution trace analysis to validate the complete microservice interaction chains. This \emph{Root API Mode} approach avoids the fundamental challenges of workflow replication while providing superior validation coverage through intelligent trace-based analysis. Figure~\ref{fig:dataflow} sketches the resulting pipeline; the methodological details are developed in Section~\ref{sec:method}.
+
+
+% \textbf{Contributions.}
+
+
+%====================================================================
+% \section{Background}
+
+
+% \subsection{The \textsc{RESTest} Framework}\label{sec:restest}
+% \textsc{RESTest} is an open-source, \emph{model-based}, black-box
+% testing framework that derives executable test cases directly from an
+% OpenAPI specification~\cite{martin2019restest}.  
+% Its core pipeline (Figure 1 in~\cite{martin2019restest}) comprises:
+
+% \begin{enumerate}[leftmargin=*,label=\arabic*)]
+%   \item \textbf{Test-model generation} — Converts the OpenAPI document
+%         into an internal YAML test model enriched with
+%         constraints (e.g.\ regular expressions, numeric ranges).
+%   \item \textbf{Test-case generation} — Applies a portfolio of
+%         techniques such as fuzzing, adaptive random testing, and
+%         constraint solving to maximise branch and HTTP-state coverage.
+%   \item \textbf{Test writing} — Instantiates the abstract tests into
+%         concrete clients (e.g.\ \textit{REST-assured}, Postman).
+%   \item \textbf{Execution \& reporting} — Runs the tests online or
+%         offline and produces Allure reports.
+% \end{enumerate}
+
+% \textbf{Extensibility.}  
+% \textsc{RESTest} exposes \emph{plug-in interfaces} for custom data
+% generators and writers, enabling researchers to prototype new
+% strategies without modifying the core engine.  
+% Prior extensions include grammar-based generators, OAuth2
+% authenticators, and domain-specific value providers, but \emph{none}
+% addresses cross-endpoint data flow or multi-service orchestration
+% out-of-the-box.
+
+% \textbf{Positioning of our work.}  
+% The generators referenced throughout this paper—
+% \textit{AiDrivenLLMGenerator}, \textit{SmartSemanticTestCaseGenerator},
+% and \textit{SchemaGuidedDependencyMutator}—\emph{are new plug-ins we
+% developed} to extend \textsc{RESTest}.  
+% They complement, rather than replace, the original
+% constraint-based and fuzzing engines reported by
+% Martin-López \emph{et al.}~\cite{martin2019restest}.  
+% Our contribution is therefore orthogonal: we retain the proven
+% single-endpoint capabilities of \textsc{RESTest} while adding a
+% trace-driven layer for \emph{workflow-level} generation and execution.
+
+
+%====================================================================
+\section{Related Work}\label{sec:related}
+Testing microservice-based systems spans API-level test generation, inter-service contract validation, resilience testing, and runtime diagnosis using distributed traces. Systematic reviews consistently highlight the difficulty of validating end-to-end behaviors that emerge from chains of service interactions rather than single endpoints alone, and call for tooling that is both workflow-aware and automation-friendly (e.g., discoverability of public entry points, realistic test data, and better oracles) \cite{waseem2020testing,miao2025sms}. We summarize the most relevant lines of work and contrast them with our trace-driven, root-API approach.
+
+\subsection{API-Level Automated Test Generation}
+%====================================================================
+\section{Methodology}\label{sec:method}
+This section presents, at an architectural and algorithmic level, how the proposed trace-driven extension for \textbf{RESTest} transforms distributed traces into intelligent single-API test cases with comprehensive multi-service validation.  The approach leverages trace analysis to identify entry-point APIs, generates diverse test variants for these root endpoints, executes them individually, and then performs deep trace analysis to validate the entire microservice interaction chain.  The design preserves RESTest's proven \textit{generate → write → execute → report} pipeline while adding sophisticated trace-based orchestration and AI-powered failure analysis.
+
+%====================================================================
+\subsection{Architecture Overview}\label{ssec:arch}
+The Root API Mode testing pipeline introduces five specialized subsystems that work together to provide comprehensive microservice validation through intelligent entry-point testing:
+
+\begin{enumerate}[leftmargin=*]
+  \item \textbf{Trace Workflow Extractor}  
+        \hfill(\S\ref{ssec:extract})\\
+        Parses OpenTelemetry/Jaeger span logs to extract complete workflow scenarios
+        and identify root API endpoints that serve as natural system entry points (Algorithm~\ref{alg:extract}).
+  \item \textbf{Root API Test Generator}  
+        \hfill(\S\ref{ssec:gen})\\
+        Operates in Root API Mode to generate diverse test variants targeting
+        externally accessible endpoints, using LLM-driven parameter synthesis
+        and smart input fetching for realistic test data (Algorithm~\ref{alg:generate}).
+  \item \textbf{Multi-Service Test Writer}\\
+        Emits JUnit/REST-assured test classes optimized for Root API Mode
+        with integrated trace collection and comprehensive Allure reporting.
+  \item \textbf{Trace-Aware Execution Engine}\\
+        Executes root API tests while capturing trace identifiers for
+        subsequent distributed trace retrieval and complete interaction analysis.
+  \item \textbf{AI-Powered Trace Analysis Engine}\\
+        Fetches execution traces, performs hierarchical failure analysis using
+        \textit{TraceErrorAnalyzer}, and provides LLM-driven root cause diagnosis
+        for the complete microservice interaction chains triggered by root API calls.
+\end{enumerate}
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=\linewidth]{figs/mst-architecture.png}
+  \caption{End-to-end data-flow across the extended RESTest pipeline for
+           multi-service testing.  Inputs (\textit{blue}) feed the processing
+           stage (\textit{orange}), which in turn produces executable artefacts
+           consumed by the execution and reporting stage (\textit{green}).  The
+           black arrows denote feedback loops used for dependency injection
+           and result aggregation.}
+  \label{fig:dataflow}
+\end{figure}
+
+\noindent%
+Figure~\ref{fig:dataflow} illustrates the complete trace-driven testing pipeline from initial trace extraction through AI-powered failure analysis.  The diagram shows how the system transforms multi-service traces into focused single-API tests while maintaining comprehensive validation capabilities through post-execution trace analysis.
+
+\subsubsection*{Root API Mode Benefits and Intelligent Analysis}
+\begin{itemize}[leftmargin=*]
+  \item \emph{Authentic Testing:} Root API Mode tests invoke only publicly
+        accessible endpoints as external clients would, avoiding the workflow
+        replication challenges that create false failure oracles.
+  \item \emph{Natural Execution Flow:} Preserves ephemeral data dependencies
+        and in-memory state transitions that occur within microservice
+        interactions, ensuring realistic system behavior validation.
+  \item \emph{AI-Enhanced Diagnosis:} Integration with Large Language Models
+        provides intelligent root cause analysis for the complete microservice
+        chains triggered by root API executions.
+  \item \emph{Comprehensive Validation:} Post-execution trace analysis captures
+        the full service interaction hierarchy triggered by single API calls,
+        providing superior coverage compared to artificial workflow replication.
+\end{itemize}
+
+%--------------------------------------------------------------------
+\subsection{Trace-Driven Root API Extraction}
+\label{ssec:extract}
+\begin{algorithm}[tb]
+\caption{TRACE\_WORKFLOW\_EXTRACTOR}\label{alg:extract}
+\footnotesize
+\begin{algorithmic}[1]
+\Require\;{Path to trace file or directory}
+\Ensure\;{List of \textsc{WorkflowScenario}s}
+\State Parse JSON/JSONL files into span objects
+\State $spansByTrace \gets$ Group spans by \texttt{traceId}
+\ForAll{$(traceId, spans) \in spansByTrace$}
+    \State $scenario \gets$ new \textsc{WorkflowScenario}
+    \State $stepIndex \gets \{\}$ \Comment{spanId → WorkflowStep mapping}
+    \ForAll{$span \in spans$}
+        \State $step \gets$ \textproc{CreateWorkflowStep}$(span)$
+        \State Extract HTTP method, path, headers, body from span tags
+        \State Extract timing and status information
+        \State $stepIndex[span.spanId] \gets step$
+    \EndFor
+    \State Link parent-child relationships using span references
+    \State Identify root steps (spans with no parents)
+    \State Add root steps to $scenario$
+    \State Add $scenario$ to results
+\EndFor
+\State \textproc{MergeScenariosByDataDependency}(scenarios)
+\State \Return scenarios
+\end{algorithmic}
+\end{algorithm}
+
+\paragraph{Root API Identification and Accessibility Rationale.}
+The \textproc{FindFirstBusinessAPI} function identifies the entry-point API call by filtering out authentication spans and selecting the first HTTP operation that represents actual business logic. This trace-driven approach addresses a fundamental challenge in microservice testing: \emph{API discoverability and accessibility}.
+
+In microservice architectures, not all endpoints defined in OpenAPI specifications are directly accessible for testing. Many services implement \emph{internal} or \emph{private} APIs that are only accessible within the service mesh or cluster network, while others require complex authentication workflows or service-to-service communication protocols~\cite{waseem2020testing, zhou2018microservice}. A systematic review of microservice testing challenges identifies API visibility and service discoverability as primary obstacles to effective testing~\cite{microservice-testing-review-2023}.
+
+By extracting root APIs from actual execution traces, we automatically identify the \emph{publicly accessible entry points} that real clients use to interact with the system. This approach ensures that our tests target APIs that are:
+\begin{itemize}[leftmargin=*]
+\item Actually accessible from external clients
+\item Properly authenticated and authorized
+\item Integrated with the system's API gateway or service mesh
+\item Representative of real-world usage patterns
+\end{itemize}
+
+This methodology aligns with established best practices in microservice testing that emphasize focusing on externally accessible interfaces rather than attempting to test all internal service endpoints directly.
+
+\paragraph{Trace Context Preservation.}
+Although only the root API is used for test generation, the complete trace context is preserved to enable post-execution validation. This includes the full service interaction hierarchy, expected response patterns, and inter-service dependencies observed in the original execution.
+
+%--------------------------------------------------------------------
+\subsection{Root API Test Generation}
+\label{ssec:gen}
+
+The generator operates primarily in Root API Mode, transforming workflow scenarios into focused test cases targeting the identified entry-point endpoints. This approach avoids the fundamental challenges of workflow replication (Section~\ref{ssec:workflow-challenges}) while maximizing test coverage for critical API operations and maintaining comprehensive microservice validation through trace-based post-execution analysis.
+
+\begin{algorithm}[tb]
+\caption{MULTI\_SERVICE\_TEST\_GENERATOR}\label{alg:generate}
+\footnotesize
+\begin{algorithmic}[1]
+\Require\;{List of \textsc{WorkflowScenario}s, variant count $V$}
+\Ensure\;{Collection of \textsc{MultiServiceTestCase}s}
+\State Group scenarios by root API signature
+\State Generate shared parameter pools for each API group
+\State $testCases \gets \{\}$
+\ForAll{$scenario \in scenarios$}
+    \For{$v \gets 1$ to $V$}
+        \State $tc \gets$ new \textsc{MultiServiceTestCase}
+        \State $context \gets \{\}$ \Comment{Runtime parameter context}
+        \ForAll{$rootStep \in scenario.rootSteps$}
+            \State \textproc{TraverseStep}$(rootStep, tc, context, v)$
+        \EndFor
+        \If{Root API Mode enabled}
+            \State Keep only root API endpoint in $tc$
+        \EndIf
+        \State $testCases \gets testCases \cup \{tc\}$
+    \EndFor
+\EndFor
+\State \Return $testCases$
+\end{algorithmic}
+\end{algorithm}
+
+\paragraph{Hybrid Parameter Generation Strategy.}
+The \textproc{TraverseStep} function implements a sophisticated parameter generation strategy that adapts based on step position and dependencies:
+
+\textbf{Root API Strategy:} For the root API endpoint identified from traces, the system prioritizes realistic parameter values:
+\begin{itemize}[leftmargin=*]
+  \item \textbf{Smart Input Fetching:} Attempts to fetch system-resident values with 50\% probability
+  \item \textbf{LLM Fallback:} Uses \emph{AiDrivenLLMGenerator} when smart fetching fails
+  \item \textbf{Trace-Based Values:} Extracts parameter values from original trace data
+\end{itemize}
+
+\textbf{Subsequent Steps Strategy:} For steps beyond the first business call:
+\begin{enumerate}[leftmargin=*]
+  \item \textbf{Dependency Resolution:} Checks runtime context for output values from previous steps
+  \item \textbf{Input Reuse:} Reuses parameter values from earlier API inputs when appropriate
+  \item \textbf{Independent Parameter Generation:} For parameters not produced by previous steps, applies smart fetching or LLM generation
+  \item \textbf{Fallback Chain:} Context → Schema extraction → Trace payloads → Smart fetch → LLM → Semantic expansion
+\end{enumerate}
+
+\textbf{Root API Mode:} When enabled, the generator focuses exclusively on the root API endpoint while preserving the complete trace context for post-execution validation. This mode avoids the workflow replication challenges described in Section~\ref{ssec:workflow-challenges}.
+
+\paragraph{Multi-Step to Single-Step Adaptation.}
+The system supports both full workflow execution and single-step focused testing through configuration:
+
+\begin{enumerate}[leftmargin=*]
+  \item \textbf{Complete Workflow Mode:} Processes all steps in the scenario,
+        maintaining dependencies and context flow between steps
+  \item \textbf{Root API Mode:} When enabled, focuses testing on the
+        root API endpoint only, while preserving complete trace context
+  \item \textbf{Dynamic Step Naming:} Updates scenario names based on the actual
+        first business step to improve test identification
+  \item \textbf{Context Preservation:} Maintains complete trace information
+        for post-execution validation regardless of execution mode
+\end{enumerate}
+
+\paragraph{Test Variant Optimization.}
+The variant selection strategy optimizes for comprehensive API coverage while maintaining computational efficiency:
+
+\begin{itemize}[leftmargin=*]
+  \item \textbf{High-Fidelity Baseline:} The first variant uses smart-fetched
+        system values to ensure realistic positive test cases
+  \item \textbf{Boundary Exploration:} Subsequent variants systematically
+        explore parameter boundaries and constraint violations
+  \item \textbf{Semantic Diversity:} LLM-driven variants explore different
+        semantic interpretations of parameter meanings
+  \item \textbf{Failure Mode Coverage:} Includes deliberate negative test
+        cases designed to trigger specific error conditions
+\end{itemize}
+
+This focused approach achieves comprehensive API testing efficiency while the trace-based validation ensures that microservice interactions remain thoroughly assessed.
+
+
+%--------------------------------------------------------------------
+\subsection{AI-Enhanced Trace Error Analysis}\label{ssec:trace-analysis}
+
+The system incorporates sophisticated trace analysis capabilities that go beyond traditional HTTP-level testing to provide deep insights into microservice failures. The \textsc{TraceErrorAnalyzer} combined with Large Language Model integration enables automated root cause diagnosis and actionable debugging recommendations.
+
+\paragraph{Hierarchical Failure Detection.}
+The \textsc{TraceErrorAnalyzer} implements a multi-level approach to identify and categorize failures within distributed traces:
+
+\begin{enumerate}[leftmargin=*]
+\item \textbf{Error Span Identification:} Scans all spans in the distributed trace to identify those marked with \texttt{error=true} tags, indicating actual service failures rather than expected error responses.
+\item \textbf{Parent-Child Relationship Mapping:} Constructs the complete service call hierarchy from span references to understand error propagation patterns and distinguish root causes from cascading failures.
+\item \textbf{Root Cause Isolation:} Identifies true root cause failures by finding error spans that have no failed children, eliminating noise from error propagation.
+\item \textbf{Detailed Error Extraction:} Parses span logs to extract exception messages, stack traces, HTTP status codes, and timing information for comprehensive failure analysis.
+\end{enumerate}
+
+\paragraph{LLM-Powered Diagnostic Analysis.}
+When failures are detected, the system leverages Large Language Models to provide intelligent analysis:
+
+\textbf{Contextual Information Assembly:} The system constructs comprehensive failure context including:
+\begin{itemize}[leftmargin=*]
+\item Exact failing service and operation details
+\item Complete exception messages and stack traces
+\item HTTP status codes and timing information
+\item Service interaction patterns and dependency chains
+\item Application-level error details from stack traces
+\end{itemize}
+
+% \textbf{Multi-Model Integration:} The \textsc{LLMService} supports multiple LLM providers with intelligent fallback:
+% \begin{itemize}[leftmargin=*]
+% \item Local Ollama models for privacy-sensitive environments
+% \item Google Gemini API for enhanced analytical capabilities
+% \item Custom local models with configurable endpoints
+% \item Automatic retry logic with rate limit handling
+% \end{itemize}
+
+% \textbf{Actionable Diagnosis Generation:} The LLM analysis produces:
+% \begin{itemize}[leftmargin=*]
+% \item Technical root cause identification with specific failure locations
+% \item Concrete fix recommendations including code-level suggestions
+% \item Common failure pattern recognition and prevention strategies
+% \item Debugging guidance tailored to the specific microservice architecture
+% \end{itemize}
+
+\paragraph{Intelligent Fallback Analysis.}
+When LLM services are unavailable, the system provides rule-based analysis:
+
+\begin{itemize}[leftmargin=*]
+\item Exception type classification with specific fix recommendations
+\item Common microservice failure pattern recognition
+\item Stack trace analysis to identify exact failure locations
+\item Service dependency impact assessment
+\end{itemize}
+
+This comprehensive approach ensures that developers receive meaningful diagnostic information regardless of the availability of external AI services, while maximizing the analytical depth when LLM capabilities are accessible.
+
+%--------------------------------------------------------------------
+\subsection{Workflow Execution Challenges and Root API Mode Rationale}\label{ssec:workflow-challenges}
+
+While our system supports complete workflow execution for comprehensive end-to-end testing, practical deployment reveals fundamental challenges that make \emph{Root API Mode} the preferred approach for microservice validation.
+
+\paragraph{The Workflow Replication Problem.}
+Traditional workflow-based testing attempts to replay multi-step sequences extracted from traces as separate, independent client requests. However, this approach encounters several critical issues:
+
+\textbf{Causal Chain Disruption:} When a trace reveals a step hierarchy (e.g., Step 1 → Step 2 → Step 3), executing Step 1 already triggers its complete internal causal chain within the microservice system. The system naturally progresses through Steps 2 and 3 as part of the original request's internal flow.
+
+\textbf{Duplicate Execution Artifacts:} When the test harness subsequently invokes Steps 2 and 3 as independent client requests, these become entirely new operations rather than continuations of the original causal chain. This creates artificial execution patterns that do not reflect real-world usage.
+
+\textbf{Ephemeral Data Loss:} Distributed traces capture API signatures (HTTP method, path, status codes, and basic attributes) but do not preserve ephemeral values passed in memory between services. Temporary identifiers, session states, and in-memory data structures that Step 1 creates for Steps 2 and 3 are invisible to trace analysis.
+
+\textbf{False Failure Oracles:} Re-calling Step 2 directly often fails due to missing ephemeral dependencies from Step 1, creating misleading test failures. While Step 1 may have succeeded end-to-end (triggering the complete microservice chain successfully), the independent Step 2 invocation fails for artificial reasons, producing false negative results.
+
+\textbf{Misleading Causality:} Allure reports show Step 2 and Step 3 failures that appear to be genuine microservice faults but are actually artifacts of the testing approach. This creates false causality chains that mislead developers about actual system behavior.
+
+\paragraph{Root API Mode Advantages.}
+Root API Mode addresses these fundamental challenges by focusing testing on the natural entry points of microservice systems:
+
+\begin{itemize}[leftmargin=*]
+\item \textbf{Natural Execution Flow:} Tests invoke only the publicly accessible APIs that external clients would naturally call, allowing internal causal chains to execute organically
+\item \textbf{Preserved Dependencies:} Ephemeral data flows remain intact within the system's internal execution, eliminating artificial dependency failures
+\item \textbf{Authentic Oracles:} Test failures reflect genuine system issues rather than testing artifacts, providing reliable validation signals
+\item \textbf{Complete Validation:} Post-execution trace analysis captures the full microservice interaction chain, providing comprehensive validation without artificial execution
+\item \textbf{Realistic Load Patterns:} Tests exercise the system in the same manner as real clients, ensuring authentic performance and behavior validation
+\end{itemize}
+
+This approach recognizes that microservice systems are designed for external API consumption, not for artificial internal step manipulation, making Root API Mode both more accurate and more practically useful for validation.
+
+%--------------------------------------------------------------------
+\subsection{Smart Input Fetching for Parameter Generation}\label{ssec:smartfetch}
+
+The \emph{primary objective} of Smart Input Fetching is to harvest \emph{system-resident inputs} (e.g., existing identifiers, tokens, codes) so that requests use values that truly exist in the deployed environment. This prevents spurious client-side failures (e.g., \texttt{404} for non-existent IDs, \texttt{401} for missing tokens) and strengthens the oracle: we can observe whether an API succeeds or fails \emph{even with correct inputs}. Starting from valid seeds also enables purposeful negative tests by applying controlled mutations or withholding context values. The \emph{secondary objective} is efficiency and diversity: reduce expensive LLM calls while maintaining variety via semantic expansion.
+
+\paragraph{Mechanism and integration.}
+Configuration is supplied via the experiment’s properties (a feature toggle, a probability for using fetched values, the location of the registry, cache time-to-live, and the base service URL) and passed to the generator at startup. The generator reads these settings once, constructs a fetching configuration and fetcher, and consults an \emph{input fetch registry} that maps parameter patterns to provider endpoints with JSONPath-based extractors. Optional LLM-assisted discovery proposes new mappings from API metadata and service patterns. A cache bounds network overhead and stabilizes fetched values across a run; authentication hints can be provided for protected providers.
+
+% \paragraph{Operational policy.}
+% The system applies a dependency-aware policy evidenced in the generator:
+% \begin{enumerate}[leftmargin=*]
+%   \item \textbf{First business step:} attempt smart fetching for each parameter with probability \(p\); this maximises the chance that initial workflow state is realistic.
+%   \item \textbf{Subsequent steps:} prefer values from the runtime context and schema-based extractors; use smart fetching only for \emph{independent} inputs that are not produced upstream.
+%   \item \textbf{Fallback order:} context \(\rightarrow\) schema extraction \(\rightarrow\) trace payloads \(\rightarrow\) smart fetch \(\rightarrow\) LLM seeding \(\rightarrow\) semantic expansion (Word2Vec/BERT/mutation).
+% \end{enumerate}
+
+\paragraph{Testing intent and benefits.}
+Using system-resident inputs makes tests representative and diagnostic: APIs are exercised under valid preconditions, revealing server-side faults that would be masked by invalid data. From these valid baselines, we construct deliberate negatives by perturbing selected fields, violating constraints, or withholding dependencies. The mechanism remains orthogonal to RESTest’s core pipeline: fetched values enter the same runtime context used for parameter injection and validation, while caching and timeouts keep cost predictable.
+
+
+%--------------------------------------------------------------------
+\subsection{Trace-Driven Test Execution and Post-Execution Analysis}
+\label{ssec:exec}
+
+The execution engine orchestrates test execution through the standard RESTest workflow: generation → writing → compilation → execution → reporting. In MST mode, the \textsc{MultiServiceRESTAssuredWriter} generates JUnit test classes with embedded trace collection and analysis capabilities.
+
+\begin{algorithm}[tb]
+\caption{GENERATED\_TEST\_EXECUTION\_FLOW}\label{alg:execute}
+\footnotesize
+\begin{algorithmic}[1]
+\Require\;{Generated JUnit test class with multiple test methods}
+\Ensure\;{Allure reports with trace analysis}
+\State Setup RestAssured with base URI and Allure filters
+\ForAll{test method in generated class}
+    \State Execute login step to obtain JWT token
+    \State $stepResults \gets \{\}$, $failedSteps \gets 0$
+    \ForAll{business step $s$ in test method}
+        \State Start Allure step with metadata
+        \State $startTime \gets$ current microseconds
+        \State Build HTTP request with parameters and JWT
+        \State $response \gets$ execute HTTP call
+        \If{response status matches expected}
+            \State $stepResults[s] \gets true$
+            \State Attach response to Allure report
+        \Else
+            \State $stepResults[s] \gets false$, $failedSteps++$
+            \State Attach detailed error information
+        \EndIf
+        \State $traces \gets$ \textproc{FetchJaegerTraces}$(service, method, path, startTime)$
+        \If{traces found}
+            \State $analysis \gets$ \textproc{TraceErrorAnalyzer.analyze}$(traces)$
+            \State Generate hierarchical trace visualization
+            \State Attach trace tree and analysis to Allure
+            \If{$analysis.hasErrors()$}
+                \State $llmDiagnosis \gets$ \textproc{LLMRootCauseAnalysis}$(analysis)$
+                \State Attach AI-generated failure diagnosis
+            \EndIf
+        \EndIf
+        \State Stop Allure step
+    \EndFor
+    \State Generate comprehensive test summary
+    \If{$failedSteps > 0$ OR login failed}
+        \State Mark test as FAILED with detailed breakdown
+    \Else
+        \State Mark test as PASSED
+    \EndIf
+\EndFor
+\end{algorithmic}
+\end{algorithm}
+
+% \begin{algorithm}[tb]
+% \caption{TRACE\_DRIVEN\_SINGLE\_API\_EXECUTION}\label{alg:execute}
+% \footnotesize
+% \begin{algorithmic}[1]
+% \Require\;{Set of root API test cases $\mathcal{T}$, trace configs $\mathcal{C}$}
+% \Ensure\;{Execution results with comprehensive trace analysis}
+% \ForAll{$tc \in \mathcal{T}$}
+%     \State Compile $tc$ to JUnit class with trace collection
+%     \State $\text{traceId} \gets null$
+%     \State $\text{startTime} \gets$ \textproc{GetCurrentTime}$()
+%     \State \Comment{Execute single root API call}
+%     \State $(code, body, \text{traceId}) \gets$ \textproc{ExecuteRootAPI}$(tc.rootEndpoint, tc.parameters)$
+%     \State $\text{executionTime} \gets$ \textproc{GetCurrentTime}$() - \text{startTime}$
+%     \State \Comment{Immediate response validation}
+%     \State $\text{responseValid} \gets$ \textproc{ValidateHTTPResponse}$(code, body, tc.expected)$
+%     \If{$\text{traceId} \neq null$}
+%         \State \textproc{WaitForTraceCompletion}$(\text{traceId}, \text{maxWaitTime})$
+%         \State $\text{distributedTrace} \gets$ \textproc{FetchCompleteTrace}$(\text{traceId}, \mathcal{C})$
+%         \State $\text{errorAnalysis} \gets$ \textproc{TraceErrorAnalyzer.analyze}$(\text{distributedTrace})$
+%         \If{$\text{errorAnalysis.hasErrors}()$}
+%             \State $\text{llmDiagnosis} \gets$ \textproc{LLMRootCauseAnalysis}$(\text{errorAnalysis}, \text{distributedTrace})$
+%             \State \textproc{AttachFailureDiagnostics}$(tc, \text{llmDiagnosis})$
+%         \EndIf
+%         \State \textproc{ValidateServiceChain}$(\text{distributedTrace}, tc.expectedTrace)$
+%         \State \textproc{GenerateTraceVisualization}$(\text{distributedTrace})$
+%     \Else
+%         \State \textproc{HandleMissingTrace}$(tc, code, body)$
+%     \EndIf
+%     \State \textproc{EmitComprehensiveResults}$(tc, \text{responseValid}, \text{distributedTrace}, \text{errorAnalysis})$
+% \EndFor
+% \end{algorithmic}
+% \end{algorithm}
+
+\paragraph{JUnit Test Execution with Embedded Trace Analysis.}
+The generated JUnit test classes execute API calls using RestAssured with integrated trace collection:
+
+\textbf{Authentication Setup:} Each test begins with a login step to obtain JWT tokens required for authenticated API access.
+
+\textbf{Allure Step Integration:} Every API call is wrapped in Allure steps with detailed metadata including service name, HTTP method, endpoint path, and expected status codes.
+
+\textbf{Request Execution:} Uses RestAssured to execute HTTP requests with proper authentication headers and JSON payloads generated by the parameter synthesis process.
+
+\textbf{Response Validation:} Validates HTTP status codes against expected values and captures complete response bodies and timing information.
+
+\textbf{Failure Handling:} On test failures, captures detailed error information including exception types, stack traces, and response details for debugging.
+
+\paragraph{Post-Execution Jaeger Trace Retrieval.}
+The \textproc{attachJaegerTrace} function implements comprehensive trace collection after each API call:
+
+\begin{enumerate}[leftmargin=*]
+  \item \textbf{Precise Time Window:} Creates a focused time window (10 seconds before
+        to 30 seconds after) the API call start time for accurate trace identification
+  \item \textbf{Multi-Strategy Queries:} Employs multiple Jaeger API query strategies:
+        exact operation matching, service-based queries, and time-range searches
+  \item \textbf{Retry Logic:} Implements retry mechanisms with exponential backoff
+        to handle trace ingestion delays in distributed systems
+  \item \textbf{API Call Detection:} Filters spans to identify actual API calls
+        versus internal framework operations
+\end{enumerate}
+
+When traces are successfully retrieved, the system:
+\begin{itemize}[leftmargin=*]
+  \item Constructs hierarchical service call trees showing parent-child relationships
+  \item Generates visual trace representations with timing and status information
+  \item Applies \textsc{TraceErrorAnalyzer} for root cause failure analysis
+  \item Creates comprehensive trace summaries with service interaction statistics
+\end{itemize}
+
+\paragraph{Integrated AI-Powered Failure Analysis.}
+When test failures occur, the system automatically applies sophisticated analysis:
+
+\textbf{TraceErrorAnalyzer Integration:} The retrieved traces are processed through \textsc{TraceErrorAnalyzer.generateIntelligentAnalysis} which:
+\begin{itemize}[leftmargin=*]
+  \item Identifies root cause failures by analyzing span hierarchies
+  \item Extracts exact failure locations from stack traces
+  \item Distinguishes between application-level and framework-level failures
+  \item Maps error propagation through the microservice interaction chain
+\end{itemize}
+
+\textbf{LLM-Enhanced Diagnosis:} When LLM services are available, the system generates:
+\begin{itemize}[leftmargin=*]
+  \item Technical root cause explanations with specific failure locations
+  \item Concrete debugging recommendations and fix suggestions
+  \item Service dependency impact assessments
+  \item Context-aware troubleshooting guidance
+\end{itemize}
+
+\textbf{Intelligent Fallback:} When LLM services are unavailable, rule-based analysis provides:
+\begin{itemize}[leftmargin=*]
+  \item Exception type classification with standard fix recommendations
+  \item Common microservice failure pattern recognition
+  \item Stack trace analysis for precise error location identification
+\end{itemize}
+
+\paragraph{Comprehensive Trace-Based Reporting.}
+The \textproc{EmitComprehensiveResults} function produces enhanced test reports that visualize complete microservice interactions:
+
+\begin{itemize}[leftmargin=*]
+  \item \textbf{Enhanced Allure Integration:} Generates rich test reports
+        that include the complete service interaction tree, showing
+        which internal services were called, their response times,
+        and success/failure status
+  \item \textbf{Trace Visualization:} Creates hierarchical views of
+        distributed traces directly within test reports, enabling
+        developers to understand the full impact of API calls
+  \item \textbf{AI-Generated Diagnostics:} Includes LLM-generated
+        failure analysis and debugging recommendations as test
+        attachments for immediate developer consumption
+  \item \textbf{Service Health Metrics:} Tracks performance and
+        error rates across the entire microservice chain triggered
+        by single API calls
+\end{itemize}
+
+This approach provides unprecedented visibility into microservice behavior during testing, enabling developers to quickly understand both successful execution paths and failure propagation patterns throughout the distributed system.
+
+
+\paragraph{Enhanced Allure Integration for Trace Visualization.}
+The \textsc{MultiServiceRESTAssuredWriter} generates test classes with sophisticated Allure integration that provides comprehensive visibility into microservice interactions:
+
+\textbf{Trace Tree Visualization:} Each test execution produces Allure reports that display the complete microservice interaction hierarchy triggered by the single API call. The reports show:
+\begin{itemize}[leftmargin=*]
+\item Hierarchical service call trees with parent-child relationships
+\item Individual span details including timing, status codes, and parameters
+\item Visual indicators for successful (\textcolor{green}{PASS}) and failed (\textcolor{red}{FAIL}) service interactions
+\item Complete request/response payloads for debugging
+\end{itemize}
+
+\textbf{AI-Enhanced Failure Reporting:} When failures occur, the reports include:
+\begin{itemize}[leftmargin=*]
+\item LLM-generated root cause analysis as test attachments
+\item Detailed error analysis showing exact failure locations
+\item Service dependency impact assessments
+\item Actionable debugging recommendations
+\end{itemize}
+
+\textbf{Test Isolation and Execution:} The writer creates timestamped test packages to ensure complete isolation between test runs, with each execution producing independent Allure reports that can be aggregated for trend analysis while maintaining per-run debugging capabilities. Coverage analysis is adapted for single-API testing patterns rather than traditional multi-step workflows (Section~\ref{sec:coverage-limitations}).
+
+
+%--------------------------------------------------------------------
+% \subsection{Integration Points with RESTest}
+% \begin{itemize}[leftmargin=*]
+%   \item \textbf{Configuration.}  YAML schema extended with multi-service
+%         mappings; legacy single-service options remain untouched.
+%   \item \textbf{Execution.}  Plug-in writer registers generated classes with
+%         RESTest’s \texttt{WorkflowExecutor}; no changes to the core runner.
+%   \item \textbf{Reporting.}  Existing Allure and statistics managers remain
+%         unchanged, ensuring homogeneous result dashboards.
+% \end{itemize}
+
+%--------------------------------------------------------------------
+\subsection{Coverage Analysis Limitations}\label{sec:coverage-limitations}
+
+Traditional API testing coverage models face significant challenges when applied to our trace-driven single-API testing approach due to the paradigm shift from workflow-based to entry-point-focused test generation. This section details the current limitations and research opportunities in extending coverage analysis to this new testing methodology.
+
+\paragraph{Single-Service Coverage Model Assumptions.}
+RESTest's coverage framework follows established API testing coverage criteria \cite{martin2019restest}, including:
+\begin{itemize}[leftmargin=*]
+    \item \textit{Parameter Coverage:} Ensuring all input parameters are exercised
+    \item \textit{Path Coverage:} Testing all API endpoints and URL templates  
+    \item \textit{Operation Coverage:} Exercising all HTTP methods (GET, POST, etc.)
+    \item \textit{Status Code Coverage:} Triggering different response codes
+    \item \textit{Response Body Coverage:} Validating output schema elements
+\end{itemize}
+
+These criteria assume a unified OpenAPI specification and coherent parameter space, which breaks down in multi-service environments where each service has independent schemas and operation sets.
+
+\paragraph{Trace-Driven Coverage Challenges.}
+Our single-API testing approach with trace-based validation introduces novel coverage considerations:
+
+\textbf{1. Root API vs. Complete Path Coverage:} While traditional coverage focuses on exercising all endpoints, our approach prioritizes comprehensive testing of entry-point APIs with validation of downstream service interactions through trace analysis.
+
+\textbf{2. Dynamic Service Chain Coverage:} Coverage must account for variable service interaction patterns triggered by different parameter combinations, where the same API call may activate different microservice chains based on input values.
+
+\textbf{3. Trace-Based Validation Coverage:} Traditional metrics cannot capture the coverage achieved through post-execution trace analysis, which validates service interactions that weren't directly tested but were triggered by root API calls.
+
+\textbf{4. AI-Enhanced Coverage Assessment:} LLM-driven parameter generation creates coverage patterns that don't follow traditional combinatorial approaches, requiring new metrics to assess the semantic diversity of generated test cases.
+
+\paragraph{Implementation Opportunities.}
+Our trace-driven approach opens new directions for coverage analysis research:
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Trace-Based Coverage Metrics:} Developing coverage models that measure the comprehensiveness of microservice interactions validated through distributed trace analysis
+    \item \textbf{AI-Driven Coverage Assessment:} Creating metrics that evaluate the semantic diversity and fault-finding capability of LLM-generated test parameters
+    \item \textbf{Dynamic Service Chain Coverage:} Measuring coverage across variable service interaction patterns triggered by different API parameter combinations
+    \item \textbf{Failure Mode Coverage:} Assessing how well the test suite covers different types of microservice failure scenarios and error propagation patterns
+\end{itemize}
+
+
+
+
+%====================================================================
+\section{Experiments}\label{sec:experiments}
+
+\subsection{System Under Test}
+We evaluate our Root API Mode approach on \emph{TrainTicket}, a representative microservice architecture comprising multiple interconnected services. Our system extracts root API endpoints from distributed traces spanning ts-admin-basic-info-service, ts-price-service, ts-admin-order-service, ts-station-service, ts-route-service, and ts-admin-route-service. The Root API Mode approach focuses testing on externally accessible entry points while validating comprehensive microservice interactions through post-execution trace analysis, avoiding the workflow replication challenges described in Section~\ref{ssec:workflow-challenges}.
+
+\subsection{Root API Extraction and Test Generation}
+We collect five representative traces from TrainTicket's web frontend, each capturing a distinct user operation and its complete microservice interaction chain. Operating in Root API Mode, we extract the externally accessible entry points (excluding internal authentication flows) as primary test targets. For each root API endpoint, we generate ten diverse test variants using our hybrid parameter generation strategy:
+
+\textbf{Smart Input Fetching:} Primary variants use the \emph{SmartInputFetcher} to harvest valid system values, ensuring realistic baseline tests that reflect authentic client interactions.
+
+\textbf{LLM-Driven Exploration:} Additional variants employ the \emph{AiDrivenLLMGenerator} with semantic expansion to explore parameter boundaries and edge cases while maintaining system compatibility.
+
+\textbf{Root API Focus:} The 50\% probability split between smart-fetched and LLM-generated values ensures that tests exercise root APIs with both realistic and exploratory data, avoiding the ephemeral dependency issues inherent in workflow replication.
+
+\subsection{Root API Mode Execution and Trace Analysis Protocol}
+Our Root API Mode execution protocol emphasizes natural client interaction patterns with comprehensive validation:
+
+\textbf{Entry Point Execution:} Each test executes only the root API endpoint as external clients would, allowing natural microservice causal chains to execute organically within the system.
+
+\textbf{Trace Capture:} We capture trace identifiers during API execution and fetch complete distributed traces using multiple query strategies, typically waiting 2-5 seconds for comprehensive trace collection.
+
+\textbf{Comprehensive Analysis:} The \textsc{TraceErrorAnalyzer} examines the complete service interaction tree triggered by root API calls, while LLM integration provides intelligent diagnosis for complex distributed failures.
+
+\textbf{Authentic Reporting:} Enhanced Allure reports visualize the natural microservice interaction hierarchies triggered by root API executions, providing AI-generated failure analysis and debugging recommendations based on authentic system behavior.
+
+\subsection{Results and Trace-Based Evidence}
+Figure~\ref{fig:case_exec} demonstrates our approach's capability to detect backend failures through single API execution. The test targets POST /api\slash v1\slash adminbasicservice\slash adminbasic\slash prices on ts-admin-basic-info-service with LLM-generated parameters. While the API call itself returns HTTP 500, our trace analysis reveals the complete failure propagation through the microservice chain. The enhanced Allure report shows not only the immediate API failure but also the subsequent trace retrieval and analysis, including AI-generated root cause diagnosis that identifies the specific service component responsible for the failure.
+
+\begin{figure}[!t]
+\centering
+\includegraphics[width=\linewidth]{case_exec.png}
+\caption{End to end execution of one generated case. Login succeeds. The call to /api\slash v1\slash adminbasicservice\slash adminbasic\slash prices returns 500. The follow up call to /api\slash v1\slash priceservice\slash prices does not meet the expected 201. Allure stores request bodies, requests, responses, and error details.}
+\label{fig:case_exec}
+\end{figure}
+
+Figure~\ref{fig:post_prices_matrix} shows the comprehensive test matrix for our root API approach targeting POST /api\slash v1\slash adminbasicservice\slash adminbasic\slash prices. The matrix displays ten test variants generated through our hybrid parameter strategy. Two tests achieve successful execution (HTTP 200/201), while several variants trigger \emph{Status Code Mismatch} failures. Each test result includes trace analysis showing whether failures originate from the target service or propagate from downstream dependencies. The matrix demonstrates how parameter variations expose different failure modes in the microservice architecture.
+
+\begin{figure}[!t]
+\centering
+\includegraphics[width=\linewidth]{post_prices_matrix.png}
+\caption{Per call results for POST /api\slash v1\slash adminbasicservice\slash adminbasic\slash prices. Two tests succeed. Several tests fail with \emph{Status Code Mismatch}. The runner holds a valid token in all runs.}
+\label{fig:post_prices_matrix}
+\end{figure}
+
+Figure~\ref{fig:get_adminorder_matrix} shows another API. The call is GET /api\slash v1\slash adminorderservice\slash adminorder. All shown runs return 200. One run takes about 1454 ms. Most runs complete near 20 to 64 ms. The grid gives a quick scan for both correctness and latency spread under new inputs.
+
+\begin{figure}[!t]
+\centering
+\includegraphics[width=\linewidth]{get_adminorder_matrix.png}
+\caption{Per call results for GET /api\slash v1\slash adminorderservice\slash adminorder. All runs return 200. One run shows a higher latency spike.}
+\label{fig:get_adminorder_matrix}
+\end{figure}
+
+Figure~\ref{fig:adminroute_exec} demonstrates our trace-driven analysis of a complex microservice failure. The test executes a single API call to POST /api\slash v1\slash adminrouteservice\slash adminroute on ts-admin-route-service, which returns HTTP 400. However, our post-execution trace analysis reveals the complete service interaction chain that would have been triggered by a successful call, including subsequent calls to ts-station-service and ts-route-service. The enhanced Allure report provides AI-generated analysis identifying the exact validation failure in the admin route service, along with debugging recommendations. This approach enables developers to understand both the immediate failure and its potential impact on the broader microservice ecosystem.
+
+\begin{figure}[!t]
+\centering
+\includegraphics[width=\linewidth]{adminroute_exec.png}
+\caption{Three step workflow that includes ts-admin-route-service, ts-station-service, and ts-route-service. The first business step returns 400. The following steps return 200. The scenario fails due to step one.}
+\label{fig:adminroute_exec}
+\end{figure}
+
+Figure~\ref{fig:smartfetch_body} demonstrates our Smart Input Fetching capability in action. The figure shows a request body populated with actual station names (haidian, guangzhou, dalian) harvested from the running TrainTicket system. This realistic data generation ensures that tests use valid system references rather than synthetic values, leading to more authentic failure scenarios. When this smart-fetched data is used in API calls, it enables the complete microservice chain to execute successfully, providing comprehensive validation of service interactions and performance characteristics.
+
+\begin{figure}[!t]
+\centering
+\includegraphics[width=\linewidth]{smartfetch_body.png}
+\caption{Smart Fetch example for POST /api\slash v1\slash stationservice\slash stations\slash idlist. The generator fills the body with existing station names. The service returns 200.}
+\label{fig:smartfetch_body}
+\end{figure}
+
+\subsection{Analysis}
+Our Root API Mode approach demonstrates superior fault detection and diagnosis capabilities compared to traditional workflow replication. The focus on externally accessible entry points eliminates the false failure oracles and ephemeral dependency issues that plague workflow-based testing.
+
+\textbf{Authentic Failure Detection:} Root API calls trigger natural microservice failure cascades, as evidenced by the price service HTTP 500 errors and admin route validation failures. These represent genuine system issues rather than testing artifacts created by workflow replication.
+
+\textbf{Natural Execution Patterns:} By invoking only the APIs that external clients would naturally call, our approach preserves in-memory data dependencies and ephemeral state transitions, ensuring that trace analysis reflects authentic system behavior.
+
+\textbf{Comprehensive Validation:} Post-execution trace analysis captures the complete service interaction hierarchies triggered by root API executions, providing deeper validation coverage than artificial step-by-step workflow replication.
+
+\textbf{Superior Debugging:} Enhanced Allure reports visualize authentic microservice interaction patterns with AI-generated root cause analysis. The elimination of false causality chains significantly improves debugging accuracy and reduces time-to-resolution for genuine system failures.
+
+\subsection{Takeaways}
+Our Root API Mode testing approach achieves comprehensive microservice validation while avoiding the fundamental challenges of workflow replication:
+
+\textbf{Authentic System Testing:} Root API Mode tests exercise microservice systems exactly as external clients would, preserving natural execution flows and ephemeral data dependencies that workflow replication cannot capture.
+
+\textbf{Elimination of False Oracles:} By avoiding artificial step-by-step replay, the approach eliminates misleading test failures caused by missing ephemeral dependencies, providing reliable validation signals.
+
+\textbf{Enhanced Fault Detection:} The method successfully exposes genuine backend failures through natural API invocation patterns, while post-execution trace analysis provides comprehensive validation of the complete microservice interaction chains.
+
+\textbf{AI-Enhanced Diagnosis:} Integration of LLM-powered failure analysis with authentic trace data transforms complex distributed failures into actionable debugging information based on real system behavior.
+
+\textbf{Practical Deployment Value:} Root API Mode provides superior practical value for microservice validation by focusing on the natural system boundaries and interaction patterns that matter for production deployments.
+
+\bibliographystyle{IEEEtran}
+% TODO: add references.bib once experiments are finalised.
+\bibliography{references}
+
+\end{document}

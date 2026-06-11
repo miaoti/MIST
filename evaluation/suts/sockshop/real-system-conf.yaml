@@ -1,0 +1,613 @@
+testConfiguration:
+  services:
+    catalogue:
+    - expectedResponse: 200
+      method: get
+      operationId: listCatalogue
+      testPath: /catalogue
+      testParameters:
+      - name: page
+        in: query
+        weight: null
+        description: 1-based page number (defaults to 1).
+        type: integer
+        format: int32
+        required: false
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: type
+            values:
+            - integer
+          - name: min
+            values:
+            - '1'
+          - name: max
+            values:
+            - '100'
+      - name: size
+        in: query
+        weight: null
+        description: Number of items per page (defaults to 10).
+        type: integer
+        format: int32
+        required: false
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: type
+            values:
+            - integer
+          - name: min
+            values:
+            - '1'
+          - name: max
+            values:
+            - '100'
+      - name: tags
+        in: query
+        weight: null
+        description: Comma-separated list of tags to filter by.
+        type: string
+        required: false
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: length
+            values:
+            - '10'
+      - name: sort
+        in: query
+        weight: null
+        description: Field to sort by (defaults to id).
+        type: string
+        required: false
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: length
+            values:
+            - '10'
+    - expectedResponse: 200
+      method: get
+      operationId: getCatalogueSize
+      testPath: /catalogue/size
+      testParameters:
+      - name: tags
+        in: query
+        weight: null
+        description: Comma-separated list of tags to filter the count by.
+        type: string
+        required: false
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: length
+            values:
+            - '10'
+    - expectedResponse: 200
+      method: get
+      operationId: getCatalogueItem
+      testPath: /catalogue/{id}
+      testParameters:
+      - name: id
+        in: path
+        weight: null
+        description: Catalogue item id (UUID-style string).
+        type: string
+        required: true
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: length
+            values:
+            - '10'
+    - expectedResponse: 200
+      method: get
+      operationId: listTags
+      testPath: /tags
+      testParameters: null
+    cart:
+    - expectedResponse: 200
+      method: get
+      operationId: getCart
+      testPath: /cart
+      testParameters: null
+    - expectedResponse: 201
+      method: post
+      operationId: addCartItem
+      testPath: /cart
+      testParameters:
+      - name: id
+        in: formData
+        weight: null
+        description: Catalogue item id to add to the cart.
+        type: string
+        required: true
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: length
+            values:
+            - '10'
+    - expectedResponse: 202
+      method: delete
+      operationId: emptyCart
+      testPath: /cart
+      testParameters: null
+    - expectedResponse: 202
+      method: post
+      operationId: updateCartItem
+      testPath: /cart/update
+      testParameters:
+      - name: id
+        in: formData
+        weight: null
+        description: Catalogue item id of the cart line to update.
+        type: string
+        required: true
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: length
+            values:
+            - '10'
+      - name: quantity
+        in: formData
+        weight: null
+        description: New quantity for the cart line.
+        type: integer
+        format: int32
+        required: true
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: type
+            values:
+            - integer
+          - name: min
+            values:
+            - '1'
+          - name: max
+            values:
+            - '100'
+    - expectedResponse: 202
+      method: delete
+      operationId: removeCartItem
+      testPath: /cart/{id}
+      testParameters:
+      - name: id
+        in: path
+        weight: null
+        description: Catalogue item id of the cart line to remove.
+        type: string
+        required: true
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: length
+            values:
+            - '10'
+    order:
+    - expectedResponse: 201
+      method: get
+      operationId: listOrders
+      testPath: /orders
+      testParameters: null
+    - expectedResponse: 201
+      method: post
+      operationId: createOrder
+      testPath: /orders
+      testParameters:
+      - name: customer
+        in: formData
+        weight: null
+        description: URL of the customer resource placing the order.
+        type: string
+        required: false
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: length
+            values:
+            - '10'
+      - name: address
+        in: formData
+        weight: null
+        description: URL of the shipping address resource.
+        type: string
+        required: false
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: length
+            values:
+            - '10'
+      - name: card
+        in: formData
+        weight: null
+        description: URL of the payment card resource.
+        type: string
+        required: false
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: length
+            values:
+            - '10'
+      - name: items
+        in: formData
+        weight: null
+        description: URL of the customer's cart-items resource.
+        type: string
+        required: false
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: length
+            values:
+            - '10'
+    user:
+    - expectedResponse: 200
+      method: get
+      operationId: getCurrentAddress
+      testPath: /address
+      testParameters: null
+    - expectedResponse: 200
+      method: get
+      operationId: listAddresses
+      testPath: /addresses
+      testParameters: null
+    - expectedResponse: 200
+      method: post
+      operationId: createAddress
+      testPath: /addresses
+      testParameters:
+      - name: street
+        in: formData
+        weight: null
+        description: Street name.
+        type: string
+        required: true
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: length
+            values:
+            - '10'
+      - name: number
+        in: formData
+        weight: null
+        description: Street/house number.
+        type: string
+        required: true
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: length
+            values:
+            - '10'
+      - name: country
+        in: formData
+        weight: null
+        description: Country.
+        type: string
+        required: true
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: length
+            values:
+            - '10'
+      - name: city
+        in: formData
+        weight: null
+        description: City.
+        type: string
+        required: true
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: length
+            values:
+            - '10'
+      - name: postcode
+        in: formData
+        weight: null
+        description: Postal code.
+        type: string
+        required: true
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: length
+            values:
+            - '10'
+    - expectedResponse: 200
+      method: delete
+      operationId: deleteAddress
+      testPath: /addresses/{id}
+      testParameters:
+      - name: id
+        in: path
+        weight: null
+        description: Address id (UUID-style string).
+        type: string
+        required: true
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: length
+            values:
+            - '10'
+    - expectedResponse: 200
+      method: get
+      operationId: getCurrentCard
+      testPath: /card
+      testParameters: null
+    - expectedResponse: 200
+      method: get
+      operationId: listCards
+      testPath: /cards
+      testParameters: null
+    - expectedResponse: 200
+      method: post
+      operationId: createCard
+      testPath: /cards
+      testParameters:
+      - name: longNum
+        in: formData
+        weight: null
+        description: Full card number.
+        type: string
+        required: true
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: length
+            values:
+            - '10'
+      - name: expires
+        in: formData
+        weight: null
+        description: Card expiry date (MM/YY).
+        type: string
+        required: true
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: length
+            values:
+            - '10'
+      - name: ccv
+        in: formData
+        weight: null
+        description: Card security code.
+        type: string
+        required: true
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: length
+            values:
+            - '10'
+    - expectedResponse: 200
+      method: get
+      operationId: getCard
+      testPath: /cards/{id}
+      testParameters:
+      - name: id
+        in: path
+        weight: null
+        description: Card id (UUID-style string).
+        type: string
+        required: true
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: length
+            values:
+            - '10'
+    - expectedResponse: 200
+      method: delete
+      operationId: deleteCard
+      testPath: /cards/{id}
+      testParameters:
+      - name: id
+        in: path
+        weight: null
+        description: Card id (UUID-style string).
+        type: string
+        required: true
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: length
+            values:
+            - '10'
+    - expectedResponse: 200
+      method: get
+      operationId: listCustomers
+      testPath: /customers
+      testParameters: null
+    - expectedResponse: 200
+      method: post
+      operationId: createCustomer
+      testPath: /customers
+      testParameters:
+      - name: username
+        in: formData
+        weight: null
+        description: Login username.
+        type: string
+        required: true
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: length
+            values:
+            - '10'
+      - name: password
+        in: formData
+        weight: null
+        description: Account password.
+        type: string
+        required: true
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: length
+            values:
+            - '10'
+      - name: email
+        in: formData
+        weight: null
+        description: Email address.
+        type: string
+        required: true
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: length
+            values:
+            - '10'
+      - name: firstName
+        in: formData
+        weight: null
+        description: Customer first name.
+        type: string
+        required: true
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: length
+            values:
+            - '10'
+      - name: lastName
+        in: formData
+        weight: null
+        description: Customer last name.
+        type: string
+        required: true
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: length
+            values:
+            - '10'
+    - expectedResponse: 200
+      method: get
+      operationId: getCustomer
+      testPath: /customers/{id}
+      testParameters:
+      - name: id
+        in: path
+        weight: null
+        description: Customer id (UUID-style string).
+        type: string
+        required: true
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: length
+            values:
+            - '10'
+    - expectedResponse: 200
+      method: delete
+      operationId: deleteCustomer
+      testPath: /customers/{id}
+      testParameters:
+      - name: id
+        in: path
+        weight: null
+        description: Customer id (UUID-style string).
+        type: string
+        required: true
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: length
+            values:
+            - '10'
+    - expectedResponse: 200
+      method: get
+      operationId: login
+      testPath: /login
+      testParameters:
+      - name: Authorization
+        in: header
+        weight: null
+        description: 'HTTP Basic credentials: ''Basic '' + base64(username:password).'
+        type: string
+        required: true
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: length
+            values:
+            - '10'
+    - expectedResponse: 200
+      method: post
+      operationId: registerCustomer
+      testPath: /register
+      testParameters:
+      - name: username
+        in: formData
+        weight: null
+        description: Login username.
+        type: string
+        required: true
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: length
+            values:
+            - '10'
+      - name: password
+        in: formData
+        weight: null
+        description: Account password.
+        type: string
+        required: true
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: length
+            values:
+            - '10'
+      - name: email
+        in: formData
+        weight: null
+        description: Email address.
+        type: string
+        required: true
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: length
+            values:
+            - '10'
+      - name: firstName
+        in: formData
+        weight: null
+        description: Customer first name.
+        type: string
+        required: true
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: length
+            values:
+            - '10'
+      - name: lastName
+        in: formData
+        weight: null
+        description: Customer last name.
+        type: string
+        required: true
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: length
+            values:
+            - '10'

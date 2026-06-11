@@ -1,0 +1,925 @@
+swagger: "2.0"
+info:
+  description: "User-facing REST API exposed by the WeaveWorks Sock Shop front-end\
+    \ service. The front-end (Node/Express, port 8079) proxies these browser-facing\
+    \ routes to the back-end microservices: catalogue, carts, orders and user. This\
+    \ spec covers the FULL front-end surface, including the write operations\
+    \ (POST/PUT/DELETE) that mutate carts, orders, customers, cards and addresses\
+    \ — the surface where negative testing (invalid request bodies, silent\
+    \ acceptance) is most valuable. Each operation is tagged with the owning\
+    \ microservice (catalogue/cart/order/user); the conf generator derives the\
+    \ service from that tag. Request-body shapes are taken from the front-end route\
+    \ handlers and the corresponding back-end request structs (see externalDocs)."
+  version: "2.0.0"
+  title: "Sock Shop Front-End API"
+  license:
+    name: "Apache 2.0"
+    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
+basePath: "/"
+tags:
+- name: "catalogue"
+  description: "Product (sock) catalogue: list, search, lookup and tags. Proxied by\
+    \ the front-end to the catalogue service."
+- name: "cart"
+  description: "The current customer's shopping cart: list, add, update quantity,\
+    \ remove item and empty. Proxied by the front-end to the carts service."
+- name: "order"
+  description: "Customer orders: list and place. Proxied by the front-end to the\
+    \ orders service."
+- name: "user"
+  description: "Customer accounts, registration, login, payment cards and addresses.\
+    \ Proxied by the front-end to the user service."
+externalDocs:
+  description: "WeaveWorks Sock Shop (microservices-demo) front-end API source"
+  url: "https://github.com/microservices-demo/front-end"
+paths:
+  /catalogue:
+    get:
+      tags:
+      - "catalogue"
+      summary: "List catalogue items"
+      description: "List socks in the catalogue, optionally filtered by tags, sorted\
+        \ and paginated. The front-end proxies this to the catalogue service List\
+        \ endpoint."
+      operationId: "listCatalogue"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "page"
+        in: "query"
+        description: "1-based page number (defaults to 1)."
+        required: false
+        type: "integer"
+        format: "int32"
+      - name: "size"
+        in: "query"
+        description: "Number of items per page (defaults to 10)."
+        required: false
+        type: "integer"
+        format: "int32"
+      - name: "tags"
+        in: "query"
+        description: "Comma-separated list of tags to filter by."
+        required: false
+        type: "string"
+      - name: "sort"
+        in: "query"
+        description: "Field to sort by (defaults to id)."
+        required: false
+        type: "string"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Sock"
+        400:
+          description: "Invalid query parameter"
+  /catalogue/size:
+    get:
+      tags:
+      - "catalogue"
+      summary: "Count catalogue items"
+      description: "Return the number of socks in the catalogue, optionally filtered\
+        \ by tags. The front-end proxies this to the catalogue service Count endpoint."
+      operationId: "getCatalogueSize"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "tags"
+        in: "query"
+        description: "Comma-separated list of tags to filter the count by."
+        required: false
+        type: "string"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/CatalogueSize"
+  /catalogue/{id}:
+    get:
+      tags:
+      - "catalogue"
+      summary: "Get a catalogue item"
+      description: "Get detailed information about a single sock by its id. The\
+        \ front-end proxies this to the catalogue service Get endpoint."
+      operationId: "getCatalogueItem"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "Catalogue item id (UUID-style string)."
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/Sock"
+        404:
+          description: "Catalogue item not found"
+  /tags:
+    get:
+      tags:
+      - "catalogue"
+      summary: "List catalogue tags"
+      description: "List all tags available in the catalogue. The front-end proxies\
+        \ this to the catalogue service Tags endpoint."
+      operationId: "listTags"
+      produces:
+      - "application/json"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/Tags"
+  /cart:
+    get:
+      tags:
+      - "cart"
+      summary: "Get the current cart"
+      description: "Return the items in the current customer's shopping cart. The\
+        \ front-end resolves the customer id from the session and proxies this to\
+        \ the carts service items endpoint."
+      operationId: "getCart"
+      produces:
+      - "application/json"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/CartItem"
+    post:
+      tags:
+      - "cart"
+      summary: "Add an item to the cart"
+      description: "Add a catalogue item to the current customer's cart. The\
+        \ front-end reads the catalogue id from the request body, looks up the\
+        \ item's price in the catalogue service, then POSTs {itemId, unitPrice} to\
+        \ the carts service. Source: front-end api/cart/index.js app.post('/cart')\
+        \ — it requires req.body.id and returns 201 on success."
+      operationId: "addCartItem"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "body"
+        in: "body"
+        required: true
+        description: "The catalogue item to add to the cart."
+        schema:
+          $ref: "#/definitions/AddCartItemRequest"
+      responses:
+        201:
+          description: "Item added to cart"
+        400:
+          description: "Missing item id"
+        500:
+          description: "Unable to add to cart"
+    delete:
+      tags:
+      - "cart"
+      summary: "Empty the cart"
+      description: "Remove all items from the current customer's cart. The front-end\
+        \ resolves the customer id from the session and proxies this to the carts\
+        \ service DELETE endpoint, which returns 202 Accepted. Source: front-end\
+        \ api/cart/index.js app.delete('/cart')."
+      operationId: "emptyCart"
+      responses:
+        202:
+          description: "Cart emptied"
+  /cart/update:
+    post:
+      tags:
+      - "cart"
+      summary: "Update a cart item's quantity"
+      description: "Update the quantity of an item already in the current\
+        \ customer's cart. The front-end reads the catalogue id and quantity from\
+        \ the request body, looks up the item's price, then PATCHes {itemId,\
+        \ quantity, unitPrice} to the carts service. Source: front-end\
+        \ api/cart/index.js app.post('/cart/update') — it requires req.body.id and\
+        \ req.body.quantity and returns 202 on success."
+      operationId: "updateCartItem"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "body"
+        in: "body"
+        required: true
+        description: "The cart item id and new quantity."
+        schema:
+          $ref: "#/definitions/UpdateCartItemRequest"
+      responses:
+        202:
+          description: "Cart item quantity updated"
+        400:
+          description: "Missing item id or quantity"
+        500:
+          description: "Unable to update cart"
+  /cart/{id}:
+    delete:
+      tags:
+      - "cart"
+      summary: "Remove an item from the cart"
+      description: "Remove a single item (by catalogue item id) from the current\
+        \ customer's cart. The front-end proxies this to the carts service\
+        \ items/{id} DELETE endpoint, which returns 202 Accepted. Source: front-end\
+        \ api/cart/index.js app.delete('/cart/:id')."
+      operationId: "removeCartItem"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "Catalogue item id of the cart line to remove."
+        required: true
+        type: "string"
+      responses:
+        202:
+          description: "Cart item removed"
+        400:
+          description: "Missing item id"
+  /orders:
+    get:
+      tags:
+      - "order"
+      summary: "List the current customer's orders"
+      description: "List orders for the current customer, sorted by date. The\
+        \ front-end resolves the customer id from the session and proxies this to\
+        \ the orders service customer search endpoint."
+      operationId: "listOrders"
+      produces:
+      - "application/json"
+      responses:
+        201:
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Order"
+    post:
+      tags:
+      - "order"
+      summary: "Place an order"
+      description: "Place a new order for the current customer. The front-end\
+        \ resolves the session customer, gathers the customer/address/card/items\
+        \ hyperlinks and POSTs a NewOrder resource (four URL fields: customer,\
+        \ address, card, items) to the orders service, which returns 201 Created.\
+        \ Source: front-end api/orders/index.js app.post('/orders') builds the order\
+        \ object; orders service NewOrderResource (customer/address/card/items\
+        \ @URL URIs)."
+      operationId: "createOrder"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "body"
+        in: "body"
+        required: false
+        description: "NewOrder resource: hyperlinks to the customer, address, card\
+          \ and cart-items resources. The live front-end ignores the client body\
+          \ and rebuilds these from the session; the orders back-end accepts this\
+          \ shape directly."
+        schema:
+          $ref: "#/definitions/NewOrderRequest"
+      responses:
+        201:
+          description: "Order created"
+          schema:
+            $ref: "#/definitions/Order"
+        406:
+          description: "Order could not be accepted (empty/invalid cart or payment\
+            \ declined)"
+        500:
+          description: "Order processing error"
+  /register:
+    post:
+      tags:
+      - "user"
+      summary: "Register a new customer"
+      description: "Register a new customer account. The front-end forwards the\
+        \ request body to the user service /register endpoint and, on success, sets\
+        \ the logged_in cookie and merges the session cart. Source: front-end\
+        \ api/user/index.js app.post('/register') forwards req.body; user service\
+        \ registerRequest struct {username, password, email, firstName, lastName}.\
+        \ Returns 200 on success, 500 on error."
+      operationId: "registerCustomer"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "body"
+        in: "body"
+        required: true
+        description: "New customer registration details."
+        schema:
+          $ref: "#/definitions/RegisterRequest"
+      responses:
+        200:
+          description: "Customer registered"
+          schema:
+            $ref: "#/definitions/RegisterResponse"
+        500:
+          description: "Registration failed"
+  /login:
+    get:
+      tags:
+      - "user"
+      summary: "Log in"
+      description: "Authenticate the current customer using HTTP Basic credentials\
+        \ supplied in the Authorization header (Basic base64(username:password)).\
+        \ On success the front-end sets the logged_in session cookie and merges the\
+        \ guest cart. Source: front-end api/user/index.js app.get('/login') passes\
+        \ the Authorization header to the user service /login; returns 200 (cookie\
+        \ set) or 401."
+      operationId: "login"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "Authorization"
+        in: "header"
+        description: "HTTP Basic credentials: 'Basic ' + base64(username:password)."
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "Logged in; session cookie set"
+        401:
+          description: "Invalid credentials"
+  /customers:
+    get:
+      tags:
+      - "user"
+      summary: "List customers"
+      description: "List customer accounts. The front-end proxies this to the user\
+        \ service customers endpoint."
+      operationId: "listCustomers"
+      produces:
+      - "application/json"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "object"
+    post:
+      tags:
+      - "user"
+      summary: "Create a customer"
+      description: "Create a customer account directly (a testing-only convenience\
+        \ route that forwards the body to the user service customers endpoint).\
+        \ Source: front-end api/user/index.js app.post('/customers') (marked FOR\
+        \ TESTING ONLY) forwards req.body; the customer shape matches the user\
+        \ service registerRequest {username, password, email, firstName, lastName}."
+      operationId: "createCustomer"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "body"
+        in: "body"
+        required: true
+        description: "Customer account details."
+        schema:
+          $ref: "#/definitions/RegisterRequest"
+      responses:
+        200:
+          description: "Customer created"
+          schema:
+            $ref: "#/definitions/Customer"
+  /customers/{id}:
+    get:
+      tags:
+      - "user"
+      summary: "Get a customer"
+      description: "Get a single customer account by id. The front-end proxies this\
+        \ to the user service customers endpoint."
+      operationId: "getCustomer"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "Customer id (UUID-style string)."
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/Customer"
+        404:
+          description: "Customer not found"
+    delete:
+      tags:
+      - "user"
+      summary: "Delete a customer"
+      description: "Delete a customer account by id (a testing-only convenience\
+        \ route that proxies to the user service customers DELETE endpoint).\
+        \ Source: front-end api/user/index.js app.delete('/customers/:id') (marked\
+        \ FOR TESTING ONLY); user service returns 200."
+      operationId: "deleteCustomer"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "Customer id (UUID-style string)."
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "Customer deleted"
+        404:
+          description: "Customer not found"
+  /cards:
+    get:
+      tags:
+      - "user"
+      summary: "List payment cards"
+      description: "List stored payment cards. The front-end proxies this to the\
+        \ user service cards endpoint."
+      operationId: "listCards"
+      produces:
+      - "application/json"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "object"
+    post:
+      tags:
+      - "user"
+      summary: "Register a payment card"
+      description: "Store a new payment card for the current customer. The front-end\
+        \ adds the session userID to the request body and forwards it to the user\
+        \ service cards endpoint. Source: front-end api/user/index.js\
+        \ app.post('/cards') sets req.body.userID then forwards req.body; user\
+        \ service Card struct {longNum, expires, ccv}. Returns 200."
+      operationId: "createCard"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "body"
+        in: "body"
+        required: true
+        description: "Payment card details."
+        schema:
+          $ref: "#/definitions/CardRequest"
+      responses:
+        200:
+          description: "Card stored"
+          schema:
+            $ref: "#/definitions/Card"
+  /cards/{id}:
+    get:
+      tags:
+      - "user"
+      summary: "Get a payment card"
+      description: "Get a single stored payment card by id. The front-end proxies\
+        \ this to the user service cards endpoint."
+      operationId: "getCard"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "Card id (UUID-style string)."
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/Card"
+        404:
+          description: "Card not found"
+    delete:
+      tags:
+      - "user"
+      summary: "Delete a payment card"
+      description: "Delete a stored payment card by id (a testing-only convenience\
+        \ route that proxies to the user service cards DELETE endpoint). Source:\
+        \ front-end api/user/index.js app.delete('/cards/:id') (marked FOR TESTING\
+        \ ONLY); user service returns 200."
+      operationId: "deleteCard"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "Card id (UUID-style string)."
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "Card deleted"
+        404:
+          description: "Card not found"
+  /addresses:
+    get:
+      tags:
+      - "user"
+      summary: "List addresses"
+      description: "List stored shipping/billing addresses. The front-end proxies\
+        \ this to the user service addresses endpoint."
+      operationId: "listAddresses"
+      produces:
+      - "application/json"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "object"
+    post:
+      tags:
+      - "user"
+      summary: "Add an address"
+      description: "Store a new shipping/billing address for the current customer.\
+        \ The front-end adds the session userID to the request body and forwards it\
+        \ to the user service addresses endpoint. Source: front-end\
+        \ api/user/index.js app.post('/addresses') sets req.body.userID then\
+        \ forwards req.body; user service Address struct {street, number, country,\
+        \ city, postcode}. Returns 200."
+      operationId: "createAddress"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "body"
+        in: "body"
+        required: true
+        description: "Address details."
+        schema:
+          $ref: "#/definitions/AddressRequest"
+      responses:
+        200:
+          description: "Address stored"
+          schema:
+            $ref: "#/definitions/Address"
+  /addresses/{id}:
+    delete:
+      tags:
+      - "user"
+      summary: "Delete an address"
+      description: "Delete a stored address by id (a testing-only convenience route\
+        \ that proxies to the user service addresses DELETE endpoint). Source:\
+        \ front-end api/user/index.js app.delete('/addresses/:id') (marked FOR\
+        \ TESTING ONLY); user service returns 200."
+      operationId: "deleteAddress"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "Address id (UUID-style string)."
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "Address deleted"
+        404:
+          description: "Address not found"
+  /card:
+    get:
+      tags:
+      - "user"
+      summary: "Get the current customer's card"
+      description: "Return a masked view (last four digits) of the current\
+        \ customer's first stored payment card. The front-end resolves the customer\
+        \ from the session and queries the user service cards endpoint. Source:\
+        \ front-end api/user/index.js app.get('/card')."
+      operationId: "getCurrentCard"
+      produces:
+      - "application/json"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/MaskedCard"
+  /address:
+    get:
+      tags:
+      - "user"
+      summary: "Get the current customer's address"
+      description: "Return the current customer's first stored shipping/billing\
+        \ address. The front-end resolves the customer from the session and queries\
+        \ the user service addresses endpoint. Source: front-end api/user/index.js\
+        \ app.get('/address')."
+      operationId: "getCurrentAddress"
+      produces:
+      - "application/json"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/Address"
+definitions:
+  Sock:
+    type: "object"
+    description: "A sock product in the catalogue"
+    properties:
+      id:
+        type: "string"
+        description: "Catalogue item id"
+      name:
+        type: "string"
+        description: "Product name"
+      description:
+        type: "string"
+        description: "Product description"
+      imageUrl:
+        type: "array"
+        description: "Image URLs for the product"
+        items:
+          type: "string"
+      price:
+        type: "number"
+        format: "float"
+        description: "Unit price"
+      count:
+        type: "integer"
+        format: "int32"
+        description: "Quantity in stock"
+      tag:
+        type: "array"
+        description: "Tags applied to the product"
+        items:
+          type: "string"
+    required:
+    - "id"
+    - "name"
+    - "price"
+  CatalogueSize:
+    type: "object"
+    description: "Count of catalogue items"
+    properties:
+      size:
+        type: "integer"
+        format: "int32"
+        description: "Number of catalogue items matching the query"
+    required:
+    - "size"
+  Tags:
+    type: "object"
+    description: "List of catalogue tags"
+    properties:
+      tags:
+        type: "array"
+        description: "Available tags"
+        items:
+          type: "string"
+    required:
+    - "tags"
+  CartItem:
+    type: "object"
+    description: "An item in the shopping cart"
+    properties:
+      itemId:
+        type: "string"
+        description: "Catalogue item id of the cart line"
+      quantity:
+        type: "integer"
+        format: "int32"
+        description: "Quantity of this item in the cart"
+      unitPrice:
+        type: "number"
+        format: "float"
+        description: "Unit price of this item"
+    required:
+    - "itemId"
+    - "quantity"
+  AddCartItemRequest:
+    type: "object"
+    description: "Request body to add an item to the cart. The front-end reads the\
+      \ catalogue item id, resolves its price, and forwards {itemId, unitPrice} to\
+      \ the carts service. Source: front-end api/cart/index.js app.post('/cart')\
+      \ (req.body.id)."
+    properties:
+      id:
+        type: "string"
+        description: "Catalogue item id to add to the cart."
+    required:
+    - "id"
+  UpdateCartItemRequest:
+    type: "object"
+    description: "Request body to update a cart item's quantity. The front-end reads\
+      \ the catalogue item id and new quantity and forwards {itemId, quantity,\
+      \ unitPrice} (PATCH) to the carts service. Source: front-end\
+      \ api/cart/index.js app.post('/cart/update') (req.body.id, req.body.quantity)."
+    properties:
+      id:
+        type: "string"
+        description: "Catalogue item id of the cart line to update."
+      quantity:
+        type: "integer"
+        format: "int32"
+        description: "New quantity for the cart line."
+    required:
+    - "id"
+    - "quantity"
+  NewOrderRequest:
+    type: "object"
+    description: "NewOrder resource posted to the orders service: four hyperlinks\
+      \ pointing at the customer, address, card and cart-items resources. Source:\
+      \ orders service NewOrderResource (customer/address/card/items, each an @URL\
+      \ URI); front-end api/orders/index.js builds this object from the session."
+    properties:
+      customer:
+        type: "string"
+        description: "URL of the customer resource placing the order."
+      address:
+        type: "string"
+        description: "URL of the shipping address resource."
+      card:
+        type: "string"
+        description: "URL of the payment card resource."
+      items:
+        type: "string"
+        description: "URL of the customer's cart-items resource."
+  RegisterRequest:
+    type: "object"
+    description: "Customer registration request. Source: user service\
+      \ registerRequest struct {username, password, email, firstName, lastName}\
+      \ (api/endpoints.go); forwarded verbatim by the front-end."
+    properties:
+      username:
+        type: "string"
+        description: "Login username."
+      password:
+        type: "string"
+        description: "Account password."
+      email:
+        type: "string"
+        description: "Email address."
+      firstName:
+        type: "string"
+        description: "Customer first name."
+      lastName:
+        type: "string"
+        description: "Customer last name."
+    required:
+    - "username"
+    - "password"
+    - "email"
+    - "firstName"
+    - "lastName"
+  RegisterResponse:
+    type: "object"
+    description: "Result of a successful registration: the new customer id."
+    properties:
+      id:
+        type: "string"
+        description: "Newly created customer id."
+    required:
+    - "id"
+  CardRequest:
+    type: "object"
+    description: "Payment card registration request. Source: user service Card\
+      \ struct {longNum, expires, ccv} (users/cards.go); the front-end adds the\
+      \ session userID before forwarding."
+    properties:
+      longNum:
+        type: "string"
+        description: "Full card number."
+      expires:
+        type: "string"
+        description: "Card expiry date (MM/YY)."
+      ccv:
+        type: "string"
+        description: "Card security code."
+    required:
+    - "longNum"
+    - "expires"
+    - "ccv"
+  AddressRequest:
+    type: "object"
+    description: "Address registration request. Source: user service Address struct\
+      \ {street, number, country, city, postcode} (users/addresses.go); the\
+      \ front-end adds the session userID before forwarding."
+    properties:
+      street:
+        type: "string"
+        description: "Street name."
+      number:
+        type: "string"
+        description: "Street/house number."
+      country:
+        type: "string"
+        description: "Country."
+      city:
+        type: "string"
+        description: "City."
+      postcode:
+        type: "string"
+        description: "Postal code."
+    required:
+    - "street"
+    - "number"
+    - "country"
+    - "city"
+    - "postcode"
+  Order:
+    type: "object"
+    description: "A customer order"
+    properties:
+      id:
+        type: "string"
+        description: "Order id"
+      customerId:
+        type: "string"
+        description: "Id of the customer who placed the order"
+      date:
+        type: "string"
+        description: "Order date"
+      total:
+        type: "number"
+        format: "float"
+        description: "Order total"
+      status:
+        type: "string"
+        description: "Order status"
+    required:
+    - "id"
+    - "customerId"
+  Customer:
+    type: "object"
+    description: "A customer account"
+    properties:
+      id:
+        type: "string"
+        description: "Customer id"
+      firstName:
+        type: "string"
+        description: "Customer first name"
+      lastName:
+        type: "string"
+        description: "Customer last name"
+      username:
+        type: "string"
+        description: "Login username"
+    required:
+    - "id"
+    - "username"
+  Card:
+    type: "object"
+    description: "A stored payment card"
+    properties:
+      id:
+        type: "string"
+        description: "Card id"
+      longNum:
+        type: "string"
+        description: "Card number (masked)"
+      expires:
+        type: "string"
+        description: "Card expiry date"
+      ccv:
+        type: "string"
+        description: "Card security code (masked)"
+    required:
+    - "id"
+  MaskedCard:
+    type: "object"
+    description: "A masked view of a payment card, exposing only the last four\
+      \ digits. Source: front-end api/user/index.js app.get('/card')."
+    properties:
+      number:
+        type: "string"
+        description: "Last four digits of the card number."
+    required:
+    - "number"
+  Address:
+    type: "object"
+    description: "A stored shipping/billing address"
+    properties:
+      id:
+        type: "string"
+        description: "Address id"
+      number:
+        type: "string"
+        description: "Street number"
+      street:
+        type: "string"
+        description: "Street name"
+      city:
+        type: "string"
+        description: "City"
+      postcode:
+        type: "string"
+        description: "Postal code"
+      country:
+        type: "string"
+        description: "Country"
+    required:
+    - "id"

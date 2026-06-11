@@ -1,0 +1,8 @@
+{
+  "metric": "D2 IPD-SR",
+  "status": "N/A \u2014 no IDL declared",
+  "ipd_sr": null,
+  "ipd_sr_threshold_pass": null,
+  "rules_loaded": 0,
+  "note": "TrainTicket's OAS does not declare x-dependencies. To enable D2, copy debug/inputs/scripts/curated_idl.example.yaml to curated_idl.yaml and add rules."
+}

@@ -1,0 +1,5 @@
+parameter,total,smart_fetch,pool_or_smart,sfhr_conservative,sfhr_upper
+accountId,40,32,40,0.8000,1.0000
+id,257,212,238,0.8249,0.9261
+loginId,40,8,23,0.2000,0.5750
+orderId,20,19,19,0.9500,0.9500

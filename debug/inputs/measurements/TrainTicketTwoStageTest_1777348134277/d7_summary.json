@@ -1,0 +1,55 @@
+{
+  "metric": "D7 Realism Score",
+  "definition": "fraction of NLP-typed positive-variant values that match a known entity in the realism oracle",
+  "oracle_mode": "offline",
+  "entities_loaded": 542,
+  "online_calls": 0,
+  "online_hits": 0,
+  "total_inputs_seen": 26467,
+  "nlp_typed_inputs": 136,
+  "realistic": 36,
+  "unrealistic": 100,
+  "empty": 0,
+  "by_lookup_source": {
+    "offline": 36,
+    "unknown": 100
+  },
+  "realism": 0.2647058823529412,
+  "realism_threshold_pass": false,
+  "worst_parameters": [
+    {
+      "parameter": "name",
+      "total": 46,
+      "realistic": 0,
+      "realism": 0.0,
+      "unrealistic_examples": [
+        "Greenway Express",
+        "Silver Bullet Express",
+        "Express Train"
+      ]
+    },
+    {
+      "parameter": "startPlace",
+      "total": 45,
+      "realistic": 7,
+      "realism": 0.15555555555555556,
+      "unrealistic_examples": [
+        "Dallas/Fort Worth International Airport",
+        "Hartsfield-Jackson Atlanta International Airport",
+        "Minneapolis\u2013Saint Paul International Airport"
+      ]
+    },
+    {
+      "parameter": "endPlace",
+      "total": 45,
+      "realistic": 29,
+      "realism": 0.6444444444444445,
+      "unrealistic_examples": [
+        "Los Angeles, CA",
+        "New York City",
+        "Houston, TX"
+      ]
+    }
+  ],
+  "computed_at": "2026-05-01T01:20:48Z"
+}

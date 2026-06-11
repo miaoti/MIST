@@ -1,0 +1,96 @@
+{
+  "metric": "D4 Smart-Fetch Hit Rate",
+  "definition": "fraction of ID-typed positive-variant inputs whose value came from a real upstream response",
+  "total_inputs_seen": 32198,
+  "id_typed_inputs": 357,
+  "by_classification": {
+    "smart_fetch": 271,
+    "shared_pool_draw": 49,
+    "llm": 37,
+    "negative": 0,
+    "unknown": 0
+  },
+  "sfhr_conservative": 0.7591036414565826,
+  "sfhr_upper": 0.896358543417367,
+  "sfhr_threshold_pass": true,
+  "coverage_caveat": "RESTest's shared-pool-fill path does not log each pooled value's originating source. Values appearing only in 'Shared Pool (Step 1)' lines have ambiguous provenance. We report a conservative SFHR (SMART_FETCH-only) and an upper bound (SMART_FETCH + SHARED_POOL_DRAW).",
+  "worst_parameters": [
+    {
+      "parameter": "loginId",
+      "total": 40,
+      "smart_fetch": 8,
+      "sfhr_conservative": 0.2,
+      "sfhr_upper": 0.575,
+      "examples": [
+        {
+          "value": "customer_1",
+          "provenance": "SHARED_POOL_DRAW"
+        },
+        {
+          "value": "guest123",
+          "provenance": "SHARED_POOL_DRAW"
+        },
+        {
+          "value": "user123",
+          "provenance": "LLM"
+        }
+      ]
+    },
+    {
+      "parameter": "accountId",
+      "total": 40,
+      "smart_fetch": 32,
+      "sfhr_conservative": 0.8,
+      "sfhr_upper": 1.0,
+      "examples": [
+        {
+          "value": "order_2026",
+          "provenance": "SHARED_POOL_DRAW"
+        },
+        {
+          "value": "order_2026",
+          "provenance": "SHARED_POOL_DRAW"
+        },
+        {
+          "value": "admin123",
+          "provenance": "SHARED_POOL_DRAW"
+        }
+      ]
+    },
+    {
+      "parameter": "id",
+      "total": 257,
+      "smart_fetch": 212,
+      "sfhr_conservative": 0.8249027237354085,
+      "sfhr_upper": 0.9260700389105059,
+      "examples": [
+        {
+          "value": "```",
+          "provenance": "SHARED_POOL_DRAW"
+        },
+        {
+          "value": "train004",
+          "provenance": "SHARED_POOL_DRAW"
+        },
+        {
+          "value": "train010",
+          "provenance": "SHARED_POOL_DRAW"
+        }
+      ]
+    },
+    {
+      "parameter": "orderId",
+      "total": 20,
+      "smart_fetch": 19,
+      "sfhr_conservative": 0.95,
+      "sfhr_upper": 0.95,
+      "examples": [
+        {
+          "value": "be5032f0-335d-4bcb-8c8e-c2f3d9346bcb",
+          "provenance": "LLM"
+        }
+      ]
+    }
+  ],
+  "computed_at": "2026-05-05T05:06:08Z"
+}

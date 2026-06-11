@@ -1,0 +1,81 @@
+% Figure 1: MIST architecture, three Maven modules.
+%   mist-core  : owns the five architectural stages (i)-(v), drawn as one box.
+%   mist-cli   : entry mist.jar launcher, JUnit / REST-Assured writer, executor;
+%                inputs enter and outputs leave through it.
+%   mist-llm   : LLM dispatch and call cache.
+% mist-cli and mist-llm each exchange with mist-core over a bidirectional arrow.
+% mist-core drives the System Under Test and reads its traces back.
+\begin{tikzpicture}[
+  font=\small,
+  >={Stealth[length=2.2mm]},
+  stage/.style  ={draw=blue!45!gray, line width=0.5pt, rounded corners=2pt,
+                  fill=white, minimum width=26mm, minimum height=11mm,
+                  align=center, inner sep=2pt, text depth=0pt, font=\scriptsize},
+  module/.style ={draw=blue!55!gray, line width=0.9pt, rounded corners=3pt,
+                  fill=blue!4},
+  modbox/.style ={module, align=center, inner sep=3pt, font=\scriptsize,
+                  text width=27mm, minimum height=15mm},
+  io/.style     ={draw=gray!55, line width=0.5pt, rounded corners=2.5pt,
+                  fill=gray!7, align=center, inner sep=3pt, font=\scriptsize,
+                  text width=36mm},
+  sut/.style    ={draw=gray!60, line width=0.5pt, rounded corners=2.5pt,
+                  fill=gray!12, align=center, inner sep=3pt, font=\scriptsize,
+                  text width=48mm},
+  modlbl/.style ={font=\scriptsize\bfseries\ttfamily, text=blue!50!gray,
+                  fill=white, inner sep=1pt, rounded corners=1pt},
+  flow/.style   ={->, thick, draw=black!75},
+  bidir/.style  ={<->, line width=1.1pt, draw=blue!55!gray},
+  trace/.style  ={->, thick, dashed, draw=black!70}
+]
+
+% ---- mist-core: the five stages (i)-(v), serpentine flow ----
+\node[stage] (ingest)   at (5.0, 0.85)  {\textbf{(i) Spec Ingestor}\\OpenAPI parser};
+\node[stage] (registry) at (8.2, 0.85)  {\textbf{(ii) Semantic Dep.\ Registry}\\producer / consumer index};
+\node[stage] (gen)      at (11.4, 0.85)  {\textbf{(iii) Sequence Generator}\\Root API Mode};
+\node[stage] (mut)      at (9.8, -0.65)  {\textbf{(iv) Fault Injector}\\Sniper Strategy};
+\node[stage] (oracle)   at (6.6, -0.65)  {\textbf{(v) Trace Checker}\\Trace Shape Oracle};
+
+\begin{scope}[on background layer]
+  \node[module, fit=(ingest)(registry)(gen)(mut)(oracle), inner sep=4mm] (core) {};
+\end{scope}
+\node[modlbl, anchor=south west] at ([xshift=2mm]core.north west) {mist-core};
+
+% internal flow: i -> ii -> iii (top), down to iv, iv -> v (bottom)
+\draw[flow] (ingest)   -- (registry);
+\draw[flow] (registry) -- (gen);
+\draw[flow] (gen.south) |- (mut.east);
+\draw[flow] (mut)      -- (oracle);
+
+% ---- mist-cli (left): inputs/outputs hub ----
+\node[modbox] (cli) at (1.0, 0.1)
+  {\texttt{mist.jar} launcher\\JUnit / REST-Assured writer\\test executor};
+\node[modlbl, anchor=south west] at ([xshift=2mm]cli.north west) {mist-cli};
+
+% ---- mist-llm (right) ----
+\node[modbox] (llm) at (15.3, 0.1)
+  {LLM dispatch\\and call cache};
+\node[modlbl, anchor=south west] at ([xshift=2mm]llm.north west) {mist-llm};
+
+% bidirectional module exchanges
+\draw[bidir] (cli.east)  -- (core.west);
+\draw[bidir] (core.east) -- (llm.west);
+
+% ---- Inputs (into mist-cli) ----
+\node[io] (inputs) at (1.0, 2.0)
+  {\textbf{Inputs:} OpenAPI spec, Jaeger / OTel traces, \texttt{.properties} config};
+\draw[flow] (inputs) -- (cli);
+
+% ---- Outputs (from mist-cli) ----
+\node[io] (out) at (1.0, -1.8)
+  {\textbf{Outputs:} JUnit tests, Allure report, fault-detection report};
+\draw[flow] (cli) -- (out);
+
+% ---- System Under Test (driven by mist-core, traces flow back) ----
+\node[sut] (sutb) at (8.2, -2.6)
+  {\textbf{System Under Test}\\Gateway $\to$ services $\to$ Jaeger};
+\draw[flow]  ([xshift=-7mm]core.south) -- ([xshift=-7mm]sutb.north)
+             node[midway, left=1pt, font=\scriptsize\itshape, text=black!65] {drive};
+\draw[trace] ([xshift=7mm]sutb.north) -- ([xshift=7mm]core.south)
+             node[midway, right=1pt, font=\scriptsize\itshape, text=black!65] {traces};
+
+\end{tikzpicture}

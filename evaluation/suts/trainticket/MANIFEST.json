@@ -1,0 +1,18 @@
+{
+  "sut": "trainticket",
+  "role": "fault-injection SUT (Sniper negative tests + 10 code-level injected faults, detected via SUT-reported faultName markers)",
+  "source": "FudanSELab TrainTicket, fault-injection fork https://github.com/AsifShaafi/train-ticket-injection (branch: injection), deployed locally via docker-compose; see deploy/deploy.sh.",
+  "deployment": "deploy/deploy.sh builds the 7 fault-bearing services from source (ts-auth-service, ts-admin-basic-info-service, ts-admin-order-service, ts-admin-route-service, ts-admin-travel-service, ts-travel-service, ts-travel-plan-service) and pulls the ~33 upstream codewisdom/* images; gateway on http://localhost:8080; built-in account admin/222222.",
+  "trace_format": "Jaeger query-API JSON ({\"data\":[{\"traceID\",\"spans\",\"processes\"}]}); consumed by io.mist.core.oracle.shape.TraceModel.fromJaegerJson and io.mist.core.workflow.TraceWorkflowExtractor (reads concrete paths from http.url/http.target span tags).",
+  "traces": [
+    {"file": "traces/admin_add_route_failed.json", "kind": "loud-failure", "note": "16 spans: POST /adminroute, NumberFormatException on a malformed value propagates http=500 x5 + otel=ERROR x7 to the root (TrainTicket fails LOUD). Exception message echoes the bad value; used in probe-attribution evidence."},
+    {"file": "traces/traces-1772605095842.json", "kind": "workload-corpus", "note": "captured nominal traffic; part of the seed corpus the workflow extractor consumes for generation."}
+  ],
+  "injected_faults": {
+    "file": "injectedFaults/injected-faults.json",
+    "count": 10,
+    "detection": "A faulty request returns HTTP 200 with body {\"data\":{\"injected\":true,\"faultName\":\"...\"}}; MIST matches faultName against this registry (MultiServiceRESTAssuredWriter -> FaultDetectionTracker). Run trainticket_twostage_test_42 detects 10/10 (debug/negative_test/runs/run22-fault-detection-10of10.txt).",
+    "faults": ["INSUFFICIENT_STATIONS", "INVALID_STATION_NAME_LENGTH", "INVALID_CONTACTS_NAME", "INVALID_SEAT_NUMBER", "INVALID_PRICE_RATE", "INVALID_ROUTE_ID", "INVALID_STATION_NAME", "INVALID_STATION_LENGTH", "INVALID_TRIP_ID_FORMAT", "INVALID_TRIP_ID_LENGTH"]
+  },
+  "soft_error_evidence": "docs/main-contribution/evidence/responseenvelope_live_softerror.txt — the shipped ResponseEnvelope invariant + real DeepSeek classifier flip a TrainTicket soft-error body (HTTP 200, {\"status\":0,...}) to RESPONSE_ENVELOPE=FAIL, where a status-class oracle passes."
+}

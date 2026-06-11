@@ -1,0 +1,69 @@
+# MIST default fault taxonomy. Mirrors the legacy InvalidInputType enum.
+# Phase 3 of PATH_B_REBUILD_PLAN.md replaces the enum with this registry.
+#
+# Applicability semantics are taken verbatim from the legacy
+# InvalidInputType#appliesTo(String) implementation. Standard OpenAPI
+# types only: string, integer, number, boolean, array, object.
+# Aliases such as "int", "long", "double", "float" the legacy enum also
+# accepted are handled in the registry layer, not the YAML.
+#
+# Order matters: it defines the registry-declared rotation order used by
+# the sniper round-robin cursor.
+faults:
+  - id: TYPE_MISMATCH
+    displayName: Type Mismatch
+    applicableTo: [string, integer, number, boolean, array, object]
+    applicableLocations: [path, query, header, cookie, body]
+    source: DEFAULT
+
+  - id: REGEX_MISMATCH
+    displayName: Regex Mismatch
+    applicableTo: [string]
+    applicableLocations: [path, query, header, cookie, body]
+    source: DEFAULT
+
+  - id: SEMANTIC_MISMATCH
+    displayName: Semantic Mismatch
+    applicableTo: [string, integer, number, array, object]
+    applicableLocations: [path, query, header, cookie, body]
+    source: DEFAULT
+
+  - id: OVERFLOW
+    displayName: Overflow
+    applicableTo: [string, integer, number, array]
+    applicableLocations: [path, query, header, cookie, body]
+    source: DEFAULT
+
+  - id: EMPTY_INPUT
+    displayName: Empty Input
+    applicableTo: [string, array, object]
+    applicableLocations: [path, query, header, cookie, body]
+    source: DEFAULT
+
+  - id: NULL_INPUT
+    displayName: Null Input
+    applicableTo: [string, integer, number, boolean, array, object]
+    applicableLocations: [path, query, header, cookie, body]
+    source: DEFAULT
+
+  - id: SPECIAL_CHARACTERS
+    displayName: Special Characters
+    applicableTo: [string, array]
+    applicableLocations: [path, query, header, cookie, body]
+    source: DEFAULT
+
+  - id: BOUNDARY_VIOLATION
+    displayName: Boundary Violation
+    applicableTo: [string, integer, number, array]
+    applicableLocations: [path, query, header, cookie, body]
+    source: DEFAULT
+
+  # Schema-aware enum violation: a value of the correct TYPE that is NOT a member
+  # of the declared enum. Passes the type check but should be rejected by enum
+  # validation — a 2xx acceptance is a silent-acceptance (under-validation) bug.
+  # Only fires when the schema declares an enum (see generateEnumViolationInputs).
+  - id: ENUM_VIOLATION
+    displayName: Enum Violation
+    applicableTo: [string, integer, number]
+    applicableLocations: [path, query, header, cookie, body]
+    source: DEFAULT

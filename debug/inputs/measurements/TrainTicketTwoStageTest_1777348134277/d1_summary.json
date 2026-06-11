@@ -1,0 +1,183 @@
+{
+  "metric": "D1 Schema Conformance Rate",
+  "include_negatives": false,
+  "rows_total": 698,
+  "rows_validated": 698,
+  "rows_valid": 680,
+  "rows_invalid": 18,
+  "rows_no_schema": 0,
+  "rows_missing_operation": 0,
+  "rows_skipped_negative": 25769,
+  "scr": 0.9742120343839542,
+  "scr_threshold_pass": true,
+  "by_test_kind": {
+    "positive": {
+      "total": 698,
+      "valid": 680,
+      "scr": 0.9742120343839542
+    }
+  },
+  "worst_parameters": [
+    {
+      "operation": "PUT /api/v1/consignservice/consigns",
+      "parameter": "accountId",
+      "location": "body",
+      "total": 20,
+      "valid": 7,
+      "scr": 0.35,
+      "invalid_examples": [
+        {
+          "value": "1234567890",
+          "error": "<root>: 1234567890 is not of type 'string'"
+        },
+        {
+          "value": "1234567890",
+          "error": "<root>: 1234567890 is not of type 'string'"
+        },
+        {
+          "value": "1234567890",
+          "error": "<root>: 1234567890 is not of type 'string'"
+        }
+      ]
+    },
+    {
+      "operation": "POST /api/v1/orderOtherService/orderOther/refresh",
+      "parameter": "state",
+      "location": "body",
+      "total": 17,
+      "valid": 12,
+      "scr": 0.7058823529411765,
+      "invalid_examples": [
+        {
+          "value": "FALLBACK_state_2",
+          "error": "<root>: 'FALLBACK_state_2' is not of type 'integer'"
+        },
+        {
+          "value": "FALLBACK_state_3",
+          "error": "<root>: 'FALLBACK_state_3' is not of type 'integer'"
+        },
+        {
+          "value": "FALLBACK_state_2",
+          "error": "<root>: 'FALLBACK_state_2' is not of type 'integer'"
+        }
+      ]
+    },
+    {
+      "operation": "POST /api/v1/orderOtherService/orderOther/refresh",
+      "parameter": "boughtDateEnd",
+      "location": "body",
+      "total": 17,
+      "valid": 17,
+      "scr": 1.0,
+      "invalid_examples": []
+    },
+    {
+      "operation": "POST /api/v1/orderOtherService/orderOther/refresh",
+      "parameter": "boughtDateStart",
+      "location": "body",
+      "total": 17,
+      "valid": 17,
+      "scr": 1.0,
+      "invalid_examples": []
+    },
+    {
+      "operation": "POST /api/v1/orderOtherService/orderOther/refresh",
+      "parameter": "enableBoughtDateQuery",
+      "location": "body",
+      "total": 17,
+      "valid": 17,
+      "scr": 1.0,
+      "invalid_examples": []
+    },
+    {
+      "operation": "POST /api/v1/orderOtherService/orderOther/refresh",
+      "parameter": "enableStateQuery",
+      "location": "body",
+      "total": 17,
+      "valid": 17,
+      "scr": 1.0,
+      "invalid_examples": []
+    },
+    {
+      "operation": "POST /api/v1/orderOtherService/orderOther/refresh",
+      "parameter": "enableTravelDateQuery",
+      "location": "body",
+      "total": 17,
+      "valid": 17,
+      "scr": 1.0,
+      "invalid_examples": []
+    },
+    {
+      "operation": "POST /api/v1/orderOtherService/orderOther/refresh",
+      "parameter": "loginId",
+      "location": "body",
+      "total": 17,
+      "valid": 17,
+      "scr": 1.0,
+      "invalid_examples": []
+    },
+    {
+      "operation": "POST /api/v1/orderOtherService/orderOther/refresh",
+      "parameter": "travelDateEnd",
+      "location": "body",
+      "total": 17,
+      "valid": 17,
+      "scr": 1.0,
+      "invalid_examples": []
+    },
+    {
+      "operation": "POST /api/v1/orderOtherService/orderOther/refresh",
+      "parameter": "travelDateStart",
+      "location": "body",
+      "total": 17,
+      "valid": 17,
+      "scr": 1.0,
+      "invalid_examples": []
+    },
+    {
+      "operation": "POST /api/v1/travelservice/trips/left",
+      "parameter": "departureTime",
+      "location": "body",
+      "total": 19,
+      "valid": 19,
+      "scr": 1.0,
+      "invalid_examples": []
+    },
+    {
+      "operation": "POST /api/v1/travelservice/trips/left",
+      "parameter": "endPlace",
+      "location": "body",
+      "total": 19,
+      "valid": 19,
+      "scr": 1.0,
+      "invalid_examples": []
+    },
+    {
+      "operation": "POST /api/v1/travelservice/trips/left",
+      "parameter": "startPlace",
+      "location": "body",
+      "total": 19,
+      "valid": 19,
+      "scr": 1.0,
+      "invalid_examples": []
+    },
+    {
+      "operation": "PUT /api/v1/consignservice/consigns",
+      "parameter": "consignee",
+      "location": "body",
+      "total": 20,
+      "valid": 20,
+      "scr": 1.0,
+      "invalid_examples": []
+    },
+    {
+      "operation": "PUT /api/v1/consignservice/consigns",
+      "parameter": "from",
+      "location": "body",
+      "total": 20,
+      "valid": 20,
+      "scr": 1.0,
+      "invalid_examples": []
+    }
+  ]
+}

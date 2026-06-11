@@ -1,0 +1,8 @@
+{
+  "metadata": {
+    "total_faults": 0,
+    "note": "Bookinfo has NO named injected faults. The hidden-downstream failure is detected as an ORACLE ANOMALY (HIDDEN_DOWNSTREAM_FAILURE) from the distributed trace, not via the SUT-reports-its-own-faultName mechanism used for train-ticket. This empty registry keeps fault.detection + the ORACLE ANOMALIES report section enabled so the trace-oracle findings still print.",
+    "version": "1.0"
+  },
+  "injected_faults": []
+}

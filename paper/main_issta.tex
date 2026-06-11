@@ -1,0 +1,254 @@
+% =============================================================================
+% ACTIVE — SPLASH/ISSTA 2026 Posters and Tool Demonstrations track.
+% =============================================================================
+% Submission deadline: June 24, 2026 AOE (archival; shared with Posters / SRC).
+% Camera ready: August 14, 2026. Conference: October 3-9, 2026 @ Oakland, CA.
+% Track URL:
+%   https://conf.researchr.org/track/issta-2026/splash-issta-2026-posters-and-tool-demonstrations
+% Format: 4 pages + 1 page refs (double-column); acmart sigconf class
+% (sample-sigconf.tex from the acmart package).
+%
+% The companion IEEEtran variant `main.tex` is kept as an ICSE 2027 fallback
+% (deadline Oct 23, 2026; 4-page all-in). The two share figures and refs.bib;
+% do not edit `figures/*.tex` here -- they are the canonical source for both.
+% =============================================================================
+
+\documentclass[sigconf,screen,review]{acmart}
+
+% --- Packages (acmart loads hyperref/url/cite/natbib/amsmath/amssymb/booktabs
+%     internally; do NOT reload them here -- an option clash will follow). ---
+\usepackage{graphicx}
+\usepackage{textcomp}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,fit,backgrounds,shapes.geometric}
+\usepackage{listings}
+\usepackage[normalem]{ulem}
+
+% --- Author-facing TODO macro (visible in PDF, easy to grep) ---
+\newcommand{\todo}[1]{\textcolor{red}{\textbf{[TODO: #1]}}}
+
+% --- Listing style ---
+\lstset{
+  basicstyle=\footnotesize\ttfamily,
+  numbers=none,
+  keywordstyle=\bfseries, commentstyle=\itshape\color{gray!70!black},
+  showstringspaces=false, breaklines=true, frame=single, framerule=0.4pt,
+  xleftmargin=4pt, xrightmargin=2pt, aboveskip=3pt, belowskip=3pt,
+  morekeywords={for,each,if,then,else,return,let,select,one,exactly,end,procedure,Sniper}
+}
+
+% --- Compact float/caption spacing to help fit the 4-page budget.
+%     (Safe lengths; verify ACM format before camera-ready. Section-heading
+%     spacing is acmart-class-managed -- do not hack it without compiling.) ---
+\setlength{\textfloatsep}{7pt plus 1pt minus 1pt}
+\setlength{\intextsep}{7pt plus 1pt minus 1pt}
+\setlength{\floatsep}{6pt plus 1pt minus 1pt}
+\setlength{\dbltextfloatsep}{8pt plus 1pt minus 1pt}
+\setlength{\abovecaptionskip}{4pt}
+\setlength{\belowcaptionskip}{0pt}
+% Let LaTeX stretch lines to avoid overfull boxes from long \texttt identifiers
+% (e.g. ENUM_VIOLATION, otel.status_code=ERROR) in the narrow sigconf columns.
+\emergencystretch=3em
+\hfuzz=1.5pt
+% NOTE: do NOT redefine \section/\subsection to tighten heading spacing -- acmart
+% issues a hard "An attempt to redefine \section detected" error and refuses to
+% build. ACM fixes the heading spacing by class policy; recover space from
+% content (prose, figures, citations), not from the section skips.
+
+% =============================================================================
+% ACM rights / conference metadata. ISBN and DOI stay as harmless placeholders
+% until the camera-ready ACM author kit; \setcopyright should be confirmed
+% against the ISSTA 2026 author kit closer to the deadline.
+% =============================================================================
+\setcopyright{rightsretained}
+\acmConference[ISSTA '26 Tool Demonstrations]{Proceedings of the 35th ACM SIGSOFT International Symposium on Software Testing and Analysis Tool Demonstrations}{October 3--9, 2026}{Oakland, CA, USA}
+\acmBooktitle{Proceedings of the 35th ACM SIGSOFT International Symposium on Software Testing and Analysis Tool Demonstrations (ISSTA '26 Tool Demonstrations), October 3--9, 2026, Oakland, CA, USA}
+% TODO: replace ISBN and DOI with the values from the camera-ready author kit.
+\acmISBN{978-X-XXXX-XXXX-X/26/10}
+\acmDOI{10.1145/XXXXXXX.XXXXXXX}
+\acmYear{2026}
+\copyrightyear{2026}
+
+% --- ACM CCS (required, even if minimal) ---
+\begin{CCSXML}
+<ccs2012>
+  <concept>
+    <concept_id>10011007.10011074.10011099.10011102.10011103</concept_id>
+    <concept_desc>Software and its engineering~Software testing and debugging</concept_desc>
+    <concept_significance>500</concept_significance>
+  </concept>
+  <concept>
+    <concept_id>10003033.10003079.10011704</concept_id>
+    <concept_desc>Networks~Network services</concept_desc>
+    <concept_significance>300</concept_significance>
+  </concept>
+</ccs2012>
+\end{CCSXML}
+\ccsdesc[500]{Software and its engineering~Software testing and debugging}
+\ccsdesc[300]{Networks~Network services}
+
+% --- Keywords ---
+\keywords{REST API testing, microservices, distributed tracing, trace-shape oracle, adaptive fault taxonomy, LLM-assisted testing}
+
+\begin{document}
+
+\title{MIST: A Trace-Driven Tool for Multi-Service REST API Test Generation with Trace-Shape Oracles}
+
+% Single-blind track: author block is visible.
+\author{Tingshuo Miao}
+\email{tingshuo_miao2@baylor.edu}
+\affiliation{%
+  \department{Department of Computer Science}
+  \institution{Baylor University}
+  \city{Waco}
+  \state{TX}
+  \country{USA}
+}
+
+\author{Asif Imtiaz Shaafi}
+\email{asifimtiaz_shaafi1@baylor.edu}
+\affiliation{%
+  \department{Department of Computer Science}
+  \institution{Baylor University}
+  \city{Waco}
+  \state{TX}
+  \country{USA}
+}
+
+\author{Eunjee Song}
+\authornote{Corresponding author.}
+\email{Eunjee_Song@baylor.edu}
+\affiliation{%
+  \department{Department of Computer Science}
+  \institution{Baylor University}
+  \city{Waco}
+  \state{TX}
+  \country{USA}
+}
+
+\begin{abstract}
+Black-box REST API testers sample inputs from the OpenAPI spec, stop at the HTTP status class, and miss cross-service failures: a \emph{soft error} hidden in a 2xx body, and a \emph{hidden downstream failure} where a clean 2xx entry masks a deeper service that 5xx-errored. We present \textbf{MIST} (Microservice Integration \& Scenario Tester), an open-source tool that turns OpenTelemetry/Jaeger traces and OpenAPI specs into runnable cross-service tests checked by a \emph{trace-shape oracle}. MIST drives only externally-reachable entry points, reads internals off the trace (\emph{Root API Mode}), and injects one fault per negative variant (\emph{Sniper Strategy}). Its \textsc{HiddenDownstreamFailure} invariant, label-free and large language model(LLM)-free, fires when a clean 2xx hides a server-errored downstream span. A bundled demo runs on four systems (TrainTicket, Istio Bookinfo, Sock Shop, Online Boutique) from one properties file with no source changes: on TrainTicket it scales to 15{,}036 tests, with all 10 injected faults confirmed by the system under test's (SUT) own registry independently of the trace oracle, while on Bookinfo and Online Boutique its oracle catches a real failure swallowed behind a \texttt{200} (over HTTP and gRPC) that status-, schema-, and body-level oracles pass, and this verdict reproduces offline from committed traces with no SUT or LLM. Source: \url{https://github.com/miaoti/MIST/}. Screencast: \todo{SCREENCAST-URL}.
+\end{abstract}
+
+\maketitle
+
+% =============================================================================
+\section{Introduction}\label{sec:intro}
+
+Modern REST API testers are spec-bound and oracle-light. Spec-only generators~\cite{Arcuri2019EvoMasterTOSEM,Atlidakis2019RESTler,MartinLopez2021RESTest,Liu2022MoRest,Kim2023ARATRL,HatfieldDodds2022Schemathesis} sample inputs from the OpenAPI surface and check the HTTP status class. LLM-assisted successors~\cite{Kim2024RESTGPT,Kim2025LlamaRestTest,Stennett2025AutoRestTest} sharpen value synthesis but inherit the same oracle. LogiAgent~\cite{Zhang2025LogiAgent} asks an LLM to read each response body rather than the cross-service trace. Three consequences hurt microservice deployments specifically. \emph{(G1) Soft errors slip through.} In a \emph{soft error}, common at enterprise endpoints, the service rejects a request at the domain level but still returns \texttt{HTTP 200 OK} and signals the failure only in the body (\texttt{status:0, data:null}). That evidence is invisible to a status-class oracle. \emph{(G2) Downstream failures are swallowed.} A client-facing entry can answer \texttt{HTTP 200} while a service deeper in the call tree has \texttt{5xx}-errored and the caller's error handling masked it. The only evidence is a span off the response path, invisible to status, schema, and even body-level checks when the body looks clean. \emph{(G3) Internal endpoints fabricate state.} Generators that exercise every operation must invent values for IDs that only specific upstream calls can mint. A fabrication failure is then indistinguishable from a real defect.
+
+MIST targets these gaps. Its differentiator versus AutoRestTest~\cite{Stennett2025AutoRestTest}, LogiAgent~\cite{Zhang2025LogiAgent}, and the grey-box MACROHIVE~\cite{Giamattei2022MACROHIVE} is to treat the OpenTelemetry/Jaeger trace as the generation source \emph{and} the assertion target. We make three contributions, all of which ship with the artifact. \textbf{Root API Mode} (\S\ref{sec:rootmode}) drives only externally-reachable entry points and observes internal behavior through traces to address G3 without instrumenting the SUT. \textbf{Sniper Strategy} (\S\ref{sec:sniper}) injects one fault per negative variant, keyed by \texttt{(name, location)} pair, so each parameter slot enrolls separately, from nine default categories plus a YAML applicability matrix, extended at run time by a \texttt{FaultMiner}. The \textbf{Trace Shape Oracle} (\S\ref{sec:traceoracle}) checks each trace against invariant families that read only the metadata surviving production PII-stripping. The following two target the gaps above: \textsc{ResponseEnvelope} catches G1 soft errors with a one-shot LLM body classifier, and \textsc{HiddenDownstreamFailure}, label-free and LLM-free, catches G2 by flagging a server-errored downstream span behind a 2xx entry (shown on real outages).
+
+\noindent A bundled demo is configured per system by one properties file on four microservice systems (TrainTicket~\cite{Zhou2018BenchTraintAnalysisSurvey}, Istio Bookinfo, Sock Shop, and Online Boutique) from their own inputs with no source changes (\S\ref{sec:case}).
+
+% =============================================================================
+
+\begin{figure*}[!ht]
+  \centering
+  \resizebox{\textwidth}{!}{\input{figures/architecture.tex}}
+  \caption{MIST architecture, three Maven modules. \texttt{mist-core} owns the five pipeline stages. \texttt{mist-cli} (launcher \texttt{mist.jar}, JUnit/REST-Assured writer, executor) and \texttt{mist-llm} (LLM dispatch + cache) each exchange with it (double arrows). \texttt{mist-core} drives the System Under Test (solid) and reads back its per-step Jaeger trace (dashed).}
+  \label{fig:arch}
+  \Description{Block diagram of the MIST pipeline as three Maven modules. mist-core contains five stages: Spec Ingestor, Semantic Dependency Registry, Sequence Generator (Root API Mode), Fault Injector (using the Sniper Strategy), and Trace Checker (using the Trace Shape Oracle). mist-cli takes the inputs (an OpenAPI specification, Jaeger or OpenTelemetry traces, and a run configuration) and emits the outputs (JUnit test classes, an Allure report, and a fault-detection report). mist-llm provides LLM dispatch and a call cache. Both exchange with mist-core, which sends HTTP requests to the System Under Test and reads back the per-step Jaeger trace.}
+\end{figure*}
+
+\section{Tool Architecture}\label{sec:arch}
+
+MIST is a Maven reactor of three modules (Figure~\ref{fig:arch}). \texttt{mist-core} owns all five architectural stages described below and contains no third-party source code: the OpenAPI parser wrapper (\texttt{io.mist.core.spec.*}), the semantic dependency registry (\texttt{io.mist.core.registry.*}), the sequence generator (\texttt{io.mist.core.generation.MistGenerator}), the sniper fault registry (\texttt{io.mist.core.fault.*}), and the trace-shape oracle (\texttt{io.mist.core.oracle.shape.*}). \texttt{mist-cli} ships the launcher \texttt{mist.jar}, the JUnit/REST-Assured writer, the test executor, and the SPI provider classes that let \texttt{mist-core} stay framework-agnostic. \texttt{mist-llm} is LLM dispatch and call cache. The build depends on REST-Assured, swagger-parser, Allure, and JUnit as ordinary Maven library artifacts, as every black-box REST tester does~\cite{MartinLopez2021RESTest,Arcuri2019EvoMasterTOSEM,Atlidakis2019RESTler}, but the MIST repository does not vendor any forked third-party source.
+
+The following five stages of \texttt{mist-core} form a pipeline that turns the spec and traces into cross-service tests that the oracle checks:
+
+\textbf{(i) Spec Ingestor} parses one OpenAPI spec (or aggregates per-service \texttt{/v3/api-docs}) and emits an MST configuration. The bundled TrainTicket spec carries 265 operations across 37 REST-exposed services (the distinct \texttt{/api/v1/} service prefixes).
+
+\textbf{(ii) Semantic Dependency Registry} indexes producer/consumer pairs over spec and trace corpus. For every \texttt{Id}/\texttt{ID}/\texttt{uuid}-stemmed parameter, a 5-pass build mines the API and JSON path that historically produces a matching value.
+
+\textbf{(iii) Sequence Generator (Root API Mode)} runs a 5-phase pipeline (Phase 2.5 dedup, shared-pool, Phase 3 weakly-connected-component shattering, Phase 3.5 dedup, Phase 4 decomposition). On the bundled TrainTicket trace corpus the pipeline collapses overlapping single-root scenarios into a smaller set of multi-root sequences. Root API Mode (\S\ref{sec:rootmode}) keeps each scenario's externally-reachable entry call and prunes internal spans. The writer emits one JUnit step per root call.
+
+\textbf{(iv) Fault Injector} applies the \emph{Sniper Strategy} (\S\ref{sec:sniper}) and builds an \texttt{Invalid\-Input\-Pool} per parameter, keyed by \texttt{PoolKey(name, location)} so same-named params at path/query/header/cookie/body are disjoint. The 9 default categories (TYPE\_MISMATCH, REGEX\_\allowbreak MISMATCH, SEMANTIC\_MISMATCH, OVERFLOW, EMPTY\_\allowbreak INPUT, NULL\_\allowbreak INPUT, SPECIAL\_\allowbreak CHARACTERS, BOUNDARY\_\allowbreak VIOLATION, ENUM\_\allowbreak VIOLATION) are filtered through a YAML applicability matrix and optionally extended by \texttt{FaultMiner} (disabled by default).
+
+\textbf{(v) Trace Checker} runs the \emph{Trace Shape Oracle} (\S\ref{sec:traceoracle}). After each emitted JUnit step, it fetches the Jaeger trace and evaluates it against four invariant families, which are learned from a seed corpus of known-good runs: \textsc{SpanTreeShape}, \textsc{StatusPropagation}, \textsc{ResponseEnvelope}, and a \textsc{TimingEnvelope} (disabled by default) invariant, plus two structural invariants that need no learned state: \textsc{TargetAttribution} (advisory) and the opt-in \textsc{HiddenDownstreamFailure}.
+
+% =============================================================================
+\section{Design}\label{sec:innov}
+
+\subsection{Root API Mode}\label{sec:rootmode}
+
+Internal endpoints presuppose state only specific upstream calls can mint (an \texttt{orderId} the database knows, a live session token). Driving them directly forces the generator to fabricate it, and a fabrication failure is indistinguishable from a real defect (G3). Root API Mode (one boolean, default \texttt{true}) instead keeps each trace's externally-reachable entry call, the parentless span left after skipping mesh/ingress routing spans (service name containing \texttt{gateway}, or a wildcard \texttt{VERB /*}), replays it externally, and observes internals through the captured trace from whatever OTel exporter the SUT runs. Unlike AutoRestTest's GloVe-embedded SPDG~\cite{Stennett2025AutoRestTest} or MACROHIVE's per-service mesh proxy~\cite{Giamattei2022MACROHIVE}, this adds no instrumentation.
+
+\subsection{Sniper Strategy}\label{sec:sniper}
+
+Mutating several parameters at once leaves the oracle unable to blame an anomaly on any specific cause. A single-fault test on a non-root call has the dual problem (its trace prefix is driven by other, possibly mutated, values). The Sniper Strategy fixes both: at the first root call it locks one round-robin-picked parameter to one applicable fault category and value (the Sniper target $(r,k,c,v)$: root call $r$, parameter $k$, fault category $c$, injected value $v$) and fills every other parameter with a valid grounded value, so the targeted slot is the only invalid input in the request.
+
+\texttt{PoolKey(name, location)} lets same-named parameters at path/query/header/cookie/body enroll independently. A schema-aware filter rejects nonsense (no 5000-char \textsc{overflow} on a boolean). A \emph{placeholder} provenance tag (no value could be grounded against the live SUT) reclassifies an ostensibly positive variant as negative up front to cut false positives. Opt-in, \texttt{FaultMiner} mines SUT-specific categories beyond the nine defaults from OpenAPI descriptions and observed 4xx/5xx bodies, for manual promotion.
+
+\subsection{Trace Shape Oracle}\label{sec:traceoracle}
+
+\begin{figure*}[!ht]
+  \centering
+  \resizebox{\textwidth}{!}{\input{figures/trace_oracle.tex}}
+  \caption{\texttt{GET /api/v1/products/\{id\}/reviews} on Istio Bookinfo under a real \texttt{ratings} outage (committed trace, IDs anonymised). The entry returns \texttt{HTTP 200} (\texttt{reviews} degrades gracefully), yet a deeper \texttt{ratings} span server-errored (\texttt{503}, \texttt{otel.status\_code=ERROR}) and was swallowed, invisible to status/schema/body oracles and caught by \textsc{HiddenDownstreamFailure} alone.}
+  \label{fig:trace}
+  \Description{A distributed-trace timeline for an HTTP GET request on Istio Bookinfo under a ratings outage. The product page entry span returns HTTP 200, and the reviews span returns 200, but the downstream ratings span returns 503 with an OpenTelemetry ERROR status and is swallowed by reviews. Response-level oracles read the 200 as success, while the Trace Shape Oracle HiddenDownstreamFailure invariant fires at ERROR.}
+\end{figure*}
+
+The Trace Shape Oracle catches the swallowed \texttt{ratings} failure in Figure~\ref{fig:trace} by evaluating each captured trace against several invariant families. \textsc{SpanTreeShape} checks the trace tree against the pattern recorded for the same root API, so a missing internal hop surfaces even when every observed call returns \texttt{200}. \textsc{StatusPropagation} flags any span whose status code falls outside the per-depth set learned from known-good runs (e.g.\ an \texttt{otel.\allowbreak status\_code=ERROR} or an unexpected \texttt{http.\allowbreak status\_code}). \textsc{ResponseEnvelope} applies body-pattern rules over learned success/failure value sets: the first unseen 2xx primary-field value per API is classified by one LLM call and cached, and it fails on a \texttt{status:0, data:null} soft error (a clean 2xx body flagging a domain rejection). \textsc{HiddenDownstreamFailure} (label-free, LLM-free, opt-in) fires when the client-facing entry returned 2xx but a deeper span server-errored (\texttt{http.\allowbreak status\_code}~$\geq 500$ or \texttt{otel.\allowbreak status\_code=ERROR}). A deeper \texttt{4xx} is benign. An HTTP-5xx swallow fails the test (\textsc{error}). An \texttt{otel}-only error (the gRPC case) is non-blocking \textsc{warn}. Because the untraced external client leaves the entry's own inbound span frequently absent, the live path reads the entry's 2xx from the test's injected client response and still scans the deeper spans for the swallowed error. Offline replay instead identifies the entry from the trace topology.
+\textsc{TargetAttribution} (advisory) classifies whether the trace's leaf rejection landed on the attacked Sniper target $(r,k,c,v)$ or upstream. A learned \textsc{TimingEnvelope} exists but is disabled by default (microservice latency variance belongs to anomaly detection, not functional testing). Each invariant's fire/no-fire decision rests on the trace \emph{graph} and status codes, which production PII pipelines preserve while redacting attribute \emph{values}, so MIST works on corpora with redacted bodies. Only \textsc{ResponseEnvelope} needs an unredacted body. The structural invariants use no LLM.
+
+% =============================================================================
+\section{Usage and Case Study}\label{sec:case}
+
+The \textsc{HiddenDownstreamFailure} verdicts reproduce \emph{offline} from a fresh clone, with no live SUT and no LLM:
+\begin{lstlisting}[basicstyle=\scriptsize\ttfamily,frame=none]
+$ mvn -DskipTests install                 # builds mist-cli/target/mist.jar
+$ JAR=mist-cli/target/mist.jar
+$ java -jar $JAR mist-cli/src/main/resources/My-Example/trainticket-demo-noexec.properties
+$ java -cp $JAR evaluation/suts/bookinfo/OracleCheck.java \
+    docs/main-contribution/evidence/bookinfo_e2e_traces/masked_reviews_ratings_outage.json "GET /api/v1/products/0/reviews"
+\end{lstlisting}
+The first command generates the cross-service JUnit tests from the bundled 265-operation spec and captured traces (no network). \texttt{OracleCheck} replays the shipped \textsc{HiddenDownstreamFailure} invariant on a committed Bookinfo outage trace and fires where status/schema/body oracles pass. \texttt{Response\allowbreak EnvelopeLiveCheck} reproduces the soft-error catch with one DeepSeek/Ollama call (committed transcript). The \emph{live} demo (the 10-fault run and the Bookinfo/Online~Boutique outage matrices) additionally needs the SUT, a reachable Jaeger, and a JDK (MIST compiles and runs the emitted tests in-process, see \S\ref{sec:rw}).
+
+\textbf{Fault detection (TrainTicket).} MIST generated 15{,}036 test cases in ${\sim}6.5$\,h on the 10-fault corpus (experiment \texttt{trainticket\_\allowbreak twostage\_\allowbreak test}, seed~42, committed report). The Sniper round-robin enrolled 7 of 9 fault categories deterministically (\textsc{Regex\_Mismatch} and \textsc{Enum\_Violation} found no applicable parameter) to cover the fault space by construction rather than by sampling. This is a generation and scale demonstration, not oracle evidence: all 10 input-validation faults were matched via the SUT's own fault registry, and the trace-shape oracle is scored independently and did not drive these confirmations. The faults are soft errors the opt-in \textsc{ResponseEnvelope} classifier targets, but a committed live check shows it fallible (it flips \textsc{Invalid\_Station\_Name} yet false-positives on a \texttt{status:1, data:null} body), so the label-free \textsc{HiddenDownstreamFailure} below is the headline.
+
+\textbf{Hidden downstream failure (Bookinfo, Online Boutique).} On Istio Bookinfo under a real \texttt{ratings} outage, MIST generated tests for every operation and executed them against the live SUT in one in-process \texttt{java -jar mist.jar} run (generate, compile, execute, and oracle in one JVM). In Table~\ref{tab:bookinfo}, the masked \texttt{/reviews} call (row 2) returns \texttt{HTTP 200}, so a response-level oracle passes, yet \textsc{HiddenDownstreamFailure} fires at \textsc{error} on the swallowed \texttt{503} \texttt{reviews}$\to$\texttt{ratings} span and fails the test red (committed report). The other rows (caption) confirm it does not over-fire.
+
+The invariant generalises to a second protocol. With Online Boutique's non-critical \texttt{adservice} scaled to zero, \texttt{frontend} still returns \texttt{HTTP 200} while the swallowed \texttt{frontend}$\to$\texttt{adservice} gRPC call carries \texttt{otel.status\_code=ERROR} (\texttt{grpc.status\_code=14}). Its \texttt{http.status\_code} is a misleading \texttt{200} (the HTTP/2 transport succeeded, the RPC failed), so the invariant fires on the \texttt{otel} signal, not HTTP. The in-process run generated and executed 579 tests, and \textsc{HiddenDownstreamFailure} fired at \textsc{warn} on the swallowed call (committed report). A controlled offline replay via \texttt{OracleCheck} quantifies it with no SUT: every \texttt{frontend}-rooted outage trace that reaches the failed \texttt{adservice} fires (7 of 7), and every other trace stays correctly silent. A larger re-capture shows the same pattern (24 of 40 outage, 0 of 30 healthy). The home-page body is a clean \texttt{200} with no breadcrumb, so only the trace exposes the failure.
+
+\textbf{Generality.} The same \texttt{java -jar mist.jar} flow runs on all four SUTs from their own inputs (one OpenAPI-derived config, one properties file, captured traces) with no source changes. Per-SUT artifacts are inputs, not patches. The soft-error gap (G1) spans SUTs: Sock Shop's \texttt{catalogue-db} outage makes \texttt{GET /catalogue} return \texttt{HTTP 200} with a \texttt{\{status\_code:500\}} body a status-class oracle passes, but \textsc{ResponseEnvelope}'s LLM classifier is format-dependent and misses this envelope while flipping TrainTicket's \texttt{status:0}, so G1 detection stays the opt-in, lower-assurance leg.
+
+\begin{table}[t]
+\centering
+\caption{Bookinfo under a \texttt{ratings} outage: response-level oracle vs.\ \textsc{HiddenDownstreamFailure}. Row 2 is the failure only the trace oracle catches. The ``silent'' rows are correct passes (row 1 exercises no dependency, and row 3 is a loud \texttt{503} the status oracle already catches).}
+\label{tab:bookinfo}
+\footnotesize
+\begin{tabular}{@{}llccc@{}}
+\toprule
+\textbf{Endpoint} & \texttt{ratings} & \textbf{HTTP} & \textbf{Resp.\ oracle} & \textbf{Trace oracle} \\
+\midrule
+\texttt{/products}                & outage  & 200 & pass            & silent (no dep.)  \\
+\texttt{/products/\{id\}/reviews} & outage  & 200 & \textbf{pass (miss)} & \textbf{FIRES}    \\
+\texttt{/products/\{id\}/ratings} & outage  & 503 & fail            & silent (loud)     \\
+\texttt{/products/\{id\}/reviews} & healthy & 200 & pass            & silent            \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+% =============================================================================
+\section{Related Work and Limitations}\label{sec:rw}
+
+\textbf{Related work.} MACROHIVE~\cite{Giamattei2022MACROHIVE} reaches grey-box visibility via a per-service-mesh proxy. MIST attains the same observation surface vendor-neutrally through OTel. AutoRestTest~\cite{Stennett2025AutoRestTest} explores operation/parameter/value/dependency/header axes with MARL agents on a GloVe-embedded dependency graph~\cite{Kim2025AutoRestTestSPDG}. LogiAgent~\cite{Zhang2025LogiAgent}, RESTifAI~\cite{Kogler2025RESTifAI}, and SATORI~\cite{Alonso2025SATORI} derive oracles from the response body or the spec, never the cross-service trace. RESTler~\cite{Atlidakis2019RESTler} fuzzes sequence dependencies inferred from OpenAPI response references. None ingest the distributed trace~\cite{Sigelman2010Dapper,OpenTelemetry}. Trace-RCA / anomaly work (e.g.\ TraceRCA~\cite{Li2021TraceRCA}, Nezha~\cite{Yu2023Nezha}) uses the trace as a post-hoc, usually learned, explanation of an incident. Trace-based testing tools (e.g.\ Tracetest~\cite{Tracetest}) assert over spans but require human-authored per-test assertions and neither generate tests nor mine traces. MIST instead couples trace-driven generation with a trace-based functional oracle inside a black-box REST API test generator, where the trace is both a generation input and a first-class oracle, without instrumenting the SUT. Its \textsc{HiddenDownstreamFailure} oracle is label-free (no authored assertions, no learned baseline), needs no model at oracle time, and catches a clean-body swallowed failure that an LLM body or business-logic oracle cannot see. To our knowledge no prior open-source REST API test generator couples them this way, rather than relying on grey-box coverage or post-hoc RCA.
+
+\textbf{Limitations.} The full in-process pipeline (generate, compile, execute, and oracle in one JVM) fires the invariant on both live SUTs, Online Boutique (gRPC, \textsc{warn}) and Bookinfo (HTTP, \textsc{error}), with run reports in the artifact. Its scope is bounded. MIST needs the SUT to export OTel/Jaeger traces, so uninstrumented services are invisible. The hidden-downstream phenomenon is shown on two of the four SUTs, both driven by a real availability outage rather than a malicious input, so input elicitation is left to future work. The structural invariant was isolated for these runs (the other shape invariants need per-SUT learned baselines). A multi-tool comparison against AutoRestTest, LogiAgent, and MACROHIVE across more systems is reserved for the companion research paper.
+
+\textbf{Threats to validity.} The \textsc{HiddenDownstreamFailure} verdict encodes a policy: a swallowed downstream error is treated as a defect, yet the same trace can be intended graceful degradation (Figure~\ref{fig:trace}'s \texttt{reviews} is exactly that), so whether a fire is a true positive is the team's call, which the \textsc{error}/\textsc{warn} severity split and the opt-in default let them tune. The rule is not perfect either: a downstream call that errored and then recovered on retry leaves an \texttt{ERROR} span and would fire (a false positive), while a failure masked with no errored span would not. \textsc{ResponseEnvelope} adds the LLM classifier's own error surface (\S\ref{sec:case}). These are why the structural invariant ships opt-in and at two severities rather than as an unconditional gate. The two tiers are the operational triage: an HTTP-5xx swallow fires \textsc{error} as a fail-stop regression gate, while an \texttt{otel}-only swallow (a tolerated gRPC degradation, say) fires \textsc{warn} as a non-blocking review signal.
+
+% =============================================================================
+\section{Tool Availability}\label{sec:avail}
+
+The MIST source code is at \url{https://github.com/miaoti/MIST/} under LGPL-3.0, with documentation for installation, configuration, and the TrainTicket walkthrough. A screencast on the bundled demo is at \todo{SCREENCAST-URL}, and the archived snapshot used in this paper is at \url{https://doi.org/10.5281/zenodo.20514985}.
+
+\textbf{Data Availability.} The MIST source code, the merged TrainTicket OpenAPI specification, the 10-fault injection registry, captured Jaeger traces (TrainTicket, Bookinfo, Online Boutique, Sock Shop), the offline oracle harnesses \texttt{OracleCheck} and \texttt{Response\allowbreak EnvelopeLiveCheck} with their committed transcripts, and fault-detection reports are all included in the public repository and the Zenodo snapshot.
+
+\bibliographystyle{ACM-Reference-Format}
+\bibliography{refs}
+
+\end{document}

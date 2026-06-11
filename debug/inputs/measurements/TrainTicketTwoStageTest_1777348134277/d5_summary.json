@@ -1,0 +1,58 @@
+{
+  "metric": "D5 ID-Resolvability Rate",
+  "definition": "fraction of ID-typed positive-variant values that appear as outputs in the Jaeger trace export",
+  "total_inputs_seen": 26467,
+  "id_typed_inputs": 123,
+  "resolvable": 0,
+  "unresolved": 123,
+  "observed_values_in_traces": 24,
+  "idr": 0.0,
+  "idr_threshold_pass": false,
+  "worst_parameters": [
+    {
+      "parameter": "loginId",
+      "total": 17,
+      "resolvable": 0,
+      "idr": 0.0,
+      "unresolvable_examples": [
+        "bob_brown101",
+        "user123",
+        "grace_purple606"
+      ]
+    },
+    {
+      "parameter": "id",
+      "total": 66,
+      "resolvable": 0,
+      "idr": 0.0,
+      "unresolvable_examples": [
+        "train-fghij",
+        "train-12345",
+        "train-12345"
+      ]
+    },
+    {
+      "parameter": "accountId",
+      "total": 20,
+      "resolvable": 0,
+      "idr": 0.0,
+      "unresolvable_examples": [
+        "1234567890",
+        "```",
+        "1234567890"
+      ]
+    },
+    {
+      "parameter": "orderId",
+      "total": 20,
+      "resolvable": 0,
+      "idr": 0.0,
+      "unresolvable_examples": [
+        "ORD123456789",
+        "ORD987654321",
+        "ORD123456789"
+      ]
+    }
+  ],
+  "computed_at": "2026-05-01T01:20:48Z"
+}

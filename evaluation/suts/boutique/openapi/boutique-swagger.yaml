@@ -1,0 +1,99 @@
+swagger: "2.0"
+info:
+  title: Online Boutique (frontend HTTP surface)
+  description: >
+    Google Cloud "Online Boutique" (microservices-demo). Only the `frontend`
+    service speaks HTTP (server-rendered HTML); all other services
+    (productcatalog, cart, currency, recommendation, ad, checkout, shipping,
+    payment, email) are internal gRPC and are NOT REST-exposed. This spec
+    therefore describes the single HTTP service — the frontend's routes from
+    frontend/handlers.go. The home page (GET /) fans out to the gRPC backends,
+    including the non-critical adservice, which is the hidden-downstream vehicle.
+  version: "0.10.x"
+basePath: "/"
+schemes: [http]
+consumes: [application/x-www-form-urlencoded]
+produces: [text/html]
+paths:
+  /:
+    get:
+      tags: [frontend]
+      operationId: home
+      summary: Home page — lists products; fans out to productcatalog, currency, cart, recommendation, and adservice.
+      responses:
+        '200': {description: rendered home page}
+  /product/{id}:
+    get:
+      tags: [frontend]
+      operationId: getProduct
+      summary: Product detail page; fans out to productcatalog, currency, cart, recommendation, adservice.
+      parameters:
+      - {name: id, in: path, required: true, type: string, description: product id (e.g. OLJCESPC7Z)}
+      responses:
+        '200': {description: rendered product page}
+        '404': {description: unknown product}
+  /cart:
+    get:
+      tags: [frontend]
+      operationId: viewCart
+      summary: View the session cart; fans out to cart, productcatalog, currency, recommendation, shipping.
+      responses:
+        '200': {description: rendered cart page}
+    post:
+      tags: [frontend]
+      operationId: addToCart
+      summary: Add an item to the session cart.
+      parameters:
+      - {name: product_id, in: formData, required: true, type: string, description: product id to add}
+      - {name: quantity, in: formData, required: true, type: integer, format: int32, minimum: 1, maximum: 10, description: quantity to add}
+      responses:
+        '303': {description: redirect to /cart on success}
+  /cart/empty:
+    post:
+      tags: [frontend]
+      operationId: emptyCart
+      summary: Empty the session cart.
+      responses:
+        '303': {description: redirect to / on success}
+  /cart/checkout:
+    post:
+      tags: [frontend]
+      operationId: placeOrder
+      summary: Place an order from the session cart (checkout → payment → shipping → email).
+      parameters:
+      - {name: email, in: formData, required: true, type: string, description: buyer email}
+      - {name: street_address, in: formData, required: true, type: string}
+      - {name: zip_code, in: formData, required: true, type: integer, format: int32}
+      - {name: city, in: formData, required: true, type: string}
+      - {name: state, in: formData, required: true, type: string}
+      - {name: country, in: formData, required: true, type: string}
+      - {name: credit_card_number, in: formData, required: true, type: string, description: 16-digit card number}
+      - {name: credit_card_expiration_month, in: formData, required: true, type: integer, format: int32, minimum: 1, maximum: 12}
+      - {name: credit_card_expiration_year, in: formData, required: true, type: integer, format: int32, minimum: 2024, maximum: 2039}
+      - {name: credit_card_cvv, in: formData, required: true, type: integer, format: int32, minimum: 100, maximum: 9999}
+      responses:
+        '200': {description: rendered order-confirmation page}
+        '500': {description: checkout failed}
+  /setCurrency:
+    post:
+      tags: [frontend]
+      operationId: setCurrency
+      summary: Set the session display currency.
+      parameters:
+      - {name: currency_code, in: formData, required: true, type: string, enum: [USD, EUR, GBP, CAD, JPY, TRY], description: ISO currency code}
+      responses:
+        '303': {description: redirect to referer on success}
+  /logout:
+    get:
+      tags: [frontend]
+      operationId: logout
+      summary: Clear the session and redirect home.
+      responses:
+        '302': {description: redirect to / with cleared cookies}
+  /_healthz:
+    get:
+      tags: [frontend]
+      operationId: healthz
+      summary: Liveness probe.
+      responses:
+        '200': {description: ok}

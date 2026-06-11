@@ -1,0 +1,215 @@
+{
+  "metric": "D1 Schema Conformance Rate",
+  "include_negatives": false,
+  "rows_total": 1839,
+  "rows_validated": 1839,
+  "rows_valid": 1807,
+  "rows_invalid": 32,
+  "rows_no_schema": 0,
+  "rows_missing_operation": 0,
+  "rows_skipped_negative": 30337,
+  "rows_skipped_fallback": 22,
+  "scr": 0.9825992387166939,
+  "scr_threshold_pass": true,
+  "by_test_kind": {
+    "positive": {
+      "total": 1839,
+      "valid": 1807,
+      "scr": 0.9825992387166939
+    }
+  },
+  "worst_parameters": [
+    {
+      "operation": "POST /api/v1/adminorderservice/adminorder",
+      "parameter": "contactsDocumentNumber",
+      "location": "body",
+      "total": 20,
+      "valid": 3,
+      "scr": 0.15,
+      "invalid_examples": [
+        {
+          "value": "8901234567890123",
+          "error": "<root>: 8901234567890123 is not of type 'string'"
+        },
+        {
+          "value": "4567891230",
+          "error": "<root>: 4567891230 is not of type 'string'"
+        },
+        {
+          "value": "4321098765432109",
+          "error": "<root>: 4321098765432109 is not of type 'string'"
+        }
+      ]
+    },
+    {
+      "operation": "POST /api/v1/adminorderservice/adminorder",
+      "parameter": "differenceMoney",
+      "location": "body",
+      "total": 20,
+      "valid": 12,
+      "scr": 0.6,
+      "invalid_examples": [
+        {
+          "value": "5.75",
+          "error": "<root>: 5.75 is not of type 'string'"
+        },
+        {
+          "value": "-89.30",
+          "error": "<root>: -89.3 is not of type 'string'"
+        },
+        {
+          "value": "-89.30",
+          "error": "<root>: -89.3 is not of type 'string'"
+        }
+      ]
+    },
+    {
+      "operation": "POST /api/v1/adminorderservice/adminorder",
+      "parameter": "accountId",
+      "location": "body",
+      "total": 20,
+      "valid": 17,
+      "scr": 0.85,
+      "invalid_examples": [
+        {
+          "value": "1234567890",
+          "error": "<root>: 1234567890 is not of type 'string'"
+        },
+        {
+          "value": "1234567890",
+          "error": "<root>: 1234567890 is not of type 'string'"
+        },
+        {
+          "value": "1234567890",
+          "error": "<root>: 1234567890 is not of type 'string'"
+        }
+      ]
+    },
+    {
+      "operation": "POST /api/v1/adminorderservice/adminorder",
+      "parameter": "price",
+      "location": "body",
+      "total": 20,
+      "valid": 17,
+      "scr": 0.85,
+      "invalid_examples": [
+        {
+          "value": "789.00",
+          "error": "<root>: 789.0 is not of type 'string'"
+        },
+        {
+          "value": "321.09",
+          "error": "<root>: 321.09 is not of type 'string'"
+        },
+        {
+          "value": "456.78",
+          "error": "<root>: 456.78 is not of type 'string'"
+        }
+      ]
+    },
+    {
+      "operation": "POST /api/v1/adminrouteservice/adminroute",
+      "parameter": "startStation",
+      "location": "body",
+      "total": 20,
+      "valid": 19,
+      "scr": 0.95,
+      "invalid_examples": [
+        {
+          "value": "12345678901",
+          "error": "<root>: 12345678901 is not of type 'string'"
+        }
+      ]
+    },
+    {
+      "operation": "POST /api/v1/orderOtherService/orderOther/refresh",
+      "parameter": "boughtDateEnd",
+      "location": "body",
+      "total": 20,
+      "valid": 20,
+      "scr": 1.0,
+      "invalid_examples": []
+    },
+    {
+      "operation": "POST /api/v1/orderOtherService/orderOther/refresh",
+      "parameter": "boughtDateStart",
+      "location": "body",
+      "total": 20,
+      "valid": 20,
+      "scr": 1.0,
+      "invalid_examples": []
+    },
+    {
+      "operation": "POST /api/v1/orderOtherService/orderOther/refresh",
+      "parameter": "enableBoughtDateQuery",
+      "location": "body",
+      "total": 20,
+      "valid": 20,
+      "scr": 1.0,
+      "invalid_examples": []
+    },
+    {
+      "operation": "POST /api/v1/orderOtherService/orderOther/refresh",
+      "parameter": "enableStateQuery",
+      "location": "body",
+      "total": 20,
+      "valid": 20,
+      "scr": 1.0,
+      "invalid_examples": []
+    },
+    {
+      "operation": "POST /api/v1/orderOtherService/orderOther/refresh",
+      "parameter": "enableTravelDateQuery",
+      "location": "body",
+      "total": 20,
+      "valid": 20,
+      "scr": 1.0,
+      "invalid_examples": []
+    },
+    {
+      "operation": "POST /api/v1/orderOtherService/orderOther/refresh",
+      "parameter": "loginId",
+      "location": "body",
+      "total": 20,
+      "valid": 20,
+      "scr": 1.0,
+      "invalid_examples": []
+    },
+    {
+      "operation": "POST /api/v1/orderOtherService/orderOther/refresh",
+      "parameter": "state",
+      "location": "body",
+      "total": 20,
+      "valid": 20,
+      "scr": 1.0,
+      "invalid_examples": []
+    },
+    {
+      "operation": "POST /api/v1/orderOtherService/orderOther/refresh",
+      "parameter": "travelDateEnd",
+      "location": "body",
+      "total": 20,
+      "valid": 20,
+      "scr": 1.0,
+      "invalid_examples": []
+    },
+    {
+      "operation": "POST /api/v1/orderOtherService/orderOther/refresh",
+      "parameter": "travelDateStart",
+      "location": "body",
+      "total": 20,
+      "valid": 20,
+      "scr": 1.0,
+      "invalid_examples": []
+    },
+    {
+      "operation": "POST /api/v1/travelservice/trips/left",
+      "parameter": "departureTime",
+      "location": "body",
+      "total": 20,
+      "valid": 20,
+      "scr": 1.0,
+      "invalid_examples": []
+    }
+  ]
+}

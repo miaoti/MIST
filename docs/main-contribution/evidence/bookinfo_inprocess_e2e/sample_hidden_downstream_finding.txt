@@ -1,0 +1,15 @@
+🕳️ HIDDEN DOWNSTREAM FAILURE  [severity=ERROR]
+🔍 Open in Jaeger (visual call tree): http://localhost:16686/jaeger/trace/c0ad147a406143b993a26993ca89fc2c
+
+WHAT THE CLIENT SAW:
+  GET /api/v1/products/0/reviews  →  HTTP 2xx ✅   (looks fine — status, schema, and body are all clean)
+
+WHAT ACTUALLY HAPPENED (only the trace shows it):
+  A downstream call failed and was SWALLOWED — the caller returned 2xx anyway.
+  Read as  caller ──▶ callee ;  the FAILURE is in the callee (the downstream service):
+    reviews.default ──▶ ratings.default.svc.cluster.local:9080/* (http=503 otel=ERROR)
+
+WHY A SEPARATE FINDING (vs the '🔗 API Call Trace' below)?
+  The trace marks EVERY errored span ❌. This one is invisible to status/schema/body
+  checks because the client got a 200 — that is what makes it a HIDDEN failure
+  (severity ERROR: it errored but never surfaced to the caller).

@@ -1,0 +1,224 @@
+{
+  "metric": "D9 Equivalence-Partition Coverage",
+  "include_negatives": false,
+  "rows_total": 18961,
+  "rows_kept": 664,
+  "rows_fallback_skipped": 439,
+  "pools_total": 67,
+  "pools_gated": 49,
+  "mean_epc": 0.39965986394557823,
+  "epc_threshold_pass": false,
+  "worst_pools": [
+    {
+      "operation": "POST /api/v1/adminbasicservice/adminbasic/trains",
+      "parameter": "id",
+      "location": "body",
+      "total": 4,
+      "classes_total": 4,
+      "classes_covered": 1,
+      "epc": 0.25,
+      "missing_classes": [
+        "empty",
+        "medium",
+        "long"
+      ]
+    },
+    {
+      "operation": "POST /api/v1/adminorderservice/adminorder",
+      "parameter": "boughtDate",
+      "location": "body",
+      "total": 5,
+      "classes_total": 4,
+      "classes_covered": 1,
+      "epc": 0.25,
+      "missing_classes": [
+        "empty",
+        "medium",
+        "long"
+      ]
+    },
+    {
+      "operation": "POST /api/v1/adminorderservice/adminorder",
+      "parameter": "contactsName",
+      "location": "body",
+      "total": 8,
+      "classes_total": 4,
+      "classes_covered": 1,
+      "epc": 0.25,
+      "missing_classes": [
+        "empty",
+        "medium",
+        "long"
+      ]
+    },
+    {
+      "operation": "POST /api/v1/adminorderservice/adminorder",
+      "parameter": "from",
+      "location": "body",
+      "total": 3,
+      "classes_total": 4,
+      "classes_covered": 1,
+      "epc": 0.25,
+      "missing_classes": [
+        "empty",
+        "short",
+        "long"
+      ]
+    },
+    {
+      "operation": "POST /api/v1/adminorderservice/adminorder",
+      "parameter": "price",
+      "location": "body",
+      "total": 5,
+      "classes_total": 4,
+      "classes_covered": 1,
+      "epc": 0.25,
+      "missing_classes": [
+        "empty",
+        "medium",
+        "long"
+      ]
+    },
+    {
+      "operation": "POST /api/v1/adminorderservice/adminorder",
+      "parameter": "to",
+      "location": "body",
+      "total": 5,
+      "classes_total": 4,
+      "classes_covered": 1,
+      "epc": 0.25,
+      "missing_classes": [
+        "empty",
+        "medium",
+        "long"
+      ]
+    },
+    {
+      "operation": "POST /api/v1/adminorderservice/adminorder",
+      "parameter": "trainNumber",
+      "location": "body",
+      "total": 6,
+      "classes_total": 4,
+      "classes_covered": 1,
+      "epc": 0.25,
+      "missing_classes": [
+        "empty",
+        "medium",
+        "long"
+      ]
+    },
+    {
+      "operation": "POST /api/v1/adminorderservice/adminorder",
+      "parameter": "travelTime",
+      "location": "body",
+      "total": 5,
+      "classes_total": 4,
+      "classes_covered": 1,
+      "epc": 0.25,
+      "missing_classes": [
+        "empty",
+        "medium",
+        "long"
+      ]
+    },
+    {
+      "operation": "POST /api/v1/adminrouteservice/adminroute",
+      "parameter": "distanceList",
+      "location": "body",
+      "total": 15,
+      "classes_total": 4,
+      "classes_covered": 1,
+      "epc": 0.25,
+      "missing_classes": [
+        "empty",
+        "medium",
+        "long"
+      ]
+    },
+    {
+      "operation": "POST /api/v1/adminrouteservice/adminroute",
+      "parameter": "endStation",
+      "location": "body",
+      "total": 15,
+      "classes_total": 4,
+      "classes_covered": 1,
+      "epc": 0.25,
+      "missing_classes": [
+        "empty",
+        "medium",
+        "long"
+      ]
+    },
+    {
+      "operation": "POST /api/v1/adminrouteservice/adminroute",
+      "parameter": "loginId",
+      "location": "body",
+      "total": 15,
+      "classes_total": 4,
+      "classes_covered": 1,
+      "epc": 0.25,
+      "missing_classes": [
+        "empty",
+        "medium",
+        "long"
+      ]
+    },
+    {
+      "operation": "POST /api/v1/adminrouteservice/adminroute",
+      "parameter": "startStation",
+      "location": "body",
+      "total": 15,
+      "classes_total": 4,
+      "classes_covered": 1,
+      "epc": 0.25,
+      "missing_classes": [
+        "empty",
+        "medium",
+        "long"
+      ]
+    },
+    {
+      "operation": "POST /api/v1/adminrouteservice/adminroute",
+      "parameter": "stationList",
+      "location": "body",
+      "total": 15,
+      "classes_total": 4,
+      "classes_covered": 1,
+      "epc": 0.25,
+      "missing_classes": [
+        "empty",
+        "medium",
+        "long"
+      ]
+    },
+    {
+      "operation": "POST /api/v1/orderOtherService/orderOther/refresh",
+      "parameter": "travelDateEnd",
+      "location": "body",
+      "total": 6,
+      "classes_total": 4,
+      "classes_covered": 1,
+      "epc": 0.25,
+      "missing_classes": [
+        "empty",
+        "medium",
+        "long"
+      ]
+    },
+    {
+      "operation": "POST /api/v1/orderOtherService/orderOther/refresh",
+      "parameter": "travelDateStart",
+      "location": "body",
+      "total": 3,
+      "classes_total": 4,
+      "classes_covered": 1,
+      "epc": 0.25,
+      "missing_classes": [
+        "empty",
+        "medium",
+        "long"
+      ]
+    }
+  ],
+  "computed_at": "2026-05-06T03:28:07Z"
+}

@@ -1,0 +1,207 @@
+scenario,test_method,step_idx,http_method,path,parameter,value,realistic,source
+Flow_Scenario_2354,test_positive_flow_S2354_v1,2,POST,/api/v1/travelplanservice/travelPlan/cheapest,endPlace,Nanjing,true,offline
+Flow_Scenario_2354,test_positive_flow_S2354_v1,2,POST,/api/v1/travelplanservice/travelPlan/cheapest,startPlace,Shanghai,true,offline
+Flow_Scenario_2354,test_positive_flow_S2354_v2,2,POST,/api/v1/travelplanservice/travelPlan/cheapest,endPlace,Beijing,true,offline
+Flow_Scenario_2354,test_positive_flow_S2354_v2,2,POST,/api/v1/travelplanservice/travelPlan/cheapest,startPlace,Shanghai,true,offline
+Flow_Scenario_2354,test_positive_flow_S2354_v3,2,POST,/api/v1/travelplanservice/travelPlan/cheapest,endPlace,Shanghai,true,offline
+Flow_Scenario_2354,test_positive_flow_S2354_v3,2,POST,/api/v1/travelplanservice/travelPlan/cheapest,startPlace,Beijing,true,offline
+Flow_Scenario_2354,test_positive_flow_S2354_v4,2,POST,/api/v1/travelplanservice/travelPlan/cheapest,endPlace,Nanjing,true,offline
+Flow_Scenario_2354,test_positive_flow_S2354_v4,2,POST,/api/v1/travelplanservice/travelPlan/cheapest,startPlace,Shanghai,true,offline
+Flow_Scenario_2354,test_positive_flow_S2354_v5,2,POST,/api/v1/travelplanservice/travelPlan/cheapest,endPlace,Shanghai,true,offline
+Flow_Scenario_2354,test_positive_flow_S2354_v5,2,POST,/api/v1/travelplanservice/travelPlan/cheapest,startPlace,Beijing,true,offline
+Flow_Scenario_2354,test_positive_flow_S2354_v6,2,POST,/api/v1/travelplanservice/travelPlan/cheapest,endPlace,Shanghai,true,offline
+Flow_Scenario_2354,test_positive_flow_S2354_v6,2,POST,/api/v1/travelplanservice/travelPlan/cheapest,startPlace,Beijing,true,offline
+Flow_Scenario_2354,test_positive_flow_S2354_v7,2,POST,/api/v1/travelplanservice/travelPlan/cheapest,endPlace,Beijing,true,offline
+Flow_Scenario_2354,test_positive_flow_S2354_v7,2,POST,/api/v1/travelplanservice/travelPlan/cheapest,startPlace,Shanghai,true,offline
+Flow_Scenario_2354,test_positive_flow_S2354_v8,2,POST,/api/v1/travelplanservice/travelPlan/cheapest,endPlace,Shanghai,true,offline
+Flow_Scenario_2354,test_positive_flow_S2354_v8,2,POST,/api/v1/travelplanservice/travelPlan/cheapest,startPlace,Nanjing,true,offline
+Flow_Scenario_2354,test_positive_flow_S2354_v9,2,POST,/api/v1/travelplanservice/travelPlan/cheapest,endPlace,Shanghai,true,offline
+Flow_Scenario_2354,test_positive_flow_S2354_v9,2,POST,/api/v1/travelplanservice/travelPlan/cheapest,startPlace,Nanjing,true,offline
+Flow_Scenario_2354,test_positive_flow_S2354_v10,2,POST,/api/v1/travelplanservice/travelPlan/cheapest,endPlace,Shanghai,true,offline
+Flow_Scenario_2354,test_positive_flow_S2354_v10,2,POST,/api/v1/travelplanservice/travelPlan/cheapest,startPlace,Nanjing,true,offline
+Flow_Scenario_2354,test_positive_flow_S2354_v11,2,POST,/api/v1/travelplanservice/travelPlan/cheapest,endPlace,Beijing,true,offline
+Flow_Scenario_2354,test_positive_flow_S2354_v11,2,POST,/api/v1/travelplanservice/travelPlan/cheapest,startPlace,Shanghai,true,offline
+Flow_Scenario_2354,test_positive_flow_S2354_v12,2,POST,/api/v1/travelplanservice/travelPlan/cheapest,endPlace,Beijing,true,offline
+Flow_Scenario_2354,test_positive_flow_S2354_v12,2,POST,/api/v1/travelplanservice/travelPlan/cheapest,startPlace,suzhou,true,offline
+Flow_Scenario_2354,test_positive_flow_S2354_v13,2,POST,/api/v1/travelplanservice/travelPlan/cheapest,endPlace,Shanghai,true,offline
+Flow_Scenario_2354,test_positive_flow_S2354_v13,2,POST,/api/v1/travelplanservice/travelPlan/cheapest,startPlace,Beijing,true,offline
+Flow_Scenario_2354,test_positive_flow_S2354_v14,2,POST,/api/v1/travelplanservice/travelPlan/cheapest,endPlace,Shanghai,true,offline
+Flow_Scenario_2354,test_positive_flow_S2354_v14,2,POST,/api/v1/travelplanservice/travelPlan/cheapest,startPlace,Beijing,true,offline
+Flow_Scenario_2354,test_positive_flow_S2354_v15,2,POST,/api/v1/travelplanservice/travelPlan/cheapest,endPlace,Shanghai,true,offline
+Flow_Scenario_2354,test_positive_flow_S2354_v15,2,POST,/api/v1/travelplanservice/travelPlan/cheapest,startPlace,Beijing,true,offline
+Flow_Scenario_2354,test_positive_flow_S2354_v16,2,POST,/api/v1/travelplanservice/travelPlan/cheapest,endPlace,Beijing,true,offline
+Flow_Scenario_2354,test_positive_flow_S2354_v16,2,POST,/api/v1/travelplanservice/travelPlan/cheapest,startPlace,Shanghai,true,offline
+Flow_Scenario_2354,test_positive_flow_S2354_v17,2,POST,/api/v1/travelplanservice/travelPlan/cheapest,endPlace,Beijing,true,offline
+Flow_Scenario_2354,test_positive_flow_S2354_v17,2,POST,/api/v1/travelplanservice/travelPlan/cheapest,startPlace,Shanghai,true,offline
+Flow_Scenario_2354,test_positive_flow_S2354_v18,2,POST,/api/v1/travelplanservice/travelPlan/cheapest,endPlace,Nanjing,true,offline
+Flow_Scenario_2354,test_positive_flow_S2354_v18,2,POST,/api/v1/travelplanservice/travelPlan/cheapest,startPlace,Beijing,true,offline
+Flow_Scenario_2354,test_positive_flow_S2354_v19,2,POST,/api/v1/travelplanservice/travelPlan/cheapest,endPlace,shanghai,true,offline
+Flow_Scenario_2354,test_positive_flow_S2354_v19,2,POST,/api/v1/travelplanservice/travelPlan/cheapest,startPlace,beijing,true,offline
+Flow_Scenario_2354,test_positive_flow_S2354_v20,2,POST,/api/v1/travelplanservice/travelPlan/cheapest,endPlace,shanghai,true,offline
+Flow_Scenario_2354,test_positive_flow_S2354_v20,2,POST,/api/v1/travelplanservice/travelPlan/cheapest,startPlace,beijing,true,offline
+Flow_Scenario_337,test_positive_flow_S337_v1,2,POST,/api/v1/adminrouteservice/adminroute,endStation,Shanghai Hongqiao,true,token
+Flow_Scenario_337,test_positive_flow_S337_v1,2,POST,/api/v1/adminrouteservice/adminroute,startStation,Shanghai,true,offline
+Flow_Scenario_337,test_positive_flow_S337_v1,2,POST,/api/v1/adminrouteservice/adminroute,stationList,"Shanghai,Beijing,Nanjing,Shanghai Hongqiao",true,token
+Flow_Scenario_337,test_positive_flow_S337_v2,2,POST,/api/v1/adminrouteservice/adminroute,endStation,Broadway Station,true,token
+Flow_Scenario_337,test_positive_flow_S337_v2,2,POST,/api/v1/adminrouteservice/adminroute,startStation,Grand Central Terminal,true,token
+Flow_Scenario_337,test_positive_flow_S337_v2,2,POST,/api/v1/adminrouteservice/adminroute,stationList,"Grand Central Terminal,Penn Station,Union Station,Times Square Station,Broadway Station",true,token
+Flow_Scenario_337,test_positive_flow_S337_v3,2,POST,/api/v1/adminrouteservice/adminroute,endStation,Broadway Station,true,token
+Flow_Scenario_337,test_positive_flow_S337_v3,2,POST,/api/v1/adminrouteservice/adminroute,startStation,Grand Central Terminal,true,token
+Flow_Scenario_337,test_positive_flow_S337_v3,2,POST,/api/v1/adminrouteservice/adminroute,stationList,"Grand Central Terminal,Penn Station,Union Station,Times Square Station,Broadway Station",true,token
+Flow_Scenario_337,test_positive_flow_S337_v4,2,POST,/api/v1/adminrouteservice/adminroute,endStation,Broadway Station,true,token
+Flow_Scenario_337,test_positive_flow_S337_v4,2,POST,/api/v1/adminrouteservice/adminroute,startStation,Grand Central Terminal,true,token
+Flow_Scenario_337,test_positive_flow_S337_v4,2,POST,/api/v1/adminrouteservice/adminroute,stationList,"Grand Central Terminal,Penn Station,Union Station,Times Square Station,Broadway Station",true,token
+Flow_Scenario_337,test_positive_flow_S337_v5,2,POST,/api/v1/adminrouteservice/adminroute,endStation,Shanghai Hongqiao,true,token
+Flow_Scenario_337,test_positive_flow_S337_v5,2,POST,/api/v1/adminrouteservice/adminroute,startStation,Shanghai,true,offline
+Flow_Scenario_337,test_positive_flow_S337_v5,2,POST,/api/v1/adminrouteservice/adminroute,stationList,"Shanghai,Shanghai Hongqiao",true,token
+Flow_Scenario_337,test_positive_flow_S337_v6,2,POST,/api/v1/adminrouteservice/adminroute,endStation,Shanghai Hongqiao,true,token
+Flow_Scenario_337,test_positive_flow_S337_v6,2,POST,/api/v1/adminrouteservice/adminroute,startStation,Shanghai,true,offline
+Flow_Scenario_337,test_positive_flow_S337_v6,2,POST,/api/v1/adminrouteservice/adminroute,stationList,"Shanghai,Shanghai Hongqiao",true,token
+Flow_Scenario_337,test_positive_flow_S337_v7,2,POST,/api/v1/adminrouteservice/adminroute,endStation,Broadway Station,true,token
+Flow_Scenario_337,test_positive_flow_S337_v7,2,POST,/api/v1/adminrouteservice/adminroute,startStation,Grand Central Terminal,true,token
+Flow_Scenario_337,test_positive_flow_S337_v7,2,POST,/api/v1/adminrouteservice/adminroute,stationList,"Grand Central Terminal,Penn Station,Union Station,Times Square Station,Broadway Station",true,token
+Flow_Scenario_337,test_positive_flow_S337_v8,2,POST,/api/v1/adminrouteservice/adminroute,endStation,Wuhan,true,offline
+Flow_Scenario_337,test_positive_flow_S337_v8,2,POST,/api/v1/adminrouteservice/adminroute,startStation,Shanghai,true,offline
+Flow_Scenario_337,test_positive_flow_S337_v8,2,POST,/api/v1/adminrouteservice/adminroute,stationList,"Shanghai,Wuhan",true,token
+Flow_Scenario_337,test_positive_flow_S337_v9,2,POST,/api/v1/adminrouteservice/adminroute,endStation,Chongqing,true,offline
+Flow_Scenario_337,test_positive_flow_S337_v9,2,POST,/api/v1/adminrouteservice/adminroute,startStation,Shanghai,true,offline
+Flow_Scenario_337,test_positive_flow_S337_v9,2,POST,/api/v1/adminrouteservice/adminroute,stationList,"Shanghai,Chongqing",true,token
+Flow_Scenario_337,test_positive_flow_S337_v10,2,POST,/api/v1/adminrouteservice/adminroute,endStation,Broadway Station,true,token
+Flow_Scenario_337,test_positive_flow_S337_v10,2,POST,/api/v1/adminrouteservice/adminroute,startStation,Grand Central Terminal,true,token
+Flow_Scenario_337,test_positive_flow_S337_v10,2,POST,/api/v1/adminrouteservice/adminroute,stationList,"Grand Central Terminal,Penn Station,Union Station,Times Square Station,Broadway Station",true,token
+Flow_Scenario_337,test_positive_flow_S337_v11,2,POST,/api/v1/adminrouteservice/adminroute,endStation,Broadway Station,true,token
+Flow_Scenario_337,test_positive_flow_S337_v11,2,POST,/api/v1/adminrouteservice/adminroute,startStation,Grand Central Terminal,true,token
+Flow_Scenario_337,test_positive_flow_S337_v11,2,POST,/api/v1/adminrouteservice/adminroute,stationList,"Grand Central Terminal,Penn Station,Union Station,Times Square Station,Broadway Station",true,token
+Flow_Scenario_337,test_positive_flow_S337_v12,2,POST,/api/v1/adminrouteservice/adminroute,endStation,Guangzhou,true,offline
+Flow_Scenario_337,test_positive_flow_S337_v12,2,POST,/api/v1/adminrouteservice/adminroute,startStation,12345678901,false,unknown
+Flow_Scenario_337,test_positive_flow_S337_v12,2,POST,/api/v1/adminrouteservice/adminroute,stationList,"centralpark,guangzhou",true,token
+Flow_Scenario_337,test_positive_flow_S337_v13,2,POST,/api/v1/adminrouteservice/adminroute,endStation,Broadway Station,true,token
+Flow_Scenario_337,test_positive_flow_S337_v13,2,POST,/api/v1/adminrouteservice/adminroute,startStation,Grand Central Terminal,true,token
+Flow_Scenario_337,test_positive_flow_S337_v13,2,POST,/api/v1/adminrouteservice/adminroute,stationList,"Grand Central Terminal,Penn Station,Union Station,Times Square Station,Broadway Station",true,token
+Flow_Scenario_337,test_positive_flow_S337_v14,2,POST,/api/v1/adminrouteservice/adminroute,endStation,Guangzhou,true,offline
+Flow_Scenario_337,test_positive_flow_S337_v14,2,POST,/api/v1/adminrouteservice/adminroute,startStation,Shanghai,true,offline
+Flow_Scenario_337,test_positive_flow_S337_v14,2,POST,/api/v1/adminrouteservice/adminroute,stationList,"Shanghai,Beijing,Nanjing,Wuhan,Guangzhou",true,token
+Flow_Scenario_337,test_positive_flow_S337_v15,2,POST,/api/v1/adminrouteservice/adminroute,endStation,Broadway Station,true,token
+Flow_Scenario_337,test_positive_flow_S337_v15,2,POST,/api/v1/adminrouteservice/adminroute,startStation,Grand Central Terminal,true,token
+Flow_Scenario_337,test_positive_flow_S337_v15,2,POST,/api/v1/adminrouteservice/adminroute,stationList,"Grand Central Terminal,Penn Station,Union Station,Times Square Station,Broadway Station",true,token
+Flow_Scenario_337,test_positive_flow_S337_v16,2,POST,/api/v1/adminrouteservice/adminroute,endStation,Shanghai Hongqiao,true,token
+Flow_Scenario_337,test_positive_flow_S337_v16,2,POST,/api/v1/adminrouteservice/adminroute,startStation,chicagounionstation,true,token
+Flow_Scenario_337,test_positive_flow_S337_v16,2,POST,/api/v1/adminrouteservice/adminroute,stationList,"chicagounionstation,shanghaihongqiao",true,token
+Flow_Scenario_337,test_positive_flow_S337_v17,2,POST,/api/v1/adminrouteservice/adminroute,endStation,Broadway Station,true,token
+Flow_Scenario_337,test_positive_flow_S337_v17,2,POST,/api/v1/adminrouteservice/adminroute,startStation,Grand Central Terminal,true,token
+Flow_Scenario_337,test_positive_flow_S337_v17,2,POST,/api/v1/adminrouteservice/adminroute,stationList,"Grand Central Terminal,Penn Station,Union Station,Times Square Station,Broadway Station",true,token
+Flow_Scenario_337,test_positive_flow_S337_v18,2,POST,/api/v1/adminrouteservice/adminroute,endStation,Shanghai Hongqiao,true,token
+Flow_Scenario_337,test_positive_flow_S337_v18,2,POST,/api/v1/adminrouteservice/adminroute,startStation,philadelphia30thstreetstation,true,token
+Flow_Scenario_337,test_positive_flow_S337_v18,2,POST,/api/v1/adminrouteservice/adminroute,stationList,"wallstreet,philadelphia30thstreetstation,Shanghai Hongqiao",true,token
+Flow_Scenario_337,test_positive_flow_S337_v19,2,POST,/api/v1/adminrouteservice/adminroute,endStation,Nanjing,true,offline
+Flow_Scenario_337,test_positive_flow_S337_v19,2,POST,/api/v1/adminrouteservice/adminroute,startStation,Shanghai,true,offline
+Flow_Scenario_337,test_positive_flow_S337_v19,2,POST,/api/v1/adminrouteservice/adminroute,stationList,"Shanghai,Nanjing,Beijing,Guangzhou,Shenzhen",true,token
+Flow_Scenario_337,test_positive_flow_S337_v20,2,POST,/api/v1/adminrouteservice/adminroute,endStation,Broadway Station,true,token
+Flow_Scenario_337,test_positive_flow_S337_v20,2,POST,/api/v1/adminrouteservice/adminroute,startStation,Grand Central Terminal,true,token
+Flow_Scenario_337,test_positive_flow_S337_v20,2,POST,/api/v1/adminrouteservice/adminroute,stationList,"Grand Central Terminal,Penn Station,Union Station,Times Square Station,Broadway Station",true,token
+Flow_Scenario_698,test_positive_flow_S698_v1,2,POST,/api/v1/travel2service/trips/left,endPlace,Kunming,true,offline
+Flow_Scenario_698,test_positive_flow_S698_v1,2,POST,/api/v1/travel2service/trips/left,startPlace,Xi'an,true,offline
+Flow_Scenario_698,test_positive_flow_S698_v2,2,POST,/api/v1/travel2service/trips/left,endPlace,Wuhan,true,offline
+Flow_Scenario_698,test_positive_flow_S698_v2,2,POST,/api/v1/travel2service/trips/left,startPlace,wuhan,true,offline
+Flow_Scenario_698,test_positive_flow_S698_v3,2,POST,/api/v1/travel2service/trips/left,endPlace,shanghai,true,offline
+Flow_Scenario_698,test_positive_flow_S698_v3,2,POST,/api/v1/travel2service/trips/left,startPlace,Chongqing,true,offline
+Flow_Scenario_698,test_positive_flow_S698_v4,2,POST,/api/v1/travel2service/trips/left,endPlace,Kunming,true,offline
+Flow_Scenario_698,test_positive_flow_S698_v4,2,POST,/api/v1/travel2service/trips/left,startPlace,Chengdu,true,offline
+Flow_Scenario_698,test_positive_flow_S698_v5,2,POST,/api/v1/travel2service/trips/left,endPlace,tianjin,true,offline
+Flow_Scenario_698,test_positive_flow_S698_v6,2,POST,/api/v1/travel2service/trips/left,endPlace,Chongqing,true,offline
+Flow_Scenario_698,test_positive_flow_S698_v6,2,POST,/api/v1/travel2service/trips/left,startPlace,shanghai,true,offline
+Flow_Scenario_698,test_positive_flow_S698_v7,2,POST,/api/v1/travel2service/trips/left,startPlace,Beijing,true,offline
+Flow_Scenario_698,test_positive_flow_S698_v8,2,POST,/api/v1/travel2service/trips/left,endPlace,Kunming,true,offline
+Flow_Scenario_698,test_positive_flow_S698_v8,2,POST,/api/v1/travel2service/trips/left,startPlace,Beijing,true,offline
+Flow_Scenario_698,test_positive_flow_S698_v9,2,POST,/api/v1/travel2service/trips/left,endPlace,nanjing,true,offline
+Flow_Scenario_698,test_positive_flow_S698_v9,2,POST,/api/v1/travel2service/trips/left,startPlace,Hangzhou,true,offline
+Flow_Scenario_698,test_positive_flow_S698_v10,2,POST,/api/v1/travel2service/trips/left,endPlace,tianjin,true,offline
+Flow_Scenario_698,test_positive_flow_S698_v10,2,POST,/api/v1/travel2service/trips/left,startPlace,Nanjing,true,offline
+Flow_Scenario_698,test_positive_flow_S698_v11,2,POST,/api/v1/travel2service/trips/left,endPlace,nanjing,true,offline
+Flow_Scenario_698,test_positive_flow_S698_v11,2,POST,/api/v1/travel2service/trips/left,startPlace,Suzhou,true,offline
+Flow_Scenario_698,test_positive_flow_S698_v12,2,POST,/api/v1/travel2service/trips/left,endPlace,Chengdu,true,offline
+Flow_Scenario_698,test_positive_flow_S698_v12,2,POST,/api/v1/travel2service/trips/left,startPlace,Suzhou,true,offline
+Flow_Scenario_698,test_positive_flow_S698_v13,2,POST,/api/v1/travel2service/trips/left,endPlace,shanghai,true,offline
+Flow_Scenario_698,test_positive_flow_S698_v14,2,POST,/api/v1/travel2service/trips/left,endPlace,Guangzhou,true,offline
+Flow_Scenario_698,test_positive_flow_S698_v14,2,POST,/api/v1/travel2service/trips/left,startPlace,Chongqing,true,offline
+Flow_Scenario_698,test_positive_flow_S698_v15,2,POST,/api/v1/travel2service/trips/left,endPlace,Wuhan,true,offline
+Flow_Scenario_698,test_positive_flow_S698_v15,2,POST,/api/v1/travel2service/trips/left,startPlace,Suzhou,true,offline
+Flow_Scenario_698,test_positive_flow_S698_v16,2,POST,/api/v1/travel2service/trips/left,endPlace,Dalian,true,offline
+Flow_Scenario_698,test_positive_flow_S698_v16,2,POST,/api/v1/travel2service/trips/left,startPlace,wuhan,true,offline
+Flow_Scenario_698,test_positive_flow_S698_v17,2,POST,/api/v1/travel2service/trips/left,endPlace,hangzhou,true,offline
+Flow_Scenario_698,test_positive_flow_S698_v17,2,POST,/api/v1/travel2service/trips/left,startPlace,Shenzhen,true,offline
+Flow_Scenario_698,test_positive_flow_S698_v18,2,POST,/api/v1/travel2service/trips/left,endPlace,Beijing,true,offline
+Flow_Scenario_698,test_positive_flow_S698_v18,2,POST,/api/v1/travel2service/trips/left,startPlace,nanjing,true,offline
+Flow_Scenario_698,test_positive_flow_S698_v19,2,POST,/api/v1/travel2service/trips/left,endPlace,Xi'an,true,offline
+Flow_Scenario_698,test_positive_flow_S698_v19,2,POST,/api/v1/travel2service/trips/left,startPlace,Tianjin,true,offline
+Flow_Scenario_698,test_positive_flow_S698_v20,2,POST,/api/v1/travel2service/trips/left,endPlace,Chengdu,true,offline
+Flow_Scenario_698,test_positive_flow_S698_v20,2,POST,/api/v1/travel2service/trips/left,startPlace,Chengdu,true,offline
+Flow_Scenario_841,test_positive_flow_S841_v1,2,POST,/api/v1/travelservice/trips/left,startPlace,shenzhen,true,offline
+Flow_Scenario_841,test_positive_flow_S841_v2,2,POST,/api/v1/travelservice/trips/left,endPlace,Shanghai,true,offline
+Flow_Scenario_841,test_positive_flow_S841_v2,2,POST,/api/v1/travelservice/trips/left,startPlace,Shanghai,true,offline
+Flow_Scenario_841,test_positive_flow_S841_v3,2,POST,/api/v1/travelservice/trips/left,endPlace,Chongqing,true,offline
+Flow_Scenario_841,test_positive_flow_S841_v3,2,POST,/api/v1/travelservice/trips/left,startPlace,Shanghai,true,offline
+Flow_Scenario_841,test_positive_flow_S841_v4,2,POST,/api/v1/travelservice/trips/left,endPlace,Dalian,true,offline
+Flow_Scenario_841,test_positive_flow_S841_v4,2,POST,/api/v1/travelservice/trips/left,startPlace,Kunming,true,offline
+Flow_Scenario_841,test_positive_flow_S841_v5,2,POST,/api/v1/travelservice/trips/left,endPlace,Shenzhen,true,offline
+Flow_Scenario_841,test_positive_flow_S841_v5,2,POST,/api/v1/travelservice/trips/left,startPlace,chengdu,true,offline
+Flow_Scenario_841,test_positive_flow_S841_v6,2,POST,/api/v1/travelservice/trips/left,endPlace,nanjing,true,offline
+Flow_Scenario_841,test_positive_flow_S841_v6,2,POST,/api/v1/travelservice/trips/left,startPlace,Nanjing,true,offline
+Flow_Scenario_841,test_positive_flow_S841_v7,2,POST,/api/v1/travelservice/trips/left,endPlace,Nanjing,true,offline
+Flow_Scenario_841,test_positive_flow_S841_v7,2,POST,/api/v1/travelservice/trips/left,startPlace,shenzhen,true,offline
+Flow_Scenario_841,test_positive_flow_S841_v8,2,POST,/api/v1/travelservice/trips/left,endPlace,Beijing,true,offline
+Flow_Scenario_841,test_positive_flow_S841_v8,2,POST,/api/v1/travelservice/trips/left,startPlace,Xi'an,true,offline
+Flow_Scenario_841,test_positive_flow_S841_v9,2,POST,/api/v1/travelservice/trips/left,endPlace,beijing,true,offline
+Flow_Scenario_841,test_positive_flow_S841_v9,2,POST,/api/v1/travelservice/trips/left,startPlace,Shanghai,true,offline
+Flow_Scenario_841,test_positive_flow_S841_v10,2,POST,/api/v1/travelservice/trips/left,endPlace,Nanjing,true,offline
+Flow_Scenario_841,test_positive_flow_S841_v10,2,POST,/api/v1/travelservice/trips/left,startPlace,Kunming,true,offline
+Flow_Scenario_841,test_positive_flow_S841_v11,2,POST,/api/v1/travelservice/trips/left,endPlace,Beijing,true,offline
+Flow_Scenario_841,test_positive_flow_S841_v11,2,POST,/api/v1/travelservice/trips/left,startPlace,Kunming,true,offline
+Flow_Scenario_841,test_positive_flow_S841_v12,2,POST,/api/v1/travelservice/trips/left,endPlace,Guangzhou,true,offline
+Flow_Scenario_841,test_positive_flow_S841_v12,2,POST,/api/v1/travelservice/trips/left,startPlace,Beijing,true,offline
+Flow_Scenario_841,test_positive_flow_S841_v13,2,POST,/api/v1/travelservice/trips/left,endPlace,Shanghai,true,offline
+Flow_Scenario_841,test_positive_flow_S841_v13,2,POST,/api/v1/travelservice/trips/left,startPlace,guangzhou,true,offline
+Flow_Scenario_841,test_positive_flow_S841_v14,2,POST,/api/v1/travelservice/trips/left,endPlace,Guangzhou,true,offline
+Flow_Scenario_841,test_positive_flow_S841_v14,2,POST,/api/v1/travelservice/trips/left,startPlace,Shenzhen,true,offline
+Flow_Scenario_841,test_positive_flow_S841_v15,2,POST,/api/v1/travelservice/trips/left,endPlace,nanjing,true,offline
+Flow_Scenario_841,test_positive_flow_S841_v15,2,POST,/api/v1/travelservice/trips/left,startPlace,chengdu,true,offline
+Flow_Scenario_841,test_positive_flow_S841_v16,2,POST,/api/v1/travelservice/trips/left,startPlace,Shenzhen,true,offline
+Flow_Scenario_841,test_positive_flow_S841_v17,2,POST,/api/v1/travelservice/trips/left,endPlace,chongqing,true,offline
+Flow_Scenario_841,test_positive_flow_S841_v17,2,POST,/api/v1/travelservice/trips/left,startPlace,chengdu,true,offline
+Flow_Scenario_841,test_positive_flow_S841_v18,2,POST,/api/v1/travelservice/trips/left,endPlace,Guangzhou,true,offline
+Flow_Scenario_841,test_positive_flow_S841_v18,2,POST,/api/v1/travelservice/trips/left,startPlace,guangzhou,true,offline
+Flow_Scenario_841,test_positive_flow_S841_v19,2,POST,/api/v1/travelservice/trips/left,endPlace,Shanghai,true,offline
+Flow_Scenario_841,test_positive_flow_S841_v19,2,POST,/api/v1/travelservice/trips/left,startPlace,Shanghai,true,offline
+Flow_Scenario_841,test_positive_flow_S841_v20,2,POST,/api/v1/travelservice/trips/left,endPlace,Chengdu,true,offline
+Flow_Scenario_841,test_positive_flow_S841_v20,2,POST,/api/v1/travelservice/trips/left,startPlace,Hangzhou,true,offline
+Flow_Scenario_985,test_positive_flow_S985_v1,2,POST,/api/v1/adminorderservice/adminorder,contactsName,Carol Williams,true,token
+Flow_Scenario_985,test_positive_flow_S985_v2,2,POST,/api/v1/adminorderservice/adminorder,contactsName,Bob Smith,true,token
+Flow_Scenario_985,test_positive_flow_S985_v3,2,POST,/api/v1/adminorderservice/adminorder,contactsName,M,false,unknown
+Flow_Scenario_985,test_positive_flow_S985_v4,2,POST,/api/v1/adminorderservice/adminorder,contactsName,Grace Wilson,true,token
+Flow_Scenario_985,test_positive_flow_S985_v5,2,POST,/api/v1/adminorderservice/adminorder,contactsName,M,false,unknown
+Flow_Scenario_985,test_positive_flow_S985_v6,2,POST,/api/v1/adminorderservice/adminorder,contactsName,Grace Wilson,true,token
+Flow_Scenario_985,test_positive_flow_S985_v7,2,POST,/api/v1/adminorderservice/adminorder,contactsName,Emily Davis,true,token
+Flow_Scenario_985,test_positive_flow_S985_v8,2,POST,/api/v1/adminorderservice/adminorder,contactsName,T2sR4aOnMQsnhIFxu,false,unknown
+Flow_Scenario_985,test_positive_flow_S985_v9,2,POST,/api/v1/adminorderservice/adminorder,contactsName,Grace Wilson,true,token
+Flow_Scenario_985,test_positive_flow_S985_v10,2,POST,/api/v1/adminorderservice/adminorder,contactsName,T2sR4aOnMQsnhIFxu,false,unknown
+Flow_Scenario_985,test_positive_flow_S985_v11,2,POST,/api/v1/adminorderservice/adminorder,contactsName,David Brown,true,token
+Flow_Scenario_985,test_positive_flow_S985_v12,2,POST,/api/v1/adminorderservice/adminorder,contactsName,Carol Williams,true,token
+Flow_Scenario_985,test_positive_flow_S985_v13,2,POST,/api/v1/adminorderservice/adminorder,contactsName,张三,false,unknown
+Flow_Scenario_985,test_positive_flow_S985_v14,2,POST,/api/v1/adminorderservice/adminorder,contactsName,Alice Johnson,true,token
+Flow_Scenario_985,test_positive_flow_S985_v15,2,POST,/api/v1/adminorderservice/adminorder,contactsName,Grace Wilson,true,token
+Flow_Scenario_985,test_positive_flow_S985_v16,2,POST,/api/v1/adminorderservice/adminorder,contactsName,Henry Moore,true,token
+Flow_Scenario_985,test_positive_flow_S985_v17,2,POST,/api/v1/adminorderservice/adminorder,contactsName,Frank Miller,true,token
+Flow_Scenario_985,test_positive_flow_S985_v18,2,POST,/api/v1/adminorderservice/adminorder,contactsName,Henry Moore,true,token
+Flow_Scenario_985,test_positive_flow_S985_v19,2,POST,/api/v1/adminorderservice/adminorder,contactsName,David Brown,true,token
+Flow_Scenario_985,test_positive_flow_S985_v20,2,POST,/api/v1/adminorderservice/adminorder,contactsName,JwznFbxbvOA6dG,false,unknown
+Flow_Scenario_985,test_positive_flow_S985_v5_explore_404,2,POST,/api/v1/adminorderservice/adminorder,contactsName,M,false,unknown
+Flow_Scenario_985,test_positive_flow_S985_v5_explore_405,2,POST,/api/v1/adminorderservice/adminorder,contactsName,M,false,unknown
+Flow_Scenario_985,test_positive_flow_S985_v5_explore_409,2,POST,/api/v1/adminorderservice/adminorder,contactsName,M,false,unknown
+Flow_Scenario_985,test_positive_flow_S985_v7_explore_422,2,POST,/api/v1/adminorderservice/adminorder,contactsName,Emily Davis,true,token
+Flow_Scenario_985,test_positive_flow_S985_v7_explore_500,2,POST,/api/v1/adminorderservice/adminorder,contactsName,Emily Davis,true,token
+Flow_Scenario_985,test_positive_flow_S985_v7_explore_401,2,POST,/api/v1/adminorderservice/adminorder,contactsName,Emily Davis,true,token
+Flow_Scenario_985,test_positive_flow_S985_v8_explore_403,2,POST,/api/v1/adminorderservice/adminorder,contactsName,T2sR4aOnMQsnhIFxu,false,unknown
+Flow_Scenario_985,test_positive_flow_S985_v8_explore_502,2,POST,/api/v1/adminorderservice/adminorder,contactsName,T2sR4aOnMQsnhIFxu,false,unknown
+Flow_Scenario_985,test_positive_flow_S985_v8_explore_504,2,POST,/api/v1/adminorderservice/adminorder,contactsName,T2sR4aOnMQsnhIFxu,false,unknown
+Flow_Scenario_985,test_positive_flow_S985_v10_explore_429,2,POST,/api/v1/adminorderservice/adminorder,contactsName,T2sR4aOnMQsnhIFxu,false,unknown
+Flow_Scenario_985,test_positive_flow_S985_v10_explore_503,2,POST,/api/v1/adminorderservice/adminorder,contactsName,T2sR4aOnMQsnhIFxu,false,unknown

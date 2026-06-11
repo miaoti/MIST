@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>es.us.isa</groupId>
+		<artifactId>mist-parent</artifactId>
+		<version>1.6.0-SNAPSHOT</version>
+		<relativePath>../pom.xml</relativePath>
+	</parent>
+
+	<artifactId>mist-llm</artifactId>
+	<packaging>jar</packaging>
+
+	<name>MIST LLM dispatch</name>
+	<description>MIST's LLM dispatch + cache layer. Hosts the LLM SPI
+	(io.mist.llm.LLMClient, LLMRequest, LLMResponse, LLMBackendKind,
+	MistLLMException) and the concrete implementations (LLMService,
+	LLMConfig, LLMCallCache, GeminiApiClient, OllamaApiClient). The
+	module carries no dependency on mist-core, mist-restest-adapter, or
+	restest-core, so mist-core (which forbids es.us.isa.* deps) can call
+	the LLM directly. Communication-side artefacts that need
+	RESTest-specific helpers stay in mist-restest-adapter and bind via
+	the LLMCommunicationSink ServiceLoader SPI.</description>
+
+	<dependencies>
+
+		<!-- Gson for LLM JSON parsing surface (kept for forward use; the legacy
+		     code uses org.json which is also declared below). -->
+		<dependency>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
+			<version>${gson.version}</version>
+		</dependency>
+
+		<!-- org.json: used by LLMService / GeminiApiClient / OllamaApiClient for
+		     request/response JSON. -->
+		<dependency>
+			<groupId>org.json</groupId>
+			<artifactId>json</artifactId>
+			<version>${json.version}</version>
+		</dependency>
+
+		<!-- OkHttp: the HTTP client used by every backend wrapper. -->
+		<dependency>
+			<groupId>com.squareup.okhttp3</groupId>
+			<artifactId>okhttp</artifactId>
+			<version>4.10.0</version>
+		</dependency>
+
+		<!-- Logging (API on the compile classpath). -->
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-api</artifactId>
+			<version>${log4j.version}</version>
+		</dependency>
+
+		<!-- Tests -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>${junit.version}</version>
+			<scope>test</scope>
+		</dependency>
+
+	</dependencies>
+
+</project>

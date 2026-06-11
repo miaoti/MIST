@@ -1,0 +1,338 @@
+{
+  "summary": "Deep research harness — fan-out web searches, fetch sources, adversarially verify claims, synthesize a cited report.",
+  "agentCount": 104,
+  "logs": [
+    "Q: Rigorously determine, with citations, whether the following is a viable MAIN con…",
+    "Decomposed into 5 angles: broad/primary — closest prior art on automated REST API test oracles, the specific gap — trace-based oracles & swallowed/silent failure detection, problem significance — the test-oracle problem as a recognized open challenge, the bar — recent top-venue REST/microservice API-testing papers, skeptical/methodology — mutation-injection as oracle evaluation and its threats",
+    "problem significance — the test-oracle problem as a recognized open challenge: 6 results",
+    "the specific gap — trace-based oracles & swallowed/silent failure detection: 6 results",
+    "broad/primary — closest prior art on automated REST API test oracles: 6 results",
+    "broad/primary — closest prior art on automated REST API test oracles: 4 novel (2 filtered)",
+    "skeptical/methodology — mutation-injection as oracle evaluation and its threats: 6 results",
+    "skeptical/methodology — mutation-injection as oracle evaluation and its threats: 2 novel (4 filtered)",
+    "the bar — recent top-venue REST/microservice API-testing papers: 6 results",
+    "the bar — recent top-venue REST/microservice API-testing papers: 4 novel (2 filtered)",
+    "Fetched 22 sources → 98 claims → verifying top 25",
+    "\"AGORA operates purely on API requests/responses pl…\": 3-0 ✓",
+    "\"AGORA is the closest published prior art on automa…\": 3-0 ✓",
+    "\"EvoMaster's test oracles operate at the HTTP-respo…\": 3-0 ✓",
+    "\"The paper explicitly frames the test-oracle proble…\": 3-0 ✓",
+    "\"EvoMaster targets both individual Web APIs and mic…\": 3-0 ✓",
+    "\"The test-oracle problem for REST/Web API testing i…\": 3-0 ✓",
+    "\"EvoMaster does negative/invalid-input testing, but…\": 2-1 ✓",
+    "\"DECISIVE GAP + COUNTERARGUMENT: the seminal REST-o…\": 1-2 ✗",
+    "\"This paper is the closest published prior art on a…\": 3-0 ✓",
+    "\"A controlled mutation-injection study with ground-…\": 0-3 ✗",
+    "\"RESTifAI's oracle is purely response-level (HTTP s…\": 2-1 ✓",
+    "\"RESTifAI performs negative testing (generating inv…\": 3-0 ✓",
+    "\"RESTifAI uses no distributed tracing or observabil…\": 3-0 ✓",
+    "\"RESTifAI already detects the 'silent acceptance' p…\": 3-0 ✓",
+    "\"Tracetest performs trace-based testing using OpenT…\": 3-0 ✓",
+    "\"Tracetest assertions/oracles are entirely user-aut…\": 3-0 ✓",
+    "\"Tracetest already supports asserting on downstream…\": 3-0 ✓",
+    "\"EvoMaster's automated test oracle for REST APIs is…\": 1-2 ✗",
+    "\"EvoMaster (the closest established REST API test-g…\": 1-2 ✗",
+    "\"As of this 92-paper survey of REST API testing, th…\": 3-0 ✓",
+    "\"The survey identifies the 'Oracle problem' as a re…\": 3-0 ✓",
+    "\"The survey's only solution offered for the oracle …\": 1-2 ✗",
+    "\"TraceGra is an unsupervised (label-free) trace-bas…\": 3-0 ✓",
+    "\"Across the surveyed literature, distributed traces…\": 1-2 ✗",
+    "\"TraceGra is framed as system-level/operational ano…\": 3-0 ✓",
+    "Verify done: 25 claims → 19 confirmed, 6 killed"
+  ],
+  "result": {
+    "question": "Rigorously determine, with citations, whether the following is a viable MAIN contribution for a top-tier software-engineering conference (ICSE/FSE/ASE/ISSTA) — be frank, not optimistic.\n\nCONTRIBUTION UNDER EVALUATION: A label-free, intent-conditioned test ORACLE for microservice REST-API negative testing. It evaluates distributed traces (Jaeger/OpenTelemetry) and uses the negative test's own injected-fault intent (which parameter was attacked and was expected to be rejected) as a per-test spec, to detect two bug classes that response-level oracles miss: (a) SILENT ACCEPTANCE — invalid input accepted with HTTP 2xx instead of rejected; (b) HIDDEN DOWNSTREAM FAILURE — gateway returns 2xx while a downstream span 5xx-errors (swallowed failure). Test generation is LLM-guided (not the novel part); the trace oracle + learned trace-shape invariants are the claimed novel core. Planned evaluation: a controlled mutation study injecting silent-acceptance/hidden-failure mutants into a real microservice SUT (train-ticket) as ground truth, measuring the trace oracle's detection rate vs a status/schema/fault-name baseline (which detects 0 of these by construction).\n\nANSWER WITH EVIDENCE:\n1. NOVELTY & PRIOR ART — closest published work and the precise, defensible gap. Cover: automated REST API test oracles (AGORA / invariant-based, EvoMaster oracles, RESTest), trace-based/observability testing (Tracetest etc.), metamorphic testing for the oracle problem, microservice fault localization/RCA from traces, and any \"silent failure\"/\"silent success\"/swallowed-error detection. Has anyone published a label-free, intent-conditioned distributed-trace oracle for negative API testing? Is silent-acceptance or hidden-downstream-failure detection via traces already claimed?\n2. PROBLEM SIGNIFICANCE — is the test-oracle problem for microservice/REST API testing a recognized, important open problem?\n3. EVALUATION METHODOLOGY — is a mutation-injection study (ground-truth bugs; detection rate vs a baseline that is 0 by construction) a sound, accepted way to evaluate a test oracle at a top venue? What threats-to-validity would a PC raise (e.g. baseline being trivially 0, single SUT, injected vs real bugs, mutant realism), and what makes it rigorous?\n4. THE BAR — what do recent (2023-2025) ICSE/FSE/ASE/ISSTA REST/microservice API-testing and test-oracle papers actually deliver (novelty framing, number of SUTs, baselines, real-bug evidence)? Does the planned contribution + evaluation clear that bar as a MAIN contribution?\n5. FRANK VERDICT — Is this A-conference-main-contribution-worthy? Give the strongest counterarguments a skeptical reviewer would raise, and exactly what must be added/changed to make it a confident accept-grade main contribution. If it is NOT enough on its own, say so and say what would be.",
+    "summary": "This is a credible niche contribution but NOT, as framed, a confident accept-grade MAIN contribution for ICSE/FSE/ASE/ISSTA — it needs more. The intent-conditioned distributed-trace oracle for negative API testing occupies a real, defensible gap: the closest oracle prior art (AGORA/ISSTA'23, EvoMaster, metamorphic-testing TSE'17, RESTifAI/ICSE'26-demo) is all response-level (status/schema/invariant) and does not consume distributed traces, while the closest trace work (Tracetest, TraceGra) is either manually-authored assertions or unsupervised operational anomaly detection — neither is a label-free, intent-conditioned oracle for negative testing, so no single system claims this exact combination [0,1,3,7,8,10,12,13,17,18]. The test-oracle problem for REST/microservice APIs is unambiguously a recognized, named, still-open research challenge (TSE'17, TOSEM'17/'23 survey), satisfying problem significance [2,6,15,16]. However, two facts blunt the novelty and evaluation story: (1) the silent-acceptance bug class is ALREADY detected at the response level by published work (RESTifAI found real 200-instead-of-400 bugs), so the only fully-novel detection target is the hidden-downstream-failure (gateway-2xx-over-downstream-5xx) case [11], and (2) the planned evaluation's baseline is 0-by-construction and rests on a single SUT (train-ticket) with injected (not real) mutants — a design top venues accept ONLY when paired with real-bug evidence and multiple SUTs, which the foundational MT paper itself demonstrated (real issues on 6 APIs, 10 developer-confirmed). As scoped, a skeptical PC would likely rate it a borderline/weak contribution; it becomes accept-grade by narrowing the headline novelty to the trace/intent-conditioning mechanism, adding multiple SUTs, and supplying real-bug (not just mutant) evidence.",
+    "findings": [
+      {
+        "claim": "Q1 NOVELTY: No published system is a label-free, intent-conditioned DISTRIBUTED-TRACE oracle for negative REST/microservice API testing. The closest automated-oracle prior art is all RESPONSE-LEVEL and does not consume traces. AGORA (ISSTA'23, the only/first automated REST oracle approach) mines Daikon-style invariants from request/response pairs + OpenAPI in black-box mode, with no spans, no downstream modeling, and no per-test fault intent. This leaves the trace-oracle + hidden-downstream-failure detection as a genuinely unclaimed gap.",
+        "confidence": "high",
+        "vote": "3-0 (each constituent claim)",
+        "evidence": "AGORA abstract: oracle generation 'through the detection of invariants—properties of the output that should always hold' by 'analyzing previous API requests and their corresponding responses' via extended Daikon, '105 different types of invariants'. Beet front-end converts 'any OpenAPI specification and a collection of API requests (and responses)' to Daikon format and 'operates in black-box mode' — enumerated inputs are ONLY OpenAPI + request/response CSV; no Jaeger/OpenTelemetry/spans. AGORA+ (TOSEM'25) self-describes as 'the ONLY existing approach in the literature that addresses the automated generation of test oracles for REST APIs', confirming it defines this research line. Verifiers could not refute on any axis.",
+        "sources": [
+          "https://personales.us.es/sergiosegura/files/papers/alonso23-issta.pdf",
+          "https://dl.acm.org/doi/10.1145/3597926.3598114",
+          "https://dl.acm.org/doi/10.1145/3726524"
+        ]
+      },
+      {
+        "claim": "Q1 NOVELTY: EvoMaster — the dominant REST/microservice API test-generation tool — has only response-level oracles (HTTP 500/5xx, schema mismatch, access-policy violation) and does NOT use distributed traces. Critically, it does negative testing but judges a fault ONLY on a server-visible error or schema violation, so it has NO mechanism to flag SILENT ACCEPTANCE (invalid input wrongly accepted with 2xx) and NO cross-span oracle to catch HIDDEN DOWNSTREAM FAILURE. Its industrial deployment (Meituan, 'hundreds of RPC APIs') confirms the problem area is significant, but the trace-level oracle gap relative to EvoMaster is real.",
+        "confidence": "high",
+        "vote": "3-0, 3-0, 3-0 (silent-acceptance sub-claim 2-1)",
+        "evidence": "Springer ASE'24 EvoMaster tool report: 'EvoMaster employs different heuristics for fault detection, like checking for 500 status codes, mismatches from the API schemas and access policy violations.' Negative-test example: invalid ByteString where a UUID is expected triggers 'an unexpected exception from the point of view of the schema' — i.e., fault = server error OR schema violation, never a 2xx-accept. Official WebFuzzing/EvoMaster README repeats the same three heuristics with NO Jaeger/OpenTelemetry/observability terms; two adversarial searches for any EvoMaster trace/observability oracle returned nothing. White-box mode instruments the SUT for coverage/search guidance, NOT as a distributed-trace cross-span oracle. Caveat (2-1 dissent): recent EvoMaster validates response STRUCTURE against schema, but that is structural conformance, not semantic silent-acceptance.",
+        "sources": [
+          "https://link.springer.com/article/10.1007/s10515-024-00478-1",
+          "https://dl.acm.org/doi/10.1145/3585009"
+        ]
+      },
+      {
+        "claim": "Q1 NOVELTY: The seminal metamorphic-testing-of-REST-APIs work (TSE'17) is also purely response/output-level — its oracle is over JSON outputs via metamorphic relations among inputs and their outputs, with NO distributed traces, spans, downstream-service inspection, or microservice observability. So the metamorphic-testing oracle family (the standard 'label-free' oracle answer when expected outcomes are unclear) is a DIFFERENT mechanism than the proposed per-test intent-conditioned trace oracle, reinforcing the gap.",
+        "confidence": "high",
+        "vote": "3-0, 3-0",
+        "evidence": "TSE'17 (Segura et al., DOI 10.1109/TSE.2017.2764464): 'metamorphic testing checks whether multiple executions of the program under test fulfil certain necessary properties called metamorphic relations.' MR formally defined over 'function inputs x0...xn and their corresponding outputs f(x0)...f(xn)'; data model is the JSON RESPONSE (Fig.1 Spotify artist); SUTs are black-box third-party APIs (Spotify/YouTube) where span/gateway-vs-downstream access is structurally impossible. Index terms contain no trace/observability term. NOTE the closely-related claim that TSE'17 deems error-code checking of bad inputs a 'trivial oracle' was REFUTED (vote 1-2) — i.e., do not over-rely on it as either gap-support or counterargument.",
+        "sources": [
+          "https://javiertroyauma.github.io/publications/TSE2017_REST_prePrint.pdf"
+        ]
+      },
+      {
+        "claim": "Q1 NOVELTY (strongest threat to novelty): The closest CONTEMPORARY LLM-based REST oracle, RESTifAI (ICSE'26 Demonstration track), already does LLM-guided negative testing with a 2xx/4xx status oracle AND already detects the SILENT-ACCEPTANCE phenomenon at the response level — it found REAL services returning HTTP 200 instead of the correct 400 Bad Request. RESTifAI uses NO distributed tracing (the terms span/distributed/Jaeger/OpenTelemetry/observability/downstream do not appear; 'trace' = local key-value test state). Implication: (a) the negative-test-generation portion is confirmed NOT novel (matches the contribution's own concession), and (b) silent-acceptance-by-status is NOT novel to detect — so the contribution's defensible headline novelty must rest specifically on the TRACE-level hidden-downstream-failure case, not on silent-acceptance per se.",
+        "confidence": "high",
+        "vote": "2-1, 3-0, 3-0, 3-0",
+        "evidence": "RESTifAI (arXiv 2512.08706v1): 'derives negative cases to verify both intended functionality (2xx responses) and robustness against invalid inputs or business-rule violations (4xx responses)'; LLM 'Negative/Invalid Value Generator' produces structural + functional invalid values; oracle is status-code based. Industrial case study (CASABLANCA): 'the services erroneously returned a 200 response code instead of the appropriate 400 Bad Request response code' — silent acceptance found on REAL services by a status oracle. Metric '#DetectedServerErrors: Number of 5xx or unexpected 2xx returned from negative tests'. Stated limitation: 'absence of assertions that validate the functional behavior of the underlying business logic'. NO distributed-trace mechanism anywhere. CAVEAT: the specific quote 'Such tools do not check that valid inputs yield 2xx...' was found MISATTRIBUTED (it describes prior tools RESTifAI criticizes, not RESTifAI itself); the substantive claim is supported by correctly-attributed passages.",
+        "sources": [
+          "https://arxiv.org/html/2512.08706v1",
+          "https://github.com/casablancahotelsoftware/RESTifAI"
+        ]
+      },
+      {
+        "claim": "Q1 NOVELTY: Trace-based testing against distributed spans is established prior art (Tracetest, OpenTelemetry-based), INCLUDING the mechanical ability to assert downstream span 2xx/5xx via selectors + wildcard assertions. Therefore neither 'trace-based assertion' nor 'check a downstream span's status code' is itself novel. BUT Tracetest's oracles are entirely USER-AUTHORED (Web UI or YAML), with no automatic test generation and no automatic invariant/intent learning — so a label-free, automatically-learned, intent-conditioned oracle is NOT what Tracetest provides. The novelty must therefore lie in the AUTOMATED, intent-derived conditioning, not the span-check primitive.",
+        "confidence": "high",
+        "vote": "3-0, 3-0, 3-0",
+        "evidence": "kubeshop/tracetest README: 'Add assertions based on response data from the trigger request and all trace data contained in the spans of your distributed trace'; 'Create tests visually in the Tracetest Web UI or programmatically via YAML'; wildcard assertions 'All gRPC return codes should be 0' and example 'http.status_code = 200'. Docs: Test Spec = user-defined Selectors + Checks ('a logical verification... attribute, comparison operator and a value'). 'Span signatures' only auto-compute a SELECTOR (which span), not the oracle. No AI/LLM/invariant-learning of expected outcomes. Verifiers explicitly warn NOT to over-read this as killing the narrower automatic-intent-derived novelty.",
+        "sources": [
+          "https://github.com/kubeshop/tracetest",
+          "https://docs.tracetest.io/concepts/assertions"
+        ]
+      },
+      {
+        "claim": "Q1 NOVELTY: Label-free (unsupervised) trace analysis for detecting microservice anomalies is established prior art (TraceGra and a family: TraceAnomaly/ISSRE'20, TraceVAE/WWW'23, TraceHG). So 'label-free trace analysis' as a FRAMING is not novel. However, this family is system-level OPERATIONAL anomaly detection (monitoring) over traces + container performance metrics, targeting graph-structure and resource-consumption/temporal anomalies — it is NOT a test oracle for negative API testing and does NOT use any per-test injected-fault intent as a specification. The contribution's intent-conditioned silent-acceptance / hidden-downstream-failure detection is a distinct problem from operational anomaly detection.",
+        "confidence": "high",
+        "vote": "3-0, 3-0",
+        "evidence": "TraceGra (Computer Communications Vol 204, 2023, DOI 10.1016/j.comcom.2023.03.028): 'unsupervised encoder–decoder anomaly detection approach... combine traces and performance metrics of the container... GNN and LSTM to extract topology and temporal features.' Motivation: existing approaches 'ignore the graph structure of trace and abnormal resource consumption.' Unsupervised = trains on normal/unlabeled data = label-free. Targeted searches for 'test oracle'/'negative testing'/intent-as-spec returned nothing; the one fault-injection link (chaosblade on TrainTicket) GENERATES ground-truth eval data, not a per-test spec. Corroborated by TraceAnomaly (github.com/NetManAIOps/TraceAnomaly), TraceVAE (dl.acm.org/doi/10.1145/3543507.3583215).",
+        "sources": [
+          "https://www.sciencedirect.com/science/article/abs/pii/S0140366423001135",
+          "https://dl.acm.org/doi/abs/10.1145/3543507.3583215"
+        ]
+      },
+      {
+        "claim": "Q2 PROBLEM SIGNIFICANCE: The test-oracle problem for REST/microservice API testing IS a recognized, named, still-open research challenge — strong support for the significance prong. The seminal TSE'17 paper frames assessing API-response correctness as 'critical but challenging... the oracle problem'; the AGORA line frames generated oracles as 'one of the major challenges' that motivates their work; and the 92-paper TOSEM survey lists 'Oracle problem' as the 3rd-most-addressed challenge AND separately lists 'Automated oracles' as an open future-work challenge. The problem is acknowledged as open, not solved.",
+        "confidence": "high",
+        "vote": "3-0, 3-0, 3-0",
+        "evidence": "TSE'17 abstract: 'Testing Web APIs is critical but challenging due to the difficulty to assess the correctness of API responses, i.e., the oracle problem.' AGORA/AGORA+: 'advanced capabilities for automated input generation contrast with the simplicity of their test oracles, which limit the types of failures they can detect to crashes, regressions, and violations of the API specification or design best practices' + 'identified the generation of test oracles as one of the major challenges... This is the problem that motivates our work.' TOSEM survey (2212.14604 / DOI 3617175): Table 10 lists 'Oracle problem' (count 5) as 3rd-ranked addressed challenge; Table 11 lists 'Automated oracles' (count 4) as an open challenge: 'specific properties of REST APIs (e.g., idempotency of HTTP verbs) could be used as Automated oracles.'",
+        "sources": [
+          "https://javiertroyauma.github.io/publications/TSE2017_REST_prePrint.pdf",
+          "https://dl.acm.org/doi/10.1145/3617175",
+          "https://personales.us.es/sergiosegura/files/papers/alonso23-issta.pdf"
+        ]
+      },
+      {
+        "claim": "Q3 EVALUATION + Q4 BAR: The contribution's premise that a status/schema/fault-name baseline detects these bugs at a rate of 0 BY CONSTRUCTION is corroborated — the field-standard oracles are HTTP 5xx status codes (~30 of 92 surveyed papers) and OpenAPI schema-violation checks, explicitly called the 'general oracles for fault finding'; a 2xx that satisfies the schema yields no signal, so it definitionally cannot catch silent acceptance or a swallowed downstream 5xx hidden behind a 2xx gateway. HOWEVER, a 0-by-construction baseline is the WEAKEST part of the evaluation design: it makes the headline detection-rate comparison nearly tautological, so a PC will demand additional rigor.",
+        "confidence": "high",
+        "vote": "3-0",
+        "evidence": "TOSEM survey (DOI 3617175): 'The status code 5xx has been applied to identify potential faults'; '500 status codes in the responses can be used as an oracle'; 'Service errors (based on status code) and violation of schema (based on OpenAPI) are general oracles for fault finding in the context of REST API.' Exactly 30 distinct citations enumerated for the 5xx oracle; 14 for schema. The 0-by-construction property is a definitional consequence (a schema-valid 2xx produces no oracle signal), consistent with the survey's own note that not all faults surface as 500s. This corroborates the PREMISE but, per the synthesis below, does not by itself make the evaluation publishable.",
+        "sources": [
+          "https://dl.acm.org/doi/10.1145/3617175"
+        ]
+      },
+      {
+        "claim": "Q3/Q4 EVALUATION BAR (what top venues actually accept): A controlled mutation-injection study with ground-truth seeded faults and a reported detection/mutation score is an ACCEPTED top-venue methodology for evaluating REST API oracles — BUT the accepted bar PAIRS it with real-bug evidence and multiple SUTs. The foundational MT-of-REST paper killed 302/317 seeded mutants (95.3%) AND independently detected 11 real issues across 6 real-world APIs (10 developer/user-confirmed). RESTifAI likewise reported real bugs on a real industrial SUT. A mutation study on a SINGLE SUT (train-ticket) with INJECTED-only mutants against a 0-by-construction baseline does NOT, on its own, clear that bar as a main contribution.",
+        "confidence": "high",
+        "vote": "0-3 on the literal 'mutation study alone validates the design' framing (refuted); the underlying facts about MT'17 real-bug evidence are reliable",
+        "evidence": "The claim 'a mutation-injection study with detection score is an accepted top-venue methodology... validating the planned design' was REFUTED (vote 0-3) precisely BECAUSE the accepted bar pairs it with real-bug evidence: MT'17 killed 302/317 mutants (95.3%) AND found 11 real issues across 6 APIs (10 confirmed). RESTifAI's industrial study: '60.87% of non-passing tests revealed true bugs or enhancement opportunities' on a real SUT. Recent oracle work reports realistic numbers (AGORA+/TOSEM'25 precision 68-80%; SATORI/ASE'25 F1 74.3%; SATORI+AGORA+ together find only ~90% of ground-truth oracles), indicating reviewers expect honest precision/recall on non-trivial baselines and real systems, not just a high mutation score vs a 0 baseline.",
+        "sources": [
+          "https://javiertroyauma.github.io/publications/TSE2017_REST_prePrint.pdf",
+          "https://arxiv.org/html/2512.08706v1",
+          "https://dl.acm.org/doi/10.1145/3726524"
+        ]
+      },
+      {
+        "claim": "Q5 FRANK VERDICT: As scoped, this is a borderline/weak MAIN contribution — defensible niche novelty but at risk of being judged 'narrow + thin evaluation' by a skeptical PC. The strongest reviewer counterarguments: (1) the novel detection target effectively collapses to ONE bug class (hidden-downstream-failure), since silent-acceptance-by-status is already published (RESTifAI); (2) the headline baseline is 0-by-construction (near-tautological win); (3) single SUT (train-ticket) + injected-only mutants raises external-validity and mutant-realism threats; (4) the trace-assertion and downstream-span-check primitives, and label-free trace analysis, are all individually prior art (Tracetest, TraceGra) — novelty rests entirely on the automated INTENT-CONDITIONING, which must be made the crisp, defended core. It becomes accept-grade by: making the trace/intent-conditioning MECHANISM (not the bug taxonomy) the headline; adding 2-3+ real microservice SUTs; supplying REAL-bug evidence (not only mutants); adding a non-trivial baseline beyond status/schema (e.g., an operational trace-anomaly detector like TraceGra, or Tracetest with hand-authored span assertions) so the comparison is not 0-by-construction; and reporting honest precision/recall/false-positive rates.",
+        "confidence": "high",
+        "vote": "synthesis of 3-0 prior-art claims + 0-3/1-2 refutations on weakest framings",
+        "evidence": "Triangulation: silent-acceptance already published [RESTifAI 11], baseline 0-by-construction [survey 15], trace primitives + label-free analysis already prior art [Tracetest 12-14, TraceGra 17-18], and the explicitly REFUTED claim that a mutation-only study validates the design [vote 0-3]. The positive side: oracle problem is a recognized open challenge [2,6,15,16] and NO system combines label-free + intent-conditioned + distributed-trace for negative testing [0,1,3,7,8,10,12,13]. The verdict directly maps each weakness to a concrete fix evidenced by what accepted papers delivered (MT'17 and RESTifAI real-bug evidence; AGORA+/SATORI honest precision/recall on non-trivial baselines).",
+        "sources": [
+          "https://arxiv.org/html/2512.08706v1",
+          "https://dl.acm.org/doi/10.1145/3617175",
+          "https://github.com/kubeshop/tracetest",
+          "https://www.sciencedirect.com/science/article/abs/pii/S0140366423001135",
+          "https://javiertroyauma.github.io/publications/TSE2017_REST_prePrint.pdf"
+        ]
+      }
+    ],
+    "caveats": "TIME-SENSITIVITY / MOVING TARGET: RESTifAI (arXiv 2512.08706, ICSE'26 Demonstration track, Dec 2025) is extremely recent and the most dangerous comparator — it independently targets LLM negative testing and already reports real silent-acceptance bugs by status code. The contribution MUST cite and explicitly distinguish from it; its existence is the single biggest threat to the novelty framing. SATORI (ASE'25), AGORA+ (TOSEM'25), and MASTEST (arXiv'25) are all 2025 oracle papers that keep the field moving; a submission must check for newer 2026 trace-oracle work before claiming first-of-kind.\n\nEVIDENTIARY DEFECTS NOTED BY VERIFIERS (do not change verdicts but must be fixed if reused verbatim): (a) the RESTifAI supporting quote 'Such tools do not check that valid inputs yield 2xx... 4xx...' is MISATTRIBUTED in claims 8 and 9 — in the paper it describes PRIOR tools RESTifAI criticizes, not RESTifAI itself; the substantive claims are still supported by correctly-attributed Section-2 / abstract passages. (b) TraceGra evidence is abstract/title-level only (ScienceDirect/ACM full-text 403-blocked), though framing/scope is unambiguous from title+abstract and triangulated.\n\nSOURCE-STRENGTH MIX: AGORA (ISSTA'23 + TOSEM'25), EvoMaster (ASE'24 + TOSEM'23 industrial), MT (TSE'17), and the 92-paper survey (TOSEM'23) are peer-reviewed and authoritative — these anchor the strong findings. Tracetest is a vendor GitHub/docs (primary for what the tool does, but promotional in tone; corroborated by CNCF/OpenTelemetry blogs). RESTifAI is a non-archival arXiv/demo-track paper (lower archival weight, but directly on-point and the most current).\n\nSCOPE LIMIT OF THIS SYNTHESIS: novelty was assessed against AGORA, EvoMaster, MT-of-REST, RESTest-adjacent work, RESTifAI, Tracetest, and the TraceGra/TraceAnomaly family. It did NOT exhaustively cover: API-fuzzing-with-internal-instrumentation oracles beyond EvoMaster, microservice fault-localization/RCA-from-traces as oracles (a few related claims were REFUTED 1-2 for over-generalization), or differential/cross-version regression oracles. A 1-2 refuted claim found that across the surveyed literature traces are used as coverage/regression artifacts, not fault oracles — directionally supportive of the gap but not strong enough to assert unconditionally. Absence-of-prior-art claims are inherently non-exhaustive.",
+    "openQuestions": [
+      "Does any 2026 paper (beyond RESTifAI) already combine LLM/automated negative testing with a distributed-trace oracle, or extend RESTifAI toward span-level/business-logic assertions? If so, the first-of-kind framing may already be lost — a fresh literature check immediately before submission is mandatory.",
+      "Can the contribution demonstrate REAL (developer-confirmed) hidden-downstream-failure bugs in production-grade microservices, not just injected mutants in train-ticket? Without this, the evaluation likely will not clear the top-venue bar that MT'17 and RESTifAI set with real-bug evidence.",
+      "What is a FAIR non-trivial baseline that is not 0-by-construction — e.g., an unsupervised operational trace-anomaly detector (TraceGra/TraceAnomaly) or Tracetest with expert-authored downstream-span assertions — and how does the proposed oracle's precision/recall/false-positive rate compare against it on the SAME traces?",
+      "Is the 'learned trace-shape invariants' component genuinely distinct from (a) AGORA-style Daikon invariants lifted to span attributes and (b) unsupervised trace-anomaly models, and can that distinction be articulated and ablated as the load-bearing novelty rather than the bug taxonomy?"
+    ],
+    "refuted": [
+      {
+        "claim": "DECISIVE GAP + COUNTERARGUMENT: the seminal REST-oracle paper explicitly EXCLUDES the exact negative-testing bug class the new contribution targets, declaring that invoking a service with invalid input and checking the returned error message / HTTP error code is a 'trivial oracle' that does NOT suffer the oracle problem. This both supports the gap (no metamorphic/response oracle addresses silent acceptance) AND is the strongest skeptical-reviewer counterargument (the field's foundational oracle work deems status/error-code checking of bad inputs to be trivial, not an oracle problem) (Q1, Q5).",
+        "vote": "1-2",
+        "source": "https://javiertroyauma.github.io/publications/TSE2017_REST_prePrint.pdf"
+      },
+      {
+        "claim": "A controlled mutation-injection study with ground-truth seeded faults and a reported detection (mutation) score is an ACCEPTED top-venue methodology for evaluating REST API test oracles, validating the planned evaluation's core design — but the accepted bar pairs it with real-bug evidence: this paper killed 302/317 seeded mutants (95.3%) AND detected 11 real issues across 6 real-world APIs, 10 confirmed by developers/users (Q3, Q4).",
+        "vote": "0-3",
+        "source": "https://javiertroyauma.github.io/publications/TSE2017_REST_prePrint.pdf"
+      },
+      {
+        "claim": "EvoMaster's automated test oracle for REST APIs is response-level only: it uses HTTP status codes, treating a 5xx response as a likely bug and 4xx as not-a-bug. It does NOT inspect distributed traces, downstream spans, or microservice internals.",
+        "vote": "1-2",
+        "source": "https://dl.acm.org/doi/10.1145/3293455"
+      },
+      {
+        "claim": "EvoMaster (the closest established REST API test-generation baseline) explicitly frames 5xx-status checking as the standard 'easiest' partial oracle and concedes it misses bug classes — directly supporting the proposed contribution's premise that a status/schema baseline detects silent-acceptance and hidden-downstream-failure bugs at a rate of 0 by construction.",
+        "vote": "1-2",
+        "source": "https://dl.acm.org/doi/10.1145/3293455"
+      },
+      {
+        "claim": "The survey's only solution offered for the oracle problem when expected outcomes are 'complex or unclear' is metamorphic testing (relations across multiple executions); no distributed-trace-based or intent-conditioned oracle is presented as the answer. This is the closest published 'label-free' oracle family and frames the precise gap: the contribution's per-test intent-conditioned trace oracle is a different mechanism than metamorphic relations.",
+        "vote": "1-2",
+        "source": "https://dl.acm.org/doi/10.1145/3617175"
+      },
+      {
+        "claim": "Across the surveyed literature, distributed traces / execution traces are used only as (a) coverage-collection instrumentation and (b) regression-recording artifacts to compare responses across versions — not as a fault-detection oracle for a given test. Trace-consuming tools (Restats, ExVivoMicroTest) take 'I/O Traces' as input, and Gazzola et al. use microservice monitoring/tracing to generate regression tests. No label-free, intent-conditioned distributed-trace oracle for negative API testing is reported, supporting the claimed novelty gap.",
+        "vote": "1-2",
+        "source": "https://dl.acm.org/doi/10.1145/3617175"
+      }
+    ],
+    "sources": [
+      {
+        "url": "https://personales.us.es/sergiosegura/files/papers/alonso23-issta.pdf",
+        "quality": "primary",
+        "angle": "broad/primary — closest prior art on automated REST API test oracles",
+        "claimCount": 5
+      },
+      {
+        "url": "https://link.springer.com/article/10.1007/s10515-024-00478-1",
+        "quality": "primary",
+        "angle": "broad/primary — closest prior art on automated REST API test oracles",
+        "claimCount": 5
+      },
+      {
+        "url": "https://javiertroyauma.github.io/publications/TSE2017_REST_prePrint.pdf",
+        "quality": "primary",
+        "angle": "broad/primary — closest prior art on automated REST API test oracles",
+        "claimCount": 5
+      },
+      {
+        "url": "https://arxiv.org/html/2512.08706v1",
+        "quality": "primary",
+        "angle": "broad/primary — closest prior art on automated REST API test oracles",
+        "claimCount": 5
+      },
+      {
+        "url": "https://github.com/kubeshop/tracetest",
+        "quality": "primary",
+        "angle": "the specific gap — trace-based oracles & swallowed/silent failure detection",
+        "claimCount": 5
+      },
+      {
+        "url": "https://dl.acm.org/doi/10.1145/3293455",
+        "quality": "primary",
+        "angle": "the specific gap — trace-based oracles & swallowed/silent failure detection",
+        "claimCount": 4
+      },
+      {
+        "url": "https://dl.acm.org/doi/10.1145/3617175",
+        "quality": "primary",
+        "angle": "the specific gap — trace-based oracles & swallowed/silent failure detection",
+        "claimCount": 5
+      },
+      {
+        "url": "https://www.sciencedirect.com/science/article/abs/pii/S0140366423001135",
+        "quality": "primary",
+        "angle": "the specific gap — trace-based oracles & swallowed/silent failure detection",
+        "claimCount": 5
+      },
+      {
+        "url": "https://cloudnativenow.com/contributed-content/black-box-testing-apis-in-microservices-why-your-tests-pass-but-your-system-still-fails/",
+        "quality": "blog",
+        "angle": "the specific gap — trace-based oracles & swallowed/silent failure detection",
+        "claimCount": 4
+      },
+      {
+        "url": "https://ieeexplore.ieee.org/document/5750006/",
+        "quality": "primary",
+        "angle": "the specific gap — trace-based oracles & swallowed/silent failure detection",
+        "claimCount": 4
+      },
+      {
+        "url": "https://www.sciencedirect.com/science/article/abs/pii/S0164121224002760",
+        "quality": "unreliable",
+        "angle": "problem significance — the test-oracle problem as a recognized open challenge",
+        "claimCount": 1
+      },
+      {
+        "url": "http://www0.cs.ucl.ac.uk/staff/m.harman/tse-oracle.pdf",
+        "quality": "primary",
+        "angle": "problem significance — the test-oracle problem as a recognized open challenge",
+        "claimCount": 5
+      },
+      {
+        "url": "https://dl.acm.org/doi/10.1145/3726524",
+        "quality": "primary",
+        "angle": "problem significance — the test-oracle problem as a recognized open challenge",
+        "claimCount": 5
+      },
+      {
+        "url": "https://arxiv.org/pdf/2212.14604",
+        "quality": "primary",
+        "angle": "problem significance — the test-oracle problem as a recognized open challenge",
+        "claimCount": 5
+      },
+      {
+        "url": "https://link.springer.com/article/10.1007/s00607-025-01540-w",
+        "quality": "unreliable",
+        "angle": "problem significance — the test-oracle problem as a recognized open challenge",
+        "claimCount": 0
+      },
+      {
+        "url": "https://arxiv.org/html/2512.08706",
+        "quality": "primary",
+        "angle": "problem significance — the test-oracle problem as a recognized open challenge",
+        "claimCount": 5
+      },
+      {
+        "url": "https://arxiv.org/pdf/2604.08007",
+        "quality": "primary",
+        "angle": "the bar — recent top-venue REST/microservice API-testing papers",
+        "claimCount": 5
+      },
+      {
+        "url": "https://research.ibm.com/publications/a-multi-agent-approach-for-rest-api-testing-with-semantic-graphs-and-llm-driven-inputs",
+        "quality": "primary",
+        "angle": "the bar — recent top-venue REST/microservice API-testing papers",
+        "claimCount": 5
+      },
+      {
+        "url": "https://dl.acm.org/doi/10.1145/3597926.3598114",
+        "quality": "primary",
+        "angle": "the bar — recent top-venue REST/microservice API-testing papers",
+        "claimCount": 5
+      },
+      {
+        "url": "https://dl.acm.org/doi/10.1145/3180155.3182528",
+        "quality": "primary",
+        "angle": "the bar — recent top-venue REST/microservice API-testing papers",
+        "claimCount": 5
+      },
+      {
+        "url": "https://people.cs.umass.edu/~rjust/publ/mutants_real_faults_fse_2014.pdf",
+        "quality": "primary",
+        "angle": "skeptical/methodology — mutation-injection as oracle evaluation and its threats",
+        "claimCount": 5
+      },
+      {
+        "url": "https://cspengxin.github.io/publications/fse19-zhou-microservice.pdf",
+        "quality": "primary",
+        "angle": "skeptical/methodology — mutation-injection as oracle evaluation and its threats",
+        "claimCount": 5
+      }
+    ],
+    "stats": {
+      "angles": 5,
+      "sourcesFetched": 22,
+      "claimsExtracted": 98,
+      "claimsVerified": 25,
+      "confirmed": 19,
+      "killed": 6,
+      "afterSynthesis": 10,
+      "urlDupes": 5,
+      "budgetDropped": 3,
+      "agentCalls": 104
+    }
+  }
+}

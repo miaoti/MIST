@@ -1,0 +1,137 @@
+scenario,test_method,step_idx,http_method,path,parameter,value,realistic,source
+Flow_Scenario_1184,test_positive_flow_S1184_v1,2,POST,/api/v1/travelservice/trips/left,endPlace,Dallas,true,offline
+Flow_Scenario_1184,test_positive_flow_S1184_v1,2,POST,/api/v1/travelservice/trips/left,startPlace,Dallas/Fort Worth International Airport,false,unknown
+Flow_Scenario_1184,test_positive_flow_S1184_v2,2,POST,/api/v1/travelservice/trips/left,endPlace,"Los Angeles, CA",false,unknown
+Flow_Scenario_1184,test_positive_flow_S1184_v2,2,POST,/api/v1/travelservice/trips/left,startPlace,Hartsfield-Jackson Atlanta International Airport,false,unknown
+Flow_Scenario_1184,test_positive_flow_S1184_v3,2,POST,/api/v1/travelservice/trips/left,endPlace,New York City,false,unknown
+Flow_Scenario_1184,test_positive_flow_S1184_v3,2,POST,/api/v1/travelservice/trips/left,startPlace,Minneapolis–Saint Paul International Airport,false,unknown
+Flow_Scenario_1184,test_positive_flow_S1184_v4,2,POST,/api/v1/travelservice/trips/left,endPlace,"Houston, TX",false,unknown
+Flow_Scenario_1184,test_positive_flow_S1184_v4,2,POST,/api/v1/travelservice/trips/left,startPlace,Hartsfield-Jackson Atlanta International Airport,false,unknown
+Flow_Scenario_1184,test_positive_flow_S1184_v5,2,POST,/api/v1/travelservice/trips/left,endPlace,Dallas,true,offline
+Flow_Scenario_1184,test_positive_flow_S1184_v5,2,POST,/api/v1/travelservice/trips/left,startPlace,Shenzhen,true,offline
+Flow_Scenario_1184,test_positive_flow_S1184_v6,2,POST,/api/v1/travelservice/trips/left,endPlace,Phoenix,true,offline
+Flow_Scenario_1184,test_positive_flow_S1184_v6,2,POST,/api/v1/travelservice/trips/left,startPlace,Xi'an,true,offline
+Flow_Scenario_1184,test_positive_flow_S1184_v7,2,POST,/api/v1/travelservice/trips/left,endPlace,San Diego,true,offline
+Flow_Scenario_1184,test_positive_flow_S1184_v7,2,POST,/api/v1/travelservice/trips/left,startPlace,Washington Dulles International Airport,false,unknown
+Flow_Scenario_1184,test_positive_flow_S1184_v8,2,POST,/api/v1/travelservice/trips/left,endPlace,"Houston, TX",false,unknown
+Flow_Scenario_1184,test_positive_flow_S1184_v8,2,POST,/api/v1/travelservice/trips/left,startPlace,Phoenix Sky Harbor International Airport,false,unknown
+Flow_Scenario_1184,test_positive_flow_S1184_v9,2,POST,/api/v1/travelservice/trips/left,endPlace,Dallas,true,offline
+Flow_Scenario_1184,test_positive_flow_S1184_v9,2,POST,/api/v1/travelservice/trips/left,startPlace,Hartsfield-Jackson Atlanta International Airport,false,unknown
+Flow_Scenario_1184,test_positive_flow_S1184_v10,2,POST,/api/v1/travelservice/trips/left,endPlace,San Diego,true,offline
+Flow_Scenario_1184,test_positive_flow_S1184_v10,2,POST,/api/v1/travelservice/trips/left,startPlace,Wuhan,true,offline
+Flow_Scenario_1184,test_positive_flow_S1184_v11,2,POST,/api/v1/travelservice/trips/left,endPlace,Chicago,true,offline
+Flow_Scenario_1184,test_positive_flow_S1184_v11,2,POST,/api/v1/travelservice/trips/left,startPlace,Guangzhou,true,offline
+Flow_Scenario_1184,test_positive_flow_S1184_v12,2,POST,/api/v1/travelservice/trips/left,endPlace,Indianapolis,true,offline
+Flow_Scenario_1184,test_positive_flow_S1184_v12,2,POST,/api/v1/travelservice/trips/left,startPlace,Portland International Airport,false,unknown
+Flow_Scenario_1184,test_positive_flow_S1184_v13,2,POST,/api/v1/travelservice/trips/left,endPlace,Los Angeles,true,offline
+Flow_Scenario_1184,test_positive_flow_S1184_v13,2,POST,/api/v1/travelservice/trips/left,startPlace,Hartsfield-Jackson Atlanta International Airport,false,unknown
+Flow_Scenario_1184,test_positive_flow_S1184_v14,2,POST,/api/v1/travelservice/trips/left,endPlace,New York City,false,unknown
+Flow_Scenario_1184,test_positive_flow_S1184_v14,2,POST,/api/v1/travelservice/trips/left,startPlace,Orlando International Airport,false,unknown
+Flow_Scenario_1184,test_positive_flow_S1184_v15,2,POST,/api/v1/travelservice/trips/left,endPlace,"Houston, TX",false,unknown
+Flow_Scenario_1184,test_positive_flow_S1184_v15,2,POST,/api/v1/travelservice/trips/left,startPlace,San Francisco International Airport,false,unknown
+Flow_Scenario_1184,test_positive_flow_S1184_v16,2,POST,/api/v1/travelservice/trips/left,endPlace,Philadelphia,true,offline
+Flow_Scenario_1184,test_positive_flow_S1184_v16,2,POST,/api/v1/travelservice/trips/left,startPlace,Phoenix Sky Harbor International Airport,false,unknown
+Flow_Scenario_1184,test_positive_flow_S1184_v17,2,POST,/api/v1/travelservice/trips/left,endPlace,San Antonio,true,offline
+Flow_Scenario_1184,test_positive_flow_S1184_v17,2,POST,/api/v1/travelservice/trips/left,startPlace,Portland International Airport,false,unknown
+Flow_Scenario_1184,test_positive_flow_S1184_v18,2,POST,/api/v1/travelservice/trips/left,endPlace,Jacksonville,true,offline
+Flow_Scenario_1184,test_positive_flow_S1184_v18,2,POST,/api/v1/travelservice/trips/left,startPlace,Hangzhou,true,offline
+Flow_Scenario_1184,test_positive_flow_S1184_v20,2,POST,/api/v1/travelservice/trips/left,endPlace,San Diego,true,offline
+Flow_Scenario_1184,test_positive_flow_S1184_v20,2,POST,/api/v1/travelservice/trips/left,startPlace,Denver International Airport,false,unknown
+Flow_Scenario_2319,test_positive_flow_S2319_v50,2,PUT,/api/v1/adminbasicservice/adminbasic/stations,name,Greenway Express,false,unknown
+Flow_Scenario_3267,test_positive_flow_S3267_v6,2,POST,/api/v1/travelplanservice/travelPlan/cheapest,endPlace,"Houston, TX",false,unknown
+Flow_Scenario_3267,test_positive_flow_S3267_v6,2,POST,/api/v1/travelplanservice/travelPlan/cheapest,startPlace,Chengdu,true,offline
+Flow_Scenario_3267,test_positive_flow_S3267_v7,2,POST,/api/v1/travelplanservice/travelPlan/cheapest,endPlace,"Houston, TX",false,unknown
+Flow_Scenario_3267,test_positive_flow_S3267_v7,2,POST,/api/v1/travelplanservice/travelPlan/cheapest,startPlace,Chicago O'Hare International Airport,false,unknown
+Flow_Scenario_3267,test_positive_flow_S3267_v9,2,POST,/api/v1/travelplanservice/travelPlan/cheapest,endPlace,"Houston, TX",false,unknown
+Flow_Scenario_3267,test_positive_flow_S3267_v9,2,POST,/api/v1/travelplanservice/travelPlan/cheapest,startPlace,Guangzhou,true,offline
+Flow_Scenario_3267,test_positive_flow_S3267_v13,2,POST,/api/v1/travelplanservice/travelPlan/cheapest,endPlace,"Houston, TX",false,unknown
+Flow_Scenario_3267,test_positive_flow_S3267_v13,2,POST,/api/v1/travelplanservice/travelPlan/cheapest,startPlace,Chicago O'Hare International Airport,false,unknown
+Flow_Scenario_3267,test_positive_flow_S3267_v16,2,POST,/api/v1/travelplanservice/travelPlan/cheapest,endPlace,"Houston, TX",false,unknown
+Flow_Scenario_3267,test_positive_flow_S3267_v16,2,POST,/api/v1/travelplanservice/travelPlan/cheapest,startPlace,Chicago O'Hare International Airport,false,unknown
+Flow_Scenario_3267,test_positive_flow_S3267_v19,2,POST,/api/v1/travelplanservice/travelPlan/cheapest,endPlace,"Los Angeles, CA",false,unknown
+Flow_Scenario_3267,test_positive_flow_S3267_v19,2,POST,/api/v1/travelplanservice/travelPlan/cheapest,startPlace,Chicago O'Hare International Airport,false,unknown
+Flow_Scenario_3472,test_positive_flow_S3472_v4,2,PUT,/api/v1/adminbasicservice/adminbasic/trains,name,Silver Bullet Express,false,unknown
+Flow_Scenario_3472,test_positive_flow_S3472_v9,2,PUT,/api/v1/adminbasicservice/adminbasic/trains,name,Express Train,false,unknown
+Flow_Scenario_3472,test_positive_flow_S3472_v11,2,PUT,/api/v1/adminbasicservice/adminbasic/trains,name,Express Train,false,unknown
+Flow_Scenario_3472,test_positive_flow_S3472_v14,2,PUT,/api/v1/adminbasicservice/adminbasic/trains,name,Express Train,false,unknown
+Flow_Scenario_3472,test_positive_flow_S3472_v15,2,PUT,/api/v1/adminbasicservice/adminbasic/trains,name,Express Train,false,unknown
+Flow_Scenario_3472,test_positive_flow_S3472_v22,2,PUT,/api/v1/adminbasicservice/adminbasic/trains,name,Greenway Express,false,unknown
+Flow_Scenario_3472,test_positive_flow_S3472_v30,2,PUT,/api/v1/adminbasicservice/adminbasic/trains,name,Express Train,false,unknown
+Flow_Scenario_3472,test_positive_flow_S3472_v35,2,PUT,/api/v1/adminbasicservice/adminbasic/trains,name,Greenway Express,false,unknown
+Flow_Scenario_3472,test_positive_flow_S3472_v40,2,PUT,/api/v1/adminbasicservice/adminbasic/trains,name,Express Train,false,unknown
+Flow_Scenario_3472,test_positive_flow_S3472_v49,2,PUT,/api/v1/adminbasicservice/adminbasic/trains,name,Express Train,false,unknown
+Flow_Scenario_3472,test_positive_flow_S3472_v55,2,PUT,/api/v1/adminbasicservice/adminbasic/trains,name,Express Train,false,unknown
+Flow_Scenario_3472,test_positive_flow_S3472_v57,2,PUT,/api/v1/adminbasicservice/adminbasic/trains,name,Express Train,false,unknown
+Flow_Scenario_3472,test_positive_flow_S3472_v66,2,PUT,/api/v1/adminbasicservice/adminbasic/trains,name,Swiftliner X,false,unknown
+Flow_Scenario_3472,test_positive_flow_S3472_v67,2,PUT,/api/v1/adminbasicservice/adminbasic/trains,name,City Saver Express,false,unknown
+Flow_Scenario_3472,test_positive_flow_S3472_v70,2,PUT,/api/v1/adminbasicservice/adminbasic/trains,name,Silver Bullet Express,false,unknown
+Flow_Scenario_3472,test_positive_flow_S3472_v73,2,PUT,/api/v1/adminbasicservice/adminbasic/trains,name,Silver Bullet Express,false,unknown
+Flow_Scenario_3472,test_positive_flow_S3472_v74,2,PUT,/api/v1/adminbasicservice/adminbasic/trains,name,Express Train,false,unknown
+Flow_Scenario_3472,test_positive_flow_S3472_v78,2,PUT,/api/v1/adminbasicservice/adminbasic/trains,name,Express Train,false,unknown
+Flow_Scenario_3472,test_positive_flow_S3472_v79,2,PUT,/api/v1/adminbasicservice/adminbasic/trains,name,Silver Bullet Express,false,unknown
+Flow_Scenario_3472,test_positive_flow_S3472_v82,2,PUT,/api/v1/adminbasicservice/adminbasic/trains,name,Express Train,false,unknown
+Flow_Scenario_3472,test_positive_flow_S3472_v83,2,PUT,/api/v1/adminbasicservice/adminbasic/trains,name,Express Train,false,unknown
+Flow_Scenario_3472,test_positive_flow_S3472_v88,2,PUT,/api/v1/adminbasicservice/adminbasic/trains,name,City Saver Express,false,unknown
+Flow_Scenario_3472,test_positive_flow_S3472_v89,2,PUT,/api/v1/adminbasicservice/adminbasic/trains,name,Greenway Express,false,unknown
+Flow_Scenario_3472,test_positive_flow_S3472_v97,2,PUT,/api/v1/adminbasicservice/adminbasic/trains,name,Express Train,false,unknown
+Flow_Scenario_3472,test_positive_flow_S3472_v98,2,PUT,/api/v1/adminbasicservice/adminbasic/trains,name,Express Train,false,unknown
+Flow_Scenario_3472,test_positive_flow_S3472_v99,2,PUT,/api/v1/adminbasicservice/adminbasic/trains,name,Greenway Express,false,unknown
+Flow_Scenario_3568,test_positive_flow_S3568_v1,2,POST,/api/v1/adminbasicservice/adminbasic/stations,name,Express Train,false,unknown
+Flow_Scenario_3568,test_positive_flow_S3568_v2,2,POST,/api/v1/adminbasicservice/adminbasic/stations,name,Express Train,false,unknown
+Flow_Scenario_3568,test_positive_flow_S3568_v3,2,POST,/api/v1/adminbasicservice/adminbasic/stations,name,Express Train,false,unknown
+Flow_Scenario_3568,test_positive_flow_S3568_v4,2,POST,/api/v1/adminbasicservice/adminbasic/stations,name,Express Train,false,unknown
+Flow_Scenario_3568,test_positive_flow_S3568_v5,2,POST,/api/v1/adminbasicservice/adminbasic/stations,name,Express Train,false,unknown
+Flow_Scenario_3568,test_positive_flow_S3568_v6,2,POST,/api/v1/adminbasicservice/adminbasic/stations,name,Silver Bullet Express,false,unknown
+Flow_Scenario_3568,test_positive_flow_S3568_v7,2,POST,/api/v1/adminbasicservice/adminbasic/stations,name,Express Train,false,unknown
+Flow_Scenario_3568,test_positive_flow_S3568_v8,2,POST,/api/v1/adminbasicservice/adminbasic/stations,name,Express Train,false,unknown
+Flow_Scenario_3568,test_positive_flow_S3568_v9,2,POST,/api/v1/adminbasicservice/adminbasic/stations,name,Swiftliner X,false,unknown
+Flow_Scenario_3568,test_positive_flow_S3568_v10,2,POST,/api/v1/adminbasicservice/adminbasic/stations,name,City Saver Express,false,unknown
+Flow_Scenario_3568,test_positive_flow_S3568_v11,2,POST,/api/v1/adminbasicservice/adminbasic/stations,name,Greenway Express,false,unknown
+Flow_Scenario_3568,test_positive_flow_S3568_v13,2,POST,/api/v1/adminbasicservice/adminbasic/stations,name,Express Train,false,unknown
+Flow_Scenario_3568,test_positive_flow_S3568_v14,2,POST,/api/v1/adminbasicservice/adminbasic/stations,name,Express Train,false,unknown
+Flow_Scenario_3568,test_positive_flow_S3568_v15,2,POST,/api/v1/adminbasicservice/adminbasic/stations,name,Silver Bullet Express,false,unknown
+Flow_Scenario_3568,test_positive_flow_S3568_v16,2,POST,/api/v1/adminbasicservice/adminbasic/stations,name,Express Train,false,unknown
+Flow_Scenario_3568,test_positive_flow_S3568_v17,2,POST,/api/v1/adminbasicservice/adminbasic/stations,name,Express Train,false,unknown
+Flow_Scenario_3568,test_positive_flow_S3568_v18,2,POST,/api/v1/adminbasicservice/adminbasic/stations,name,Swiftliner X,false,unknown
+Flow_Scenario_3568,test_positive_flow_S3568_v19,2,POST,/api/v1/adminbasicservice/adminbasic/stations,name,City Saver Express,false,unknown
+Flow_Scenario_3568,test_positive_flow_S3568_v20,2,POST,/api/v1/adminbasicservice/adminbasic/stations,name,Greenway Express,false,unknown
+Flow_Scenario_976,test_positive_flow_S976_v1,2,POST,/api/v1/travel2service/trips/left,endPlace,"Chicago, IL",false,unknown
+Flow_Scenario_976,test_positive_flow_S976_v1,2,POST,/api/v1/travel2service/trips/left,startPlace,Dallas/Fort Worth International Airport,false,unknown
+Flow_Scenario_976,test_positive_flow_S976_v2,2,POST,/api/v1/travel2service/trips/left,endPlace,Phoenix,true,offline
+Flow_Scenario_976,test_positive_flow_S976_v2,2,POST,/api/v1/travel2service/trips/left,startPlace,Dallas/Fort Worth International Airport,false,unknown
+Flow_Scenario_976,test_positive_flow_S976_v3,2,POST,/api/v1/travel2service/trips/left,endPlace,Phoenix,true,offline
+Flow_Scenario_976,test_positive_flow_S976_v3,2,POST,/api/v1/travel2service/trips/left,startPlace,Chicago O'Hare International Airport,false,unknown
+Flow_Scenario_976,test_positive_flow_S976_v4,2,POST,/api/v1/travel2service/trips/left,endPlace,"Los Angeles, CA",false,unknown
+Flow_Scenario_976,test_positive_flow_S976_v4,2,POST,/api/v1/travel2service/trips/left,startPlace,John F. Kennedy Space Center,false,unknown
+Flow_Scenario_976,test_positive_flow_S976_v5,2,POST,/api/v1/travel2service/trips/left,endPlace,"Chicago, IL",false,unknown
+Flow_Scenario_976,test_positive_flow_S976_v5,2,POST,/api/v1/travel2service/trips/left,startPlace,Portland International Airport,false,unknown
+Flow_Scenario_976,test_positive_flow_S976_v6,2,POST,/api/v1/travel2service/trips/left,endPlace,New York City,false,unknown
+Flow_Scenario_976,test_positive_flow_S976_v6,2,POST,/api/v1/travel2service/trips/left,startPlace,FALLBACK_startPlace_0,false,unknown
+Flow_Scenario_976,test_positive_flow_S976_v7,2,POST,/api/v1/travel2service/trips/left,endPlace,Indianapolis,true,offline
+Flow_Scenario_976,test_positive_flow_S976_v7,2,POST,/api/v1/travel2service/trips/left,startPlace,Portland International Airport,false,unknown
+Flow_Scenario_976,test_positive_flow_S976_v8,2,POST,/api/v1/travel2service/trips/left,endPlace,beijing,true,offline
+Flow_Scenario_976,test_positive_flow_S976_v8,2,POST,/api/v1/travel2service/trips/left,startPlace,Phoenix Sky Harbor International Airport,false,unknown
+Flow_Scenario_976,test_positive_flow_S976_v9,2,POST,/api/v1/travel2service/trips/left,endPlace,Phoenix,true,offline
+Flow_Scenario_976,test_positive_flow_S976_v9,2,POST,/api/v1/travel2service/trips/left,startPlace,John F. Kennedy Space Center,false,unknown
+Flow_Scenario_976,test_positive_flow_S976_v10,2,POST,/api/v1/travel2service/trips/left,endPlace,beijing,true,offline
+Flow_Scenario_976,test_positive_flow_S976_v10,2,POST,/api/v1/travel2service/trips/left,startPlace,Los Angeles International Airport,false,unknown
+Flow_Scenario_976,test_positive_flow_S976_v11,2,POST,/api/v1/travel2service/trips/left,endPlace,Dallas,true,offline
+Flow_Scenario_976,test_positive_flow_S976_v11,2,POST,/api/v1/travel2service/trips/left,startPlace,FALLBACK_startPlace_0,false,unknown
+Flow_Scenario_976,test_positive_flow_S976_v12,2,POST,/api/v1/travel2service/trips/left,endPlace,Jacksonville,true,offline
+Flow_Scenario_976,test_positive_flow_S976_v12,2,POST,/api/v1/travel2service/trips/left,startPlace,John F. Kennedy Space Center,false,unknown
+Flow_Scenario_976,test_positive_flow_S976_v13,2,POST,/api/v1/travel2service/trips/left,endPlace,Los Angeles,true,offline
+Flow_Scenario_976,test_positive_flow_S976_v13,2,POST,/api/v1/travel2service/trips/left,startPlace,Orlando International Airport,false,unknown
+Flow_Scenario_976,test_positive_flow_S976_v14,2,POST,/api/v1/travel2service/trips/left,endPlace,Phoenix,true,offline
+Flow_Scenario_976,test_positive_flow_S976_v14,2,POST,/api/v1/travel2service/trips/left,startPlace,John F. Kennedy Space Center,false,unknown
+Flow_Scenario_976,test_positive_flow_S976_v15,2,POST,/api/v1/travel2service/trips/left,endPlace,Chicago,true,offline
+Flow_Scenario_976,test_positive_flow_S976_v15,2,POST,/api/v1/travel2service/trips/left,startPlace,John F. Kennedy Space Center,false,unknown
+Flow_Scenario_976,test_positive_flow_S976_v16,2,POST,/api/v1/travel2service/trips/left,endPlace,Chicago,true,offline
+Flow_Scenario_976,test_positive_flow_S976_v16,2,POST,/api/v1/travel2service/trips/left,startPlace,FALLBACK_startPlace_0,false,unknown
+Flow_Scenario_976,test_positive_flow_S976_v17,2,POST,/api/v1/travel2service/trips/left,endPlace,Beijing,true,offline
+Flow_Scenario_976,test_positive_flow_S976_v17,2,POST,/api/v1/travel2service/trips/left,startPlace,Seattle-Tacoma International Airport,false,unknown
+Flow_Scenario_976,test_positive_flow_S976_v18,2,POST,/api/v1/travel2service/trips/left,endPlace,Jacksonville,true,offline
+Flow_Scenario_976,test_positive_flow_S976_v18,2,POST,/api/v1/travel2service/trips/left,startPlace,Phoenix Sky Harbor International Airport,false,unknown
+Flow_Scenario_976,test_positive_flow_S976_v19,2,POST,/api/v1/travel2service/trips/left,endPlace,Jacksonville,true,offline
+Flow_Scenario_976,test_positive_flow_S976_v19,2,POST,/api/v1/travel2service/trips/left,startPlace,Orlando International Airport,false,unknown
+Flow_Scenario_976,test_positive_flow_S976_v20,2,POST,/api/v1/travel2service/trips/left,endPlace,Philadelphia,true,offline
+Flow_Scenario_976,test_positive_flow_S976_v20,2,POST,/api/v1/travel2service/trips/left,startPlace,Dallas/Fort Worth International Airport,false,unknown

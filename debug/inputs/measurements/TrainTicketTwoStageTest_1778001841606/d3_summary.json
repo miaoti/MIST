@@ -1,0 +1,82 @@
+{
+  "metric": "D3 LLM Hallucination Rate",
+  "scored_categories": [
+    "diverse_gen",
+    "positive_gen",
+    "simple_gen"
+  ],
+  "rows_total": 13033,
+  "rows_scored": 159,
+  "rows_actionable": 0,
+  "rows_valid": 0,
+  "rows_hallucinated": 0,
+  "rows_abstained": 159,
+  "rows_no_constraint": 0,
+  "lhr": null,
+  "lhr_definition": "hallucinated / (scored - abstained)",
+  "lhr_threshold_pass": false,
+  "abstain_rate": 1.0,
+  "by_constraint_violation": {},
+  "by_prompt_category": {
+    "positive_gen": {
+      "total": 83,
+      "valid": 0,
+      "hallucinated": 0,
+      "abstained": 83,
+      "lhr": null
+    },
+    "extraction": {
+      "total": 54,
+      "valid": 0,
+      "hallucinated": 0,
+      "abstained": 0,
+      "lhr": 0.0
+    },
+    "simple_gen": {
+      "total": 37,
+      "valid": 0,
+      "hallucinated": 0,
+      "abstained": 37,
+      "lhr": null
+    },
+    "other": {
+      "total": 12664,
+      "valid": 0,
+      "hallucinated": 0,
+      "abstained": 0,
+      "lhr": 0.0
+    },
+    "bulk_extract": {
+      "total": 54,
+      "valid": 0,
+      "hallucinated": 0,
+      "abstained": 0,
+      "lhr": 0.0
+    },
+    "diverse_gen": {
+      "total": 39,
+      "valid": 0,
+      "hallucinated": 0,
+      "abstained": 39,
+      "lhr": null
+    },
+    "negative_gen": {
+      "total": 102,
+      "valid": 0,
+      "hallucinated": 0,
+      "abstained": 0,
+      "lhr": 0.0
+    }
+  },
+  "by_model": {
+    "deepseek-chat": {
+      "total": 159,
+      "valid": 0,
+      "hallucinated": 0,
+      "abstained": 159,
+      "lhr": null
+    }
+  },
+  "worst_parameters": [],
+  "computed_at": "2026-05-06T03:28:01Z"
+}

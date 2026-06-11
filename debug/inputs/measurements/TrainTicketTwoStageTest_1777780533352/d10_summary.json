@@ -1,0 +1,133 @@
+{
+  "metric": "D10 Negative-Input Fault-Type Purity",
+  "definition": "fraction of negative values that actually exhibit the labelled fault as a property of the value",
+  "rows_total": 3348,
+  "rows_pure": 2503,
+  "overall_nifp": 0.747610513739546,
+  "by_fault": {
+    "BOUNDARY_VIOLATION": {
+      "total": 248,
+      "pure": 0,
+      "schema_unbounded": 248,
+      "purity": 0.0,
+      "impure_examples": []
+    },
+    "EMPTY_INPUT": {
+      "total": 12,
+      "pure": 12,
+      "schema_unbounded": 0,
+      "purity": 1.0,
+      "impure_examples": []
+    },
+    "NULL_INPUT": {
+      "total": 21,
+      "pure": 21,
+      "schema_unbounded": 0,
+      "purity": 1.0,
+      "impure_examples": []
+    },
+    "OVERFLOW": {
+      "total": 254,
+      "pure": 226,
+      "schema_unbounded": 0,
+      "purity": 0.889763779527559,
+      "impure_examples": [
+        {
+          "parameter": "enableBoughtDateQuery",
+          "value": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+          "operation": "POST /api/v1/orderOtherService/orderOther/refresh"
+        },
+        {
+          "parameter": "enableBoughtDateQuery",
+          "value": "2147483647",
+          "operation": "POST /api/v1/orderOtherService/orderOther/refresh"
+        },
+        {
+          "parameter": "enableStateQuery",
+          "value": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+          "operation": "POST /api/v1/orderOtherService/orderOther/refresh"
+        }
+      ]
+    },
+    "SEMANTIC_MISMATCH": {
+      "total": 1224,
+      "pure": 956,
+      "schema_unbounded": 0,
+      "purity": 0.7810457516339869,
+      "impure_examples": [
+        {
+          "parameter": "enableBoughtDateQuery",
+          "value": "truefalse",
+          "operation": "POST /api/v1/orderOtherService/orderOther/refresh"
+        },
+        {
+          "parameter": "enableBoughtDateQuery",
+          "value": "01",
+          "operation": "POST /api/v1/orderOtherService/orderOther/refresh"
+        },
+        {
+          "parameter": "enableBoughtDateQuery",
+          "value": "null",
+          "operation": "POST /api/v1/orderOtherService/orderOther/refresh"
+        }
+      ]
+    },
+    "SPECIAL_CHARACTERS": {
+      "total": 1134,
+      "pure": 882,
+      "schema_unbounded": 0,
+      "purity": 0.7777777777777778,
+      "impure_examples": [
+        {
+          "parameter": "boughtDateStart",
+          "value": "1; DELETE FROM users WHERE 1=1",
+          "operation": "POST /api/v1/orderOtherService/orderOther/refresh"
+        },
+        {
+          "parameter": "boughtDateStart",
+          "value": "..\\..\\..\\windows\\system32\\config\\sam",
+          "operation": "POST /api/v1/orderOtherService/orderOther/refresh"
+        },
+        {
+          "parameter": "boughtDateStart",
+          "value": "; ls -la",
+          "operation": "POST /api/v1/orderOtherService/orderOther/refresh"
+        }
+      ]
+    },
+    "TYPE_MISMATCH": {
+      "total": 455,
+      "pure": 406,
+      "schema_unbounded": 0,
+      "purity": 0.8923076923076924,
+      "impure_examples": [
+        {
+          "parameter": "boughtDateStart",
+          "value": "{key=value}",
+          "operation": "POST /api/v1/orderOtherService/orderOther/refresh"
+        },
+        {
+          "parameter": "loginId",
+          "value": "{key=value}",
+          "operation": "POST /api/v1/orderOtherService/orderOther/refresh"
+        },
+        {
+          "parameter": "boughtDateEnd",
+          "value": "{key=value}",
+          "operation": "POST /api/v1/orderOtherService/orderOther/refresh"
+        }
+      ]
+    }
+  },
+  "per_type_pass": {
+    "BOUNDARY_VIOLATION": false,
+    "OVERFLOW": false,
+    "SPECIAL_CHARACTERS": false,
+    "TYPE_MISMATCH": false,
+    "SEMANTIC_MISMATCH": false,
+    "NULL_INPUT": true,
+    "EMPTY_INPUT": true
+  },
+  "nifp_threshold_pass": false,
+  "computed_at": "2026-05-05T05:06:12Z"
+}

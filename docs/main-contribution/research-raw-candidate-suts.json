@@ -1,0 +1,330 @@
+{
+  "summary": "Deep research harness — fan-out web searches, fetch sources, adversarially verify claims, synthesize a cited report.",
+  "agentCount": 108,
+  "logs": [
+    "Q: Find open-source microservice benchmark systems (or real systems with public bug…",
+    "Decomposed into 6 angles: broad/primary — benchmark survey, resilience/graceful-degradation behavior, academic/empirical — swallowed-error bug datasets, academic/SUT-alignment — recent testing papers, practitioner/implementation — fault injection on benchmarks, contrarian/skeptical — BFF aggregator partial-failure design",
+    "practitioner/implementation — fault injection on benchmarks: 6 results",
+    "broad/primary — benchmark survey: 6 results",
+    "broad/primary — benchmark survey: 5 novel (1 filtered)",
+    "contrarian/skeptical — BFF aggregator partial-failure design: 6 results",
+    "contrarian/skeptical — BFF aggregator partial-failure design: 4 novel (2 filtered)",
+    "resilience/graceful-degradation behavior: 6 results",
+    "resilience/graceful-degradation behavior: 4 novel (2 filtered)",
+    "academic/empirical — swallowed-error bug datasets: 6 results",
+    "academic/empirical — swallowed-error bug datasets: 2 novel (4 filtered)",
+    "academic/SUT-alignment — recent testing papers: 6 results",
+    "academic/SUT-alignment — recent testing papers: 4 novel (2 filtered)",
+    "Fetched 25 sources → 113 claims → verifying top 25",
+    "\"Istio Bookinfo's reviews service is designed to gr…\": 3-0 ✓",
+    "\"The masking behavior surfaces to the user as a suc…\": 3-0 ✓",
+    "\"Issue #14842 documents a regression where the revi…\": 3-0 ✓",
+    "\"Robot Shop's authors explicitly disclaim that its …\": 2-1 ✓",
+    "\"Robot Shop ships pre-instrumented for distributed …\": 3-0 ✓",
+    "\"Online Boutique's frontend swallows downstream fai…\": 3-0 ✓",
+    "\"The productHandler calls getRecommendations and on…\": 3-0 ✓",
+    "\"Online Boutique is an 11-service microservice app …\": 3-0 ✓",
+    "\"Legolas (NSDI'24) evaluates SIX large distributed …\": 3-0 ✓",
+    "\"The paper's definition of partial failure is the d…\": 3-0 ✓",
+    "\"Online Boutique's frontend swallows recommendation…\": 3-0 ✓",
+    "\"The motivating real ZooKeeper incident shows the c…\": 3-0 ✓",
+    "\"Online Boutique's frontend swallows ad-service fai…\": 3-0 ✓",
+    "\"The same frontend fails LOUDLY for critical downst…\": 3-0 ✓",
+    "\"The Istio Bookinfo sample app's product page is de…\": 3-0 ✓",
+    "\"Istio's Bookinfo productpage (frontend/aggregator)…\": 2-1 ✓",
+    "\"In Istio's Bookinfo benchmark, productpage calls r…\": 3-0 ✓",
+    "\"When the downstream timeout/failure manifests, Boo…\": 3-0 ✓",
+    "\"Bookinfo's productpage HTTP response remains succe…\": 1-2 ✗",
+    "\"Swallowed/masked errors are a dominant, empiricall…\": 1-2 ✗",
+    "\"The classic swallowed-error pattern (catch-and-ign…\": 3-0 ✓",
+    "\"The masked-error bugs are concrete and trivial-to-…\": 2-1 ✓",
+    "\"The paper's evaluation SUTs are 10 mostly standalo…\": 2-1 ✓",
+    "\"TrainTicket is an accepted, widely-used benchmark …\": 2-1 ✓",
+    "\"The faults used were NOT injected hidden-downstrea…\": 3-0 ✓",
+    "Verify done: 25 claims → 23 confirmed, 2 killed"
+  ],
+  "result": {
+    "question": "Find open-source microservice benchmark systems (or real systems with public bug data) suitable as a SECOND/THIRD evaluation SUT for a distributed-trace TEST ORACLE that detects HIDDEN-DOWNSTREAM FAILURES — where a gateway/BFF/aggregator returns a clean HTTP 2xx while a downstream service span 5xx-errors (failure swallowed/masked, invisible to response-level oracles; only the trace reveals it).\n\nCONTEXT (treat as GIVEN): We currently have ONE SUT, train-ticket, but it is STRUCTURALLY UNFIT for demonstrating this: it (a) validates inputs defensively and rejects bad inputs with HTTP 4xx BEFORE any downstream call, and (b) fails LOUDLY — it propagates a downstream 5xx all the way to the root rather than swallowing it. So train-ticket has ZERO natural hidden-downstream instances; we can only inject them, which is circular (\"baseline 0 by construction\") evidence a reviewer rejects. We need systems where hidden-downstream failures arise NATURALLY — swallowed exceptions, fallback / graceful-degradation that masks a real error, partial fan-out where one of several downstreams 5xx but the aggregator still returns 200 — OR systems with REAL developer-confirmed bugs of this kind.\n\nCANDIDATE SUT REQUIREMENTS: (1) microservice architecture with a gateway/BFF/aggregator + multiple downstream services; (2) distributed tracing already instrumented (Jaeger/OpenTelemetry/Zipkin) or easily added; (3) REST/HTTP APIs, open-source, locally deployable (Docker/K8s); (4) CRUCIAL and hardest — a propensity for hidden-downstream/masked failures (resilience patterns like circuit breakers/fallbacks/retries/partial responses, or aggregator/BFF designs that can mask a sub-call failure), NOT defensive-and-loud like train-ticket.\n\nDELIVER:\nA. Survey the major open-source microservice benchmarks — at least DeathStarBench (social/hotel/media), Google Online Boutique (microservices-demo / hipster-shop), Weaveworks Sock Shop, TeaStore, Spring PetClinic microservices, Istio Bookinfo, Instana Robot Shop, Acme Air, eShopOnContainers, and any others you find. For EACH: tracing support (Jaeger/OTel/Zipkin?), gateway/aggregator + downstream topology, REST, deployability — and MOST IMPORTANTLY whether it exhibits or is documented to exhibit hidden-downstream / swallowed-error / graceful-degradation-masking / partial-fan-out behavior (e.g., does Online Boutique's frontend still render 200 when a downstream like recommendation/ad fails? does Bookinfo degrade when reviews/ratings fail?).\nB. Empirical studies / bug datasets documenting swallowed-error / error-masking / silent / partial-failure bugs in microservices (for REAL-bug evidence), especially any naming specific systems + developer-confirmed bugs.\nC. What SUTs do recent (2022-2026) ICSE/FSE/ASE/ISSTA microservice/REST API testing + trace/observability papers actually use, so we align with accepted benchmarks?\nD. FRANK RANKED RECOMMENDATION: the 2-3 best candidate systems (besides train-ticket) satisfying BOTH (tracing + REST + deployable) AND (natural hidden-downstream propensity OR real confirmed such bugs). For each: why it fits, how to obtain it, its tracing status, and the single biggest risk. If NO open benchmark naturally exhibits hidden-downstream (i.e., they are all defensive/loud like train-ticket), say so PLAINLY and state what that implies for the viability of a hidden-downstream contribution.",
+    "summary": "A second/third evaluation SUT that NATURALLY exhibits hidden-downstream/masked failures exists and is well-documented: the two strongest candidates are Istio Bookinfo (productpage/reviews tier degrades gracefully — returns HTTP 200 with \"ratings/reviews currently unavailable\" while the downstream ratings/reviews call has actually failed) and Google Online Boutique (frontend deliberately swallows non-critical adservice/recommendationservice failures via log-and-continue, rendering a 200 page, while failing loudly with HTTP 500 only for critical cart/product/currency calls). Both behaviors are present in current primary source code (not injected), are marked intentional by developer comments/design, and represent exactly the mixed-criticality/graceful-degradation pattern train-ticket lacks. The decisive trade-off between them: Online Boutique ships native OpenTelemetry tracing out-of-the-box (satisfies the tracing requirement directly) but uses gRPC for inter-service calls (violating the strict REST/HTTP requirement), whereas Bookinfo is the canonical Istio tracing demo with documented graceful degradation but its masking is partly mesh/fault-injection-driven. Robot Shop is a weaker third option (honest \"patchy error handling\" disclaimer but NO documented specific masked-failure instance, and ships Instana-only tracing — no native Jaeger/OTel/Zipkin). The masked/partial-failure phenomenon itself is independently validated as a real, studied bug class by OSDI'14 (25% of catastrophic failures caused by ignoring/only-logging errors, with developer-confirmed instances in HBase/Cassandra/HDFS) and NSDI'24 Legolas (partial/\"gray\" failures where a subset breaks while liveness checks still report healthy), so the contribution's premise is defensible even though those substrates are not microservices.",
+    "findings": [
+      {
+        "claim": "Istio Bookinfo NATURALLY exhibits the target hidden-downstream pattern: the reviews service (v2/v3) catches a failed/timed-out downstream ratings call, returns null internally, and the endpoint still emits HTTP 200 with a body field {\"rating\": {\"error\": \"Ratings service is currently unavailable\"}}; the productpage aggregator renders this as a clean page. This is intended, in-tree, present-day design — a regression that broke it (loud propagation) was filed as a BUG (#14842) and FIXED (PR #15489). A response-level oracle sees 200 and misses the ratings failure; only the trace reveals the failed downstream span.",
+        "confidence": "high",
+        "sources": [
+          "https://github.com/istio/istio/issues/14842",
+          "https://github.com/istio/istio/issues/8069",
+          "https://istio.io/latest/docs/tasks/traffic-management/fault-injection/",
+          "samples/bookinfo/src/reviews/.../LibertyRestEndpoint.java (Istio repo, current master)"
+        ],
+        "evidence": "Verifier read current master LibertyRestEndpoint.java directly: getRatings() catches ProcessingException / treats non-200 as failure and returns null; bookReviewsById() builds Response.ok() (HTTP 200) regardless; getJsonResponse() emits \"rating\": {\"error\": \"Ratings service is currently unavailable\"} when stars remain -1. PR #15489 ('Make BookInfo reviews service handle timeouts of rating service') RESTORED this with comment 'Catching the exception allows to show the reviews without the rating stars.' Issue #14842 closed/resolved. Official Istio fault-injection docs corroborate: with an abort fault on ratings the 'productpage loads successfully (HTTP 200)' while showing 'Ratings service is currently unavailable'. Multiple primary sources, 3-0 votes on claims [0],[1],[2],[14].",
+        "vote": "merged 3-0 (claims 0,1,2,14)"
+      },
+      {
+        "claim": "Bookinfo's masking spans both tiers and both fault modes. (a) Productpage->reviews: getProductReviews() in productpage.py wraps the reviews call in try/except, on failure returns {'error':'Sorry, product reviews are currently unavailable for this book.'}, and front() ALWAYS render_template(...) at HTTP 200 with the message embedded inline. (b) The canonical demo has a hard-coded timeout mismatch (productpage->reviews = 3s + 1 retry = 6s vs reviews:v2->ratings = 10s) built into the app code. When a downstream delay/abort manifests, the page still loads (~7s) with only the reviews/ratings section degraded — graceful degradation, not end-to-end loud failure.",
+        "confidence": "high",
+        "sources": [
+          "https://istio.io/latest/docs/tasks/traffic-management/fault-injection/",
+          "https://github.com/istio/istio/issues/1379",
+          "samples/bookinfo/src/productpage/productpage.py (Istio repo)"
+        ],
+        "evidence": "Official Istio docs state verbatim 'There are hard-coded timeouts in the microservices that have caused the reviews service to fail... productpage to reviews coded as 3s + 1 retry for 6s total' and 'the Reviews section displays an error message: Sorry, product reviews are currently unavailable for this book.' productpage.py source: getProductReviews() try/except returns the error dict; front() renders it at HTTP 200. Third-party (oneuptime) corroborates 'productpage returns HTTP 200 even when reviewing services fail.' NUANCE: the productpage internally retains the true downstream status code in a Prometheus counter, so the failure is masked at the USER-FACING/HTTP-status level but not fully erased internally — still exactly the 2xx-at-aggregator-while-downstream-failed pattern. Claims [15],[16],[17] (3-0, one 2-1).",
+        "vote": "merged 3-0/2-1 (claims 15,16,17)"
+      },
+      {
+        "claim": "Google Online Boutique (microservices-demo / hipster-shop) NATURALLY exhibits selective hidden-downstream masking in committed Go code (NOT injected). The frontend swallows non-critical downstream failures: chooseAd() on getAd error logs a warning and returns nil (invoked inline in the home/product template-data map, so the page still renders 200); productHandler/cartHandler on getRecommendations error only log a warning and continue (one site discards the error entirely with `recommendations, _ :=`). Developer comments mark both as intentional: 'ignores the error retrieving the ad since it is not critical' and 'ignores the error retrieving recommendations since it is not critical.' By contrast critical calls (currency, cart, product) call renderHTTPError(..., http.StatusInternalServerError) and abort — proving SELECTIVE graceful degradation / mixed-criticality, exactly the resilience pattern the oracle targets and train-ticket lacks.",
+        "confidence": "high",
+        "sources": [
+          "https://github.com/GoogleCloudPlatform/microservices-demo",
+          "https://github.com/GoogleCloudPlatform/microservices-demo/blob/main/src/frontend/handlers.go",
+          "https://github.com/GoogleCloudPlatform/microservices-demo/blob/main/src/frontend/rpc.go"
+        ],
+        "evidence": "Verifier cloned repo (HEAD 5096a85 / commit ccff406, 2026-04-23, current) and matched every quoted string verbatim. handlers.go:526-534 chooseAd returns nil on err with comment 'It ignores the error retrieving the ad since it is not critical'; invoked inline at handlers.go:116 (home) and product handler. handlers.go:177-181 & 265-268 getRecommendations: log.Warn + NO return; handlers.go:378 uses `_` to discard error. Critical path handlers.go:64/69/74 currencies/products/cart -> renderHTTPError(..., StatusInternalServerError) + return. git blame: recommendation-optional behavior deliberately introduced by commit dfc78b9 'Make recommendation service optional (#1332)' (Dec 2022). Claims [5],[6],[11],[12],[13] all 3-0 with direct source reads.",
+        "vote": "merged 3-0 (claims 5,6,11,12,13)"
+      },
+      {
+        "claim": "Online Boutique ships native OpenTelemetry distributed tracing out-of-the-box and is trivially K8s-deployable — satisfying the tracing and deployability requirements directly. BUT inter-service calls are gRPC, not REST: it is 11 microservices that 'talk to each other over gRPC', with only the frontend exposing an HTTP server to clients. This is the single biggest fitness caveat against requirement (3) REST/HTTP APIs — the swallowed downstream failure surfaces as a gRPC error status on the downstream span, not literally an HTTP 5xx span (substantively identical to the oracle's target of root-200 + downstream-span-error, but not strict REST).",
+        "confidence": "high",
+        "sources": [
+          "https://github.com/GoogleCloudPlatform/microservices-demo",
+          "https://github.com/GoogleCloudPlatform/microservices-demo/blob/main/src/frontend/main.go"
+        ],
+        "evidence": "main.go imports otelhttp/otelgrpc + OTLP trace exporter; frontend wrapped via otelhttp.NewHandler(handler,'frontend'), sdktrace.AlwaysSample(), otelgrpc client handler on downstream conns — full OTel out of the box. Deployable via kubernetes-manifests/ (12 svcs) + release/kubernetes-manifests.yaml + release/istio-manifests.yaml. README states verbatim 'Online Boutique is composed of 11 microservices written in different languages that talk to each other over gRPC' and frontend 'Exposes an HTTP server to serve the website.' NOTE one verifier flagged that src/frontend/handlers.go itself uses logrus+gorilla/mux and the OTel wiring lives in main.go / a separate path (opentelemetry-demo fork is a related but distinct OTel-instrumented variant). Claims [5],[7] (3-0).",
+        "vote": "merged 3-0 (claims 5,7)"
+      },
+      {
+        "claim": "Instana Robot Shop is a WEAK third candidate. Its README honestly disclaims 'the error handling is patchy and there is not any security built into the application' — a propensity SIGNAL toward mishandled errors rather than train-ticket's defensive-and-loud style. However there is NO documented specific hidden-downstream/masked-failure instance (no named service, no 2xx-at-gateway-while-downstream-5xx scenario; three corroborating negative searches found none). 'Patchy' could equally mean loud crashes. Additionally it ships pre-instrumented for Instana tracing only — NOT natively OpenTelemetry/Jaeger/Zipkin — so a Jaeger/OTel/Zipkin-expecting oracle would need to adapt or add instrumentation rather than use it out of the box.",
+        "confidence": "high",
+        "sources": [
+          "https://github.com/instana/robot-shop",
+          "https://github.com/instana/robot-shop/blob/master/README.md"
+        ],
+        "evidence": "Verbatim from current master README: 'To be clear, the error handling is patchy and there is not any security built into the application.' README references ONLY Instana for tracing ('all required Instana components installed and configured ... automatic instrumentation for complete end to end tracing'); sole non-Instana observability is Prometheus /metrics on cart+payment (metrics, not tracing). No README/issues/docs reference OTel/Jaeger/Zipkin app instrumentation; instana/otel-shop is a SEPARATE repo. Claim [3] split 2-1 (the dissent reflects that 'patchy' is a weak signal that doesn't entail masking — already conceded in the claim); claim [4] 3-0.",
+        "vote": "merged 3-0/2-1 (claims 3,4)"
+      },
+      {
+        "claim": "The masked/swallowed-error phenomenon is a REAL, empirically-quantified, developer-confirmed bug class (validating the contribution's premise even where the substrate is not microservices). OSDI'14 (Yuan et al., 'Simple Testing Can Prevent Most Critical Failures') found 25% of catastrophic failures were caused by ignoring explicit errors, EXPLICITLY counting 'an error handler that only logs the error' as ignoring it; 35% fell into three trivial error-handler patterns (empty/log-only, abort-on-overly-general-exception, or FIXME/TODO). It gives a verbatim HBase example (catch (Exception ex) { LOG.error(\"split failed..\"); }) causing data loss, drawn from 198 real production failures in Cassandra/HBase/HDFS/MapReduce/Redis of which 143 were developer-fixed/confirmed (e.g., HBASE-10452). These are citable real swallowed-error bugs, not injected ones.",
+        "confidence": "high",
+        "sources": [
+          "https://www.usenix.org/system/files/conference/osdi14/osdi14-paper-yuan.pdf"
+        ],
+        "evidence": "Verifier extracted PDF text: '25% of the catastrophic failures were caused by ignoring explicit errors (an error handler that only logs the error is also considered as ignoring the error)' and 'Ignoring errors and allowing them to propagate is known to be bad programming practice [7, 60], yet we observed this lead to many catastrophic failures.' Figure 5 decomposes the 35% umbrella into Errors-ignored(25%)+Abort-in-over-caught(8%)+TODO(2%). Figure 7 HBase data-loss example confirmed verbatim. Top-tier venue, ~1500+ cites. Claims [18] (3-0) and [19] (2-1). CAVEAT: the editorial bridge to 'trace oracle' is the claimant's interpretation; the paper studies data-intensive storage systems, not microservice gateways/BFFs, and never mentions trace oracles. NOTE: a related stronger claim ('92% of catastrophic failures from incorrect handling of non-fatal errors') was REFUTED 1-2 and should NOT be cited.",
+        "vote": "merged 3-0/2-1 (claims 18,19)"
+      },
+      {
+        "claim": "Partial/'gray' failure — a subset of a system silently breaks while the rest behaves normally and liveness checks still report healthy — is a recognized, top-venue-studied failure class that is the direct conceptual analogue of 'hidden-downstream failure', though the studied substrate is NOT microservices. NSDI'24 Legolas defines partial failure as 'some R_f subset of R fail to maintain their safety or liveness properties, while other services R \\ R_f behave as expected', and its motivating real ZooKeeper incident shows the canonical looks-alive-but-broken signature: 'The clients experienced timeouts in create requests, but get requests still succeeded. Pinging the leader also showed that it was alive.' This supports the realism of the phenomenon the oracle targets.",
+        "confidence": "high",
+        "sources": [
+          "https://www.usenix.org/conference/nsdi24/presentation/wu-haoze",
+          "https://orderlab.io/paper/legolas-nsdi24-preprint.pdf"
+        ],
+        "evidence": "Verifier extracted preprint text confirming the partial-failure definition verbatim and the Figure 1 ZooKeeper incident verbatim. Paper grounds the masked/fail-silent reading in abstract ('notorious partial service failures ... triggered by subtle faults'), intro ('remain hidden in existing testing'), and 'gray faults [23]' (Huang et al. gray-failure/differential-observability). Independent OmegaGen (NSDI'20) corroborates a sibling ZooKeeper bug. Claims [9],[10] (3-0). CRITICAL SUBSTRATE CAVEAT (claim [8], 3-0): Legolas evaluates SIX large distributed systems — Kafka, ZooKeeper, HDFS, HBase, Cassandra, Flink — coordination services/databases/streaming engines, NOT REST microservices with gateway/BFF + downstream + distributed tracing. The authors themselves position Legolas as 'orthogonal' to microservice/REST work. So this supplies PHENOMENON validation, NOT a usable microservice SUT.",
+        "vote": "merged 3-0 (claims 8,9,10)"
+      },
+      {
+        "claim": "On benchmark alignment (part C): recent REST API testing and microservice-trace papers do NOT consistently use multi-service-with-aggregator SUTs, and train-ticket remains an accepted single-SUT benchmark — so a hidden-downstream contribution must look outside the most-cited REST-testing benchmark sets for natural topology. The ASE'23 RL REST-testing paper evaluates 10 mostly-standalone RESTful services (Features Service, LanguageTool, NCS, REST Countries, SCS, Genome Nexus, Person Controller, User Management Microservice, Market Service, Project Tracking System) from the EvoMaster Benchmark — single APIs lacking a gateway/BFF-over-downstreams topology, unsuitable as hidden-downstream SUTs. Separately, ICSE'22 DeepTraLog uses TrainTicket V0.2.0 (45 services, synchronous REST + async messaging) as its SOLE system, confirming a single-SUT-on-TrainTicket evaluation is publishable at a top venue.",
+        "confidence": "high",
+        "sources": [
+          "https://codingsoo.github.io/publication/2024-adaptive-rest-api-testing-rl",
+          "https://arxiv.org/html/2501.08600v2",
+          "https://cspengxin.github.io/publications/icse22-DeepTraLog.pdf"
+        ],
+        "evidence": "ASE'23 paper SUT list confirmed verbatim against author page + arXiv full text; these are EvoMaster/EMB independent single web/enterprise REST APIs (NCS/SCS artificial single-function; Genome Nexus = single Spring Boot app over MongoDB), black-box-tested per-operation with no gateway/aggregator. DeepTraLog states verbatim 'Our studies are conducted on the latest release V0.2.0 of TrainTicket ... 45 services ... synchronous REST invocations and asynchronous messaging' and Threats-to-Validity 'Our approach is only evaluated on TrainTicket and its fault cases.' Still cited as accepted benchmark in 2024-2025 works. Claims [20] (2-1), [21] (2-1).",
+        "vote": "merged 2-1 (claims 20,21)"
+      },
+      {
+        "claim": "TrainTicket's NATURAL fault catalog confirms it does NOT exhibit the hidden-downstream pattern, justifying the search for a second SUT. The 14 built-in fault branches group into four types — Asynchronous Interaction (F1,F2,F13), Multi-Instance (F8,F11,F12), Configuration (F3,F4,F5,F7), Monolithic (F6,F9,F10,F14) — none of which is a gateway/aggregator-swallows-a-downstream-5xx fault. Corroborating analyses note TrainTicket has 'no circuit breakers, fallback handlers, or graceful degradation' (the very mechanisms that produce hidden-downstream masking) and that faults 'propagate to dependent microservices' (fail loudly). This directly substantiates the research question's stated premise that train-ticket is structurally unfit and produces zero NATURAL hidden-downstream instances.",
+        "confidence": "high",
+        "sources": [
+          "https://cspengxin.github.io/publications/icse22-DeepTraLog.pdf",
+          "https://github.com/FudanSELab/train-ticket (Fault-Description wiki)"
+        ],
+        "evidence": "DeepTraLog Table 1 ('Fault Types in the TrainTicket Dataset') lists exactly the four types and IDs verbatim, by TrainTicket's own authors (Fudan SELab). Detailed fault mechanics (async message-ordering, multi-instance state desync, JVM/Docker/SSL/thread-pool config, SQL/CSS/calc bugs) contain NO masked-downstream-5xx case; multiple sources note absence of circuit-breakers/fallback/graceful-degradation. Claim [22] (3-0). SOFT SPOT (kept honest): the negative inference 'does not exhibit the hidden-downstream pattern' is derived from an exhaustive 4-category taxonomy + corroborated absence of degradation mechanisms, not a literal paper statement — but nothing contradicts it.",
+        "vote": "3-0 (claim 22)"
+      }
+    ],
+    "caveats": "TIME-SENSITIVITY / VERSION DRIFT: All source-code findings (Bookinfo reviews/productpage, Online Boutique frontend) were verified against current master/main as of late April 2026; both are actively maintained repos, so re-verify the exact handler/swallow logic at deploy time. Bookinfo's graceful degradation has ALREADY broken once (regression #14842, fixed by PR #15489) — it is a maintained design intent, not an immutable guarantee. CITATION PROVENANCE: Several Istio findings were originally cited to bug reports (#14842, #8069, #1379) that describe the masking via a REGRESSION or transient/Envoy bug rather than as a standing feature; the substantive behavior is confirmed by current primary source code + official fault-injection docs, so prefer citing samples/bookinfo/src/{reviews/LibertyRestEndpoint.java, productpage/productpage.py} + PR #15489 + the Istio fault-injection task page over the bug reports read in isolation. PROTOCOL MISMATCH (load-bearing): Online Boutique's inter-service calls are gRPC, NOT REST — the swallowed failure is a gRPC error status on the downstream span, not an HTTP 5xx span. If requirement (3) 'REST/HTTP APIs' is strict, this is disqualifying; if it means 'the oracle reads spans and detects root-2xx + downstream-error-span', it is substantively equivalent. Bookinfo's reviews->ratings and productpage->reviews hops ARE HTTP/REST, making Bookinfo the better fit on the REST axis. WEAK/SPLIT SOURCES: Robot Shop's masking propensity rests only on a generic self-disclaimer with zero documented specific instance (2-1) — do not overstate it. The OSDI'14 and NSDI'24 evidence validates the PHENOMENON but on non-microservice substrates (storage/coordination/streaming systems); it does NOT supply a drop-in microservice SUT and the 'trace oracle would detect this' framing is interpretive, not stated in those papers. REFUTED — DO NOT CITE: (1) the claim that Bookinfo's productpage stays 200 specifically under the injected-timeout scenario (1-2: under the docs' timeout demo the productpage actually surfaces an error after ~6s — Bookinfo's masking is the graceful-degradation/abort path, NOT the hard-coded-timeout path); (2) the OSDI'14 '92% of catastrophic failures from incorrect handling of non-fatal errors' figure (1-2). MIXED-CRITICALITY NUANCE: Online Boutique fails LOUDLY (HTTP 500) on critical cart/product/currency — so it is a MIXED pattern; the genuine hidden-downstream propensity lives ONLY in the ad/recommendation branch. This is a feature for demonstrating selectivity but means not every downstream failure is masked.",
+    "openQuestions": [
+      "FRANK BOTTOM LINE the synthesis supports but the parent must own: At least TWO open benchmarks (Bookinfo, Online Boutique) DO naturally exhibit hidden-downstream masking with present-day primary-source evidence, so the 'no benchmark naturally exhibits it -> contribution non-viable' worst case does NOT hold. The viability risk is narrower: each best candidate fails ONE of the strict requirements (Online Boutique = gRPC not REST; Bookinfo = masking partly mesh/fault-injection-driven and degradation has regressed before). Which requirement is the parent willing to relax — strict REST, or out-of-the-box-Jaeger/OTel — since no single candidate cleanly satisfies BOTH plus natural masking plus REST?",
+      "Does the trace oracle operate on span status codes generically (gRPC status + HTTP status) or strictly on HTTP 5xx spans? This determines whether Online Boutique (gRPC internal, but native OTel + concrete committed log-and-continue masking — arguably the strongest natural-masking evidence found) is usable or disqualified.",
+      "For Bookinfo, can a NATURAL (non-mesh-injected) downstream failure be triggered so the masking is not 'circular by injection' like train-ticket? The reviews service natively degrades on a real downstream exception/non-200 (LibertyRestEndpoint catch block) independent of Istio fault rules — does deploying ratings in a genuinely failing state (e.g., DB down) produce a 200-at-productpage + failed-ratings-span without any Istio VirtualService abort, giving a truly natural instance?",
+      "Are there REAL developer-confirmed hidden-downstream bug datasets in actual microservice systems (not storage/coordination systems like the OSDI'14/NSDI'24 corpora) — e.g., GitHub issues in Online Boutique/Bookinfo or industrial incident postmortems where an aggregator returned 2xx while a downstream span 5xx'd — that could replace injection entirely and rebut the 'baseline 0 by construction' reviewer objection?",
+      "Among benchmarks NOT individually verified in these 23 claims (DeathStarBench social/hotel/media, Sock Shop, TeaStore, Spring PetClinic microservices, Acme Air, eShopOnContainers), does any combine native Jaeger/OTel/Zipkin + REST inter-service calls + a documented natural fallback/partial-fan-out that masks a sub-call failure — potentially a cleaner fit than Bookinfo/Online Boutique on all axes simultaneously?"
+    ],
+    "refuted": [
+      {
+        "claim": "Bookinfo's productpage HTTP response remains successful even when the downstream reviews/ratings call fails due to the injected timeout, demonstrating a hidden-downstream / masked-failure pattern where the response level looks clean while a sub-call errors.",
+        "vote": "1-2",
+        "source": "https://istio.io/latest/docs/tasks/traffic-management/fault-injection/"
+      },
+      {
+        "claim": "Swallowed/masked errors are a dominant, empirically-measured cause of real production failures: 92% of catastrophic failures in five widely-used distributed systems resulted from incorrect handling of non-fatal errors that were explicitly signaled in software (e.g., a thrown exception or an error return that was then mishandled rather than propagated correctly). This is direct real-bug evidence that error-masking/silent-failure patterns occur naturally and are developer-confirmed, supporting the premise of a test oracle targeting hidden-downstream failures.",
+        "vote": "1-2",
+        "source": "https://www.usenix.org/system/files/conference/osdi14/osdi14-paper-yuan.pdf"
+      }
+    ],
+    "sources": [
+      {
+        "url": "https://github.com/istio/istio/issues/14842",
+        "quality": "primary",
+        "angle": "broad/primary — benchmark survey",
+        "claimCount": 5
+      },
+      {
+        "url": "https://github.com/instana/robot-shop",
+        "quality": "primary",
+        "angle": "broad/primary — benchmark survey",
+        "claimCount": 5
+      },
+      {
+        "url": "https://github.com/GoogleCloudPlatform/microservices-demo",
+        "quality": "primary",
+        "angle": "broad/primary — benchmark survey",
+        "claimCount": 5
+      },
+      {
+        "url": "https://notes.davidkopp.de/30-knowledge/microservices-reference-and-benchmark-applications/",
+        "quality": "blog",
+        "angle": "broad/primary — benchmark survey",
+        "claimCount": 5
+      },
+      {
+        "url": "https://www.usenix.org/conference/nsdi24/presentation/wu-haoze",
+        "quality": "primary",
+        "angle": "broad/primary — benchmark survey",
+        "claimCount": 5
+      },
+      {
+        "url": "https://github.com/GoogleCloudPlatform/microservices-demo/blob/main/src/frontend/handlers.go",
+        "quality": "primary",
+        "angle": "resilience/graceful-degradation behavior",
+        "claimCount": 4
+      },
+      {
+        "url": "https://github.com/istio/istio/issues/8069",
+        "quality": "primary",
+        "angle": "resilience/graceful-degradation behavior",
+        "claimCount": 4
+      },
+      {
+        "url": "https://github.com/istio/istio/issues/1379",
+        "quality": "primary",
+        "angle": "resilience/graceful-degradation behavior",
+        "claimCount": 4
+      },
+      {
+        "url": "https://istio.io/latest/docs/tasks/traffic-management/fault-injection/",
+        "quality": "primary",
+        "angle": "resilience/graceful-degradation behavior",
+        "claimCount": 5
+      },
+      {
+        "url": "https://www.usenix.org/system/files/conference/osdi14/osdi14-paper-yuan.pdf",
+        "quality": "primary",
+        "angle": "academic/empirical — swallowed-error bug datasets",
+        "claimCount": 5
+      },
+      {
+        "url": "https://zenodo.org/records/13947828",
+        "quality": "primary",
+        "angle": "academic/empirical — swallowed-error bug datasets",
+        "claimCount": 3
+      },
+      {
+        "url": "https://codingsoo.github.io/publication/2024-adaptive-rest-api-testing-rl",
+        "quality": "primary",
+        "angle": "academic/SUT-alignment — recent testing papers",
+        "claimCount": 4
+      },
+      {
+        "url": "https://cspengxin.github.io/publications/icse22-DeepTraLog.pdf",
+        "quality": "primary",
+        "angle": "academic/SUT-alignment — recent testing papers",
+        "claimCount": 5
+      },
+      {
+        "url": "https://arxiv.org/abs/2306.05895",
+        "quality": "primary",
+        "angle": "academic/SUT-alignment — recent testing papers",
+        "claimCount": 5
+      },
+      {
+        "url": "https://arxiv.org/pdf/2212.14604",
+        "quality": "primary",
+        "angle": "academic/SUT-alignment — recent testing papers",
+        "claimCount": 5
+      },
+      {
+        "url": "https://opentelemetry.io/docs/demo/feature-flags/recommendation-cache/",
+        "quality": "primary",
+        "angle": "practitioner/implementation — fault injection on benchmarks",
+        "claimCount": 4
+      },
+      {
+        "url": "https://arxiv.org/html/2512.12314",
+        "quality": "primary",
+        "angle": "practitioner/implementation — fault injection on benchmarks",
+        "claimCount": 5
+      },
+      {
+        "url": "https://github.com/istio/istio/issues/1034",
+        "quality": "primary",
+        "angle": "practitioner/implementation — fault injection on benchmarks",
+        "claimCount": 4
+      },
+      {
+        "url": "https://dl.acm.org/doi/10.1145/3700436",
+        "quality": "primary",
+        "angle": "practitioner/implementation — fault injection on benchmarks",
+        "claimCount": 4
+      },
+      {
+        "url": "https://arxiv.org/html/2302.01894v4",
+        "quality": "primary",
+        "angle": "practitioner/implementation — fault injection on benchmarks",
+        "claimCount": 5
+      },
+      {
+        "url": "https://oneuptime.com/blog/post/2026-02-06-opentelemetry-chaos-engineering/view",
+        "quality": "blog",
+        "angle": "practitioner/implementation — fault injection on benchmarks",
+        "claimCount": 3
+      },
+      {
+        "url": "https://raw.githubusercontent.com/istio/istio/master/samples/bookinfo/src/reviews/reviews-application/src/main/java/application/rest/LibertyRestEndpoint.java",
+        "quality": "primary",
+        "angle": "contrarian/skeptical — BFF aggregator partial-failure design",
+        "claimCount": 5
+      },
+      {
+        "url": "https://raw.githubusercontent.com/GoogleCloudPlatform/microservices-demo/main/src/frontend/handlers.go",
+        "quality": "primary",
+        "angle": "contrarian/skeptical — BFF aggregator partial-failure design",
+        "claimCount": 5
+      },
+      {
+        "url": "https://arxiv.org/abs/2302.01894",
+        "quality": "primary",
+        "angle": "contrarian/skeptical — BFF aggregator partial-failure design",
+        "claimCount": 5
+      },
+      {
+        "url": "https://akfpartners.com/growth-blog/microservice-aggregator-pattern",
+        "quality": "blog",
+        "angle": "contrarian/skeptical — BFF aggregator partial-failure design",
+        "claimCount": 4
+      }
+    ],
+    "stats": {
+      "angles": 6,
+      "sourcesFetched": 25,
+      "claimsExtracted": 113,
+      "claimsVerified": 25,
+      "confirmed": 23,
+      "killed": 2,
+      "afterSynthesis": 9,
+      "urlDupes": 5,
+      "budgetDropped": 6,
+      "agentCalls": 108
+    }
+  }
+}

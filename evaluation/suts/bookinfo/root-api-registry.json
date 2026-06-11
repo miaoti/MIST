@@ -1,0 +1,78 @@
+{
+  "root_apis": {
+    "GET /api/v1/products/0/ratings": {
+      "path": "/api/v1/products/0/ratings",
+      "method": "GET",
+      "trees": [{
+        "children": [{
+          "path": "/api/v1/products/0/ratings",
+          "method": "GET"
+        }],
+        "source_trace": "api_capture"
+      }]
+    },
+    "GET /api/v1/products": {
+      "path": "/api/v1/products",
+      "method": "GET",
+      "trees": [{
+        "children": [{
+          "path": "/api/v1/products",
+          "method": "GET"
+        }],
+        "source_trace": "api_capture"
+      }]
+    },
+    "GET /reviews/0": {
+      "path": "/reviews/0",
+      "method": "GET",
+      "trees": [{
+        "children": [],
+        "source_trace": "api_capture"
+      }]
+    },
+    "GET /productpage": {
+      "path": "/productpage",
+      "method": "GET",
+      "trees": [{
+        "children": [],
+        "source_trace": "masked_ratings_outage_c80623f59e318b99bc556c41f818e5b2"
+      }]
+    },
+    "GET /api/v1/products/0": {
+      "path": "/api/v1/products/0",
+      "method": "GET",
+      "trees": [{
+        "children": [{
+          "path": "/api/v1/products/0",
+          "method": "GET"
+        }],
+        "source_trace": "api_capture"
+      }]
+    },
+    "GET /ratings/0": {
+      "path": "/ratings/0",
+      "method": "GET",
+      "trees": [{
+        "children": [],
+        "source_trace": "api_capture"
+      }]
+    },
+    "GET /api/v1/products/0/reviews": {
+      "path": "/api/v1/products/0/reviews",
+      "method": "GET",
+      "trees": [{
+        "children": [{
+          "path": "/api/v1/products/0/reviews",
+          "method": "GET"
+        }],
+        "source_trace": "api_capture"
+      }]
+    }
+  },
+  "registry_metadata": {
+    "total_root_apis": 7,
+    "last_updated": "Fri May 29 17:18:07 CDT 2026",
+    "total_trees": 7,
+    "version": "1.0"
+  }
+}

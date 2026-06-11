@@ -1,0 +1,158 @@
+{
+  "metric": "D1 Schema Conformance Rate",
+  "include_negatives": false,
+  "rows_total": 1991,
+  "rows_validated": 1991,
+  "rows_valid": 1991,
+  "rows_invalid": 0,
+  "rows_no_schema": 0,
+  "rows_missing_operation": 0,
+  "rows_skipped_negative": 21160,
+  "rows_skipped_fallback": 38,
+  "scr": 1.0,
+  "scr_threshold_pass": true,
+  "by_test_kind": {
+    "positive": {
+      "total": 1991,
+      "valid": 1991,
+      "scr": 1.0
+    }
+  },
+  "worst_parameters": [
+    {
+      "operation": "POST /api/v1/orderOtherService/orderOther/refresh",
+      "parameter": "boughtDateEnd",
+      "location": "body",
+      "total": 20,
+      "valid": 20,
+      "scr": 1.0,
+      "invalid_examples": []
+    },
+    {
+      "operation": "POST /api/v1/orderOtherService/orderOther/refresh",
+      "parameter": "boughtDateStart",
+      "location": "body",
+      "total": 18,
+      "valid": 18,
+      "scr": 1.0,
+      "invalid_examples": []
+    },
+    {
+      "operation": "POST /api/v1/orderOtherService/orderOther/refresh",
+      "parameter": "enableBoughtDateQuery",
+      "location": "body",
+      "total": 20,
+      "valid": 20,
+      "scr": 1.0,
+      "invalid_examples": []
+    },
+    {
+      "operation": "POST /api/v1/orderOtherService/orderOther/refresh",
+      "parameter": "enableStateQuery",
+      "location": "body",
+      "total": 20,
+      "valid": 20,
+      "scr": 1.0,
+      "invalid_examples": []
+    },
+    {
+      "operation": "POST /api/v1/orderOtherService/orderOther/refresh",
+      "parameter": "enableTravelDateQuery",
+      "location": "body",
+      "total": 20,
+      "valid": 20,
+      "scr": 1.0,
+      "invalid_examples": []
+    },
+    {
+      "operation": "POST /api/v1/orderOtherService/orderOther/refresh",
+      "parameter": "loginId",
+      "location": "body",
+      "total": 20,
+      "valid": 20,
+      "scr": 1.0,
+      "invalid_examples": []
+    },
+    {
+      "operation": "POST /api/v1/orderOtherService/orderOther/refresh",
+      "parameter": "state",
+      "location": "body",
+      "total": 20,
+      "valid": 20,
+      "scr": 1.0,
+      "invalid_examples": []
+    },
+    {
+      "operation": "POST /api/v1/orderOtherService/orderOther/refresh",
+      "parameter": "travelDateEnd",
+      "location": "body",
+      "total": 18,
+      "valid": 18,
+      "scr": 1.0,
+      "invalid_examples": []
+    },
+    {
+      "operation": "POST /api/v1/orderOtherService/orderOther/refresh",
+      "parameter": "travelDateStart",
+      "location": "body",
+      "total": 19,
+      "valid": 19,
+      "scr": 1.0,
+      "invalid_examples": []
+    },
+    {
+      "operation": "PUT /api/v1/adminbasicservice/adminbasic/stations",
+      "parameter": "id",
+      "location": "body",
+      "total": 49,
+      "valid": 49,
+      "scr": 1.0,
+      "invalid_examples": []
+    },
+    {
+      "operation": "PUT /api/v1/adminbasicservice/adminbasic/stations",
+      "parameter": "name",
+      "location": "body",
+      "total": 49,
+      "valid": 49,
+      "scr": 1.0,
+      "invalid_examples": []
+    },
+    {
+      "operation": "PUT /api/v1/adminbasicservice/adminbasic/stations",
+      "parameter": "stayTime",
+      "location": "body",
+      "total": 49,
+      "valid": 49,
+      "scr": 1.0,
+      "invalid_examples": []
+    },
+    {
+      "operation": "POST /api/v1/adminbasicservice/adminbasic/trains",
+      "parameter": "averageSpeed",
+      "location": "body",
+      "total": 20,
+      "valid": 20,
+      "scr": 1.0,
+      "invalid_examples": []
+    },
+    {
+      "operation": "POST /api/v1/adminbasicservice/adminbasic/trains",
+      "parameter": "confortClass",
+      "location": "body",
+      "total": 20,
+      "valid": 20,
+      "scr": 1.0,
+      "invalid_examples": []
+    },
+    {
+      "operation": "POST /api/v1/adminbasicservice/adminbasic/trains",
+      "parameter": "economyClass",
+      "location": "body",
+      "total": 20,
+      "valid": 20,
+      "scr": 1.0,
+      "invalid_examples": []
+    }
+  ]
+}

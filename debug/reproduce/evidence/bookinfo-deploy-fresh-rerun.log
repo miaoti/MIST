@@ -1,0 +1,58 @@
+Set kubectl context to "kind-mist-repro"
+        |\          
+        | \         
+        |  \        
+        |   \       
+      /||    \      
+     / ||     \     
+    /  ||      \    
+   /   ||       \   
+  /    ||        \  
+ /     ||         \ 
+/______||__________\
+____________________
+  \__       _____/  
+     \_____/        
+
+
+The Kubernetes version v1.31.0 is not supported by Istio 1.30.0. The minimum supported Kubernetes version is 1.32.
+Proceeding with the installation, but you might experience problems. See https://istio.io/latest/docs/releases/supported-releases/ for a list of supported versions.
+
+
+- Processing resources for Istio core.
+✔ Istio core installed ⛵️
+- Processing resources for Istiod.
+✔ Istiod installed 🧠
+- Processing resources for Egress gateways, Ingress gateways.
+✔ Egress gateways installed 🛫
+✔ Ingress gateways installed 🛬
+- Pruning removed resources
+✔ Installation completedeployment.apps/jaeger unchanged
+service/tracing unchanged
+configmap/jaeger unchanged
+service/zipkin created
+service/jaeger-collector unchanged
+telemetry.telemetry.istio.io/mesh-tracing created
+namespace/default labeled
+service/details created
+serviceaccount/bookinfo-details created
+deployment.apps/details-v1 created
+service/ratings created
+serviceaccount/bookinfo-ratings created
+deployment.apps/ratings-v1 created
+service/reviews created
+serviceaccount/bookinfo-reviews created
+deployment.apps/reviews-v1 created
+deployment.apps/reviews-v2 created
+deployment.apps/reviews-v3 created
+service/productpage created
+serviceaccount/bookinfo-productpage created
+deployment.apps/productpage-v1 created
+gateway.networking.istio.io/bookinfo-gateway created
+virtualservice.networking.istio.io/bookinfo created
+destinationrule.networking.istio.io/productpage created
+destinationrule.networking.istio.io/reviews created
+destinationrule.networking.istio.io/ratings created
+destinationrule.networking.istio.io/details created
+virtualservice.networking.istio.io/reviews created
+error: timed out waiting for the condition on pods/productpage-v1-658db8b685-tttsg

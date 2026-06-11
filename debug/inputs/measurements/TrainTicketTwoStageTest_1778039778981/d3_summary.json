@@ -1,0 +1,203 @@
+{
+  "metric": "D3 LLM Hallucination Rate",
+  "scored_categories": [
+    "diverse_gen",
+    "positive_gen",
+    "simple_gen"
+  ],
+  "rows_total": 41093,
+  "rows_scored": 989,
+  "rows_actionable": 989,
+  "rows_valid": 989,
+  "rows_hallucinated": 0,
+  "rows_abstained": 0,
+  "rows_no_constraint": 0,
+  "lhr": 0.0,
+  "lhr_definition": "hallucinated / (scored - abstained)",
+  "lhr_threshold_pass": true,
+  "abstain_rate": 0.0,
+  "by_constraint_violation": {},
+  "by_prompt_category": {
+    "extraction": {
+      "total": 54,
+      "valid": 0,
+      "hallucinated": 0,
+      "abstained": 0,
+      "lhr": 0.0
+    },
+    "simple_gen": {
+      "total": 20,
+      "valid": 20,
+      "hallucinated": 0,
+      "abstained": 0,
+      "lhr": 0.0
+    },
+    "bulk_extract": {
+      "total": 349,
+      "valid": 0,
+      "hallucinated": 0,
+      "abstained": 0,
+      "lhr": 0.0
+    },
+    "diverse_gen": {
+      "total": 280,
+      "valid": 280,
+      "hallucinated": 0,
+      "abstained": 0,
+      "lhr": 0.0
+    },
+    "positive_gen": {
+      "total": 689,
+      "valid": 689,
+      "hallucinated": 0,
+      "abstained": 0,
+      "lhr": 0.0
+    },
+    "other": {
+      "total": 39031,
+      "valid": 0,
+      "hallucinated": 0,
+      "abstained": 0,
+      "lhr": 0.0
+    },
+    "negative_gen": {
+      "total": 670,
+      "valid": 0,
+      "hallucinated": 0,
+      "abstained": 0,
+      "lhr": 0.0
+    }
+  },
+  "by_model": {
+    "deepseek-chat": {
+      "total": 989,
+      "valid": 989,
+      "hallucinated": 0,
+      "abstained": 0,
+      "lhr": 0.0
+    }
+  },
+  "worst_parameters": [
+    {
+      "parameter": "boughtDateEnd",
+      "total": 22,
+      "hallucinated": 0,
+      "abstained": 0,
+      "lhr": 0.0,
+      "examples": []
+    },
+    {
+      "parameter": "boughtDateStart",
+      "total": 22,
+      "hallucinated": 0,
+      "abstained": 0,
+      "lhr": 0.0,
+      "examples": []
+    },
+    {
+      "parameter": "enableBoughtDateQuery",
+      "total": 19,
+      "hallucinated": 0,
+      "abstained": 0,
+      "lhr": 0.0,
+      "examples": []
+    },
+    {
+      "parameter": "enableStateQuery",
+      "total": 19,
+      "hallucinated": 0,
+      "abstained": 0,
+      "lhr": 0.0,
+      "examples": []
+    },
+    {
+      "parameter": "enableTravelDateQuery",
+      "total": 19,
+      "hallucinated": 0,
+      "abstained": 0,
+      "lhr": 0.0,
+      "examples": []
+    },
+    {
+      "parameter": "loginId",
+      "total": 19,
+      "hallucinated": 0,
+      "abstained": 0,
+      "lhr": 0.0,
+      "examples": []
+    },
+    {
+      "parameter": "state",
+      "total": 13,
+      "hallucinated": 0,
+      "abstained": 0,
+      "lhr": 0.0,
+      "examples": []
+    },
+    {
+      "parameter": "travelDateEnd",
+      "total": 21,
+      "hallucinated": 0,
+      "abstained": 0,
+      "lhr": 0.0,
+      "examples": []
+    },
+    {
+      "parameter": "travelDateStart",
+      "total": 23,
+      "hallucinated": 0,
+      "abstained": 0,
+      "lhr": 0.0,
+      "examples": []
+    },
+    {
+      "parameter": "orderId",
+      "total": 35,
+      "hallucinated": 0,
+      "abstained": 0,
+      "lhr": 0.0,
+      "examples": []
+    },
+    {
+      "parameter": "id",
+      "total": 67,
+      "hallucinated": 0,
+      "abstained": 0,
+      "lhr": 0.0,
+      "examples": []
+    },
+    {
+      "parameter": "departureTime",
+      "total": 38,
+      "hallucinated": 0,
+      "abstained": 0,
+      "lhr": 0.0,
+      "examples": []
+    },
+    {
+      "parameter": "endPlace",
+      "total": 32,
+      "hallucinated": 0,
+      "abstained": 0,
+      "lhr": 0.0,
+      "examples": []
+    },
+    {
+      "parameter": "startPlace",
+      "total": 33,
+      "hallucinated": 0,
+      "abstained": 0,
+      "lhr": 0.0,
+      "examples": []
+    },
+    {
+      "parameter": "averageSpeed",
+      "total": 31,
+      "hallucinated": 0,
+      "abstained": 0,
+      "lhr": 0.0,
+      "examples": []
+    }
+  ],
+  "computed_at": "2026-05-07T18:48:31Z"
+}

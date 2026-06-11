@@ -1,0 +1,300 @@
+Phase 1.A MST branch map for TestGenerationAndExecution.java
+File length: 2423 lines (before lift)
+Source: src/main/java/es/us/isa/restest/main/TestGenerationAndExecution.java
+
+This file enumerates every "MST"-specific block in the entry point so
+Stage 1.A of PATH_B_REBUILD_PLAN.md can extract them into MistRunner.
+
+================================================================================
+SECTION 1 — STATIC FIELDS THAT ARE MST-ONLY (move verbatim to MistRunner)
+================================================================================
+
+L88   private static String mstPropertiesFilePath;
+L89   private static MstConfig mstConfig;                              // legacy Properties POJO
+L98   private static List<MultiServiceTestCase> generatedMSTTestCases = new ArrayList<>();
+L101  private static MultiServiceRESTAssuredWriter mstWriter = null;
+L119  private static long testGenerationStartTime = 0;                 // only MST sets/reads it
+L91   private static String TraceFile = "src/main/resources/...trace"; // MST-only default
+
+Fields above become INSTANCE fields on MistRunner. Visibility: private
+final where possible; mutable where the MST workflow needs to update
+them mid-run (mstWriter, generatedMSTTestCases, testGenerationStartTime).
+
+================================================================================
+SECTION 2 — MST DISPATCH SITES IN main()
+================================================================================
+
+DISPATCH-1   L155-L157   if ("MST".equals(generator)) loadMstConfig();
+             Action: deleted from main; MistRunner's constructor takes the
+             already-loaded MstConfig (from A-6 fromSystemProperties()).
+
+DISPATCH-2   L181-L186   if (!"MST".equals(...)) { runner = new RESTestWorkflow(...) }
+             Action: the negative guard becomes unnecessary because the MST
+             branch returns earlier (see DISPATCH-3). Reduces to a plain
+             RESTestWorkflow construction (no guard).
+
+DISPATCH-3   L199-L326   if ("MST".equals(...)) { ...128 lines of MST run loop... }
+             Action: replaced by:
+                MstConfig cfg = MstConfig.fromSystemProperties();
+                Path workdir = Path.of(System.getProperty("user.dir"));
+                int code = new MistRunner(cfg, workdir).run().exitCode();
+                System.exit(code);
+             The 128 lines move verbatim into MistRunner.runMainLoop().
+
+================================================================================
+SECTION 3 — MST DISPATCH SITES IN createGenerator()
+================================================================================
+
+L374   if (!"MST".equals(generator)) { conf = loadConfiguration(...); }
+        Action: after lifting, classic mode no longer shares this method
+        with MST; the guard goes away.
+
+L431-L575   case "MST": { ...145 lines of MST generator construction... break; }
+        Action: extracted into MistRunner.createMultiServiceGenerator()
+        which returns the configured MultiServiceTestCaseGenerator.
+
+================================================================================
+SECTION 4 — MST DISPATCH SITES IN createWriter()
+================================================================================
+
+L597-L609   if ("MST".equals(generator)) { ...MultiServiceRESTAssuredWriter... }
+        Action: extracted into MistRunner.createMultiServiceWriter().
+
+================================================================================
+SECTION 5 — MST DISPATCH SITES IN createAllureReportManager()
+================================================================================
+
+L639-L642   MST chooses bare allure dirs (no experimentName suffix)
+L656-L662   MST skips loading auth properties from confPath
+        Action: extracted to MistRunner.createAllureReportManager(). The
+        method takes MstConfig as a parameter so System.getProperty calls
+        disappear. Classic-mode method stays in TestGenerationAndExecution.
+
+================================================================================
+SECTION 6 — MST DISPATCH SITES IN createStatsReportManager()
+================================================================================
+
+L688-L693   MST skips CoverageMeter construction
+        Action: extracted to MistRunner.createStatsReportManager().
+
+================================================================================
+SECTION 7 — MST-ONLY HELPER METHODS (move whole-cloth to MistRunner)
+================================================================================
+
+L834-L850   readParameterValue(String)  — has an MST-only fallback at L844-L845
+            Action: the MST fallback stays in MistRunner's own
+            propertyResolver since MistRunner needs to read keys both from
+            the core file and the MST file. The classic readParameterValue
+            in TestGenerationAndExecution loses the MST branch.
+
+L861-L877   loadMstConfig()
+            Action: DELETE. MistRunner's constructor takes MstConfig
+            directly; the factory call MstConfig.fromSystemProperties()
+            happens once in main() before delegating.
+
+L889-L941   passSmartInputFetchingProperties()
+            Action: move whole-cloth into MistRunner.
+
+L955-L1145  executeGeneratedTestsWithJUnit(String, String)
+            CALLERS: line 286 (MST path in main) and line 1460 (inside
+            executeWithEnhancement). Both are MST-only.
+            Action: move whole-cloth into MistRunner.
+
+L1147-L1466 executeWithEnhancement(String, String, int, boolean, String)
+            Action: move whole-cloth into MistRunner. MST-only.
+
+L1468-L1621 executeTestsWithCollector (two overloads)
+            Both overloads are called only by executeWithEnhancement and
+            its inner status-code exploration block. MST-only.
+            Action: move whole-cloth into MistRunner.
+
+L1623-L1656 findTestClassNames(File, String)
+L1658-L1686 findTestFilePath(String, String, ...)
+L1688-L1735 cleanOldCompiledTestClasses(String)
+L1737-L1752 deleteDirectory(File)
+L1754-L1895 compileTestClasses()
+L1897-L1934 findNewlyGeneratedJavaFiles(File)
+L1936-L1950 findRecentJavaFiles(File, List<File>, long)
+L1952-L1972 findJavaFiles(File)
+L1974-L2005 buildCompilationClasspath(File)
+L2007-L2068 fallbackMavenCompilation()
+L2070-L2104 setupJava11Environment()
+L2106-L2116 compileTestClassesAlternative()
+L2118-L2164 addTestClassesToClasspath()
+L2166-L2190 clearAllureResults()
+L2192-L2237 setupAllureForIntelliJ()
+            All called only from MST execution paths (executeGenerated...
+            or executeWithEnhancement). MST-only utility methods.
+            Action: move whole-cloth into MistRunner.
+
+L2265-L2325 buildExplorationResults(FailedTestCollector, Result)
+L2330-L2334 getApiKeyFromTest(MultiServiceTestCase)
+L2340-L2352 extractApiKeyFromTestName(String)
+L2357-L2401 logStatusCodeCoverage(Map<...>)
+L2406-L2412 getStatusCodeCategory(int)
+L2417-L2421 truncateApiKey(String, int)
+            All MST-only status-code exploration helpers.
+            Action: move whole-cloth into MistRunner.
+
+================================================================================
+SECTION 8 — METHODS THAT STAY ON TestGenerationAndExecution (classic only)
+================================================================================
+
+L699-L708   generateTimeReport(Integer)         — used by both; STAYS (shared)
+L713-L722   delay(Integer)                       — used by classic only
+L725-L829   readParameterValues()                — used by both; MST guard at
+            L820 (faulty.ratio) and L827 (TraceFile log) need to be either
+            (a) duplicated into MistRunner's argument parsing OR
+            (b) kept on the central helper and MistRunner consumes the
+            already-parsed values via constructor injection.
+            Recommendation: (b). Hand MstConfig + the parsed scalars to
+            MistRunner's constructor.
+
+L834-L850   readParameterValue(String)            — used by both; MST file
+            fallback (L844-L845) moves to MistRunner's own resolver
+            since MistRunner gets a Properties object in its constructor.
+
+L944-L946   getTestConfigurationObject()         — used by classic test only
+L948        getExperimentName()                  — used by both (legacy
+            generator-internal calls). STAYS as a static accessor; MistRunner
+            sets a single value via setExperimentName() before delegating
+            to legacy MST writer code that reads this.
+L2239-L2257 setUpLogger()                        — used by both; STAYS
+
+================================================================================
+SECTION 9 — IMPORTS THAT MIST RUNNER WILL NEED (rough list)
+================================================================================
+
+From es.us.isa.restest.analysis: FaultDetectionTracker
+From es.us.isa.restest.configuration: MstConfig (NEW typed POJO)
+From es.us.isa.restest.configuration.multiservice: MstConfig (LEGACY loader),
+    MicroserviceTestConfigurationGenerator, MicroserviceTestConfigurationIO,
+    MultiServiceTestConfiguration
+From es.us.isa.restest.configuration.pojos: Auth, TestConfiguration,
+    TestConfigurationObject
+From es.us.isa.restest.enhancer: FailedTestCollector, FailedTestResult,
+    TestCaseEnhancer, TestFileRegenerator, TestResultCapture,
+    StatusCodeExplorationEnhancer
+From es.us.isa.restest.generators: MultiServiceTestCaseGenerator,
+    AbstractTestCaseGenerator
+From es.us.isa.restest.llm: LLMService
+From es.us.isa.restest.registry: RootApiRegistry
+From es.us.isa.restest.reporting: AllureReportManager, StatsReportManager
+From es.us.isa.restest.specification: OpenAPISpecification
+From es.us.isa.restest.testcases: MultiServiceTestCase, TestCase
+From es.us.isa.restest.util: ConsoleProgressBar, IDGenerator,
+    PropertyManager, RESTestException, Timer
+From es.us.isa.restest.workflow: TraceWorkflowExtractor, WorkflowScenario,
+    WorkflowScenarioUtils
+From es.us.isa.restest.writers.restassured: MultiServiceRESTAssuredWriter
+From io.qameta.allure / org.junit / etc.: as before
+java.io.*, java.nio.file.*, java.util.*
+
+================================================================================
+SECTION 10 — POST-LIFT SHAPE OF TestGenerationAndExecution.main
+================================================================================
+
+After Stage 1.A the main() body will look approximately like:
+
+  Timer.startCounting(ALL);
+  if (args.length > 0) propertiesFilePath = args[0];
+  argsList = Arrays.asList(args);
+  readParameterValues();
+
+  if ("MST".equals(generator)) {
+      MstConfig cfg = MstConfig.fromSystemProperties();
+      Path workdir = Path.of(System.getProperty("user.dir"));
+      int code = new MistRunner(cfg, workdir).run().exitCode();
+      System.exit(code);
+  }
+
+  // Set proxy globally, if specified
+  if (proxy != null) { ... }
+  createDir(targetDirJava);
+
+  AbstractTestCaseGenerator generator = createGenerator();
+  IWriter writer = createWriter();
+  StatsReportManager statsReportManager = createStatsReportManager();
+  AllureReportManager reportManager = createAllureReportManager();
+  RESTestWorkflow runner = new RESTestWorkflow(...);
+  runner.setExecuteTestCases(executeTestCases);
+  runner.setAllureReport(allureReports);
+
+  // Main loop (classic only)
+  int iteration = 1;
+  ...
+  while (...) {
+      ...
+      runner.run();
+      iteration++;
+  }
+  ...
+
+  Timer.stopCounting(ALL);
+  generateTimeReport(iteration - 1);
+  System.exit(0);
+
+================================================================================
+SECTION 11 — `"MST".equals` AFTER LIFT
+================================================================================
+
+Expected sites after Stage 1.A: exactly 1.
+  - The dispatch in main() at the top (DISPATCH-3 location).
+Plan gate allows ≤ 2.
+
+================================================================================
+SECTION 12 — MIST RUNNER CONTRACT (PER PLAN § 4 STAGE 1.A STEP 2)
+================================================================================
+
+package es.us.isa.restest.main;                  // stage 1.A location
+// after stage 1.C: package io.mist.cli;
+
+import es.us.isa.restest.configuration.MstConfig; // typed POJO from A-6
+import java.nio.file.Path;
+
+public final class MistRunner {
+
+    private final MstConfig config;
+    private final Path workdir;
+    // every previously-static MST field becomes an instance field here
+
+    public MistRunner(MstConfig config, Path workdir) {
+        this.config = Objects.requireNonNull(config, "config");
+        this.workdir = Objects.requireNonNull(workdir, "workdir");
+        // NO System.getProperty calls in this constructor.
+    }
+
+    public MistRunResult run() throws Exception {
+        // delegates to private methods that hold the lifted MST code
+    }
+}
+
+public final class MistRunResult {
+    private final int exitCode;
+    private final Path allureReportDir;
+    private final int testCaseCount;
+    // getters + a void summarise(PrintStream) helper
+    public int exitCode() { return exitCode; }
+}
+
+================================================================================
+SECTION 13 — RISK NOTES (matches plan § Phase 1 R-1-1 mitigation)
+================================================================================
+
+R-1-1: Classic-mode regression. The MST blocks read static fields
+       declared at L88-L132 of TestGenerationAndExecution. Some of those
+       fields are ALSO read by classic mode (e.g. experimentName,
+       targetDirJava). MistRunner cannot become the owner; instead, it
+       reads them once in its constructor from `MstConfig` and from the
+       passed-in scalars. The static fields on TestGenerationAndExecution
+       stay intact for classic mode.
+
+R-1-1 verification: after the lift, run Ex9_Generation_Execution
+       (classic RT mode demo) and confirm test cases are still generated.
+
+R-1-4: Behavioural drift. Before/after diff under -Drandom.seed=42
+       MUST be empty. Procedure recorded in plan § Stage 1.D step 2.
+
+================================================================================
+END OF MAP
+================================================================================

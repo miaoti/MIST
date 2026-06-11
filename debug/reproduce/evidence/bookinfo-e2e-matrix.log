@@ -1,0 +1,60 @@
+gateway unreachable — starting auto-restarting port-forwards (8080 ingress, 16686 jaeger)
+=== compiling generated tests ===
+=== outage ON ===
+  ratings endpoint = HTTP 503 (settled)
+--- #1 /products (outage) — expect SILENT/PASS ---
+✅ Root 1: productpage.default GET /api/v1/products [expect 200] - SUCCESS
+OK (1 test)
+--- #2 /reviews (outage) — expect HIDDEN_DOWNSTREAM_FAILURE/FAIL ---
+✅ Root 1: productpage.default GET /api/v1/products/0/reviews [expect 200] - SUCCESS
+❌ Root 1: productpage.default GET /api/v1/products/0/reviews [expect 200] - FAILED: Positive variant failed — Trace Shape Oracle verdict has violation(s): [HIDDEN_DOWNSTREAM_FAILURE: reviews.default ──▶ ratings.default.svc.cluster.local:9080/* (http=503 otel=ERROR)]
+✅ Root 1: productpage.default GET /api/v1/products/0/reviews [expect 200] - SUCCESS
+❌ Root 1: productpage.default GET /api/v1/products/0/reviews [expect 200] - FAILED: Positive variant failed — Trace Shape Oracle verdict has violation(s): [HIDDEN_DOWNSTREAM_FAILURE: reviews.default ──▶ ratings.default.svc.cluster.local:9080/* (http=503 otel=ERROR)]
+✅ Root 1: productpage.default GET /api/v1/products/0/reviews [expect 200] - SUCCESS
+❌ Root 1: productpage.default GET /api/v1/products/0/reviews [expect 200] - FAILED: Positive variant failed — Trace Shape Oracle verdict has violation(s): [HIDDEN_DOWNSTREAM_FAILURE: reviews.default ──▶ ratings.default.svc.cluster.local:9080/* (http=503 otel=ERROR)]
+✅ Root 1: productpage.default GET /api/v1/products/0/reviews [expect 200] - SUCCESS
+❌ Root 1: productpage.default GET /api/v1/products/0/reviews [expect 200] - FAILED: Positive variant failed — Trace Shape Oracle verdict has violation(s): [HIDDEN_DOWNSTREAM_FAILURE: reviews.default ──▶ ratings.default.svc.cluster.local:9080/* (http=503 otel=ERROR)]
+✅ Root 1: productpage.default GET /api/v1/products/0/reviews [expect 200] - SUCCESS
+❌ Root 1: productpage.default GET /api/v1/products/0/reviews [expect 200] - FAILED: Positive variant failed — Trace Shape Oracle verdict has violation(s): [HIDDEN_DOWNSTREAM_FAILURE: reviews.default ──▶ ratings.default.svc.cluster.local:9080/* (http=503 otel=ERROR)]
+✅ Root 1: productpage.default GET /api/v1/products/0/reviews [expect 200] - SUCCESS
+❌ Root 1: productpage.default GET /api/v1/products/0/reviews [expect 200] - FAILED: Positive variant failed — Trace Shape Oracle verdict has violation(s): [HIDDEN_DOWNSTREAM_FAILURE: reviews.default ──▶ ratings.default.svc.cluster.local:9080/* (http=503 otel=ERROR)]
+✅ Root 1: productpage.default GET /api/v1/products/0/reviews [expect 200] - SUCCESS
+❌ Root 1: productpage.default GET /api/v1/products/0/reviews [expect 200] - FAILED: Positive variant failed — Trace Shape Oracle verdict has violation(s): [HIDDEN_DOWNSTREAM_FAILURE: reviews.default ──▶ ratings.default.svc.cluster.local:9080/* (http=503 otel=ERROR)]
+✅ Root 1: productpage.default GET /api/v1/products/0/reviews [expect 200] - SUCCESS
+❌ Root 1: productpage.default GET /api/v1/products/0/reviews [expect 200] - FAILED: Positive variant failed — Trace Shape Oracle verdict has violation(s): [HIDDEN_DOWNSTREAM_FAILURE: reviews.default ──▶ ratings.default.svc.cluster.local:9080/* (http=503 otel=ERROR)]
+✅ Root 1: productpage.default GET /api/v1/products/0/reviews [expect 200] - SUCCESS
+❌ Root 1: productpage.default GET /api/v1/products/0/reviews [expect 200] - FAILED: Positive variant failed — Trace Shape Oracle verdict has violation(s): [HIDDEN_DOWNSTREAM_FAILURE: reviews.default ──▶ ratings.default.svc.cluster.local:9080/* (http=503 otel=ERROR)]
+✅ Root 1: productpage.default GET /api/v1/products/0/reviews [expect 200] - SUCCESS
+❌ Root 1: productpage.default GET /api/v1/products/0/reviews [expect 200] - FAILED: Positive variant failed — Trace Shape Oracle verdict has violation(s): [HIDDEN_DOWNSTREAM_FAILURE: reviews.default ──▶ ratings.default.svc.cluster.local:9080/* (http=503 otel=ERROR)]
+✅ Root 1: productpage.default GET /api/v1/products/0/reviews [expect 200] - SUCCESS
+❌ Root 1: productpage.default GET /api/v1/products/0/reviews [expect 200] - FAILED: Positive variant failed — Trace Shape Oracle verdict has violation(s): [HIDDEN_DOWNSTREAM_FAILURE: reviews.default ──▶ ratings.default.svc.cluster.local:9080/* (http=503 otel=ERROR)]
+✅ Root 1: productpage.default GET /api/v1/products/0/reviews [expect 200] - SUCCESS
+❌ Root 1: productpage.default GET /api/v1/products/0/reviews [expect 200] - FAILED: Positive variant failed — Trace Shape Oracle verdict has violation(s): [HIDDEN_DOWNSTREAM_FAILURE: reviews.default ──▶ ratings.default.svc.cluster.local:9080/* (http=503 otel=ERROR)]
+✅ Root 1: productpage.default GET /api/v1/products/0/reviews [expect 200] - SUCCESS
+❌ Root 1: productpage.default GET /api/v1/products/0/reviews [expect 200] - FAILED: Positive variant failed — Trace Shape Oracle verdict has violation(s): [HIDDEN_DOWNSTREAM_FAILURE: reviews.default ──▶ ratings.default.svc.cluster.local:9080/* (http=503 otel=ERROR)]
+✅ Root 1: productpage.default GET /api/v1/products/0/reviews [expect 200] - SUCCESS
+❌ Root 1: productpage.default GET /api/v1/products/0/reviews [expect 200] - FAILED: Positive variant failed — Trace Shape Oracle verdict has violation(s): [HIDDEN_DOWNSTREAM_FAILURE: reviews.default ──▶ ratings.default.svc.cluster.local:9080/* (http=503 otel=ERROR)]
+✅ Root 1: productpage.default GET /api/v1/products/0/reviews [expect 200] - SUCCESS
+❌ Root 1: productpage.default GET /api/v1/products/0/reviews [expect 200] - FAILED: Positive variant failed — Trace Shape Oracle verdict has violation(s): [HIDDEN_DOWNSTREAM_FAILURE: reviews.default ──▶ ratings.default.svc.cluster.local:9080/* (http=503 otel=ERROR)]
+✅ Root 1: productpage.default GET /api/v1/products/0/reviews [expect 200] - SUCCESS
+❌ Root 1: productpage.default GET /api/v1/products/0/reviews [expect 200] - FAILED: Positive variant failed — Trace Shape Oracle verdict has violation(s): [HIDDEN_DOWNSTREAM_FAILURE: reviews.default ──▶ ratings.default.svc.cluster.local:9080/* (http=503 otel=ERROR)]
+✅ Root 1: productpage.default GET /api/v1/products/0/reviews [expect 200] - SUCCESS
+❌ Root 1: productpage.default GET /api/v1/products/0/reviews [expect 200] - FAILED: Positive variant failed — Trace Shape Oracle verdict has violation(s): [HIDDEN_DOWNSTREAM_FAILURE: reviews.default ──▶ ratings.default.svc.cluster.local:9080/* (http=503 otel=ERROR)]
+Tests run: 50,  Failures: 50
+--- #3 /ratings (outage) — expect LOUD 503 status mismatch, NO hidden ---
+✅ Root 1: productpage.default GET /api/v1/products/0/ratings [expect 504 (exploration)] - SUCCESS
+✅ Root 1: productpage.default GET /api/v1/products/0/ratings [expect not 200] - SUCCESS
+✅ Root 1: productpage.default GET /api/v1/products/0/ratings [expect not 200] - SUCCESS
+✅ Root 1: productpage.default GET /api/v1/products/0/ratings [expect not 200] - SUCCESS
+✅ Root 1: productpage.default GET /api/v1/products/0/ratings [expect not 200] - SUCCESS
+✅ Root 1: productpage.default GET /api/v1/products/0/ratings [expect not 200] - SUCCESS
+✅ Root 1: productpage.default GET /api/v1/products/0/ratings [expect not 200] - SUCCESS
+✅ Root 1: productpage.default GET /api/v1/products/0/ratings [expect not 200] - SUCCESS
+✅ Root 1: productpage.default GET /api/v1/products/0/ratings [expect not 200] - SUCCESS
+✅ Root 1: productpage.default GET /api/v1/products/0/ratings [expect not 200] - SUCCESS
+✅ Root 1: productpage.default GET /api/v1/products/0/ratings [expect not 200] - SUCCESS
+✅ Root 1: productpage.default GET /api/v1/products/0/ratings [expect not 200] - SUCCESS
+✅ Root 1: productpage.default GET /api/v1/products/0/ratings [expect not 200] - SUCCESS
+✅ Root 1: productpage.default GET /api/v1/products/0/ratings [expect not 200] - SUCCESS
+✅ Root 1: productpage.default GET /api/v1/products/0/ratings [expect 500 (exploration)] - SUCCESS
+✅ Root 1: productpage.default GET /api/v1/products/0/ratings [expect 502 (exploration)] - SUCCESS

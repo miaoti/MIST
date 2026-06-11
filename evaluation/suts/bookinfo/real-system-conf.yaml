@@ -1,0 +1,82 @@
+testConfiguration:
+  services:
+    product:
+    - expectedResponse: 200
+      method: get
+      operationId: getProducts
+      testPath: /api/v1/products
+      testParameters: null
+    - expectedResponse: 200
+      method: get
+      operationId: getProduct
+      testPath: /api/v1/products/{id}
+      testParameters:
+      - name: id
+        in: path
+        weight: null
+        description: Product id
+        type: integer
+        format: int32
+        required: true
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: type
+            values:
+            - integer
+          - name: min
+            values:
+            - '1'
+          - name: max
+            values:
+            - '100'
+    review:
+    - expectedResponse: 200
+      method: get
+      operationId: getProductReviews
+      testPath: /api/v1/products/{id}/reviews
+      testParameters:
+      - name: id
+        in: path
+        weight: null
+        description: Product id
+        type: integer
+        format: int32
+        required: true
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: type
+            values:
+            - integer
+          - name: min
+            values:
+            - '1'
+          - name: max
+            values:
+            - '100'
+    rating:
+    - expectedResponse: 200
+      method: get
+      operationId: getProductRatings
+      testPath: /api/v1/products/{id}/ratings
+      testParameters:
+      - name: id
+        in: path
+        weight: null
+        description: Product id
+        type: integer
+        format: int32
+        required: true
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: type
+            values:
+            - integer
+          - name: min
+            values:
+            - '1'
+          - name: max
+            values:
+            - '100'

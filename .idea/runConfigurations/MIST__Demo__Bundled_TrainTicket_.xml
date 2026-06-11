@@ -1,0 +1,19 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="MIST: Demo (bundled TrainTicket)" type="Application" factoryName="Application">
+    <!-- Right-click → Run launches MistMain against the bundled
+         TrainTicket demo. WORKING_DIRECTORY=$PROJECT_DIR$ (repo root)
+         matches the CLI convention; INPUT paths in the .properties
+         file are .properties-relative so the absolute CWD does not
+         matter, but we standardise on repo root for consistency
+         with the CLI Quick Start in README.md. -->
+    <option name="MAIN_CLASS_NAME" value="io.mist.cli.MistMain" />
+    <module name="mist-cli" />
+    <option name="PROGRAM_PARAMETERS" value="mist-cli/src/main/resources/My-Example/trainticket-demo.properties" />
+    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+    <option name="VM_PARAMETERS" value="-Drandom.seed=42" />
+    <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

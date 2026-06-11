@@ -1,0 +1,7 @@
+{
+  "_comment": "Phase 2.A label registry: maps seed-trace file basenames to a known-good | known-bad verdict. Files absent from this map default to known-good per io.mist.core.oracle.shape.TraceShapeLearner#readLabels. Edit this file to mark traces from a faulty cluster run as known-bad; the learner will then exclude them from the invariant corpus.",
+  "_format": "{ \"<trace-file-basename>\": \"known-good\" | \"known-bad\" }",
+  "_corpus_root_default": "mist-cli/src/main/resources/My-Example/trainticket/test-trace",
+
+  "traces-1772605095842.json": "known-good"
+}

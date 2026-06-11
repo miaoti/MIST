@@ -1,0 +1,28 @@
+== TrainTicket local one-command deploy on this host (8 cores, standing kind cluster) — 2026-06-09 ==
+-- container states ~12 min after compose up:
+     30 Up 20 minutes
+     11 Up 21 minutes
+      8 Up 2 minutes
+      5 Up About a minute
+      5 Up 3 minutes
+      2 Up 19 minutes
+      1 Up 8 seconds
+      1 Up 5 minutes
+      1 Up 54 seconds
+      1 Up 4 minutes
+      1 Up 38 seconds
+      1 Up 2 seconds
+      1 Up 10 seconds
+
+-- gateway nginx (ui-dashboard) crash-loop:
+nginx: [emerg] host not found in upstream "ts-config-service" in /usr/local/openresty/nginx/conf/nginx.conf:79
+2026/06/10 08:14:08 [emerg] 1#1: host not found in upstream "ts-ticket-office-service" in /usr/local/openresty/nginx/conf/nginx.conf:258
+nginx: [emerg] host not found in upstream "ts-ticket-office-service" in /usr/local/openresty/nginx/conf/nginx.conf:258
+
+-- ts-auth-service crash-loop (MySQL DNS under startup storm):
+2026-06-10 08:14:24.761 DEBUG 7 --- [           main] o.s.b.f.s.DefaultListableBeanFactory     : Creating shared instance of singleton bean 'methodSecurityMetadataSource'
+2026-06-10 08:14:24.778 DEBUG 7 --- [           main] o.s.b.f.s.DefaultListableBeanFactory     : Creating shared instance of singleton bean 'org.springframework.security.config.annotation.method.configuration.GlobalMethodSecurityConfiguration'
+2026-06-10 08:14:24.778 DEBUG 7 --- [           main] o.s.b.f.s.DefaultListableBeanFactory     : Creating shared instance of singleton bean 'org.springframework.transaction.config.internalTransactionAdvisor'
+2026-06-10 08:14:24.781 DEBUG 7 --- [           main] o.s.b.f.s.DefaultListableBeanFactory     : Creating shared instance of singleton bean 'org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration'
+
+ 19:14:26 up 79 days, 58 min,  1 user,  load average: 121.73, 78.58, 65.21

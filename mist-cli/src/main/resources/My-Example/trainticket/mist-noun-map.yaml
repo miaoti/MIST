@@ -1,0 +1,13 @@
+# Per-SUT override for TrainTicket.
+#
+# Empty because the bundled default map (mist/noun-map.default.yaml) already
+# covers TrainTicket vocabulary. This file exists to demonstrate the override
+# mechanism: point mist.noun.map.path at it (or a copy) and add per-SUT
+# entries here.
+#
+# Loaded entries are overlaid on top of the default map, so unspecified
+# nouns still resolve through mist/noun-map.default.yaml.
+#
+# Example overrides:
+#   orders: customOrderId
+#   widgets: widgetCode

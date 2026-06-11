@@ -1,0 +1,134 @@
+Phase 1.C inventory: MIST classes to move out of es.us.isa.restest.* into io.mist.core.*
+
+Source pattern: any class under workflow/, inputs/smart/, configuration/MstConfig*,
+configuration/multiservice/, llm/, registry/RootApi*, enhancer/, auth/,
+analysis/TraceErrorAnalyzer*, analysis/IntelligentAnalysisCache*,
+validation/SoftErrorRuleCache*, name starts with `Mst`, name contains
+MultiService, AiDrivenLLM, ZeroShotLLM, LLMOnly, TraceWorkflowExtractor,
+or NounKeyMap.
+
+Total: 69 .java files plus
+- src/main/java/es/us/isa/restest/main/MistRunner.java         (Phase 1.A)
+- src/main/java/es/us/isa/restest/main/MistRunResult.java      (Phase 1.A)
+- src/main/java/es/us/isa/restest/main/MistMain.java           (Phase 1.B)
+- src/main/java/es/us/isa/restest/oracle/shape/*.java          (Phase 2)
+- src/main/java/es/us/isa/restest/fault/*.java                 (Phase 3)
+- src/main/resources/mist/fault-types.default.yaml             (Phase 3)
+- src/main/resources/mist/seed-trace-labels.json               (Phase 2.A — TBD)
+
+================================================================================
+PROPOSED TARGET LAYOUT (Stage 1.C)
+================================================================================
+
+mist-core/src/main/java/io/mist/core/
+  cli/                                # MistMain + MistRunner + MistRunResult
+  config/                             # MistConfig (renamed from MstConfig)
+  workflow/                           # TraceWorkflowExtractor, ScenarioOptimizer,
+                                      # SemanticDependencyRegistry, NounKeyMap,
+                                      # WorkflowPipeline + stages + supports,
+                                      # WorkflowScenario + WorkflowStep + utils
+  registry/                           # RootApiEntry, RootApiRegistry
+  smartfetch/                         # everything under inputs/smart/ + inputs/llm/
+  oracle/
+    shape/                            # Phase 2 deliverables
+    softerror/                        # SoftErrorRuleCache (subsumed in Phase 2.E)
+  fault/                              # Phase 3 deliverables
+  analysis/                           # TraceErrorAnalyzer, IntelligentAnalysisCache
+  testcases/                          # MultiServiceTestCase (Mist test case carrier)
+  enhancer/                           # FailedTestCollector + family
+  auth/                               # AuthManipulationStrategy, MstAuthHandler,
+                                      # MstAuthRefreshFilter
+  spi/                                # NEW interfaces the adapter implements
+                                      # (see mist-restest-adapter)
+
+mist-llm/src/main/java/io/mist/llm/
+  LLMService, LLMConfig, LLMCallCache,
+  GeminiApiClient, OllamaApiClient
+
+mist-restest-adapter/src/main/java/io/mist/restest/
+  RestestSpecLoaderImpl                 (implements io.mist.core.spi.MistSpecLoader)
+  RestestTestConfigLoaderImpl           (implements io.mist.core.spi.MistTestConfigLoader)
+  RestestAllureBridgeImpl               (implements io.mist.core.spi.MistAllureBridge)
+  RestestPropertiesBridge               (the readParameterValue helper)
+  RestestWriterImpl                     (implements io.mist.core.spi.MistWriter,
+                                         wraps MultiServiceRESTAssuredWriter)
+
+mist-cli/src/main/java/io/mist/cli/
+  MistMain (moved from es.us.isa.restest.main.MistMain)
+
+================================================================================
+COMPLETE FILE LIST (69 + 3 + Phase 2/3 additions)
+================================================================================
+
+src/main/java/es/us/isa/restest/analysis/IntelligentAnalysisCache.java
+src/main/java/es/us/isa/restest/analysis/TraceErrorAnalyzer.java
+src/main/java/es/us/isa/restest/auth/AuthManipulationStrategy.java
+src/main/java/es/us/isa/restest/auth/MstAuthHandler.java
+src/main/java/es/us/isa/restest/auth/MstAuthRefreshFilter.java
+src/main/java/es/us/isa/restest/configuration/MstConfig.java
+src/main/java/es/us/isa/restest/configuration/MstConfigValidator.java
+src/main/java/es/us/isa/restest/configuration/multiservice/GenParam.java
+src/main/java/es/us/isa/restest/configuration/multiservice/MicroserviceTestConfigurationGenerator.java
+src/main/java/es/us/isa/restest/configuration/multiservice/MicroserviceTestConfigurationIO.java
+src/main/java/es/us/isa/restest/configuration/multiservice/MstConfig.java
+src/main/java/es/us/isa/restest/configuration/multiservice/MultiServiceTestConfiguration.java
+src/main/java/es/us/isa/restest/configuration/multiservice/OperationConfig.java
+src/main/java/es/us/isa/restest/configuration/multiservice/TestParameter.java
+src/main/java/es/us/isa/restest/configuration/multiservice/ValueGenerator.java
+src/main/java/es/us/isa/restest/enhancer/FailedTestCollector.java
+src/main/java/es/us/isa/restest/enhancer/FailedTestResult.java
+src/main/java/es/us/isa/restest/enhancer/ParameterSnapshot.java
+src/main/java/es/us/isa/restest/enhancer/StatusCodeExplorationEnhancer.java
+src/main/java/es/us/isa/restest/enhancer/TestCaseEnhancer.java
+src/main/java/es/us/isa/restest/enhancer/TestFileRegenerator.java
+src/main/java/es/us/isa/restest/enhancer/TestResultCapture.java
+src/main/java/es/us/isa/restest/generators/AiDrivenLLMGenerator.java
+src/main/java/es/us/isa/restest/generators/LLMOnlyTestCaseGenerator.java
+src/main/java/es/us/isa/restest/generators/MultiServiceTestCaseGenerator.java
+src/main/java/es/us/isa/restest/generators/ZeroShotLLMGenerator.java
+src/main/java/es/us/isa/restest/inputs/llm/LLMParameterGenerator.java
+src/main/java/es/us/isa/restest/inputs/llm/ParameterInfo.java
+src/main/java/es/us/isa/restest/inputs/smart/ApiMapping.java
+src/main/java/es/us/isa/restest/inputs/smart/CacheConfig.java
+src/main/java/es/us/isa/restest/inputs/smart/InputFetchRegistry.java
+src/main/java/es/us/isa/restest/inputs/smart/OpenAPIEndpointDiscovery.java
+src/main/java/es/us/isa/restest/inputs/smart/ParameterError.java
+src/main/java/es/us/isa/restest/inputs/smart/ParameterErrorAnalysisCache.java
+src/main/java/es/us/isa/restest/inputs/smart/ParameterErrorAnalyzer.java
+src/main/java/es/us/isa/restest/inputs/smart/ServicePattern.java
+src/main/java/es/us/isa/restest/inputs/smart/SmartFetchAuthManager.java
+src/main/java/es/us/isa/restest/inputs/smart/SmartInputFetchConfig.java
+src/main/java/es/us/isa/restest/inputs/smart/SmartInputFetcher.java
+src/main/java/es/us/isa/restest/inputs/smart/SmartLLMParameterGenerator.java
+src/main/java/es/us/isa/restest/llm/GeminiApiClient.java
+src/main/java/es/us/isa/restest/llm/LLMCallCache.java
+src/main/java/es/us/isa/restest/llm/LLMConfig.java
+src/main/java/es/us/isa/restest/llm/LLMService.java
+src/main/java/es/us/isa/restest/llm/OllamaApiClient.java
+src/main/java/es/us/isa/restest/main/MistMain.java
+src/main/java/es/us/isa/restest/main/MistRunResult.java
+src/main/java/es/us/isa/restest/main/MistRunner.java
+src/main/java/es/us/isa/restest/registry/RootApiEntry.java
+src/main/java/es/us/isa/restest/registry/RootApiRegistry.java
+src/main/java/es/us/isa/restest/testcases/MultiServiceTestCase.java
+src/main/java/es/us/isa/restest/validation/SoftErrorRuleCache.java
+src/main/java/es/us/isa/restest/workflow/NounKeyMap.java
+src/main/java/es/us/isa/restest/workflow/ScenarioOptimizer.java
+src/main/java/es/us/isa/restest/workflow/SemanticDependencyRegistry.java
+src/main/java/es/us/isa/restest/workflow/TraceWorkflowExtractor.java
+src/main/java/es/us/isa/restest/workflow/WorkflowScenario.java
+src/main/java/es/us/isa/restest/workflow/WorkflowScenarioUtils.java
+src/main/java/es/us/isa/restest/workflow/WorkflowStep.java
+src/main/java/es/us/isa/restest/workflow/pipeline/PipelineContext.java
+src/main/java/es/us/isa/restest/workflow/pipeline/PipelineStage.java
+src/main/java/es/us/isa/restest/workflow/pipeline/WorkflowPipeline.java
+src/main/java/es/us/isa/restest/workflow/pipeline/stages/DecompositionSupport.java
+src/main/java/es/us/isa/restest/workflow/pipeline/stages/DedupSupport.java
+src/main/java/es/us/isa/restest/workflow/pipeline/stages/Phase25DedupStage.java
+src/main/java/es/us/isa/restest/workflow/pipeline/stages/Phase35DedupStage.java
+src/main/java/es/us/isa/restest/workflow/pipeline/stages/Phase3ShatteringStage.java
+src/main/java/es/us/isa/restest/workflow/pipeline/stages/Phase4DecompositionStage.java
+src/main/java/es/us/isa/restest/workflow/pipeline/stages/SharedPoolGenerationStage.java
+src/main/java/es/us/isa/restest/workflow/pipeline/stages/SharedPoolSupport.java
+src/main/java/es/us/isa/restest/workflow/pipeline/stages/StageSupport.java
+src/main/java/es/us/isa/restest/writers/restassured/MultiServiceRESTAssuredWriter.java

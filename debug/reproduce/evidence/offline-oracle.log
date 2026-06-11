@@ -1,0 +1,105 @@
+==> [1/3] Building mist.jar from this commit (tests skipped)...
+
+==> [2/3] Bookinfo (HTTP G2): expect HIDDEN_DOWNSTREAM_FAILURE FIRES @ERROR, response-level PASS
+Loaded 1 trace(s) from masked_reviews_ratings_outage.json
+
+=== trace abcdef0123456789abcdef0123450001  (6 spans) ===
+  client-facing ROOT : istio-ingressgateway.istio-system  productpage.default.svc.cluster.local:9080/api/v1/products*  http=200 otel=null
+  downstream ERROR   : reviews.default  ratings.default.svc.cluster.local:9080/*  http=503 otel=ERROR
+  --> RESPONSE-LEVEL oracle (status/schema/soft-error sees the client response): PASS  (root is 2xx — looks successful, MISSES the failure)
+  --> TRACE oracle HIDDEN_DOWNSTREAM_FAILURE: FIRES  severity=ERROR
+      reviews.default ──▶ ratings.default.svc.cluster.local:9080/* (http=503 otel=ERROR)
+
+==> [3/3] Online Boutique (gRPC G2): expect FIRES @WARN on the swallowed adservice error
+Loaded 12 trace(s) from boutique_adservice_outage.json
+
+=== trace 9ac1435bce9b9aff474df16456488f72  (40 spans) ===
+  client-facing ROOT : loadgenerator.boutique  frontend.boutique.svc.cluster.local:80/*  http=200 otel=null
+  --> RESPONSE-LEVEL oracle (status/schema/soft-error sees the client response): PASS  (root is 2xx — looks successful, MISSES the failure)
+  --> TRACE oracle HIDDEN_DOWNSTREAM_FAILURE: pass  severity=ERROR
+
+=== trace 166be6a691aef86b76ce2642e75e0888  (25 spans) ===
+  client-facing ROOT : loadgenerator.boutique  frontend.boutique.svc.cluster.local:80/*  http=200 otel=null
+  downstream ERROR   : frontend.boutique  adservice.boutique.svc.cluster.local:9555/*  http=200 otel=ERROR
+  --> RESPONSE-LEVEL oracle (status/schema/soft-error sees the client response): PASS  (root is 2xx — looks successful, MISSES the failure)
+  --> TRACE oracle HIDDEN_DOWNSTREAM_FAILURE: FIRES  severity=WARN
+      frontend.boutique ──▶ adservice.boutique.svc.cluster.local:9555/* (http=200 otel=ERROR)
+
+=== trace b68a8f55c14224e0c4d9172e32a3faad  (25 spans) ===
+  client-facing ROOT : loadgenerator.boutique  frontend.boutique.svc.cluster.local:80/*  http=200 otel=null
+  downstream ERROR   : frontend.boutique  adservice.boutique.svc.cluster.local:9555/*  http=200 otel=ERROR
+  --> RESPONSE-LEVEL oracle (status/schema/soft-error sees the client response): PASS  (root is 2xx — looks successful, MISSES the failure)
+  --> TRACE oracle HIDDEN_DOWNSTREAM_FAILURE: FIRES  severity=WARN
+      frontend.boutique ──▶ adservice.boutique.svc.cluster.local:9555/* (http=200 otel=ERROR)
+
+=== trace 69901b6529b93512b1c7ff5ee35f311c  (40 spans) ===
+  client-facing ROOT : loadgenerator.boutique  frontend.boutique.svc.cluster.local:80/*  http=200 otel=null
+  --> RESPONSE-LEVEL oracle (status/schema/soft-error sees the client response): PASS  (root is 2xx — looks successful, MISSES the failure)
+  --> TRACE oracle HIDDEN_DOWNSTREAM_FAILURE: pass  severity=ERROR
+
+=== trace b09c47f2bfdcf1463e38fa8c2c0ef861  (17 spans) ===
+  client-facing ROOT : frontend.boutique  productcatalogservice.boutique.svc.cluster.local:3550/*  http=200 otel=null
+  client-facing ROOT : productcatalogservice.boutique  productcatalogservice.boutique.svc.cluster.local:3550/*  http=200 otel=null
+  client-facing ROOT : frontend.boutique  currencyservice.boutique.svc.cluster.local:7000/*  http=200 otel=null
+  client-facing ROOT : frontend.boutique  recommendationservice.boutique.svc.cluster.local:8080/*  http=200 otel=null
+  client-facing ROOT : frontend.boutique  productcatalogservice.boutique.svc.cluster.local:3550/*  http=200 otel=null
+  client-facing ROOT : productcatalogservice.boutique  productcatalogservice.boutique.svc.cluster.local:3550/*  http=200 otel=null
+  client-facing ROOT : loadgenerator.boutique  frontend.boutique.svc.cluster.local:80/*  http=200 otel=null
+  client-facing ROOT : frontend.boutique  cartservice.boutique.svc.cluster.local:7070/*  http=200 otel=null
+  client-facing ROOT : frontend.boutique  currencyservice.boutique.svc.cluster.local:7000/*  http=200 otel=null
+  client-facing ROOT : frontend.boutique  productcatalogservice.boutique.svc.cluster.local:3550/*  http=200 otel=null
+  client-facing ROOT : productcatalogservice.boutique  productcatalogservice.boutique.svc.cluster.local:3550/*  http=200 otel=null
+  client-facing ROOT : productcatalogservice.boutique  productcatalogservice.boutique.svc.cluster.local:3550/*  http=200 otel=null
+  client-facing ROOT : frontend.boutique  adservice.boutique.svc.cluster.local:9555/*  http=200 otel=ERROR
+  downstream ERROR   : frontend.boutique  adservice.boutique.svc.cluster.local:9555/*  http=200 otel=ERROR
+  --> RESPONSE-LEVEL oracle (status/schema/soft-error sees the client response): PASS  (root is 2xx — looks successful, MISSES the failure)
+  --> TRACE oracle HIDDEN_DOWNSTREAM_FAILURE: pass  severity=ERROR
+
+=== trace ac6a709315c60fde59bf4a9ca40010e8  (25 spans) ===
+  client-facing ROOT : loadgenerator.boutique  frontend.boutique.svc.cluster.local:80/*  http=200 otel=null
+  downstream ERROR   : frontend.boutique  adservice.boutique.svc.cluster.local:9555/*  http=200 otel=ERROR
+  --> RESPONSE-LEVEL oracle (status/schema/soft-error sees the client response): PASS  (root is 2xx — looks successful, MISSES the failure)
+  --> TRACE oracle HIDDEN_DOWNSTREAM_FAILURE: FIRES  severity=WARN
+      frontend.boutique ──▶ adservice.boutique.svc.cluster.local:9555/* (http=200 otel=ERROR)
+
+=== trace ed044db4afcfb0a958db7fd4914ff0ca  (24 spans) ===
+  client-facing ROOT : frontend.boutique  frontend.boutique.svc.cluster.local:80/*  http=200 otel=null
+  downstream ERROR   : frontend.boutique  adservice.boutique.svc.cluster.local:9555/*  http=200 otel=ERROR
+  --> RESPONSE-LEVEL oracle (status/schema/soft-error sees the client response): PASS  (root is 2xx — looks successful, MISSES the failure)
+  --> TRACE oracle HIDDEN_DOWNSTREAM_FAILURE: FIRES  severity=WARN
+      frontend.boutique ──▶ adservice.boutique.svc.cluster.local:9555/* (http=200 otel=ERROR)
+
+=== trace 916ffe0428d2c88c974e95dac36f9607  (25 spans) ===
+  client-facing ROOT : loadgenerator.boutique  frontend.boutique.svc.cluster.local:80/*  http=200 otel=null
+  downstream ERROR   : frontend.boutique  adservice.boutique.svc.cluster.local:9555/*  http=200 otel=ERROR
+  --> RESPONSE-LEVEL oracle (status/schema/soft-error sees the client response): PASS  (root is 2xx — looks successful, MISSES the failure)
+  --> TRACE oracle HIDDEN_DOWNSTREAM_FAILURE: FIRES  severity=WARN
+      frontend.boutique ──▶ adservice.boutique.svc.cluster.local:9555/* (http=200 otel=ERROR)
+
+=== trace 65f4d9958df98ae3db4f72edbbf00fdc  (24 spans) ===
+  client-facing ROOT : frontend.boutique  frontend.boutique.svc.cluster.local:80/*  http=200 otel=null
+  downstream ERROR   : frontend.boutique  adservice.boutique.svc.cluster.local:9555/*  http=200 otel=ERROR
+  --> RESPONSE-LEVEL oracle (status/schema/soft-error sees the client response): PASS  (root is 2xx — looks successful, MISSES the failure)
+  --> TRACE oracle HIDDEN_DOWNSTREAM_FAILURE: FIRES  severity=WARN
+      frontend.boutique ──▶ adservice.boutique.svc.cluster.local:9555/* (http=200 otel=ERROR)
+
+=== trace d0c27a26aa0b8630c5bef42b68175f6d  (32 spans) ===
+  client-facing ROOT : productcatalogservice.boutique  productcatalogservice.boutique.svc.cluster.local:3550/*  http=200 otel=null
+  client-facing ROOT : loadgenerator.boutique  frontend.boutique.svc.cluster.local:80/*  http=200 otel=null
+  --> RESPONSE-LEVEL oracle (status/schema/soft-error sees the client response): PASS  (root is 2xx — looks successful, MISSES the failure)
+  --> TRACE oracle HIDDEN_DOWNSTREAM_FAILURE: pass  severity=ERROR
+
+=== trace d16e9e1ecd5f5193542829701461fa9a  (6 spans) ===
+  client-facing ROOT : loadgenerator.boutique  frontend.boutique.svc.cluster.local:80/*  http=302 otel=null
+  --> RESPONSE-LEVEL oracle (status/schema/soft-error sees the client response): would flag
+  --> TRACE oracle HIDDEN_DOWNSTREAM_FAILURE: pass  severity=ERROR
+
+=== trace e53b309c706914572c1b37aef0ebb0a1  (24 spans) ===
+  client-facing ROOT : frontend.boutique  frontend.boutique.svc.cluster.local:80/*  http=200 otel=null
+  downstream ERROR   : frontend.boutique  adservice.boutique.svc.cluster.local:9555/*  http=200 otel=ERROR
+  --> RESPONSE-LEVEL oracle (status/schema/soft-error sees the client response): PASS  (root is 2xx — looks successful, MISSES the failure)
+  --> TRACE oracle HIDDEN_DOWNSTREAM_FAILURE: FIRES  severity=WARN
+      frontend.boutique ──▶ adservice.boutique.svc.cluster.local:9555/* (http=200 otel=ERROR)
+
+==> Done. Both fired offline -- no SUT, no LLM. (Healthy-control traces in the
+    same directories stay silent; see REPRODUCE.md for the full matrix.)

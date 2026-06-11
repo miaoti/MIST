@@ -1,0 +1,166 @@
+{
+  "metric": "D8 Pool Shannon Entropy + Simpson Index",
+  "include_negatives": false,
+  "rows_total": 32198,
+  "rows_kept": 1839,
+  "rows_fallback_skipped": 22,
+  "pools_total": 68,
+  "pools_gated": 68,
+  "mean_shannon_normalised": 0.5525153452319946,
+  "mean_simpson": 0.7058195510846434,
+  "shannon_threshold_pass": true,
+  "simpson_threshold_pass": true,
+  "worst_pools": [
+    {
+      "operation": "POST /api/v1/adminrouteservice/adminroute",
+      "parameter": "stationList",
+      "location": "body",
+      "total": 20,
+      "distinct": 3,
+      "shannon": 0.5689955935892812,
+      "shannon_normalised": 0.1316531837404644,
+      "simpson": 0.18499999999999994
+    },
+    {
+      "operation": "PUT /api/v1/consignservice/consigns",
+      "parameter": "within",
+      "location": "body",
+      "total": 20,
+      "distinct": 2,
+      "shannon": 0.7219280948873623,
+      "shannon_normalised": 0.16703843262486695,
+      "simpson": 0.31999999999999984
+    },
+    {
+      "operation": "PUT /api/v1/consignservice/consigns",
+      "parameter": "id",
+      "location": "body",
+      "total": 20,
+      "distinct": 4,
+      "shannon": 0.8475846798245739,
+      "shannon_normalised": 0.19611262871939647,
+      "simpson": 0.27000000000000013
+    },
+    {
+      "operation": "POST /api/v1/orderOtherService/orderOther/refresh",
+      "parameter": "enableStateQuery",
+      "location": "body",
+      "total": 20,
+      "distinct": 2,
+      "shannon": 0.9709505944546686,
+      "shannon_normalised": 0.22465681361132717,
+      "simpson": 0.48
+    },
+    {
+      "operation": "POST /api/v1/orderOtherService/orderOther/refresh",
+      "parameter": "enableBoughtDateQuery",
+      "location": "body",
+      "total": 20,
+      "distinct": 2,
+      "shannon": 0.9927744539878083,
+      "shannon_normalised": 0.2297063792343546,
+      "simpson": 0.4949999999999999
+    },
+    {
+      "operation": "POST /api/v1/orderOtherService/orderOther/refresh",
+      "parameter": "enableTravelDateQuery",
+      "location": "body",
+      "total": 20,
+      "distinct": 2,
+      "shannon": 0.9927744539878083,
+      "shannon_normalised": 0.2297063792343546,
+      "simpson": 0.4949999999999999
+    },
+    {
+      "operation": "PUT /api/v1/adminbasicservice/adminbasic/trains",
+      "parameter": "name",
+      "location": "body",
+      "total": 95,
+      "distinct": 5,
+      "shannon": 1.6807273605254596,
+      "shannon_normalised": 0.2558240942760146,
+      "simpson": 0.566426592797784
+    },
+    {
+      "operation": "PUT /api/v1/adminbasicservice/adminbasic/trains",
+      "parameter": "averageSpeed",
+      "location": "body",
+      "total": 95,
+      "distinct": 5,
+      "shannon": 1.6839393799271,
+      "shannon_normalised": 0.25631299686278797,
+      "simpson": 0.5668698060941828
+    },
+    {
+      "operation": "PUT /api/v1/consignservice/consigns",
+      "parameter": "handleDate",
+      "location": "body",
+      "total": 20,
+      "distinct": 5,
+      "shannon": 1.1219280948873622,
+      "shannon_normalised": 0.2595897178887706,
+      "simpson": 0.34999999999999987
+    },
+    {
+      "operation": "PUT /api/v1/consignservice/consigns",
+      "parameter": "to",
+      "location": "body",
+      "total": 20,
+      "distinct": 5,
+      "shannon": 1.1219280948873622,
+      "shannon_normalised": 0.2595897178887706,
+      "simpson": 0.34999999999999987
+    },
+    {
+      "operation": "PUT /api/v1/adminbasicservice/adminbasic/trains",
+      "parameter": "economyClass",
+      "location": "body",
+      "total": 95,
+      "distinct": 5,
+      "shannon": 1.7701509480035882,
+      "shannon_normalised": 0.2694352895304026,
+      "simpson": 0.5998891966759003
+    },
+    {
+      "operation": "PUT /api/v1/adminbasicservice/adminbasic/trains",
+      "parameter": "confortClass",
+      "location": "body",
+      "total": 95,
+      "distinct": 5,
+      "shannon": 1.8475395379235553,
+      "shannon_normalised": 0.2812146336337698,
+      "simpson": 0.6300277008310249
+    },
+    {
+      "operation": "POST /api/v1/adminrouteservice/adminroute",
+      "parameter": "distanceList",
+      "location": "body",
+      "total": 20,
+      "distinct": 5,
+      "shannon": 1.2917601481809733,
+      "shannon_normalised": 0.2988851549170993,
+      "simpson": 0.42000000000000004
+    },
+    {
+      "operation": "POST /api/v1/adminrouteservice/adminroute",
+      "parameter": "endStation",
+      "location": "body",
+      "total": 20,
+      "distinct": 5,
+      "shannon": 1.2917601481809733,
+      "shannon_normalised": 0.2988851549170993,
+      "simpson": 0.42000000000000004
+    },
+    {
+      "operation": "POST /api/v1/adminrouteservice/adminroute",
+      "parameter": "loginId",
+      "location": "body",
+      "total": 20,
+      "distinct": 5,
+      "shannon": 1.2917601481809733,
+      "shannon_normalised": 0.2988851549170993,
+      "simpson": 0.42000000000000004
+    }
+  ],
+  "computed_at": "2026-05-05T05:06:09Z"
+}

@@ -1,0 +1,243 @@
+{
+  "metric": "D3 LLM Hallucination Rate",
+  "scored_categories": [
+    "diverse_gen",
+    "positive_gen",
+    "simple_gen"
+  ],
+  "rows_total": 72499,
+  "rows_scored": 787,
+  "rows_actionable": 777,
+  "rows_valid": 766,
+  "rows_hallucinated": 11,
+  "rows_abstained": 10,
+  "rows_no_constraint": 0,
+  "lhr": 0.014157014157014158,
+  "lhr_definition": "hallucinated / (scored - abstained)",
+  "lhr_threshold_pass": true,
+  "abstain_rate": 0.012706480304955527,
+  "by_constraint_violation": {
+    "shape": 11
+  },
+  "by_prompt_category": {
+    "positive_gen": {
+      "total": 717,
+      "valid": 717,
+      "hallucinated": 0,
+      "abstained": 0,
+      "lhr": 0.0
+    },
+    "extraction": {
+      "total": 16,
+      "valid": 0,
+      "hallucinated": 0,
+      "abstained": 0,
+      "lhr": 0.0
+    },
+    "bulk_extract": {
+      "total": 26,
+      "valid": 0,
+      "hallucinated": 0,
+      "abstained": 0,
+      "lhr": 0.0
+    },
+    "diverse_gen": {
+      "total": 64,
+      "valid": 45,
+      "hallucinated": 11,
+      "abstained": 8,
+      "lhr": 0.19642857142857142
+    },
+    "other": {
+      "total": 71060,
+      "valid": 0,
+      "hallucinated": 0,
+      "abstained": 0,
+      "lhr": 0.0
+    },
+    "simple_gen": {
+      "total": 6,
+      "valid": 4,
+      "hallucinated": 0,
+      "abstained": 2,
+      "lhr": 0.0
+    },
+    "negative_gen": {
+      "total": 610,
+      "valid": 0,
+      "hallucinated": 0,
+      "abstained": 0,
+      "lhr": 0.0
+    }
+  },
+  "by_model": {
+    "qwen2.5-coder:14b": {
+      "total": 787,
+      "valid": 766,
+      "hallucinated": 11,
+      "abstained": 10,
+      "lhr": 0.014157014157014158
+    }
+  },
+  "worst_parameters": [
+    {
+      "parameter": "orderId",
+      "total": 56,
+      "hallucinated": 7,
+      "abstained": 0,
+      "lhr": 0.125,
+      "examples": [
+        {
+          "value": "1a3b5c7d-8e9f-0ab1-cdef-2ghij3klmno",
+          "violations": [
+            "shape: value has UUID-like shape but is not a valid UUID: '1a3b5c7d-8e9f-0ab1-cdef-2ghij3klmno'"
+          ]
+        },
+        {
+          "value": "b23c4d5e-f67g-h8i9-j0ka-lmnopqrstu",
+          "violations": [
+            "shape: value has UUID-like shape but is not a valid UUID: 'b23c4d5e-f67g-h8i9-j0ka-lmnopqrstu'"
+          ]
+        },
+        {
+          "value": "c34d5e6f-g7h8-i9ja-k0lb-mnopqrstuv",
+          "violations": [
+            "shape: value has UUID-like shape but is not a valid UUID: 'c34d5e6f-g7h8-i9ja-k0lb-mnopqrstuv'"
+          ]
+        }
+      ]
+    },
+    {
+      "parameter": "id",
+      "total": 84,
+      "hallucinated": 4,
+      "abstained": 0,
+      "lhr": 0.047619047619047616,
+      "examples": [
+        {
+          "value": "3e4f5a6b-c7d8-e9f0-a1b2-c3d4e5f6g7h8",
+          "violations": [
+            "shape: value has UUID-like shape but is not a valid UUID: '3e4f5a6b-c7d8-e9f0-a1b2-c3d4e5f6g7h8'"
+          ]
+        },
+        {
+          "value": "1a2b3c4d-5e6f-7a8b-9c0d-e1f2g3h4i5j6",
+          "violations": [
+            "shape: value has UUID-like shape but is not a valid UUID: '1a2b3c4d-5e6f-7a8b-9c0d-e1f2g3h4i5j6'"
+          ]
+        },
+        {
+          "value": "2f4a6b8c-e9d0-c1b2-a3d4-efghijklmnop",
+          "violations": [
+            "shape: value has UUID-like shape but is not a valid UUID: '2f4a6b8c-e9d0-c1b2-a3d4-efghijklmnop'"
+          ]
+        }
+      ]
+    },
+    {
+      "parameter": "boughtDateEnd",
+      "total": 15,
+      "hallucinated": 0,
+      "abstained": 0,
+      "lhr": 0.0,
+      "examples": []
+    },
+    {
+      "parameter": "boughtDateStart",
+      "total": 15,
+      "hallucinated": 0,
+      "abstained": 0,
+      "lhr": 0.0,
+      "examples": []
+    },
+    {
+      "parameter": "enableBoughtDateQuery",
+      "total": 18,
+      "hallucinated": 0,
+      "abstained": 0,
+      "lhr": 0.0,
+      "examples": []
+    },
+    {
+      "parameter": "enableStateQuery",
+      "total": 18,
+      "hallucinated": 0,
+      "abstained": 0,
+      "lhr": 0.0,
+      "examples": []
+    },
+    {
+      "parameter": "enableTravelDateQuery",
+      "total": 18,
+      "hallucinated": 0,
+      "abstained": 0,
+      "lhr": 0.0,
+      "examples": []
+    },
+    {
+      "parameter": "loginId",
+      "total": 17,
+      "hallucinated": 0,
+      "abstained": 0,
+      "lhr": 0.0,
+      "examples": []
+    },
+    {
+      "parameter": "state",
+      "total": 17,
+      "hallucinated": 0,
+      "abstained": 0,
+      "lhr": 0.0,
+      "examples": []
+    },
+    {
+      "parameter": "travelDateEnd",
+      "total": 16,
+      "hallucinated": 0,
+      "abstained": 0,
+      "lhr": 0.0,
+      "examples": []
+    },
+    {
+      "parameter": "travelDateStart",
+      "total": 15,
+      "hallucinated": 0,
+      "abstained": 0,
+      "lhr": 0.0,
+      "examples": []
+    },
+    {
+      "parameter": "departureTime",
+      "total": 20,
+      "hallucinated": 0,
+      "abstained": 0,
+      "lhr": 0.0,
+      "examples": []
+    },
+    {
+      "parameter": "endPlace",
+      "total": 21,
+      "hallucinated": 0,
+      "abstained": 1,
+      "lhr": 0.0,
+      "examples": []
+    },
+    {
+      "parameter": "startPlace",
+      "total": 26,
+      "hallucinated": 0,
+      "abstained": 0,
+      "lhr": 0.0,
+      "examples": []
+    },
+    {
+      "parameter": "averageSpeed",
+      "total": 19,
+      "hallucinated": 0,
+      "abstained": 1,
+      "lhr": 0.0,
+      "examples": []
+    }
+  ],
+  "computed_at": "2026-05-01T01:20:45Z"
+}

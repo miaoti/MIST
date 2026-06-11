@@ -1,0 +1,4 @@
+# Per-SUT runtime caches/logs/outputs — regenerable, never committed.
+# Each SUT is run from its own .runtime/ so .mist/*, logs/, allure-results/,
+# and generated tests stay isolated per SUT (no cross-SUT cache overlap).
+suts/*/.runtime/

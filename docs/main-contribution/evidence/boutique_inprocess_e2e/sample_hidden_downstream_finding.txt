@@ -1,0 +1,15 @@
+🕳️ HIDDEN DOWNSTREAM FAILURE  [severity=WARN]
+🔍 Open in Jaeger (visual call tree): http://localhost:16686/jaeger/trace/179f63e92f3244f7b6e104d9f28097e2
+
+WHAT THE CLIENT SAW:
+  GET /product/LS4PSXUNUM  →  HTTP 2xx ✅   (looks fine — status, schema, and body are all clean)
+
+WHAT ACTUALLY HAPPENED (only the trace shows it):
+  A downstream call failed and was SWALLOWED — the caller returned 2xx anyway.
+  Read as  caller ──▶ callee ;  the FAILURE is in the callee (the downstream service):
+    frontend.boutique ──▶ adservice.boutique.svc.cluster.local:9555/* (http=200 otel=ERROR)
+
+WHY A SEPARATE FINDING (vs the '🔗 API Call Trace' below)?
+  The trace marks EVERY errored span ❌. This one is invisible to status/schema/body
+  checks because the client got a 200 — that is what makes it a HIDDEN failure
+  (severity WARN: it errored but never surfaced to the caller).

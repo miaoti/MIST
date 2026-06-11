@@ -1,0 +1,183 @@
+{
+  "metric": "D1 Schema Conformance Rate",
+  "include_negatives": false,
+  "rows_total": 664,
+  "rows_validated": 664,
+  "rows_valid": 659,
+  "rows_invalid": 5,
+  "rows_no_schema": 0,
+  "rows_missing_operation": 0,
+  "rows_skipped_negative": 17858,
+  "rows_skipped_fallback": 439,
+  "scr": 0.9924698795180723,
+  "scr_threshold_pass": true,
+  "by_test_kind": {
+    "positive": {
+      "total": 664,
+      "valid": 659,
+      "scr": 0.9924698795180723
+    }
+  },
+  "worst_parameters": [
+    {
+      "operation": "POST /api/v1/adminorderservice/adminorder",
+      "parameter": "price",
+      "location": "body",
+      "total": 5,
+      "valid": 4,
+      "scr": 0.8,
+      "invalid_examples": [
+        {
+          "value": "0.38",
+          "error": "<root>: 0.38 is not of type 'string'"
+        }
+      ]
+    },
+    {
+      "operation": "POST /api/v1/orderOtherService/orderOther/refresh",
+      "parameter": "state",
+      "location": "body",
+      "total": 20,
+      "valid": 19,
+      "scr": 0.95,
+      "invalid_examples": [
+        {
+          "value": "test976",
+          "error": "<root>: 'test976' is not of type 'integer'"
+        }
+      ]
+    },
+    {
+      "operation": "POST /api/v1/adminbasicservice/adminbasic/trains",
+      "parameter": "confortClass",
+      "location": "body",
+      "total": 20,
+      "valid": 19,
+      "scr": 0.95,
+      "invalid_examples": [
+        {
+          "value": "test166",
+          "error": "<root>: 'test166' is not of type 'integer'"
+        }
+      ]
+    },
+    {
+      "operation": "POST /api/v1/adminbasicservice/adminbasic/trains",
+      "parameter": "economyClass",
+      "location": "body",
+      "total": 20,
+      "valid": 19,
+      "scr": 0.95,
+      "invalid_examples": [
+        {
+          "value": "test261",
+          "error": "<root>: 'test261' is not of type 'integer'"
+        }
+      ]
+    },
+    {
+      "operation": "POST /api/v1/adminorderservice/adminorder",
+      "parameter": "seatClass",
+      "location": "body",
+      "total": 20,
+      "valid": 19,
+      "scr": 0.95,
+      "invalid_examples": [
+        {
+          "value": "test763",
+          "error": "<root>: 'test763' is not of type 'integer'"
+        }
+      ]
+    },
+    {
+      "operation": "POST /api/v1/orderOtherService/orderOther/refresh",
+      "parameter": "enableBoughtDateQuery",
+      "location": "body",
+      "total": 20,
+      "valid": 20,
+      "scr": 1.0,
+      "invalid_examples": []
+    },
+    {
+      "operation": "POST /api/v1/orderOtherService/orderOther/refresh",
+      "parameter": "enableStateQuery",
+      "location": "body",
+      "total": 20,
+      "valid": 20,
+      "scr": 1.0,
+      "invalid_examples": []
+    },
+    {
+      "operation": "POST /api/v1/orderOtherService/orderOther/refresh",
+      "parameter": "enableTravelDateQuery",
+      "location": "body",
+      "total": 20,
+      "valid": 20,
+      "scr": 1.0,
+      "invalid_examples": []
+    },
+    {
+      "operation": "POST /api/v1/orderOtherService/orderOther/refresh",
+      "parameter": "travelDateEnd",
+      "location": "body",
+      "total": 6,
+      "valid": 6,
+      "scr": 1.0,
+      "invalid_examples": []
+    },
+    {
+      "operation": "POST /api/v1/orderOtherService/orderOther/refresh",
+      "parameter": "travelDateStart",
+      "location": "body",
+      "total": 3,
+      "valid": 3,
+      "scr": 1.0,
+      "invalid_examples": []
+    },
+    {
+      "operation": "POST /api/v1/adminbasicservice/adminbasic/trains",
+      "parameter": "averageSpeed",
+      "location": "body",
+      "total": 20,
+      "valid": 20,
+      "scr": 1.0,
+      "invalid_examples": []
+    },
+    {
+      "operation": "POST /api/v1/adminbasicservice/adminbasic/trains",
+      "parameter": "id",
+      "location": "body",
+      "total": 4,
+      "valid": 4,
+      "scr": 1.0,
+      "invalid_examples": []
+    },
+    {
+      "operation": "PUT /api/v1/consignservice/consigns",
+      "parameter": "accountId",
+      "location": "body",
+      "total": 20,
+      "valid": 20,
+      "scr": 1.0,
+      "invalid_examples": []
+    },
+    {
+      "operation": "PUT /api/v1/consignservice/consigns",
+      "parameter": "consignee",
+      "location": "body",
+      "total": 20,
+      "valid": 20,
+      "scr": 1.0,
+      "invalid_examples": []
+    },
+    {
+      "operation": "PUT /api/v1/consignservice/consigns",
+      "parameter": "from",
+      "location": "body",
+      "total": 20,
+      "valid": 20,
+      "scr": 1.0,
+      "invalid_examples": []
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="MIST: Demo (no-exec smoke)" type="Application" factoryName="Application">
+    <!-- Generation-only smoke run for sandboxes that cannot reach
+         TrainTicket / Ollama / Gemini. Uses the trainticket-demo-noexec
+         profile which disables jaeger / smart-fetch / llm / enhancer /
+         status-code-exploration. -->
+    <option name="MAIN_CLASS_NAME" value="io.mist.cli.MistMain" />
+    <module name="mist-cli" />
+    <option name="PROGRAM_PARAMETERS" value="mist-cli/src/main/resources/My-Example/trainticket-demo-noexec.properties" />
+    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+    <option name="VM_PARAMETERS" value="-Drandom.seed=42" />
+    <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

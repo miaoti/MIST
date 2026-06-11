@@ -1,0 +1,72 @@
+{
+  "metric": "D7 Realism Score",
+  "definition": "fraction of NLP-typed positive-variant values that match a known entity in the realism oracle",
+  "oracle_mode": "offline",
+  "entities_loaded": 732,
+  "online_calls": 0,
+  "online_hits": 0,
+  "total_inputs_seen": 23189,
+  "nlp_typed_inputs": 206,
+  "realistic": 191,
+  "unrealistic": 15,
+  "empty": 0,
+  "fallback_skipped": 5,
+  "by_lookup_source": {
+    "offline": 127,
+    "token": 64,
+    "unknown": 15
+  },
+  "realism": 0.9271844660194175,
+  "realism_threshold_pass": true,
+  "worst_parameters": [
+    {
+      "parameter": "contactsName",
+      "total": 31,
+      "realistic": 17,
+      "realism": 0.5483870967741935,
+      "unrealistic_examples": [
+        "M",
+        "M",
+        "T2sR4aOnMQsnhIFxu"
+      ]
+    },
+    {
+      "parameter": "startStation",
+      "total": 20,
+      "realistic": 19,
+      "realism": 0.95,
+      "unrealistic_examples": [
+        "12345678901"
+      ]
+    },
+    {
+      "parameter": "endPlace",
+      "total": 57,
+      "realistic": 57,
+      "realism": 1.0,
+      "unrealistic_examples": []
+    },
+    {
+      "parameter": "startPlace",
+      "total": 58,
+      "realistic": 58,
+      "realism": 1.0,
+      "unrealistic_examples": []
+    },
+    {
+      "parameter": "endStation",
+      "total": 20,
+      "realistic": 20,
+      "realism": 1.0,
+      "unrealistic_examples": []
+    },
+    {
+      "parameter": "stationList",
+      "total": 20,
+      "realistic": 20,
+      "realism": 1.0,
+      "unrealistic_examples": []
+    }
+  ],
+  "computed_at": "2026-05-07T19:04:32Z"
+}

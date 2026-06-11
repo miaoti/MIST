@@ -1,0 +1,224 @@
+{
+  "metric": "D3 LLM Hallucination Rate",
+  "scored_categories": [
+    "diverse_gen",
+    "positive_gen",
+    "simple_gen"
+  ],
+  "rows_total": 48492,
+  "rows_scored": 776,
+  "rows_actionable": 767,
+  "rows_valid": 760,
+  "rows_hallucinated": 7,
+  "rows_abstained": 9,
+  "rows_no_constraint": 0,
+  "lhr": 0.009126466753585397,
+  "lhr_definition": "hallucinated / (scored - abstained)",
+  "lhr_threshold_pass": true,
+  "abstain_rate": 0.011597938144329897,
+  "by_constraint_violation": {
+    "type": 7
+  },
+  "by_prompt_category": {
+    "extraction": {
+      "total": 12,
+      "valid": 0,
+      "hallucinated": 0,
+      "abstained": 0,
+      "lhr": 0.0
+    },
+    "simple_gen": {
+      "total": 9,
+      "valid": 7,
+      "hallucinated": 0,
+      "abstained": 2,
+      "lhr": 0.0
+    },
+    "bulk_extract": {
+      "total": 15,
+      "valid": 0,
+      "hallucinated": 0,
+      "abstained": 0,
+      "lhr": 0.0
+    },
+    "diverse_gen": {
+      "total": 48,
+      "valid": 34,
+      "hallucinated": 7,
+      "abstained": 7,
+      "lhr": 0.17073170731707318
+    },
+    "positive_gen": {
+      "total": 719,
+      "valid": 719,
+      "hallucinated": 0,
+      "abstained": 0,
+      "lhr": 0.0
+    },
+    "other": {
+      "total": 47200,
+      "valid": 0,
+      "hallucinated": 0,
+      "abstained": 0,
+      "lhr": 0.0
+    },
+    "negative_gen": {
+      "total": 489,
+      "valid": 0,
+      "hallucinated": 0,
+      "abstained": 0,
+      "lhr": 0.0
+    }
+  },
+  "by_model": {
+    "qwen2.5-coder:14b": {
+      "total": 776,
+      "valid": 760,
+      "hallucinated": 7,
+      "abstained": 9,
+      "lhr": 0.009126466753585397
+    }
+  },
+  "worst_parameters": [
+    {
+      "parameter": "enableTravelDateQuery",
+      "total": 28,
+      "hallucinated": 7,
+      "abstained": 0,
+      "lhr": 0.25,
+      "examples": [
+        {
+          "value": "enabled",
+          "violations": [
+            "type: not a boolean ('enabled')"
+          ]
+        },
+        {
+          "value": "disabled",
+          "violations": [
+            "type: not a boolean ('disabled')"
+          ]
+        },
+        {
+          "value": "yes",
+          "violations": [
+            "type: not a boolean ('yes')"
+          ]
+        }
+      ]
+    },
+    {
+      "parameter": "boughtDateEnd",
+      "total": 23,
+      "hallucinated": 0,
+      "abstained": 0,
+      "lhr": 0.0,
+      "examples": []
+    },
+    {
+      "parameter": "boughtDateStart",
+      "total": 15,
+      "hallucinated": 0,
+      "abstained": 0,
+      "lhr": 0.0,
+      "examples": []
+    },
+    {
+      "parameter": "enableBoughtDateQuery",
+      "total": 20,
+      "hallucinated": 0,
+      "abstained": 1,
+      "lhr": 0.0,
+      "examples": []
+    },
+    {
+      "parameter": "enableStateQuery",
+      "total": 18,
+      "hallucinated": 0,
+      "abstained": 0,
+      "lhr": 0.0,
+      "examples": []
+    },
+    {
+      "parameter": "loginId",
+      "total": 15,
+      "hallucinated": 0,
+      "abstained": 0,
+      "lhr": 0.0,
+      "examples": []
+    },
+    {
+      "parameter": "state",
+      "total": 17,
+      "hallucinated": 0,
+      "abstained": 0,
+      "lhr": 0.0,
+      "examples": []
+    },
+    {
+      "parameter": "travelDateEnd",
+      "total": 16,
+      "hallucinated": 0,
+      "abstained": 0,
+      "lhr": 0.0,
+      "examples": []
+    },
+    {
+      "parameter": "travelDateStart",
+      "total": 22,
+      "hallucinated": 0,
+      "abstained": 0,
+      "lhr": 0.0,
+      "examples": []
+    },
+    {
+      "parameter": "orderId",
+      "total": 58,
+      "hallucinated": 0,
+      "abstained": 0,
+      "lhr": 0.0,
+      "examples": []
+    },
+    {
+      "parameter": "id",
+      "total": 71,
+      "hallucinated": 0,
+      "abstained": 0,
+      "lhr": 0.0,
+      "examples": []
+    },
+    {
+      "parameter": "departureTime",
+      "total": 20,
+      "hallucinated": 0,
+      "abstained": 0,
+      "lhr": 0.0,
+      "examples": []
+    },
+    {
+      "parameter": "endPlace",
+      "total": 20,
+      "hallucinated": 0,
+      "abstained": 0,
+      "lhr": 0.0,
+      "examples": []
+    },
+    {
+      "parameter": "startPlace",
+      "total": 20,
+      "hallucinated": 0,
+      "abstained": 1,
+      "lhr": 0.0,
+      "examples": []
+    },
+    {
+      "parameter": "averageSpeed",
+      "total": 22,
+      "hallucinated": 0,
+      "abstained": 1,
+      "lhr": 0.0,
+      "examples": []
+    }
+  ],
+  "computed_at": "2026-04-27T18:53:00Z"
+}

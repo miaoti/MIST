@@ -1,0 +1,41 @@
+# Default noun -> ID-key map. Tailored for the bundled TrainTicket demo.
+#
+# Used by TraceWorkflowExtractor.extractFieldsFromUrl to map path segments such
+# as /orders/{value} into semantic field names like orderId={value}. Per-SUT
+# overrides can be supplied via the mist.noun.map.path system property (see
+# MstConfig.Core.nounMapPath()); override entries are overlaid on top of this
+# map, so nouns not present in the override still resolve via these defaults.
+#
+# Format: a single top-level YAML map of noun: keyName pairs.
+orders: orderId
+order: orderId
+trips: tripId
+trip: tripId
+routes: routeId
+route: routeId
+accounts: accountId
+account: accountId
+contacts: contactId
+contact: contactId
+users: userId
+user: userId
+trains: trainNumber
+train: trainNumber
+stations: stationId
+station: stationId
+seats: seatId
+seat: seatId
+prices: priceId
+price: priceId
+configs: configId
+config: configId
+consigns: consignId
+consign: consignId
+foods: foodId
+food: foodId
+assurances: assuranceId
+assurance: assuranceId
+vouchers: voucherId
+voucher: voucherId
+payments: paymentId
+payment: paymentId

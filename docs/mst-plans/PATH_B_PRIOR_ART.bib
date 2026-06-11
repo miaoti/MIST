@@ -1,0 +1,236 @@
+% PATH_B_PRIOR_ART.bib
+%
+% BibTeX entries collected during Phase 0 of PATH_B_REBUILD_PLAN.md for
+% the eventual ICSE/FSE 2027 submission. Verified from primary sources
+% where possible; secondary-source fields are noted in BibTeX comments.
+%
+% Owner: positioning document at docs/mst-plans/PATH_B_POSITIONING.md.
+
+% =============================================================================
+% AutoRestTest (ICSE 2025 + arXiv companions)
+% =============================================================================
+
+% Canonical ICSE 2025 tool-demonstration paper. DOI verified via search;
+% ACM DL page itself was unreachable from this sandbox so page numbers
+% are omitted rather than guessed.
+@inproceedings{stennett2025autoresttest,
+  author    = {Stennett, Tyler and Kim, Myeongsoo and Sinha, Saurabh and Orso, Alessandro},
+  title     = {{AutoRestTest}: A Tool for Automated {REST} {API} Testing Using {LLMs} and {MARL}},
+  booktitle = {Proceedings of the IEEE/ACM 47th International Conference on Software Engineering: Companion Proceedings (ICSE-Companion '25)},
+  year      = {2025},
+  publisher = {IEEE},
+  doi       = {10.1109/ICSE-Companion66252.2025.00015},
+  note      = {Tool demonstration track}
+}
+
+% arXiv fallback for the tool-demo paper.
+@misc{stennett2025autoresttestarxiv,
+  author        = {Stennett, Tyler and Kim, Myeongsoo and Sinha, Saurabh and Orso, Alessandro},
+  title         = {{AutoRestTest}: A Tool for Automated {REST} {API} Testing Using {LLMs} and {MARL}},
+  year          = {2025},
+  eprint        = {2501.08600},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.SE},
+  url           = {https://arxiv.org/abs/2501.08600}
+}
+
+% Companion research paper describing the full methodology
+% (SPDG + MARL + LLM). arXiv only as of the Phase 0 search.
+@misc{kim2024multiagent,
+  author        = {Kim, Myeongsoo and Stennett, Tyler and Sinha, Saurabh and Orso, Alessandro},
+  title         = {A Multi-Agent Approach for {REST} {API} Testing with Semantic Graphs and {LLM}-Driven Inputs},
+  year          = {2024},
+  eprint        = {2411.07098},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.SE},
+  url           = {https://arxiv.org/abs/2411.07098}
+}
+
+% =============================================================================
+% LogiAgent (2025 preprint)
+% =============================================================================
+
+@misc{zhang2025logiagent,
+  title         = {{LogiAgent}: Automated Logical Testing for {REST} Systems with {LLM}-Based Multi-Agents},
+  author        = {Zhang, Ke and Zhang, Chenxi and Wang, Chong and Zhang, Chi and Wu, YaChen and Xing, Zhenchang and Liu, Yang and Li, Qingshan and Peng, Xin},
+  year          = {2025},
+  month         = mar,
+  eprint        = {2503.15079},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.SE},
+  url           = {https://arxiv.org/abs/2503.15079},
+  note          = {Preprint; posted 19 March 2025}
+}
+
+% =============================================================================
+% MACROHIVE (QRS'22 + JSS'23)
+% =============================================================================
+
+@inproceedings{giamattei2022macrohive,
+  author    = {Giamattei, Luca and
+               Guerriero, Antonio and
+               Pietrantuono, Roberto and
+               Russo, Stefano},
+  title     = {Automated Grey-Box Testing of Microservice Architectures},
+  booktitle = {2022 IEEE 22nd International Conference on Software
+               Quality, Reliability and Security (QRS)},
+  year      = {2022},
+  pages     = {640--650},
+  publisher = {IEEE},
+  address   = {Guangzhou, China},
+  doi       = {10.1109/QRS57517.2022.00070}
+}
+
+@article{giamattei2024macrohive,
+  author    = {Giamattei, Luca and
+               Guerriero, Antonio and
+               Pietrantuono, Roberto and
+               Russo, Stefano},
+  title     = {Automated functional and robustness testing of
+               microservice architectures},
+  journal   = {Journal of Systems and Software},
+  volume    = {207},
+  pages     = {111857},
+  year      = {2024},
+  note      = {Available online October 2023},
+  publisher = {Elsevier},
+  issn      = {0164-1212},
+  doi       = {10.1016/j.jss.2023.111857}
+}
+
+% =============================================================================
+% Mandatory baselines (cited but not deep-dived in the positioning doc)
+% =============================================================================
+
+% RESTler — Microsoft's stateful REST API fuzzer (ICSE'19).
+@inproceedings{atlidakis2019restler,
+  author    = {Atlidakis, Vaggelis and Godefroid, Patrice and Polishchuk, Marina},
+  title     = {{RESTler}: Stateful {REST} {API} Fuzzing},
+  booktitle = {Proceedings of the 41st International Conference on Software Engineering (ICSE)},
+  year      = {2019},
+  pages     = {748--758},
+  publisher = {IEEE},
+  doi       = {10.1109/ICSE.2019.00083}
+}
+
+% EvoMaster — search-based test generation for REST APIs (Arcuri, multiple papers).
+@article{arcuri2019restful,
+  author  = {Arcuri, Andrea},
+  title   = {{RESTful API} Automated Test Case Generation with {EvoMaster}},
+  journal = {ACM Transactions on Software Engineering and Methodology (TOSEM)},
+  volume  = {28},
+  number  = {1},
+  pages   = {3:1--3:37},
+  year    = {2019},
+  doi     = {10.1145/3293455}
+}
+
+% Morest — model-based REST API testing using extended operation dependency graph (FSE'22).
+@inproceedings{liu2022morest,
+  author    = {Liu, Yi and Li, Yuekang and Deng, Gelei and Liu, Yang and Wan, Ruiyuan and Wu, Runchao and Ji, Dandan and Xu, Shiheng and Bao, Minli},
+  title     = {{Morest}: Model-Based {RESTful} {API} Testing with Execution Feedback},
+  booktitle = {Proceedings of the 30th ACM Joint European Software Engineering Conference and Symposium on the Foundations of Software Engineering (ESEC/FSE)},
+  year      = {2022},
+  pages     = {1406--1417},
+  publisher = {ACM},
+  doi       = {10.1145/3540250.3549144}
+}
+
+% ARAT-RL — adaptive REST API testing with reinforcement learning (ICSE'23).
+@inproceedings{kim2023adaptive,
+  author    = {Kim, Myeongsoo and Sinha, Saurabh and Orso, Alessandro},
+  title     = {Adaptive {REST} {API} Testing with Reinforcement Learning},
+  booktitle = {2023 38th IEEE/ACM International Conference on Automated Software Engineering (ASE)},
+  year      = {2023},
+  pages     = {446--458},
+  publisher = {IEEE},
+  doi       = {10.1109/ASE56229.2023.00069}
+}
+
+% DeepREST — deep learning for stateful REST API testing (ASE'24).
+@inproceedings{corradini2024deeprest,
+  author    = {Corradini, Davide and Pasqua, Michele and Ceccato, Mariano},
+  title     = {{DeepREST}: Automated Test Case Generation for {REST} {APIs} Exploiting Deep Reinforcement Learning},
+  booktitle = {2024 39th IEEE/ACM International Conference on Automated Software Engineering (ASE)},
+  year      = {2024},
+  publisher = {ACM},
+  doi       = {10.1145/3691620.3695535}
+}
+
+% LlamaRestTest — fine-tuned LLaMA for REST API testing (FSE'25).
+% Citation placeholder; full author list to be confirmed at submission time.
+@inproceedings{llamaresttest2025,
+  title     = {{LlamaRestTest}: Effective {REST} {API} Testing with Small Language Models},
+  booktitle = {Proceedings of the 33rd ACM Joint European Software Engineering Conference and Symposium on the Foundations of Software Engineering (FSE)},
+  year      = {2025},
+  note      = {Bibliographic details to be confirmed against the proceedings}
+}
+
+% RESTGPT — using LLMs to discover input constraints in OpenAPI specs (ICSE-NIER'24).
+@inproceedings{kim2024restgpt,
+  author    = {Kim, Myeongsoo and Sinha, Saurabh and Orso, Alessandro},
+  title     = {Leveraging Large Language Models to Improve {REST} {API} Testing},
+  booktitle = {Proceedings of the 2024 IEEE/ACM 46th International Conference on Software Engineering: New Ideas and Emerging Results (ICSE-NIER)},
+  year      = {2024},
+  pages     = {37--41},
+  publisher = {ACM},
+  doi       = {10.1145/3639476.3639769}
+}
+
+% =============================================================================
+% Microservice benchmarks
+% =============================================================================
+
+% TrainTicket — Fudan's reference microservice benchmark.
+@article{zhou2018trainticket,
+  author  = {Zhou, Xiang and Peng, Xin and Xie, Tao and Sun, Jun and Ji, Chao and Liu, Dewei and Xiang, Qilin and He, Chuan},
+  title   = {Fault Analysis and Debugging of Microservice Systems: Industrial Survey, Benchmark System, and Empirical Study},
+  journal = {IEEE Transactions on Software Engineering},
+  volume  = {47},
+  number  = {2},
+  pages   = {243--260},
+  year    = {2021},
+  doi     = {10.1109/TSE.2018.2887384}
+}
+
+% DeathStarBench — open-source cloud microservices benchmark.
+@inproceedings{gan2019deathstarbench,
+  author    = {Gan, Yu and Zhang, Yanqi and Cheng, Dailun and Shetty, Ankitha and Rathi, Priyal and Katarki, Nayan and Bruno, Ariana and Hu, Justin and Ritchken, Brian and Jackson, Brendon and Hu, Kelvin and Pancholi, Meghna and He, Yuan and Clancy, Brett and Colen, Chris and Wen, Fukang and Leung, Catherine and Wang, Siyuan and Zaruvinsky, Leon and Espinosa, Mateo and Lin, Rick and Liu, Zhongling and Padilla, Jake and Delimitrou, Christina},
+  title     = {An Open-Source Benchmark Suite for Microservices and Their Hardware-Software Implications for Cloud and Edge Systems},
+  booktitle = {Proceedings of the 24th International Conference on Architectural Support for Programming Languages and Operating Systems (ASPLOS)},
+  year      = {2019},
+  pages     = {3--18},
+  publisher = {ACM},
+  doi       = {10.1145/3297858.3304013}
+}
+
+% =============================================================================
+% Supporting tooling (cited in the positioning doc)
+% =============================================================================
+
+% RESTest — the upstream framework MIST is built on.
+@inproceedings{martin-lopez2020restest,
+  author    = {Mart{\'\i}n-L{\'o}pez, Alberto and Segura, Sergio and Ruiz-Cort{\'e}s, Antonio},
+  title     = {{RESTest}: Automated Black-Box Testing of {RESTful} Web {APIs}},
+  booktitle = {Proceedings of the 29th ACM SIGSOFT International Symposium on Software Testing and Analysis (ISSTA)},
+  year      = {2020},
+  pages     = {553--556},
+  publisher = {ACM},
+  doi       = {10.1145/3395363.3404538}
+}
+
+% OpenTelemetry — observability standard MIST consumes traces from.
+@misc{opentelemetry,
+  title  = {{OpenTelemetry}: An observability framework for cloud-native software},
+  year   = {2024},
+  url    = {https://opentelemetry.io/},
+  note   = {Cloud Native Computing Foundation incubating project; W3C Trace Context recommendation}
+}
+
+% Jaeger — distributed tracing backend MIST treats as a reference consumer.
+@misc{jaeger,
+  title  = {{Jaeger}: Open source, end-to-end distributed tracing},
+  year   = {2024},
+  url    = {https://www.jaegertracing.io/},
+  note   = {Cloud Native Computing Foundation graduated project}
+}

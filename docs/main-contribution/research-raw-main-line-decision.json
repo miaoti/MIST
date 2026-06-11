@@ -1,0 +1,306 @@
+{
+  "summary": "Deep research harness — fan-out web searches, fetch sources, adversarially verify claims, synthesize a cited report.",
+  "agentCount": 104,
+  "logs": [
+    "Q: Find the single most defensible MAIN contribution for a top-tier SE conference (…",
+    "Decomposed into 5 angles: Cross-service negative testing vs stateful REST fuzzing, Distributed-trace span-level oracle for API testing, 2026 first-of-kind sweep, A-bar bug count, SUTs, confirmation thresholds, Microservice trace anomaly and RCA, closest non-testing prior art, LLM semantic business-logic negative input generation",
+    "Microservice trace anomaly and RCA, closest non-testing prior art: 6 results",
+    "LLM semantic business-logic negative input generation: 6 results",
+    "A-bar bug count, SUTs, confirmation thresholds: 6 results",
+    "A-bar bug count, SUTs, confirmation thresholds: 4 novel (2 filtered)",
+    "Cross-service negative testing vs stateful REST fuzzing: 6 results",
+    "Cross-service negative testing vs stateful REST fuzzing: 4 novel (2 filtered)",
+    "Distributed-trace span-level oracle for API testing, 2026 first-of-kind sweep: 6 results",
+    "Distributed-trace span-level oracle for API testing, 2026 first-of-kind sweep: 2 novel (4 filtered)",
+    "Fetched 22 sources → 108 claims → verifying top 25",
+    "\"MISH targets system-level, cross-service microserv…\": 3-0 ✓",
+    "\"MISH performs NO negative/invalid-input testing — …\": 1-2 ✗",
+    "\"MISH's oracle is response-level (HTTP 500 errors +…\": 3-0 ✓",
+    "\"RESTler is single-service oriented: it analyzes on…\": 3-0 ✓",
+    "\"RESTler's oracle is response-level, not trace-leve…\": 3-0 ✓",
+    "\"RESTler focuses on generating valid, legitimate st…\": 1-2 ✗",
+    "\"Morest's bug oracle is purely response-level: a fa…\": 3-0 ✓",
+    "\"Morest is single-service stateful-sequence testing…\": 3-0 ✓",
+    "\"Tracetest's oracle/assertions are USER-DEFINED, no…\": 3-0 ✓",
+    "\"Tracetest uses the distributed system trace itself…\": 3-0 ✓",
+    "\"Tracetest can assert on individual spans and on pe…\": 3-0 ✓",
+    "\"Microusity does NOT use distributed tracing (Jaege…\": 2-1 ✓",
+    "\"Microusity detects hidden downstream backend failu…\": 2-1 ✓",
+    "\"TraceAnomaly is an UNSUPERVISED OPERATIONAL anomal…\": 3-0 ✓",
+    "\"Morest (ICSE 2022) established an A-venue evaluati…\": 1-2 ✗",
+    "\"TraceAnomaly detects exactly two anomaly types -- …\": 3-0 ✓",
+    "\"Morest's developer-confirmation threshold was mode…\": 2-1 ✓",
+    "\"Morest's novelty/differentiation was demonstrated …\": 3-0 ✓",
+    "\"Lobrest's bug-detection oracle is RESPONSE-LEVEL (…\": 3-0 ✓",
+    "\"Despite the 'business-aware' / multi-step framing,…\": 2-1 ✓",
+    "\"Lobrest does NOT do negative-input testing: it fil…\": 3-0 ✓",
+    "\"LlamaRestTest is a response-level oracle that dete…\": 3-0 ✓",
+    "\"LlamaRestTest operates on individual REST API spec…\": 2-1 ✓",
+    "\"EmRest meets the A-conference empirical bar throug…\": 3-0 ✓",
+    "\"EmRest is a black-box REST API testing approach th…\": 3-0 ✓",
+    "Verify done: 25 claims → 22 confirmed, 3 killed"
+  ],
+  "result": {
+    "question": "Find the single most defensible MAIN contribution for a top-tier SE conference (ICSE/FSE/ASE/ISSTA) that is BOTH (i) genuinely first-of-kind (nobody published it) AND (ii) clears the actual A-conference acceptance standard. Judge by that objective standard, not preference. Be frank; if a candidate is not first-of-kind or won't clear the bar, say so plainly.\n\nCONTEXT (established by prior rigorous passes + the tool's own code — treat as GIVEN, do not re-litigate):\n- Tool (MIST): LLM-guided negative-test GENERATION over multi-step CROSS-SERVICE microservice WORKFLOWS (from distributed traces) + a label-free distributed-trace ORACLE (Jaeger/OTel).\n- The REST/microservice test-oracle problem is a recognized OPEN challenge. AGORA/AGORA+, EvoMaster, metamorphic-testing(TSE'17), RESTifAI(ICSE'26-demo) are RESPONSE-LEVEL oracles (no traces). Tracetest = manual span assertions; TraceGra/TraceAnomaly = unsupervised OPERATIONAL anomaly detection (not test oracles).\n- \"SILENT ACCEPTANCE\" (invalid input → 2xx) is NOT novel and is now TRIPLY covered: RESTifAI detects it at response level, AND MIST itself already has an LLM \"soft-error\" check (reads the 2xx response body to flag 200-with-error). So silent-acceptance is OFF the table as the contribution.\n- \"HIDDEN DOWNSTREAM FAILURE\" (gateway returns 2xx while a downstream span 5xx-errors; the response body is CLEAN so response-level/soft-error checks structurally cannot see it; only the trace can) appears UNCLAIMED.\n- A-bar = multiple SUTs + real developer-confirmed bugs + a non-trivial (non-0-by-construction) baseline. Recent comparators: Morest (ICSE'22, 44 bugs/6 projects), EvoMaster (38 real bugs), Lobrest/log-based business-aware REST testing (arXiv 2604.08007), LlamaRestTest (FSE'25), TestGPT-Server (FSE'25), \"Effective REST API Testing with Error Message Analysis\" (ISSTA'25).\n\nEVALUATE for TRUE novelty + A-standard, citing closest prior work and the precise unclaimed gap (or showing it IS claimed):\n1. CROSS-SERVICE multi-step WORKFLOW negative testing for microservices — is it genuinely unclaimed vs RESTler/Morest/MINER/RestTestGen/EvoMaster (which are single-API or stateful-sequence but same-service)? Does anyone test NEGATIVE inputs across a cross-service business workflow?\n2. HIDDEN-DOWNSTREAM-FAILURE detection via a label-free distributed-trace oracle for API testing — first-of-kind? closest = trace anomaly detection (operational, not testing) + Tracetest (manual). \n3. A SYSTEM contribution: LLM workflow negative testing + label-free trace oracle finding REAL bugs SOTA misses — what bug-count/#SUTs/confirmation threshold do recent A-venue tool/empirical papers meet?\n4. ANY other genuinely-unclaimed angle at {LLM negative gen, microservice workflows, distributed-trace oracles, real-bug finding}, including ones not considered.\n\nDELIVER: (A) per candidate, first-of-kind? cite closest work + precise gap. (B) per viable candidate, does it clear the A-bar + what evaluation is required. (C) a FRANK RANKED recommendation of the ONE main line (or explicit COMBINATION, e.g. cross-service-workflow negative generation + hidden-downstream trace oracle as one system) that best satisfies BOTH first-of-kind AND the A-bar, with the single strongest reviewer counterargument and exactly what must be built/evaluated. If nothing clears it standalone, say what combination does.",
+    "summary": "The single most defensible MAIN contribution is a SYSTEM that combines (a) LLM-guided NEGATIVE-input test generation over multi-step CROSS-SERVICE microservice workflows with (b) a LABEL-FREE distributed-trace (OTel/Jaeger) oracle that catches HIDDEN-DOWNSTREAM failures (gateway returns 2xx while a downstream span 5xx-errors). Each half is individually contestable but the combination is genuinely first-of-kind: every SOTA REST/microservice tester verified here (RESTler, Morest, MISH, EmRest, LlamaRestTest, Lobrest) uses a RESPONSE-LEVEL 5xx/schema oracle and is single-service-scoped, so none can see a hidden-downstream failure; Tracetest does trace-based testing but with MANUAL span assertions (not label-free); and the closest hidden-downstream prior art, Microusity (ICPC'23 demo), uses network port-mapping rather than a distributed-trace oracle, generates no LLM/cross-service negative workflows, and never did a real-bug evaluation. The A-bar is concretely defined by recent comparators (EmRest ISSTA'25: 16 SUTs / 226 unique bugs; Morest ICSE'22: 6 SUTs / 44 bugs, only 2 developer-confirmed-and-fixed, over a non-trivial baseline), so MIST can clear it WITHOUT a huge confirmed-bug count provided it shows multiple SUTs, a non-trivial baseline, and at least a few developer-confirmed bugs that response-level SOTA structurally misses. FRANK BOTTOM LINE: neither \"cross-service negative generation\" nor \"trace oracle\" is bulletproof alone, but pitched as one integrated system whose label-free trace oracle finds real hidden-downstream bugs that all response-level SOTA cannot, it is both first-of-kind and A-bar-viable — contingent on the empirical evaluation actually delivering the bugs and the baseline.",
+    "findings": [
+      {
+        "claim": "CROSS-SERVICE multi-step WORKFLOW negative testing for microservices is genuinely UNCLAIMED by the SOTA generation tools. RESTler, Morest, MISH, Lobrest, and LlamaRestTest are all single-service-scoped (one OpenAPI spec / one service-under-test), and where they are 'stateful' or 'sequence' or 'business-aware', it is strictly WITHIN one service. None generate negative/invalid inputs across a cross-service business workflow. This angle is therefore first-of-kind for MIST — but with the important caveat that it is a SCOPE/setting novelty, not a new algorithm, which a reviewer can attack as incremental on its own.",
+        "confidence": "high",
+        "sources": [
+          "https://www.microsoft.com/en-us/research/publication/restler-stateful-rest-api-fuzzing/",
+          "https://arxiv.org/pdf/2204.12148",
+          "https://arxiv.org/html/2412.03420v1",
+          "https://arxiv.org/pdf/2604.08007",
+          "https://conf.researchr.org/details/fse-2025/fse-2025-research-papers/51/LlamaRestTest-Effective-REST-API-Testing-with-Small-Language-Models"
+        ],
+        "evidence": "RESTler 'analyzes the API specification of a cloud service and generates sequences of requests that automatically test the service through its API' (single spec, each SUT tested in isolation) [claim 2]. Morest takes 'its OpenAPI specifications as input', tests six services independently, 'workflow' = its own algorithm pipeline (Fig.3) not a business workflow, and produces VALID producer-consumer sequences with zero negative/malformed/fuzz testing of its own [claims 5, and 4 on response oracle]. MISH is system-level/cross-service but is a POSITIVE coverage search heuristic inside EvoMaster with no negative-input component [claim 0]. Lobrest is 'business-aware' yet 'removes any operations not declared in the specification, as such operations are typically from other services', is evaluated per-service (S01-S17), and explicitly filters 4XX and seeds only from 2XX valid requests — no negative-input oracle [claims 16, 17]. LlamaRestTest does RL/Q-learning operation sequencing but only WITHIN a single service and refines from server responses [claim 19]. Refuted sub-claim (1-2): the assertion that MISH does 'NO negative testing' was NOT upheld as stated, so do not over-rely on MISH being purely positive; the surviving framing is that MISH is positive/coverage and does not occupy the negative cross-service gap.",
+        "vote": "merged from claims 0,2,5,16,17,19 (all 3-0 except 16,19 at 2-1); refuted counter-claims on MISH-negative and RESTler-negative noted",
+        "confidence_note": ""
+      },
+      {
+        "claim": "HIDDEN-DOWNSTREAM-FAILURE detection (gateway/BFF returns 2xx while a downstream span 5xx-errors, with a clean response body) is structurally INVISIBLE to every response-level SOTA REST/microservice tester. A label-free distributed-trace (OTel/Jaeger) oracle that detects it for API TESTING appears first-of-kind. This is the single strongest novelty pillar.",
+        "confidence": "high",
+        "sources": [
+          "https://www.microsoft.com/en-us/research/publication/restler-stateful-rest-api-fuzzing/",
+          "https://arxiv.org/pdf/2204.12148",
+          "https://arxiv.org/html/2412.03420v1",
+          "https://arxiv.org/pdf/2604.08007",
+          "https://conf.researchr.org/details/fse-2025/fse-2025-research-papers/51/LlamaRestTest-Effective-REST-API-Testing-with-Small-Language-Models",
+          "https://dl.acm.org/doi/10.1145/3728964"
+        ],
+        "evidence": "Every verified SOTA oracle is response/status-code-level and thus blind to a clean 2xx masking a downstream 5xx: RESTler fires on HTTP 500 status, 'does not analyze distributed traces, spans, or backend service internals' [claim 3]; Morest: 'a failure is considered to happen when an operation returns 5xx status code', manually classified from response bodies/server logs, with trace/span/jaeger/otel term-count = 0 [claim 4]; MISH oracle = unique 500s from HTTP responses + OpenAPI schema discrepancies, using application LOGS not OTel/Jaeger spans [claim 1]; Lobrest: 'Bug detection is indicated by 5XX status codes', gateway appears only as an Nginx log source, never an oracle vantage [claim 15]; LlamaRestTest: faults = 500 status codes + JaCoCo coverage, zero trace machinery [claim 18]; EmRest (ISSTA'25, current SOTA): black-box, analyzes 400/500 error MESSAGES, no instrumentation/tracing required [claim 20]. The 'structurally cannot see hidden-downstream' inference is logically sound for each (a status-code oracle on the final response cannot observe a downstream span error). No verified source describes any of these tools as having a trace-level oracle.",
+        "vote": "merged from claims 1,3,4,15,18,20 (all 3-0)",
+        "confidence_note": ""
+      },
+      {
+        "claim": "The closest published prior art to the hidden-downstream idea is Microusity (ICPC'23 tool demo), which DOES pinpoint which backend service caused an internal server error behind a BFF/gateway (its Error-Report Category 3 = sub-response errored while main response did not). This partially undercuts first-of-kind at the CONCEPTUAL level — a reviewer will cite it. BUT MIST remains distinguishable: Microusity uses NETWORK port-mapping (Zeek), NOT a distributed-trace (Jaeger/OTel) oracle; it does not do LLM cross-service-workflow negative generation; and it never did a real-bug-finding evaluation (5-page demo, 8-person usability study only).",
+        "confidence": "medium",
+        "sources": [
+          "https://arxiv.org/abs/2302.11150"
+        ],
+        "evidence": "'our tool can pinpoint which of the back end service causing the internal server error' and Intro: 'If one of the back-end services fails and returns the 500 HTTP status code, we cannot know which of the services fail since we can only get the unsuccessful result from the BFF response' — i.e. the exact hidden-downstream scenario [claim 9]. Mechanism is NOT distributed tracing: 'We design a novel approach to trace BFF requests using the port mapping between requests to BFF and the sub-requests', captured via Zeek; grep for jaeger/opentelemetry/otel/zipkin/span = 0 hits [claim 10]. Both claims are 2-1 (single-source, primary arXiv), hence MEDIUM confidence and flagged as the reviewer's likely counter-citation. Microusity does no real-bug eval, so it does not pre-empt MIST's A-bar evaluation, but it DOES weaken a bald 'first to detect hidden-downstream failures' phrasing — MIST must instead claim 'first LABEL-FREE DISTRIBUTED-TRACE oracle for this, under LLM-generated cross-service negative inputs, with a real-bug evaluation'.",
+        "vote": "merged from claims 9,10 (both 2-1)",
+        "confidence_note": ""
+      },
+      {
+        "claim": "Trace-based API test verification ALREADY EXISTS as a category (Tracetest, OpenTelemetry-based), so MIST cannot claim novelty for 'using traces to test'. MIST's defensible novelty must rest specifically on the LABEL-FREE / AUTOMATIC nature of its trace oracle. Tracetest's assertions are USER-DEFINED (selector + check = attribute/operator/value, hand-authored), so it is NOT label-free and NOT a competitor to an auto/label-free oracle. Tracetest CAN in principle inspect a downstream span (so MIST cannot claim the mere capability), but only if a human manually authors the right span assertion.",
+        "confidence": "high",
+        "sources": [
+          "https://docs.tracetest.io/concepts/what-is-trace-based-testing"
+        ],
+        "evidence": "'A check is a logical verification ... comprised of an attribute, a comparison operator and a value' — human-specified [claim 6]. 'Trace-based testing ... utilizing the rich data contained in a distributed system trace' establishes the category exists [claim 7]. Tracetest 'Validates trace span duration and performance' and operates per-span, so it CAN observe a downstream failure IF the assertion is authored — therefore MIST's gap is doing it AUTOMATICALLY/label-free, not span inspection per se [claim 8]. A WebFetch of the Sumo Logic blog explicitly confirmed: 'Tracetest does not automatically generate test assertions using AI ... developers must manually create assertions' [claim 6]. All three claims 3-0. NET: this both removes a naive novelty pitch ('we use traces') and sharpens the real one ('label-free/automatic trace oracle keyed to downstream 5xx under negative inputs').",
+        "vote": "merged from claims 6,7,8 (all 3-0)",
+        "confidence_note": ""
+      },
+      {
+        "claim": "TraceAnomaly / the trace-anomaly-detection line is the canonical closest prior work for a 'distributed-trace oracle', but it is OPERATIONAL/AIOps (unsupervised production monitoring + root-cause localization for operators), NOT a test oracle and NOT tied to test inputs. It detects only two anomaly types — response-time and invocation-path statistical outliers (deep Bayesian likelihood + HSTV mean±3σ) — and reads NO HTTP status/body semantics and has NO concept of an injected negative input. This leaves the API-TESTING-oracle use of traces unclaimed by that line, and shows MIST's status/error-semantic, negative-input-keyed oracle is structurally different.",
+        "confidence": "high",
+        "sources": [
+          "https://netman.aiops.org/wp-content/uploads/2020/09/%E5%88%98%E5%B9%B3issre.pdf",
+          "https://github.com/NetManAIOps/TraceAnomaly"
+        ],
+        "evidence": "Official repo: 'designed for operations and monitoring rather than software testing ... targets production microservice environments' [claim 11]. Detection input is solely the STV (timing + path); return codes are used only to ARGUE AGAINST rule-based baselines and as eval ground-truth labels, never as model features; 'injection' = synthetic anomaly injection to build a labeled eval set, not test input [claim 12]. Anomaly = statistical outlier ('greater than mean + 3*std or less than mean - 3*std'), no HTTP-error semantics. Both claims 3-0. Caveat: the primary online detector is a deep Bayesian posterior-flow score (the 3σ HSTV is the localization step), so do not over-state 'just a 3σ rule' — but both are timing/path-statistical and status/body-agnostic, so the gap framing holds.",
+        "vote": "merged from claims 11,12 (both 3-0)",
+        "confidence_note": ""
+      },
+      {
+        "claim": "The A-conference empirical bar for a REST-testing tool paper is concretely met by '#SUTs + bug-count + non-trivial baseline + some developer confirmation' — and crucially does NOT require a large number of developer-CONFIRMED bugs. Recent reference points: EmRest (ISSTA'25) = 16 real-world SUTs, 226 unique bugs not found by competitors; Morest (ICSE'22) = 6 SUTs, 44 bugs over a non-trivial SOTA baseline (EvoMaster-bb/RestTestGen/RESTler, all non-zero), with ONLY 2 developer-confirmed-and-fixed. So MIST can clear the bar with multiple SUTs, a meaningful baseline, and a modest number of developer-confirmed hidden-downstream bugs that response-level SOTA structurally misses.",
+        "confidence": "high",
+        "sources": [
+          "https://dl.acm.org/doi/10.1145/3728964",
+          "https://conf.researchr.org/details/issta-2025/issta-2025-papers/86/Effective-REST-APIs-Testing-with-Error-Message-Analysis",
+          "https://conf.researchr.org/details/icse-2022/icse-2022-papers/96/MOREST-Model-based-RESTful-API-Testing-with-Execution-Feedback",
+          "https://arxiv.org/pdf/2204.12148"
+        ],
+        "evidence": "EmRest: '16 real-world REST APIs ... detecting 226 unique bugs that cannot be found by the other approaches' [claims 20, 21]. Morest: '44 bugs ... in 6 projects ... 2 of them are confirmed' (and both fixed, on Bitbucket/Atlassian, 6M+ users) [claim 13]; deltas of '40.64%-215.94% more bugs ... 26.16%-103.24% more lines of code' over REAL non-zero baselines (Table 3 baseline bug counts up to 6-11.6), with Â12 effect-size testing — NOT a 0-by-construction baseline [claim 14]. Note: 'unique bugs' in these papers usually means competitor-differential 500-triggering operations, not developer-triaged defects, so MIST's claim quality improves if its bugs are genuinely developer-confirmed. Two claims at 2-1/3-0; one refuted counter-claim (1-2) tried to assert Morest set a fixed '44 bugs/6 SUTs threshold' — rejected, so do NOT present 44/6 as a hard threshold; present it as an existence proof that the bar is flexible (EmRest at 16 SUTs is the higher recent anchor).",
+        "vote": "merged from claims 13,14,20,21; refuted '44-bug threshold' counter-claim (1-2) noted",
+        "confidence_note": ""
+      },
+      {
+        "claim": "FRANK RANKED RECOMMENDATION: The ONE defensible main line is the integrated SYSTEM — 'LLM-guided cross-service-workflow NEGATIVE test generation + a LABEL-FREE distributed-trace oracle that detects hidden-downstream failures, finding real bugs that response-level SOTA structurally cannot.' Pitch the hidden-downstream trace oracle as the primary novelty pillar and the cross-service-workflow negative generation as the enabling setting/mechanism. Neither half clears the bar STANDALONE (cross-service-negative alone = incremental scope change; trace oracle alone = conceptually shadowed by Microusity + TraceAnomaly + Tracetest), but the combination is first-of-kind AND A-bar-viable.",
+        "confidence": "medium",
+        "sources": [
+          "https://arxiv.org/abs/2302.11150",
+          "https://docs.tracetest.io/concepts/what-is-trace-based-testing",
+          "https://netman.aiops.org/wp-content/uploads/2020/09/%E5%88%98%E5%B9%B3issre.pdf",
+          "https://dl.acm.org/doi/10.1145/3728964",
+          "https://conf.researchr.org/details/icse-2022/icse-2022-papers/96/MOREST-Model-based-RESTful-API-Testing-with-Execution-Feedback"
+        ],
+        "evidence": "Ranking rationale grounded in the findings above: (Pillar A, trace oracle) is unclaimed for API testing — Tracetest is manual (not label-free) [6,7,8], TraceAnomaly is operational not a test oracle [11,12], and the only hidden-downstream prior art (Microusity) uses port-mapping not distributed traces and did no real-bug eval [9,10]. (Pillar B, cross-service negative generation) is unclaimed by RESTler/Morest/MISH/Lobrest/LlamaRestTest, all single-service and/or non-negative [0,2,5,16,17,19]. The system framing is what makes it A-grade because (i) it survives the 'incremental' attack on either half, and (ii) it maps to the established #SUTs+bugs bar [13,14,20,21]. SINGLE STRONGEST REVIEWER COUNTERARGUMENT: 'Your hidden-downstream oracle is just trace-anomaly detection / Microusity applied to testing, and a downstream 5xx is a bug regardless of trace — a developer would have caught it in logs; what is fundamentally new beyond plumbing?' REBUTTAL TO BUILD: show (a) LABEL-FREE = no human-authored span assertions and no training of normal-pattern baselines, unlike Tracetest/TraceAnomaly; (b) the oracle fires under MIST's own LLM-generated NEGATIVE cross-service inputs, a closed-loop generation+oracle no prior tool has; (c) real developer-CONFIRMED bugs where gateway=2xx but a downstream span 5xx-errored, which RESTler/Morest/EmRest/LlamaRestTest provably cannot flag. WHAT MUST BE BUILT/EVALUATED: (1) >=2-3 microservice SUTs with real gateway+downstream topology (train-ticket plus at least one more, to beat the single-SUT objection); (2) a NON-TRIVIAL baseline — run EmRest/LlamaRestTest/RESTler/Morest on the same SUTs and show their response-level oracle returns the bug as a clean 2xx (baseline detection = 0 on hidden-downstream specifically, but baseline must be non-zero on OTHER bugs so it is not 0-by-construction); (3) a modest set of developer-CONFIRMED hidden-downstream bugs (Morest cleared ICSE with 2 confirmed; aim higher but a handful suffices); (4) an ablation isolating the trace oracle's contribution vs the soft-error/response-level check MIST already has.",
+        "vote": "synthesis recommendation; confidence MEDIUM because viability is CONTINGENT on the empirical results (multiple SUTs + non-trivial baseline + confirmed bugs) actually materializing, which the claims cannot pre-verify",
+        "confidence_note": ""
+      }
+    ],
+    "caveats": "CONTINGENCY, NOT FACT, ON THE A-BAR: The novelty findings (what is/ isn't first-of-kind) are HIGH-confidence and primary-sourced. But whether MIST CLEARS the A-bar is MEDIUM-confidence and contingent on an evaluation that does not yet exist in these claims: it requires multiple SUTs, a non-trivial (non-0-by-construction) baseline, and at least a handful of developer-CONFIRMED hidden-downstream bugs. The claims establish the bar's shape (EmRest 16 SUTs/226 bugs; Morest 6 SUTs/44 bugs/2 confirmed), not that MIST meets it. PER PROJECT MEMORY: the Phase-2 attribution note flags that on train-ticket only generic controller spans + a tier-2 mapper are live and TARGET_REJECTION=0 for param-level generalization, and the SUT is a SINGLE app — so the '>=2-3 SUTs' requirement is a real, currently-unmet gap that directly threatens A-bar viability. WEAKEST EVIDENCE: claims 9, 10, 16, 19 are 2-1 single-source (primary arXiv) — the Microusity conceptual-overlap (9,10) is the load-bearing risk to the trace-oracle novelty and should be treated as the reviewer's most likely counter-citation, not a settled non-issue. TERMINOLOGY RISK: 'unique bugs' in REST-testing A-papers typically means competitor-differential 500-triggering operations, not developer-triaged defects; MIST's claim is materially stronger only if its bugs are genuinely developer-confirmed, so do not conflate the two. REFUTED CLAIMS TO AVOID REPEATING: (a) 'Morest set a fixed 44-bug/6-SUT A-bar threshold' was refuted (1-2) — present it as a flexible existence proof, with EmRest (16 SUTs) as the higher recent anchor; (b) 'MISH does NO negative testing' and 'RESTler is the opposite of negative testing' were refuted (1-2) — rely only on the surviving framing that they do not occupy the cross-service negative gap. TIME-SENSITIVITY: EmRest (ISSTA'25), LlamaRestTest (FSE'25), Lobrest (arXiv Apr 2026) are very recent; the REST-oracle field is moving fast and a response-level competitor could close the silent-acceptance angle further — reinforcing that MIST's durable differentiator is the TRACE oracle for hidden-downstream, not anything response-level.",
+    "openQuestions": [
+      "Does MIST have access to >=2 microservice SUTs with a real gateway+downstream topology? Project memory indicates train-ticket is the single live SUT and param-level attribution is currently TARGET_REJECTION=0 — without a second SUT the 'multiple SUTs' A-bar element is unmet and is the biggest standalone risk to acceptance.",
+      "Can MIST produce developer-CONFIRMED (not merely tool-detected) hidden-downstream bugs, and how many? Morest cleared ICSE'22 with only 2 confirmed-and-fixed; the realistic confirmable count on the available SUTs is the key unknown that determines A-bar viability.",
+      "How exactly does MIST's label-free trace oracle decide a downstream span 5xx is a genuine fault vs an expected/handled error, WITHOUT any human-authored assertion or trained normal-pattern baseline? This mechanism is the core rebuttal to the 'it's just trace-anomaly detection / Microusity plumbing' counterargument and its precise design was not in scope of the verified claims.",
+      "When the response-level baselines (EmRest/LlamaRestTest/RESTler/Morest) are run on the SAME microservice SUTs, do they find a NON-ZERO number of OTHER bugs (so the comparison is not 0-by-construction) while provably returning the hidden-downstream cases as clean 2xx? This must be demonstrated empirically and was not verifiable from the claims."
+    ],
+    "refuted": [
+      {
+        "claim": "MISH performs NO negative/invalid-input testing — it generates sequences of REST API calls guided by behavioral coverage, so it does not occupy the cross-service NEGATIVE testing gap.",
+        "vote": "1-2",
+        "source": "https://arxiv.org/html/2412.03420v1"
+      },
+      {
+        "claim": "RESTler focuses on generating valid, legitimate stateful request sequences (ordered via producer-consumer dependencies) rather than negative/invalid-input testing; its dynamic feedback is used to AVOID combinations the service refuses, the opposite of deliberately injecting negative inputs.",
+        "vote": "1-2",
+        "source": "https://www.microsoft.com/en-us/research/publication/restler-stateful-rest-api-fuzzing/"
+      },
+      {
+        "claim": "Morest (ICSE 2022) established an A-venue evaluation bar of 44 bugs found across 6 real-world projects/SUTs, providing a concrete benchmark for the bug-count and #SUTs threshold a competing tool paper must meet.",
+        "vote": "1-2",
+        "source": "https://conf.researchr.org/details/icse-2022/icse-2022-papers/96/MOREST-Model-based-RESTful-API-Testing-with-Execution-Feedback"
+      }
+    ],
+    "sources": [
+      {
+        "url": "https://arxiv.org/html/2412.03420v1",
+        "quality": "primary",
+        "angle": "Cross-service negative testing vs stateful REST fuzzing",
+        "claimCount": 5
+      },
+      {
+        "url": "https://www.microsoft.com/en-us/research/publication/restler-stateful-rest-api-fuzzing/",
+        "quality": "primary",
+        "angle": "Cross-service negative testing vs stateful REST fuzzing",
+        "claimCount": 4
+      },
+      {
+        "url": "https://arxiv.org/pdf/2204.12148",
+        "quality": "primary",
+        "angle": "Cross-service negative testing vs stateful REST fuzzing",
+        "claimCount": 5
+      },
+      {
+        "url": "https://docs.tracetest.io/concepts/what-is-trace-based-testing",
+        "quality": "primary",
+        "angle": "Cross-service negative testing vs stateful REST fuzzing",
+        "claimCount": 5
+      },
+      {
+        "url": "https://arxiv.org/abs/2302.11150",
+        "quality": "primary",
+        "angle": "Distributed-trace span-level oracle for API testing, 2026 first-of-kind sweep",
+        "claimCount": 5
+      },
+      {
+        "url": "https://netman.aiops.org/wp-content/uploads/2020/09/%E5%88%98%E5%B9%B3issre.pdf",
+        "quality": "primary",
+        "angle": "Distributed-trace span-level oracle for API testing, 2026 first-of-kind sweep",
+        "claimCount": 5
+      },
+      {
+        "url": "https://conf.researchr.org/details/icse-2022/icse-2022-papers/96/MOREST-Model-based-RESTful-API-Testing-with-Execution-Feedback",
+        "quality": "primary",
+        "angle": "A-bar bug count, SUTs, confirmation thresholds",
+        "claimCount": 5
+      },
+      {
+        "url": "https://arxiv.org/pdf/2604.08007",
+        "quality": "primary",
+        "angle": "A-bar bug count, SUTs, confirmation thresholds",
+        "claimCount": 5
+      },
+      {
+        "url": "https://conf.researchr.org/details/fse-2025/fse-2025-research-papers/51/LlamaRestTest-Effective-REST-API-Testing-with-Small-Language-Models",
+        "quality": "primary",
+        "angle": "A-bar bug count, SUTs, confirmation thresholds",
+        "claimCount": 5
+      },
+      {
+        "url": "https://dl.acm.org/doi/10.1145/3728964",
+        "quality": "primary",
+        "angle": "A-bar bug count, SUTs, confirmation thresholds",
+        "claimCount": 5
+      },
+      {
+        "url": "https://netman.aiops.org/wp-content/uploads/2024/09/SparseRCA__Unsupervised_Root_Cause_Analysis_in_Sparse_Microservice_Testing_Traces__ISSRE24_Camera_Ready_.pdf",
+        "quality": "primary",
+        "angle": "Microservice trace anomaly and RCA, closest non-testing prior art",
+        "claimCount": 5
+      },
+      {
+        "url": "https://nkcs.iops.ai/wp-content/uploads/2020/08/paper-ISSRE20-TraceAnomaly.pdf",
+        "quality": "primary",
+        "angle": "Microservice trace anomaly and RCA, closest non-testing prior art",
+        "claimCount": 5
+      },
+      {
+        "url": "https://netman.aiops.org/wp-content/uploads/2021/05/1570705191.pdf",
+        "quality": "primary",
+        "angle": "Microservice trace anomaly and RCA, closest non-testing prior art",
+        "claimCount": 5
+      },
+      {
+        "url": "https://dl.acm.org/doi/abs/10.1016/j.comcom.2023.03.028",
+        "quality": "primary",
+        "angle": "Microservice trace anomaly and RCA, closest non-testing prior art",
+        "claimCount": 5
+      },
+      {
+        "url": "https://www.sciencedirect.com/science/article/abs/pii/S0164121223003126",
+        "quality": "primary",
+        "angle": "Microservice trace anomaly and RCA, closest non-testing prior art",
+        "claimCount": 5
+      },
+      {
+        "url": "https://www.gravitee.io/blog/tracing-api-calls-debugging-distributed-systems",
+        "quality": "blog",
+        "angle": "Microservice trace anomaly and RCA, closest non-testing prior art",
+        "claimCount": 4
+      },
+      {
+        "url": "https://arxiv.org/html/2512.08706v1",
+        "quality": "primary",
+        "angle": "LLM semantic business-logic negative input generation",
+        "claimCount": 5
+      },
+      {
+        "url": "https://arxiv.org/html/2503.15079v1",
+        "quality": "primary",
+        "angle": "LLM semantic business-logic negative input generation",
+        "claimCount": 5
+      },
+      {
+        "url": "https://arxiv.org/html/2605.14202",
+        "quality": "primary",
+        "angle": "LLM semantic business-logic negative input generation",
+        "claimCount": 5
+      },
+      {
+        "url": "https://arxiv.org/html/2511.18038v1",
+        "quality": "primary",
+        "angle": "LLM semantic business-logic negative input generation",
+        "claimCount": 5
+      },
+      {
+        "url": "https://arxiv.org/pdf/2508.16318",
+        "quality": "primary",
+        "angle": "LLM semantic business-logic negative input generation",
+        "claimCount": 5
+      },
+      {
+        "url": "https://arxiv.org/pdf/2411.07098",
+        "quality": "primary",
+        "angle": "LLM semantic business-logic negative input generation",
+        "claimCount": 5
+      }
+    ],
+    "stats": {
+      "angles": 5,
+      "sourcesFetched": 22,
+      "claimsExtracted": 108,
+      "claimsVerified": 25,
+      "confirmed": 22,
+      "killed": 3,
+      "afterSynthesis": 7,
+      "urlDupes": 7,
+      "budgetDropped": 1,
+      "agentCalls": 104
+    }
+  }
+}

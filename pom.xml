@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>es.us.isa</groupId>
+	<artifactId>mist-parent</artifactId>
+	<version>1.6.0-SNAPSHOT</version>
+	<packaging>pom</packaging>
+
+	<name>MIST (parent)</name>
+	<description>Reactor POM for the MIST microservice testing framework
+	(Stage 1.C of debug/Conference-refinement/PATH_B_REBUILD_PLAN.md).
+	Splits the legacy single-module RESTest fork into four modules so that
+	mist-core depends on neither RESTest nor any other module.</description>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<maven.compiler.source>11</maven.compiler.source>
+		<maven.compiler.target>11</maven.compiler.target>
+		<gson.version>2.9.1</gson.version>
+		<!-- Pinned to 1.x: jackson-dataformat-yaml 2.11.4 in mist-restest-adapter
+		     calls a constructor only present in snakeyaml 1.x. Bumping to 2.x
+		     produces NoSuchMethodError on ParserImpl.<init> at runtime. -->
+		<snakeyaml.version>1.33</snakeyaml.version>
+		<log4j.version>2.20.0</log4j.version>
+		<junit.version>4.13.2</junit.version>
+		<json.version>20231013</json.version>
+		<jackson.version>2.11.4</jackson.version>
+		<!-- swagger-core v3: the OpenAPI model classes used by both
+		     mist-restest-adapter (full Swagger parser) and mist-core
+		     (vendored Operation pojo referencing OASv3 Operation). -->
+		<swagger.version>2.1.10</swagger.version>
+	</properties>
+
+	<modules>
+		<module>mist-core</module>
+		<module>mist-llm</module>
+		<module>mist-cli</module>
+	</modules>
+
+</project>

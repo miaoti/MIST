@@ -1,0 +1,193 @@
+scenario,test_method,step_idx,http_method,path,parameter,value,realistic,source
+Flow_Scenario_1192,test_positive_flow_S1192_v1,2,POST,/api/v1/travelservice/trips/left,endPlace,Miami,true,offline
+Flow_Scenario_1192,test_positive_flow_S1192_v2,2,POST,/api/v1/travelservice/trips/left,endPlace,Charlotte,true,offline
+Flow_Scenario_1192,test_positive_flow_S1192_v2,2,POST,/api/v1/travelservice/trips/left,startPlace,changchun,true,offline
+Flow_Scenario_1192,test_positive_flow_S1192_v3,2,POST,/api/v1/travelservice/trips/left,endPlace,Charlotte,true,offline
+Flow_Scenario_1192,test_positive_flow_S1192_v3,2,POST,/api/v1/travelservice/trips/left,startPlace,Chicago O'Hare International Airport,true,token
+Flow_Scenario_1192,test_positive_flow_S1192_v4,2,POST,/api/v1/travelservice/trips/left,endPlace,San Antonio,true,offline
+Flow_Scenario_1192,test_positive_flow_S1192_v4,2,POST,/api/v1/travelservice/trips/left,startPlace,San Antonio,true,offline
+Flow_Scenario_1192,test_positive_flow_S1192_v5,2,POST,/api/v1/travelservice/trips/left,endPlace,Columbus,true,offline
+Flow_Scenario_1192,test_positive_flow_S1192_v5,2,POST,/api/v1/travelservice/trips/left,startPlace,Indianapolis,true,offline
+Flow_Scenario_1192,test_positive_flow_S1192_v6,2,POST,/api/v1/travelservice/trips/left,endPlace,New York,true,offline
+Flow_Scenario_1192,test_positive_flow_S1192_v6,2,POST,/api/v1/travelservice/trips/left,startPlace,Philadelphia,true,offline
+Flow_Scenario_1192,test_positive_flow_S1192_v7,2,POST,/api/v1/travelservice/trips/left,endPlace,Houston,true,offline
+Flow_Scenario_1192,test_positive_flow_S1192_v7,2,POST,/api/v1/travelservice/trips/left,startPlace,Indianapolis,true,offline
+Flow_Scenario_1192,test_positive_flow_S1192_v8,2,POST,/api/v1/travelservice/trips/left,endPlace,Los Angeles,true,offline
+Flow_Scenario_1192,test_positive_flow_S1192_v8,2,POST,/api/v1/travelservice/trips/left,startPlace,"shanghai,nanjing,beijing",true,token
+Flow_Scenario_1192,test_positive_flow_S1192_v10,2,POST,/api/v1/travelservice/trips/left,endPlace,San Jose,true,offline
+Flow_Scenario_1192,test_positive_flow_S1192_v10,2,POST,/api/v1/travelservice/trips/left,startPlace,San Jose,true,offline
+Flow_Scenario_1192,test_positive_flow_S1192_v11,2,POST,/api/v1/travelservice/trips/left,endPlace,Houston,true,offline
+Flow_Scenario_1192,test_positive_flow_S1192_v12,2,POST,/api/v1/travelservice/trips/left,endPlace,New York City,false,unknown
+Flow_Scenario_1192,test_positive_flow_S1192_v13,2,POST,/api/v1/travelservice/trips/left,endPlace,Philadelphia,true,offline
+Flow_Scenario_1192,test_positive_flow_S1192_v13,2,POST,/api/v1/travelservice/trips/left,startPlace,Los Angeles,true,offline
+Flow_Scenario_1192,test_positive_flow_S1192_v14,2,POST,/api/v1/travelservice/trips/left,endPlace,New York,true,offline
+Flow_Scenario_1192,test_positive_flow_S1192_v14,2,POST,/api/v1/travelservice/trips/left,startPlace,foshan,true,offline
+Flow_Scenario_1192,test_positive_flow_S1192_v15,2,POST,/api/v1/travelservice/trips/left,endPlace,Jacksonville,true,offline
+Flow_Scenario_1192,test_positive_flow_S1192_v15,2,POST,/api/v1/travelservice/trips/left,startPlace,Dallas,true,offline
+Flow_Scenario_1192,test_positive_flow_S1192_v16,2,POST,/api/v1/travelservice/trips/left,endPlace,New York City,false,unknown
+Flow_Scenario_1192,test_positive_flow_S1192_v16,2,POST,/api/v1/travelservice/trips/left,startPlace,Chicago,true,offline
+Flow_Scenario_1192,test_positive_flow_S1192_v17,2,POST,/api/v1/travelservice/trips/left,endPlace,Dallas,true,offline
+Flow_Scenario_1192,test_positive_flow_S1192_v17,2,POST,/api/v1/travelservice/trips/left,startPlace,foshan,true,offline
+Flow_Scenario_1192,test_positive_flow_S1192_v18,2,POST,/api/v1/travelservice/trips/left,endPlace,New York John F. Kennedy International Airport,true,token
+Flow_Scenario_1192,test_positive_flow_S1192_v18,2,POST,/api/v1/travelservice/trips/left,startPlace,Los Angeles International Airport,true,suffix_stripped
+Flow_Scenario_1192,test_positive_flow_S1192_v19,2,POST,/api/v1/travelservice/trips/left,endPlace,Fort Worth,true,offline
+Flow_Scenario_1192,test_positive_flow_S1192_v19,2,POST,/api/v1/travelservice/trips/left,startPlace,Jacksonville,true,offline
+Flow_Scenario_1192,test_positive_flow_S1192_v20,2,POST,/api/v1/travelservice/trips/left,endPlace,Charlotte,true,offline
+Flow_Scenario_1192,test_positive_flow_S1192_v20,2,POST,/api/v1/travelservice/trips/left,startPlace,Jacksonville,true,offline
+Flow_Scenario_1382,test_positive_flow_S1382_v1,2,POST,/api/v1/adminorderservice/adminorder,contactsName,Linda Taylor,true,token
+Flow_Scenario_1382,test_positive_flow_S1382_v3,2,POST,/api/v1/adminorderservice/adminorder,contactsName,Isaac White,true,token
+Flow_Scenario_1382,test_positive_flow_S1382_v4,2,POST,/api/v1/adminorderservice/adminorder,contactsName,Isaac White,true,token
+Flow_Scenario_1382,test_positive_flow_S1382_v5,2,POST,/api/v1/adminorderservice/adminorder,contactsName,Christopher Anderson,true,token
+Flow_Scenario_1382,test_positive_flow_S1382_v6,2,POST,/api/v1/adminorderservice/adminorder,contactsName,Bob Johnson,true,token
+Flow_Scenario_1382,test_positive_flow_S1382_v7,2,POST,/api/v1/adminorderservice/adminorder,contactsName,Bob Johnson,true,token
+Flow_Scenario_1382,test_positive_flow_S1382_v9,2,POST,/api/v1/adminorderservice/adminorder,contactsName,Jane Smith,true,token
+Flow_Scenario_1382,test_positive_flow_S1382_v10,2,POST,/api/v1/adminorderservice/adminorder,contactsName,Emily Johnson,true,token
+Flow_Scenario_1382,test_positive_flow_S1382_v11,2,POST,/api/v1/adminorderservice/adminorder,contactsName,Bob Johnson,true,token
+Flow_Scenario_1382,test_positive_flow_S1382_v12,2,POST,/api/v1/adminorderservice/adminorder,contactsName,Hannah Green,true,token
+Flow_Scenario_1382,test_positive_flow_S1382_v13,2,POST,/api/v1/adminorderservice/adminorder,contactsName,Isaac White,true,token
+Flow_Scenario_1382,test_positive_flow_S1382_v14,2,POST,/api/v1/adminorderservice/adminorder,contactsName,Hannah Green,true,token
+Flow_Scenario_1382,test_positive_flow_S1382_v15,2,POST,/api/v1/adminorderservice/adminorder,contactsName,Linda Taylor,true,token
+Flow_Scenario_1382,test_positive_flow_S1382_v16,2,POST,/api/v1/adminorderservice/adminorder,contactsName,Jack Black,true,token
+Flow_Scenario_1382,test_positive_flow_S1382_v17,2,POST,/api/v1/adminorderservice/adminorder,contactsName,Alice Smith,true,token
+Flow_Scenario_1382,test_positive_flow_S1382_v18,2,POST,/api/v1/adminorderservice/adminorder,contactsName,Bob Johnson,true,token
+Flow_Scenario_1382,test_positive_flow_S1382_v19,2,POST,/api/v1/adminorderservice/adminorder,contactsName,Emily Johnson,true,token
+Flow_Scenario_1382,test_positive_flow_S1382_v20,2,POST,/api/v1/adminorderservice/adminorder,contactsName,John Doe,true,token
+Flow_Scenario_3279,test_positive_flow_S3279_v1,2,POST,/api/v1/travelplanservice/travelPlan/cheapest,endPlace,Chicago,true,offline
+Flow_Scenario_3279,test_positive_flow_S3279_v1,2,POST,/api/v1/travelplanservice/travelPlan/cheapest,startPlace,Chicago O'Hare International Airport,true,token
+Flow_Scenario_3279,test_positive_flow_S3279_v2,2,POST,/api/v1/travelplanservice/travelPlan/cheapest,endPlace,New York,true,offline
+Flow_Scenario_3279,test_positive_flow_S3279_v2,2,POST,/api/v1/travelplanservice/travelPlan/cheapest,startPlace,Chicago O'Hare International Airport,true,token
+Flow_Scenario_3279,test_positive_flow_S3279_v3,2,POST,/api/v1/travelplanservice/travelPlan/cheapest,endPlace,Los Angeles,true,offline
+Flow_Scenario_3279,test_positive_flow_S3279_v3,2,POST,/api/v1/travelplanservice/travelPlan/cheapest,startPlace,Chicago O'Hare International Airport,true,token
+Flow_Scenario_3279,test_positive_flow_S3279_v4,2,POST,/api/v1/travelplanservice/travelPlan/cheapest,endPlace,Miami,true,offline
+Flow_Scenario_3279,test_positive_flow_S3279_v4,2,POST,/api/v1/travelplanservice/travelPlan/cheapest,startPlace,Chicago O'Hare International Airport,true,token
+Flow_Scenario_3279,test_positive_flow_S3279_v5,2,POST,/api/v1/travelplanservice/travelPlan/cheapest,endPlace,Chicago,true,offline
+Flow_Scenario_3279,test_positive_flow_S3279_v5,2,POST,/api/v1/travelplanservice/travelPlan/cheapest,startPlace,shanghai,true,offline
+Flow_Scenario_3279,test_positive_flow_S3279_v6,2,POST,/api/v1/travelplanservice/travelPlan/cheapest,endPlace,San Francisco,true,offline
+Flow_Scenario_3279,test_positive_flow_S3279_v6,2,POST,/api/v1/travelplanservice/travelPlan/cheapest,startPlace,Chicago O'Hare International Airport,true,token
+Flow_Scenario_3279,test_positive_flow_S3279_v7,2,POST,/api/v1/travelplanservice/travelPlan/cheapest,endPlace,Chicago,true,offline
+Flow_Scenario_3279,test_positive_flow_S3279_v7,2,POST,/api/v1/travelplanservice/travelPlan/cheapest,startPlace,Chicago O'Hare International Airport,true,token
+Flow_Scenario_3279,test_positive_flow_S3279_v8,2,POST,/api/v1/travelplanservice/travelPlan/cheapest,endPlace,New York,true,offline
+Flow_Scenario_3279,test_positive_flow_S3279_v8,2,POST,/api/v1/travelplanservice/travelPlan/cheapest,startPlace,shenyang,true,offline
+Flow_Scenario_3279,test_positive_flow_S3279_v9,2,POST,/api/v1/travelplanservice/travelPlan/cheapest,endPlace,Los Angeles,true,offline
+Flow_Scenario_3279,test_positive_flow_S3279_v9,2,POST,/api/v1/travelplanservice/travelPlan/cheapest,startPlace,Chicago O'Hare International Airport,true,token
+Flow_Scenario_3279,test_positive_flow_S3279_v10,2,POST,/api/v1/travelplanservice/travelPlan/cheapest,endPlace,Chicago,true,offline
+Flow_Scenario_3279,test_positive_flow_S3279_v10,2,POST,/api/v1/travelplanservice/travelPlan/cheapest,startPlace,wuhan,true,offline
+Flow_Scenario_3279,test_positive_flow_S3279_v11,2,POST,/api/v1/travelplanservice/travelPlan/cheapest,endPlace,Chicago,true,offline
+Flow_Scenario_3279,test_positive_flow_S3279_v11,2,POST,/api/v1/travelplanservice/travelPlan/cheapest,startPlace,Chicago O'Hare International Airport,true,token
+Flow_Scenario_3279,test_positive_flow_S3279_v12,2,POST,/api/v1/travelplanservice/travelPlan/cheapest,endPlace,New York,true,offline
+Flow_Scenario_3279,test_positive_flow_S3279_v12,2,POST,/api/v1/travelplanservice/travelPlan/cheapest,startPlace,dongguan,true,offline
+Flow_Scenario_3279,test_positive_flow_S3279_v13,2,POST,/api/v1/travelplanservice/travelPlan/cheapest,endPlace,Chicago,true,offline
+Flow_Scenario_3279,test_positive_flow_S3279_v13,2,POST,/api/v1/travelplanservice/travelPlan/cheapest,startPlace,tianjin,true,offline
+Flow_Scenario_3279,test_positive_flow_S3279_v14,2,POST,/api/v1/travelplanservice/travelPlan/cheapest,endPlace,Los Angeles,true,offline
+Flow_Scenario_3279,test_positive_flow_S3279_v14,2,POST,/api/v1/travelplanservice/travelPlan/cheapest,startPlace,Chicago O'Hare International Airport,true,token
+Flow_Scenario_3279,test_positive_flow_S3279_v15,2,POST,/api/v1/travelplanservice/travelPlan/cheapest,endPlace,Chicago,true,offline
+Flow_Scenario_3279,test_positive_flow_S3279_v15,2,POST,/api/v1/travelplanservice/travelPlan/cheapest,startPlace,guangzhou,true,offline
+Flow_Scenario_3279,test_positive_flow_S3279_v16,2,POST,/api/v1/travelplanservice/travelPlan/cheapest,endPlace,Chicago,true,offline
+Flow_Scenario_3279,test_positive_flow_S3279_v16,2,POST,/api/v1/travelplanservice/travelPlan/cheapest,startPlace,Chicago O'Hare International Airport,true,token
+Flow_Scenario_3279,test_positive_flow_S3279_v17,2,POST,/api/v1/travelplanservice/travelPlan/cheapest,endPlace,San Francisco,true,offline
+Flow_Scenario_3279,test_positive_flow_S3279_v17,2,POST,/api/v1/travelplanservice/travelPlan/cheapest,startPlace,chengdu,true,offline
+Flow_Scenario_3279,test_positive_flow_S3279_v18,2,POST,/api/v1/travelplanservice/travelPlan/cheapest,endPlace,Chicago,true,offline
+Flow_Scenario_3279,test_positive_flow_S3279_v18,2,POST,/api/v1/travelplanservice/travelPlan/cheapest,startPlace,foshan,true,offline
+Flow_Scenario_3279,test_positive_flow_S3279_v19,2,POST,/api/v1/travelplanservice/travelPlan/cheapest,endPlace,Chicago,true,offline
+Flow_Scenario_3279,test_positive_flow_S3279_v19,2,POST,/api/v1/travelplanservice/travelPlan/cheapest,startPlace,changchun,true,offline
+Flow_Scenario_3279,test_positive_flow_S3279_v20,2,POST,/api/v1/travelplanservice/travelPlan/cheapest,endPlace,Chicago,true,offline
+Flow_Scenario_3279,test_positive_flow_S3279_v20,2,POST,/api/v1/travelplanservice/travelPlan/cheapest,startPlace,"shanghai,nanjing,beijing",true,token
+Flow_Scenario_538,test_positive_flow_S538_v1,2,POST,/api/v1/adminrouteservice/adminroute,endStation,Station A,true,token
+Flow_Scenario_538,test_positive_flow_S538_v1,2,POST,/api/v1/adminrouteservice/adminroute,startStation,Tokyo,true,offline
+Flow_Scenario_538,test_positive_flow_S538_v1,2,POST,/api/v1/adminrouteservice/adminroute,stationList,"Grand Central Terminal,Penn Station",true,token
+Flow_Scenario_538,test_positive_flow_S538_v2,2,POST,/api/v1/adminrouteservice/adminroute,endStation,Station A,true,token
+Flow_Scenario_538,test_positive_flow_S538_v2,2,POST,/api/v1/adminrouteservice/adminroute,startStation,empirestatebuilding,false,unknown
+Flow_Scenario_538,test_positive_flow_S538_v2,2,POST,/api/v1/adminrouteservice/adminroute,stationList,"Grand Central Terminal,Penn Station",true,token
+Flow_Scenario_538,test_positive_flow_S538_v3,2,POST,/api/v1/adminrouteservice/adminroute,endStation,Station A,true,token
+Flow_Scenario_538,test_positive_flow_S538_v3,2,POST,/api/v1/adminrouteservice/adminroute,startStation,12345678901,false,unknown
+Flow_Scenario_538,test_positive_flow_S538_v3,2,POST,/api/v1/adminrouteservice/adminroute,stationList,"Grand Central Terminal,Penn Station",true,token
+Flow_Scenario_538,test_positive_flow_S538_v4,2,POST,/api/v1/adminrouteservice/adminroute,endStation,Station A,true,token
+Flow_Scenario_538,test_positive_flow_S538_v4,2,POST,/api/v1/adminrouteservice/adminroute,startStation,Downtown,true,offline
+Flow_Scenario_538,test_positive_flow_S538_v4,2,POST,/api/v1/adminrouteservice/adminroute,stationList,"Grand Central Terminal,Penn Station",true,token
+Flow_Scenario_538,test_positive_flow_S538_v5,2,POST,/api/v1/adminrouteservice/adminroute,endStation,Station A,true,token
+Flow_Scenario_538,test_positive_flow_S538_v5,2,POST,/api/v1/adminrouteservice/adminroute,startStation,Downtown,true,offline
+Flow_Scenario_538,test_positive_flow_S538_v5,2,POST,/api/v1/adminrouteservice/adminroute,stationList,"Grand Central Terminal,Penn Station",true,token
+Flow_Scenario_538,test_positive_flow_S538_v6,2,POST,/api/v1/adminrouteservice/adminroute,endStation,Station A,true,token
+Flow_Scenario_538,test_positive_flow_S538_v6,2,POST,/api/v1/adminrouteservice/adminroute,startStation,Downtown,true,offline
+Flow_Scenario_538,test_positive_flow_S538_v6,2,POST,/api/v1/adminrouteservice/adminroute,stationList,"Grand Central Terminal,Penn Station",true,token
+Flow_Scenario_538,test_positive_flow_S538_v7,2,POST,/api/v1/adminrouteservice/adminroute,endStation,Station A,true,token
+Flow_Scenario_538,test_positive_flow_S538_v7,2,POST,/api/v1/adminrouteservice/adminroute,startStation,Downtown,true,offline
+Flow_Scenario_538,test_positive_flow_S538_v7,2,POST,/api/v1/adminrouteservice/adminroute,stationList,"Grand Central Terminal,Penn Station",true,token
+Flow_Scenario_538,test_positive_flow_S538_v8,2,POST,/api/v1/adminrouteservice/adminroute,endStation,Station B,true,token
+Flow_Scenario_538,test_positive_flow_S538_v8,2,POST,/api/v1/adminrouteservice/adminroute,startStation,Downtown,true,offline
+Flow_Scenario_538,test_positive_flow_S538_v8,2,POST,/api/v1/adminrouteservice/adminroute,stationList,"Grand Central Terminal,Penn Station",true,token
+Flow_Scenario_538,test_positive_flow_S538_v9,2,POST,/api/v1/adminrouteservice/adminroute,endStation,Station A,true,token
+Flow_Scenario_538,test_positive_flow_S538_v9,2,POST,/api/v1/adminrouteservice/adminroute,startStation,Downtown,true,offline
+Flow_Scenario_538,test_positive_flow_S538_v9,2,POST,/api/v1/adminrouteservice/adminroute,stationList,"Grand Central Terminal,Penn Station",true,token
+Flow_Scenario_538,test_positive_flow_S538_v10,2,POST,/api/v1/adminrouteservice/adminroute,endStation,Station A,true,token
+Flow_Scenario_538,test_positive_flow_S538_v10,2,POST,/api/v1/adminrouteservice/adminroute,startStation,Downtown,true,offline
+Flow_Scenario_538,test_positive_flow_S538_v10,2,POST,/api/v1/adminrouteservice/adminroute,stationList,"Grand Central Terminal,Penn Station",true,token
+Flow_Scenario_538,test_positive_flow_S538_v11,2,POST,/api/v1/adminrouteservice/adminroute,endStation,Station C,true,token
+Flow_Scenario_538,test_positive_flow_S538_v11,2,POST,/api/v1/adminrouteservice/adminroute,startStation,Central Station,true,token
+Flow_Scenario_538,test_positive_flow_S538_v11,2,POST,/api/v1/adminrouteservice/adminroute,stationList,"Central Station,Times Square Station",true,token
+Flow_Scenario_538,test_positive_flow_S538_v12,2,POST,/api/v1/adminrouteservice/adminroute,endStation,Station A,true,token
+Flow_Scenario_538,test_positive_flow_S538_v12,2,POST,/api/v1/adminrouteservice/adminroute,startStation,Union Square,true,offline
+Flow_Scenario_538,test_positive_flow_S538_v12,2,POST,/api/v1/adminrouteservice/adminroute,stationList,"Grand Central Terminal,Penn Station",true,token
+Flow_Scenario_538,test_positive_flow_S538_v13,2,POST,/api/v1/adminrouteservice/adminroute,endStation,Station A,true,token
+Flow_Scenario_538,test_positive_flow_S538_v13,2,POST,/api/v1/adminrouteservice/adminroute,startStation,Downtown,true,offline
+Flow_Scenario_538,test_positive_flow_S538_v13,2,POST,/api/v1/adminrouteservice/adminroute,stationList,"Grand Central Terminal,Penn Station",true,token
+Flow_Scenario_538,test_positive_flow_S538_v14,2,POST,/api/v1/adminrouteservice/adminroute,endStation,Station A,true,token
+Flow_Scenario_538,test_positive_flow_S538_v14,2,POST,/api/v1/adminrouteservice/adminroute,startStation,Downtown,true,offline
+Flow_Scenario_538,test_positive_flow_S538_v14,2,POST,/api/v1/adminrouteservice/adminroute,stationList,"Grand Central Terminal,Penn Station",true,token
+Flow_Scenario_538,test_positive_flow_S538_v15,2,POST,/api/v1/adminrouteservice/adminroute,endStation,Station A,true,token
+Flow_Scenario_538,test_positive_flow_S538_v15,2,POST,/api/v1/adminrouteservice/adminroute,startStation,Midtown,true,offline
+Flow_Scenario_538,test_positive_flow_S538_v15,2,POST,/api/v1/adminrouteservice/adminroute,stationList,"Grand Central Terminal,Penn Station",true,token
+Flow_Scenario_538,test_positive_flow_S538_v16,2,POST,/api/v1/adminrouteservice/adminroute,endStation,Station A,true,token
+Flow_Scenario_538,test_positive_flow_S538_v16,2,POST,/api/v1/adminrouteservice/adminroute,startStation,Financial District,true,offline
+Flow_Scenario_538,test_positive_flow_S538_v16,2,POST,/api/v1/adminrouteservice/adminroute,stationList,"Broadway Station,Financial District",true,token
+Flow_Scenario_538,test_positive_flow_S538_v17,2,POST,/api/v1/adminrouteservice/adminroute,endStation,Station D,true,token
+Flow_Scenario_538,test_positive_flow_S538_v17,2,POST,/api/v1/adminrouteservice/adminroute,startStation,Downtown,true,offline
+Flow_Scenario_538,test_positive_flow_S538_v17,2,POST,/api/v1/adminrouteservice/adminroute,stationList,"Grand Central Terminal,Penn Station",true,token
+Flow_Scenario_538,test_positive_flow_S538_v18,2,POST,/api/v1/adminrouteservice/adminroute,endStation,Station A,true,token
+Flow_Scenario_538,test_positive_flow_S538_v18,2,POST,/api/v1/adminrouteservice/adminroute,startStation,empirestatebuilding,false,unknown
+Flow_Scenario_538,test_positive_flow_S538_v18,2,POST,/api/v1/adminrouteservice/adminroute,stationList,"Grand Central Terminal,Penn Station",true,token
+Flow_Scenario_538,test_positive_flow_S538_v19,2,POST,/api/v1/adminrouteservice/adminroute,endStation,Station E,true,token
+Flow_Scenario_538,test_positive_flow_S538_v19,2,POST,/api/v1/adminrouteservice/adminroute,startStation,Downtown,true,offline
+Flow_Scenario_538,test_positive_flow_S538_v19,2,POST,/api/v1/adminrouteservice/adminroute,stationList,"Grand Central Terminal,Penn Station",true,token
+Flow_Scenario_538,test_positive_flow_S538_v20,2,POST,/api/v1/adminrouteservice/adminroute,endStation,Station B,true,token
+Flow_Scenario_538,test_positive_flow_S538_v20,2,POST,/api/v1/adminrouteservice/adminroute,startStation,Tokyo,true,offline
+Flow_Scenario_538,test_positive_flow_S538_v20,2,POST,/api/v1/adminrouteservice/adminroute,stationList,"Grand Central Terminal,Penn Station",true,token
+Flow_Scenario_973,test_positive_flow_S973_v1,2,POST,/api/v1/travel2service/trips/left,startPlace,Dallas,true,offline
+Flow_Scenario_973,test_positive_flow_S973_v2,2,POST,/api/v1/travel2service/trips/left,endPlace,Charlotte,true,offline
+Flow_Scenario_973,test_positive_flow_S973_v2,2,POST,/api/v1/travel2service/trips/left,startPlace,San Diego,true,offline
+Flow_Scenario_973,test_positive_flow_S973_v3,2,POST,/api/v1/travel2service/trips/left,endPlace,New York,true,offline
+Flow_Scenario_973,test_positive_flow_S973_v3,2,POST,/api/v1/travel2service/trips/left,startPlace,San Antonio,true,offline
+Flow_Scenario_973,test_positive_flow_S973_v4,2,POST,/api/v1/travel2service/trips/left,endPlace,Jacksonville,true,offline
+Flow_Scenario_973,test_positive_flow_S973_v4,2,POST,/api/v1/travel2service/trips/left,startPlace,San Antonio,true,offline
+Flow_Scenario_973,test_positive_flow_S973_v5,2,POST,/api/v1/travel2service/trips/left,endPlace,Austin,true,offline
+Flow_Scenario_973,test_positive_flow_S973_v5,2,POST,/api/v1/travel2service/trips/left,startPlace,shenyang,true,offline
+Flow_Scenario_973,test_positive_flow_S973_v6,2,POST,/api/v1/travel2service/trips/left,endPlace,Houston,true,offline
+Flow_Scenario_973,test_positive_flow_S973_v6,2,POST,/api/v1/travel2service/trips/left,startPlace,San Antonio,true,offline
+Flow_Scenario_973,test_positive_flow_S973_v7,2,POST,/api/v1/travel2service/trips/left,endPlace,Jacksonville,true,offline
+Flow_Scenario_973,test_positive_flow_S973_v7,2,POST,/api/v1/travel2service/trips/left,startPlace,shenyang,true,offline
+Flow_Scenario_973,test_positive_flow_S973_v8,2,POST,/api/v1/travel2service/trips/left,endPlace,San Jose,true,offline
+Flow_Scenario_973,test_positive_flow_S973_v8,2,POST,/api/v1/travel2service/trips/left,startPlace,Chicago O'Hare International Airport,true,token
+Flow_Scenario_973,test_positive_flow_S973_v9,2,POST,/api/v1/travel2service/trips/left,endPlace,Columbus,true,offline
+Flow_Scenario_973,test_positive_flow_S973_v9,2,POST,/api/v1/travel2service/trips/left,startPlace,New York City,false,unknown
+Flow_Scenario_973,test_positive_flow_S973_v10,2,POST,/api/v1/travel2service/trips/left,endPlace,Dallas,true,offline
+Flow_Scenario_973,test_positive_flow_S973_v10,2,POST,/api/v1/travel2service/trips/left,startPlace,San Jose,true,offline
+Flow_Scenario_973,test_positive_flow_S973_v11,2,POST,/api/v1/travel2service/trips/left,endPlace,San Jose,true,offline
+Flow_Scenario_973,test_positive_flow_S973_v11,2,POST,/api/v1/travel2service/trips/left,startPlace,Dallas,true,offline
+Flow_Scenario_973,test_positive_flow_S973_v12,2,POST,/api/v1/travel2service/trips/left,endPlace,San Jose,true,offline
+Flow_Scenario_973,test_positive_flow_S973_v12,2,POST,/api/v1/travel2service/trips/left,startPlace,Phoenix,true,offline
+Flow_Scenario_973,test_positive_flow_S973_v13,2,POST,/api/v1/travel2service/trips/left,endPlace,New York,true,offline
+Flow_Scenario_973,test_positive_flow_S973_v13,2,POST,/api/v1/travel2service/trips/left,startPlace,San Antonio,true,offline
+Flow_Scenario_973,test_positive_flow_S973_v14,2,POST,/api/v1/travel2service/trips/left,endPlace,Austin,true,offline
+Flow_Scenario_973,test_positive_flow_S973_v14,2,POST,/api/v1/travel2service/trips/left,startPlace,dongguan,true,offline
+Flow_Scenario_973,test_positive_flow_S973_v15,2,POST,/api/v1/travel2service/trips/left,endPlace,New York,true,offline
+Flow_Scenario_973,test_positive_flow_S973_v15,2,POST,/api/v1/travel2service/trips/left,startPlace,Indianapolis,true,offline
+Flow_Scenario_973,test_positive_flow_S973_v16,2,POST,/api/v1/travel2service/trips/left,endPlace,Phoenix,true,offline
+Flow_Scenario_973,test_positive_flow_S973_v16,2,POST,/api/v1/travel2service/trips/left,startPlace,Chicago O'Hare International Airport,true,token
+Flow_Scenario_973,test_positive_flow_S973_v17,2,POST,/api/v1/travel2service/trips/left,endPlace,Fort Worth,true,offline
+Flow_Scenario_973,test_positive_flow_S973_v17,2,POST,/api/v1/travel2service/trips/left,startPlace,dongguan,true,offline
+Flow_Scenario_973,test_positive_flow_S973_v18,2,POST,/api/v1/travel2service/trips/left,endPlace,Phoenix,true,offline
+Flow_Scenario_973,test_positive_flow_S973_v18,2,POST,/api/v1/travel2service/trips/left,startPlace,Philadelphia,true,offline
+Flow_Scenario_973,test_positive_flow_S973_v19,2,POST,/api/v1/travel2service/trips/left,endPlace,San Antonio,true,offline
+Flow_Scenario_973,test_positive_flow_S973_v19,2,POST,/api/v1/travel2service/trips/left,startPlace,Indianapolis,true,offline
+Flow_Scenario_973,test_positive_flow_S973_v20,2,POST,/api/v1/travel2service/trips/left,endPlace,Fort Worth,true,offline
+Flow_Scenario_973,test_positive_flow_S973_v20,2,POST,/api/v1/travel2service/trips/left,startPlace,Chicago,true,offline

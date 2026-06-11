@@ -1,0 +1,48 @@
+ResponseEnvelope live classifier — 3-case transcript (real DeepSeek calls)
+Harness: evaluation/suts/trainticket/ResponseEnvelopeLiveCheck.java (MIST's shipped
+ZeroShotLLMGenerator.validateResponse, fresh store per run = a live LLM call each).
+Date: 2026-06-02. Shows ResponseEnvelope flips the status:0 soft error and passes a
+status:1 success, but false-positives on an ambiguous status:1/data:null body —
+the basis for the paper's 'opt-in, best-effort LLM judgment' framing (Sec. Usage).
+================================================================================
+
+### CASE 1 (soft error, expect FAIL)
+WARNING: sun.reflect.Reflection.getCallerClass is not supported. This will impact performance.
+Soft-error response (HTTP 200): {"status":0,"msg":"start or end station not include in stationList.","data":null}
+Root API: POST /api/v1/adminrouteservice/adminroute
+Status-class oracle: PASS (HTTP is 200)
+Trace Shape Oracle overall passed: false
+  SPAN_TREE_SHAPE: pass  severity=ERROR
+  STATUS_PROPAGATION: pass  severity=ERROR
+  RESPONSE_ENVELOPE: FAIL  severity=ERROR  detail=status=0 classified as failure (LLM, cached)
+
+### CASE 2 (success with data, expect pass)
+WARNING: sun.reflect.Reflection.getCallerClass is not supported. This will impact performance.
+Soft-error response (HTTP 200): {"status":1,"msg":"Save success!","data":{"id":"r1","startStation":"shanghai","endStation":"beijing"}}
+Root API: POST /api/v1/adminrouteservice/adminroute
+Status-class oracle: PASS (HTTP is 200)
+Trace Shape Oracle overall passed: true
+  SPAN_TREE_SHAPE: pass  severity=ERROR
+  STATUS_PROPAGATION: pass  severity=ERROR
+  RESPONSE_ENVELOPE: pass  severity=ERROR
+
+### CASE 3 (status:1 success, data:null — FALSE POSITIVE)
+WARNING: sun.reflect.Reflection.getCallerClass is not supported. This will impact performance.
+Soft-error response (HTTP 200): {"status":1,"msg":"Success","data":null}
+Root API: POST /api/v1/adminrouteservice/adminroute
+Status-class oracle: PASS (HTTP is 200)
+Trace Shape Oracle overall passed: false
+  SPAN_TREE_SHAPE: pass  severity=ERROR
+  STATUS_PROPAGATION: pass  severity=ERROR
+  RESPONSE_ENVELOPE: FAIL  severity=ERROR  detail=status=1 classified as failure (LLM, cached)
+
+### CASE 4 (Sock Shop soft error, status_code:500 — FALSE NEGATIVE: classifier MISSES it)
+# Added 2026-06-02: backs the paper's claim that the classifier is format-dependent
+# (flips TrainTicket's status:0 but misses Sock Shop's status_code:500 envelope).
+Soft-error response (HTTP 200): {"error":"Do: database connection error","status_code":500,"status_text":"Internal Server Error"}
+Root API: GET /catalogue
+Status-class oracle: PASS (HTTP is 200)
+Trace Shape Oracle overall passed: true
+  SPAN_TREE_SHAPE: pass  severity=ERROR
+  STATUS_PROPAGATION: pass  severity=ERROR
+  RESPONSE_ENVELOPE: pass  severity=ERROR
