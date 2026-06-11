@@ -55,6 +55,15 @@ beat as motivation, and the OracleCheck harness beat is explicitly narrated as
 Time-lapse honesty: keep the progress bar / terminal clock visible across the
 jump and overlay a "⏩ ~30 min" caption — a visible cut, never a hidden one.
 
+Why the LLM cache cannot shorten Scene 2 (asked and answered): the ~30 min is
+dominated by EXECUTION — 166 tests × (request + 5 s Jaeger-ingest wait + trace
+fetch + oracle) ≈ 22–28 min of physical waiting. The cache only serves LLM
+calls in the generation/enhancement phases (~5–8 min), and the bookinfo run is
+unseeded so `mist.llm.cache.read=auto` does not read it anyway. Hence the
+design: run the full pipeline ONCE in prep (P6), show launch + a visible
+time-lapse + the tail on camera. Do not swap Scene 2 to the noexec profile —
+a tool demo must show the tool executing; noexec lives in Scene 5.
+
 ---
 
 ## 3. What exists on the machine after prep (the inventory the camera relies on)
