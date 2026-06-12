@@ -217,17 +217,17 @@ The invariant generalises to a second protocol. With Online Boutique's non-criti
 
 \begin{table}[t]
 \centering
-\caption{Bookinfo under a \texttt{ratings} outage: response-level oracle vs.\ \textsc{HiddenDownstreamFailure}. Row 2 is the failure only the trace oracle catches. The ``silent'' rows are correct passes (row 1 exercises no dependency, and row 3 is a loud \texttt{503} the status oracle already catches).}
+\caption{Bookinfo under a \texttt{ratings} outage: response-level oracle vs.\ \textsc{HiddenDownstreamFailure}. The invariant either \emph{fires} (it reports a swallowed downstream failure) or stays \emph{silent} (it reports nothing). Row 2 is the failure only the trace oracle catches. The silent rows are correct non-fires: row 1 has no \texttt{ratings} dependency, row 3 is a loud \texttt{503} the status oracle already catches, and row 4 is the healthy control.}
 \label{tab:bookinfo}
 \footnotesize
 \begin{tabular}{@{}llccc@{}}
 \toprule
 \textbf{Endpoint} & \texttt{ratings} & \textbf{HTTP} & \textbf{Resp.\ oracle} & \textbf{Trace oracle} \\
 \midrule
-\texttt{/products}                & outage  & 200 & pass            & silent (no dep.)  \\
+\texttt{/products}                & outage  & 200 & pass            & silent  \\
 \texttt{/products/\{id\}/reviews} & outage  & 200 & \textbf{pass (miss)} & \textbf{FIRES}    \\
-\texttt{/products/\{id\}/ratings} & outage  & 503 & fail            & silent (loud)     \\
-\texttt{/products/\{id\}/reviews} & healthy & 200 & pass            & silent            \\
+\texttt{/products/\{id\}/ratings} & outage  & 503 & fail            & silent  \\
+\texttt{/products/\{id\}/reviews} & healthy & 200 & pass            & silent  \\
 \bottomrule
 \end{tabular}
 \end{table}
