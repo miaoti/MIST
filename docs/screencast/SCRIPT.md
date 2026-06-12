@@ -71,6 +71,7 @@ a tool demo must show the tool executing; noexec lives in Scene 5.
 | Artifact | Path / location | Created by (§4 step) |
 |---|---|---|
 | `mist.jar` | `mist-cli/target/mist.jar` | P2 build |
+| Allure CLI 2.30.0 | `allure/bin/allure` (fetched — NOT in the repo) | P2 fetch |
 | kind cluster + Istio + Jaeger + Bookinfo, healthy | kind context `kind-mist` | P3 deploy |
 | Port-forwards 8080 (ingress) / 16686 (Jaeger), self-restarting | two background loops | P4 |
 | Run-1 checksums for the determinism beat | `/tmp/run1.sums` | P5 |
@@ -141,6 +142,12 @@ export JAVA_HOME=/usr/lib/jvm/java-21-openjdk-amd64   # a JDK, not a JRE (adjust
 
 # P2 — build (~5 min)
 mvn -q -DskipTests install
+#   Allure CLI: NOT in the repo (allure/ is gitignored and the build does not
+#   create it) — P7 needs it. One-time fetch recreating the allure/bin layout
+#   README and P7 expect (verified against Maven Central 2026-06-11):
+curl -sLo /tmp/allure.tgz https://repo.maven.apache.org/maven2/io/qameta/allure/allure-commandline/2.30.0/allure-commandline-2.30.0.tgz
+mkdir -p allure && tar -xzf /tmp/allure.tgz -C allure --strip-components=1
+allure/bin/allure --version                          # expect: 2.30.0
 
 # P3 — SUT up (~8 min; Linux x86_64; macOS: brew install kind kubectl istioctl first)
 evaluation/suts/bookinfo/deploy/deploy.sh
@@ -223,11 +230,13 @@ verified output to point at · **CUT** = edit note.
 evaluation/suts/bookinfo/workload/inject-ratings-outage.sh on
 curl -s -o /dev/null -w '%{http_code}\n' http://localhost:8080/api/v1/products/0/ratings
 curl -s -o /dev/null -w '%{http_code}\n' http://localhost:8080/api/v1/products/0/reviews
-curl -s http://localhost:8080/api/v1/products/0/reviews | python3 -m json.tool | head -8
+curl -s http://localhost:8080/api/v1/products/0/reviews | python3 -m json.tool | head -12
 ```
 
 **EXPECT (verified):** `503` (direct), then `200` (reviews), body carrying
-`"rating": {"error": "Ratings service is currently unavailable"}`.
+`"rating": {"error": "Ratings service is currently unavailable"}` — the error
+block sits at lines 9–11 of the pretty-printed body, which is why the pipe is
+`head -12`, not `head -8` (re-verified live 2026-06-11).
 
 **SAY:**
 > "Istio Bookinfo, live on a kind cluster. I take the ratings service down —
@@ -333,7 +342,7 @@ violation(s): [HIDDEN_DOWNSTREAM_FAILURE: reviews.default ──▶ ratings... (
 find mist-cli/src/test/java/trainticket_twostage_test -name 'Flow_Scenario_*.java' \
     -exec sha256sum {} \; | sort > /tmp/run2.sums
 diff /tmp/run1.sums /tmp/run2.sums && echo IDENTICAL
-grep -A3 "FAULT COVERAGE SUMMARY" debug/negative_test/runs/run22-fault-detection-10of10.txt
+grep -A5 "FAULT COVERAGE SUMMARY" debug/negative_test/runs/run22-fault-detection-10of10.txt
 ```
 
 **EXPECT (verified):** `IDENTICAL`; `Total Injected Faults: 10 / Detected
@@ -371,6 +380,11 @@ Soft-error response (HTTP 200): {"status":0,"msg":"start or end station not incl
 Status-class oracle: PASS (HTTP is 200)
   RESPONSE_ENVELOPE: FAIL  severity=ERROR  detail=status=0 classified as failure (LLM, cached)
 ```
+
+⚠ A missing/invalid key does **not** error loudly: the LLM call fails silently
+and the last line degrades to `RESPONSE_ENVELOPE: pass` (verified 2026-06-11
+with an empty key). If the FAIL line doesn't appear, fix the key or use the §7
+fallback — never record the silent pass.
 
 **SAY:**
 > "The second failure class: soft errors — HTTP 200 wrapping a domain
@@ -415,7 +429,7 @@ Switch to tab A (GitHub). End card 5 s: `github.com/miaoti/MIST` · Zenodo DOI �
 evaluation/suts/bookinfo/workload/inject-ratings-outage.sh on
 curl -s -o /dev/null -w '%{http_code}\n' http://localhost:8080/api/v1/products/0/ratings
 curl -s -o /dev/null -w '%{http_code}\n' http://localhost:8080/api/v1/products/0/reviews
-curl -s http://localhost:8080/api/v1/products/0/reviews | python3 -m json.tool | head -8
+curl -s http://localhost:8080/api/v1/products/0/reviews | python3 -m json.tool | head -12
 
 # Scene 2 (launch live; the tail can replay /tmp/mist-bookinfo-run.log from prep P6)
 cd evaluation/suts/bookinfo/.runtime
@@ -439,7 +453,7 @@ evaluation/suts/bookinfo/workload/inject-ratings-outage.sh off
 find mist-cli/src/test/java/trainticket_twostage_test -name 'Flow_Scenario_*.java' \
     -exec sha256sum {} \; | sort > /tmp/run2.sums
 diff /tmp/run1.sums /tmp/run2.sums && echo IDENTICAL
-grep -A3 "FAULT COVERAGE SUMMARY" debug/negative_test/runs/run22-fault-detection-10of10.txt
+grep -A5 "FAULT COVERAGE SUMMARY" debug/negative_test/runs/run22-fault-detection-10of10.txt
 
 # Scene 6
 "$JAVA_HOME/bin/java" -cp mist-cli/target/mist.jar \
@@ -457,6 +471,11 @@ evaluation/run-offline-oracle.sh
 # restore (not recorded)
 evaluation/suts/bookinfo/workload/inject-ratings-outage.sh off
 kubectl scale deploy ratings-v1 --replicas=1
+# the runs regenerate these TWO TRACKED registries in place (P5/Scene 5 touch the
+# trainticket one, P6/Scene 2 the bookinfo one) — restore so the frozen
+# submission commit stays clean:
+git checkout -- mist-cli/src/main/resources/My-Example/trainticket/root-api-registry.json \
+    evaluation/suts/bookinfo/root-api-registry.json
 ```
 
 ---
@@ -511,3 +530,5 @@ kubectl scale deploy ratings-v1 --replicas=1
 | `allure generate` renders a real run (2,710 files) | **2026-06-10** | summary: 166 total |
 | Red positive test with the oracle message in Allure | committed 2026-06-02 run (prep P6/P7 reproduces it) | `bookinfo_inprocess_e2e/sample_hidden_downstream_finding.txt` |
 | `run-offline-oracle.sh` ~5–6 min end-to-end | 2026-06-09 fresh clone | `evidence/offline-oracle.log` |
+| Second-host re-audit of every offline beat: build, noexec ×2 → 26 files IDENTICAL, OracleCheck bookinfo FIRES@ERROR + boutique FIRES@WARN (both arg forms), run22 grep, Allure 2.30.0 fetch + `--version` | 2026-06-11 (Windows/Git-Bash) | this session; fixes folded into P2/§3/§6/Scene 5/Scene 6 |
+| Live chain rehearsed ON THE RECORDING HOST (WSL2 Ubuntu, P0-B route): P0-B packages, clone+build in ext4, `deploy.sh` exit 0, P3 check empty, P4 forwards 200/200 from BOTH WSL and the Windows browser side, outage 503 settles in 2 s, masked `/reviews` 200 + error body, Jaeger fetch (8 traces) → OracleCheck **FIRES@ERROR on the live trace**, restore clean. Outstanding: P6/P7 + Scene 6 (need the DeepSeek key), P5 re-run inside WSL | 2026-06-11 live | this session |

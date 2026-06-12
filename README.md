@@ -101,7 +101,11 @@ ollama pull qwen2.5-coder:14b
 java -jar mist-cli/target/mist.jar \
      mist-cli/src/main/resources/My-Example/trainticket-demo.properties
 
-# 5. Render the Allure report
+# 5. Render the Allure report (first time only: fetch the Allure CLI into
+#    allure/ — the directory is not part of the repo)
+[ -x allure/bin/allure ] || { curl -sLo /tmp/allure.tgz \
+      https://repo.maven.apache.org/maven2/io/qameta/allure/allure-commandline/2.30.0/allure-commandline-2.30.0.tgz \
+   && mkdir -p allure && tar -xzf /tmp/allure.tgz -C allure --strip-components=1; }
 allure/bin/allure generate target/allure-results -o target/allure-report --clean && \
 allure/bin/allure open target/allure-report
 ```
@@ -318,7 +322,7 @@ Full pipeline (Phase 1 cross-trace merging → Phase 2 session merging → Phase
 |---|---|
 | JDK | **21** (a full JDK, not a JRE — MIST compiles the generated tests in-process; bytecode target stays `-source 11 -target 11`) |
 | Maven | 3.6+ |
-| Allure CLI | bundled in `allure/` (Java 8+ required by Allure itself) |
+| Allure CLI | one-time fetch into `allure/` — see Quick Start A step 5 (Java 8+ required by Allure itself) |
 | LLM backend | one of: Ollama (local), DeepSeek / OpenAI-compatible HTTP, Google Gemini |
 | Target system | reachable HTTP base URL + an OpenAPI spec + Jaeger traces |
 
