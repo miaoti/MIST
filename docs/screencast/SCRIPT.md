@@ -82,26 +82,46 @@ a tool demo must show the tool executing; noexec lives in Scene 5.
 
 ---
 
-## 4. Prep (run start-to-finish on the recording machine; ~1.5 h incl. one 30-min run)
+## 4. Prep (run start-to-finish on the recording machine; ~1.5 h incl. one 30-min run; +15 min P0 on a blank box)
 
 ```bash
+# P0 — blank-machine preconditions (one-time; skip any you already have).
+#      Every line below corresponds to a failure we actually hit during the
+#      2026-06 audit — do not trust a fresh box without them.
+sudo apt-get update && sudo apt-get install -y \
+    openjdk-21-jdk-headless maven git curl python3 jq        # python3: Scene 1 pretty-prints JSON
+#   Docker engine (https://docs.docker.com/engine/install/), then make it
+#   usable without sudo (kind runs as your user; re-login after):
+sudo usermod -aG docker "$USER" && newgrp docker
+docker ps                                                    # must work WITHOUT sudo
+#   Stock Ubuntu inotify limits are too low for a kind node ("could not find
+#   a log line that matches 'Reached target ... Multi-User System'"):
+sudo sysctl fs.inotify.max_user_watches=1048576 fs.inotify.max_user_instances=8192
+#   deploy.sh installs kind/kubectl/istioctl into ~/.local/bin — make sure
+#   your shell sees it (Ubuntu's default .profile does; WSL sometimes not):
+export PATH="$HOME/.local/bin:$PATH"
+#   Recorder: install OBS (sudo apt-get install -y obs-studio) and do a mic test.
+
 # P1 — clone at the frozen submission commit + key
 git clone https://github.com/miaoti/MIST && cd MIST
 mkdir -p .api_keys && <put your DeepSeek key in .api_keys/DEEPSEEK_API_KEY>
-export JAVA_HOME=/path/to/jdk21          # a JDK, not a JRE
+export JAVA_HOME=/usr/lib/jvm/java-21-openjdk-amd64   # a JDK, not a JRE (adjust to your install)
 
 # P2 — build (~5 min)
 mvn -q -DskipTests install
 
 # P3 — SUT up (~8 min; Linux x86_64; macOS: brew install kind kubectl istioctl first)
 evaluation/suts/bookinfo/deploy/deploy.sh
-kubectl get pods    # all 2/2 Running before continuing
+kubectl get pods -A | grep -vE 'Running|Completed'   # expect EMPTY (bookinfo 2/2 in
+                                                     # default, istiod/jaeger/gateways
+                                                     # Running in istio-system)
 
 # P4 — self-restarting forwards (bare port-forwards die mid-take; ports must be free:
 #       ss -tlnp | grep -E ':8080|:16686' shows nothing before this)
 ( while true; do kubectl port-forward -n istio-system svc/istio-ingressgateway 8080:80; sleep 2; done ) &
 ( while true; do kubectl port-forward -n istio-system svc/tracing 16686:80; sleep 2; done ) &
-curl -s -o /dev/null -w '%{http_code}\n' http://localhost:8080/productpage   # 200
+curl -s -o /dev/null -w '%{http_code}\n' http://localhost:8080/productpage             # 200
+curl -s -o /dev/null -w '%{http_code}\n' "http://localhost:16686/jaeger/api/services"  # 200
 
 # P5 — determinism run 1 (~2.5 min) -> /tmp/run1.sums, then clear for the on-camera run 2
 rm -rf mist-cli/src/test/java/trainticket_twostage_test
