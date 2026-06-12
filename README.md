@@ -121,7 +121,7 @@ OpenAI-compatible endpoint by adjusting the env-var name and the
 # 1. Build
 mvn clean install -DskipTests
 
-# 2. Provide an API key (resolved by ${DEEPSEEK_API_KEY} placeholder in the MST file)
+# 2. Provide an API key (resolved by ${DEEPSEEK_API_KEY} placeholder in the MST section)
 export DEEPSEEK_API_KEY=sk-...
 
 # 3. The bundled demo is already wired for DeepSeek
@@ -402,7 +402,7 @@ The `${VAR}` syntax is resolved at startup — see *API keys* below.
 
 MIST persists every LLM response under `.mist/llm-call-cache.json`
 (SHA-256-keyed on the prompt). Two knobs gate the cache, settable from
-the MST `.properties` file or via `-D` (the latter takes precedence):
+the `.properties` file (MST section) or via `-D` (the latter takes precedence):
 
 ```properties
 # mist.llm.cache.read = auto | true | false
@@ -431,7 +431,7 @@ Common combinations:
 | Run isolated from the shared cache file | `-Dmist.llm.cache.read=false -Dmist.llm.cache.write=false` |
 | Use a side-channel cache file | `-Dmist.llm.cache.path=.mist/run-A.json` |
 
-The same three knobs also work as command-line `-D` flags for IDE play-button runs that bypass the MST file.
+The same three knobs also work as command-line `-D` flags for IDE play-button runs.
 
 ### Google Gemini
 
@@ -459,7 +459,7 @@ A missing key resolves to the empty string, in which case the request is sent un
 
 ## Auth strategy for the *target* system
 
-The generated tests use `io.mist.cli.auth.MstAuthHandler` to obtain and stamp tokens. Configured by `auth.*` keys in the MST file:
+The generated tests use `io.mist.cli.auth.MstAuthHandler` to obtain and stamp tokens. Configured by `auth.*` keys in the MST section of the demo `.properties`:
 
 | `auth.mode` | Effect |
 |---|---|
@@ -482,7 +482,7 @@ Endpoints matching `auth.skip.path.patterns` (CSV of regex, e.g. `^/actuator,^/a
 | `target/allure-report/`                        | Rendered HTML report (after `allure generate`) |
 | `logs/fault-detection-reports/`                | Injected-fault detection summary, matched against `injectedFaults/injected-faults.json` |
 | `logs/llm-communications/`                     | Per-call LLM request/response transcripts (`LLMCommunicationLogger`; gitignored) |
-| `.mist/llm-call-cache.json`                    | SHA-256-keyed cache of LLM responses. Default: read enabled only when `-Drandom.seed=<n>` is set (so seeded runs reproduce byte-identically and unseeded benchmark runs hit the real LLM); write always on. Both gates are overridable from the MST `.properties` file or via `-D`. See *LLM cache control* below. |
+| `.mist/llm-call-cache.json`                    | SHA-256-keyed cache of LLM responses. Default: read enabled only when `-Drandom.seed=<n>` is set (so seeded runs reproduce byte-identically and unseeded benchmark runs hit the real LLM); write always on. Both gates are overridable from the .properties file (MST section) or via `-D`. See *LLM cache control* below. |
 | `.mist/parameter-error-analysis-cache.json`    | Parameter-error analyser cache |
 | `.mist/intelligent-analysis-cache.json`        | Trace error analyser intelligent cache |
 | `.mist/trace-shape-invariants.json`            | Phase 2 Trace Shape Oracle persisted invariants |
