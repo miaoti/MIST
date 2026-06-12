@@ -2,8 +2,11 @@
 
 **Status:** every command, output snippet, and wall-clock figure was executed
 and measured on 2026-06-09/10 (see §9 Feasibility ledger and
-`debug/reproduce/README.md` V1–V12). The one beat whose *console form* you
-must confirm yourself at the dry run is marked ⚠ in §9.
+`debug/reproduce/README.md` V1–V12). The one beat whose *console form* needed
+confirming (the P6 closing block) was **confirmed 2026-06-11 on the recording
+host itself** — prep P5/P6/P7 and Scenes 1/3/6 have all been rehearsed there
+end-to-end (§9, last two rows). Run-of-record: 84 tests, ~12 min, exit 0,
+1 ERROR finding × 8 hits on `/reviews`.
 
 **Reading rule: nothing pre-exists.** Every artifact the camera touches — the
 jar, the cluster, the Allure report, the checksum file, the browser tabs — is
@@ -42,7 +45,7 @@ beat as motivation, and the OracleCheck harness beat is explicitly narrated as
 | Step | Real wall time (measured) | Screen time |
 |---|---|---|
 | Outage inject + ratings settles to 503 | 10–40 s | ~8 s (cut the poll) |
-| **Full in-process run `java -jar mist.jar bookinfo-demo.properties`** (generate→compile→execute 166 tests→oracle) | **~30 min** | **~45 s: launch live, "⏩ ~30 min" caption, tail** |
+| **Full in-process run `java -jar mist.jar bookinfo-demo.properties`** (generate→compile→execute→oracle; count varies per run — 166 tests healthy 2026-06-09, **84 tests under outage on the recording host 2026-06-11**) | **12–30 min (run-of-record: ~12 min)** | **~45 s: launch live, "⏩ ⟨wall time of YOUR prep-P6 run⟩" caption, tail** |
 | Jaeger ingest before trace fetch | ~6 s | 0 s (cut) |
 | `OracleCheck` single invocation | ~10 s | ~10 s |
 | noexec generation (26 deduplicated scenarios, offline) | ~2.5 min | ~10 s (time-lapse) |
@@ -55,11 +58,12 @@ beat as motivation, and the OracleCheck harness beat is explicitly narrated as
 Time-lapse honesty: keep the progress bar / terminal clock visible across the
 jump and overlay a "⏩ ~30 min" caption — a visible cut, never a hidden one.
 
-Why the LLM cache cannot shorten Scene 2 (asked and answered): the ~30 min is
-dominated by EXECUTION — 166 tests × (request + 5 s Jaeger-ingest wait + trace
-fetch + oracle) ≈ 22–28 min of physical waiting. The cache only serves LLM
-calls in the generation/enhancement phases (~5–8 min), and the bookinfo run is
-unseeded so `mist.llm.cache.read=auto` does not read it anyway. Hence the
+Why the LLM cache cannot shorten Scene 2 (asked and answered): the run is
+dominated by EXECUTION — each test pays (request + 5 s Jaeger-ingest wait +
+trace fetch + oracle): ≈ 22–28 min for the 166-test healthy run, ≈ 9–11 min
+for the 84-test outage run-of-record. The cache only serves LLM calls in the
+generation/enhancement phases, and the bookinfo run is unseeded so
+`mist.llm.cache.read=auto` does not read it anyway. Hence the
 design: run the full pipeline ONCE in prep (P6), show launch + a visible
 time-lapse + the tail on camera. Do not swap Scene 2 to the noexec profile —
 a tool demo must show the tool executing; noexec lives in Scene 5.
@@ -180,15 +184,19 @@ mkdir -p evaluation/suts/bookinfo/.runtime
   "$JAVA_HOME/bin/java" -jar ../../../../mist-cli/target/mist.jar ../bookinfo-demo.properties \
   ) 2>&1 | tee /tmp/mist-bookinfo-run.log
 evaluation/suts/bookinfo/workload/inject-ratings-outage.sh off
-#   Confirm now (this is the ⚠ dry-run check): the closing "MIST findings"
-#   block and .runtime/logs/fault-detection-reports/ name
-#   HIDDEN_DOWNSTREAM_FAILURE findings (committed reference for the expected
-#   content: docs/main-contribution/evidence/bookinfo_inprocess_e2e/).
+#   Confirm now (the former ⚠ dry-run check — CONFIRMED 2026-06-11 on the
+#   recording host: exit 0, 84 tests in ~12 min, closing block "MIST findings
+#   — 1 anomaly across 84 executed test case(s)" with ERROR on /reviews ×8,
+#   report names HIDDEN_DOWNSTREAM_FAILURE | GET /api/v1/products/0/reviews):
+#   the closing "MIST findings" block and .runtime/logs/fault-detection-reports/
+#   must name HIDDEN_DOWNSTREAM findings (committed reference:
+#   docs/main-contribution/evidence/bookinfo_inprocess_e2e/).
 
 # P7 — render the Allure report from that exact run (~40 s)
 allure/bin/allure generate evaluation/suts/bookinfo/.runtime/target/allure-results \
     -o /tmp/allure-report --clean
-allure/bin/allure open /tmp/allure-report &    # note the URL it prints; open in the browser
+allure/bin/allure open -p 53535 /tmp/allure-report &   # fixed port -> the tab-B
+#   bookmark survives restarts; open http://localhost:53535 in the browser
 #   In the report, find ONE positive /reviews test that is red with
 #   "Trace Shape Oracle verdict has violation(s): [HIDDEN_DOWNSTREAM_FAILURE: ...]"
 #   and BOOKMARK that page. Never show the unfiltered failure list cold —
@@ -257,29 +265,43 @@ cd evaluation/suts/bookinfo/.runtime
 DEEPSEEK_API_KEY="$(cat ../../../../.api_keys/DEEPSEEK_API_KEY)" \
 "$JAVA_HOME/bin/java" -jar ../../../../mist-cli/target/mist.jar ../bookinfo-demo.properties
 ```
-Let the banner + generation progress run ~8 s on camera → **"⏩ ~30 min"
-caption** → cut to the END of the run. (To avoid waiting again on the day,
-replay the tail of `/tmp/mist-bookinfo-run.log` from prep P6 — same commit,
-same SUT state; narrate it honestly as "the run we recorded earlier".) End on
-the closing `MIST findings` block, then:
+Let the banner + generation progress run ~8 s on camera → **"⏩ ~12 min"
+caption (use the wall time of YOUR prep-P6 run)** → cut to the END of the
+run. (To avoid waiting again on the day, replay the tail of
+`/tmp/mist-bookinfo-run.log` from prep P6 — same commit, same SUT state;
+narrate it honestly as "the run we recorded earlier".) End on the closing
+`MIST findings` block, then:
 ```bash
-tail -20 logs/fault-detection-reports/*.txt
+grep -A14 "ORACLE ANOMALIES" logs/fault-detection-reports/*.txt
 ```
+(the findings section sits at the TOP of the report, lines ~22–34 — a
+`tail -20` shows only the executed-test list at the bottom.)
 
-**EXPECT:** the findings block / report names `HIDDEN_DOWNSTREAM_FAILURE` on
-the `/reviews` positive test(s) with the swallowed `reviews → ratings` 503
-(⚠ confirm exact lines at prep P6; committed reference:
-`docs/main-contribution/evidence/bookinfo_inprocess_e2e/`).
+**EXPECT (confirmed at the 2026-06-11 prep-P6 run on the recording host):**
+the closing console block reads
+```
+  MIST findings — 1 anomaly across 84 executed test case(s)
+  ERROR 1         🕳️  Hidden downstream failure  (a 2xx hid a swallowed downstream error)
+  ▸ ERROR GET /api/v1/products/0/reviews  →  reviews.default ──▶ ratings.default... (8x, trace …)
+```
+and the report's `ORACLE ANOMALIES (1 distinct, 8 hits)` section names
+`HIDDEN_DOWNSTREAM_FAILURE | GET /api/v1/products/0/reviews`. Counts vary
+run to run (166 tests on the 2026-06-09 healthy run) — read yours off the
+log. Committed reference:
+`docs/main-contribution/evidence/bookinfo_inprocess_e2e/`.
 
 **SAY:**
 > "Now the tool. One jar, one properties file — this is the entire interface.
 > MIST reads the OpenAPI spec and the captured traces, generates
 > cross-service scenarios, compiles them, executes them against the live
 > system, fetches each test's distributed trace from Jaeger, and runs its
-> trace-shape oracle — all in this one process. Thirty minutes later: one
-> hundred sixty-six tests executed, and the run report flags the reviews
+> trace-shape oracle — all in this one process. Twelve minutes later:
+> eighty-four tests executed, and the run report flags the reviews
 > tests red — hidden downstream failure, the swallowed reviews-to-ratings
 > five-oh-three — caught by the oracle, not by the HTTP response."
+
+(Speak the duration and test count of YOUR prep-P6 run — they vary run to
+run; the 2026-06-11 run-of-record measured 12 min / 84 tests.)
 
 ---
 
@@ -321,6 +343,9 @@ failure message.
 
 **EXPECT:** `Positive variant failed — Trace Shape Oracle verdict has
 violation(s): [HIDDEN_DOWNSTREAM_FAILURE: reviews.default ──▶ ratings... (http=503 otel=ERROR)]`
+(2026-06-11 run-of-record: the bookmark target is **`test_positive_flow_S55_v28`**
+— exactly one positive `/reviews` variant carries the finding; the other 7
+hits land on negative variants, which are red by design.)
 
 **SAY:**
 > "The same run renders a standard Allure report. Here's the reviews test:
@@ -435,7 +460,7 @@ curl -s http://localhost:8080/api/v1/products/0/reviews | python3 -m json.tool |
 cd evaluation/suts/bookinfo/.runtime
 DEEPSEEK_API_KEY="$(cat ../../../../.api_keys/DEEPSEEK_API_KEY)" \
 "$JAVA_HOME/bin/java" -jar ../../../../mist-cli/target/mist.jar ../bookinfo-demo.properties
-tail -20 logs/fault-detection-reports/*.txt
+grep -A14 "ORACLE ANOMALIES" logs/fault-detection-reports/*.txt
 
 # Scene 3
 cd ../../../..
@@ -476,6 +501,8 @@ kubectl scale deploy ratings-v1 --replicas=1
 # submission commit stays clean:
 git checkout -- mist-cli/src/main/resources/My-Example/trainticket/root-api-registry.json \
     evaluation/suts/bookinfo/root-api-registry.json
+# the bookinfo run also CREATES this untracked artifact next to its properties:
+rm -f evaluation/suts/bookinfo/input-fetch-registry.yaml
 ```
 
 ---
@@ -520,7 +547,7 @@ git checkout -- mist-cli/src/main/resources/My-Example/trainticket/root-api-regi
 |---|---|---|
 | Outage toggle, 503 settle, masked 200 + body | 2026-06-09/10 live | `debug/reproduce/evidence/bookinfo-e2e-matrix.log` + session transcript |
 | **In-process run on live Bookinfo, exit 0** (Scene 2's engine) | 2026-06-09 live: 166 tests, healthy SUT | session transcript (audit V10) |
-| In-process run **under outage** produces HIDDEN_DOWNSTREAM findings + report | 2026-06-02 committed run | `docs/main-contribution/evidence/bookinfo_inprocess_e2e/` — ⚠ confirm the console-tail wording at prep P6 (the only unconfirmed *formatting*; the behavior itself is committed evidence) |
+| In-process run **under outage** produces HIDDEN_DOWNSTREAM findings + report | 2026-06-02 committed run; **console form CONFIRMED 2026-06-11 on the recording host** | `docs/main-contribution/evidence/bookinfo_inprocess_e2e/` + the 2026-06-11 run-of-record (`/tmp/mist-bookinfo-run.log` in WSL: "MIST findings — 1 anomaly across 84 executed test case(s)", ERROR on `/reviews` ×8) |
 | Live Jaeger-API fetch → OracleCheck FIRES on fresh traces | **2026-06-10 live, end-to-end** | session transcript |
 | OracleCheck on committed traces (fallback) | 2026-06-09 fresh clone | `debug/reproduce/evidence/offline-oracle.log` |
 | noexec generation ~2.5 min offline; seed-42 byte-identical (26 files at current HEAD — count re-baselined after the dedup-leak fix; 123 at the audit commit) | 2026-06-09 audit + **2026-06-11 re-run** | `debug/reproduce/README.md` addendum |
@@ -531,4 +558,5 @@ git checkout -- mist-cli/src/main/resources/My-Example/trainticket/root-api-regi
 | Red positive test with the oracle message in Allure | committed 2026-06-02 run (prep P6/P7 reproduces it) | `bookinfo_inprocess_e2e/sample_hidden_downstream_finding.txt` |
 | `run-offline-oracle.sh` ~5–6 min end-to-end | 2026-06-09 fresh clone | `evidence/offline-oracle.log` |
 | Second-host re-audit of every offline beat: build, noexec ×2 → 26 files IDENTICAL, OracleCheck bookinfo FIRES@ERROR + boutique FIRES@WARN (both arg forms), run22 grep, Allure 2.30.0 fetch + `--version` | 2026-06-11 (Windows/Git-Bash) | this session; fixes folded into P2/§3/§6/Scene 5/Scene 6 |
-| Live chain rehearsed ON THE RECORDING HOST (WSL2 Ubuntu, P0-B route): P0-B packages, clone+build in ext4, `deploy.sh` exit 0, P3 check empty, P4 forwards 200/200 from BOTH WSL and the Windows browser side, outage 503 settles in 2 s, masked `/reviews` 200 + error body, Jaeger fetch (8 traces) → OracleCheck **FIRES@ERROR on the live trace**, restore clean. Outstanding: P6/P7 + Scene 6 (need the DeepSeek key), P5 re-run inside WSL | 2026-06-11 live | this session |
+| Live chain rehearsed ON THE RECORDING HOST (WSL2 Ubuntu, P0-B route): P0-B packages, clone+build in ext4, `deploy.sh` exit 0, P3 check empty, P4 forwards 200/200 from BOTH WSL and the Windows browser side, outage 503 settles in 2 s, masked `/reviews` 200 + error body, Jaeger fetch (8 traces) → OracleCheck **FIRES@ERROR on the live trace**, restore clean | 2026-06-11 live | this session |
+| **P5 + P6 + P7 + Scene 6 rehearsed on the recording host with the real DeepSeek key**: P5 noexec → 26 files, sums at `/tmp/run1.sums` + `~/run1.sums` (WSL); P6 run-of-record exit 0 (84 tests, ~12 min, log `/tmp/mist-bookinfo-run.log`, report `…234532.txt`); P7 Allure rendered from 683 result files, served at `http://localhost:53535`, bookmark target `test_positive_flow_S55_v28`; Scene 6 live DeepSeek call → `RESPONSE_ENVELOPE: FAIL … (LLM, cached)` | 2026-06-11/12 live | this session |
