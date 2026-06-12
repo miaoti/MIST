@@ -85,11 +85,14 @@ a tool demo must show the tool executing; noexec lives in Scene 5.
 ## 4. Prep (run start-to-finish on the recording machine; ~1.5 h incl. one 30-min run; +15 min P0 on a blank box)
 
 ```bash
-# P0 — blank-machine preconditions (one-time; skip any you already have).
-#      Every line below corresponds to a failure we actually hit during the
+# P0 — blank-machine preconditions (one-time; pick ONE of the two variants).
+#      Every line corresponds to a failure we actually hit during the
 #      2026-06 audit — do not trust a fresh box without them.
+
+# ── P0-A: native Linux recording host ─────────────────────────────────────
 sudo apt-get update && sudo apt-get install -y \
-    openjdk-21-jdk-headless maven git curl python3 jq        # python3: Scene 1 pretty-prints JSON
+    openjdk-21-jdk-headless maven git curl python3 jq obs-studio
+#   (python3: Scene 1 pretty-prints JSON; OBS records the session)
 #   Docker engine (https://docs.docker.com/engine/install/), then make it
 #   usable without sudo (kind runs as your user; re-login after):
 sudo usermod -aG docker "$USER" && newgrp docker
@@ -97,10 +100,39 @@ docker ps                                                    # must work WITHOUT
 #   Stock Ubuntu inotify limits are too low for a kind node ("could not find
 #   a log line that matches 'Reached target ... Multi-User System'"):
 sudo sysctl fs.inotify.max_user_watches=1048576 fs.inotify.max_user_instances=8192
-#   deploy.sh installs kind/kubectl/istioctl into ~/.local/bin — make sure
-#   your shell sees it (Ubuntu's default .profile does; WSL sometimes not):
+#   deploy.sh installs kind/kubectl/istioctl into ~/.local/bin:
 export PATH="$HOME/.local/bin:$PATH"
-#   Recorder: install OBS (sudo apt-get install -y obs-studio) and do a mic test.
+
+# ── P0-B: WINDOWS recording host (the WSL2 route; see §3) ─────────────────
+#   In PowerShell (Administrator), once:
+#       wsl --install -d Ubuntu-24.04          # then reboot / first-run setup
+#       winget install OBSProject.OBSStudio    # OBS lives on WINDOWS, not in WSL
+#   Give the WSL VM enough memory for the cluster — create
+#   %UserProfile%\.wslconfig with:
+#       [wsl2]
+#       memory=12GB
+#   then `wsl --shutdown` and reopen Ubuntu.
+#   Install Docker Desktop for Windows and enable Settings -> Resources ->
+#   WSL Integration for the Ubuntu distro. Do NOT apt-install docker and do
+#   NOT usermod/newgrp on this route — Docker Desktop injects the docker CLI
+#   and manages the socket. Verify inside Ubuntu:
+docker ps                                                    # must work, no sudo
+#   Everything below runs INSIDE the Ubuntu shell (Windows Terminal, Ubuntu
+#   profile). Two WSL-specific rules:
+#   1) work in the WSL filesystem (~/, ext4) — NOT /mnt/c (slow + permission
+#      weirdness breaks builds);
+#   2) the inotify sysctls reset on `wsl --shutdown` — re-run them after any
+#      WSL restart:
+sudo apt-get update && sudo apt-get install -y \
+    openjdk-21-jdk-headless maven git curl python3 jq
+sudo sysctl fs.inotify.max_user_watches=1048576 fs.inotify.max_user_instances=8192
+export PATH="$HOME/.local/bin:$PATH"
+#   localhost auto-forwards: the WINDOWS browser reaches :8080/:16686/Allure
+#   directly — but only if no WINDOWS process owns those ports (the forward
+#   yields to a Windows-side listener). Check in PowerShell:
+#       netstat -ano | findstr ":8080 :16686"      # expect empty
+#   `allure open` cannot spawn the Windows browser from WSL — open the URL it
+#   prints in Edge/Chrome yourself.
 
 # P1 — clone at the frozen submission commit + key
 git clone https://github.com/miaoti/MIST && cd MIST
