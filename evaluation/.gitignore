@@ -2,3 +2,5 @@
 # Each SUT is run from its own .runtime/ so .mist/*, logs/, allure-results/,
 # and generated tests stay isolated per SUT (no cross-SUT cache overlap).
 suts/*/.runtime/
+# runtime-regenerated registries (written relative to the .properties dir by zero-infra runs)
+suts/trainticket/trainticket/
