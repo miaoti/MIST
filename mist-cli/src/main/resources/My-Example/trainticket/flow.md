@@ -1719,9 +1719,8 @@ only `otel = ERROR` and no HTTP 5xx is lower-confidence → `WARN` (surfaced,
 non-blocking).
 
 **Default OFF — opt-in.** `mst.oracle.shape.invariants.hidden_downstream_failure.enabled`
-defaults to `false`; it is enabled in `evaluation/suts/bookinfo/bookinfo-mst.properties`,
-`evaluation/suts/sockshop/sockshop-mst.properties`, and
-`mist-cli/src/main/resources/My-Example/hidden-downstream-mst.properties`.
+defaults to `false`; it is enabled in the MST sections of `evaluation/suts/bookinfo/bookinfo-demo.properties`
+and `evaluation/suts/sockshop/sockshop-demo.properties`.
 
 **Allure surfacing.** When it fires, the writer emits a dedicated attachment
 `🕳️ HIDDEN DOWNSTREAM FAILURE — swallowed 5xx behind a 2xx` and tags the test with

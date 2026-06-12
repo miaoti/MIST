@@ -45,7 +45,7 @@ beat as motivation, and the OracleCheck harness beat is explicitly narrated as
 | **Full in-process run `java -jar mist.jar bookinfo-demo.properties`** (generate→compile→execute 166 tests→oracle) | **~30 min** | **~45 s: launch live, "⏩ ~30 min" caption, tail** |
 | Jaeger ingest before trace fetch | ~6 s | 0 s (cut) |
 | `OracleCheck` single invocation | ~10 s | ~10 s |
-| noexec generation (123 scenarios, offline) | ~2.5 min | ~10 s (time-lapse) |
+| noexec generation (26 deduplicated scenarios, offline) | ~2.5 min | ~10 s (time-lapse) |
 | `ResponseEnvelopeLiveCheck` (1 real DeepSeek call) | 20–40 s | ~10 s (cut LLM wait) |
 | `allure generate` (2,710 result files) | 30–60 s | 0 s (prep) |
 | `evaluation/run-offline-oracle.sh` (incl. mvn build) | ~5–6 min | ~15 s (launch + tail) |
@@ -292,8 +292,8 @@ Faults: 10 (100.0%)`.
 > 265-operation spec plus captured traces — no SUT, no key, no network.
 > Negative variants follow the Sniper strategy: exactly one fault each, so
 > every red test has exactly one cause. Under a fixed seed the suite is
-> byte-identical — I generated it before recording, and all
-> one-hundred-twenty-three checksums match. Against the live forty-service
+> byte-identical — I generated it before recording, and every
+> checksum matches. Against the live forty-service
 > TrainTicket, this engine generated fifteen thousand thirty-six tests, and
 > the fault registry confirms ten out of ten injected faults detected."
 
@@ -452,7 +452,7 @@ kubectl scale deploy ratings-v1 --replicas=1
 | In-process run **under outage** produces HIDDEN_DOWNSTREAM findings + report | 2026-06-02 committed run | `docs/main-contribution/evidence/bookinfo_inprocess_e2e/` — ⚠ confirm the console-tail wording at prep P6 (the only unconfirmed *formatting*; the behavior itself is committed evidence) |
 | Live Jaeger-API fetch → OracleCheck FIRES on fresh traces | **2026-06-10 live, end-to-end** | session transcript |
 | OracleCheck on committed traces (fallback) | 2026-06-09 fresh clone | `debug/reproduce/evidence/offline-oracle.log` |
-| noexec 123 files ~2.5 min, offline; seed-42 byte-identical | 2026-06-09 (no-network namespace) | `debug/reproduce/evidence/noexec-run1-tail.log`, `evidence/run{1,2}.sums` |
+| noexec generation ~2.5 min offline; seed-42 byte-identical (26 files at current HEAD — count re-baselined after the dedup-leak fix; 123 at the audit commit) | 2026-06-09 audit + **2026-06-11 re-run** | `debug/reproduce/README.md` addendum |
 | run22 numbers (10/10, 15,036) | 2026-06-10 re-grepped | `debug/negative_test/runs/run22-fault-detection-10of10.txt` |
 | ResponseEnvelopeLiveCheck exact output | 2026-06-09 + committed transcript | `docs/main-contribution/evidence/responseenvelope_live_softerror.txt` |
 | Boutique 7/12 (+ recapture 24/40, 0/30) | 2026-06-10 re-run | session transcript |

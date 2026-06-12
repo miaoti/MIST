@@ -35,7 +35,7 @@ only the trace exposes it.
   induce the adservice outage and capture the swallowed-gRPC-error traces.
 - `openapi/boutique-swagger.yaml` — the frontend's HTTP routes (1 service).
 - `real-system-conf.yaml` — generated from the swagger via `io.mist.cli.MistConfGenMain`.
-- `boutique-demo.properties` + `boutique-mst.properties` — minimal MIST profiles
+- `boutique-demo.properties` — the single MIST profile (core keys + MST section)
   (hidden-downstream invariant enabled).
 - `traces/` — `boutique_home.json` (healthy generation seed) +
   `boutique_adservice_outage.json` (the hidden-downstream evidence).

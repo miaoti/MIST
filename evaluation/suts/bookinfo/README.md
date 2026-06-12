@@ -16,7 +16,7 @@ defensively and fails loudly); Bookinfo produces it naturally, which makes the e
 - `workload/traffic.sh [N]` — drive nominal traffic through the Istio ingress gateway.
 - `openapi/bookinfo-swagger.yaml` — the SUT's OpenAPI spec (MIST input #1).
 - `real-system-conf.yaml` — generated from the swagger via `io.mist.cli.MistConfGenMain` (MIST input #2a).
-- `bookinfo-demo.properties` + `bookinfo-mst.properties` — MIST profiles, core + mst (MIST input #2b).
+- `bookinfo-demo.properties` — the single MIST profile (core keys + MST section; MIST input #2b).
 - `traces/` — captured Jaeger traces, masked + healthy (MIST input #3); see `MANIFEST.json`.
 - `injectedFaults/injected-faults.json` — empty: Bookinfo's failure is an ORACLE ANOMALY
   (`HIDDEN_DOWNSTREAM_FAILURE`), not a SUT-reported named fault.

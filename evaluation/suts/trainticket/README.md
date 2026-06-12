@@ -17,7 +17,7 @@ the SUT for the **Sniper negative-test + injected-fault** detection story (10/10
   from source, pull the ~33 upstream images, `docker compose up`. `deploy.sh teardown` to remove.
 - `openapi/merged_openapi_spec.yaml` — the SUT spec, 265 operations (MIST input #1).
 - `real-system-conf.yaml` — MIST conf generated from the spec (MIST input #2a).
-- `trainticket-demo.properties` + `trainticket-mst.properties` — MIST profiles, core + mst (input #2b).
+- `trainticket-demo.properties` — the single MIST profile (core keys + MST section; input #2b).
 - `trainticket-demo-noexec.properties` + `trainticket-mst-noexec.properties` — **offline** profile
   (no SUT, no LLM: `llm.enabled=false`, hardcode inputs) for a zero-infra generation check.
 - `traces/` — captured Jaeger traces (MIST input #3).

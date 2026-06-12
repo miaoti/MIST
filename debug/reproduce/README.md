@@ -71,3 +71,26 @@ find mist-cli/src/test/java/trainticket_twostage_test -name 'Flow_Scenario_*.jav
   `run22` report as evidence of record.
 - The detection-rate count (10/10) is a live, LLM-variant number (REPRODUCE §8);
   it is not an offline-reproducible claim and the docs no longer imply it is.
+
+## 5. Addendum 2026-06-11 — single-file config migration + re-baselined noexec count
+
+- **Pipeline fixes landed after this audit** (`b5266f62` 18 logic bugs,
+  `de63674a` four A-rank fixes incl. the dedup leak): the seeded noexec demo
+  now generates **26 deduplicated scenarios**, not the 123 recorded in V4/V5
+  (which remain correct for the audited commit `c39ceec4`).
+- **Single-file configuration shipped**: every bundled demo is now ONE
+  `.properties` file (core keys + MST section); `mst.config.path` overlays
+  remain supported. `MistMain` falls back to the core file as the MST source
+  when the key is absent.
+- **Equality forensics**: a per-key bisect (26 candidate keys, one full
+  generation each) showed the only behavioural difference between the modes
+  is **`faulty.ratio` split-brain**: the legacy two-file layout never pushed
+  the core file's `faulty.ratio=0.8` into System properties, so the MST
+  pipeline silently used `MstConfig`'s default `0.1`
+  (`mist-core/.../MstConfig.java:247`) while `MistMain` used 0.8 — two
+  components, two values. Single-file mode makes the file's value effective
+  everywhere, which is the faithful behaviour; historical two-file run
+  artifacts (run22 et al.) are unaffected records.
+- **Determinism re-proven at MIST `main`**: two seeded single-file noexec
+  runs → 26/26 identical SHA-256 sums; `mvn test -pl mist-core -am` green
+  (328 tests).

@@ -86,12 +86,21 @@ public final class MistMain {
             }
         }
 
-        // MST mode loads its dedicated properties file via mst.config.path and
-        // pushes those keys (only) to System properties — same code path the
+        // MST keys are pushed to System properties — same code path the
         // legacy TestGenerationAndExecution.loadMstConfig() takes. Keeping the
         // System state identical between the two launch paths is what makes
         // their generation byte-identical under -Drandom.seed.
+        //
+        // Single-file mode (the default for every bundled demo): when the core
+        // file does not name a separate overlay via mst.config.path, the core
+        // .properties file ITSELF is the MST source — one file carries every
+        // key. A split overlay remains supported for users who want the
+        // separation; -D flags still override either way (applyToSystem
+        // never clobbers an existing System property).
         String mstConfigPath = coreProps.getProperty("mst.config.path");
+        if (mstConfigPath == null || mstConfigPath.trim().isEmpty()) {
+            mstConfigPath = propsFile.toString();
+        }
         if (mstConfigPath != null && !mstConfigPath.trim().isEmpty()) {
             io.mist.core.config.legacy.MstConfig
                     .load(mstConfigPath)

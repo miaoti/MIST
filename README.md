@@ -46,10 +46,12 @@ library artifacts, the same way every other black-box REST tester does.
 
 ## Inputs (every run needs these)
 
-A single MIST run is fully described by one **core `.properties`** file.
-All paths inside that file are **resolved relative to the file itself**,
-so launching MIST from the repo root, from a module subdirectory, or
-from an IntelliJ play-button all produce the same result.
+A single MIST run is fully described by **one `.properties` file** — core
+inputs at the top, the MST-specific keys (LLM, Jaeger, fault detection,
+enhancer, ...) in a marked section below them. All paths inside the file are
+**resolved relative to the file itself**, so launching MIST from the repo
+root, from a module subdirectory, or from an IntelliJ play-button all produce
+the same result.
 
 | Input | Key | Bundled demo value (relative to the .properties file) |
 |---|---|---|
@@ -57,9 +59,8 @@ from an IntelliJ play-button all produce the same result.
 | **MST test configuration** (one YAML file per SUT, copy + edit the bundled one) | `conf.path` | `trainticket/real-system-conf.yaml` |
 | **Jaeger / OpenTelemetry traces** (single file *or* directory of `.json` / `.jsonl`) | `trace.file.path` | `trainticket/test-trace` |
 | **Target system base URL** | `base.url` | `http://<your-sut-host>:32677` |
-| **MST-mode overlay** (extra MIST-only keys) | `mst.config.path` | `trainticket-mst.properties` |
 
-Two more keys sit in the MIST-mode overlay:
+Two more keys sit in the MST section of the same file:
 
 | Input | Key | Where to put the secret |
 |---|---|---|
@@ -90,8 +91,8 @@ ollama serve &
 ollama pull qwen2.5-coder:14b
 
 # 3. Switch the bundled demo to Ollama (one-time edit; see snippet below)
-#    open mist-cli/src/main/resources/My-Example/trainticket-mst.properties
-#    and set:
+#    open mist-cli/src/main/resources/My-Example/trainticket-demo.properties
+#    (the MST section at the bottom) and set:
 #       llm.model.type=ollama
 #       llm.ollama.enabled=true
 #       llm.openai_compatible.enabled=false
@@ -151,19 +152,17 @@ mvn clean install -DskipTests
 #    config generator was retired during the 1.6 RESTest sever; reach out
 #    via GitHub issues if you'd like the regeneration helper reinstated.)
 
-# 4. Copy the bundled .properties files as a starting point:
+# 4. Copy the bundled .properties file as a starting point (ONE file —
+#    core keys on top, the MST section below):
 #       cp mist-cli/src/main/resources/My-Example/trainticket-demo.properties \
 #          <yourdir>/system-demo.properties
-#       cp mist-cli/src/main/resources/My-Example/trainticket-mst.properties \
-#          <yourdir>/system-mst.properties
-#    Then in <yourdir>/system-demo.properties update FIVE keys (paths are
+#    Then in <yourdir>/system-demo.properties update FOUR keys (paths are
 #    resolved relative to the .properties file, so write them relative to
 #    <yourdir>):
 #       oas.path           → openapi.yaml
 #       conf.path          → your-mst-conf.yaml         (from step 3)
 #       trace.file.path    → test-trace/
 #       base.url           → your system's HTTP entry point
-#       mst.config.path    → system-mst.properties      (the MST overlay)
 
 # 5. Launch:
 java -jar mist-cli/target/mist.jar <yourdir>/system-demo.properties
@@ -188,9 +187,10 @@ identical `Flow_Scenario_*.java` files under
 `mist-cli/src/test/java/trainticket_twostage_test/`, in a directory
 named after the seed (`TrainTicketTwoStageTest_42`; unseeded or
 execution runs use a per-run timestamp instead) — no SUT, no API key,
-no network at all. Re-verified on 2026-06-09 from a fresh clone inside
-a no-network namespace (123 files, identical SHA-256 sums across two
-runs); the earlier protocol is in
+no network at all. Re-verified on 2026-06-11 (26 files, identical
+SHA-256 sums across two runs; the count dropped from the earlier 123
+when the dedup-leak fix de63674a landed — fewer, deduplicated
+scenarios); the earlier protocol is in
 [`debug/Conference-refinement/PROMPT_VERIFY_FIXES.md`](debug/Conference-refinement/PROMPT_VERIFY_FIXES.md).
 
 ```bash
@@ -328,22 +328,22 @@ The TrainTicket demo expects a TrainTicket deployment you provide; set the `base
 
 ## Configuration layout
 
-Configuration is **split into two files** — the core `.properties` you
-pass on the command line plus an MST overlay it references via
-`mst.config.path`. The split keeps the ~70 MIST-specific keys out of
-the core file so the core file only carries the OpenAPI / trace /
-target-URL inputs that any tester would need.
+Configuration is **one file per SUT**: the ~30 core keys (OpenAPI / trace /
+target-URL inputs any tester would need) at the top, and a clearly marked
+MST section (~70 MIST-specific keys: LLM, smart fetch, jaeger, fault
+detection, enhancer, status-code exploration, root-API registry, trace
+merging, auth, …) below them.
 
 ```
 mist-cli/src/main/resources/My-Example/
-├── trainticket-demo.properties   # core (~30 keys) + mst.config.path pointer
-└── trainticket-mst.properties    # MST overlay (~70 keys: LLM, smart fetch,
-                                  # jaeger, fault detection, enhancer,
-                                  # status-code exploration, root-API
-                                  # registry, trace merging, auth, …)
+└── trainticket-demo.properties   # ONE file: core keys + the MST section
 ```
 
-`mst.config.path` itself and every INPUT-path key inside both files
+Power users who want the old separation can still point `mst.config.path`
+at an external overlay file; when the key is absent (the default in every
+bundled demo) MIST reads the MST section from the same file.
+
+Every INPUT-path key in the file
 (`oas.path`, `conf.path`, `trace.file.path`,
 `fault.detection.injected.faults.path`, the various registry paths) are
 resolved **relative to the .properties file's own directory** by
@@ -363,7 +363,7 @@ configurations under
 
 ## LLM backends
 
-Set `llm.model.type` in `*-mst.properties` to one of `openai_compatible`, `gemini`, or `ollama`. The unused backends can be left in the file with `*.enabled=false` — only the selected one is contacted.
+Set `llm.model.type` (MST section of the demo `.properties`) to one of `openai_compatible`, `gemini`, or `ollama`. The unused backends can be left in the file with `*.enabled=false` — only the selected one is contacted.
 
 > **Heads-up on naming.** Earlier versions called the OpenAI-compatible backend `local` (`llm.model.type=local`, `llm.local.*`). That was misleading — DeepSeek, OpenAI, and the like are *remote hosted APIs*, not local models. The new canonical name is `openai_compatible`, but the old `local` value and `llm.local.*` keys are still accepted as deprecated aliases (you'll see a one-time deprecation warning on startup).
 
