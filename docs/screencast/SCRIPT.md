@@ -290,6 +290,15 @@ run to run (166 tests on the 2026-06-09 healthy run) — read yours off the
 log. Committed reference:
 `docs/main-contribution/evidence/bookinfo_inprocess_e2e/`.
 
+Immediately below the findings block, MIST prints the **`MIST outputs`** map
+(where this run was saved) — this is the last thing on screen for the scene:
+```
+  MIST outputs (this run: BookinfoTest_<id>)
+  • generated tests : evaluation/suts/bookinfo/.runtime/.../BookinfoTest_<id>/
+  • Allure results  : target/allure-results/   (render: allure serve target/allure-results)
+  • fault report    : logs/fault-detection-reports/
+```
+
 **SAY:**
 > "Now the tool. One jar, one properties file — this is the entire interface.
 > MIST reads the OpenAPI spec and the captured traces, generates
@@ -298,7 +307,9 @@ log. Committed reference:
 > trace-shape oracle — all in this one process. Twelve minutes later:
 > eighty-four tests executed, and the run report flags the reviews
 > tests red — hidden downstream failure, the swallowed reviews-to-ratings
-> five-oh-three — caught by the oracle, not by the HTTP response."
+> five-oh-three — caught by the oracle, not by the HTTP response. And MIST
+> tells you exactly where it put everything: the generated tests, the Allure
+> results, and the report."
 
 (Speak the duration and test count of YOUR prep-P6 run — they vary run to
 run; the 2026-06-11 run-of-record measured 12 min / 84 tests.)

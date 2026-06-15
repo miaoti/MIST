@@ -395,6 +395,36 @@ public final class MistRunner {
         io.mist.core.util.ConsoleProgressBar.printRaw(findingsSummary); // terminal (bypass log4j WARN+ filter)
         logger.info("Findings summary:\n{}", findingsSummary);          // also retained in the run log file
 
+        // Discoverability (P0): an UNCONDITIONAL map of where this run's results
+        // were saved. The findings block above prints paths only when there is an
+        // anomaly, so a clean run otherwise leaves the user with no pointer to the
+        // generated tests / Allure results / reports. Mirror the channel + ASCII
+        // fallback of the findings block. Paths match the Outputs table in README.
+        String genTestsDir = (inputs.targetDirJava == null ? "mist-cli/src/test/java" : inputs.targetDirJava)
+                + "/" + (inputs.packageName == null ? "" : inputs.packageName.replace('.', '/'))
+                + "/" + className;
+        String b2 = "==================================================================";
+        String dot = asciiOnly ? "-" : "•";
+        StringBuilder out = new StringBuilder("\n").append(b2).append("\n");
+        out.append("  MIST outputs (this run: ").append(className).append(")\n");
+        out.append("  ------------------------------------------------------------\n");
+        out.append("  ").append(dot).append(" generated tests : ").append(genTestsDir).append("/\n");
+        if (Boolean.TRUE.equals(inputs.executeTestCases)) {
+            if (Boolean.TRUE.equals(inputs.allureReports)) {
+                out.append("  ").append(dot).append(" Allure results  : target/allure-results/")
+                   .append("   (render: allure serve target/allure-results)\n");
+            }
+            out.append("  ").append(dot).append(" fault report    : ").append(anomalyReportDir).append("/\n");
+            if (Boolean.TRUE.equals(inputs.enableCSVStats)) {
+                out.append("  ").append(dot).append(" CSV stats       : target/test-data/\n");
+            }
+        } else {
+            out.append("  ").append(dot).append(" (generation only — no execution; pass execute.testcases=true to run + report)\n");
+        }
+        out.append(b2).append("\n");
+        io.mist.core.util.ConsoleProgressBar.printRaw(out.toString());
+        logger.info("Outputs:\n{}", out);
+
         return MistRunResult.builder()
                 .exitCode(0)
                 .testCaseCount(testCases.size())

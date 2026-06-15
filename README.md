@@ -175,10 +175,14 @@ java -jar mist-cli/target/mist.jar <yourdir>/system-demo.properties
 In IntelliJ, the **"MIST: Demo (bundled TrainTicket)"** run
 configuration is a template you can copy + edit for your own SUT.
 
-After any run, the fault-detection report lands under
-`logs/fault-detection-reports/`, CSV stats under `target/test-data/`,
-and the generated JUnit sources under the directory you pointed
-`test.target.dir` at.
+After any run, MIST prints an **`MIST outputs`** block to the terminal
+mapping where this run's results were saved — the timestamped generated
+tests, the Allure results (with the `allure serve` command to render them),
+the fault-detection report, and the CSV stats. The same paths are listed in
+*Outputs* below: the fault-detection report lands under
+`logs/fault-detection-reports/`, CSV stats under `target/test-data/`, the
+Allure results under `target/allure-results/`, and the generated JUnit
+sources under the directory you pointed `test.target.dir` at.
 
 ## Quick Start D — Reproduce the paper's numbers (artifact track)
 
