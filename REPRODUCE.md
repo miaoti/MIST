@@ -99,6 +99,54 @@ HIDDEN_DOWNSTREAM_FAILURE: FIRES`. The healthy control traces in the same dir st
 Expected: `RESPONSE_ENVELOPE: FAIL ... status=0 classified as failure (LLM, cached)`. A
 committed transcript is at `docs/main-contribution/evidence/responseenvelope_live_softerror.txt`.
 
+### 5.1 Byte-identical offline generation (determinism; no SUT, no LLM)
+The bundled **noexec** profile disables the LLM (`llm.enabled=false`, hardcoded
+negative inputs), so under `-Drandom.seed=<n>` two consecutive runs emit
+byte-for-byte identical `Flow_Scenario_*.java` files under
+`mist-cli/src/test/java/trainticket_twostage_test/<TrainTicketTwoStageTest_seed>/`
+— no SUT, no API key, no network. (Re-verified 2026-06-12: 26 files, identical
+SHA-256 across two runs; the count fell from an earlier 123 when the dedup-leak
+fix landed.)
+```bash
+java -Drandom.seed=42 -jar mist-cli/target/mist.jar \
+     mist-cli/src/main/resources/My-Example/trainticket-demo-noexec.properties
+find mist-cli/src/test/java/trainticket_twostage_test \
+     -name 'Flow_Scenario_*.java' -exec sha256sum {} \; | sort > /tmp/run1.sums
+# repeat the same java command -> /tmp/run2.sums, then:
+diff /tmp/run1.sums /tmp/run2.sums   # expect empty (byte-identical)
+```
+
+### 5.2 Ablation rows (paper Path B §4.2)
+Every row is driven by the **same** `.properties` file; only JVM `-D` overrides
+change, so any difference between rows is causally attributable to the toggled
+contribution. Each row is independently byte-deterministic under its seed; the
+startup banner (`[MIST] ablation profile: ...`) names the active row.
+
+| Row | Configuration | JVM overrides |
+|---|---|---|
+| **R1** | MIST-full | `-Drandom.seed=42 -Dmist.fault.mining.enabled=true` |
+| **R2** | MIST − trace-shape-oracle | `-Drandom.seed=42 -Dmst.oracle.shape.enabled=false -Dmist.fault.mining.enabled=true` |
+| **R3** | MIST − adaptive-fault (bundled default) | `-Drandom.seed=42` |
+| **R4** | MIST − trace-shape − adaptive | `-Drandom.seed=42 -Dmst.oracle.shape.enabled=false` |
+
+Finer per-invariant gates
+(`mst.oracle.shape.invariants.{span_tree,status_propagation,response_envelope,timing}.enabled`)
+are documented in
+[`mist-cli/src/main/resources/My-Example/trainticket/flow.md`](mist-cli/src/main/resources/My-Example/trainticket/flow.md)
+§ "H2 ablation toggles"; the full matrix (rows × SUTs × metrics) is in
+[`docs/mst-plans/PATH_B_POSITIONING.md`](docs/mst-plans/PATH_B_POSITIONING.md) § 4.
+
+### 5.3 The LLM cache is local replay, not a shipped artifact (optional)
+The repo does **not** ship `.mist/llm-call-cache.json` (the whole `.mist/` dir is
+gitignored). With the defaults (`mist.llm.cache.read=auto`,
+`mist.llm.cache.write=true`) one cold LLM-enabled run populates the cache and
+every later run under the same `-Drandom.seed=<n>` replays it offline. Entries are
+keyed by a SHA-256 of the full prompt, so any prompt/trace/model change silently
+falls through to the live backend — which is why a committed "blessed cache" is
+*not* the reproduction path of record. To bless one against a frozen SUT snapshot:
+run once cold with `DEEPSEEK_API_KEY` set under `-Drandom.seed=42`, re-run offline
+to prove coverage, then `git add` it behind a targeted `.gitignore` negation.
+
 ## 6. Step-by-step (full, live)
 ### 6.2 Light SUTs — Bookinfo / Sock Shop / Online Boutique (kind/Docker)
 Each bundle is self-contained; from the repo root:
@@ -218,6 +266,12 @@ A 3–5 min screencast of the bundled demo: see the URL at the end of the paper 
   too; WSL2 auto-forwards `localhost`, so the Windows browser reaches the port-forwards
   directly; `allure open` cannot launch a Windows browser from WSL — open the URL it
   prints manually (or use `allure serve`).
+- **`docker-credential-desktop.exe: Invalid argument` during the TrainTicket image build**
+  → Docker Desktop's WSL credential helper can fail under buildkit even for *public*
+  base-image pulls (seen running as root). The bundled `deploy.sh` already sidesteps it
+  (it builds under a throwaway creds-free `DOCKER_CONFIG`); if you build by hand, run
+  `DOCKER_CONFIG=$(mktemp -d) docker build ...` or remove `"credsStore"` from
+  `~/.docker/config.json` (all TrainTicket images are public, so no auth is needed).
 - **LLM step fails** → set `DEEPSEEK_API_KEY` (or switch to Ollama); only the ResponseEnvelope
   check needs it.
 - **Bookinfo/Boutique trace fetch empty** → allow a few seconds for Jaeger ingest before the oracle.

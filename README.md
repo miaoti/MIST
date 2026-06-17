@@ -83,7 +83,7 @@ API key handy.
 Best for first-time validation that the tool works on your machine. Uses Ollama, so nothing leaves your laptop.
 
 ```bash
-# 1. Build the whole reactor (fat JARs for both launch paths)
+# 1. Build the whole reactor (produces the mist.jar fat JAR)
 mvn clean install -DskipTests
 
 # 2. Start Ollama and pull a model (one-time; see https://ollama.com/download)
@@ -150,11 +150,11 @@ mvn clean install -DskipTests
 #       <yourdir>/openapi.yaml
 #       <yourdir>/test-trace/*.json   (one or more Jaeger / OTel traces)
 
-# 3. Author the MST test configuration YAML for your spec (one-time per spec
-#    change). The bundled real-system-conf.yaml is the schema; copy it and
-#    edit the operations list to match your spec. (The standalone CLI
-#    config generator was retired during the 1.6 RESTest sever; reach out
-#    via GitHub issues if you'd like the regeneration helper reinstated.)
+# 3. Generate the MST test configuration YAML straight from your OpenAPI
+#    spec with the bundled generator, then hand-tune the operations list if
+#    needed (the bundled real-system-conf.yaml is the schema reference):
+java -cp mist-cli/target/mist.jar io.mist.cli.MistConfGenMain \
+     <yourdir>/openapi.yaml <yourdir>/your-mst-conf.yaml
 
 # 4. Copy the bundled .properties file as a starting point (ONE file —
 #    core keys on top, the MST section below):
@@ -186,104 +186,19 @@ sources under the directory you pointed `test.target.dir` at.
 
 ## Quick Start D — Reproduce the paper's numbers (artifact track)
 
-For artifact evaluation, peer review, or any context where you need
-the **byte-identical** generated test suite the paper reports. The
-offline claim is scoped to *generation*: the bundled noexec profile
-disables the LLM (`llm.enabled=false`, hardcoded negative inputs), so
-under `-Drandom.seed=<n>` two consecutive runs produce byte-for-byte
-identical `Flow_Scenario_*.java` files under
-`mist-cli/src/test/java/trainticket_twostage_test/`, in a directory
-named after the seed (`TrainTicketTwoStageTest_42`; unseeded or
-execution runs use a per-run timestamp instead) — no SUT, no API key,
-no network at all. Re-verified on 2026-06-11 (26 files, identical
-SHA-256 sums across two runs; the count dropped from the earlier 123
-when the dedup-leak fix de63674a landed — fewer, deduplicated
-scenarios); the earlier protocol is in
-[`debug/Conference-refinement/PROMPT_VERIFY_FIXES.md`](debug/Conference-refinement/PROMPT_VERIFY_FIXES.md).
+Artifact evaluation, peer review, and byte-identical reproduction are
+covered end-to-end in **[`REPRODUCE.md`](REPRODUCE.md)** — the single
+source of truth for the paper's claims, so this README does not
+duplicate (and risk drifting from) it:
 
-```bash
-# 1. Build the reactor (same as Quick Start B).
-mvn clean install -DskipTests
+- **§5** — ≈10-min offline smoke that *is* a result reproduction (the
+  trace-shape oracle fires on committed traces; no SUT, no LLM).
+- **§5.1** — byte-identical offline generation under `-Drandom.seed=<n>`.
+- **§5.2** — the ablation rows (R1–R4); **§5.3** — the LLM cache as local replay.
+- **§6** — full live SUT runs (Bookinfo/Sock Shop/Online Boutique/TrainTicket);
+  **§7** — the claim→evidence map.
 
-# 2. Reproduce the paper's generated suite byte-identically, offline
-#    (noexec profile: skips execution, LLM disabled, no key needed).
-java -Drandom.seed=42 -jar mist-cli/target/mist.jar \
-     mist-cli/src/main/resources/My-Example/trainticket-demo-noexec.properties
-find mist-cli/src/test/java/trainticket_twostage_test \
-     -name 'Flow_Scenario_*.java' -exec sha256sum {} \; | sort > /tmp/run1.sums
-# Repeat the same java command, write /tmp/run2.sums, then:
-diff /tmp/run1.sums /tmp/run2.sums   # expect empty
-```
-
-The headline **detection-rate** number (10/10 injected faults) is a
-*live* result, not an offline one: it needs the TrainTicket SUT up
-(`evaluation/suts/trainticket/deploy/deploy.sh`, heavy — see
-`REPRODUCE.md` §6.3) plus an LLM key, and the exact count varies with
-LLM output run to run. The evidence of record is the committed run
-report
-[`debug/negative_test/runs/run22-fault-detection-10of10.txt`](debug/negative_test/runs/run22-fault-detection-10of10.txt);
-`REPRODUCE.md` §5 reproduces the trace-oracle headline results offline
-from committed traces instead.
-
-### Ablation rows (Path B § 4.2)
-
-The paper's ablation table is reproduced by changing only the JVM
-overrides — the same `.properties` file drives every row, so any
-difference between rows is causally attributable to the toggled
-contribution. Each row is independently byte-deterministic under its
-seed; the startup banner (`[MIST] ablation profile: ...`) identifies
-the active row on every run.
-
-| Row | Configuration | JVM overrides |
-|---|---|---|
-| **R1** | MIST-full | `-Drandom.seed=42 -Dmist.fault.mining.enabled=true` |
-| **R2** | MIST − trace-shape-oracle | `-Drandom.seed=42 -Dmst.oracle.shape.enabled=false -Dmist.fault.mining.enabled=true` |
-| **R3** | MIST − adaptive-fault (bundled default) | `-Drandom.seed=42` |
-| **R4** | MIST − trace-shape − adaptive | `-Drandom.seed=42 -Dmst.oracle.shape.enabled=false` |
-
-Finer-grained per-invariant gates
-(`mst.oracle.shape.invariants.{span_tree,status_propagation,response_envelope,timing}.enabled`)
-are documented in
-[`mist-cli/src/main/resources/My-Example/trainticket/flow.md`](mist-cli/src/main/resources/My-Example/trainticket/flow.md)
-§ "H2 ablation toggles". The full ablation matrix layout (rows × SUTs
-× metrics) lives in
-[`docs/mst-plans/PATH_B_POSITIONING.md`](docs/mst-plans/PATH_B_POSITIONING.md) § 4.
-
-### The LLM call cache is local replay, not a shipped artifact
-
-The repository does **not** ship a pre-populated
-`.mist/llm-call-cache.json` (the whole `.mist/` directory is
-gitignored). The cache makes *your own* seeded re-runs offline: with
-the default knobs (`mist.llm.cache.read=auto`,
-`mist.llm.cache.write=true`), one cold LLM-enabled run on your machine
-populates the cache, and every later run under the same
-`-Drandom.seed=<n>` replays from it without touching the network.
-
-Cache entries are keyed by a SHA-256 of the full prompt, so any change
-to a prompt template, the trace corpus, or the model invalidates the
-affected entries — they silently fall through to the live backend.
-That is why a committed "blessed cache" is not the reproduction path
-of record (an empirical check on 2026-06-09 confirmed a months-old
-cache no longer covers the current prompts). If you still want to
-ship one alongside a frozen SUT snapshot:
-
-```bash
-# 1. Wipe the cache and run once cold under the canonical seed
-#    (the only run that needs an API key).
-export DEEPSEEK_API_KEY=sk-...
-rm -f .mist/llm-call-cache.json
-java -Drandom.seed=42 -jar mist-cli/target/mist.jar \
-     mist-cli/src/main/resources/My-Example/trainticket-demo.properties
-
-# 2. Re-run the same command offline to prove the cache covers the run,
-#    then commit it as data (targeted .gitignore negation):
-#       echo '!/.mist/llm-call-cache.json' >> .gitignore
-git add .mist/llm-call-cache.json .gitignore
-git commit -m "data: bless LLM cache for artifact reproducibility"
-```
-
-Step 2's offline re-run is the acceptance test: bless a cache only at
-the exact commit whose prompts produced it.
+Reviewers should start at `REPRODUCE.md` §0 (TL;DR).
 
 ---
 
@@ -298,9 +213,10 @@ For each microservice scenario reconstructed from a Jaeger trace, MIST emits one
    cross-trace data-dependency inference and a JIT producer-binding
    registry built from the OpenAPI spec,
 3. **runs the *Sniper Strategy***: each negative variant carries
-   exactly one fault, drawn from the *Adaptive Fault Taxonomy* — 8
+   exactly one fault, drawn from the *Adaptive Fault Taxonomy* — 9
    built-in categories (TYPE_MISMATCH, REGEX_MISMATCH, SEMANTIC_MISMATCH,
-   OVERFLOW, EMPTY/NULL, SPECIAL_CHARACTERS, BOUNDARY_VIOLATION) plus
+   OVERFLOW, EMPTY_INPUT, NULL_INPUT, SPECIAL_CHARACTERS,
+   BOUNDARY_VIOLATION, ENUM_VIOLATION) plus
    any per-SUT categories the `FaultMiner` proposes from observed
    4xx/5xx responses + OpenAPI description fields. An
    `ApplicabilityMatrix` filters which faults reach which parameters,
@@ -360,9 +276,10 @@ values look like `trainticket/merged_openapi_spec 1.yaml` rather than
 absolute paths — the path no longer depends on where the user launches
 MIST from.
 
-OUTPUT paths (`test.target.dir`, `allure.results.dir`,
-`data.tests.dir`, the various `.mist/*-cache.json` keys) keep the
-Maven convention of being relative to the JVM CWD; the run
+OUTPUT paths (the configurable `test.target.dir`, plus the fixed
+`target/allure-results`, `target/test-data`, and the various
+`.mist/*-cache.json` files) keep the Maven convention of being
+relative to the JVM CWD; the run
 configurations under
 [`.idea/runConfigurations/`](.idea/runConfigurations) pin CWD to
 `$PROJECT_DIR$` so the IDE matches the CLI.
@@ -494,7 +411,7 @@ Endpoints matching `auth.skip.path.patterns` (CSV of regex, e.g. `^/actuator,^/a
 | `.mist/parameter-error-analysis-cache.json`    | Parameter-error analyser cache |
 | `.mist/intelligent-analysis-cache.json`        | Trace error analyser intelligent cache |
 | `.mist/trace-shape-invariants.json`            | Phase 2 Trace Shape Oracle persisted invariants |
-| `.mist/mist-mined-fault-types.yaml`            | Phase 3 mined SUT-specific fault categories (when `mist.fault.mining.enabled=true`) |
+| `.mist/mined-fault-types.yaml`                 | Phase 3 mined SUT-specific fault categories (when `mist.fault.mining.enabled=true`) |
 | `target/test-data/`                            | CSV stats (test cases, results, time) |
 
 > **`.mist/` vs `target/`.** Everything under `target/` is recreated by
@@ -521,7 +438,7 @@ The TrainTicket dataset bundled with the tool, all under
 | Asset | Description |
 |---|---|
 | `merged_openapi_spec 1.yaml` | 265-operation merged OpenAPI spec; MIST's black-box scope covers the 37 REST-exposed services |
-| `real-system-conf.yaml` | MIST test configuration. Copy + edit for your own SUT (the standalone CLI generator was retired during the 1.6 RESTest sever). |
+| `real-system-conf.yaml` | MIST test configuration. Regenerate from any OpenAPI spec with `io.mist.cli.MistConfGenMain <spec> <out.yaml>`, then copy + edit for your own SUT. |
 | `test-trace/*.json` | OpenTelemetry traces used to mine workflow scenarios |
 | `injectedFaults/injected-faults.json` | Ground-truth fault registry for detection-rate evaluation |
 | `noun-map.default.yaml` (in `mist-core/src/main/resources/mist/`) | Default noun-key map used by the trace workflow extractor |

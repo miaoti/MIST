@@ -32,6 +32,15 @@ DC="docker"; command -v docker >/dev/null || { echo "docker not found"; exit 1; 
 # use sudo if the daemon needs it
 $DC info >/dev/null 2>&1 || DC="sudo docker"
 
+# All TrainTicket images are PUBLIC, so no registry auth is needed. Docker
+# Desktop's WSL credential helper (credsStore=desktop.exe) can still fail under
+# buildkit even for public base-image pulls ("docker-credential-desktop.exe:
+# Invalid argument", observed 2026-06-12 on WSL2-as-root), which aborts the
+# build. Isolate this script with a throwaway creds-free docker config so the
+# build/pull never consults a broken helper. Harmless no-op on native Linux.
+export DOCKER_CONFIG="$(mktemp -d)"
+printf '{}\n' > "$DOCKER_CONFIG/config.json"
+
 TT_SRC="${TT_SRC:-$HOME/github/train-ticket-injection}"
 TT_REPO="https://github.com/AsifShaafi/train-ticket-injection.git"
 TAG="${TAG:-0.2.0}"
@@ -45,8 +54,35 @@ if [[ "${1:-}" == "teardown" ]]; then
   echo "torn down."; exit 0
 fi
 
-# 0. get the source (fault code lives here)
-[[ -d "$TT_SRC/.git" ]] || git clone --branch injection "$TT_REPO" "$TT_SRC"
+# 0. get the source (fault code lives here). Shallow + single-branch keeps the
+#    download small (the full history is hundreds of MB and a slow/flaky link
+#    disconnects mid-pack — observed 2026-06-12: "fetch-pack: unexpected
+#    disconnect"); docker build only needs the working tree at HEAD. Retry a
+#    few times and clear any partial clone from an interrupted run.
+if [[ ! -d "$TT_SRC/.git" ]]; then
+  n=0
+  until git clone --depth 1 --single-branch --branch injection "$TT_REPO" "$TT_SRC"; do
+    n=$((n+1)); [[ $n -ge 3 ]] && { echo "ERROR: clone failed after $n attempts"; exit 1; }
+    echo "clone attempt $n failed; clearing partial clone and retrying in 5s..."
+    rm -rf "$TT_SRC"; sleep 5
+  done
+fi
+
+# 0b. Pin the MongoDB image. The upstream compose uses an UNPINNED `image: mongo`
+#     (= mongo:latest = 7.x today). The legacy Node services (e.g.
+#     ts-ticket-office-service, mongodb-core driver) then crash-loop with
+#     "Unsupported OP_QUERY command" (MongoDB removed the OP_QUERY opcode in
+#     5.1), and because the nginx gateway (ts-ui-dashboard) does
+#     `host not found in upstream` -> [emerg] when ANY upstream container is
+#     not resolvable, one crash-looping service takes the WHOLE gateway down and
+#     login never returns 200. Pin to 4.4 (last release that supports OP_QUERY
+#     and needs no AVX CPU). Override with TT_MONGO_IMAGE=mongo:4.0 etc.
+TT_MONGO_IMAGE="${TT_MONGO_IMAGE:-mongo:4.4}"
+if [[ -f "$TT_SRC/docker-compose.yml" ]]; then
+  sed -i -E "s|^([[:space:]]*image:[[:space:]]+)mongo[[:space:]]*$|\1${TT_MONGO_IMAGE}|" \
+    "$TT_SRC/docker-compose.yml"
+  echo "pinned unpinned 'image: mongo' -> ${TT_MONGO_IMAGE} ($(grep -cE "image:[[:space:]]+${TT_MONGO_IMAGE}$" "$TT_SRC/docker-compose.yml") services)"
+fi
 
 # 1. ensure docker compose v2 is available
 $DC compose version >/dev/null 2>&1 || {

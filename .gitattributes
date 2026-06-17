@@ -1,0 +1,6 @@
+# Shell scripts must stay LF in the repo and on checkout, regardless of the
+# committer's platform or core.autocrlf setting. The SUT deploy.sh / workload
+# scripts are the reviewer entry points (REPRODUCE.md, evaluation/suts/*/) and
+# a stray CRLF breaks the shebang on Linux/macOS ("/usr/bin/env: 'bash\r'").
+*.sh   text eol=lf
+*.bash text eol=lf
