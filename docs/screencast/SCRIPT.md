@@ -158,6 +158,14 @@ evaluation/suts/bookinfo/deploy/deploy.sh
 kubectl get pods -A | grep -vE 'Running|Completed'   # expect EMPTY (bookinfo 2/2 in
                                                      # default, istiod/jaeger/gateways
                                                      # Running in istio-system)
+#   ⚠ Run the deploy AND every later kubectl / workload command (P4 forwards,
+#   inject-ratings-outage.sh, Scene 1/3) as the SAME login user — deploy.sh points
+#   only THAT user's kubectl at the cluster (`kind export kubeconfig`). If a later
+#   command errors with "couldn't get current server API group list" / NotFound,
+#   your shell isn't pointed at the cluster (fresh shell, or it was created by a
+#   different user). Fix with:  kind export kubeconfig --name mist
+#   (needs `kind` on PATH + Docker access; the cluster API is on 127.0.0.1 so the
+#   exported kubeconfig works for any user on the host.)
 
 # P4 — self-restarting forwards (bare port-forwards die mid-take; ports must be free:
 #       ss -tlnp | grep -E ':8080|:16686' shows nothing before this)

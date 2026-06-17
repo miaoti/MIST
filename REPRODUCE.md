@@ -47,7 +47,7 @@ lets a reviewer reproduce the paper's headline results. Source:
 ### 2.3 Accounts / keys / external deps
 - An LLM for value synthesis + the soft-error classifier: **DeepSeek API key**
   (`export DEEPSEEK_API_KEY=...` or place it at `.api_keys/DEEPSEEK_API_KEY`) **or** a local
-  **Ollama** (`ollama pull qwen3-coder:30b`). The §5 `HiddenDownstreamFailure` checks need **no LLM**;
+  **Ollama** (`ollama pull qwen2.5-coder:14b`, the bundled demo's model). The §5 `HiddenDownstreamFailure` checks need **no LLM**;
   only the `ResponseEnvelope` soft-error check calls the LLM (one live call, cached for repeats).
 
 ## 3. Layout
