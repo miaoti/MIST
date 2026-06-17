@@ -1907,6 +1907,13 @@ public class MultiServiceRESTAssuredWriter {
                             // try (where they were before) was a Java scope error.
                             pw.println("                    String __mstTraceId" + stepIdx + " = java.util.UUID.randomUUID().toString().replace(\"-\", \"\");");
                             pw.println("                    String __mstSpanId" + stepIdx + " = java.util.UUID.randomUUID().toString().replace(\"-\", \"\").substring(0, 16);");
+                            // Guards against double-emitting this step's trace/oracle/attachment block.
+                            // The success path runs attachJaegerTrace(...,false) and then Phase 2.F may
+                            // throw to fail a positive variant on an ERROR verdict; the surrounding catch
+                            // would otherwise run attachJaegerTrace(...,true) AGAIN, duplicating every
+                            // attachment + shape-violation step in the Allure "Test body". Set true once
+                            // the success path attaches; the failure path then skips its re-emit.
+                            pw.println("                    boolean __traceAttached" + stepIdx + " = false;");
                             pw.println("                    ");
                             
                             // Execute the step
@@ -2407,6 +2414,7 @@ public class MultiServiceRESTAssuredWriter {
                             pw.println("                            CLIENT_RESPONSE_BODY.set(responseBody);");
                             pw.println("                            CLIENT_RESPONSE_STATUS.set(actualStatus);");
                             pw.println("                            attachJaegerTrace(\"" + escape(step.getServiceName()) + "\", \"" + verb.toUpperCase() + "\", \"" + escape(step.getPath()) + "\", requestStartMicros, allStepParameters, false, __mstTraceId" + stepIdx + ", \"" + escape(testMethodName) + "\", __targetService, __targetParam);");
+                            pw.println("                            __traceAttached" + stepIdx + " = true;");
                             pw.println("                        } catch (Exception e) {");
                             pw.println("                            Allure.parameter(\"🎯 Result\", \"✅ SUCCESS (response capture failed)\");");
                             pw.println("                        }");
@@ -2524,7 +2532,7 @@ public class MultiServiceRESTAssuredWriter {
                         pw.println("                        Allure.parameter(\"🔗 Failed Endpoint\", \"" + escape(step.getPath()) + "\");");
                         pw.println("                        ");
                         pw.println("                        // 🔥 CRITICAL: Attach response body for failed requests");
-                        pw.println("                        if (failedResponseBody != null) {");
+                        pw.println("                        if (!__traceAttached" + stepIdx + " && failedResponseBody != null) {");
                         pw.println("                            String responseTitle = \"📥 Response (\" + failedStatusCode + \")\";");
                         pw.println("                            Allure.addAttachment(responseTitle, \"application/json\", failedResponseBody);");
                         pw.println("                        }");
@@ -2575,9 +2583,14 @@ public class MultiServiceRESTAssuredWriter {
                         pw.println("                            try { Thread.sleep(__jaegerPropagationDelayMs); }");
                         pw.println("                            catch (InterruptedException ie) { Thread.currentThread().interrupt(); }");
                         pw.println("                        }");
-                        pw.println("                        CLIENT_RESPONSE_BODY.set(failedResponseBody);");
-                        pw.println("                        if (failedStatusCode > 0) CLIENT_RESPONSE_STATUS.set(failedStatusCode);");
-                        pw.println("                        attachJaegerTrace(\"" + escape(step.getServiceName()) + "\", \"" + verb.toUpperCase() + "\", \"" + escape(step.getPath()) + "\", requestStartMicros, allStepParameters, true, __mstTraceId" + stepIdx + ", \"" + escape(testMethodName) + "\", __targetService, __targetParam);");
+                        pw.println("                        // Skip when the success path already emitted this step's trace block");
+                        pw.println("                        // (positive variant failed via the Phase 2.F oracle throw) — prevents");
+                        pw.println("                        // duplicating every attachment + shape-violation step in the report.");
+                        pw.println("                        if (!__traceAttached" + stepIdx + ") {");
+                        pw.println("                            CLIENT_RESPONSE_BODY.set(failedResponseBody);");
+                        pw.println("                            if (failedStatusCode > 0) CLIENT_RESPONSE_STATUS.set(failedStatusCode);");
+                        pw.println("                            attachJaegerTrace(\"" + escape(step.getServiceName()) + "\", \"" + verb.toUpperCase() + "\", \"" + escape(step.getPath()) + "\", requestStartMicros, allStepParameters, true, __mstTraceId" + stepIdx + ", \"" + escape(testMethodName) + "\", __targetService, __targetParam);");
+                        pw.println("                        }");
                         pw.println("                        ");
                         // Phase 2.F: ResponseEnvelopeInvariant carries the contract the deleted
                         // SoftErrorRuleCache used to encode (a soft error in a 2xx response on a
