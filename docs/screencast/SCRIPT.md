@@ -476,6 +476,9 @@ Switch to tab A (GitHub). End card 5 s: `github.com/miaoti/MIST` · Zenodo DOI �
 #    SAME user that ran the P3 deploy, not a mix of root + user. ──
 export JAVA_HOME=/usr/lib/jvm/java-21-openjdk-amd64   # adjust to your JDK 21; the Scenes call "$JAVA_HOME/bin/java"
 export PATH="$HOME/.local/bin:/usr/local/bin:$PATH"   # kind / kubectl
+export DEEPSEEK_API_KEY="$(cat .api_keys/DEEPSEEK_API_KEY)"  # else runs launched from .runtime/ hit LLM 401:
+                                                      # the key file is cwd-relative and isn't found 4 levels down.
+                                                      # (Permanent alt: put the key at ~/.mist/api_keys/DEEPSEEK_API_KEY)
 kind export kubeconfig --name mist                    # point THIS shell's kubectl at the kind cluster
 "$JAVA_HOME/bin/java" -version 2>&1 | head -1          # expect: openjdk 21  (proves JAVA_HOME is right)
 kubectl get pods -n default --no-headers | head -1     # expect a Running bookinfo pod (proves kubeconfig)
