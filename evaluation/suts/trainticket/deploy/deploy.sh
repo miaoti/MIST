@@ -1,136 +1,110 @@
 #!/usr/bin/env bash
 # =============================================================================
-# Reproducible local stand-up of the FAULT-INJECTION TrainTicket SUT for MIST.
+# TrainTicket fault-injection SUT for MIST — deployed the PROVEN way: Kubernetes
+# via the upstream `make deploy`. This is exactly how the paper's run22 (10/10
+# injected faults) SUT was stood up.
 #
-# TrainTicket is the dedicated FAULT-INJECTION SUT: 7 of its ~40 services carry
-# code-level injected faults (ts-auth-service, ts-admin-basic-info-service,
-# ts-admin-order-service, ts-admin-route-service, ts-admin-travel-service,
-# ts-travel-service, ts-travel-plan-service). On a faulty request they answer
-# HTTP 200 with a body that self-reports {"data":{"injected":true,
-# "faultName":"..."}}, which MIST matches against injectedFaults/injected-faults.json
-# (10 faults). The other ~33 services use the upstream public codewisdom images.
+# WHY NOT docker-compose. This repo also ships a root docker-compose.yml, but it
+# is Mongo-backed while the fault services are MySQL
+# (jdbc:mysql://${AUTH_MYSQL_HOST:ts-auth-mysql}...), so compose never converges:
+# the services die with UnknownHostException ts-auth-mysql, the nginx gateway
+# (ts-ui-dashboard) then `host not found in upstream` -> [emerg], and login never
+# returns 200. `make deploy` is the maintained path: `make build` compiles the
+# ~40 services FROM the injection-branch source (so the fault code is baked in),
+# then `hack/deploy/deploy.sh` k8s-deploys an all-in-one MySQL plus the gateway
+# as a NodePort on 32677 — which is exactly MIST's
+# base.url=http://localhost:32677 (../trainticket-demo.properties). The 10/10
+# detection is marker-driven (MIST reads the {"injected":true,"faultName":...}
+# response bodies and matches injectedFaults/injected-faults.json), so it needs
+# the SUT reachable but NOT tracing/monitoring.
 #
-# Because the injected faults live in source (NOT in the public codewisdom
-# images), the 7 fault services are BUILT from source here; the rest are PULLED.
-# This makes the 10/10 detection reproducible on any machine with docker — no
-# dependency on the authors' lab deployment.
+# Requirements (HEAVY — see REPRODUCE.md 6.3): minikube + kubectl + docker; a
+# host that can run ~40 JVMs (16+ cores, >=16 GB RAM). The FIRST `make build`
+# compiles ~40 Spring services and takes a long time. This does NOT converge on
+# a small laptop; the offline path (committed run22 + offline oracle checks)
+# evidences TrainTicket's claims without standing the SUT up.
 #
-# Requirements: Linux, docker (server running; user in the docker group or sudo),
-#   ~16 GB RAM, ENOUGH CPU for ~40 JVMs (8 cores is marginal; do not run other
-#   heavy workloads concurrently — TrainTicket-on-compose needs CPU to converge),
-#   internet (first run pulls ~33 images + builds 7).
-#
-# Usage:  ./deploy.sh                 # build the 7 fault images + compose up
-#         ./deploy.sh teardown        # docker compose down -v
-#         TT_SRC=/path/to/train-ticket-injection ./deploy.sh   # use an existing clone
+# Usage:  ./deploy.sh                       # minikube + make deploy + expose :32677
+#         ./deploy.sh teardown              # make reset-deploy + stop the forward
+#         TT_SRC=/path/to/clone ./deploy.sh # use an existing clone
+#         DEPLOY_ARGS="--with-tracing --with-monitoring" ./deploy.sh  # run22's full args
 #
 # Source repo (public): https://github.com/AsifShaafi/train-ticket-injection (branch: injection)
 # =============================================================================
 set -euo pipefail
 
-DC="docker"; command -v docker >/dev/null || { echo "docker not found"; exit 1; }
-# use sudo if the daemon needs it
-$DC info >/dev/null 2>&1 || DC="sudo docker"
-
-# All TrainTicket images are PUBLIC, so no registry auth is needed. Docker
-# Desktop's WSL credential helper (credsStore=desktop.exe) can still fail under
-# buildkit even for public base-image pulls ("docker-credential-desktop.exe:
-# Invalid argument", observed 2026-06-12 on WSL2-as-root), which aborts the
-# build. Isolate this script with a throwaway creds-free docker config so the
-# build/pull never consults a broken helper. Harmless no-op on native Linux.
-export DOCKER_CONFIG="$(mktemp -d)"
-printf '{}\n' > "$DOCKER_CONFIG/config.json"
-
 TT_SRC="${TT_SRC:-$HOME/github/train-ticket-injection}"
 TT_REPO="https://github.com/AsifShaafi/train-ticket-injection.git"
-TAG="${TAG:-0.2.0}"
-NAMESPACE="${NAMESPACE:-codewisdom}"
-IMG_REPO="${IMG_REPO:-codewisdom}"
-FAULT_SERVICES=(ts-auth-service ts-admin-basic-info-service ts-admin-order-service \
-  ts-admin-route-service ts-admin-travel-service ts-travel-service ts-travel-plan-service)
+NS="${NS:-default}"
+# Default to the lean quick-start (all-in-one MySQL, no skywalking/prometheus) —
+# enough for the marker-based 10/10. run22 additionally used
+# "--with-tracing --with-monitoring"; set DEPLOY_ARGS to match if you want those.
+DEPLOY_ARGS="${DEPLOY_ARGS:-}"
+PF_PIDFILE="/tmp/tt-ui-portforward.pid"
 
 if [[ "${1:-}" == "teardown" ]]; then
-  ( cd "$TT_SRC" && NAMESPACE=$NAMESPACE TAG=$TAG IMG_REPO=$IMG_REPO IMG_TAG=$TAG $DC compose down -v )
-  echo "torn down."; exit 0
+  [[ -f "$PF_PIDFILE" ]] && { kill "$(cat "$PF_PIDFILE")" 2>/dev/null || true; rm -f "$PF_PIDFILE"; }
+  [[ -d "$TT_SRC" ]] && ( cd "$TT_SRC" && make reset-deploy Namespace="$NS" ) || true
+  echo "torn down (kept minikube + built images; 'minikube delete' frees them)."
+  exit 0
 fi
 
-# 0. get the source (fault code lives here). Shallow + single-branch keeps the
-#    download small (the full history is hundreds of MB and a slow/flaky link
+command -v minikube >/dev/null || { echo "ERROR: minikube not found — https://minikube.sigs.k8s.io/docs/start/"; exit 1; }
+command -v kubectl  >/dev/null || { echo "ERROR: kubectl not found"; exit 1; }
+
+# 0. get the source (the fault code lives here). Shallow + single-branch keeps
+#    the download small (the full history is hundreds of MB and a slow/flaky link
 #    disconnects mid-pack — observed 2026-06-12: "fetch-pack: unexpected
-#    disconnect"); docker build only needs the working tree at HEAD. Retry a
-#    few times and clear any partial clone from an interrupted run.
+#    disconnect"). Retry a few times and clear any partial clone.
 if [[ ! -d "$TT_SRC/.git" ]]; then
   n=0
-  until git clone --depth 1 --single-branch --branch injection "$TT_REPO" "$TT_SRC"; do
+  until git clone --single-branch --branch injection "$TT_REPO" "$TT_SRC"; do
     n=$((n+1)); [[ $n -ge 3 ]] && { echo "ERROR: clone failed after $n attempts"; exit 1; }
     echo "clone attempt $n failed; clearing partial clone and retrying in 5s..."
     rm -rf "$TT_SRC"; sleep 5
   done
 fi
 
-# 0b. Pin the MongoDB image. The upstream compose uses an UNPINNED `image: mongo`
-#     (= mongo:latest = 7.x today). The legacy Node services (e.g.
-#     ts-ticket-office-service, mongodb-core driver) then crash-loop with
-#     "Unsupported OP_QUERY command" (MongoDB removed the OP_QUERY opcode in
-#     5.1), and because the nginx gateway (ts-ui-dashboard) does
-#     `host not found in upstream` -> [emerg] when ANY upstream container is
-#     not resolvable, one crash-looping service takes the WHOLE gateway down and
-#     login never returns 200. Pin to 4.4 (last release that supports OP_QUERY
-#     and needs no AVX CPU). Override with TT_MONGO_IMAGE=mongo:4.0 etc.
-TT_MONGO_IMAGE="${TT_MONGO_IMAGE:-mongo:4.4}"
-if [[ -f "$TT_SRC/docker-compose.yml" ]]; then
-  sed -i -E "s|^([[:space:]]*image:[[:space:]]+)mongo[[:space:]]*$|\1${TT_MONGO_IMAGE}|" \
-    "$TT_SRC/docker-compose.yml"
-  echo "pinned unpinned 'image: mongo' -> ${TT_MONGO_IMAGE} ($(grep -cE "image:[[:space:]]+${TT_MONGO_IMAGE}$" "$TT_SRC/docker-compose.yml") services)"
-fi
+# 1. k8s substrate: minikube (the proven one). Build images INTO minikube's docker.
+minikube status >/dev/null 2>&1 || minikube start --cpus=8 --memory=16g
+eval "$(minikube docker-env)"
 
-# 1. ensure docker compose v2 is available
-$DC compose version >/dev/null 2>&1 || {
-  echo "installing docker compose v2 plugin..."
-  sudo mkdir -p /usr/local/lib/docker/cli-plugins
-  sudo curl -fsSL https://github.com/docker/compose/releases/download/v2.29.7/docker-compose-linux-x86_64 \
-    -o /usr/local/lib/docker/cli-plugins/docker-compose
-  sudo chmod +x /usr/local/lib/docker/cli-plugins/docker-compose
-}
+# Docker Desktop's WSL credential helper (credsStore=desktop.exe) can abort
+# buildkit even on PUBLIC base-image pulls ("docker-credential-desktop.exe:
+# Invalid argument", observed on WSL2-as-root); all images here are public, so
+# isolate the build with a throwaway creds-free docker config. No-op on Linux.
+export DOCKER_CONFIG="$(mktemp -d)"; printf '{}\n' > "$DOCKER_CONFIG/config.json"
 
-# 2. build the 7 fault images from source (tagged codewisdom/<svc>:TAG so compose uses them)
+# 2. THE proven deploy: `make build` compiles the ~40 services from source (fault
+#    code baked in), then k8s-deploys all-in-one MySQL + the gateway. First run
+#    is LONG (compiles ~40 Spring services).
 cd "$TT_SRC"
-for svc in "${FAULT_SERVICES[@]}"; do
-  if $DC image inspect "$IMG_REPO/$svc:$TAG" >/dev/null 2>&1; then
-    echo "== $svc:$TAG already built, skip =="; continue
-  fi
-  echo "== building $svc (fault-injected) =="
-  $DC build --build-arg SERVICE_NAME="$svc" -t "$IMG_REPO/$svc:$TAG" -f "$svc/Dockerfile" .
-done
+chmod -R 777 deployment || true
+make deploy DeployArgs="$DEPLOY_ARGS" Namespace="$NS"
 
-# 3. bring up all ~40 services (7 local fault images + ~33 pulled upstream + DBs)
-NAMESPACE=$NAMESPACE TAG=$TAG IMG_REPO=$IMG_REPO IMG_TAG=$TAG $DC compose up -d
+# 3. expose the gateway on localhost:32677 (MIST's base.url) and wait for login.
+( while true; do kubectl port-forward -n "$NS" svc/ts-ui-dashboard 32677:8080; sleep 2; done ) &
+echo $! > "$PF_PIDFILE"
 
-# 4. wait for the gateway (ts-ui-dashboard nginx). It crash-restarts until every
-#    upstream service it proxies is resolvable, then serves on :8080.
-echo "waiting for the SUT gateway on http://localhost:8080 (TrainTicket takes several minutes to converge)..."
+echo "waiting for the gateway (login 200 on :32677; TrainTicket takes several minutes to converge)..."
 UP=""
-for i in $(seq 1 60); do
+for i in $(seq 1 90); do
   code=$(curl -s -o /dev/null -w '%{http_code}' --max-time 5 \
-    -X POST http://localhost:8080/api/v1/users/login \
+    -X POST http://localhost:32677/api/v1/users/login \
     -H 'Content-Type: application/json' -d '{"username":"admin","password":"222222"}' 2>/dev/null || true)
-  if [[ "$code" == "200" ]]; then echo "  gateway UP (login 200) after ${i}0s"; UP=1; break; fi
-  # nudge nginx to re-resolve upstreams as services finish booting
-  [[ $((i % 6)) -eq 0 ]] && $DC restart train-ticket-injection-ts-ui-dashboard-1 >/dev/null 2>&1 || true
+  if [[ "$code" == "200" ]]; then echo "  gateway UP (login 200) after ~$((i*10))s"; UP=1; break; fi
   sleep 10
 done
 
 if [[ -z "$UP" ]]; then
   echo
-  echo "WARNING: the gateway never answered login 200 within 10 min. The containers are"
-  echo "up but the SUT has not converged yet — on a small host this can take longer"
-  echo "(or never finish under load; see REPRODUCE.md 6.3). Re-check manually with:"
-  echo "  curl -s -o /dev/null -w '%{http_code}\\n' -X POST http://localhost:8080/api/v1/users/login \\"
-  echo "       -H 'Content-Type: application/json' -d '{\"username\":\"admin\",\"password\":\"222222\"}'"
+  echo "WARNING: gateway not answering login 200 yet. On an adequately-sized host"
+  echo "TrainTicket converges in a few minutes; on a small host it can take much"
+  echo "longer or thrash (see REPRODUCE.md 6.3). Watch with: kubectl get pods -n $NS"
   exit 1
 fi
 
 echo
-echo "TrainTicket up. Gateway: http://localhost:8080  (admin/222222, TT's built-in account)"
-echo "Point MIST at it:  base.url=http://localhost:8080  (already set in ../trainticket-demo.properties)"
-echo "Then from the repo root run a MIST detection run (see ../README.md)."
+echo "TrainTicket up. Gateway: http://localhost:32677  (admin/222222)."
+echo "MIST is already pointed at it (base.url=http://localhost:32677 in ../trainticket-demo.properties)."
+echo "Run a MIST detection run from ../.runtime/ (see ../README.md)."

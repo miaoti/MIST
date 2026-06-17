@@ -8,13 +8,18 @@ TrainTicket validates defensively and **fails loudly** (every error propagates a
 root), so — unlike Bookinfo/Online Boutique — it has no natural hidden-downstream case; it is
 the SUT for the **Sniper negative-test + injected-fault** detection story (10/10).
 
-> This bundle is **self-contained and reviewer-reproducible on any machine with docker** — it
-> does NOT depend on the authors' lab deployment. The 7 fault services are built from the public
-> source; the other ~33 are the upstream public `codewisdom/*` images.
+> This bundle deploys TrainTicket the **proven way the paper's run22 used: Kubernetes via the
+> upstream `make deploy`** (minikube). `make build` compiles the ~40 services from the
+> injection-branch source — so the 7 fault services carry their injected fault code — and
+> `make deploy` k8s-deploys an all-in-one MySQL plus the gateway (NodePort 32677). It is HEAVY
+> (~40 JVMs); see the resource note below and REPRODUCE.md §6.3.
 
 ## Bundle contents
-- `deploy/deploy.sh` — one command: clone the fault-injection source, **build the 7 fault images**
-  from source, pull the ~33 upstream images, `docker compose up`. `deploy.sh teardown` to remove.
+- `deploy/deploy.sh` — one command: clone the injection source, then `minikube` + `make deploy`
+  (build the ~40 service images from source with the fault code baked in, k8s-deploy all-in-one
+  MySQL + the NodePort-32677 gateway), and port-forward it to `localhost:32677`. `deploy.sh
+  teardown` runs `make reset-deploy`. (A root `docker-compose.yml` also exists in that repo but is
+  Mongo-backed while the services are MySQL, so it does not converge — `make deploy` is the path.)
 - `openapi/merged_openapi_spec.yaml` — the SUT spec, 265 operations (MIST input #1).
 - `real-system-conf.yaml` — MIST conf generated from the spec (MIST input #2a).
 - `trainticket-demo.properties` — the single MIST profile (core keys + MST section; input #2b).
@@ -38,8 +43,9 @@ these 7 must be built from `https://github.com/AsifShaafi/train-ticket-injection
 ```bash
 REPO=$(pwd)
 
-# 1. deploy the fault-injection TrainTicket locally (builds 7 images first run; ~40 min; needs CPU)
-evaluation/suts/trainticket/deploy/deploy.sh            # gateway -> http://localhost:8080
+# 1. deploy the fault-injection TrainTicket locally (minikube + make deploy; first
+#    run compiles ~40 services from source — long; needs a 16+-core, >=16GB host)
+evaluation/suts/trainticket/deploy/deploy.sh            # gateway -> http://localhost:32677
 
 # 2a. offline generation check (no SUT, no LLM):
 mkdir -p evaluation/suts/trainticket/.runtime
@@ -61,13 +67,16 @@ TrainTicket's built-in admin account (`admin` / `222222`) is seeded by the SUT �
 any fresh deploy (verified: `POST /api/v1/users/login` returns a `ROLE_ADMIN` JWT).
 
 ## Notes on reproducibility (lessons baked into deploy.sh)
-- **Build vs pull:** the injected faults live in source, not in the public images, so the 7 fault
-  services are built locally; the rest are pulled. Detection (`faultName` markers) needs the built
-  fault images.
-- **CPU:** TrainTicket on docker-compose is CPU-heavy at startup (~40 JVMs). On an 8-core box it will
-  not converge while other heavy workloads run concurrently; give it the cores (FudanSELab recommends
-  k8s for production-grade deploys). deploy.sh nudges the gateway (nginx re-resolves upstreams) until
-  every proxied service is up.
+- **k8s, not compose:** run22 was stood up with `make deploy` (k8s/minikube), and MIST's
+  `base.url=http://localhost:32677` is the gateway NodePort that deploy exposes. The repo's root
+  `docker-compose.yml` is Mongo-backed while the fault services are MySQL
+  (`jdbc:mysql://${AUTH_MYSQL_HOST:ts-auth-mysql}`), so compose never converges — do not use it.
+- **Build from source:** `make build` compiles the ~40 services from the injection-branch source,
+  so the 7 fault services carry their injected fault code; detection (`faultName` markers) needs
+  those built images.
+- **Resources:** ~40 JVMs + MySQL is CPU- and RAM-heavy. Give it a 16+-core, >=16GB host; a small
+  laptop will thrash and not converge (REPRODUCE.md §6.3). The offline path evidences the claims
+  without standing the SUT up.
 - **JDK not JRE:** MIST compiles the generated JUnit tests in-process; set `JAVA_HOME` to a JDK 21.
 - **Per-SUT isolation:** run MIST from this SUT's own `.runtime/` so caches/logs/generated tests stay
   separate from the other SUTs (the `.properties` input paths still resolve to this bundle).

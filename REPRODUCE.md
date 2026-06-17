@@ -42,8 +42,8 @@ lets a reviewer reproduce the paper's headline results. Source:
   supported (the SUT scripts are bash).
 - **JDK 21** (a JRE is **not** enough — MIST compiles generated tests, and the single-file
   oracle harnesses are source-launched). Set `JAVA_HOME` to the JDK.
-- **Maven 3.9+** (to build the jar). **Docker** + **docker compose v2** (SUTs). **kind** +
-  **kubectl** + **Istio 1.30** (Bookinfo/Sock Shop/Online Boutique). **git**, **curl**.
+- **Maven 3.9+** (to build the jar). **Docker**. **kind** + **kubectl** + **Istio 1.30**
+  (Bookinfo/Sock Shop/Online Boutique); **minikube** (TrainTicket — `make deploy`). **git**, **curl**.
 ### 2.3 Accounts / keys / external deps
 - An LLM for value synthesis + the soft-error classifier: **DeepSeek API key**
   (`export DEEPSEEK_API_KEY=...` or place it at `.api_keys/DEEPSEEK_API_KEY`) **or** a local
@@ -178,13 +178,15 @@ Online Boutique + Sock Shop follow the same shape (`evaluation/suts/{boutique,so
 Sock Shop shows the `ResponseEnvelope` soft error (`GET /catalogue` -> 200 + `{status_code:500}`).
 
 ### 6.3 Heavy SUT — TrainTicket (40 services) — OPTIONAL
-> **Resource caveat (honest):** TrainTicket on docker-compose runs ~40 JVMs and is CPU-heavy at
-> startup (first run also **builds 7 fault images, ~40 min**). On an 8-core host (especially with
-> another cluster running) it will **not converge** (it thrashes to a very high load). Use a host
-> with adequate cores, or the FudanSELab-recommended k8s deploy. **The §5 offline path already
-> evidences TrainTicket's claims**, so this full run is optional for reviewers without a beefy host.
+> **Resource caveat (honest):** TrainTicket is deployed the way the paper's run22 was — **Kubernetes
+> via the upstream `make deploy`** (minikube). The first run **compiles ~40 Spring services from
+> source** (long) and runs ~40 JVMs + MySQL, so it needs a **16+-core, ≥16 GB** host; a small box
+> thrashes and will **not converge**. **The §5 offline path already evidences TrainTicket's claims**
+> (committed run22 + the offline oracle checks), so this full live run is optional. (The repo also
+> ships a root `docker-compose.yml`, but it is Mongo-backed while the fault services are MySQL, so it
+> does not converge — `deploy.sh` uses `make deploy`, not compose.)
 ```bash
-evaluation/suts/trainticket/deploy/deploy.sh      # clone fault source, BUILD 7 fault images, compose up
+evaluation/suts/trainticket/deploy/deploy.sh      # minikube + make deploy; gateway -> localhost:32677
 # zero-infra generation sanity check (no SUT, no LLM):
 ( cd evaluation/suts/trainticket/.runtime 2>/dev/null || mkdir -p evaluation/suts/trainticket/.runtime; \
   cd evaluation/suts/trainticket/.runtime && \
@@ -193,9 +195,10 @@ evaluation/suts/trainticket/deploy/deploy.sh      # clone fault source, BUILD 7 
 evaluation/suts/trainticket/run-oracle-e2e.sh     # needs JDK 21 on JAVA_HOME + a DeepSeek key
 evaluation/suts/trainticket/deploy/deploy.sh teardown
 ```
-The 7 fault-bearing services are built from the public fault-injection source
-(`https://github.com/AsifShaafi/train-ticket-injection`, branch `injection`); the other ~33 are the
-upstream public `codewisdom/*` images. Built-in account `admin`/`222222`. See the bundle README.
+`make build` compiles the ~40 services from the public fault-injection source
+(`https://github.com/AsifShaafi/train-ticket-injection`, branch `injection`), so the 7 fault-bearing
+services carry their injected fault code. Gateway NodePort 32677, built-in account `admin`/`222222`.
+See the bundle README.
 
 ## 7. Claim → evidence map
 | Paper claim | Reproduce via | Evidence / output | Needs |
