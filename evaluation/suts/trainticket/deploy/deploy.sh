@@ -51,6 +51,8 @@ fi
 
 command -v minikube >/dev/null || { echo "ERROR: minikube not found — https://minikube.sigs.k8s.io/docs/start/"; exit 1; }
 command -v kubectl  >/dev/null || { echo "ERROR: kubectl not found"; exit 1; }
+command -v make     >/dev/null || { echo "ERROR: 'make' not found — install build tools (e.g. apt-get install -y make)"; exit 1; }
+command -v helm     >/dev/null || { echo "ERROR: 'helm' not found — https://helm.sh/docs/intro/install/ (the all-in-one MySQL is a helm chart)"; exit 1; }
 
 # 0. get the source (the fault code lives here). Shallow + single-branch keeps
 #    the download small (the full history is hundreds of MB and a slow/flaky link
@@ -66,7 +68,13 @@ if [[ ! -d "$TT_SRC/.git" ]]; then
 fi
 
 # 1. k8s substrate: minikube (the proven one). Build images INTO minikube's docker.
-minikube status >/dev/null 2>&1 || minikube start --cpus=8 --memory=16g
+#    ~40 JVMs need real memory: give minikube >=20g (so the host wants >=24g).
+#    Override with MINIKUBE_CPUS / MINIKUBE_MEM.
+# the docker driver refuses to run as root unless forced (common in CI/WSL-as-root).
+MK_FORCE=""; [[ "$(id -u)" == "0" ]] && MK_FORCE="--force"
+minikube status >/dev/null 2>&1 || \
+  minikube start $MK_FORCE --driver="${MINIKUBE_DRIVER:-docker}" \
+    --cpus="${MINIKUBE_CPUS:-8}" --memory="${MINIKUBE_MEM:-20g}"
 eval "$(minikube docker-env)"
 
 # Docker Desktop's WSL credential helper (credsStore=desktop.exe) can abort
@@ -75,12 +83,17 @@ eval "$(minikube docker-env)"
 # isolate the build with a throwaway creds-free docker config. No-op on Linux.
 export DOCKER_CONFIG="$(mktemp -d)"; printf '{}\n' > "$DOCKER_CONFIG/config.json"
 
-# 2. THE proven deploy: `make build` compiles the ~40 services from source (fault
-#    code baked in), then k8s-deploys all-in-one MySQL + the gateway. First run
-#    is LONG (compiles ~40 Spring services).
+# 2. Build the ~40 service images from source INTO minikube, then k8s-deploy
+#    all-in-one MySQL + the services. The multi-stage Dockerfiles compile each
+#    service with JDK 8 IN-CONTAINER (no host JDK/Maven needed) and tag them
+#    codewisdom/ts-*:1.0.2 to match the deploy manifests, so k8s uses the local
+#    (fault-injected) images. First run is LONG. We call build-image +
+#    deploy-no-build rather than `make deploy`, because the upstream `clean-image`
+#    step that `make deploy` runs first errors on a machine with no prior images.
 cd "$TT_SRC"
 chmod -R 777 deployment || true
-make deploy DeployArgs="$DEPLOY_ARGS" Namespace="$NS"
+make build-image Repo="${TT_IMG_REPO:-codewisdom}" Tag="${TT_IMG_TAG:-1.0.2}"
+make deploy-no-build DeployArgs="$DEPLOY_ARGS" Namespace="$NS"
 
 # 3. expose the gateway on localhost:32677 (MIST's base.url) and wait for login.
 ( while true; do kubectl port-forward -n "$NS" svc/ts-ui-dashboard 32677:8080; sleep 2; done ) &
