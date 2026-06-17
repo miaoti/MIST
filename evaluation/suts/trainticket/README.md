@@ -71,9 +71,13 @@ any fresh deploy (verified: `POST /api/v1/users/login` returns a `ROLE_ADMIN` JW
   `base.url=http://localhost:32677` is the gateway NodePort that deploy exposes. The repo's root
   `docker-compose.yml` is Mongo-backed while the fault services are MySQL
   (`jdbc:mysql://${AUTH_MYSQL_HOST:ts-auth-mysql}`), so compose never converges — do not use it.
+- **Toolchain:** `minikube` + `kubectl` + `docker` + `make` + `helm` (the all-in-one MySQL is a
+  helm chart). No host JDK/Maven is needed to build the SUT — each service's multi-stage Dockerfile
+  compiles it with JDK 8 *in-container*. `deploy.sh` checks for these and errors early if missing.
 - **Build from source:** `make build` compiles the ~40 services from the injection-branch source,
   so the 7 fault services carry their injected fault code; detection (`faultName` markers) needs
-  those built images.
+  those built images. (Verified live 2026-06-17: 47 images built, all-in-one MySQL via helm, 56
+  pods Running, login 200, and MIST preflight `30/30 endpoints reachable, 0 unhealthy`.)
 - **Resources:** ~40 JVMs + MySQL is CPU- and RAM-heavy. Give it a 16+-core, >=16GB host; a small
   laptop will thrash and not converge (REPRODUCE.md §6.3). The offline path evidences the claims
   without standing the SUT up.
