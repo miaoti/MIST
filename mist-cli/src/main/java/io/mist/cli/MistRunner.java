@@ -1193,6 +1193,11 @@ public final class MistRunner {
             long __aggRunTime = 0L;
             java.util.List<Failure> __aggFailures = new ArrayList<>();
 
+            // Publish Allure's singleton lifecycle on this (main) thread BEFORE the
+            // worker pool first touches it (Allure.getLifecycle() is not thread-safe
+            // in 2.13.3). See ensureAllureLifecycleInitialized().
+            ensureAllureLifecycleInitialized();
+
             if (__parallelism <= 1) {
                 // Sequential path — single JUnitCore, prior-equivalent behavior.
                 Result result = junit.run(testClasses.toArray(new Class[0]));
@@ -1806,6 +1811,13 @@ public final class MistRunner {
                     parallelism <= 1 ? "sequential" : "parallel",
                     Runtime.getRuntime().availableProcessors(),
                     llmValidationOn ? "on" : "off");
+
+            // Publish Allure's singleton lifecycle on this (main) thread BEFORE the
+            // worker pool first touches it. Allure 2.13.3's Allure.getLifecycle() is
+            // not thread-safe, so concurrent first-touch forks multiple lifecycle
+            // instances and spams the console with "no test case running" /
+            // "step with uuid ... not found". See ensureAllureLifecycleInitialized().
+            ensureAllureLifecycleInitialized();
 
             Timer.startCounting(Timer.TestStep.TEST_SUITE_EXECUTION);
             Result result;
@@ -2742,6 +2754,50 @@ public final class MistRunner {
         } catch (Exception e) {
             logger.warn("Could not fully set up Allure environment: {}", e.getMessage());
         }
+    }
+
+    /**
+     * Force creation of Allure's process-wide {@link io.qameta.allure.AllureLifecycle}
+     * singleton on the CURRENT (main) thread, before any parallel test executor is
+     * started.
+     *
+     * <p><b>Why this is required.</b> Allure 2.13.3's {@code Allure.getLifecycle()}
+     * is a lazy, <i>unsynchronized</i> null-check-then-create over a
+     * <i>non-volatile</i> static field:
+     * <pre>{@code
+     *   private static AllureLifecycle lifecycle;          // not volatile
+     *   public static AllureLifecycle getLifecycle() {
+     *       if (Objects.isNull(lifecycle)) {               // unsynchronized
+     *           lifecycle = new AllureLifecycle();
+     *       }
+     *       return lifecycle;
+     *   }
+     * }</pre>
+     * When the parallel test pool's N worker threads each touch it for the first
+     * time concurrently — via {@code new AllureJunit4()} and via the generated
+     * tests' static {@code Allure.label/parameter/step/addAttachment} calls — the
+     * race forks several distinct {@code AllureLifecycle} instances. Each
+     * per-task {@code AllureJunit4} listener binds its JUnit test case to whatever
+     * instance it captured, while the generated test body resolves the static
+     * field and may see a <i>different</i> instance whose per-thread
+     * {@link io.qameta.allure.internal.AllureThreadContext} is empty. That mismatch
+     * is exactly what produces the flood of
+     * {@code "Could not update test case: no test case running"},
+     * {@code "Could not start step: no test case running"} and
+     * {@code "... step with uuid ... not found"} ERROR logs during the Enhance
+     * phase. (The test-case file itself is still written by the listener's
+     * instance, so result counts survive — only the in-test steps/parameters/
+     * attachments are dropped and the console is spammed.)
+     *
+     * <p><b>Why one call fixes it.</b> Creating the singleton here, on the single
+     * main thread, publishes it before the pool exists; submitting tasks to the
+     * executor then establishes a happens-before edge so every worker observes the
+     * same instance. Allure's storage is a thread-safe {@code ConcurrentHashMap}
+     * and its context is per-thread, so a single shared lifecycle is the intended
+     * model for parallel execution.
+     */
+    private static void ensureAllureLifecycleInitialized() {
+        io.qameta.allure.Allure.getLifecycle();
     }
 
     /**
