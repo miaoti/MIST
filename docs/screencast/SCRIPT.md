@@ -360,6 +360,8 @@ curl -s "http://localhost:16686/jaeger/api/traces?service=productpage.default&li
 Allure report rendered at prep P7 from the Scene-2 run. One click, zoom on the
 failure message.
 
+allure/bin/allure serve evaluation/suts/bookinfo/.runtime/target/allure-results
+
 **EXPECT:** `Positive variant failed — Trace Shape Oracle verdict has
 violation(s): [HIDDEN_DOWNSTREAM_FAILURE: reviews.default ──▶ ratings... (http=503 otel=ERROR)]`
 (2026-06-11 run-of-record: the bookmark target is **`test_positive_flow_S55_v28`**
