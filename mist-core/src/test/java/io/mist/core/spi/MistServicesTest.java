@@ -9,7 +9,7 @@ import static org.junit.Assert.assertNotNull;
  * Smoke test for the {@link MistServices} service locator. Unit-test
  * scope: only validates the discovery mechanism in isolation; the
  * adapter-side integration test (in mist-restest-adapter) verifies that
- * the bundled RestestMistSpecLoader is the one discovered when the
+ * the bundled DefaultMistSpecLoader is the one discovered when the
  * adapter is on the classpath.
  */
 public class MistServicesTest {

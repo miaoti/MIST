@@ -29,7 +29,7 @@ public class SpiDiscoveryIntegrationTest {
         MistSpecLoader loader = MistServices.requireSpecLoader();
         assertNotNull(loader);
         assertEquals(
-                "io.mist.cli.spi.RestestMistSpecLoader",
+                "io.mist.cli.spi.DefaultMistSpecLoader",
                 loader.getClass().getName());
     }
 

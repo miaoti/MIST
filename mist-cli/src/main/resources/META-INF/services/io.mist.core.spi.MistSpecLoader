@@ -1,1 +1,1 @@
-io.mist.cli.spi.RestestMistSpecLoader
+io.mist.cli.spi.DefaultMistSpecLoader

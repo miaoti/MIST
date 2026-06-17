@@ -11,11 +11,11 @@ import io.swagger.v3.oas.models.OpenAPI;
  * (and its full transitive dependency tree) stays on the adapter
  * side.
  */
-public final class RestestMistSpec implements MistSpec {
+public final class DefaultMistSpec implements MistSpec {
 
     private final OpenAPISpecification delegate;
 
-    public RestestMistSpec(OpenAPISpecification delegate) {
+    public DefaultMistSpec(OpenAPISpecification delegate) {
         if (delegate == null) {
             throw new IllegalArgumentException("delegate must not be null");
         }

@@ -474,7 +474,7 @@ public class LLMConfig {
      *       default CWD for Application run configs.</li>
      *   <li>{@code System.getProperty("user.dir")} — same path, resolved via
      *       the user-dir property in case the JVM CWD differs.</li>
-     *   <li>{@code System.getProperty("user.home")/.restest/api_keys/<VAR>} —
+     *   <li>{@code System.getProperty("user.home")/.mist/api_keys/<VAR>} —
      *       a user-wide location for users who want one key shared across
      *       multiple checkouts.</li>
      * </ol>
@@ -491,7 +491,7 @@ public class LLMConfig {
             java.nio.file.Paths.get(
                     System.getProperty("user.dir", "."), ".api_keys", varName),
             java.nio.file.Paths.get(
-                    System.getProperty("user.home", "."), ".restest", "api_keys", varName),
+                    System.getProperty("user.home", "."), ".mist", "api_keys", varName),
         };
         for (java.nio.file.Path p : candidates) {
             try {

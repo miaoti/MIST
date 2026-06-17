@@ -25,7 +25,7 @@ mist-parent (root pom.xml, packaging=pom)
 │               spec ingest, semantic dependency registry, sequence
 │               generator, sniper strategy, trace shape oracle —
 │               plus the adaptive fault taxonomy live here.
-│               Zero RESTest source.
+│               No vendored third-party source.
 ├── mist-llm    LLM dispatch SPI + Ollama / Gemini / OpenAI-compatible
 │               backends, call cache, env-placeholder resolver.
 └── mist-cli    User entry. Houses the launcher (io.mist.cli.MistMain →
@@ -37,10 +37,9 @@ mist-parent (root pom.xml, packaging=pom)
 ```
 
 There is one entry point: `java -jar mist-cli/target/mist.jar
-<your.properties>`. The previous `mist-restest-adapter` module (which
-vendored a forked copy of RESTest 1.6.0-SNAPSHOT) was severed in MIST
-1.6 — the runtime now uses RESTAssured + swagger-parser as published
-library artifacts, the same way every other black-box REST tester does.
+<your.properties>`. The runtime uses REST-Assured and swagger-parser
+as published Maven library artifacts, the same way every other
+black-box REST tester does.
 
 ---
 
@@ -73,8 +72,7 @@ API key handy.
 
 > **One launcher.** `mist-cli/target/mist.jar`
 > (`Main-Class: io.mist.cli.MistMain`) is the single supported entry
-> point. The legacy `restest.jar` and the `TestGenerationAndExecution`
-> main class were retired during the 1.6 RESTest sever.
+> point.
 
 ---
 
@@ -323,6 +321,15 @@ llm.openai_compatible.api.key=
 
 The `${VAR}` syntax is resolved at startup — see *API keys* below.
 
+### Google Gemini
+
+```properties
+llm.model.type=gemini
+llm.gemini.api.key=${GEMINI_API_KEY}
+llm.gemini.model=gemini-2.0-flash-exp
+llm.gemini.api.url=https://generativelanguage.googleapis.com/v1beta/models
+```
+
 ### LLM cache control
 
 MIST persists every LLM response under `.mist/llm-call-cache.json`
@@ -356,16 +363,7 @@ Common combinations:
 | Run isolated from the shared cache file | `-Dmist.llm.cache.read=false -Dmist.llm.cache.write=false` |
 | Use a side-channel cache file | `-Dmist.llm.cache.path=.mist/run-A.json` |
 
-The same three knobs also work as command-line `-D` flags for IDE play-button runs.
-
-### Google Gemini
-
-```properties
-llm.model.type=gemini
-llm.gemini.api.key=${GEMINI_API_KEY}
-llm.gemini.model=gemini-2.0-flash-exp
-llm.gemini.api.url=https://generativelanguage.googleapis.com/v1beta/models
-```
+These cache settings also work as command-line `-D` flags for IDE play-button runs.
 
 ---
 
@@ -375,7 +373,7 @@ llm.gemini.api.url=https://generativelanguage.googleapis.com/v1beta/models
 
 1. `System.getenv("VAR")` — `export DEEPSEEK_API_KEY=sk-...` before launching.
 2. `System.getProperty("VAR")` — `-DDEEPSEEK_API_KEY=sk-...` on the JVM command line (handy for IntelliJ run configs).
-3. `.api_keys/VAR` (or `~/.restest/api_keys/VAR`) — a file containing only the secret. The `.api_keys/` directory is gitignored.
+3. `.api_keys/VAR` (or `~/.mist/api_keys/VAR`) — a file containing only the secret. The `.api_keys/` directory is gitignored.
 4. The literal `default` after `:` in `${VAR:default}`.
 
 A missing key resolves to the empty string, in which case the request is sent unauthenticated rather than literally containing the placeholder text. The full resolution logic lives in [`LLMConfig.resolveEnvPlaceholder`](mist-llm/src/main/java/io/mist/llm/LLMConfig.java).
@@ -492,17 +490,16 @@ mist-parent (root pom.xml, packaging=pom)
         ├── TraceMain                   Diagnostic tool
         ├── auth/                       MstAuthHandler, MstAuthRefreshFilter
         ├── writer/                     MultiServiceRESTAssuredWriter
-        └── spi/                        RestestMistSpec, RestestMistSpecLoader,
+        └── spi/                        DefaultMistSpec, DefaultMistSpecLoader,
                                         RestAssuredMistTestWriter,
                                         MavenSurefireMistTestExecutor,
                                         PojoConverter
 ```
 
-There is no longer a `mist-restest-adapter` module — it was deleted in
-the 1.6 RESTest sever, along with the classic `RT / CBT / ART / FT /
-LLM` generators that lived only in the legacy `TestGenerationAndExecution`
-entry. Use `mist.jar` for all MIST work; reach out on GitHub if you
-need a specific classic-generator behaviour reinstated as an SPI.
+`mist.jar` is the single entry point for all MIST work; the `spi/`
+provider classes keep `mist-core` framework-agnostic so the JUnit /
+REST-Assured writer, the Surefire executor, and the spec loader can be
+swapped without touching the core.
 
 ---
 
@@ -518,24 +515,8 @@ need a specific classic-generator behaviour reinstated as an SPI.
 }
 ```
 
-MIST acknowledges intellectual debt to RESTest, which informed the
-JUnit + REST-Assured test-generation pattern MIST adopts in
-`mist-cli/writer/MultiServiceRESTAssuredWriter`; if you cite MIST in
-a context where the predecessor is relevant, please also cite:
-
-```bibtex
-@inproceedings{MartinLopez2021Restest,
-  title     = {{RESTest: Automated Black-Box Testing of RESTful Web APIs}},
-  author    = {Alberto Martin-Lopez and Sergio Segura and Antonio Ruiz-Cort\'{e}s},
-  booktitle = {Proceedings of the 30th ACM SIGSOFT International Symposium on Software Testing and Analysis},
-  series    = {ISSTA '21},
-  publisher = {Association for Computing Machinery},
-  year      = {2021}
-}
-```
-
 ---
 
 ## License
 
-Distributed under the [GNU Lesser General Public License v3.0](LICENSE), inherited from RESTest. Includes Allure Framework © Qameta Software OÜ under the Apache 2.0 License.
+Distributed under the [GNU Lesser General Public License v3.0](LICENSE). Includes Allure Framework © Qameta Software OÜ under the Apache 2.0 License.
