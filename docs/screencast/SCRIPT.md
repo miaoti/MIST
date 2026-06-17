@@ -469,6 +469,17 @@ Switch to tab A (GitHub). End card 5 s: `github.com/miaoti/MIST` · Zenodo DOI �
 ## 6. Copy-paste appendix (camera order)
 
 ```bash
+# ── Session setup — run ONCE in the shell you record from. A FRESH shell has
+#    NEITHER of these set, and the Scene commands assume both (this is the class
+#    of failure that bites otherwise: "/bin/java: No such file" or kubectl's
+#    "couldn't get current server API group list"). Run as YOUR login user — the
+#    SAME user that ran the P3 deploy, not a mix of root + user. ──
+export JAVA_HOME=/usr/lib/jvm/java-21-openjdk-amd64   # adjust to your JDK 21; the Scenes call "$JAVA_HOME/bin/java"
+export PATH="$HOME/.local/bin:/usr/local/bin:$PATH"   # kind / kubectl
+kind export kubeconfig --name mist                    # point THIS shell's kubectl at the kind cluster
+"$JAVA_HOME/bin/java" -version 2>&1 | head -1          # expect: openjdk 21  (proves JAVA_HOME is right)
+kubectl get pods -n default --no-headers | head -1     # expect a Running bookinfo pod (proves kubeconfig)
+
 # Scene 1
 evaluation/suts/bookinfo/workload/inject-ratings-outage.sh on
 curl -s -o /dev/null -w '%{http_code}\n' http://localhost:8080/api/v1/products/0/ratings
