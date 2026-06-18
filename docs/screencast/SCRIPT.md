@@ -568,10 +568,10 @@ rm -f evaluation/suts/bookinfo/input-fetch-registry.yaml
 - [ ] Lower-third caption with each command name; "⏩" captions on every jump.
 - [ ] Clean up auto-captions (accessibility).
 - [ ] Export MP4 (H.264, 1080p/30).
-- [ ] Upload YouTube (unlisted) **and** add the MP4 to the Zenodo deposit;
-      publish the deposit (the paper's DOI must resolve).
-- [ ] Fill `\todo{SCREENCAST-URL}` in `paper/main_issta.tex` (abstract + Tool
-      Availability); update REPRODUCE §9.
+- [x] Uploaded YouTube: **https://youtu.be/IvUoZRuMAQU** . Still TODO: add the
+      MP4 to the Zenodo deposit and **publish** it (the paper's DOI must resolve).
+- [x] Filled the screencast URL in `paper/main_issta.tex` (abstract + Tool
+      Availability) and REPRODUCE §9 — `https://youtu.be/IvUoZRuMAQU`.
 - [ ] Watch once end-to-end on laptop speakers.
 
 ---

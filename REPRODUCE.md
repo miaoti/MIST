@@ -249,8 +249,8 @@ checks run on **committed traces** and are **deterministic** regardless of LLM a
 is why they are the reproduction path of record.
 
 ## 9. Screencast
-A 3–5 min screencast of the bundled demo: see the URL at the end of the paper abstract
-(`paper/main_issta.tex`) / the repository README.
+A 3–5 min screencast of the bundled demo: **https://youtu.be/IvUoZRuMAQU**
+(also cited at the end of the paper abstract and in the paper's Tool Availability section).
 
 ## 10. Troubleshooting
 - **`no external javac` / compile fails** → you are on a JRE; set `JAVA_HOME` to a JDK 21.
