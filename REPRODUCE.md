@@ -249,7 +249,7 @@ checks run on **committed traces** and are **deterministic** regardless of LLM a
 is why they are the reproduction path of record.
 
 ## 9. Screencast
-A 3–5 min screencast of the bundled demo: **https://youtu.be/IvUoZRuMAQU**
+A 3–5 min screencast of the bundled demo: **https://youtu.be/T2AePcbFT6E**
 (also cited at the end of the paper abstract and in the paper's Tool Availability section).
 
 ## 10. Troubleshooting
