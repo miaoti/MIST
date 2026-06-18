@@ -51,15 +51,16 @@ lets a reviewer reproduce the paper's headline results. Source:
   only the `ResponseEnvelope` soft-error check calls the LLM (one live call, cached for repeats).
 
 ## 3. Layout
-```
-mist-cli/target/mist.jar                         # the tool (after `mvn -DskipTests install`)
-evaluation/suts/{bookinfo,sockshop,boutique,trainticket}/   # one self-contained bundle per SUT
-   deploy/deploy.sh   README.md   MANIFEST.json   openapi/   traces/   *.properties
-   OracleCheck.java                              # offline HiddenDownstreamFailure on a captured trace
-   trainticket/ResponseEnvelopeLiveCheck.java    # offline ResponseEnvelope (soft error) via LLM
-docs/main-contribution/evidence/                 # committed traces + verbatim oracle transcripts
-debug/negative_test/runs/run22-fault-detection-10of10.txt   # TrainTicket 10/10 detection report
-```
+
+| Path | What it is |
+|---|---|
+| `mist-cli/target/mist.jar` | the tool (after `mvn -DskipTests install`) |
+| `evaluation/suts/{bookinfo,sockshop,boutique,trainticket}/` | one self-contained bundle per SUT |
+| &nbsp;&nbsp;`deploy/deploy.sh`, `README.md`, `MANIFEST.json`, `openapi/`, `traces/`, `*.properties` | bundle contents |
+| &nbsp;&nbsp;`OracleCheck.java` | offline HiddenDownstreamFailure on a captured trace |
+| &nbsp;&nbsp;`trainticket/ResponseEnvelopeLiveCheck.java` | offline ResponseEnvelope (soft error) via LLM |
+| `docs/main-contribution/evidence/` | committed traces + verbatim oracle transcripts |
+| `debug/negative_test/runs/run22-fault-detection-10of10.txt` | TrainTicket 10/10 detection report |
 
 ## 4. Install
 ```bash
