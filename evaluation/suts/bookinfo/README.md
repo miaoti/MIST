@@ -12,6 +12,9 @@ defensively and fails loudly); Bookinfo produces it naturally, which makes the e
 
 ## Bundle contents (self-contained — this SUT uses only its own input files)
 - `deploy/deploy.sh` — one-command stand-up (kind + Istio + Jaeger + Bookinfo); `deploy.sh teardown`.
+  Idempotent: re-run it after a crash/reboot and it skips the Istio download + `kind create` when
+  they already exist and just re-applies the manifests (nothing is re-cloned). Sock Shop and Online
+  Boutique then add themselves to THIS cluster — so always deploy Bookinfo first.
 - `workload/inject-ratings-outage.sh on|off` — toggle the **real ratings outage** (the fault).
 - `workload/traffic.sh [N]` — drive nominal traffic through the Istio ingress gateway.
 - `openapi/bookinfo-swagger.yaml` — the SUT's OpenAPI spec (MIST input #1).

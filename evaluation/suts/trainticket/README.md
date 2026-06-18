@@ -84,6 +84,12 @@ any fresh deploy (verified: `POST /api/v1/users/login` returns a `ROLE_ADMIN` JW
 - **JDK not JRE:** MIST compiles the generated JUnit tests in-process; set `JAVA_HOME` to a JDK 21.
 - **Per-SUT isolation:** run MIST from this SUT's own `.runtime/` so caches/logs/generated tests stay
   separate from the other SUTs (the `.properties` input paths still resolve to this bundle).
+- **Re-run safety (idempotent):** after a crash, a reboot, or to bring the SUT back, just re-run
+  `deploy.sh`. It does **not** re-clone the source (it checks for `$TT_SRC/.git`), `minikube start`
+  is skipped when the node is already up, and `make build-image` rebuilds only what changed (Docker
+  layer cache) — so a re-run reconciles in minutes, it doesn't redo the hours-long first build. Use
+  `deploy.sh teardown` (`make reset-deploy`) to remove the k8s resources; `minikube delete` frees
+  everything including the built images.
 
 ## Evidence
 - `debug/negative_test/runs/run22-fault-detection-10of10.txt` — 15,036 generated tests, **10/10**

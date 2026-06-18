@@ -149,7 +149,12 @@ to prove coverage, then `git add` it behind a targeted `.gitignore` negation.
 
 ## 6. Step-by-step (full, live)
 ### 6.2 Light SUTs — Bookinfo / Sock Shop / Online Boutique (kind/Docker)
-Each bundle is self-contained; from the repo root:
+Each bundle ships its own inputs (spec, conf, traces, properties), but the SUTs
+**share one kind cluster**: Bookinfo's `deploy.sh` stands up kind + Istio + Jaeger,
+and **Sock Shop and Online Boutique have NO cluster of their own — they deploy
+INTO Bookinfo's cluster, so you must run Bookinfo's `deploy.sh` FIRST** (their own
+`deploy.sh` only adds a namespace + ingress route and will fail with "couldn't get
+server API group list" against a non-existent cluster). From the repo root:
 ```bash
 evaluation/suts/bookinfo/deploy/deploy.sh         # kind + Istio + Jaeger + Bookinfo (~8 min)
 # (deploy.sh also patches the Jaeger addon with a startupProbe and waits for its
@@ -173,9 +178,20 @@ mkdir -p evaluation/suts/bookinfo/.runtime
 evaluation/suts/bookinfo/run-oracle-e2e.sh        # 4-case sensitivity/specificity, see its README
 evaluation/suts/bookinfo/deploy/deploy.sh teardown
 ```
-Online Boutique + Sock Shop follow the same shape (`evaluation/suts/{boutique,sockshop}/deploy/deploy.sh`
-+ each bundle's `README.md`). Online Boutique shows the same `HiddenDownstreamFailure` over gRPC;
-Sock Shop shows the `ResponseEnvelope` soft error (`GET /catalogue` -> 200 + `{status_code:500}`).
+Online Boutique + Sock Shop follow the same shape — but **into Bookinfo's already-running
+cluster** (`evaluation/suts/{boutique,sockshop}/deploy/deploy.sh` AFTER Bookinfo's deploy,
+reusing the same port-forwards; see each bundle's `README.md`). Online Boutique shows the same
+`HiddenDownstreamFailure` over gRPC; Sock Shop shows the `ResponseEnvelope` soft error
+(`GET /catalogue` -> 200 + `{status_code:500}`).
+
+**Re-run safety (the deploy scripts are idempotent).** After a crash, a reboot, or to bring a
+SUT back, just re-run its `deploy.sh` — it reconciles instead of rebuilding from scratch:
+Bookinfo skips the Istio download and `kind create` when they already exist; TrainTicket does
+**not** re-clone (it checks for `$TT_SRC/.git`) and rebuilds only changed images (Docker layer
+cache), and `minikube start` is skipped if the node is already up; Sock Shop / Online Boutique
+re-fetch their **upstream** manifest each run, so an upstream change is picked up (otherwise it's
+a no-op `kubectl apply`). The kind node container restarts with Docker. **The port-forwards and
+the Allure server are NOT part of `deploy.sh`** — restart those yourself after a reboot.
 
 ### 6.3 Heavy SUT — TrainTicket (40 services) — OPTIONAL
 > **Resource caveat (honest):** TrainTicket is deployed the way the paper's run22 was — **Kubernetes

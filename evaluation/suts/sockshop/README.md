@@ -26,10 +26,18 @@ code edits and NO hand-fixed config**, after the train-ticket assumptions were c
 - `.runtime/` — per-SUT run dir (gitignored): all caches/logs/generated-tests isolate here.
 
 ## Quick start
+
+> **⚠ Prerequisite — run Bookinfo's `deploy.sh` FIRST.** Sock Shop has **no
+> cluster of its own**; it deploys *into* the kind + Istio + Jaeger cluster that
+> `evaluation/suts/bookinfo/deploy/deploy.sh` stands up. Run this bundle's
+> `deploy.sh` with no such cluster and it fails (`couldn't get server API group
+> list`). Re-running either `deploy.sh` after a crash/reboot is safe — they are
+> idempotent (skip cluster create, re-apply manifests; nothing is re-cloned).
+
 ```bash
 REPO=$(pwd)
-# 1. base cluster (kind+Istio+Jaeger) — bookinfo's deploy stands it up:
-evaluation/suts/bookinfo/deploy/deploy.sh            # if not already running
+# 1. base cluster (kind+Istio+Jaeger) — REQUIRED FIRST; bookinfo's deploy stands it up:
+evaluation/suts/bookinfo/deploy/deploy.sh            # idempotent: skips work if already running
 # 2. add Sock Shop into the mesh + ingress routing:
 evaluation/suts/sockshop/deploy/deploy.sh
 # 3. port-forwards (shared with bookinfo):
