@@ -411,7 +411,7 @@ Faults: 10 (100.0%)`.
 **DO:**
 ```bash
 "$JAVA_HOME/bin/java" -cp mist-cli/target/mist.jar \
-  -Dllm.openai_compatible.enabled=true \
+  -Dllm.model.type=openai_compatible \
   -Dllm.openai_compatible.url=https://api.deepseek.com/v1/chat/completions \
   -Dllm.openai_compatible.model=deepseek-chat \
   -Dllm.openai_compatible.api.key="$(cat .api_keys/DEEPSEEK_API_KEY)" \
@@ -517,7 +517,7 @@ grep -A5 "FAULT COVERAGE SUMMARY" debug/negative_test/runs/run22-fault-detection
 
 # Scene 6
 "$JAVA_HOME/bin/java" -cp mist-cli/target/mist.jar \
-  -Dllm.openai_compatible.enabled=true \
+  -Dllm.model.type=openai_compatible \
   -Dllm.openai_compatible.url=https://api.deepseek.com/v1/chat/completions \
   -Dllm.openai_compatible.model=deepseek-chat \
   -Dllm.openai_compatible.api.key="$(cat .api_keys/DEEPSEEK_API_KEY)" \

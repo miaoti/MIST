@@ -102,12 +102,10 @@ mvn clean install -DskipTests
 ollama serve &
 ollama pull qwen2.5-coder:14b
 
-# 3. Switch the bundled demo to Ollama (one-time edit; see snippet below)
+# 3. Switch the bundled demo to Ollama (one-time edit)
 #    open mist-cli/src/main/resources/My-Example/trainticket-demo.properties
 #    (the MST section at the bottom) and set:
 #       llm.model.type=ollama
-#       llm.ollama.enabled=true
-#       llm.openai_compatible.enabled=false
 
 # 4. Generate + execute against the bundled TrainTicket demo (run from repo root)
 java -jar mist-cli/target/mist.jar \
@@ -286,7 +284,7 @@ configurations under
 
 ## LLM backends
 
-Set `llm.model.type` (MST section of the demo `.properties`) to one of `openai_compatible`, `gemini`, or `ollama`. The unused backends can be left in the file with `*.enabled=false` — only the selected one is contacted.
+Set `llm.model.type` (MST section of the demo `.properties`) to one of `openai_compatible`, `gemini`, or `ollama`. That single key is the switch — `*.enabled` flags are redundant and have been removed from all bundled configs.
 
 > **Heads-up on naming.** Earlier versions called the OpenAI-compatible backend `local` (`llm.model.type=local`, `llm.local.*`). That was misleading — DeepSeek, OpenAI, and the like are *remote hosted APIs*, not local models. The new canonical name is `openai_compatible`, but the old `local` value and `llm.local.*` keys are still accepted as deprecated aliases (you'll see a one-time deprecation warning on startup).
 

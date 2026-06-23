@@ -89,7 +89,7 @@ HIDDEN_DOWNSTREAM_FAILURE: FIRES`. The healthy control traces in the same dir st
 ```bash
 # (G1) TrainTicket soft error: 200 + {"status":0,...} -> RESPONSE_ENVELOPE FIRES (needs an LLM)
 "$JAVA_HOME/bin/java" -cp mist-cli/target/mist.jar \
-  -Dllm.openai_compatible.enabled=true \
+  -Dllm.model.type=openai_compatible \
   -Dllm.openai_compatible.url=https://api.deepseek.com/v1/chat/completions \
   -Dllm.openai_compatible.model=deepseek-chat \
   -Dllm.openai_compatible.api.key="$(cat .api_keys/DEEPSEEK_API_KEY)" \
