@@ -309,4 +309,4 @@ A 3–5 min screencast of the bundled demo: **https://youtu.be/T2AePcbFT6E**
 - Archived snapshot (the **Available** badge): the paper cites the reserved DOI
   <https://doi.org/10.5281/zenodo.20514985>. The deposit must be **published** from the
   final evaluated commit before submission — a reserved-but-unpublished DOI resolves to 404.
-- Cite the paper (`paper/main_issta.tex`) and the repository.
+- Cite the paper (`paper/tool-demo/main_issta.tex`) and the repository.

@@ -570,7 +570,7 @@ rm -f evaluation/suts/bookinfo/input-fetch-registry.yaml
 - [ ] Export MP4 (H.264, 1080p/30).
 - [x] Uploaded YouTube: **https://youtu.be/T2AePcbFT6E** . Still TODO: add the
       MP4 to the Zenodo deposit and **publish** it (the paper's DOI must resolve).
-- [x] Filled the screencast URL in `paper/main_issta.tex` (abstract + Tool
+- [x] Filled the screencast URL in `paper/tool-demo/main_issta.tex` (abstract + Tool
       Availability) and REPRODUCE §9 — `https://youtu.be/T2AePcbFT6E`.
 - [ ] Watch once end-to-end on laptop speakers.
 

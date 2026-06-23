@@ -103,7 +103,7 @@
 
 ## 9. 导航(东西在哪)
 
-- **论文**:`paper/main_issta.tex`(4 页 sigconf + 1 页 refs);图 `paper/figures/{architecture,trace_oracle}.tex`;引用 `paper/refs.bib`。
+- **论文**:`paper/tool-demo/main_issta.tex`(4 页 sigconf + 1 页 refs);图 `paper/tool-demo/figures/{architecture,trace_oracle}.tex`;引用 `paper/tool-demo/refs.bib`。
 - **头条 invariant 源码**:`mist-core/src/main/java/io/mist/core/oracle/shape/invariant/HiddenDownstreamFailureInvariant.java`。
 - **离线 harness**:`evaluation/suts/bookinfo/OracleCheck.java`、`evaluation/suts/trainticket/ResponseEnvelopeLiveCheck.java`。
 - **证据**:`docs/main-contribution/evidence/`(Bookinfo/Boutique/Sock Shop traces + 报告 + ResponseEnvelope transcript + 10/10 fault-detection 报告)。
