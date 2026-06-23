@@ -76,6 +76,20 @@ API key handy.
 
 ---
 
+## Requirements
+
+| | Version |
+|---|---|
+| JDK | **21** (a full JDK, not a JRE — MIST compiles the generated tests in-process; bytecode target stays `-source 11 -target 11`) |
+| Maven | 3.6+ |
+| Allure CLI | one-time fetch into `allure/` — see Quick Start A step 5 (Java 8+ required by Allure itself) |
+| LLM backend | one of: Ollama (local), DeepSeek / OpenAI-compatible HTTP, Google Gemini |
+| Target system | reachable HTTP base URL + an OpenAPI spec + Jaeger traces |
+
+The TrainTicket demo expects a TrainTicket deployment you provide; set the `base.url` and `jaeger.base.url` keys in the config to your own host (e.g. `http://localhost:32677` via `kubectl port-forward`).
+
+---
+
 ## Quick Start A — bundled demo, fully local LLM (no API key)
 
 Best for first-time validation that the tool works on your machine. Uses Ollama, so nothing leaves your laptop.
@@ -231,20 +245,6 @@ For each microservice scenario reconstructed from a Jaeger trace, MIST emits one
 5. **explores untriggered status codes** (401/403/404/409/…) via auth-manipulation and LLM-suggested input mutations.
 
 Full pipeline (Phase 1 cross-trace merging → Phase 2 session merging → Phase 2.5 dedup → Phase 3 component shattering → Phase 4 baseline decomposition → variant generation) is documented in the in-code Javadoc on `io.mist.core.generation.MistGenerator`.
-
----
-
-## Requirements
-
-| | Version |
-|---|---|
-| JDK | **21** (a full JDK, not a JRE — MIST compiles the generated tests in-process; bytecode target stays `-source 11 -target 11`) |
-| Maven | 3.6+ |
-| Allure CLI | one-time fetch into `allure/` — see Quick Start A step 5 (Java 8+ required by Allure itself) |
-| LLM backend | one of: Ollama (local), DeepSeek / OpenAI-compatible HTTP, Google Gemini |
-| Target system | reachable HTTP base URL + an OpenAPI spec + Jaeger traces |
-
-The TrainTicket demo expects a TrainTicket deployment you provide; set the `base.url` and `jaeger.base.url` keys in the config to your own host (e.g. `http://localhost:32677` via `kubectl port-forward`).
 
 ---
 
