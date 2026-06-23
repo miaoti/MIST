@@ -919,7 +919,7 @@ flowchart LR
 
 **`llm.openai_compatible.api.key` resolution**: the property accepts `${ENV_VAR}` or `${ENV_VAR:default}` syntax; `LLMConfig.resolveEnvPlaceholder` reads from `System.getenv` first, then `System.getProperty` (so IntelliJ run configs can pass `-DDEEPSEEK_API_KEY=…`). A missing variable resolves to `""` so the auth header is simply omitted — the literal `${…}` placeholder never reaches the wire. Locked in by `mist-llm/src/test/java/io/mist/llm/LLMConfigEnvResolverTest.java`.
 
-**DeepSeek example** (no edits to the existing `trainticket-demo.properties` needed; copy `deepseek-config.properties` or set these four lines):
+**DeepSeek example** (set these four lines in the MST section of your `.properties` file):
 
 ```properties
 llm.model.type=openai_compatible
