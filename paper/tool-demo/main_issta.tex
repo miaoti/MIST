@@ -118,7 +118,7 @@
 
 \author{Eunjee Song}
 \authornote{Corresponding author.}
-\email{Eunjee_Song@baylor.edu}
+\email{eunjee_song@baylor.edu}
 \affiliation{%
   \department{Department of Computer Science}
   \institution{Baylor University}
@@ -128,7 +128,7 @@
 }
 
 \begin{abstract}
-Black-box REST API testers sample inputs from the OpenAPI spec, stop at the HTTP status class, and miss cross-service failures: a \emph{soft error} hidden in a 2xx body, and a \emph{hidden downstream failure} where a clean 2xx entry masks a deeper service that 5xx-errored. We present \textbf{MIST} (Microservice Integration \& Scenario Tester), an open-source tool that turns OpenTelemetry/Jaeger traces and OpenAPI specs into runnable cross-service tests checked by a \emph{trace-shape oracle}. MIST drives only externally-reachable entry points, reads internals off the trace (\emph{Root API Mode}), and injects one fault per negative variant (\emph{Sniper Strategy}). Its \textsc{HiddenDownstreamFailure} invariant, label-free and large language model(LLM)-free, fires when a clean 2xx hides a server-errored downstream span. A bundled demo runs on four systems (TrainTicket, Istio Bookinfo, Sock Shop, Online Boutique) from one properties file with no source changes: on TrainTicket it scales to 15{,}036 tests, with all 10 injected faults confirmed by the system under test's (SUT) own registry independently of the trace oracle, while on Bookinfo and Online Boutique its oracle catches a real failure swallowed behind a \texttt{200} (over HTTP and gRPC) that status-, schema-, and body-level oracles pass, and this verdict reproduces offline from committed traces with no SUT or LLM. Source: \url{https://github.com/miaoti/MIST/}. Screencast: \url{https://youtu.be/T2AePcbFT6E}.
+Black-box REST API testers sample inputs from the OpenAPI specification (OAS), stop at the HTTP status class, and miss cross-service failures: a \emph{soft error} hidden in a 2xx response body, and a \emph{hidden downstream failure} where a clean 2xx entry masks a deeper service that 5xx-errored. We present \textbf{MIST} (Microservice Integration \& Scenario Tester), an open-source tool that turns OpenTelemetry/Jaeger traces and OpenAPI specs into runnable cross-service tests checked by a \emph{trace-shape oracle}. MIST drives only externally-reachable entry points, reads internals off the trace (\emph{Root API Mode}), and injects one fault per negative variant (\emph{Sniper Strategy}). Its \textsc{HiddenDownstreamFailure} invariant, label-free and large language model(LLM)-free, fires when a clean 2xx hides a server-errored downstream span. A bundled demo runs on four systems (TrainTicket, Istio Bookinfo, Sock Shop, Online Boutique) from one properties file with no source changes: on TrainTicket it scales to 15{,}036 tests, with all 10 injected faults confirmed by the system under test's (SUT) own registry independently of the trace oracle, while on Bookinfo and Online Boutique its oracle catches a real failure swallowed behind a \texttt{200} (over HTTP and gRPC) that status-, schema-, and body-level oracles pass, and this verdict reproduces offline from committed traces with no SUT or LLM. Source: \url{https://github.com/miaoti/MIST/}. Screencast: \url{https://youtu.be/T2AePcbFT6E}.
 \end{abstract}
 
 \maketitle
