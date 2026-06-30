@@ -133,3 +133,7 @@ allure-report/
 
 # Allure report assets (build output)
 /allure/
+
+# Large local artifacts (distributed via YouTube/Zenodo, not tracked in git)
+/MIST-screencast.mp4
+/MIST-zenodo-*.zip
