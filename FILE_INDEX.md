@@ -820,7 +820,7 @@ Developer design notes / investigation logs (excluding inputs), plus the input-q
 |------|-------------|
 | `debug/a-main/README.md` | **Active A-conference plan v4** (reviewer-hardened): take MIST to a top venue via black-box generation-driven fault injection + a label-free differential data-integrity trace oracle; honest Borderline verdict, build list, decision gates, strategic options |
 | `debug/a-main/EXECUTION.md` | **Active execution plan** (decision: bet on Gate 3): ordered engineering sequence with code seams + acceptance criteria; focus on the Gate 1 sprint (B1 fault-injection mode, B2 differential oracle, validate on TrainTicket) toward the Gate 3 empirical bug hunt |
-| `debug/a-main/TOOL-EXECUTION-PLAN.md` | **Step-by-step plan to TOUCH MIST tool code** (B1 opt-in fault-injection mode + B2 differential data-integrity oracle), evidence-anchored to research/01 seams and the Gate-1 smoke result; per-step file/why/verify, sequencing gates, deliberate decisions; execution BLOCKED until the user says "yes" |
+| `debug/a-main/TOOL-EXECUTION-PLAN.md` | **Step-by-step plan to TOUCH MIST tool code** (B1 opt-in fault-injection mode + B2 differential data-integrity oracle), v2 review-hardened against README §3/§4 + REVIEW2-R2/R3; evidence-anchored to research/01 seams + the Gate-1 smoke result; key decision = **two-mode fire** (pure-differential headline catches S2/skip-persist Cast can't reach + keeps read-back trace-independent for de-circularization; gated mode = high-confidence S1 stratum); soundness adds trace-driven quiescence + gate-coverage, pending-vs-missing, broker-async FP probe; per-step file/why/verify, sequencing gates; execution BLOCKED until the user says "yes" |
 
 ### `debug/a-main/research/`
 
