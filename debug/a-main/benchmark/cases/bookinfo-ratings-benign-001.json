@@ -1,0 +1,51 @@
+{
+  "case_id": "bookinfo-ratings-benign-001",
+  "schema_version": "0.1.0",
+  "stratum": 2,
+  "fault_class": "swallowed_downstream_error",
+  "capture_status": "specified",
+  "sut": {
+    "name": "Istio Bookinfo",
+    "repo": "github.com/istio/istio (samples/bookinfo)",
+    "branch": "",
+    "commit": "",
+    "deploy": "k8s with Istio sidecars + Jaeger"
+  },
+  "target": {
+    "entry_endpoint": {
+      "method": "GET",
+      "path": "/productpage",
+      "service": "productpage"
+    },
+    "dependency": {
+      "service": "ratings",
+      "kind": "downstream_service"
+    }
+  },
+  "injection": {
+    "mechanism": "natural",
+    "config": { "note": "ratings made unavailable (scale-to-zero or toxiproxy). The reviews service catches the failed ratings call and degrades by design." },
+    "injected_by": "",
+    "trigger_input": "GET /productpage while ratings is unavailable"
+  },
+  "ground_truth": {
+    "label": "negative",
+    "rationale": "Designed graceful degradation: the reviews service catches a failed ratings call and productpage still returns HTTP 200 with 'Ratings service is currently unavailable' (developer-intended, istio/istio PR #15489). The downstream error span is real, but the entry behaviour is correct-by-design, so this is benign — the canonical false-positive trap for any naive 'error span under a 2xx' oracle.",
+    "source": "natural"
+  },
+  "oracle_expectation": {
+    "status_code_oracle": "no_flag",
+    "schema_oracle": "no_flag",
+    "body_marker_oracle": "no_flag",
+    "naive_span_error_oracle": "flag",
+    "mist_trace_shape_oracle": "no_flag",
+    "mist_dataintegrity_oracle": "not_applicable"
+  },
+  "provenance": {
+    "control_trace": null,
+    "fault_trace": null,
+    "readback_response": null,
+    "notes": "Stratum-2 benign trap. naive_span_error_oracle FLAGS this (false positive) because a ratings error span sits under a 2xx entry; the TARGET for MIST's trace-shape oracle is no_flag (discriminate the designed degradation). The gap between these two columns at matched recall is exactly the A1 ablation (precision/FP) the eval reports."
+  },
+  "adjudication": null
+}

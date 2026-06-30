@@ -1,0 +1,56 @@
+{
+  "case_id": "TT-adminroute-lostwrite-001",
+  "schema_version": "0.1.0",
+  "stratum": 1,
+  "fault_class": "acknowledged_lost_write",
+  "capture_status": "specified",
+  "sut": {
+    "name": "TrainTicket",
+    "repo": "github.com/miaoti-or-collaborator/train-ticket-injection",
+    "branch": "MIST-trainticket",
+    "commit": "5c471dd8",
+    "deploy": "k8s/minikube via make deploy (with OTel->Jaeger tracing)"
+  },
+  "target": {
+    "entry_endpoint": {
+      "method": "POST",
+      "path": "/api/v1/adminrouteservice/adminroute",
+      "service": "ts-admin-route-service"
+    },
+    "dependency": {
+      "service": "ts-route-service",
+      "kind": "persistence"
+    },
+    "readback_endpoint": {
+      "method": "GET",
+      "path": "/api/v1/adminrouteservice/adminroute",
+      "service": "ts-admin-route-service"
+    }
+  },
+  "injection": {
+    "mechanism": "sut_injector",
+    "config": { "env": { "MIST_FAULT_LOSTWRITE_ENABLED": "true" } },
+    "injected_by": "MIST-trainticket@5c471dd8 (AdminRouteServiceImpl.createAndModifyRoute)",
+    "trigger_input": "valid route: >=2 existing stations, startStation and endStation both in stationList, names 2-50 chars"
+  },
+  "ground_truth": {
+    "label": "positive",
+    "rationale": "With the flag on, createAndModifyRoute returns status:1 'create and modify success' but skips the persist POST to ts-route-service, so the route is never saved. The acknowledgement is a lie; the write is lost. Verified by read-back: GET getAllRoutes does not list the route.",
+    "source": "by_construction"
+  },
+  "oracle_expectation": {
+    "status_code_oracle": "no_flag",
+    "schema_oracle": "no_flag",
+    "body_marker_oracle": "no_flag",
+    "naive_span_error_oracle": "no_flag",
+    "mist_trace_shape_oracle": "no_flag",
+    "mist_dataintegrity_oracle": "flag"
+  },
+  "provenance": {
+    "control_trace": null,
+    "fault_trace": null,
+    "readback_response": null,
+    "notes": "Headline case: the write is silently dropped, so there is NO downstream 5xx and NO response marker; every status/schema/body and trace-shape oracle passes it clean. Only the read-back differential catches it. Traces + read-back to be captured at Gate 1 per prep/gate1-environment-runbook.md."
+  },
+  "adjudication": null
+}

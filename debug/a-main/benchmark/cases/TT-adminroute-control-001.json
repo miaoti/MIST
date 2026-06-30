@@ -1,0 +1,56 @@
+{
+  "case_id": "TT-adminroute-control-001",
+  "schema_version": "0.1.0",
+  "stratum": 1,
+  "fault_class": "none",
+  "capture_status": "specified",
+  "sut": {
+    "name": "TrainTicket",
+    "repo": "github.com/miaoti-or-collaborator/train-ticket-injection",
+    "branch": "MIST-trainticket",
+    "commit": "5c471dd8",
+    "deploy": "k8s/minikube via make deploy (with OTel->Jaeger tracing)"
+  },
+  "target": {
+    "entry_endpoint": {
+      "method": "POST",
+      "path": "/api/v1/adminrouteservice/adminroute",
+      "service": "ts-admin-route-service"
+    },
+    "dependency": {
+      "service": "ts-route-service",
+      "kind": "persistence"
+    },
+    "readback_endpoint": {
+      "method": "GET",
+      "path": "/api/v1/adminrouteservice/adminroute",
+      "service": "ts-admin-route-service"
+    }
+  },
+  "injection": {
+    "mechanism": "none",
+    "config": { "env": { "MIST_FAULT_LOSTWRITE_ENABLED": "false" } },
+    "injected_by": "",
+    "trigger_input": "same valid route as TT-adminroute-lostwrite-001"
+  },
+  "ground_truth": {
+    "label": "negative",
+    "rationale": "Clean control: the flag is off, so the route is persisted normally and the read-back GET lists it. The differential read-back oracle must NOT fire here. This is the per-case specificity check that pairs with the positive case (same input, fault off).",
+    "source": "by_construction"
+  },
+  "oracle_expectation": {
+    "status_code_oracle": "no_flag",
+    "schema_oracle": "no_flag",
+    "body_marker_oracle": "no_flag",
+    "naive_span_error_oracle": "no_flag",
+    "mist_trace_shape_oracle": "no_flag",
+    "mist_dataintegrity_oracle": "no_flag"
+  },
+  "provenance": {
+    "control_trace": null,
+    "fault_trace": null,
+    "readback_response": null,
+    "notes": "Negative control paired 1:1 with the positive case. A false flag here would mean the read-back oracle fires on a normal successful write (a false positive). Traces + read-back to be captured at Gate 1."
+  },
+  "adjudication": null
+}
