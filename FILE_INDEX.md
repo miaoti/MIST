@@ -820,6 +820,7 @@ Developer design notes / investigation logs (excluding inputs), plus the input-q
 |------|-------------|
 | `debug/a-main/README.md` | **Active A-conference plan v4** (reviewer-hardened): take MIST to a top venue via black-box generation-driven fault injection + a label-free differential data-integrity trace oracle; honest Borderline verdict, build list, decision gates, strategic options |
 | `debug/a-main/EXECUTION.md` | **Active execution plan** (decision: bet on Gate 3): ordered engineering sequence with code seams + acceptance criteria; focus on the Gate 1 sprint (B1 fault-injection mode, B2 differential oracle, validate on TrainTicket) toward the Gate 3 empirical bug hunt |
+| `debug/a-main/TOOL-EXECUTION-PLAN.md` | **Step-by-step plan to TOUCH MIST tool code** (B1 opt-in fault-injection mode + B2 differential data-integrity oracle), evidence-anchored to research/01 seams and the Gate-1 smoke result; per-step file/why/verify, sequencing gates, deliberate decisions; execution BLOCKED until the user says "yes" |
 
 ### `debug/a-main/research/`
 
@@ -845,6 +846,7 @@ Developer design notes / investigation logs (excluding inputs), plus the input-q
 | `debug/a-main/prep/target-triples.md` | Main-track prep (no tool code): candidate (write endpoint, persisting dependency, read-back GET) triples in the TrainTicket spec for the Gate 1 differential data-integrity oracle; recommends adminroute + adminbasic/contacts |
 | `debug/a-main/prep/sut-fault-injection-capability.md` | Main-track prep (no tool code): our SUT fork (train-ticket-injection@injection) already has an in-service fault injector; how to extend it SUT-side (LOST_WRITE_FAULT on a MIST-trainticket branch) to build the differential-oracle ground truth with zero MIST tool changes; §8/§9 record the implemented LOST_WRITE on adminroute (5c471dd8) and adminbasic/contacts (bbf3d6ae) |
 | `debug/a-main/prep/gate1-environment-runbook.md` | Main-track prep (no tool code): WSL2/k8s runbook to deploy TrainTicket (MIST-trainticket branch) with tracing, enable the LOST_WRITE variant on ts-admin-route-service, and confirm the acknowledged-but-lost write by read-back (manual proof of the differential oracle's target before B2 is built) |
+| `debug/a-main/prep/gate1-smoke-result.md` | Main-track prep (no tool code): Gate-1 smoke RESULT — on live TrainTicket (minikube), control-vs-fault proof that the adminroute LOST_WRITE yields an acknowledged-but-lost write (HTTP 200/status:1, getAllRoutes unchanged) that status/schema/body oracles pass and only read-back catches; records the load-bearing JAVA_TOOL_OPTIONS `-D` flag finding (env relaxed-binding fails on TT) |
 
 ### `debug/a-main/benchmark/`
 
