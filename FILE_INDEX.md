@@ -838,6 +838,12 @@ Developer design notes / investigation logs (excluding inputs), plus the input-q
 | `debug/a-main/research/REVIEW2-R2-evaluation.md` | Round-2 reviewer (evaluation) on plan v4: Borderline (methodology axis at Accept); circular GT resolved in design |
 | `debug/a-main/research/REVIEW2-R3-soundness.md` | Round-2 reviewer (soundness) on plan v4: Borderline; race reframed as measured, gated bounded risk |
 
+### `debug/a-main/prep/`
+
+| Path | Description |
+|------|-------------|
+| `debug/a-main/prep/target-triples.md` | Main-track prep (no tool code): candidate (write endpoint, persisting dependency, read-back GET) triples in the TrainTicket spec for the Gate 1 differential data-integrity oracle; recommends adminroute + adminbasic/contacts |
+
 ### `debug/a-main/archive-2026-06-01/`
 
 | Path | Description |
