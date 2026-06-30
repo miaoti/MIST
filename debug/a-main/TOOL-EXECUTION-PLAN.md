@@ -4,13 +4,15 @@
 > step-by-step, evidence-anchored sequence to build B1+B2 toward Gate 1, refined by the live Gate-1 smoke
 > result **and a multi-round self-review against README §3/§4, EXECUTION G1a/b/c, all three Round-2 reviewers
 > (R1 novelty, R2 evaluation, R3 soundness), plus engineering-feasibility & internal-consistency passes, then
-> an independent cold-reviewer subagent (no shared context) that confirmed NO MAJOR and spot-verified all five
-> cited seams as real & line-accurate — its MODERATE findings are folded into v4**.
+> THREE independent cold-reviewer subagents (no shared context): the first (on v3) confirmed no MAJOR; a second
+> pair (on v4) EACH found one real MAJOR the first missed — the writer seam is a code-GENERATION site, not
+> runtime plumbing; and the make-or-break async-FP Gate-1 PASS criterion was untrustworthy — plus drift two
+> reviewers flagged together. All folded into v5 (seam line-numbers are real; their semantics are now fixed)**.
 > Every step cites a real code seam (from
 > `research/01-feasibility-codebase.md`, audited 2026-06-30 with `file:line`; **re-verify the exact line at
 > edit time**) and/or the smoke evidence (`prep/gate1-smoke-result.md`) and/or a reviewer concern. All MIST
 > changes go on branch `main_track`. **Build additively — with every flag OFF, behavior is byte-for-byte
-> unchanged.** v4 (review-hardened; passed an independent cold review), 2026-06-30.
+> unchanged.** v5 (review-hardened; survived three independent cold reviews), 2026-06-30.
 
 ## 0. Facts the smoke + review established (this plan's footing — not assumptions)
 1. On a real, fully-deployed TrainTicket, the SUT-side `LOST_WRITE` makes `POST /adminroute` return **HTTP
@@ -50,10 +52,13 @@
    path**, which exercises only the gated/S1 mode. Do not imply the black-box path evidences S2.
 
 ## 1. Pre-flight (no-regret; do first, no behavior change)
-- **P1. Branch + flags.** Confirm on `main_track`. Reserve two OFF-by-default config keys, mirroring the
-  existing `mist.fault.mining.enabled` pattern (`FaultMiner.java:35-40`): `mist.fault.injection.enabled`
-  (B1) and `mist.oracle.dataintegrity.enabled` (B2). Wire them into `MstConfig` next to the mining flag.
-  *Verify:* with both false, a normal run diffs zero against today.
+- **P1. Branch + flags.** Confirm on `main_track`. Reserve two OFF-by-default keys, each mirroring the
+  *correct* shipped pattern (verified, cold-review): **B1** = `mist.fault.injection.enabled`, a **system
+  property** in the `mist.fault.*` namespace mirroring `FaultMiner.ENABLED_PROPERTY` (`FaultMiner.java:54`,
+  read via `System.getProperty` — it is **NOT** in `MstConfig`). **B2** = `mst.oracle.dataintegrity.enabled`,
+  an opt-in `parseBool` field in **`MstConfig.Oracle`** (`MstConfig.java:403-417`, namespace `mst.oracle.*` —
+  note **`mst`**, not `mist`), mirroring the default-false `hidden_downstream_failure.enabled` (`:416`).
+  *Verify:* with both off, a normal run diffs zero against today.
 - **P2. Target-triple registry.** Add a small per-SUT config (reuse the bundle's `real-system-conf.yaml`
   style) listing `{write_endpoint, dependency, readback_endpoint, isolation_key}` — exactly the
   `prep/target-triples.md` triples. The `dependency` must be a **trace-matchable service/operation key** (the
@@ -81,7 +86,9 @@ behind the flag and frame it as a mode, or the "no SUT instrumentation" identity
   (Gate-3 unmodified-system) path; Gate-1's SUT flag only buys clean labels. State this wherever Gate-1
   results appear.
 - **B1.2 Realistic input reuse.** Drive the request from the existing two-phase verified-input pool
-  (`MistRunner.java:502-557`) so the *only* abnormality is the injected fault.
+  (`MistRunner.java:502-557`, verified-valid *values* harvested in Phase A) so the only **behavioral**
+  abnormality is the injected fault — the isolation key is **freshly varied by design** (B2.2), so control and
+  fault are deliberately not byte-identical inputs.
 - **B1.3 Control/fault pairing executor.** New orchestration: for target request R, execute control (no
   inject) then fault (inject → run → clear). Separate code path entered only when `mist.fault.injection.enabled`.
 - **B1.4 Acceptance.** Fault run shows the masked write (smoke: `status:1` + `data:null` + getAllRoutes
@@ -89,13 +96,22 @@ behind the flag and frame it as a mode, or the "no SUT instrumentation" identity
   scenario through MIST instead of curl.*
 
 ## 3. B2 — differential data-integrity oracle + soundness protocol (EXECUTION G1b; the real work)
-**Architecture (decided):** B2 is an **active differential oracle** — it actively issues the read-back GET and
-diffs *state* across the control/fault pair. It is **not** a `ShapeInvariant.evaluate(trace)`
-(`ShapeInvariant.java:11-21`) — that interface evaluates a single trace; B2 needs an active GET + a pairwise
-state diff. It hangs off the B1 pairing executor and reuses the writer's request/response plumbing
-(`MultiServiceRESTAssuredWriter.java:706-707` staples the entry response; the read-back GET goes right after)
-and the oracle-surfacing path (`:714`). (EXECUTION calls it a "ShapeInvariant-*style* checker" meaning it
-reuses that surfacing pattern, not that it implements the interface — this doc is the precise version.)
+**Architecture (decided — corrected after cold review found the seam mis-located).** MIST is
+**generate-the-test-then-run-it** (`MistRunner.java:506 executeGeneratedTestsWithJUnit`); the writer *emits a
+standalone RestAssured/JUnit test as a String* — `MultiServiceRESTAssuredWriter.java:706-707` and `:714` are
+`pw.println(...)` that **emit** the response-staple and the per-run `oracle.evaluate(model,…)` *into the
+generated test*, which then runs in the generated test's JVM (NOT a MIST-side runtime). So B2 spans **two
+layers that v4 wrongly conflated:**
+- **Codegen layer (inside the generated test, the `:706-714` region):** emit the **read-back GET** + the
+  per-run check `X ∈ its own read-back` as additional generated steps, beside the existing emitted oracle.
+  "Reuse `:714`" means the verdict-**emission pattern**, not the single-trace `oracle.evaluate` (which stays
+  as-is; B2 is **not** a `ShapeInvariant.evaluate(trace)`, `ShapeInvariant.java:11-21` — that takes one trace,
+  no active GET).
+- **Orchestration layer (mist-cli, B1.3):** `inject → run generated test → clear` (`kubectl set env` +
+  rollout), executed **twice** (control flag-off, fault flag-on); collect each run's emitted read-back state +
+  acknowledgement; do the **pairwise** fire decision (control as FP-guard) + stratified reporting HERE.
+A pairwise control-vs-fault verdict **cannot** be surfaced through the per-run `:714` as-is — it lives in the
+orchestration layer (cold-review MAJOR: writer = codegen, not runtime plumbing).
 
 **Dual role (why it matters to the contribution, not just a detector):** B2's discriminating signal is
 *persisted state* (`S_control` vs `S_fault`), a **different signal class** from the masking oracle's *trace
@@ -133,6 +149,12 @@ trace-derived gate (see B2.3).
   positives** (it proves X would be present under no fault, ruling out invalid-input / test-bug causes), not
   the thing we subtract. (For collection read-backs like getAllRoutes, check "X ∈ read-back," not
   list-equality — the control run legitimately adds its own X.)
+  **X is request-derived** (a business / idempotency / client-minted key sent IN the request — e.g.
+  adminroute's station-pair routeId), **never read from the fault response** (S2 returns `data:null` per the
+  smoke, so the fault run never learns a server-assigned id). For the per-entity-UUID target (adminbasic/
+  contacts — B2.4's clean FP target) this needs `contactsId` to be **client-minted & sent**; whether
+  adminbasic accepts that is **UNVERIFIED** (resolve in P2/P3) — if server-assigned, that target falls back to
+  collection-membership read-back.
   - **pure-differential (HEADLINE):** fire = `fault run 2xx/success acknowledging X  AND  X absent/stale on the
     fault read-back  AND  control run shows X present`. No trace gate → read-back stays **independent of the
     trace** (the de-circularization precondition, R2 §2a) and covers **S2** (no D-error to key on). **Honest
@@ -184,10 +206,18 @@ lost-write on an async path) — the latter is a G3 item.
   it needs a real D failure (Toxiproxy), deferred to G3; Gate 1 ships the gated code path but exercises it
   only once the Toxiproxy backend exists.
 - **Specificity:** run the benign-trap stratum (B2.4, incl. the broker-async path); confirm B2 does NOT fire
-  after quiescence; record FP **and quiescence-gate coverage per-SUT**.
-- **Gate-1 verdict:** PASS = fires on the constructed case + measured-low, characterized FP (with a
-  non-trivial non-timeout-gated fraction) ⇒ proceed to G2/G3. FAIL ⇒ mechanism unsound ⇒ README §9.
-  Record results next to `prep/gate1-smoke-result.md`.
+  after quiescence; record FP **+ quiescence-gate coverage per-SUT AND per-stratum (sync vs async)**.
+- **Gate-1 verdict (async-FP criterion tightened — cold-review MAJOR):** the broker-async trap's verdicts are
+  expected to be **largely timeout-gated** (OTel emits span *links*, not parent-child edges, so trace-driven
+  quiescence degrades to wall-clock on async paths — R3 §5.1), and timeout-gated FP is a **function of the
+  wall-clock timeout** (lengthen it → FP drops trivially). So: **pre-register the quiescence/compensation
+  timeout independent of the trap; report async FP as a CURVE over that timeout, not a point; report the
+  non-timeout-gated fraction per stratum INCLUDING async.** PASS = fires-on-the-constructed-case AND
+  characterized-low **sync** FP AND **either** a non-trivial *observed-gated* async fraction **or** an explicit
+  disclaimer that Gate-1's async-FP is a low-confidence lower bound making **no** async-soundness claim
+  (trustworthy async-FP deferred to G3 with instrumented broker context). A green FP that is ~100%
+  timeout-gated on the async path does **NOT** pass the async axis (R3 §4: "90% timeout-gated would not
+  convince me"). FAIL ⇒ mechanism unsound ⇒ README §9. Record next to `prep/gate1-smoke-result.md`.
 
 ## 5. Sequencing & per-step verification gates
 ```
@@ -203,8 +233,9 @@ B2.2 pending-vs-missing→ (NOT Gate-1 — no saga target) code compiles; VALIDA
 B2.2 normalization     → verify: idempotency key + volatile-field strip before diff
 B2.3 fire rule         → verify: pure-differential fires on S2 (per-run X∉read-back); gated path compiles,
                          validated at G3 (needs Toxiproxy S1); two strata reported separately
-B2.4 FP measurement    → verify: P3 resolved (broker-async trap); FP + quiescence-coverage per-SUT  ← make-or-break
-Gate-1 verdict         → PASS/FAIL recorded (non-timeout-gated FP must be characterized-low)
+B2.4 FP measurement    → verify: P3 resolved; FP-vs-timeout curve + gate-coverage per-SUT AND per-stratum  ← make-or-break
+Gate-1 verdict         → PASS = fires + low SYNC FP + (observed-gated async fraction OR explicit low-conf async
+                         disclaimer); ~100% timeout-gated async does NOT pass the async axis
 ```
 
 ## 6. Decisions made deliberately (so they're not re-litigated mid-build)
@@ -215,11 +246,12 @@ Gate-1 verdict         → PASS/FAIL recorded (non-timeout-gated FP must be char
   Do NOT phrase (a) as "Cast can't reach it" — unverified (§0 fact 6). The gated mode (observed D-error) is a
   lower-FP S1 stratum, reported **separately**, never pooled (R3 #1). Cost owned: pure-differential puts the
   entire FP burden on the B2.2 protocol → B2.4's measured FP is make-or-break.
-- **This two-mode fire SUPERSEDES the single rule in README §4 / research/03 §4** (both bundled the D-error
-  conjunct = gated-only, S1). **Propagated now (v4): README §4 + EXECUTION G1b point here as the authoritative
-  spec** so an implementer following EXECUTION cannot build the S2-blind single rule (cold-review MODERATE #1 —
-  spec-propagation had to precede code, not follow it). research/03 §4 is left as a historical analysis
-  snapshot (not back-edited).
+- **This two-mode fire SUPERSEDES the single rule across README §4 / EXECUTION G1a / research/03 §4 /
+  `prep/target-triples.md`** (all bundled the D-error conjunct = gated-only, S1). **Propagated (v5):** README §4
+  + EXECUTION G1b carry the two-mode rule; **EXECUTION G0/G1a + README §5 B1 patched to SUT-flag-injector-first
+  for Gate-1 (S2, no D span), Toxiproxy → G3** — the injector-backend drift TWO reviewers flagged as
+  un-propagated; `prep/target-triples.md` line 18 + research/03 §4 left as historical snapshots with a pointer.
+  Lesson: spec-propagation must precede code and cover **both** the fire rule AND the injector backend.
 - **Flag via `-D`, never env** (smoke fact #4).
 - **SUT-flag injector first, Toxiproxy later** — smoke proved the SUT flag is the cleanest labeled positive;
   Toxiproxy/real-outage is for the Gate-3 unmodified-system hunt, worded connection-level (R3 #5).

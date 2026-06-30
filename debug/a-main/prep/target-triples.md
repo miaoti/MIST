@@ -15,8 +15,11 @@
 4. **Isolation-friendliness**: ideally a per-entity create with a unique ID → fresh entity per test, clean
    read-back, low cross-run interference (plan §8.5 / R3: shared-inventory state breaks black-box isolation).
 
-The fire condition: fault-run returns 2xx **and** D's span errored/aborted **and** the read-back shows the
-entity absent/stale/partial (acknowledged-but-lost write).
+The fire condition **[superseded — see TOOL-PLAN §3 B2.3 for the authoritative two-mode rule; the below is the
+gated/S1 mode ONLY]**: fault-run returns 2xx **and** D's span errored/aborted **and** the read-back shows the
+entity absent/stale/partial. The **headline pure-differential / S2** mode **drops the D-error conjunct** (in
+S2 D is never called → no D span); it fires on 2xx-acknowledging-X **and** X absent on its own read-back, with
+the control run as FP-guard.
 
 ## TrainTicket write surface (from the spec)
 74 POST · 27 PUT · 26 DELETE · 2 PATCH · 134 GET. The admin* and *service CRUD resources give clean

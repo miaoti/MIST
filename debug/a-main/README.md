@@ -130,9 +130,9 @@ exists); service-level attribution (honest ceiling).
 
 **The differential data-integrity oracle.** For a state-mutating request *R* on resource *X* with persisting
 dependency *D*: run *R* without a fault (read back → `S_control`), run *R* with one injected fault on *D*
-(read back → `S_fault`); fire iff the fault-run client response is 2xx/"success" AND the *D* span
-errored/aborted AND the success-contract is violated (acknowledged-but-not-persisted write, skipped
-compensation, orphaned/partial state).
+(read back → `S_fault`); **[gated / S1 mode ONLY — superseded by the two-mode refinement below]** fire iff
+the fault-run client response is 2xx/"success" AND the *D* span errored/aborted AND the success-contract is
+violated (acknowledged-but-not-persisted write, skipped compensation, orphaned/partial state).
 
 **[Refined post-REVIEW2 — `TOOL-EXECUTION-PLAN.md` §3 B2.3 is the authoritative spec.]** The D-error conjunct
 above is now the **gated (high-confidence / S1)** mode ONLY. The **headline pure-differential mode drops it**:
@@ -171,7 +171,7 @@ system state"). MIST must do better. **Mandatory protocol (this is a build requi
 
 | # | Build | Effort | Feasibility | Priority |
 |---|---|---|---|---|
-| B1 | **Opt-in fault-injection mode** (per-test mesh/Chaos Mesh/**Toxiproxy or DB-proxy** fault on a dependency; note: Istio aborts are L7-HTTP/TCP, **not** app-aware DB aborts — use a DB-aware proxy for DB faults, R3) | L | MODERATE; grey-box mode | **P0** |
+| B1 | **Opt-in fault-injection mode**. **Gate-1 backend = SUT-flag injector** (`LOST_WRITE` / S2, smoke-proven; it is ground-truth scaffolding, **not** a tool dependency — TOOL-PLAN B1.1). Toxiproxy/mesh/DB-proxy faults (S1, errored-D) **deferred to G3** (Istio aborts are L7, **not** app-aware DB aborts — R3) | L | MODERATE; grey-box mode | **P0** |
 | B2 | **Differential data-integrity oracle + the §4 soundness protocol** (control/fault pairing, isolation, trace-driven quiescence, read-back diff, measured FP) | M-L | HIGH for the diff; the soundness protocol is the real work | **P0** |
 | B3 | **Generalize masking oracle + Envoy `response_flags`** | S | HIGH | **P1** |
 | B4 | **Independent-label harness** for the precision study: derive required-vs-optional dependency and intended-degradation from spec/docs/code, *blind to MIST's predicate* (fixing R2's circular GT — §6) | M | MODERATE | **P1** |

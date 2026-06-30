@@ -35,20 +35,27 @@ measured and low**. Fail ⇒ mechanism unsound ⇒ revisit plan §9.
 - **Pick the first target triple** `(POST endpoint, persisting dependency D, read-back GET)`. Candidate:
   an order/route create on `ts-*-service` that writes to its DB. Requirement: (a) mutates persisted state,
   (b) has a downstream DB/service write, (c) has a GET that reflects the resulting state.
-- Stand up **Toxiproxy** in front of the target service's **DB connection** (black-box DB-write fault: a TCP
-  cut/timeout on the DB socket during the write). Note R3 caveat: this is TCP/connection-level, not an
-  app-aware DB abort — adequate for a first lost-write provocation; document the limitation.
+- **Gate-1 fault backend = the SUT-flag injector** (`LOST_WRITE`, the S2/skip-persist path proven in the
+  smoke: D never called → 2xx + `data:null` + state unchanged), toggled per run via
+  `kubectl set env … JAVA_TOOL_OPTIONS=-Dmist.fault.lostwrite.enabled=true` + rollout. **Toxiproxy** (TCP-level
+  DB-socket cut = the S1/errored-D path) is **DEFERRED to G3's unmodified-system hunt, NOT Gate-1** — two cold
+  reviewers flagged the old "stand up Toxiproxy at Gate-1" wording as drift against the SUT-flag-first decision
+  (TOOL-PLAN §6; B1.1). R3 caveat for when it lands: TCP/connection-level, not an app-aware DB abort.
 
 ### G1a — B1: opt-in fault-injection mode (~1 wk) — Task #10
-- **Config:** add `mist.fault.injection.enabled` (default **false**) + a target-dependency spec to MstConfig
-  (mirror the existing flag plumbing). Opt-in only; zero effect when off.
-- **Injector:** new orchestration component (mist-cli) that, per fault-run test, toggles the Toxiproxy
-  rule on D, runs the request, then clears it. Abstract the injector behind an interface
-  (`FaultInjector{ inject(dep), clear() }`) so Toxiproxy/mesh/Chaos-Mesh back-ends are swappable.
+- **Config:** add the two OFF-by-default flags **per TOOL-PLAN P1's corrected pattern** (B1 =
+  `mist.fault.injection.enabled` **system property**; B2 = `mst.oracle.dataintegrity.enabled` in
+  `MstConfig.Oracle` — **not** both wired into MstConfig as earlier worded). Opt-in only; zero effect when off.
+- **Injector:** new mist-cli orchestration that, per fault run, toggles the fault on D, runs the request, then
+  clears it, behind `FaultInjector{ inject(dep), clear() }`. **Gate-1 backend = `SutFlagFaultInjector`**
+  (`kubectl set env … -Dmist.fault.lostwrite.enabled=true` + rollout = the S2 path; smoke-proven);
+  Toxiproxy/mesh back-ends are swappable but **deferred to G3** (S1/errored-D).
 - **Realistic inputs:** drive the request from the existing **two-phase verified-input pool**
   (`MistRunner.java:502-557`) so the only abnormality is the injected fault.
-- **Acceptance:** with the mode on, a fault run shows D's span errored/aborted in the captured trace; with
-  the mode off, nothing changes vs today.
+- **Acceptance (Gate-1 = SUT-flag / S2):** with the mode on, the fault run returns **2xx acknowledging X but X
+  is absent on its read-back** while the control run shows X present — note **there is NO errored D span** (S2:
+  D is never called). The old "D's span errored/aborted" acceptance applies only to the **G3 Toxiproxy/S1**
+  path. Mode off ⇒ nothing changes vs today.
 
 ### G1b — B2: differential data-integrity oracle + soundness protocol (~1 wk) — Task #11
 - **Pairing executor:** new path that, for target request R, executes **control** (no fault → read-back
