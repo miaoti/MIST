@@ -69,3 +69,13 @@ Branch `MIST-trainticket` from `injection`; add `LOST_WRITE_FAULT` (+ optionally
 to adminroute (+ 1–2 more write-path services) behind a config flag; document in `INJECTED_FAULTS.md`; build
 to confirm it compiles. Write the code via the karpathy-guidelines skill. This builds the differential-oracle
 ground truth with zero MIST tool changes.
+
+## 8. Implemented (2026-06-30) — DONE for adminroute
+Branch `MIST-trainticket` created from `origin/injection`; commit `5c471dd8` adds `LOST_WRITE_FAULT` to
+`AdminRouteServiceImpl.createAndModifyRoute`: when env `MIST_FAULT_LOSTWRITE_ENABLED=true`, it returns
+`status:1` "create and modify success" but skips the persist to `ts-route-service` (masked, no marker).
+Default off = no behavior change. Documented in `ts-admin-route-service/FAULT_INJECTION_SUMMARY.md`.
+**Build/deploy + read-back test → WSL2 runbook: `gate1-environment-runbook.md`.** Branch kept LOCAL (remote
+is the collaborator's `AsifShaafi/train-ticket-injection`; not pushed — WSL2 builds from the local checkout).
+Compiler not run here (trivial, review-verified); real verification is the runbook's read-back test on WSL2.
+Next optional SUT extension: `SWALLOW_DOWNSTREAM_FAULT` + replicate `LOST_WRITE` on 1–2 more write-path services.
