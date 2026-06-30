@@ -13,6 +13,16 @@ assertion*. Everything before Gate 3 exists to make that hunt possible and credi
 
 ---
 
+## Prep finding (2026-06-30) that reshapes B1 — see prep/sut-fault-injection-capability.md
+Our SUT fork (`train-ticket-injection@injection`) already has an in-service fault injector
+(`FaultInjectionResponse` + inline `*ServiceImpl` hooks; canonical 10-fault state). It does input-validation
+rejections today; a small SUT-side extension (`LOST_WRITE_FAULT`: skip persist, return 2xx) on a new
+`MIST-trainticket` branch gives the differential oracle its **ground-truth positives with ZERO MIST tool
+code**. So B1's *ground-truth* provocation = the SUT injector (clean, labeled); Toxiproxy / real outage is
+reserved for the *unmodified-system* Gate-3 hunt. B2 (the oracle, in MIST) remains BLOCKED until "yes".
+
+---
+
 ## Gate 1 — "the mechanism is real and sound on one SUT" (FIRST SPRINT)
 
 **Definition of done (from plan §8 Gate 1):** on TrainTicket, B1+B2 run end-to-end; the differential oracle

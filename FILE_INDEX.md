@@ -843,6 +843,7 @@ Developer design notes / investigation logs (excluding inputs), plus the input-q
 | Path | Description |
 |------|-------------|
 | `debug/a-main/prep/target-triples.md` | Main-track prep (no tool code): candidate (write endpoint, persisting dependency, read-back GET) triples in the TrainTicket spec for the Gate 1 differential data-integrity oracle; recommends adminroute + adminbasic/contacts |
+| `debug/a-main/prep/sut-fault-injection-capability.md` | Main-track prep (no tool code): our SUT fork (train-ticket-injection@injection) already has an in-service fault injector; how to extend it SUT-side (LOST_WRITE_FAULT on a MIST-trainticket branch) to build the differential-oracle ground truth with zero MIST tool changes |
 
 ### `debug/a-main/archive-2026-06-01/`
 
