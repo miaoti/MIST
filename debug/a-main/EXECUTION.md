@@ -63,8 +63,12 @@ measured and low**. Fail ⇒ mechanism unsound ⇒ revisit plan §9.
   3. **Late compensation:** bounded window for saga/compensation completion (trace-detected); distinguish
      *pending* from *missing*.
   4. **Normalization:** idempotency keys; normalize volatile fields (timestamps/IDs) before the diff.
-- **Fire rule:** fault-run client response is 2xx/"success" AND D span errored/aborted AND `S_fault` violates
-  the success contract (entity absent / stale / partial vs `S_control`).
+- **Fire rule — TWO modes (authoritative spec: `TOOL-EXECUTION-PLAN.md` §3 B2.3; refined post-REVIEW2):** a
+  per-run relation — a 2xx/"success" run acknowledging entity X must have X on its OWN read-back. **pure-
+  differential (headline):** fire = fault run 2xx acknowledging X AND X absent/stale on the fault read-back AND
+  control shows X present (no D-error gate → also catches S2/skip-persist; read-back stays trace-independent).
+  **gated (high-confidence / S1, validation deferred to G3):** the same AND `D span observed errored/aborted`.
+  **Do NOT build only the single gated rule — it cannot fire on the S2 smoke case** (D never called, no D span).
 - **Checker + surface:** new `ShapeInvariant`-style checker; surface findings in the report/Allure with the
   control/fault traces and the state diff.
 

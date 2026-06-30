@@ -3,12 +3,14 @@
 > **This plan TOUCHES MIST tool code → executing it requires the user's explicit "yes".** It is the
 > step-by-step, evidence-anchored sequence to build B1+B2 toward Gate 1, refined by the live Gate-1 smoke
 > result **and a multi-round self-review against README §3/§4, EXECUTION G1a/b/c, all three Round-2 reviewers
-> (R1 novelty, R2 evaluation, R3 soundness), plus engineering-feasibility & internal-consistency passes**.
+> (R1 novelty, R2 evaluation, R3 soundness), plus engineering-feasibility & internal-consistency passes, then
+> an independent cold-reviewer subagent (no shared context) that confirmed NO MAJOR and spot-verified all five
+> cited seams as real & line-accurate — its MODERATE findings are folded into v4**.
 > Every step cites a real code seam (from
 > `research/01-feasibility-codebase.md`, audited 2026-06-30 with `file:line`; **re-verify the exact line at
 > edit time**) and/or the smoke evidence (`prep/gate1-smoke-result.md`) and/or a reviewer concern. All MIST
 > changes go on branch `main_track`. **Build additively — with every flag OFF, behavior is byte-for-byte
-> unchanged.** v3 (review-hardened), 2026-06-30.
+> unchanged.** v4 (review-hardened; passed an independent cold review), 2026-06-30.
 
 ## 0. Facts the smoke + review established (this plan's footing — not assumptions)
 1. On a real, fully-deployed TrainTicket, the SUT-side `LOST_WRITE` makes `POST /adminroute` return **HTTP
@@ -17,8 +19,9 @@
 2. **All response-level oracles pass the fault run** (status 200, schema ok, body `status:1`). Only the
    control-vs-fault **read-back** distinguishes them. → B2's value is exactly read-back, not the response.
 3. **read-back is a black-box GET**, so its signal is **independent of the trace signal floor** (research/01
-   §D: status+topology+otel/response_flags) — B2 does **not** degrade on Envoy-only SUTs where the trace
-   carries less. **BUT applicability is a separate axis:** B2 applies **only** to write-path SUTs with a clean
+   §D: status+topology+otel/response_flags) — **the pure-differential mode's signal** does **not** degrade on
+   Envoy-only SUTs where the trace carries less (the **gated** mode, keying on an observed D-error, DOES ride
+   the trace floor — so this independence is the pure mode's, not "B2's"). **BUT applicability is a separate axis:** B2 applies **only** to write-path SUTs with a clean
    black-box read-back (README §4.6 — TrainTicket/TeaStore/Sock Shop/petclinic), **not** read-only/derived
    demos (Bookinfo, Online Boutique). Do not conflate "signal-floor-independent" with "runs on any Envoy SUT."
 4. The opt-in fault flag **must use a JVM `-D` system property** (`JAVA_TOOL_OPTIONS=-Dmist.fault....=true`),
@@ -34,12 +37,17 @@
    The point that matters: a read-back differential keys on **persisted state, not on a downstream-error
    signal**, so it covers S1 and S2 *alike*. Any **downstream-error-keyed** oracle (the naive span-error
    baseline, MIST's own gated mode in B2.3) has **no signal on S2** — that is the real, **E2-measurable**
-   delta (README §6 precision-vs-naive-span-error). **Do NOT overclaim this against Cast:** Cast's *injection*
+   delta, **over those weak baselines** (the load-bearing Cast/Filibuster comparison is the deferred G2 item, §7). **Do NOT overclaim this against Cast:** Cast's *injection*
    sits at the DB call (S1-style) and its *oracle* is metric-threshold/assertion-point — a different,
    stronger-assumption mechanism; whether Cast's assertion points catch a *naturally-occurring* S2 is
    **unverified**, so claim only "different / weaker-assumption mechanism," never "Cast structurally cannot
    reach S2." (Honesty basis = REVIEW2-R1, which flags manufactured deltas; research/03 §4.3 already concedes
    the read-back diff "automates an assertion, not a new analysis.")
+   **S2 is only producible invasively (disclose):** S2 = "D never called" is an *application-logic* fault; a
+   TCP-level proxy (Toxiproxy) can only perturb calls that ARE made → it yields **S1, never S2**. So the
+   pure-differential mode's S2-distinguishing power is demonstrable only on a **source-injected** SUT (the
+   Gate-1 `LOST_WRITE` flag) or a **real wild S2** (the uncertain G3 bet) — **never on the black-box Toxiproxy
+   path**, which exercises only the gated/S1 mode. Do not imply the black-box path evidences S2.
 
 ## 1. Pre-flight (no-regret; do first, no behavior change)
 - **P1. Branch + flags.** Confirm on `main_track`. Reserve two OFF-by-default config keys, mirroring the
@@ -50,6 +58,11 @@
   style) listing `{write_endpoint, dependency, readback_endpoint, isolation_key}` — exactly the
   `prep/target-triples.md` triples. The `dependency` must be a **trace-matchable service/operation key** (the
   gated mode in B2.3 needs to locate D's span). No logic yet; data only.
+- **P3. Async benign-trap prerequisite (make-or-break — schedule before B2.4, do NOT discover mid-Gate-1).**
+  The read-back FP probe (B2.4) needs a **broker-mediated** async write path, not a synchronous sleep.
+  **UNVERIFIED whether TrainTicket exposes a clean black-box async write+read-back without new SUT work** —
+  resolve FIRST: name the concrete rabbitmq-backed write endpoint(s) (e.g. order/cancel or notification flows)
+  and decide *existing path* vs a *new SUT-side async injector*. This gates B2.4 (cold-review MODERATE #3).
 
 ## 2. B1 — opt-in fault-injection mode (research/01 build-list #4; EXECUTION G1a)
 **Goal:** for a target write request, run it once clean (control) and once with the dependency faulted
@@ -107,9 +120,13 @@ trace-derived gate (see B2.3).
   - **Late compensation (the missing_compensation path):** for saga/compensation flows, wait a bounded,
     trace-detected window and **distinguish *pending* (not yet arrived) from *missing* (truly absent)**
     (README §4.3). v1 only handled lost-write; this path is required because missing_compensation is a named
-    fault class in our benchmark.
+    fault class in our benchmark. **Code-built at Gate-1 but VALIDATED AT G3** against the named saga site —
+    Gate-1's shallow CRUD targets have no compensation flow to exercise it (same treatment as the gated mode;
+    its Gate-1 verify row is dropped from §5 — cold-review MODERATE #2).
   - **Normalization:** idempotency keys; strip volatile fields (timestamps, server-generated ids) before diff.
-- **B2.3 Fire rule — a per-run metamorphic relation, in TWO modes reported separately.**
+- **B2.3 Fire rule — a bounded, FP-measured differential relation (per-run), in TWO modes reported separately.**
+  (Not called an "invariant": R3's standing point is "a race, not an invariant" — the per-run framing kills
+  *cross-run* contamination but not the *temporal* race, which only B2.2 + the measured FP bound.)
   Base relation (both modes): a run whose client response is **2xx/"success" and that acknowledges entity X**
   must have **X present/correct on its OWN read-back**; fire when that is violated. *Diff each run against its
   own acknowledgement — NOT one collection against the other.* The control run is a **control for false
@@ -133,8 +150,8 @@ trace-derived gate (see B2.3).
     synchronous `DELAYED_WRITE` sleep** — because R3's real soundness fear is the async regime where OTel
     yields span *links*, producer/consumer spans need not co-occur in one trace, and trace-driven quiescence
     silently degrades to a wall-clock timeout (R3 #1/#4). A synchronous sleep only tests "did poll wait long
-    enough"; it does **not** exercise the degradation R3 names. (A SUT-side async injector is the remaining
-    SUT-side prep.)
+    enough"; it does **not** exercise the degradation R3 names. (Prerequisite = **P3**: resolve the concrete
+    rabbitmq path vs a new SUT-side async injector there, before this step.)
   - Report measured FP/FN **per-SUT** + **quiescence-gate coverage per-SUT**; state explicitly that FP on a
     *constructed* benign-trap is a **lower bound** on wild-async FP (R3 #4).
   - **Gate-1 pass = fires on the constructed lost-write + low/characterized FP (especially in the
@@ -152,6 +169,13 @@ not a cross-service snapshot**. A write can be lost in store A while a GET hitti
 still looks correct (or vice versa). The oracle measures **read-back equivalence to the control**, not
 **persisted-state correctness** — state this as the honest ceiling of a black-box oracle; do not call it
 "data-correctness" unqualified.
+
+**Gate-1 evidences the ORACLE pillar, not the GENERATION pillar (disclose, cold-review MODERATE).** Gate-1
+hand-targets a known endpoint and reuses one verified input — it validates the label-free read-back oracle,
+**NOT** the generation-driven path-discovery delta vs Cast (README §2 axis 1; that delta is "argued, not
+measured," R2 R5). A green Gate-1 must not be read as evidence for the novelty axis; path-coverage is a
+G3/eval claim. Also: Gate-1 tests async *specificity* (benign trap, B2.4) but not async *sensitivity* (a
+lost-write on an async path) — the latter is a G3 item.
 
 ## 4. Gate-1 validation (EXECUTION G1c)
 - **Sensitivity (Gate-1 = pure-differential only):** drive B1+B2 over the adminroute + adminbasic triples;
@@ -175,11 +199,11 @@ B1.3 pairing executor  → verify: control persists, fault masks (smoke parity, 
 B2.1 read-back capture → verify: fault read-back lacks its own X; control read-back has its X (per-run, not list-eq)
 B2.2 isolation         → verify: fresh non-shared entity; runs never collide
 B2.2 quiescence        → verify: poll OR trace-completion; gate-coverage logged per verdict
-B2.2 pending-vs-missing→ verify: bounded compensation window distinguishes the two (saga path)
+B2.2 pending-vs-missing→ (NOT Gate-1 — no saga target) code compiles; VALIDATED AT G3 vs named saga site
 B2.2 normalization     → verify: idempotency key + volatile-field strip before diff
 B2.3 fire rule         → verify: pure-differential fires on S2 (per-run X∉read-back); gated path compiles,
                          validated at G3 (needs Toxiproxy S1); two strata reported separately
-B2.4 FP measurement    → verify: benign-trap incl. broker-async; FP + quiescence-coverage per-SUT  ← make-or-break
+B2.4 FP measurement    → verify: P3 resolved (broker-async trap); FP + quiescence-coverage per-SUT  ← make-or-break
 Gate-1 verdict         → PASS/FAIL recorded (non-timeout-gated FP must be characterized-low)
 ```
 
@@ -191,12 +215,17 @@ Gate-1 verdict         → PASS/FAIL recorded (non-timeout-gated FP must be char
   Do NOT phrase (a) as "Cast can't reach it" — unverified (§0 fact 6). The gated mode (observed D-error) is a
   lower-FP S1 stratum, reported **separately**, never pooled (R3 #1). Cost owned: pure-differential puts the
   entire FP burden on the B2.2 protocol → B2.4's measured FP is make-or-break.
-- **This two-mode fire SUPERSEDES the single rule in README §4 / research/03 §4** (both bundle the D-error
-  conjunct = gated-only, S1). When B2 lands, propagate the split back into README §4 + EXECUTION G1b so there
-  is one source of truth (the original formulation silently covered only S1).
+- **This two-mode fire SUPERSEDES the single rule in README §4 / research/03 §4** (both bundled the D-error
+  conjunct = gated-only, S1). **Propagated now (v4): README §4 + EXECUTION G1b point here as the authoritative
+  spec** so an implementer following EXECUTION cannot build the S2-blind single rule (cold-review MODERATE #1 —
+  spec-propagation had to precede code, not follow it). research/03 §4 is left as a historical analysis
+  snapshot (not back-edited).
 - **Flag via `-D`, never env** (smoke fact #4).
 - **SUT-flag injector first, Toxiproxy later** — smoke proved the SUT flag is the cleanest labeled positive;
   Toxiproxy/real-outage is for the Gate-3 unmodified-system hunt, worded connection-level (R3 #5).
+  **Toxiproxy can only ever validate the gated/S1 mode** (it perturbs calls that are made; S2 = no call), so
+  pure-differential's S2 evidence is source-injected at Gate-1 / wild at G3, never on the proxy path; and the
+  "no-SUT-change identity" is precisely "no SUT *source* change + an in-path proxy," not literally unmodified.
 - **Gate-1 picks non-shared-inventory, shallow targets on purpose** — to make black-box isolation hold and
   isolate the mechanism question; shared-inventory isolation (R3 #2) and saga depth (R2 R4) are explicit G3
   expansions, not Gate-1 claims.

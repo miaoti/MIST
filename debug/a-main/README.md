@@ -134,6 +134,15 @@ dependency *D*: run *R* without a fault (read back → `S_control`), run *R* wit
 errored/aborted AND the success-contract is violated (acknowledged-but-not-persisted write, skipped
 compensation, orphaned/partial state).
 
+**[Refined post-REVIEW2 — `TOOL-EXECUTION-PLAN.md` §3 B2.3 is the authoritative spec.]** The D-error conjunct
+above is now the **gated (high-confidence / S1)** mode ONLY. The **headline pure-differential mode drops it**:
+fire = a 2xx/"success" run that acknowledges entity X but lacks X on its OWN read-back, with the control run
+as a false-positive guard. Dropping the conjunct lets the oracle also fire on **skip-persist (S2: D is never
+called → no D span)** and keeps read-back **independent of the trace** (the §6 de-circularization precondition,
+per REVIEW2-R2 §2a, which flags the D-error conjunct as re-importing trace-conditioning). The gated mode needs
+a real errored D span (Toxiproxy/S1) and is validated at Gate 3. **Implementers: build the two-mode rule, not
+the single gated rule above.**
+
 **Why a naive version is unsound (R3, verbatim concern): "the diff is a race, not an invariant."** Late saga
 compensation, async/CQRS writes, shared mutable state across two mutating runs, and retries all confound a
 naive read-back diff — and MIST would false-positive on exactly the async-*benign* cases it must beat. Cast
