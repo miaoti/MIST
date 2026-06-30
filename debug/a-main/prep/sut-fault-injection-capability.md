@@ -78,4 +78,17 @@ Default off = no behavior change. Documented in `ts-admin-route-service/FAULT_IN
 **Build/deploy + read-back test → WSL2 runbook: `gate1-environment-runbook.md`.** Branch kept LOCAL (remote
 is the collaborator's `AsifShaafi/train-ticket-injection`; not pushed — WSL2 builds from the local checkout).
 Compiler not run here (trivial, review-verified); real verification is the runbook's read-back test on WSL2.
-Next optional SUT extension: `SWALLOW_DOWNSTREAM_FAULT` + replicate `LOST_WRITE` on 1–2 more write-path services.
+
+## 9. Implemented (2026-06-30) — DONE for adminbasic/contacts (2nd service)
+Commit `bbf3d6ae` (MIST-trainticket) adds the same `LOST_WRITE_FAULT` to
+`AdminBasicInfoServiceImpl.addContact` (`POST /api/v1/adminbasicservice/adminbasic/contacts`): when env
+`MIST_FAULT_LOSTWRITE_ENABLED=true`, it returns `status:1` "create contacts success" but skips the persist
+to `ts-contacts-service`. Same per-container env key (set it on `ts-admin-basic-info-service` to isolate).
+This is **target triple B** — a per-entity create with a fresh UUID per request, the cleanest isolation for
+**measuring the read-back oracle's FP rate** (plan §8.5). Two lost-write positives now exist on two distinct
+write-path services (adminroute, adminbasic), so the oracle's ground truth is not endpoint-specific.
+Benchmark seed case: `../benchmark/cases/TT-adminbasic-contacts-lostwrite-001.json`. Build/deploy verified
+on WSL2 via `make build` (same path as adminroute). Compiler/Response-ctor review-verified here
+(`Response<T>` is Lombok `@AllArgsConstructor(status,msg,data)`; `Contacts` is `@Data` → `getId()`).
+Remaining optional SUT extension: `SWALLOW_DOWNSTREAM_FAULT` (input-driven masked downstream error — would
+add a stratum-1 positive for the swallowed-downstream class and directly attack finding F4).

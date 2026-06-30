@@ -22,11 +22,14 @@ benchmark/
     fault-case.schema.json          JSON Schema (draft 2020-12) for ONE labeled case
     rubric.md                       pre-registered genuine-vs-benign labeling rubric (the adjudication guide)
   cases/
-    TT-adminroute-lostwrite-001.json   stratum 1, POSITIVE  (acknowledged-but-lost write; only our oracle catches it)
-    TT-adminroute-control-001.json     stratum 1, NEGATIVE  (clean control, same input, fault off)
-    bookinfo-ratings-benign-001.json   stratum 2, NEGATIVE  (designed degradation; the naive-oracle FP trap)
+    TT-adminroute-lostwrite-001.json         stratum 1, POSITIVE  (acknowledged-but-lost write; only our oracle catches it)
+    TT-adminroute-control-001.json           stratum 1, NEGATIVE  (clean control, same input, fault off)
+    TT-adminbasic-contacts-lostwrite-001.json stratum 1, POSITIVE  (lost write on a 2nd service; cleanest per-entity read-back)
+    bookinfo-ratings-benign-001.json         stratum 2, NEGATIVE  (designed degradation; the naive-oracle FP trap)
 ```
-The three cases double as schema-validation fixtures (one per stratum/role) and as the first real seeds.
+The seed cases double as schema-validation fixtures (covering each stratum/role) and as the first real
+seeds; the two lost-write positives sit on different write-path services (adminroute, adminbasic/contacts)
+to show the oracle is not endpoint-specific.
 
 ## 3. The three strata (from the evaluation design, §4 of doc 05)
 - **Stratum 1 — positive ground truth.** Injected / replicated / vendor faults with a label known *by

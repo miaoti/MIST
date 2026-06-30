@@ -843,7 +843,7 @@ Developer design notes / investigation logs (excluding inputs), plus the input-q
 | Path | Description |
 |------|-------------|
 | `debug/a-main/prep/target-triples.md` | Main-track prep (no tool code): candidate (write endpoint, persisting dependency, read-back GET) triples in the TrainTicket spec for the Gate 1 differential data-integrity oracle; recommends adminroute + adminbasic/contacts |
-| `debug/a-main/prep/sut-fault-injection-capability.md` | Main-track prep (no tool code): our SUT fork (train-ticket-injection@injection) already has an in-service fault injector; how to extend it SUT-side (LOST_WRITE_FAULT on a MIST-trainticket branch) to build the differential-oracle ground truth with zero MIST tool changes; §8 records the implemented adminroute LOST_WRITE (commit 5c471dd8) |
+| `debug/a-main/prep/sut-fault-injection-capability.md` | Main-track prep (no tool code): our SUT fork (train-ticket-injection@injection) already has an in-service fault injector; how to extend it SUT-side (LOST_WRITE_FAULT on a MIST-trainticket branch) to build the differential-oracle ground truth with zero MIST tool changes; §8/§9 record the implemented LOST_WRITE on adminroute (5c471dd8) and adminbasic/contacts (bbf3d6ae) |
 | `debug/a-main/prep/gate1-environment-runbook.md` | Main-track prep (no tool code): WSL2/k8s runbook to deploy TrainTicket (MIST-trainticket branch) with tracing, enable the LOST_WRITE variant on ts-admin-route-service, and confirm the acknowledged-but-lost write by read-back (manual proof of the differential oracle's target before B2 is built) |
 
 ### `debug/a-main/benchmark/`
@@ -855,6 +855,7 @@ Developer design notes / investigation logs (excluding inputs), plus the input-q
 | `debug/a-main/benchmark/schema/rubric.md` | Pre-registered genuine-vs-benign labeling rubric (adjudication guide shipped with the benchmark): checkable predicates per fault class, quiescence protocol, stratum-3 κ adjudication, honesty rules |
 | `debug/a-main/benchmark/cases/TT-adminroute-lostwrite-001.json` | Seed case — stratum 1 POSITIVE: adminroute acknowledged-but-lost write (LOST_WRITE_FAULT); all baseline + trace-shape oracles pass, only the read-back differential oracle flags it |
 | `debug/a-main/benchmark/cases/TT-adminroute-control-001.json` | Seed case — stratum 1 NEGATIVE control: same input, fault off; the read-back oracle must not fire (per-case specificity check) |
+| `debug/a-main/benchmark/cases/TT-adminbasic-contacts-lostwrite-001.json` | Seed case — stratum 1 POSITIVE: second lost write on a different service (adminbasic addContact → ts-contacts-service); fresh-UUID per-entity create = cleanest read-back FP-measurement target (triple B) |
 | `debug/a-main/benchmark/cases/bookinfo-ratings-benign-001.json` | Seed case — stratum 2 NEGATIVE benign trap: Bookinfo reviews→ratings designed degradation; the naive span-error oracle false-positives, the MIST target is no_flag (the A1 precision/FP test) |
 
 ### `debug/a-main/archive-2026-06-01/`

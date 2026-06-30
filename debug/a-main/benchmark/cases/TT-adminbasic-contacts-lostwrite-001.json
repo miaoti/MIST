@@ -1,0 +1,56 @@
+{
+  "case_id": "TT-adminbasic-contacts-lostwrite-001",
+  "schema_version": "0.1.0",
+  "stratum": 1,
+  "fault_class": "acknowledged_lost_write",
+  "capture_status": "specified",
+  "sut": {
+    "name": "TrainTicket",
+    "repo": "github.com/miaoti-or-collaborator/train-ticket-injection",
+    "branch": "MIST-trainticket",
+    "commit": "bbf3d6ae",
+    "deploy": "k8s/minikube via make deploy (with OTel->Jaeger tracing)"
+  },
+  "target": {
+    "entry_endpoint": {
+      "method": "POST",
+      "path": "/api/v1/adminbasicservice/adminbasic/contacts",
+      "service": "ts-admin-basic-info-service"
+    },
+    "dependency": {
+      "service": "ts-contacts-service",
+      "kind": "persistence"
+    },
+    "readback_endpoint": {
+      "method": "GET",
+      "path": "/api/v1/adminbasicservice/adminbasic/contacts",
+      "service": "ts-admin-basic-info-service"
+    }
+  },
+  "injection": {
+    "mechanism": "sut_injector",
+    "config": { "env": { "MIST_FAULT_LOSTWRITE_ENABLED": "true" } },
+    "injected_by": "MIST-trainticket@bbf3d6ae (AdminBasicInfoServiceImpl.addContact)",
+    "trigger_input": "valid Contacts with a fresh unique UUID id (and accountId, name, document fields)"
+  },
+  "ground_truth": {
+    "label": "positive",
+    "rationale": "With the flag on, addContact returns status:1 'create contacts success' but skips the persist POST to ts-contacts-service, so the contact is never saved. Verified by read-back: GET getAllContacts does not list the new contact id.",
+    "source": "by_construction"
+  },
+  "oracle_expectation": {
+    "status_code_oracle": "no_flag",
+    "schema_oracle": "no_flag",
+    "body_marker_oracle": "no_flag",
+    "naive_span_error_oracle": "no_flag",
+    "mist_trace_shape_oracle": "no_flag",
+    "mist_dataintegrity_oracle": "flag"
+  },
+  "provenance": {
+    "control_trace": null,
+    "fault_trace": null,
+    "readback_response": null,
+    "notes": "Second lost-write positive on a different write-path service (proves the oracle is not adminroute-specific). The fresh-UUID-per-create gives clean per-entity isolation, making this the preferred target for MEASURING the read-back oracle's false-positive rate (target triple B). Traces + read-back captured at Gate 1."
+  },
+  "adjudication": null
+}
