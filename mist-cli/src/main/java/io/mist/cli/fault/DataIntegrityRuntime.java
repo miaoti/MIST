@@ -497,7 +497,10 @@ public final class DataIntegrityRuntime {
             return false;
         }
         try {
-            String url = base.replaceAll("/$", "") + "/api/traces/" + traceId.trim();
+            // Same convention as the writer-emitted lookup: jaeger.base.url
+            // already ends in /api (e.g. .../jaeger/ui/api), so append only
+            // /traces/<id>.
+            String url = base.replaceAll("/$", "") + "/traces/" + traceId.trim();
             int first = spanCount(http.getAbsolute(url));
             if (first <= 0) {
                 return false;

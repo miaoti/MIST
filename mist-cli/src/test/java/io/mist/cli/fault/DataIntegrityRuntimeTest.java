@@ -226,7 +226,8 @@ public class DataIntegrityRuntimeTest {
 
     @Test
     public void ackedButNeverPresent_withStableTrace_gatesObservedCompleteAbsent() {
-        System.setProperty("jaeger.base.url", "http://jaeger.test:16686");
+        // Base URL includes /api like the real config (.../jaeger/ui/api).
+        System.setProperty("jaeger.base.url", "http://jaeger.test:16686/api");
         http.scriptAbsolute("http://jaeger.test:16686/api/traces/trace77",
                 "{\"data\":[{\"spans\":[{},{},{}]}]}");
         begin("fault", contactTriple());
