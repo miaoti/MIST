@@ -135,8 +135,20 @@ behind the flag and frame it as a mode, or the "no SUT instrumentation" identity
   (`MistRunner.java:502-557`, verified-valid *values* harvested in Phase A) so the only **behavioral**
   abnormality is the injected fault — the isolation key is **freshly varied by design** (B2.2), so control and
   fault are deliberately not byte-identical inputs.
+  **✅ DONE (code+unit) 2026-07-01** — realized as: the pairing test IS a normally-generated test (bodies from
+  the generator/pool path, two-phase Phase B when `mst.two.phase.enabled=true` — the Gate-1 run config), and
+  `DataIntegrityRuntime.beforeWrite` freshens ONLY the isolation-key fields (plus stripping server-assigned
+  `id`); all other fields keep their pool/generator values. Unit-pinned (`freshStrings_rewritesKeys...`,
+  `stationPair_...` keep pool fields).
 - **B1.3 Control/fault pairing executor.** New orchestration: for target request R, execute control (no
   inject) then fault (inject → run → clear). Separate code path entered only when `mist.fault.injection.enabled`.
+  **✅ DONE (code+unit) 2026-07-01** — `PairedFaultExecutor` (mist-cli): clear-all hygiene → control run →
+  inject-all (batched, D-m2) → fault run → clear-all in `finally` (flag can never leak); runs execute
+  back-to-back with no interleaved mutation (smoke evidence-hygiene note honored); entered from
+  `MistRunner.executePairedDataIntegrity` ONLY when `FaultInjector.enabled()` AND the B2 registry is loaded;
+  enhancer+pairing config conflict fails fast. Exact-method JUnit filter reuses the round-mode executor via a
+  new Predicate overload (legacy substring path delegates, byte-identical). Unit-pinned incl. crash-safe
+  clearing. **Live smoke-parity (B1.4) runs in the Gate-1 cluster session.**
 - **B1.4 Acceptance.** Fault run shows the masked write (smoke: `status:1` + `data:null` + getAllRoutes
   unchanged); control run persists; flag OFF ⇒ no new code path runs. *Verify by re-running the exact smoke
   scenario through MIST instead of curl.*
@@ -175,6 +187,11 @@ trace-derived gate (see B2.3).
 
 - **B2.1 Read-back capture.** After each run in the pair, GET the triple's `readback_endpoint` and capture
   `S_control` / `S_fault` (smoke read-back: getAllRoutes JSON).
+  **✅ DONE (code+unit) 2026-07-01** — codegen layer: writer emits `DataIntegrityRuntime.beforeWrite`
+  (baseline GET + freshen, between the body literal and `req.body`) and `afterWrite` (ack + polled read-back,
+  fed the step's own W3C traceparent id) for steps matching a registered triple; zero emission when no triples
+  registered (flag-off byte-identity pinned by `DataIntegrityEmissionTest`). Records cross back via the
+  runtime's static holder (LAST_VERDICT sibling pattern), drained by B1.3 after each JUnitCore run.
 - **B2.2 Soundness protocol (§4 — the contribution's spine, not a footnote):**
   - **Isolation:** one fresh unique entity per test, keyed by a **request-supplied business key** (adminroute:
     station-pair; adminbasic/contacts: accountId+documentNumber) — NOT a per-entity GET (adminbasic has none;
@@ -201,6 +218,23 @@ trace-derived gate (see B2.3).
     named saga site — Gate-1's shallow CRUD targets have no compensation flow to exercise it (its Gate-1 verify
     row is reduced to a **compile-only check** in §5, not a fire/FP test — cold-review MODERATE #2).
   - **Normalization:** idempotency keys; strip volatile fields (timestamps, server-generated ids) before diff.
+  **✅ DONE (code+unit) 2026-07-01, with two build-time discoveries recorded:** (1) **Isolation, adminroute:**
+  the SUT *validates station existence* (`AdminRouteServiceImpl.checkStationsExists` → status:0 on unknown
+  names, source-verified) on BOTH control and fault paths, so fresh random station names would be rejected —
+  freshness is therefore an **unused ordered pair of EXISTING stations relative to the run's own baseline
+  read-back** (`station-pair` strategy; catalogue via `GET /stationservice/stations`); contacts keeps plain
+  `fresh-strings` (admin create dedupes on accountId+documentNumber+documentType, source-verified — a duplicate
+  returns status:0, which is not a 2xx-ack, so no FP source). Strategy is declared per-triple in the registry.
+  (2) **Quiescence:** poll-until-X-present (gate `OBSERVED_PRESENT`) with hard pre-registered timeout
+  (`mst.oracle.dataintegrity.{poll,timeout}.ms`, defaults 500/10000, whitelisted); an ABSENT verdict is
+  upgraded to `OBSERVED_COMPLETE_ABSENT` only when the step's own trace (exact traceparent id, emitted per
+  step at writer :2130) is present in Jaeger with a stable span set — otherwise it stays `TIMEOUT_ABSENT`
+  (the lower-confidence stratum). **This makes the FIRE verdicts observation-gatable — R3 #1's exact demand —
+  because absence, not just presence, can be observation-gated.** No early "stable-absent" exit: premature
+  absence exits would bias benign eventually-consistent traps toward false fires (B2.4's metric), so absence
+  concludes only at the pre-registered cap. Pending-vs-missing (compensation) remains compile-only at Gate-1
+  per the reduced §5 row. Normalization = membership by business-key projection (volatile fields never
+  compared). All unit-pinned.
 - **B2.3 Fire rule — a bounded, FP-measured differential relation (per-run), in TWO modes reported separately.**
   (Not called an "invariant": R3's standing point is "a race, not an invariant" — the per-run framing kills
   *cross-run* contamination but not the *temporal* race, which only B2.2 + the measured FP bound.)
@@ -233,6 +267,14 @@ trace-derived gate (see B2.3).
   - Smoke instance (S2): fault `status:1` acknowledging route X, but X ∉ getAllRoutes while the control's route
     IS present ⇒ pure-differential fires. Surface in report/Allure with both read-backs + the per-run diff
     (reuse `MultiServiceRESTAssuredWriter.java:714`).
+  **✅ DONE (code+unit) 2026-07-01** — pure-differential implemented in `PairedFaultExecutor.verdict` exactly
+  as specified (FIRE = fault 2xx-acks-X ∧ X∉fault-read-back ∧ control-X-present; X request-derived via the
+  freshened business key, never from the response; per-run membership, not list-equality; control failures =
+  NOT_EVALUABLE, never NO_FIRE evidence; isolation violation = NOT_EVALUABLE). Unit test drives a stateful
+  fake SUT through the REAL hook chain and the masked run FIREs. **Gated mode: implemented as a reported
+  stratum with verdict slot `NOT_EVALUATED (needs observed D-error; Toxiproxy → G3)` — code path exists,
+  never pooled with pure-differential, exercised at G3** (per §5 reduced row). JSON pairing report + console
+  summary carry both strata + the fault run's quiescence gate. Live S2 fire on the real SUT = Gate-1 session.
 - **B2.4 MEASURE the read-back FP rate (make-or-break, §8.5):**
   - Build a **benign-trap stratum** the oracle must NOT fire on: eventually-consistent-then-correct writes
     **AND the `2xx-accepted-but-by-design-never-persists` sub-class (accept-then-drop — e.g. a write silently

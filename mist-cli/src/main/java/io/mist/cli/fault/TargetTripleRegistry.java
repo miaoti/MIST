@@ -20,7 +20,9 @@ import java.util.Set;
  * differential data-integrity oracle. Each triple names a state-mutating write
  * endpoint, the trace-matchable persisting dependency D, the black-box
  * read-back GET, and the request-supplied business-key fields used for
- * per-test isolation (TOOL-EXECUTION-PLAN P2).
+ * per-test isolation (TOOL-EXECUTION-PLAN P2); the optional top-level
+ * {@code cluster} block carries the kubectl coordinates the
+ * {@link SutFlagFaultInjector} needs (B1.1).
  *
  * <p>Pure data holder: consulted only by the flag-gated control/fault pairing
  * executor ({@code mist.fault.injection.enabled=true}), never on the legacy
@@ -29,6 +31,54 @@ import java.util.Set;
  */
 public final class TargetTripleRegistry {
 
+    /** How the pairing run freshens the isolation-key fields per execution. */
+    public enum IsolationStrategy {
+        /** Unique generated string per key field (general create endpoints). */
+        FRESH_STRINGS,
+        /**
+         * TrainTicket adminroute adapter: ordered pair of EXISTING stations
+         * unused by any baseline route (the SUT validates station existence).
+         */
+        STATION_PAIR;
+
+        static IsolationStrategy parse(String raw, String origin) {
+            if (raw == null) {
+                return FRESH_STRINGS;
+            }
+            switch (raw) {
+                case "fresh-strings": return FRESH_STRINGS;
+                case "station-pair":  return STATION_PAIR;
+                default:
+                    throw new IllegalArgumentException("TargetTripleRegistry: unknown isolation_strategy '"
+                            + raw + "' in " + origin + " (allowed: fresh-strings, station-pair)");
+            }
+        }
+    }
+
+    /** Parsed registry: optional cluster coordinates + at least one triple. */
+    public static final class Registry {
+        public final Cluster cluster;
+        public final List<Triple> triples;
+
+        Registry(Cluster cluster, List<Triple> triples) {
+            this.cluster = cluster;
+            this.triples = triples;
+        }
+    }
+
+    /** kubectl coordinates for the SutFlagFaultInjector; null context = current. */
+    public static final class Cluster {
+        public final String context;
+        public final String namespace;
+        public final long rolloutTimeoutSeconds;
+
+        Cluster(String context, String namespace, long rolloutTimeoutSeconds) {
+            this.context = context;
+            this.namespace = namespace;
+            this.rolloutTimeoutSeconds = rolloutTimeoutSeconds;
+        }
+    }
+
     /** One (write endpoint, dependency, read-back, isolation key) target. */
     public static final class Triple {
         public final String name;
@@ -36,45 +86,54 @@ public final class TargetTripleRegistry {
         public final String dependency;
         public final String readbackEndpoint;
         public final List<String> isolationKey;
+        public final IsolationStrategy isolationStrategy;
         /** SUT-side ground-truth flag (B1.1); null on benign-trap-only targets. */
         public final FaultInjector.FaultTarget faultFlag;
 
         Triple(String name, String writeEndpoint, String dependency,
                String readbackEndpoint, List<String> isolationKey,
+               IsolationStrategy isolationStrategy,
                FaultInjector.FaultTarget faultFlag) {
             this.name = name;
             this.writeEndpoint = writeEndpoint;
             this.dependency = dependency;
             this.readbackEndpoint = readbackEndpoint;
             this.isolationKey = Collections.unmodifiableList(new ArrayList<>(isolationKey));
+            this.isolationStrategy = isolationStrategy;
             this.faultFlag = faultFlag;
         }
     }
 
+    private static final Set<String> ALLOWED_TOP_KEYS = Collections.unmodifiableSet(new HashSet<>(
+            Arrays.asList("cluster", "triples")));
+
     private static final Set<String> ALLOWED_KEYS = Collections.unmodifiableSet(new HashSet<>(
             Arrays.asList("name", "write_endpoint", "dependency", "readback_endpoint", "isolation_key",
-                    "fault_flag")));
+                    "isolation_strategy", "fault_flag")));
 
     private static final Set<String> ALLOWED_FAULT_FLAG_KEYS = Collections.unmodifiableSet(new HashSet<>(
             Arrays.asList("deployment", "property")));
+
+    private static final Set<String> ALLOWED_CLUSTER_KEYS = Collections.unmodifiableSet(new HashSet<>(
+            Arrays.asList("context", "namespace", "rollout_timeout_s")));
 
     private TargetTripleRegistry() {
         // static loader only
     }
 
     /** Loads and validates a registry file from disk. */
-    public static List<Triple> load(Path yamlFile) throws IOException {
+    public static Registry load(Path yamlFile) throws IOException {
         try (InputStream in = Files.newInputStream(yamlFile)) {
             return parse(in, yamlFile.toString());
         }
     }
 
     /**
-     * Parses a registry document. Package-private so tests can feed streams;
-     * {@code origin} only labels error messages.
+     * Parses a registry document from a stream; {@code origin} only labels
+     * error messages.
      */
     @SuppressWarnings("unchecked")
-    static List<Triple> parse(InputStream in, String origin) {
+    public static Registry parse(InputStream in, String origin) {
         Object raw;
         try {
             raw = new Yaml().load(in);
@@ -86,7 +145,14 @@ public final class TargetTripleRegistry {
             throw new IllegalArgumentException(
                     "TargetTripleRegistry: " + origin + " must be a map with a top-level 'triples' list");
         }
-        Object triplesNode = ((Map<String, Object>) raw).get("triples");
+        Map<String, Object> root = (Map<String, Object>) raw;
+        for (String key : root.keySet()) {
+            if (!ALLOWED_TOP_KEYS.contains(key)) {
+                throw new IllegalArgumentException("TargetTripleRegistry: unknown top-level key '" + key
+                        + "' in " + origin + " (typo? allowed: " + ALLOWED_TOP_KEYS + ")");
+            }
+        }
+        Object triplesNode = root.get("triples");
         if (!(triplesNode instanceof List)) {
             throw new IllegalArgumentException(
                     "TargetTripleRegistry: " + origin + " is missing the top-level 'triples' list");
@@ -117,13 +183,47 @@ public final class TargetTripleRegistry {
                     requireString(entry, "dependency", origin),
                     requireString(entry, "readback_endpoint", origin),
                     requireStringList(entry, "isolation_key", origin),
+                    IsolationStrategy.parse(optionalString(entry, "isolation_strategy", origin), origin),
                     optionalFaultFlag(entry, origin)));
         }
         if (triples.isEmpty()) {
             throw new IllegalArgumentException(
                     "TargetTripleRegistry: 'triples' list in " + origin + " is empty");
         }
-        return Collections.unmodifiableList(triples);
+        return new Registry(optionalCluster(root, origin), Collections.unmodifiableList(triples));
+    }
+
+    @SuppressWarnings("unchecked")
+    private static Cluster optionalCluster(Map<String, Object> root, String origin) {
+        Object node = root.get("cluster");
+        if (node == null) {
+            return null;
+        }
+        if (!(node instanceof Map)) {
+            throw new IllegalArgumentException("TargetTripleRegistry: 'cluster' in " + origin
+                    + " must be a map");
+        }
+        Map<String, Object> cluster = (Map<String, Object>) node;
+        for (String key : cluster.keySet()) {
+            if (!ALLOWED_CLUSTER_KEYS.contains(key)) {
+                throw new IllegalArgumentException("TargetTripleRegistry: unknown cluster key '" + key
+                        + "' in " + origin + " (typo? allowed: " + ALLOWED_CLUSTER_KEYS + ")");
+            }
+        }
+        String namespace = optionalString(cluster, "namespace", origin);
+        long timeout = 180;
+        Object timeoutNode = cluster.get("rollout_timeout_s");
+        if (timeoutNode != null) {
+            if (!(timeoutNode instanceof Integer) || ((Integer) timeoutNode) <= 0) {
+                throw new IllegalArgumentException("TargetTripleRegistry: 'rollout_timeout_s' in " + origin
+                        + " must be a positive integer");
+            }
+            timeout = ((Integer) timeoutNode).longValue();
+        }
+        return new Cluster(
+                optionalString(cluster, "context", origin),
+                namespace == null ? "default" : namespace,
+                timeout);
     }
 
     @SuppressWarnings("unchecked")
@@ -153,6 +253,18 @@ public final class TargetTripleRegistry {
         if (!(value instanceof String) || ((String) value).trim().isEmpty()) {
             throw new IllegalArgumentException("TargetTripleRegistry: triple in " + origin
                     + " needs a non-empty string '" + key + "'");
+        }
+        return ((String) value).trim();
+    }
+
+    private static String optionalString(Map<String, Object> entry, String key, String origin) {
+        Object value = entry.get(key);
+        if (value == null) {
+            return null;
+        }
+        if (!(value instanceof String) || ((String) value).trim().isEmpty()) {
+            throw new IllegalArgumentException("TargetTripleRegistry: '" + key + "' in " + origin
+                    + " must be a non-empty string when present");
         }
         return ((String) value).trim();
     }

@@ -512,7 +512,9 @@ The core Maven module: OpenAPI spec model, test/input generation, oracle (shape/
 
 | Path | Description |
 |------|-------------|
+| `mist-cli/src/main/java/io/mist/cli/fault/DataIntegrityRuntime.java` | B2 runtime consulted by generated tests: baseline capture, isolation-key freshening (fresh-strings/station-pair), ack parse, quiescence-gated read-back poll with Jaeger absence upgrade, run records on the in-process holder. |
 | `mist-cli/src/main/java/io/mist/cli/fault/FaultInjector.java` | B1.1 backend-swappable fault-activation interface (inject/clear + FaultTarget + mist.fault.injection.enabled gate) for the flag-gated control/fault pairing executor. |
+| `mist-cli/src/main/java/io/mist/cli/fault/PairedFaultExecutor.java` | B1.3 orchestrator: clear→control run→inject-all→fault run→clear (finally), joins per-triple records, applies the B2.3 pure-differential fire rule (gated stratum NOT_EVALUATED until G3), writes the JSON pairing report. |
 | `mist-cli/src/main/java/io/mist/cli/fault/SutFlagFaultInjector.java` | Gate-1 FaultInjector backend: kubectl set env JAVA_TOOL_OPTIONS=-D<prop>=true + rollout status per toggle, explicit kubectl context, process-level timeouts, test seam. |
 | `mist-cli/src/main/java/io/mist/cli/fault/TargetTripleRegistry.java` | Strict loader for the per-SUT target-triples.yaml (write endpoint, persisting dependency, read-back GET, isolation key, optional fault_flag) consumed only by the flag-gated pairing executor. |
 
@@ -588,6 +590,8 @@ The core Maven module: OpenAPI spec model, test/input generation, oracle (shape/
 
 | Path | Description |
 |------|-------------|
+| `mist-cli/src/test/java/io/mist/cli/fault/DataIntegrityRuntimeTest.java` | Pins the B2 runtime against a scripted HTTP seam: passthrough when inactive, freshening per strategy, membership projection, and every quiescence-gate branch; hooks never throw. |
+| `mist-cli/src/test/java/io/mist/cli/fault/PairedFaultExecutorTest.java` | Pins B1.3+B2.3 against a stateful fake SUT: masked fault run FIREs, injector clear/inject/clear ordering, crash-safe flag clearing, full verdict rule table, JSON report shape. |
 | `mist-cli/src/test/java/io/mist/cli/fault/SutFlagFaultInjectorTest.java` | Pins the B1.1 injector against a recorded Exec seam: exact kubectl argv (-D form), set-env→rollout sequencing, context passing, failure propagation, enabled-gate default. |
 | `mist-cli/src/test/java/io/mist/cli/fault/TargetTripleRegistryTest.java` | Pins the P2 registry: shipped TrainTicket file parses to the two Gate-1 triples (incl. fault_flag); strict parser rejects missing/unknown/duplicate/empty-key malformations. |
 
@@ -595,6 +599,7 @@ The core Maven module: OpenAPI spec model, test/input generation, oracle (shape/
 
 | Path | Description |
 |------|-------------|
+| `mist-cli/src/test/java/io/mist/cli/writer/DataIntegrityEmissionTest.java` | Locks the B2 codegen layer: matching write steps get beforeWrite/afterWrite hook emissions (body rewrite before req.body, traceparent id into afterWrite); no triples ⇒ hook-free source. |
 | `mist-cli/src/test/java/io/mist/cli/writer/QueryParamEmissionTest.java` | JUnit test locking the writer's query-param emission: form-encoded values, fault-target replacement, and no double-emission of dependency-wired params. |
 
 ### `mist-llm/`

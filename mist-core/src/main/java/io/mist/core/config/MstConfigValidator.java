@@ -145,6 +145,10 @@ public final class MstConfigValidator {
                 // Main-track B2: differential data-integrity oracle (opt-in, default
                 // off; active read-back oracle, NOT a shape invariant — sibling depth)
                 "mst.oracle.dataintegrity.enabled",
+                // Main-track B2.2: pre-registered quiescence knobs (read via
+                // Long.getLong in DataIntegrityRuntime, not MstConfig fields)
+                "mst.oracle.dataintegrity.poll.ms",
+                "mst.oracle.dataintegrity.timeout.ms",
                 // Phase 0: surface oracle violations in the fault-detection report
                 "mist.report.oracle.anomalies.enabled",
                 // Phase 1: opt-in two-phase positive-first / negative-second flow

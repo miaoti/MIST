@@ -99,6 +99,10 @@ public final class MistRunner {
     // Previously-static MST-only state lifted from TestGenerationAndExecution.
     private MultiServiceRESTAssuredWriter mstWriter = null;
     private final List<MultiServiceTestCase> generatedMSTTestCases = new ArrayList<>();
+
+    // Main-track B2: loaded only when mst.oracle.dataintegrity.enabled=true;
+    // null on every legacy run.
+    private io.mist.cli.fault.TargetTripleRegistry.Registry dataIntegrityRegistry = null;
     private long testGenerationStartTime = 0;
     private OpenAPISpecification spec;
 
@@ -314,6 +318,25 @@ public final class MistRunner {
             mstWriter = (MultiServiceRESTAssuredWriter) writer;
         }
 
+        // Main-track B2: differential data-integrity oracle (opt-in, default
+        // off). The registry lives beside the SUT conf; with the flag off
+        // nothing is loaded and the writer emits byte-identical output.
+        if (io.mist.core.config.MstConfig.instance().oracle().dataIntegrityOracleEnabled()) {
+            java.nio.file.Path registryPath = java.nio.file.Paths.get(inputs.confPath)
+                    .toAbsolutePath().getParent().resolve("target-triples.yaml");
+            if (!java.nio.file.Files.isRegularFile(registryPath)) {
+                throw new IllegalStateException("mst.oracle.dataintegrity.enabled=true but no registry at "
+                        + registryPath + " (expected target-triples.yaml beside the SUT conf)");
+            }
+            dataIntegrityRegistry = io.mist.cli.fault.TargetTripleRegistry.load(registryPath);
+            if (writer instanceof MultiServiceRESTAssuredWriter) {
+                ((MultiServiceRESTAssuredWriter) writer)
+                        .setDataIntegrityTriples(dataIntegrityRegistry.triples);
+            }
+            logger.warn("[MIST] data-integrity oracle ON: {} target triple(s) from {}",
+                    dataIntegrityRegistry.triples.size(), registryPath);
+        }
+
         // Phase 1 part 2: two-phase positive-first / negative-second flow.
         // When enabled, run the generate→write→execute pipeline twice with
         // different config:
@@ -486,6 +509,15 @@ public final class MistRunner {
             boolean enhancerEnabled = enhancerCfg.enabled() && !forceDisableEnhancer;
             int enhancerRounds = enhancerCfg.rounds();
             boolean skip5xx = enhancerCfg.skip5xx();
+            boolean pairingRequested = io.mist.cli.fault.FaultInjector.enabled()
+                    && dataIntegrityRegistry != null;
+            if (pairingRequested && enhancerEnabled) {
+                // The pairing executor owns test execution (two bracketed runs);
+                // the enhancer's regenerate-and-rerun loop would interleave
+                // mutations between them. Fail fast rather than guess.
+                throw new IllegalStateException("mist.fault.injection.enabled=true is incompatible with "
+                        + "test.enhancer.enabled=true — disable the enhancer for pairing runs");
+            }
             if (enhancerEnabled) {
                 logger.info("═══════════════════════════════════════════════════════════════════════════");
                 logger.info("🔧 TEST CASE ENHANCER ENABLED - {} enhancement round(s) configured", enhancerRounds);
@@ -502,11 +534,68 @@ public final class MistRunner {
                 logger.info("🔧 PHASE A: capture + enhancer-rescue ({} round(s)) to harvest VERIFIED_VALID", phaseARounds);
                 executeWithEnhancement(actualPackageName, className, phaseARounds, skip5xx, id,
                         /*exploreStatusCodes=*/false);
+            } else if (pairingRequested) {
+                executePairedDataIntegrity(actualPackageName, className, id, skip5xx);
             } else {
                 executeGeneratedTestsWithJUnit(actualPackageName, className);
             }
         }
         return testCases;
+    }
+
+    /**
+     * Main-track B1.3: control/fault pairing execution. Delegates the
+     * orchestration + fire rule to {@link io.mist.cli.fault.PairedFaultExecutor};
+     * this method only supplies the runner-owned pieces — the exact-method
+     * JUnit run (compile + fresh classloader + filter, shared with the
+     * enhancer path) and the kubectl-backed injector from the registry's
+     * cluster block.
+     */
+    private void executePairedDataIntegrity(String fullPackageName, String className, String id,
+                                            boolean skip5xx) throws Exception {
+        java.util.Set<String> pairingMethods = mstWriter == null
+                ? java.util.Collections.emptySet() : mstWriter.getDataIntegrityMethods();
+        if (pairingMethods.isEmpty()) {
+            logger.error("Data-integrity pairing requested but no generated test matched a registered "
+                    + "triple (is the write endpoint in a scenario?); running the suite normally instead");
+            executeGeneratedTestsWithJUnit(fullPackageName, className);
+            return;
+        }
+        io.mist.cli.fault.TargetTripleRegistry.Cluster cluster = dataIntegrityRegistry.cluster;
+        if (cluster == null) {
+            throw new IllegalStateException("target-triples.yaml needs a 'cluster' block "
+                    + "(kubectl context/namespace) for the pairing executor");
+        }
+        io.mist.cli.fault.SutFlagFaultInjector injector = new io.mist.cli.fault.SutFlagFaultInjector(
+                cluster.context, cluster.namespace, cluster.rolloutTimeoutSeconds);
+        logger.warn("[MIST] pairing execution: {} method(s) {} — control run, then batched fault run",
+                pairingMethods.size(), pairingMethods);
+
+        final java.util.concurrent.atomic.AtomicBoolean firstRun =
+                new java.util.concurrent.atomic.AtomicBoolean(true);
+        io.mist.cli.fault.PairedFaultExecutor.FilteredRun filteredRun = () -> {
+            // First (control) run sets up + clears Allure; the fault run
+            // appends so both runs' evidence lands in one report.
+            boolean skipAllureClean = !firstRun.compareAndSet(true, false);
+            executeTestsWithCollector(fullPackageName, className,
+                    new FailedTestCollector(0, skip5xx, "target/enhancer/" + id),
+                    /*isFinalRound=*/false, skipAllureClean,
+                    pairingMethods::contains,
+                    "data-integrity pairing methods " + pairingMethods);
+        };
+
+        io.mist.cli.fault.PairedFaultExecutor executor = new io.mist.cli.fault.PairedFaultExecutor(
+                dataIntegrityRegistry.triples, injector, filteredRun);
+        java.util.List<io.mist.cli.fault.PairedFaultExecutor.PairResult> results = executor.execute();
+
+        java.nio.file.Path reportPath = java.nio.file.Paths.get(
+                "logs", "data-integrity-reports",
+                "pairing_" + inputs.experimentName + "_" + id + ".json");
+        io.mist.cli.fault.PairedFaultExecutor.writeReport(reportPath, results, id);
+        String summary = io.mist.cli.fault.PairedFaultExecutor.summarize(results)
+                + "  report: " + reportPath + "\n";
+        io.mist.core.util.ConsoleProgressBar.printRaw(summary);
+        logger.info("Data-integrity pairing summary:\n{}", summary);
     }
 
     /**
@@ -1675,6 +1764,23 @@ public final class MistRunner {
                                                     FailedTestCollector collector, boolean isFinalRound,
                                                     boolean skipAllureClean,
                                                     String methodNameFilter) {
+        // Legacy substring form preserved; the predicate core is shared with
+        // the data-integrity pairing executor (exact method-name set).
+        java.util.function.Predicate<String> predicate =
+                methodNameFilter == null || methodNameFilter.isEmpty()
+                        ? null
+                        : m -> m.contains(methodNameFilter);
+        String description = predicate == null ? null
+                : "method name contains '" + methodNameFilter + "'";
+        return executeTestsWithCollector(fullPackageName, className, collector, isFinalRound,
+                skipAllureClean, predicate, description);
+    }
+
+    private Result executeTestsWithCollector(String fullPackageName, String className,
+                                                    FailedTestCollector collector, boolean isFinalRound,
+                                                    boolean skipAllureClean,
+                                                    java.util.function.Predicate<String> methodPredicate,
+                                                    String methodPredicateDescription) {
         try {
             // Clean and setup
             cleanOldCompiledTestClasses(fullPackageName);
@@ -1772,19 +1878,21 @@ public final class MistRunner {
             // "only new exploration tests", but executeTestsWithCollector used
             // to run every @Test method in every class.
             final org.junit.runner.manipulation.Filter mFilter;
-            if (methodNameFilter != null && !methodNameFilter.isEmpty()) {
-                final String needle = methodNameFilter;
+            if (methodPredicate != null) {
+                final java.util.function.Predicate<String> accept = methodPredicate;
+                final String describe = methodPredicateDescription == null
+                        ? "method predicate" : methodPredicateDescription;
                 mFilter = new org.junit.runner.manipulation.Filter() {
                     @Override public boolean shouldRun(org.junit.runner.Description d) {
                         if (d.isSuite()) return true;
                         String m = d.getMethodName();
-                        return m != null && m.contains(needle);
+                        return m != null && accept.test(m);
                     }
                     @Override public String describe() {
-                        return "method name contains '" + needle + "'";
+                        return describe;
                     }
                 };
-                logger.info("Method filter active: only running tests whose name contains '{}'", needle);
+                logger.info("Method filter active: {}", describe);
             } else {
                 mFilter = null;
             }

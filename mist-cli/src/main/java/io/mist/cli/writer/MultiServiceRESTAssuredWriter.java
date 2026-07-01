@@ -102,10 +102,50 @@ public class MultiServiceRESTAssuredWriter {
         this.traceShapeStorePath = storePath == null ? null : storePath.toString();
     }
 
+    /**
+     * Main-track B2 (codegen layer): registered target triples. When
+     * non-empty, write steps matching a triple's {@code write_endpoint} get
+     * {@code DataIntegrityRuntime.beforeWrite/afterWrite} hook emissions
+     * beside the existing oracle block. MistRunner only calls this when
+     * {@code mst.oracle.dataintegrity.enabled=true}, so legacy (flag-off)
+     * output stays byte-identical.
+     */
+    public void setDataIntegrityTriples(java.util.List<io.mist.cli.fault.TargetTripleRegistry.Triple> triples) {
+        this.dataIntegrityTriples = triples == null ? java.util.Collections.emptyList() : triples;
+    }
+
+    /** Test methods that carry data-integrity hooks, in emission order (B1.3 filters on these). */
+    public java.util.Set<String> getDataIntegrityMethods() {
+        return new java.util.LinkedHashSet<>(dataIntegrityMethods);
+    }
+
+    private java.util.List<io.mist.cli.fault.TargetTripleRegistry.Triple> dataIntegrityTriples =
+            java.util.Collections.emptyList();
+    private final java.util.Set<String> dataIntegrityMethods = new java.util.LinkedHashSet<>();
+    private static final org.apache.logging.log4j.Logger logger =
+            org.apache.logging.log4j.LogManager.getLogger(MultiServiceRESTAssuredWriter.class);
+
+    private io.mist.cli.fault.TargetTripleRegistry.Triple dataIntegrityTripleFor(String verb, String path) {
+        if (dataIntegrityTriples.isEmpty()) {
+            return null;
+        }
+        String stepKey = verb.toUpperCase(java.util.Locale.ROOT) + " " + path;
+        for (io.mist.cli.fault.TargetTripleRegistry.Triple triple : dataIntegrityTriples) {
+            if (triple.writeEndpoint.equals(stepKey)) {
+                return triple;
+            }
+        }
+        return null;
+    }
+
 
     /*  WRITE JAVA SOURCE                                           */
     public void write(Collection<TestCase> testCases) {
         if (testCases == null || testCases.isEmpty()) return;
+
+        // Fresh per write() call: two-phase runs reuse this writer instance,
+        // and the pairing executor must only see the latest phase's methods.
+        dataIntegrityMethods.clear();
 
         // Group test cases by scenario name
         Map<String, List<TestCase>> byScenario = new LinkedHashMap<>();
@@ -1922,12 +1962,34 @@ public class MultiServiceRESTAssuredWriter {
                             // for path-param values (e.g. " " -> "%20"). Without this, % gets re-encoded to %25 (double-encoded), so /admintravel/%20 -> /admintravel/%2520.
                             pw.println("                        RequestSpecification req = RestAssured.given().urlEncodingEnabled(false);");
                             
+                            // Main-track B2 (codegen layer): steps matching a registered
+                            // target triple call into DataIntegrityRuntime around the
+                            // request. Passthrough no-ops outside pairing runs; nothing
+                            // is emitted at all when no triples are registered.
+                            io.mist.cli.fault.TargetTripleRegistry.Triple __diTriple =
+                                    dataIntegrityTripleFor(verb, step.getPath());
+                            String __diStepKey = __diTriple == null ? null
+                                    : verb.toUpperCase(java.util.Locale.ROOT) + " " + step.getPath();
+
                             // 🔥 FIX: Always set Content-Type to application/json for requests with bodies
                             String requestBody = step.getBody() != null ? step.getBody() : "";
+                            if (__diTriple != null && requestBody.isEmpty()) {
+                                // The freshening hook rewrites body fields; a body-less write
+                                // can't carry an isolation key, so the step is left un-hooked.
+                                logger.warn("DataIntegrity: step {} matches triple '{}' but has no request body; "
+                                        + "skipping hook emission for method {}", __diStepKey, __diTriple.name,
+                                        testMethodName);
+                                __diTriple = null;
+                                __diStepKey = null;
+                            }
                             if (!requestBody.isEmpty()) {
                                 pw.println("                        // 🔥 FIX: Set Content-Type to application/json for requests with bodies");
                                 pw.println("                        req = req.contentType(\"application/json\");");
                                 pw.println("                        String requestBody" + stepIdx + " = \"" + escape(requestBody) + "\";");
+                                if (__diTriple != null) {
+                                    pw.println("                        // Main-track B2: baseline read-back + isolation-key freshening (no-op outside pairing runs)");
+                                    pw.println("                        requestBody" + stepIdx + " = io.mist.cli.fault.DataIntegrityRuntime.beforeWrite(\"" + escape(__diStepKey) + "\", requestBody" + stepIdx + ");");
+                                }
                                 pw.println("                        req = req.body(requestBody" + stepIdx + ");");
                                 pw.println("                        ");
                                 pw.println("                        // Add request body as attachment (AllureRestAssured filter disabled to avoid duplication)");
@@ -2137,6 +2199,14 @@ public class MultiServiceRESTAssuredWriter {
                             pw.println("                        int actualStatusCode" + stepIdx + " = stepResponse" + stepIdx + ".getStatusCode();");
                             pw.println("                        int expectedStatusCode" + stepIdx + " = " + step.getExpectedStatus() + ";");
                             pw.println("                        ");
+                            if (__diTriple != null) {
+                                // Main-track B2: acknowledgement + quiescence-gated read-back,
+                                // recorded on the in-process holder for the pairing executor.
+                                // The step's own traceparent id lets an absent verdict be
+                                // upgraded from timeout- to observation-gated.
+                                pw.println("                        io.mist.cli.fault.DataIntegrityRuntime.afterWrite(\"" + escape(__diStepKey) + "\", actualStatusCode" + stepIdx + ", stepResponse" + stepIdx + ".getBody().asString(), __mstTraceId" + stepIdx + ");");
+                                dataIntegrityMethods.add(testMethodName);
+                            }
 
                             // Fix 3 Layer 3: output-coverage backstop. Compute the response
                             // fingerprint (SHA-256 over status + body) and short-circuit

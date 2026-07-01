@@ -20,12 +20,27 @@
 #                       labeled positives, not a tool dependency; note the
 #                       deployment (front service) differs from `dependency`
 #                       (persisting service). Absent on benign-trap-only targets.
+#   isolation_strategy- OPTIONAL (B2.2): how the pairing run freshens the
+#                       isolation-key fields at execution time. `fresh-strings`
+#                       (default) = unique generated string per key field;
+#                       `station-pair` = TrainTicket adminroute adapter (pick an
+#                       ordered pair of EXISTING stations unused by any baseline
+#                       route — the SUT validates station existence, so random
+#                       fresh names would be rejected on the control run).
+#
+# cluster (optional): kubectl coordinates for the SutFlagFaultInjector. The
+# context is explicit on purpose — the host may also run an unrelated cluster.
+cluster:
+  context: minikube
+  namespace: default
+  rollout_timeout_s: 180
 triples:
   - name: adminroute-create
     write_endpoint: "POST /api/v1/adminrouteservice/adminroute"
     dependency: ts-route-service
     readback_endpoint: "GET /api/v1/adminrouteservice/adminroute"
     isolation_key: [startStation, endStation]
+    isolation_strategy: station-pair
     fault_flag:
       deployment: ts-admin-route-service
       property: mist.fault.lostwrite.enabled
@@ -34,6 +49,7 @@ triples:
     dependency: ts-contacts-service
     readback_endpoint: "GET /api/v1/adminbasicservice/adminbasic/contacts"
     isolation_key: [accountId, documentNumber]
+    isolation_strategy: fresh-strings
     fault_flag:
       deployment: ts-admin-basic-info-service
       property: mist.fault.lostwrite.enabled
