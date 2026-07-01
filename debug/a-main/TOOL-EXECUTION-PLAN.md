@@ -312,6 +312,17 @@ trace-derived gate (see B2.3).
     *constructed* benign-trap is a **lower bound** on wild-async FP (R3 #4).
   - **Gate-1 pass = fires on the constructed lost-write + low/characterized FP (especially in the
     non-timeout-gated stratum);** uncharacterized FP sinks the contribution.
+  **✅ DONE (code+unit) 2026-07-01 — the MEASURED numbers land in the Gate-1 session.** Built:
+  `PairedFaultExecutor.benignProbe(N)` (N pre-registered flag-off iterations of the SAME generated pairing
+  tests, run after the pair; per-run FP rule = acked ∧ absent-at-cap) + `fpProbeJson` aggregation (per-triple
+  + aggregate FP rate, observed- vs timeout-gated fire strata never pooled, gate-coverage histogram,
+  FP-vs-timeout curve derived from per-run time-to-presence, pre-registered ≤5% non-timeout-gated sync bar
+  with PASS/FAIL) — all in the JSON report + console block. `mst.oracle.dataintegrity.fpprobe.runs=30`
+  pre-registered in the Gate-1 config. **Scope per P3/§4:** sync stratum only; the report carries the async
+  disclaimer verbatim and the accept-then-drop disclosure (NO TrainTicket representative exists — the only
+  by-design drop, contacts dedupe, soft-rejects with status:0 which the ack rule already excludes; the
+  residual FP class is covered by the eventually-consistent benign runs, stated honestly). Unit-pinned incl.
+  rate/strata/curve arithmetic and a bar-FAIL case.
 
 ## 3.5 Scope honesty: Gate-1 validates a shallow write; depth is a G3 expansion
 Gate-1 targets (adminroute create / adminbasic addContact) are **shallow CRUD** — they validate mechanism

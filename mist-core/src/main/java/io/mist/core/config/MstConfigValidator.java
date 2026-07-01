@@ -150,6 +150,7 @@ public final class MstConfigValidator {
                 "mst.oracle.dataintegrity.poll.ms",
                 "mst.oracle.dataintegrity.timeout.ms",
                 "mst.oracle.dataintegrity.trace.settle.ms",
+                "mst.oracle.dataintegrity.fpprobe.runs",
                 // Phase 0: surface oracle violations in the fault-detection report
                 "mist.report.oracle.anomalies.enabled",
                 // Phase 1: opt-in two-phase positive-first / negative-second flow

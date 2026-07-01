@@ -66,9 +66,9 @@ public final class DataIntegrityRuntime {
      * Gate-1.
      */
     public static final String TRACE_SETTLE_MS_PROPERTY = "mst.oracle.dataintegrity.trace.settle.ms";
-    static final long DEFAULT_POLL_MS = 500;
-    static final long DEFAULT_TIMEOUT_MS = 10_000;
-    static final long DEFAULT_TRACE_SETTLE_MS = 3_000;
+    public static final long DEFAULT_POLL_MS = 500;
+    public static final long DEFAULT_TIMEOUT_MS = 10_000;
+    public static final long DEFAULT_TRACE_SETTLE_MS = 3_000;
 
     /** TrainTicket station catalogue consulted by the STATION_PAIR adapter. */
     static final String STATIONS_PATH = "/api/v1/stationservice/stations";

@@ -272,6 +272,94 @@ public class PairedFaultExecutorTest {
     }
 
     @Test
+    public void benignProbe_healthySut_zeroFires() throws Exception {
+        PairedFaultExecutor.FilteredRun alwaysPersist = () -> {
+            String freshened = DataIntegrityRuntime.beforeWrite(CONTACT_STEP,
+                    "{\"accountId\":\"pool\",\"documentNumber\":\"pool\"}");
+            JSONObject body = new JSONObject(freshened);
+            Map<String, String> row = new LinkedHashMap<>();
+            row.put("accountId", body.getString("accountId"));
+            row.put("documentNumber", body.getString("documentNumber"));
+            sut.persist(row);
+            DataIntegrityRuntime.afterWrite(CONTACT_STEP, 200, "{\"status\":1}", "trace-x");
+        };
+        List<DataIntegrityRuntime.RunRecord> records = new PairedFaultExecutor(
+                Collections.singletonList(contacts), injector, alwaysPersist).benignProbe(3);
+        assertEquals(3, records.size());
+        JSONObject probe = PairedFaultExecutor.fpProbeJson(records, 20);
+        JSONObject aggregate = probe.getJSONObject("aggregate");
+        assertEquals(3, aggregate.getInt("ackedBenignRuns"));
+        assertEquals(0, aggregate.getInt("fpFires"));
+        assertEquals("PASS", probe.getJSONObject("syncFpBar").getString("verdict"));
+        assertEquals("benign runs are flag-off (one hygiene clear only)",
+                java.util.Collections.singletonList("clear:ts-admin-basic-info-service"), injector.ops);
+        assertEquals("sync", probe.getString("stratum"));
+        assertNotNull(probe.getString("asyncDisclaimer"));
+        assertNotNull(probe.getString("acceptThenDropTrap"));
+    }
+
+    @Test
+    public void fpProbeJson_ratesStrataAndCurve() {
+        List<DataIntegrityRuntime.RunRecord> records = new java.util.ArrayList<>();
+        // 8 fast-present benign runs (present on read-back within 100 ms)
+        for (int i = 0; i < 8; i++) {
+            records.add(probeRecord(true, true, 100,
+                    DataIntegrityRuntime.QuiescenceGate.OBSERVED_PRESENT, null));
+        }
+        // 1 slow-present run (eventually consistent: present at 6000 ms)
+        records.add(probeRecord(true, true, 6_000,
+                DataIntegrityRuntime.QuiescenceGate.OBSERVED_PRESENT, null));
+        // 1 observation-gated fire (the high-confidence FP stratum)
+        records.add(probeRecord(true, false, 10_000,
+                DataIntegrityRuntime.QuiescenceGate.OBSERVED_COMPLETE_ABSENT, null));
+        // 1 timeout-gated fire (lower-confidence stratum)
+        records.add(probeRecord(true, false, 10_000,
+                DataIntegrityRuntime.QuiescenceGate.TIMEOUT_ABSENT, null));
+        // 1 invalid run (hook error) — excluded from every denominator
+        records.add(probeRecord(false, false, 0,
+                DataIntegrityRuntime.QuiescenceGate.NOT_APPLICABLE, "boom"));
+
+        JSONObject probe = PairedFaultExecutor.fpProbeJson(records, 10_000);
+        JSONObject aggregate = probe.getJSONObject("aggregate");
+        assertEquals(11, aggregate.getInt("ackedBenignRuns"));
+        assertEquals(1, aggregate.getInt("invalidRuns"));
+        assertEquals(2, aggregate.getInt("fpFires"));
+        assertEquals(2.0 / 11, aggregate.getDouble("fpRate"), 1e-9);
+        assertEquals(1, aggregate.getInt("observedGatedFpFires"));
+        assertEquals(1, aggregate.getInt("timeoutGatedFpFires"));
+        assertEquals(1.0 / 11, aggregate.getDouble("nonTimeoutGatedFpRate"), 1e-9);
+        assertEquals("1/11 = 9.1% > 5% bar", "FAIL",
+                probe.getJSONObject("syncFpBar").getString("verdict"));
+
+        // Curve: at a 5000 ms cutoff the slow-present run would also have fired.
+        org.json.JSONArray curve = aggregate.getJSONArray("fpVsTimeoutCurve");
+        double fpAt5000 = -1;
+        double fpAt10000 = -1;
+        for (int i = 0; i < curve.length(); i++) {
+            JSONObject point = curve.getJSONObject(i);
+            if (point.getLong("timeoutMs") == 5_000) {
+                fpAt5000 = point.getDouble("fpRate");
+            }
+            if (point.getLong("timeoutMs") == 10_000) {
+                fpAt10000 = point.getDouble("fpRate");
+            }
+        }
+        assertEquals(3.0 / 11, fpAt5000, 1e-9);
+        assertEquals(2.0 / 11, fpAt10000, 1e-9);
+    }
+
+    private static DataIntegrityRuntime.RunRecord probeRecord(boolean acked, boolean present,
+                                                              long elapsedMs,
+                                                              DataIntegrityRuntime.QuiescenceGate gate,
+                                                              String error) {
+        Map<String, String> key = new LinkedHashMap<>();
+        key.put("accountId", "mist-x");
+        return new DataIntegrityRuntime.RunRecord("benign-1", "t", "POST /x", key, 200,
+                acked ? Integer.valueOf(1) : null, acked, false, present, gate, 1, elapsedMs,
+                "{}", "{}", error);
+    }
+
+    @Test
     public void report_isWrittenWithVerdictAndStrata() throws Exception {
         PairedFaultExecutor.PairResult fire = PairedFaultExecutor.verdict("t",
                 record("control", true, false, true,

@@ -605,12 +605,29 @@ public final class MistRunner {
                 dataIntegrityRegistry.triples, injector, filteredRun);
         java.util.List<io.mist.cli.fault.PairedFaultExecutor.PairResult> results = executor.execute();
 
+        // B2.4: benign FP probe (specificity) after the pair (sensitivity).
+        int fpProbeRuns = Integer.getInteger(
+                io.mist.cli.fault.PairedFaultExecutor.FP_PROBE_RUNS_PROPERTY, 0);
+        java.util.List<io.mist.cli.fault.DataIntegrityRuntime.RunRecord> probeRecords = null;
+        if (fpProbeRuns > 0) {
+            logger.warn("[MIST] benign FP probe: {} flag-off iteration(s) of the pairing tests", fpProbeRuns);
+            probeRecords = executor.benignProbe(fpProbeRuns);
+        }
+
+        long quiescenceTimeoutMs = Long.getLong(
+                io.mist.cli.fault.DataIntegrityRuntime.TIMEOUT_MS_PROPERTY,
+                io.mist.cli.fault.DataIntegrityRuntime.DEFAULT_TIMEOUT_MS);
         java.nio.file.Path reportPath = java.nio.file.Paths.get(
                 "logs", "data-integrity-reports",
                 "pairing_" + inputs.experimentName + "_" + id + ".json");
-        io.mist.cli.fault.PairedFaultExecutor.writeReport(reportPath, results, id);
-        String summary = io.mist.cli.fault.PairedFaultExecutor.summarize(results)
-                + "  report: " + reportPath + "\n";
+        io.mist.cli.fault.PairedFaultExecutor.writeReport(
+                reportPath, results, probeRecords, quiescenceTimeoutMs, id);
+        String summary = io.mist.cli.fault.PairedFaultExecutor.summarize(results);
+        if (probeRecords != null) {
+            summary += io.mist.cli.fault.PairedFaultExecutor.summarizeProbe(
+                    io.mist.cli.fault.PairedFaultExecutor.fpProbeJson(probeRecords, quiescenceTimeoutMs));
+        }
+        summary += "  report: " + reportPath + "\n";
         io.mist.core.util.ConsoleProgressBar.printRaw(summary);
         logger.info("Data-integrity pairing summary:\n{}", summary);
     }
