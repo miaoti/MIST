@@ -1,0 +1,27 @@
+# Target-triple registry for the differential data-integrity oracle (main-track B2)
+# and its control/fault pairing executor (B1). Data only: nothing reads this file
+# unless mist.fault.injection.enabled=true, so flags-off runs are unaffected.
+#
+# Field semantics (TOOL-EXECUTION-PLAN P2; triples selected in
+# debug/a-main/prep/target-triples.md, business keys spec-verified against
+# merged_openapi_spec 1.yaml):
+#   write_endpoint    - "METHOD /path" of the state-mutating request under test
+#   dependency        - trace-matchable service name of the persisting dependency D
+#                       (the gated fire mode locates D's span by this key; this is
+#                       NOT the service the SUT fault flag is set on)
+#   readback_endpoint - "METHOD /path" black-box GET whose response must contain
+#                       the written entity (collection read-back on both Gate-1
+#                       targets; membership by business key, no per-entity GET)
+#   isolation_key     - request-body fields forming the per-test-unique business
+#                       key (B2.2 isolation: fresh values per test)
+triples:
+  - name: adminroute-create
+    write_endpoint: "POST /api/v1/adminrouteservice/adminroute"
+    dependency: ts-route-service
+    readback_endpoint: "GET /api/v1/adminrouteservice/adminroute"
+    isolation_key: [startStation, endStation]
+  - name: adminbasic-contacts-create
+    write_endpoint: "POST /api/v1/adminbasicservice/adminbasic/contacts"
+    dependency: ts-contacts-service
+    readback_endpoint: "GET /api/v1/adminbasicservice/adminbasic/contacts"
+    isolation_key: [accountId, documentNumber]

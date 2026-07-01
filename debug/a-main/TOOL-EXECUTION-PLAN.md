@@ -84,6 +84,11 @@
   style) listing `{write_endpoint, dependency, readback_endpoint, isolation_key}` — exactly the
   `prep/target-triples.md` triples. The `dependency` must be a **trace-matchable service/operation key** (the
   gated mode in B2.3 needs to locate D's span). No logic yet; data only.
+  **✅ DONE 2026-07-01** — `mist-cli/src/main/resources/My-Example/trainticket/target-triples.yaml` (both
+  Gate-1 triples; business keys spec-verified: startStation+endStation / accountId+documentNumber; `dependency`
+  = persisting service ts-route-service / ts-contacts-service, deliberately distinct from the injector
+  deployment) + strict loader `io.mist.cli.fault.TargetTripleRegistry` + 6 tests (`TargetTripleRegistryTest`).
+  All green; nothing consumes the loader yet.
 - **P3. Async benign-trap prerequisite (make-or-break — schedule before B2.4, do NOT discover mid-Gate-1).**
   The read-back FP probe (B2.4) needs a **broker-mediated** async write path, not a synchronous sleep.
   **UNVERIFIED whether TrainTicket exposes a clean black-box async write+read-back without new SUT work** —
