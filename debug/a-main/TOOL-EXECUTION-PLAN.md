@@ -94,6 +94,15 @@
   **UNVERIFIED whether TrainTicket exposes a clean black-box async write+read-back without new SUT work** —
   resolve FIRST: name the concrete rabbitmq-backed write endpoint(s) (e.g. order/cancel or notification flows)
   and decide *existing path* vs a *new SUT-side async injector*. This gates B2.4 (cold-review MODERATE #3).
+  **✅ RESOLVED 2026-07-01** — verdict **NEW-INJECTOR-NEEDED** (`prep/p3-async-path-resolution.md`, read-only
+  source research on `MIST-trainticket@bbf3d6ae`): NO existing 2xx-ack-before-persist path with a black-box
+  read-back exists — the only live broker edge (food→delivery) persists the observable entity synchronously
+  before the 2xx, and the async-persisted `Delivery` row has no HTTP reader anywhere; the email edge's real
+  producers are commented out. RabbitMQ itself IS helm-installed by `make deploy`. **Decision: Gate-1 takes
+  this plan's pre-decided branch (§3 B2.4 / §4): sync-FP benign traps + the explicit async disclaimer; the
+  broker-async trap = the doc's pre-specified Option A injector (~40-line flag-gated async-write trap in
+  ts-food-service, `GET /foodservice/orders/{orderId}` read-back), built when G3's async-soundness claim
+  needs it.** Gate-1 is NOT hard-blocked (per B2.4).
 
 ## 2. B1 — opt-in fault-injection mode (research/01 build-list #4; EXECUTION G1a)
 **Goal:** for a target write request, run it once clean (control) and once with the dependency faulted

@@ -508,6 +508,12 @@ The core Maven module: OpenAPI spec model, test/input generation, oracle (shape/
 | `mist-cli/src/main/java/io/mist/cli/auth/MstAuthHandler.java` | Runtime auth helper for MST-generated tests with configurable login strategy (none/static/per-jvm/per-test), token caching and per-path skip patterns. |
 | `mist-cli/src/main/java/io/mist/cli/auth/MstAuthRefreshFilter.java` | REST Assured filter for MST tests that on a 401/403 invalidates the cached JWT, re-logs in, swaps the header and retries the request once. |
 
+### `mist-cli/src/main/java/io/mist/cli/fault/`
+
+| Path | Description |
+|------|-------------|
+| `mist-cli/src/main/java/io/mist/cli/fault/TargetTripleRegistry.java` | Strict loader for the per-SUT target-triples.yaml (write endpoint, persisting dependency, read-back GET, isolation key) consumed only by the flag-gated pairing executor. |
+
 ### `mist-cli/src/main/java/io/mist/cli/spi/`
 
 | Path | Description |
@@ -556,6 +562,7 @@ The core Maven module: OpenAPI spec model, test/input generation, oracle (shape/
 | `mist-cli/src/main/resources/My-Example/trainticket/mist-noun-map.yaml` | Empty per-SUT noun-map override for TrainTicket demonstrating the overlay mechanism over the bundled default noun map. |
 | `mist-cli/src/main/resources/My-Example/trainticket/real-system-conf.yaml` | Multi-service test configuration YAML listing each TrainTicket service's operations, paths and parameter generators (the conf.path input). |
 | `mist-cli/src/main/resources/My-Example/trainticket/root-api-registry.json` | Persisted Root API Registry JSON of unique TrainTicket root APIs and their recorded microservice call trees per source trace. |
+| `mist-cli/src/main/resources/My-Example/trainticket/target-triples.yaml` | P2 target-triple registry: the two Gate-1 write/read-back triples (adminroute, adminbasic-contacts) with trace-matchable dependency and business-key isolation fields. |
 
 ### `mist-cli/src/main/resources/My-Example/trainticket/injectedFaults/`
 
@@ -574,6 +581,12 @@ The core Maven module: OpenAPI spec model, test/input generation, oracle (shape/
 | Path | Description |
 |------|-------------|
 | `mist-cli/src/test/java/io/mist/cli/SpiDiscoveryIntegrationTest.java` | JUnit test verifying the MIST SpecLoader, TestWriter and TestExecutor SPIs are discoverable via ServiceLoader on the cli classpath. |
+
+### `mist-cli/src/test/java/io/mist/cli/fault/`
+
+| Path | Description |
+|------|-------------|
+| `mist-cli/src/test/java/io/mist/cli/fault/TargetTripleRegistryTest.java` | Pins the P2 registry: shipped TrainTicket file parses to the two Gate-1 triples; strict parser rejects missing/unknown/duplicate/empty-key malformations. |
 
 ### `mist-cli/src/test/java/io/mist/cli/writer/`
 
@@ -848,6 +861,7 @@ Developer design notes / investigation logs (excluding inputs), plus the input-q
 | `debug/a-main/prep/sut-fault-injection-capability.md` | Main-track prep (no tool code): our SUT fork (train-ticket-injection@injection) already has an in-service fault injector; how to extend it SUT-side (LOST_WRITE_FAULT on a MIST-trainticket branch) to build the differential-oracle ground truth with zero MIST tool changes; §8/§9 record the implemented LOST_WRITE on adminroute (5c471dd8) and adminbasic/contacts (bbf3d6ae) |
 | `debug/a-main/prep/gate1-environment-runbook.md` | Main-track prep (no tool code): WSL2/k8s runbook to deploy TrainTicket (MIST-trainticket branch) with tracing, enable the LOST_WRITE variant on ts-admin-route-service, and confirm the acknowledged-but-lost write by read-back (manual proof of the differential oracle's target before B2 is built) |
 | `debug/a-main/prep/gate1-smoke-result.md` | Main-track prep (no tool code): Gate-1 smoke RESULT — on live TrainTicket (minikube), control-vs-fault proof that the adminroute LOST_WRITE yields an acknowledged-but-lost write (HTTP 200/status:1, getAllRoutes unchanged) that status/schema/body oracles pass and only read-back catches; records the load-bearing JAVA_TOOL_OPTIONS `-D` flag finding (env relaxed-binding fails on TT) |
+| `debug/a-main/prep/p3-async-path-resolution.md` | Main-track prep (no tool code): P3 broker-async write-path research for the B2.4 benign trap — full RabbitMQ inventory of TrainTicket (2 queues: `email` dead-code/test-only, `food_delivery` live food→delivery), proof that no existing 2xx write is ack-before-persist with a black-box read-back, and verdict NEW-INJECTOR-NEEDED with the recommended flag-gated ASYNC_WRITE trap in ts-food-service (skip sync save, persist via rabbit consumer, read back via GET /foodservice/orders/{orderId}) |
 
 ### `debug/a-main/benchmark/`
 
