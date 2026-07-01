@@ -122,6 +122,15 @@ behind the flag and frame it as a mode, or the "no SUT instrumentation" identity
   itself needs no SUT change. The black-box / no-SUT-change identity is carried by the Toxiproxy
   (Gate-3 unmodified-system) path; Gate-1's SUT flag only buys clean labels. State this wherever Gate-1
   results appear.
+  **✅ DONE (code+unit) 2026-07-01** — `io.mist.cli.fault.FaultInjector` (interface + ENABLED_PROPERTY gate +
+  FaultTarget + FaultInjectionException) and `SutFlagFaultInjector` (kubectl set env `-D` → rollout status;
+  explicit `--context` because the host also runs an unrelated kind cluster; set/unset semantics safe —
+  deploy.yaml has zero JAVA_TOOL_OPTIONS uses). Registry extended with optional `fault_flag`
+  {deployment, property} per triple — the injector coordinates had no other home; deployment ≠ `dependency`
+  for both Gate-1 triples so it is not derivable. 8 injector + 3 new registry tests green (24 mist-cli total).
+  **Live inject/clear toggle check folded into the B1.3/B1.4 smoke-parity run** (one cluster session; WSL2
+  reachable from this session, minikube currently Stopped). The first live clear() also flushes the stale
+  smoke flag per gate1-smoke-result.md.
 - **B1.2 Realistic input reuse.** Drive the request from the existing two-phase verified-input pool
   (`MistRunner.java:502-557`, verified-valid *values* harvested in Phase A) so the only **behavioral**
   abnormality is the injected fault — the isolation key is **freshly varied by design** (B2.2), so control and

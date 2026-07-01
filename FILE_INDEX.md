@@ -512,7 +512,9 @@ The core Maven module: OpenAPI spec model, test/input generation, oracle (shape/
 
 | Path | Description |
 |------|-------------|
-| `mist-cli/src/main/java/io/mist/cli/fault/TargetTripleRegistry.java` | Strict loader for the per-SUT target-triples.yaml (write endpoint, persisting dependency, read-back GET, isolation key) consumed only by the flag-gated pairing executor. |
+| `mist-cli/src/main/java/io/mist/cli/fault/FaultInjector.java` | B1.1 backend-swappable fault-activation interface (inject/clear + FaultTarget + mist.fault.injection.enabled gate) for the flag-gated control/fault pairing executor. |
+| `mist-cli/src/main/java/io/mist/cli/fault/SutFlagFaultInjector.java` | Gate-1 FaultInjector backend: kubectl set env JAVA_TOOL_OPTIONS=-D<prop>=true + rollout status per toggle, explicit kubectl context, process-level timeouts, test seam. |
+| `mist-cli/src/main/java/io/mist/cli/fault/TargetTripleRegistry.java` | Strict loader for the per-SUT target-triples.yaml (write endpoint, persisting dependency, read-back GET, isolation key, optional fault_flag) consumed only by the flag-gated pairing executor. |
 
 ### `mist-cli/src/main/java/io/mist/cli/spi/`
 
@@ -586,7 +588,8 @@ The core Maven module: OpenAPI spec model, test/input generation, oracle (shape/
 
 | Path | Description |
 |------|-------------|
-| `mist-cli/src/test/java/io/mist/cli/fault/TargetTripleRegistryTest.java` | Pins the P2 registry: shipped TrainTicket file parses to the two Gate-1 triples; strict parser rejects missing/unknown/duplicate/empty-key malformations. |
+| `mist-cli/src/test/java/io/mist/cli/fault/SutFlagFaultInjectorTest.java` | Pins the B1.1 injector against a recorded Exec seam: exact kubectl argv (-D form), set-env→rollout sequencing, context passing, failure propagation, enabled-gate default. |
+| `mist-cli/src/test/java/io/mist/cli/fault/TargetTripleRegistryTest.java` | Pins the P2 registry: shipped TrainTicket file parses to the two Gate-1 triples (incl. fault_flag); strict parser rejects missing/unknown/duplicate/empty-key malformations. |
 
 ### `mist-cli/src/test/java/io/mist/cli/writer/`
 

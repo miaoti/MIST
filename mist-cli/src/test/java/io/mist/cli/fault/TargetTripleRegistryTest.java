@@ -10,6 +10,7 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -44,6 +45,9 @@ public class TargetTripleRegistryTest {
         assertEquals("ts-route-service", adminroute.dependency);
         assertEquals("GET /api/v1/adminrouteservice/adminroute", adminroute.readbackEndpoint);
         assertEquals(Arrays.asList("startStation", "endStation"), adminroute.isolationKey);
+        assertNotNull(adminroute.faultFlag);
+        assertEquals("ts-admin-route-service", adminroute.faultFlag.deployment);
+        assertEquals("mist.fault.lostwrite.enabled", adminroute.faultFlag.property);
 
         TargetTripleRegistry.Triple contacts = triples.get(1);
         assertEquals("adminbasic-contacts-create", contacts.name);
@@ -51,6 +55,60 @@ public class TargetTripleRegistryTest {
         assertEquals("ts-contacts-service", contacts.dependency);
         assertEquals("GET /api/v1/adminbasicservice/adminbasic/contacts", contacts.readbackEndpoint);
         assertEquals(Arrays.asList("accountId", "documentNumber"), contacts.isolationKey);
+        assertNotNull(contacts.faultFlag);
+        assertEquals("ts-admin-basic-info-service", contacts.faultFlag.deployment);
+        assertEquals("mist.fault.lostwrite.enabled", contacts.faultFlag.property);
+    }
+
+    @Test
+    public void faultFlag_isOptional() {
+        String doc = "triples:\n"
+                + "  - name: benign-only\n"
+                + "    write_endpoint: \"POST /x\"\n"
+                + "    dependency: ts-x\n"
+                + "    readback_endpoint: \"GET /x\"\n"
+                + "    isolation_key: [a]\n";
+        List<TargetTripleRegistry.Triple> triples = TargetTripleRegistry.parse(yaml(doc), "test-doc");
+        assertEquals(1, triples.size());
+        assertNull(triples.get(0).faultFlag);
+    }
+
+    @Test
+    public void faultFlag_missingProperty_fails() {
+        String doc = "triples:\n"
+                + "  - name: t1\n"
+                + "    write_endpoint: \"POST /x\"\n"
+                + "    dependency: ts-x\n"
+                + "    readback_endpoint: \"GET /x\"\n"
+                + "    isolation_key: [a]\n"
+                + "    fault_flag:\n"
+                + "      deployment: ts-front\n";
+        try {
+            TargetTripleRegistry.parse(yaml(doc), "test-doc");
+            fail("expected IllegalArgumentException for missing fault_flag property");
+        } catch (IllegalArgumentException e) {
+            assertTrue(e.getMessage(), e.getMessage().contains("property"));
+        }
+    }
+
+    @Test
+    public void faultFlag_unknownKey_failsAsTypo() {
+        String doc = "triples:\n"
+                + "  - name: t1\n"
+                + "    write_endpoint: \"POST /x\"\n"
+                + "    dependency: ts-x\n"
+                + "    readback_endpoint: \"GET /x\"\n"
+                + "    isolation_key: [a]\n"
+                + "    fault_flag:\n"
+                + "      deployment: ts-front\n"
+                + "      property: mist.fault.x.enabled\n"
+                + "      namespase: default\n";
+        try {
+            TargetTripleRegistry.parse(yaml(doc), "test-doc");
+            fail("expected IllegalArgumentException for unknown fault_flag key");
+        } catch (IllegalArgumentException e) {
+            assertTrue(e.getMessage(), e.getMessage().contains("namespase"));
+        }
     }
 
     @Test

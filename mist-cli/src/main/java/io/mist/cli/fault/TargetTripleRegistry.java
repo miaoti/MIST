@@ -36,19 +36,27 @@ public final class TargetTripleRegistry {
         public final String dependency;
         public final String readbackEndpoint;
         public final List<String> isolationKey;
+        /** SUT-side ground-truth flag (B1.1); null on benign-trap-only targets. */
+        public final FaultInjector.FaultTarget faultFlag;
 
         Triple(String name, String writeEndpoint, String dependency,
-               String readbackEndpoint, List<String> isolationKey) {
+               String readbackEndpoint, List<String> isolationKey,
+               FaultInjector.FaultTarget faultFlag) {
             this.name = name;
             this.writeEndpoint = writeEndpoint;
             this.dependency = dependency;
             this.readbackEndpoint = readbackEndpoint;
             this.isolationKey = Collections.unmodifiableList(new ArrayList<>(isolationKey));
+            this.faultFlag = faultFlag;
         }
     }
 
     private static final Set<String> ALLOWED_KEYS = Collections.unmodifiableSet(new HashSet<>(
-            Arrays.asList("name", "write_endpoint", "dependency", "readback_endpoint", "isolation_key")));
+            Arrays.asList("name", "write_endpoint", "dependency", "readback_endpoint", "isolation_key",
+                    "fault_flag")));
+
+    private static final Set<String> ALLOWED_FAULT_FLAG_KEYS = Collections.unmodifiableSet(new HashSet<>(
+            Arrays.asList("deployment", "property")));
 
     private TargetTripleRegistry() {
         // static loader only
@@ -108,13 +116,36 @@ public final class TargetTripleRegistry {
                     requireString(entry, "write_endpoint", origin),
                     requireString(entry, "dependency", origin),
                     requireString(entry, "readback_endpoint", origin),
-                    requireStringList(entry, "isolation_key", origin)));
+                    requireStringList(entry, "isolation_key", origin),
+                    optionalFaultFlag(entry, origin)));
         }
         if (triples.isEmpty()) {
             throw new IllegalArgumentException(
                     "TargetTripleRegistry: 'triples' list in " + origin + " is empty");
         }
         return Collections.unmodifiableList(triples);
+    }
+
+    @SuppressWarnings("unchecked")
+    private static FaultInjector.FaultTarget optionalFaultFlag(Map<String, Object> entry, String origin) {
+        Object node = entry.get("fault_flag");
+        if (node == null) {
+            return null;
+        }
+        if (!(node instanceof Map)) {
+            throw new IllegalArgumentException("TargetTripleRegistry: 'fault_flag' in " + origin
+                    + " must be a map with 'deployment' and 'property'");
+        }
+        Map<String, Object> flag = (Map<String, Object>) node;
+        for (String key : flag.keySet()) {
+            if (!ALLOWED_FAULT_FLAG_KEYS.contains(key)) {
+                throw new IllegalArgumentException("TargetTripleRegistry: unknown fault_flag key '" + key
+                        + "' in " + origin + " (typo? allowed: " + ALLOWED_FAULT_FLAG_KEYS + ")");
+            }
+        }
+        return new FaultInjector.FaultTarget(
+                requireString(flag, "deployment", origin),
+                requireString(flag, "property", origin));
     }
 
     private static String requireString(Map<String, Object> entry, String key, String origin) {

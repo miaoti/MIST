@@ -14,14 +14,26 @@
 #                       targets; membership by business key, no per-entity GET)
 #   isolation_key     - request-body fields forming the per-test-unique business
 #                       key (B2.2 isolation: fresh values per test)
+#   fault_flag        - OPTIONAL (B1.1): SUT-side ground-truth flag for the
+#                       SutFlagFaultInjector — the deployment to toggle and the
+#                       -D property its injected code reads. Scaffolding for
+#                       labeled positives, not a tool dependency; note the
+#                       deployment (front service) differs from `dependency`
+#                       (persisting service). Absent on benign-trap-only targets.
 triples:
   - name: adminroute-create
     write_endpoint: "POST /api/v1/adminrouteservice/adminroute"
     dependency: ts-route-service
     readback_endpoint: "GET /api/v1/adminrouteservice/adminroute"
     isolation_key: [startStation, endStation]
+    fault_flag:
+      deployment: ts-admin-route-service
+      property: mist.fault.lostwrite.enabled
   - name: adminbasic-contacts-create
     write_endpoint: "POST /api/v1/adminbasicservice/adminbasic/contacts"
     dependency: ts-contacts-service
     readback_endpoint: "GET /api/v1/adminbasicservice/adminbasic/contacts"
     isolation_key: [accountId, documentNumber]
+    fault_flag:
+      deployment: ts-admin-basic-info-service
+      property: mist.fault.lostwrite.enabled
