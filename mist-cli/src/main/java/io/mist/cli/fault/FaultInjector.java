@@ -53,6 +53,15 @@ public interface FaultInjector {
             }
             this.deployment = deployment.trim();
             this.property = property.trim();
+            // The property lands inside JAVA_TOOL_OPTIONS and the deployment
+            // inside a kubectl resource path — reject characters that would
+            // smuggle extra JVM options or path segments (review F7).
+            if (this.property.matches(".*[\\s=].*")) {
+                throw new IllegalArgumentException("FaultTarget property must not contain whitespace or '='");
+            }
+            if (this.deployment.matches(".*[\\s/].*")) {
+                throw new IllegalArgumentException("FaultTarget deployment must not contain whitespace or '/'");
+            }
         }
 
         @Override

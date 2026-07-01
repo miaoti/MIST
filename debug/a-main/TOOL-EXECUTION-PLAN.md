@@ -459,9 +459,20 @@ rule: **regression lens → ADDITIVITY HOLDS** (flags-off byte-identity confirme
 paths, config validation, reports; full reactor green incl. mist-llm); **plan-fidelity lens → DRIFTED
 (narrowly)** — Gate-1-critical core faithful, drift confined to G3-deferred components whose markers
 overclaimed ("code exists" for unbuilt gated/compensation code) plus the Jaeger-URL near-miss; **soundness
-lens → ABORTED on subagent session limits, to be re-run before the live Gate-1 session** (partial coverage
-exists: the regression reviewer audited hook inertness, verdict-join determinism and flag-leak paths; the
-fidelity reviewer audited the fire rule + gate strata).
+lens → first attempt ABORTED on subagent session limits; the RE-RUN completed 2026-07-01 with verdict
+"NOT (yet) sound → sound after F1/F2"**: F1 MAJOR — the sync-FP bar auto-PASSed on a collapsed/zero
+denominator and passes vacuously when Jaeger is down (all fires timeout-gated ⇒ numerator structurally 0);
+fixed with a ≥20-acked-run minimum (below it the bar is NOT_EVALUABLE) + an explicit all-fires-timeout-gated
+caveat. F2 MAJOR — pairing/probe ran with the default parallel executor while station-pair freshening was
+per-thread ⇒ concurrent methods could claim the same pair and another thread's persisted row would satisfy
+the membership check (optimistic FP undercount); fixed by forcing mst.test.parallelism=1 for pairing/probe
+(snapshot/restore) AND a session-level claimed-pairs set. F3-F7 MINOR all folded: pairing report persisted
+BEFORE the probe (a probe crash no longer discards the pair evidence); FP-vs-timeout curve trimmed to the
+pre-registered cap with censoring note + the poll loop is authoritative at the cap; duplicate write_endpoint
+across triples fails loudly; 15 s post-rollout settle for stale nacos/ribbon discovery caches; FaultTarget
+rejects whitespace/'='//' characters. The reviewer confirmed clean: fire-rule spec match, ack parsing,
+ThreadLocal scoping, run bracketing, S2 absence-upgrade semantics, and the config plumbing of every
+pre-registered knob.
 **Fixed in code (all test-pinned, suites green 331+49):** inject-loop moved inside try/finally +
 best-effort-per-target clear-all + loud failure when a flag may remain (R2-F2 MAJOR); Jaeger URL convention
 (R3-F2 MAJOR, fixed pre-review-return); trace-settle knob separated + pre-registered (R3-F4); enhancer

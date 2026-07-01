@@ -50,6 +50,13 @@ public final class PairedFaultExecutor {
     /** §4: the pre-registered numeric bar on non-timeout-gated sync FP. */
     static final double SYNC_FP_BAR = 0.05;
 
+    /**
+     * Minimum acked benign runs for the bar to be evaluable — a bar computed
+     * over a collapsed denominator (auth outage, pair exhaustion) must not
+     * auto-PASS (soundness review F1).
+     */
+    static final int MIN_ACKED_FOR_BAR = 20;
+
     /** §4: async-FP carries no soundness claim at Gate-1 (P3 verdict: no clean broker path). */
     static final String ASYNC_DISCLAIMER =
             "Gate-1 measures the SYNC stratum only. No broker-mediated async write path exists on this SUT "
@@ -307,22 +314,40 @@ public final class PairedFaultExecutor {
         }
         JSONObject perTriple = new JSONObject();
         for (Map.Entry<String, List<DataIntegrityRuntime.RunRecord>> e : byTriple.entrySet()) {
-            perTriple.put(e.getKey(), fpStats(e.getValue(), cutoffs));
+            perTriple.put(e.getKey(), fpStats(e.getValue(), cutoffs, timeoutMs));
         }
         out.put("perTriple", perTriple);
-        JSONObject aggregate = fpStats(records, cutoffs);
+        JSONObject aggregate = fpStats(records, cutoffs, timeoutMs);
         out.put("aggregate", aggregate);
 
-        double nonTimeoutFpRate = aggregate.getDouble("nonTimeoutGatedFpRate");
+        int acked = aggregate.getInt("ackedBenignRuns");
+        int fires = aggregate.getInt("fpFires");
+        int observedGated = aggregate.getInt("observedGatedFpFires");
         JSONObject bar = new JSONObject();
-        bar.put("preRegistered", "non-timeout-gated sync FP <= " + SYNC_FP_BAR + " (plan section 4)");
-        bar.put("value", nonTimeoutFpRate);
-        bar.put("verdict", nonTimeoutFpRate <= SYNC_FP_BAR ? "PASS" : "FAIL");
+        bar.put("preRegistered", "non-timeout-gated sync FP <= " + SYNC_FP_BAR + " over >= "
+                + MIN_ACKED_FOR_BAR + " acked benign runs (plan section 4)");
+        if (acked < MIN_ACKED_FOR_BAR) {
+            // A collapsed denominator must not auto-PASS the pre-registered bar.
+            bar.put("value", JSONObject.NULL);
+            bar.put("verdict", "NOT_EVALUABLE");
+            bar.put("reason", "only " + acked + " acked benign run(s) — below the " + MIN_ACKED_FOR_BAR
+                    + "-run minimum; diagnose invalid runs before reading the bar");
+        } else {
+            double nonTimeoutFpRate = (double) observedGated / acked;
+            bar.put("value", nonTimeoutFpRate);
+            bar.put("verdict", nonTimeoutFpRate <= SYNC_FP_BAR ? "PASS" : "FAIL");
+            if (fires > 0 && observedGated == 0) {
+                bar.put("caveat", "all " + fires + " fire(s) are timeout-gated — the observation gate "
+                        + "may have been unavailable (verify Jaeger reachability); the bar's numerator "
+                        + "is then structurally zero and this PASS is weak evidence");
+            }
+        }
         out.put("syncFpBar", bar);
         return out;
     }
 
-    private static JSONObject fpStats(List<DataIntegrityRuntime.RunRecord> records, long[] cutoffs) {
+    private static JSONObject fpStats(List<DataIntegrityRuntime.RunRecord> records, long[] cutoffs,
+                                      long timeoutMs) {
         int invalid = 0;
         int acked = 0;
         int fires = 0;
@@ -356,14 +381,21 @@ public final class PairedFaultExecutor {
         stats.put("fpRate", acked == 0 ? JSONObject.NULL : (double) fires / acked);
         stats.put("observedGatedFpFires", observedGatedFires);
         stats.put("timeoutGatedFpFires", timeoutGatedFires);
-        stats.put("nonTimeoutGatedFpRate", acked == 0 ? 0.0 : (double) observedGatedFires / acked);
+        stats.put("nonTimeoutGatedFpRate",
+                acked == 0 ? JSONObject.NULL : (double) observedGatedFires / acked);
         stats.put("gateHistogram", new JSONObject(gateHistogram));
         JSONArray curve = new JSONArray();
         for (long cutoff : cutoffs) {
             int firesAtCutoff = fires;
-            for (long presence : presenceTimesMs) {
-                if (presence > cutoff) {
-                    firesAtCutoff++;
+            // A presence observed after the cutoff would have been judged
+            // absent under that (shorter) cutoff. At the cap itself the poll
+            // loop is the authority: a presence seen on the final poll past
+            // the cap did NOT fire, so it is not re-counted (review F4).
+            if (cutoff < timeoutMs) {
+                for (long presence : presenceTimesMs) {
+                    if (presence > cutoff) {
+                        firesAtCutoff++;
+                    }
                 }
             }
             JSONObject point = new JSONObject();
@@ -372,19 +404,25 @@ public final class PairedFaultExecutor {
             curve.put(point);
         }
         stats.put("fpVsTimeoutCurve", curve);
+        stats.put("curveNote", "points are observable only up to the pre-registered cap (" + timeoutMs
+                + " ms); absence beyond the cap is censored, so no larger cutoffs are reported");
         return stats;
     }
 
+    /** Cutoffs at or below the pre-registered cap, with the cap itself last. */
     private static long[] curveCutoffs(long timeoutMs) {
+        List<Long> cutoffs = new ArrayList<>();
         for (long cutoff : CURVE_CUTOFFS_MS) {
-            if (cutoff == timeoutMs) {
-                return CURVE_CUTOFFS_MS;
+            if (cutoff < timeoutMs) {
+                cutoffs.add(cutoff);
             }
         }
-        long[] extended = java.util.Arrays.copyOf(CURVE_CUTOFFS_MS, CURVE_CUTOFFS_MS.length + 1);
-        extended[extended.length - 1] = timeoutMs;
-        java.util.Arrays.sort(extended);
-        return extended;
+        cutoffs.add(timeoutMs);
+        long[] out = new long[cutoffs.size()];
+        for (int i = 0; i < out.length; i++) {
+            out[i] = cutoffs.get(i);
+        }
+        return out;
     }
 
     /** Writes the machine-readable pairing report (evidence + strata). */

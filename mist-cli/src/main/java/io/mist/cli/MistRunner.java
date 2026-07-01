@@ -572,8 +572,10 @@ public final class MistRunner {
             throw new IllegalStateException("target-triples.yaml needs a 'cluster' block "
                     + "(kubectl context/namespace) for the pairing executor");
         }
+        // 15s post-rollout settle: nacos/ribbon caches can serve stale
+        // instances right after a pod swap (soundness review F6).
         io.mist.cli.fault.SutFlagFaultInjector injector = new io.mist.cli.fault.SutFlagFaultInjector(
-                cluster.context, cluster.namespace, cluster.rolloutTimeoutSeconds);
+                cluster.context, cluster.namespace, cluster.rolloutTimeoutSeconds, 15);
         logger.warn("[MIST] pairing execution: {} method(s) {} — control run, then batched fault run",
                 pairingMethods.size(), pairingMethods);
 
@@ -603,23 +605,42 @@ public final class MistRunner {
 
         io.mist.cli.fault.PairedFaultExecutor executor = new io.mist.cli.fault.PairedFaultExecutor(
                 dataIntegrityRegistry.triples, injector, filteredRun);
-        java.util.List<io.mist.cli.fault.PairedFaultExecutor.PairResult> results = executor.execute();
 
-        // B2.4: benign FP probe (specificity) after the pair (sensitivity).
-        int fpProbeRuns = Integer.getInteger(
-                io.mist.cli.fault.PairedFaultExecutor.FP_PROBE_RUNS_PROPERTY, 0);
+        // Pairing/probe runs are single-threaded on purpose: concurrent hooked
+        // methods can race on isolation-key freshness and baseline reads,
+        // biasing the measured FP downward (soundness review F2). Snapshot and
+        // restore the property so the rest of the JVM is untouched.
+        String previousParallelism = System.getProperty("mst.test.parallelism");
+        System.setProperty("mst.test.parallelism", "1");
+        java.util.List<io.mist.cli.fault.PairedFaultExecutor.PairResult> results;
         java.util.List<io.mist.cli.fault.DataIntegrityRuntime.RunRecord> probeRecords = null;
-        if (fpProbeRuns > 0) {
-            logger.warn("[MIST] benign FP probe: {} flag-off iteration(s) of the pairing tests", fpProbeRuns);
-            probeRecords = executor.benignProbe(fpProbeRuns);
-        }
-
         long quiescenceTimeoutMs = Long.getLong(
                 io.mist.cli.fault.DataIntegrityRuntime.TIMEOUT_MS_PROPERTY,
                 io.mist.cli.fault.DataIntegrityRuntime.DEFAULT_TIMEOUT_MS);
         java.nio.file.Path reportPath = java.nio.file.Paths.get(
                 "logs", "data-integrity-reports",
                 "pairing_" + inputs.experimentName + "_" + id + ".json");
+        try {
+            results = executor.execute();
+            // Persist the pairing evidence BEFORE the probe: a probe crash must
+            // not discard the control/fault verdicts (soundness review F3).
+            io.mist.cli.fault.PairedFaultExecutor.writeReport(reportPath, results, id);
+
+            // B2.4: benign FP probe (specificity) after the pair (sensitivity).
+            int fpProbeRuns = Integer.getInteger(
+                    io.mist.cli.fault.PairedFaultExecutor.FP_PROBE_RUNS_PROPERTY, 0);
+            if (fpProbeRuns > 0) {
+                logger.warn("[MIST] benign FP probe: {} flag-off iteration(s) of the pairing tests",
+                        fpProbeRuns);
+                probeRecords = executor.benignProbe(fpProbeRuns);
+            }
+        } finally {
+            if (previousParallelism == null) {
+                System.clearProperty("mst.test.parallelism");
+            } else {
+                System.setProperty("mst.test.parallelism", previousParallelism);
+            }
+        }
         io.mist.cli.fault.PairedFaultExecutor.writeReport(
                 reportPath, results, probeRecords, quiescenceTimeoutMs, id);
         String summary = io.mist.cli.fault.PairedFaultExecutor.summarize(results);

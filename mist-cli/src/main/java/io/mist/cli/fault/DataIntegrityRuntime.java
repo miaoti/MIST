@@ -171,12 +171,19 @@ public final class DataIntegrityRuntime {
         final long traceSettleMs;
         final List<RunRecord> records = Collections.synchronizedList(new ArrayList<>());
         final ThreadLocal<Pending> pending = new ThreadLocal<>();
+        // Pairs claimed by ANY thread this run — two concurrent hooked methods
+        // must never freshen onto the same (start,end) pair, or one thread's
+        // persisted row satisfies the other's membership check (review F2).
+        final Set<String> claimedPairs = java.util.concurrent.ConcurrentHashMap.newKeySet();
 
         Session(List<TargetTripleRegistry.Triple> triples, String runLabel, Http http,
                 long pollMs, long timeoutMs, long traceSettleMs) {
             Map<String, TargetTripleRegistry.Triple> keyed = new HashMap<>();
             for (TargetTripleRegistry.Triple t : triples) {
-                keyed.put(t.writeEndpoint, t);
+                if (keyed.put(t.writeEndpoint, t) != null) {
+                    throw new IllegalArgumentException("duplicate write_endpoint '" + t.writeEndpoint
+                            + "' across triples — records would be misattributed (review F5)");
+                }
                 if (t.isolationStrategy == TargetTripleRegistry.IsolationStrategy.STATION_PAIR
                         && !t.isolationKey.equals(java.util.Arrays.asList("startStation", "endStation"))) {
                     throw new IllegalArgumentException("station-pair strategy expects isolation_key"
@@ -250,7 +257,8 @@ public final class DataIntegrityRuntime {
         try {
             HttpResponse baseline = s.http.getSut(readbackPath(triple));
             Map<String, String> freshKey = new LinkedHashMap<>();
-            String freshened = freshen(triple, requestBody, baseline.body, freshKey, s.http);
+            String freshened = freshen(triple, requestBody, baseline.body, freshKey, s.http,
+                    s.claimedPairs);
             boolean baselineHasX = containsKey(baseline.body, freshKey);
             s.pending.set(new Pending(triple, freshKey, baselineHasX, baseline.body, null));
             logger.info("DataIntegrity[{}][{}]: baseline captured, fresh key {}",
@@ -362,7 +370,7 @@ public final class DataIntegrityRuntime {
      * fields keep their generator/pool-provided values (B1.2).
      */
     static String freshen(TargetTripleRegistry.Triple triple, String requestBody, String baselineBody,
-                          Map<String, String> outKey, Http http) {
+                          Map<String, String> outKey, Http http, Set<String> claimedPairs) {
         JSONObject body = requestBody == null || requestBody.trim().isEmpty()
                 ? new JSONObject()
                 : new JSONObject(requestBody);
@@ -378,7 +386,7 @@ public final class DataIntegrityRuntime {
                 }
                 break;
             case STATION_PAIR:
-                freshStationPair(body, baselineBody, outKey, http);
+                freshStationPair(body, baselineBody, outKey, http, claimedPairs);
                 break;
             default:
                 throw new IllegalStateException("unhandled strategy " + triple.isolationStrategy);
@@ -392,7 +400,8 @@ public final class DataIntegrityRuntime {
      * that no baseline route already uses.
      */
     private static void freshStationPair(JSONObject body, String baselineBody,
-                                         Map<String, String> outKey, Http http) {
+                                         Map<String, String> outKey, Http http,
+                                         Set<String> claimedPairs) {
         HttpResponse stationsResp = http.getSut(STATIONS_PATH);
         List<String> stations = new ArrayList<>();
         for (Object item : extractItems(stationsResp.body)) {
@@ -417,6 +426,10 @@ public final class DataIntegrityRuntime {
         for (String start : shuffled) {
             for (String end : shuffled) {
                 if (start.equals(end) || usedPairs.contains(start + "|" + end)) {
+                    continue;
+                }
+                if (!claimedPairs.add(start + "|" + end)) {
+                    // Another thread already freshened onto this pair this run.
                     continue;
                 }
                 body.put("startStation", start);

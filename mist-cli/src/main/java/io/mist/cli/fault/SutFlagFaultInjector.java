@@ -65,20 +65,33 @@ public final class SutFlagFaultInjector implements FaultInjector {
     private final String kubectlContext;
     private final String namespace;
     private final long rolloutTimeoutSeconds;
+    private final long postChangeSettleSeconds;
     private final Exec exec;
 
     /**
-     * @param kubectlContext        kubectl context to target, or {@code null}
-     *                              to use the current one (discouraged outside
-     *                              tests — see class doc)
-     * @param namespace             namespace of the SUT deployments
-     * @param rolloutTimeoutSeconds upper bound for each rollout to converge
+     * @param kubectlContext          kubectl context to target, or {@code null}
+     *                                to use the current one (discouraged outside
+     *                                tests — see class doc)
+     * @param namespace               namespace of the SUT deployments
+     * @param rolloutTimeoutSeconds   upper bound for each rollout to converge
+     * @param postChangeSettleSeconds extra wait after a converged rollout —
+     *                                nacos/ribbon client caches can serve stale
+     *                                instances briefly after the pod swap, and a
+     *                                5xx on the fault run's first request would
+     *                                burn the leg as not-acked (review F6)
      */
-    public SutFlagFaultInjector(String kubectlContext, String namespace, long rolloutTimeoutSeconds) {
-        this(kubectlContext, namespace, rolloutTimeoutSeconds, SutFlagFaultInjector::runProcess);
+    public SutFlagFaultInjector(String kubectlContext, String namespace, long rolloutTimeoutSeconds,
+                                long postChangeSettleSeconds) {
+        this(kubectlContext, namespace, rolloutTimeoutSeconds, postChangeSettleSeconds,
+                SutFlagFaultInjector::runProcess);
     }
 
     SutFlagFaultInjector(String kubectlContext, String namespace, long rolloutTimeoutSeconds, Exec exec) {
+        this(kubectlContext, namespace, rolloutTimeoutSeconds, 0, exec);
+    }
+
+    SutFlagFaultInjector(String kubectlContext, String namespace, long rolloutTimeoutSeconds,
+                         long postChangeSettleSeconds, Exec exec) {
         if (namespace == null || namespace.trim().isEmpty()) {
             throw new IllegalArgumentException("SutFlagFaultInjector needs a non-empty namespace");
         }
@@ -88,7 +101,21 @@ public final class SutFlagFaultInjector implements FaultInjector {
         this.kubectlContext = kubectlContext;
         this.namespace = namespace.trim();
         this.rolloutTimeoutSeconds = rolloutTimeoutSeconds;
+        this.postChangeSettleSeconds = postChangeSettleSeconds;
         this.exec = exec;
+    }
+
+    /** Post-rollout settle for stale discovery caches (no-op when 0). */
+    private void settle() {
+        if (postChangeSettleSeconds <= 0) {
+            return;
+        }
+        try {
+            Thread.sleep(postChangeSettleSeconds * 1000L);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new FaultInjectionException("interrupted during post-rollout settle", e);
+        }
     }
 
     @Override
@@ -105,6 +132,7 @@ public final class SutFlagFaultInjector implements FaultInjector {
                 "JAVA_TOOL_OPTIONS=" + String.join(" ", parts),
                 "--request-timeout=" + SET_ENV_REQUEST_TIMEOUT);
         awaitRollout(target);
+        settle();
         logger.info("FaultInjector: INJECT {} converged", target);
     }
 
@@ -121,6 +149,7 @@ public final class SutFlagFaultInjector implements FaultInjector {
                 parts.isEmpty() ? "JAVA_TOOL_OPTIONS-" : "JAVA_TOOL_OPTIONS=" + String.join(" ", parts),
                 "--request-timeout=" + SET_ENV_REQUEST_TIMEOUT);
         awaitRollout(target);
+        settle();
         logger.info("FaultInjector: CLEAR {} converged", target);
     }
 
