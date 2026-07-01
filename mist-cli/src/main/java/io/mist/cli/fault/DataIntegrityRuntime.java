@@ -380,7 +380,13 @@ public final class DataIntegrityRuntime {
         switch (triple.isolationStrategy) {
             case FRESH_STRINGS:
                 for (String field : triple.isolationKey) {
-                    String value = "mist-" + UUID.randomUUID().toString().replace("-", "").substring(0, 12);
+                    // Form-preserving freshness: SUT entities may type a JSON
+                    // string field as java.util.UUID (TrainTicket Contacts
+                    // accountId), where an arbitrary string 400s at Jackson —
+                    // so a UUID-shaped pool value gets a fresh UUID and only
+                    // free-form strings get the mist- prefix.
+                    String previous = body.has(field) ? String.valueOf(body.opt(field)) : null;
+                    String value = freshValueLike(previous);
                     body.put(field, value);
                     outKey.put(field, value);
                 }
@@ -392,6 +398,16 @@ public final class DataIntegrityRuntime {
                 throw new IllegalStateException("unhandled strategy " + triple.isolationStrategy);
         }
         return body.toString();
+    }
+
+    private static final java.util.regex.Pattern UUID_SHAPE = java.util.regex.Pattern.compile(
+            "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}");
+
+    static String freshValueLike(String previous) {
+        if (previous != null && UUID_SHAPE.matcher(previous).matches()) {
+            return UUID.randomUUID().toString();
+        }
+        return "mist-" + UUID.randomUUID().toString().replace("-", "").substring(0, 12);
     }
 
     /**

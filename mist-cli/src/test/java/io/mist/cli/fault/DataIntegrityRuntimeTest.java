@@ -148,13 +148,20 @@ public class DataIntegrityRuntimeTest {
     @Test
     public void freshStrings_rewritesKeysStripsIdKeepsPoolFields() {
         begin("control", contactTriple());
-        String body = "{\"accountId\":\"pool-acct\",\"documentNumber\":\"123\",\"documentType\":1,"
+        // accountId is UUID-typed on the SUT (java.util.UUID) — the pool value
+        // is UUID-shaped and the fresh value must stay UUID-shaped or Jackson
+        // 400s the request.
+        String poolUuid = "123e4567-e89b-42d3-a456-426614174000";
+        String body = "{\"accountId\":\"" + poolUuid + "\",\"documentNumber\":\"123\",\"documentType\":1,"
                 + "\"name\":\"pool-name\",\"phoneNumber\":\"555\",\"id\":\"a-very-long-generator-id-0123456789\"}";
         String freshened = DataIntegrityRuntime.beforeWrite(CONTACT_STEP, body);
         JSONObject out = new JSONObject(freshened);
-        assertTrue(out.getString("accountId").startsWith("mist-"));
-        assertTrue(out.getString("documentNumber").startsWith("mist-"));
-        assertNotEquals("pool-acct", out.getString("accountId"));
+        assertTrue("UUID-shaped field stays UUID-shaped",
+                out.getString("accountId").matches(
+                        "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"));
+        assertNotEquals(poolUuid, out.getString("accountId"));
+        assertTrue("free-form field gets the mist prefix",
+                out.getString("documentNumber").startsWith("mist-"));
         assertEquals("pool-name", out.getString("name"));
         assertEquals(1, out.getInt("documentType"));
         assertEquals("555", out.getString("phoneNumber"));
