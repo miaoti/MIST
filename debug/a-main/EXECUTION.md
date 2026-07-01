@@ -27,7 +27,9 @@ reserved for the *unmodified-system* Gate-3 hunt. B2 (the oracle, in MIST) remai
 
 **Definition of done (from plan §8 Gate 1):** on TrainTicket, B1+B2 run end-to-end; the differential oracle
 **fires on a constructed lost-write**, and the read-back oracle's **FP rate on a benign-trap stratum is
-measured and low**. Fail ⇒ mechanism unsound ⇒ revisit plan §9.
+measured and low**. **Scope (cold-review C-M2): this DoD = SYNC-mechanism soundness on ONE SUT** — the
+async/CQRS regime is NOT validated here (async FP is largely timeout-gated ⇒ deferred to G3; TOOL-PLAN §4).
+"Sound on one SUT" throughout this file means the sync regime only. Fail ⇒ mechanism unsound ⇒ revisit plan §9.
 
 ### G0 — Prerequisites (days)
 - TrainTicket up via `make deploy` (k8s/minikube — see memory `trainticket-live-deploy`); Jaeger/OTel traces
@@ -83,8 +85,11 @@ measured and low**. Fail ⇒ mechanism unsound ⇒ revisit plan §9.
 - **Sensitivity:** construct a case where the SUT *masks* a failed write as 2xx (or inject such that the write
   is dropped) → confirm the oracle **FIRES** with the state diff as evidence.
 - **Specificity / FP:** build a **benign-trap stratum** (eventually-consistent-then-correct, retry-then-
-  succeed, optional-dependency) → measure the read-back oracle's **FP/FN rate**; report it **per-SUT** (plan
-  §8.5). Target: low/characterized.
+  succeed, optional-dependency), **which MUST include a broker-mediated async write path** (TOOL-PLAN B2.4 /
+  prerequisite P3 — a synchronous sleep does not exercise the async span-link degradation R3 fears) → measure
+  the read-back oracle's **FP/FN rate**; report it **per-SUT AND per-stratum (sync vs async)** with
+  quiescence-gate coverage (plan §8.5). Target: low/characterized **sync** FP; async FP as a curve over the
+  pre-registered timeout (TOOL-PLAN §4), not a point.
 - **Gate 1 verdict:** PASS = fires on the constructed case + measured low FP ⇒ proceed to G2/G3.
   FAIL ⇒ mechanism unsound ⇒ plan §9 (re-venue or pivot).
 

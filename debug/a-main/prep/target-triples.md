@@ -30,7 +30,7 @@ create↔read-back pairs, each backed by its own service DB.
 | # | Write endpoint | Persisting dependency D | Read-back GET | Isolation | Notes |
 |---|---|---|---|---|---|
 | **A (recommended #1 — known endpoint)** | `POST /api/v1/adminrouteservice/adminroute` (addRoute, body `RouteInfo`) | `ts-admin-route-service` → `ts-route-service` DB | `GET /api/v1/adminrouteservice/adminroute` (getAllRoutes) — check the new route is present | MED — `routeId` is derived from start/end stations; use unique station pairs per test; `DELETE …/{routeId}` exists for cleanup | **We already have `admin_add_route_failed.json` traces** (probe-attribution). Read-back is collection-level (no item-GET on adminroute), so verify presence in getAllRoutes |
-| **B (recommended #1b — cleanest isolation)** | `POST /api/v1/adminbasicservice/adminbasic/contacts` (create contact) | `ts-contacts-service` DB | `GET /api/v1/adminbasicservice/adminbasic/contacts/{contactsId}` (per-entity) | **HIGH** — per-entity create with unique `contactsId` → fresh entity/test | Textbook create↔read-back; best first soundness target (clean per-ID read-back) |
+| **B (2nd positive)** | `POST /api/v1/adminbasicservice/adminbasic/contacts` (create contact) | `ts-admin-basic-info-service` → `ts-contacts-service` | `GET /api/v1/adminbasicservice/adminbasic/contacts` (**collection** `getAllContacts` — spec has **NO** per-entity `GET /contacts/{id}` on adminbasic, only `delete`; cold-review A) | MED — collection read-back, membership by business key (accountId+documentNumber) | Same collection pattern as adminroute; **no isolation advantage over A** |
 | C | `POST /api/v1/consignservice/consigns` (create consign) | `ts-consign-service` DB | `GET /api/v1/consignservice/consigns/order/{id}` or `/account/{id}` | HIGH — keyed by order/account id | Good per-key read-back; richer record (price/weight) to diff |
 | D | `POST /api/v1/adminbasicservice/adminbasic/prices` (create price) | `ts-price-service` DB | `GET …/adminbasic/prices/{pricesId}` | HIGH | Same clean pattern as B |
 | E | `POST /api/v1/contactservice/contacts` (non-admin create) | `ts-contacts-service` DB | `GET /api/v1/contactservice/contacts/{contactsId}` or `/account/{accountId}` | HIGH | Mirror of B via the user-facing path |
@@ -39,9 +39,14 @@ create↔read-back pairs, each backed by its own service DB.
 ## Recommendation for Gate 1
 - **Sanity target = A (adminroute):** we already have traces and the probe history; good for first end-to-end
   wiring even though read-back is collection-level.
-- **Soundness target = B (adminbasic/contacts) or C (consigns):** per-entity unique-ID create↔read-back gives
-  the cleanest isolation to *measure* the read-back oracle's FP rate (the make-or-break number, plan §8.5).
-- Run the soundness FP measurement primarily on B/C; use A as the recognizable demonstration case.
+- **Soundness FP target = business-key collection membership on adminroute/adminbasic** (both are collection
+  read-back — adminbasic has no per-entity GET, cold-review A). A true per-entity GET exists only on
+  `ts-contacts-service` (row E) and `consigns` (row C), but **neither has a LOST_WRITE injector** — using them
+  is extra SUT work, deferred. The make-or-break FP number (plan §8.5) is still obtainable via collection
+  membership, just without a per-entity cleanliness bonus.
+- Run the FP measurement on adminroute + adminbasic (both collection membership); **adminroute is the
+  smoke-demonstrated case; adminbasic's read-back demonstration is still pending** (see
+  sut-fault-injection-capability §9).
 
 ## Open items to resolve at G0 (need a live trace / the SUT up)
 1. Confirm, from a live trace of each POST, the **actual** persisting span (which service writes to which DB)

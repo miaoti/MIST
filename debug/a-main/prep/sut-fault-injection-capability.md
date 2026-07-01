@@ -84,9 +84,14 @@ Commit `bbf3d6ae` (MIST-trainticket) adds the same `LOST_WRITE_FAULT` to
 `AdminBasicInfoServiceImpl.addContact` (`POST /api/v1/adminbasicservice/adminbasic/contacts`): when env
 `MIST_FAULT_LOSTWRITE_ENABLED=true`, it returns `status:1` "create contacts success" but skips the persist
 to `ts-contacts-service`. Same per-container env key (set it on `ts-admin-basic-info-service` to isolate).
-This is **target triple B** — a per-entity create with a fresh UUID per request, the cleanest isolation for
-**measuring the read-back oracle's FP rate** (plan §8.5). Two lost-write positives now exist on two distinct
-write-path services (adminroute, adminbasic), so the oracle's ground truth is not endpoint-specific.
+This is **target triple B**. **Correction (cold-review A, spec-verified):** adminbasic exposes **no per-entity
+`GET /contacts/{id}`** (only `delete` + the collection `getAllContacts`), so this is a **collection read-back**
+measured by business-key membership (accountId+documentNumber) — **not** the "fresh-UUID per-entity"
+cleanest-isolation target earlier claimed, and it has no isolation advantage over adminroute.
+**Verification status:** adminroute is live smoke-demonstrated (`gate1-smoke-result.md`); **adminbasic is only
+`make build` + Response-ctor review-verified — its 2xx-but-not-persisted read-back is NOT yet
+smoke-demonstrated** (run that one-shot smoke at G0 before relying on it as an FP target). So today there is
+**one demonstrated positive (adminroute) + one built-but-unverified (adminbasic)**, not "two positives."
 Benchmark seed case: `../benchmark/cases/TT-adminbasic-contacts-lostwrite-001.json`. Build/deploy verified
 on WSL2 via `make build` (same path as adminroute). Compiler/Response-ctor review-verified here
 (`Response<T>` is Lombok `@AllArgsConstructor(status,msg,data)`; `Contacts` is `@Data` → `getId()`).

@@ -37,13 +37,18 @@ cannot, honestly); it is to (1) fix every fixable methodological flaw, (2) speci
 one make-or-break empirical result, and (3) lay out the strategic decision in §9 that is genuinely the
 team's to make.
 
-**The reframed one-line claim (honest, defensible):**
-> *MIST is the first **black-box, generation-driven** technique (needing no test-specific instrumentation
-> beyond the OTel a system already runs — no AOP, no per-service changes) that makes silently-masked
-> cross-service failures and **acknowledged-but-lost writes** testable on **any OTel-instrumented
-> microservice system without production traffic or per-service assertions** — using a label-free read-back
-> differential trace oracle — together with the first **open-source labeled benchmark** of such faults and a
-> measurement of how often they are genuine defects.*
+**The reframed one-line claim (honest, defensible — recast per cold-review from a stacked-"first" to a
+capability + benchmark claim):**
+> *MIST makes silently-masked cross-service failures and — on **write-path services with a black-box
+> read-back** — **acknowledged-but-lost writes** testable **without production traffic and without AOP /
+> per-service assertions**, using only the OTel a system already runs plus a label-free read-back differential
+> oracle; together with an **open-source labeled benchmark** of such faults and a measurement of how often they
+> are genuine defects.*
+>
+> **Scope honesty (cold-review B — do not overclaim):** the masking oracle is broad (any OTel SUT) but is the
+> **non-novel** part (Cast/Microusity already detect masking); the read-back lost-write oracle is the
+> differentiated part but applies **only** to the write-path subset (§4 item 6), **not** "any OTel system." No
+> stacked-"first" — the accessibility + open-benchmark combination is the claim, not primacy of detection.
 
 ---
 
@@ -78,7 +83,7 @@ Root API Mode, Sniper Strategy (1 input-fault/variant), Trace Shape Oracle (head
 
 | Axis | Cast (ICSE-SEIP'26) | MIST | Is the delta defensible? |
 |---|---|---|---|
-| Workload source | **Production-traffic replay** (admits missing uncovered paths) | **Generated** cross-service inputs that actively drive vulnerable paths | **Yes** — substantive: enables systems with *no* production traffic and targets paths replay can't reach |
+| Workload source | **Production-traffic replay** (admits missing uncovered paths) | **Generated** cross-service inputs that actively drive vulnerable paths | **Accessibility/setting delta, NOT research-novelty** (cold-review B): generation-vs-replay is a paradigm choice — it enables no-production-traffic SUTs (a real accessibility win) but "reaches paths replay can't" is **argued, not measured** (R2 R5) and would merely confirm the expected even if measured; carries **no novelty weight** |
 | Instrumentation | **Java AOP agents**, Java-only | **Black-box** standard OTel, language-agnostic | **Yes** — substantive accessibility delta |
 | Oracle | Metric-threshold (success/latency/throughput) at configured **assertion points** + historical baselines | **Label-free read-back data-correctness** differential (no thresholds, no assertion points, no baselines) | **Partial** — a different, cheaper oracle; honestly "automating an assertion" (metamorphic), not a new analysis |
 | Evaluation | Closed (Huawei Cloud) | **Open OSS** SUTs + **released labeled benchmark** | **Yes** — reproducibility/benchmark contribution |
@@ -108,10 +113,13 @@ generation + open-benchmark** combination, not the masking idea itself.
 
 ## §3 Contribution stack (honest weighting)
 
-- **C1 — A black-box, generation-driven, instrumentation-free resilience/masking *capability* + a label-free
-  read-back differential oracle.** The novelty is the *setting and automation* (works with no production
-  traffic, no AOP, no assertions, any language), plus the metamorphic read-back oracle for
-  acknowledged-but-lost writes. *Honest weight: modest mechanism novelty; real accessibility novelty.*
+- **C1 — A black-box, generation-driven, *no-test-specific-instrumentation* resilience/masking *capability* +
+  a label-free read-back differential oracle.** ("No test-specific instrumentation" — **NOT** "instrumentation-
+  free": it relies on the standard OTel the system already runs, which IS instrumentation — cold-review B / R1
+  MAJOR 1.) The novelty is the *setting and automation* (no production traffic, no AOP, no assertions, any
+  language), plus the metamorphic read-back oracle for acknowledged-but-lost writes. *Honest weight: modest
+  mechanism novelty (Cast caps it); real accessibility novelty. Alone it is an SEIP/empirical contribution, not
+  a research-track-A mechanism.*
 - **C2 — The first OPEN-SOURCE labeled benchmark** of masked-downstream / data-integrity faults across N OSS
   microservice systems, with an adjudication rubric (Cast ships a *closed* 48-bug benchmark; scope the claim
   to open + OSS). *Honest weight: the most durable, citable asset and the floor-raiser (R1: "a citable
@@ -123,6 +131,18 @@ generation + open-benchmark** combination, not the masking idea itself.
 
 Supporting only (not headline): FP-controlled invariant mining (if corpus captured; near-twin MINES
 exists); service-level attribution (honest ceiling).
+
+**Primary A-path (committed — cold-review B).** The plan does **not** rest A-worthiness on the Cast-capped
+*mechanism* novelty of C1. The guaranteed, **Cast-independent** research contribution is **C2 (open labeled
+benchmark) + C3 (defect-prevalence study) + C1 (the accessible capability with a *measured* oracle-FP)** — an
+**empirical/benchmark research paper**, for which ISSTA/ASE/FSE are A-venues and which Cast does **not** cap
+(Cast is closed and ships no prevalence study). **Gate-3 is the upside, not the floor:** real
+acknowledged-but-lost-write / missing-compensation defects that a competent assertion oracle misses would
+*additionally* clear the mechanism-novelty research-track bar — high-value but admitted-uncertain (§9). For C2
+to be a genuine floor-raiser it must reach **citable scale** (cf. RCAEval's 735 cases — the seed of 4 cases is
+a start, not the deliverable; R3 R6). So the honest bar this plan targets is: *a clear empirical/benchmark-track
+A, with a high-variance shot at a mechanism-novelty-track A via Gate 3* — not a guaranteed mechanism-novelty A,
+which the verified Cast overlap forecloses.
 
 ---
 
@@ -297,11 +317,15 @@ is a *setting/accessibility + open-benchmark* contribution with a modest metamor
 real, but not a leap. **No amount of plan-writing changes this**, because the reviewers' objection is to the
 idea's novelty ceiling, and their unanimous path to Accept is **empirical** (Gate 3 bugs). Therefore:
 
-- **The plan cannot be made to "pass all reviewers" on paper.** The realistic ceiling of a *plan* here is
-  **Borderline / weak-accept-conditional-on-Gate-3** — the v4 fixes (substantiated Cast deltas, de-circularized
-  ground truth, the §4 soundness protocol with measured FP, ≥3-SUT data-integrity scope, honest Uber framing)
-  address all three FATALs, which is what moves a reviewer from Weak Reject to Borderline. Getting to Accept
-  requires *executing* Gate 3.
+- **The plan cannot be made to "pass all reviewers" on paper as a mechanism-novelty paper** — and cold-review
+  (round-4 reviewer B) sharpens this into a **split by track**: on a **pure mechanism-novelty research track**
+  the guaranteed floor (no Gate-3 credit) is **Weak Reject** (Cast caps the mechanism); on an
+  **empirical/benchmark track (ISSTA/ASE/FSE)** the same guaranteed floor is a **clear Accept** (C2 benchmark +
+  C3 prevalence are Cast-independent). So the honest label is **"clear empirical/benchmark-track A + a
+  high-variance mechanism-novelty-track A via Gate 3,"** NOT a flat "Borderline." The v4/v5/v6 fixes address
+  all three methodological FATALs (lifting the *methodology* to Accept); the residual is the *mechanism*-novelty
+  ceiling, which only Gate 3 lifts. **This is why §3 commits the primary A-path to the empirical/benchmark leg,
+  with Gate 3 as upside — not the reverse.**
 
 **Fallback ladder (unchanged in spirit, sharpened):**
 - **Plan A** (this doc): C1 capability + C2 benchmark + C3 defect-prevalence, **iff Gate 3 yields real bugs**.

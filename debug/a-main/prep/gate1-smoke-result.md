@@ -25,6 +25,12 @@
 Both runs return HTTP 200 / `status:1` → **status-code, schema, and body-marker oracles all PASS on the fault run**.
 Only the control-vs-fault **read-back differential** distinguishes them. Exactly the signal B2 is designed to fire on.
 
+**Evidence-hygiene note (cold-review C).** The counts step 11 (end of control) → 12 (start of fault) because a
+manual create was run between the two scripted steps — the smoke was interactive, not a single automated pair.
+This does **not** affect the per-run verdict (the fault run's OWN baseline→after, 12→12 with its route absent,
+is the read-back signal), but the automated B2 pairing executor (TOOL-PLAN B1.3) MUST run control and fault
+back-to-back with no interleaved mutation, precisely to avoid this.
+
 ## Key engineering finding (load-bearing for B1)
 The opt-in flag **must not rely on env→property relaxed binding** on this SUT. With container env
 `MIST_FAULT_LOSTWRITE_ENABLED=true` present in the pod, Spring did **not** bind it to

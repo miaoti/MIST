@@ -12,7 +12,9 @@
 > `research/01-feasibility-codebase.md`, audited 2026-06-30 with `file:line`; **re-verify the exact line at
 > edit time**) and/or the smoke evidence (`prep/gate1-smoke-result.md`) and/or a reviewer concern. All MIST
 > changes go on branch `main_track`. **Build additively — with every flag OFF, behavior is byte-for-byte
-> unchanged.** v5 (review-hardened; survived three independent cold reviews), 2026-06-30.
+> unchanged.** v6 (four review rounds; round-4 = three goal-aligned cold reviewers — 2/3 SATISFIED, with the
+> feasibility factual-errors, three design-logic overstatements, and the novelty-framing all folded in here and
+> in README/EXECUTION/prep), 2026-06-30.
 
 ## 0. Facts the smoke + review established (this plan's footing — not assumptions)
 1. On a real, fully-deployed TrainTicket, the SUT-side `LOST_WRITE` makes `POST /adminroute` return **HTTP
@@ -24,14 +26,19 @@
    §D: status+topology+otel/response_flags) — **the pure-differential mode's signal** does **not** degrade on
    Envoy-only SUTs where the trace carries less (the **gated** mode, keying on an observed D-error, DOES ride
    the trace floor — so this independence is the pure mode's, not "B2's"). **BUT applicability is a separate axis:** B2 applies **only** to write-path SUTs with a clean
-   black-box read-back (README §4.6 — TrainTicket/TeaStore/Sock Shop/petclinic), **not** read-only/derived
+   black-box read-back (README §4 item 6 — TrainTicket/TeaStore/Sock Shop/petclinic), **not** read-only/derived
    demos (Bookinfo, Online Boutique). Do not conflate "signal-floor-independent" with "runs on any Envoy SUT."
 4. The opt-in fault flag **must use a JVM `-D` system property** (`JAVA_TOOL_OPTIONS=-Dmist.fault....=true`),
    NOT env relaxed-binding (which silently failed on TT's Spring-Cloud+nacos bootstrap). Load-bearing for B1.
 5. SUT = `train-ticket-injection@MIST-trainticket`, deployed the team's proven way
    (`evaluation/suts/trainticket/deploy/deploy.sh` = minikube + make build/deploy). Target triples:
-   adminroute (collection read-back) and **adminbasic/contacts (fresh-UUID per-entity read-back — the clean
-   FP-measurement target)**. Both are **non-shared-inventory** writes (see §3 B2.2 isolation).
+   adminroute (getAllRoutes collection read-back) and **adminbasic/contacts (ALSO collection read-back =
+   `getAllContacts`)**. **Correction (cold-review A, spec-verified):** adminbasic has **NO per-entity
+   `GET /contacts/{id}`** — the spec exposes only `delete` on `/contacts/{contactsId}` plus the collection GET;
+   the earlier "fresh-UUID per-entity read-back / clean FP target" claim was a **factual error**. Both targets
+   are non-shared-inventory appends; FP is measured by **business-key membership in the collection**, not a
+   per-entity GET. (A real per-entity GET exists only on `ts-contacts-service`, which has no LOST_WRITE
+   injector — see §3 B2.3.)
 6. **Two defect shapes the oracle must cover** (decided in §3 B2.3 fire rule):
    - **S1 — swallowed downstream error:** D is called → D errors → error swallowed → 2xx. **D span errored.**
    - **S2 — skipped persist:** D is never called (logic bug / wrong branch / forgot to save) → 2xx. **No D
@@ -123,8 +130,9 @@ trace-derived gate (see B2.3).
 - **B2.1 Read-back capture.** After each run in the pair, GET the triple's `readback_endpoint` and capture
   `S_control` / `S_fault` (smoke read-back: getAllRoutes JSON).
 - **B2.2 Soundness protocol (§4 — the contribution's spine, not a footnote):**
-  - **Isolation:** one fresh unique entity per test (smoke used distinct stations + the service's UUID id).
-    Prefer the **adminbasic/contacts** triple (fresh UUID per create). Gate-1 deliberately picks
+  - **Isolation:** one fresh unique entity per test, keyed by a **request-supplied business key** (adminroute:
+    station-pair; adminbasic/contacts: accountId+documentNumber) — NOT a per-entity GET (adminbasic has none;
+    §0 fact 5). Read-back = membership of that business key in the collection. Gate-1 deliberately picks
     **non-shared-inventory** targets so black-box isolation holds; the shared-inventory threat (TrainTicket
     seats / Sock Shop stock, where fresh-ID does NOT isolate finite contention — R3 concern #2) needs
     namespace+reset (not black-box) and is a **G3 threat-to-validity, not a Gate-1 target**.
@@ -135,26 +143,35 @@ trace-derived gate (see B2.3).
     90% timeout-gated does not convince R3). This is the single most important soundness add over v1.
   - **Late compensation (the missing_compensation path):** for saga/compensation flows, wait a bounded,
     trace-detected window and **distinguish *pending* (not yet arrived) from *missing* (truly absent)**
-    (README §4.3). v1 only handled lost-write; this path is required because missing_compensation is a named
-    fault class in our benchmark. **Code-built at Gate-1 but VALIDATED AT G3** against the named saga site —
-    Gate-1's shallow CRUD targets have no compensation flow to exercise it (same treatment as the gated mode;
-    its Gate-1 verify row is dropped from §5 — cold-review MODERATE #2).
+    (README §4 item 3). **Shared failure mode (disclose — cold-review C-M3):** black-box, this distinction
+    relies on the SAME async span-completion visibility quiescence needs — which R3 §5.1 shows is unobservable
+    across brokers (span *links*, often absent). So in the async regime pending-vs-missing **IS** the same
+    wall-clock race as quiescence, not an independent guarantee; compensation verdicts reached by timeout are
+    reported in the same **lower-confidence, timeout-gated stratum**. **Code-built at Gate-1 but VALIDATED AT
+    G3** against the named saga site — Gate-1's shallow CRUD targets have no compensation flow to exercise it
+    (its Gate-1 verify row is dropped from §5 — cold-review MODERATE #2).
   - **Normalization:** idempotency keys; strip volatile fields (timestamps, server-generated ids) before diff.
 - **B2.3 Fire rule — a bounded, FP-measured differential relation (per-run), in TWO modes reported separately.**
   (Not called an "invariant": R3's standing point is "a race, not an invariant" — the per-run framing kills
   *cross-run* contamination but not the *temporal* race, which only B2.2 + the measured FP bound.)
   Base relation (both modes): a run whose client response is **2xx/"success" and that acknowledges entity X**
   must have **X present/correct on its OWN read-back**; fire when that is violated. *Diff each run against its
-  own acknowledgement — NOT one collection against the other.* The control run is a **control for false
-  positives** (it proves X would be present under no fault, ruling out invalid-input / test-bug causes), not
-  the thing we subtract. (For collection read-backs like getAllRoutes, check "X ∈ read-back," not
-  list-equality — the control run legitimately adds its own X.)
-  **X is request-derived** (a business / idempotency / client-minted key sent IN the request — e.g.
-  adminroute's station-pair routeId), **never read from the fault response** (S2 returns `data:null` per the
-  smoke, so the fault run never learns a server-assigned id). For the per-entity-UUID target (adminbasic/
-  contacts — B2.4's clean FP target) this needs `contactsId` to be **client-minted & sent**; whether
-  adminbasic accepts that is **UNVERIFIED** (resolve in P2/P3) — if server-assigned, that target falls back to
-  collection-membership read-back.
+  own acknowledgement — NOT one collection against the other.* (For collection read-backs like getAllRoutes,
+  check "X ∈ read-back," not list-equality — the control run legitimately adds its own X.)
+  **What the control run actually rules out (rescoped — cold-review C-M1):** it rules out **systemic /
+  environmental** FP (if the SUT/DB/auth/harness were down, the control's X would be absent too). It does NOT
+  prove the *fault* input "would persist under no fault" — control & fault deliberately use different isolation
+  keys (B1.2). **Input validity is carried by the two-phase pool** (an input that reached 2xx = verified-
+  ACCEPTED, `MistRunner.java:495-499`, not verified-*persisted*) **+ isolation uniqueness.** The residual FP
+  class "a fresh valid write that returns 2xx but legitimately does not persist" is bounded ONLY by the
+  measured benign-trap FP (B2.4) — so the benign-trap stratum must include such cases.
+  **X is request-derived** (a business key sent IN the request — adminroute: station-pair; adminbasic:
+  accountId+documentNumber), **never read from the fault response** (S2 returns `data:null`, so the fault run
+  never learns a server-assigned id). **Neither Gate-1 target has a per-entity GET** (§0 fact 5), so read-back =
+  **business-key membership in the collection** for both; the earlier "fresh-UUID per-entity" cleanliness claim
+  is dropped (cold-review A). A real per-entity-GET target exists only on `ts-contacts-service`
+  (`/contactservice/contacts/{id}`), which has **no LOST_WRITE injector** — using it as a Gate-1 positive is
+  extra SUT work, deferred.
   - **pure-differential (HEADLINE):** fire = `fault run 2xx/success acknowledging X  AND  X absent/stale on the
     fault read-back  AND  control run shows X present`. No trace gate → read-back stays **independent of the
     trace** (the de-circularization precondition, R2 §2a) and covers **S2** (no D-error to key on). **Honest
@@ -173,7 +190,9 @@ trace-derived gate (see B2.3).
     yields span *links*, producer/consumer spans need not co-occur in one trace, and trace-driven quiescence
     silently degrades to a wall-clock timeout (R3 #1/#4). A synchronous sleep only tests "did poll wait long
     enough"; it does **not** exercise the degradation R3 names. (Prerequisite = **P3**: resolve the concrete
-    rabbitmq path vs a new SUT-side async injector there, before this step.)
+    rabbitmq path vs a new SUT-side async injector there, before this step.) **The broker-async trap is required
+    only for the async *soundness claim*; if no clean async path exists (P3 negative), Gate-1 still PASSES on
+    sync FP with the §4 async disclaimer — P3-UNVERIFIED does NOT hard-block Gate-1** (async-FP deferred to G3).
   - Report measured FP/FN **per-SUT** + **quiescence-gate coverage per-SUT**; state explicitly that FP on a
     *constructed* benign-trap is a **lower bound** on wild-async FP (R3 #4).
   - **Gate-1 pass = fires on the constructed lost-write + low/characterized FP (especially in the
@@ -181,7 +200,7 @@ trace-derived gate (see B2.3).
 
 ## 3.5 Scope honesty: Gate-1 validates a shallow write; depth is a G3 expansion
 Gate-1 targets (adminroute create / adminbasic addContact) are **shallow CRUD** — they validate mechanism
-*soundness*, **not transactional depth** (R2 R4; README §8.5.3: count ≠ depth). The depth story (rich sagas,
+*soundness*, **not transactional depth** (R2 R4; README §8.5 item 3: count ≠ depth). The depth story (rich sagas,
 genuine missing-compensation opportunities) requires **naming a concrete TrainTicket saga site**
 (order/booking/payment flow) — that is pre-specified and run at **G3 across ≥2 SUTs**, not faked at Gate 1.
 Gate 1 does not claim saga coverage.
@@ -192,12 +211,14 @@ still looks correct (or vice versa). The oracle measures **read-back equivalence
 **persisted-state correctness** — state this as the honest ceiling of a black-box oracle; do not call it
 "data-correctness" unqualified.
 
-**Gate-1 evidences the ORACLE pillar, not the GENERATION pillar (disclose, cold-review MODERATE).** Gate-1
-hand-targets a known endpoint and reuses one verified input — it validates the label-free read-back oracle,
-**NOT** the generation-driven path-discovery delta vs Cast (README §2 axis 1; that delta is "argued, not
-measured," R2 R5). A green Gate-1 must not be read as evidence for the novelty axis; path-coverage is a
-G3/eval claim. Also: Gate-1 tests async *specificity* (benign trap, B2.4) but not async *sensitivity* (a
-lost-write on an async path) — the latter is a G3 item.
+**Gate-1 evidences SOUNDNESS ONLY — essentially ZERO novelty evidence (disclose bluntly, cold-review B).**
+Gate-1 hand-targets a known endpoint, reuses one verified input, and fires on a **self-injected** fault beaten
+only against **weak baselines** (naive span-error + MIST's own gated mode). As a *novelty* signal that is ~zero
+(beating a strawman on a planted fault). Gate-1 validates the read-back oracle's **soundness**, **NOT** (a) the
+generation-driven path-discovery delta vs Cast (README §2 axis 1; "argued not measured," R2 R5), nor (b) any
+research-novelty claim. **ALL novelty evidence is back-loaded to G2 (a fair Cast/Filibuster comparator) + G3
+(real bugs the comparator misses).** Also: Gate-1 tests async *specificity* (B2.4) but not async *sensitivity*
+(a lost-write on an async path) — the latter is a G3 item.
 
 ## 4. Gate-1 validation (EXECUTION G1c)
 - **Sensitivity (Gate-1 = pure-differential only):** drive B1+B2 over the adminroute + adminbasic triples;
@@ -218,6 +239,9 @@ lost-write on an async path) — the latter is a G3 item.
   (trustworthy async-FP deferred to G3 with instrumented broker context). A green FP that is ~100%
   timeout-gated on the async path does **NOT** pass the async axis (R3 §4: "90% timeout-gated would not
   convince me"). FAIL ⇒ mechanism unsound ⇒ README §9. Record next to `prep/gate1-smoke-result.md`.
+  **Gate-1 DoD = SYNC-mechanism soundness on one SUT (cold-review C-M2):** a PASS via the async-disclaimer path
+  establishes the **sync** regime only; the oracle's advertised **async/CQRS** regime gets ZERO validation
+  until G3. Do NOT read a disclaimer-path PASS (or EXECUTION's "sound on one SUT") as *general* soundness.
 
 ## 5. Sequencing & per-step verification gates
 ```
@@ -275,7 +299,9 @@ Gate-1 verdict         → PASS = fires + low SYNC FP + (observed-gated async fr
   exists; orthogonal to B2.
 - No param-level attribution (research/01 §C) — instrumentation-bound, not load-bearing.
 - No changes to the shipped trace-shape oracle / Sniper / Root-API mode — untouched.
-- **Cast/Filibuster assertion-based comparator** (README §6, G2): the load-bearing novelty defense and the
-  hardest to make *fair* on OSS SUTs (a fair Cast wants production replay + Java AOP + historical baselines,
-  exactly what OSS lacks — R1 MAJOR 4). Deferred to G2, flagged here as the single most fragile plank: budget
-  real effort, since a weak baseline invites "you beat a crippled comparator."
+- **Cast/Filibuster assertion-based comparator** (README §6, G2): deferred to G2 but **budgeted as a
+  first-class deliverable, NOT "where feasible"** (cold-review B) — it is the ONLY comparator that tests oracle
+  *novelty* (naive-span-error / Tracetest-generic / TraceAnomaly are strawman-adjacent or RCA tools, not
+  oracle-novelty baselines — research/02 §1d). A fair Cast wants production-replay + Java-AOP + historical
+  baselines, exactly what OSS lacks (R1 MAJOR 4); a weak one invites "you beat a crippled comparator." Budget
+  the real effort or the headline novelty comparison is contestable.
