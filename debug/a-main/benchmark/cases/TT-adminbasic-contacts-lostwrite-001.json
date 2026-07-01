@@ -6,7 +6,7 @@
   "capture_status": "specified",
   "sut": {
     "name": "TrainTicket",
-    "repo": "github.com/miaoti-or-collaborator/train-ticket-injection",
+    "repo": "local fork of AsifShaafi/train-ticket-injection (branch MIST-trainticket kept local, not pushed; resolve to a public URL at artifact release)",
     "branch": "MIST-trainticket",
     "commit": "bbf3d6ae",
     "deploy": "k8s/minikube via make deploy (with OTel->Jaeger tracing)"
@@ -50,7 +50,7 @@
     "control_trace": null,
     "fault_trace": null,
     "readback_response": null,
-    "notes": "Second lost-write positive on a different write-path service (proves the oracle is not adminroute-specific). The fresh-UUID-per-create gives clean per-entity isolation, making this the preferred target for MEASURING the read-back oracle's false-positive rate (target triple B). Traces + read-back captured at Gate 1."
+    "notes": "Second lost-write positive on a different write-path service (target triple B; shows the oracle is not adminroute-specific). Read-back is COLLECTION membership by business key (accountId+documentNumber) -- adminbasic has NO per-entity GET, so no per-entity isolation advantage over adminroute (cold-review A). Status: build-verified only; read-back capture + traces pending Gate-1 (G0 smoke)."
   },
   "adjudication": null
 }

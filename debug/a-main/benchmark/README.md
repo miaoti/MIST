@@ -108,9 +108,9 @@ The 4 seed cases are validation fixtures + first seeds, **not** the deliverable.
 floor-raiser only at release scale; until captured at scale it is a **credible** floor, not yet a **clear**
 one — do not label it "clear" in the paper before the corpus is released. Pre-registered target + budget:
 
-**Target: N ≈ 120–160 labeled cases** at first release. (RCAEval's 735 is a broad multi-fault RCA corpus,
-not the right yardstick; a *scoped* masked-fault / data-integrity oracle benchmark is A-grade in the low
-hundreds.)
+**Target: N ≈ 100–140 labeled cases** at first release (the sum of the strata below). (RCAEval's 735 is a
+broad multi-fault RCA corpus, not the right yardstick; a *scoped* masked-fault / data-integrity oracle
+benchmark is A-grade in the low hundreds.)
 
 **Costed decomposition (SUTs × write endpoints × fault classes × strata):**
 - **SUTs (3 write-path):** TrainTicket, TeaStore, Sock Shop (README §4 item 6 — all have a black-box
@@ -123,7 +123,8 @@ hundreds.)
   per SUT (the make-or-break FP stratum — TOOL-PLAN P3/B2.4).
 - **Rough count:** 3 SUTs × ~7 endpoints × ~2 applicable positive classes ≈ 40–60 stratum-1; ~10 benign
   traps/SUT ≈ 30 stratum-2; a **bounded, size-pre-registered** stratum-3 wild-adjudicated sample (see the C3
-  caveat in README §6 — this is the only genuinely population-*prevalence* element) ≈ 30–50. Total ≈ 120–160.
+  caveat in README §6 — this is the only genuinely population-*prevalence* element) ≈ 30–50. Total ≈ 100–140
+  (40–60 + 30 + 30–50).
 
 **Injection recipe (reproducible case production):** S2 = SUT-flag `LOST_WRITE` (source-injected — the only
 way to get skip-persist, §0 fact 6); S1 = Toxiproxy TCP cut on D's socket (errored-D) OR SUT-flag

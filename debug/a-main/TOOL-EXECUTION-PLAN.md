@@ -12,11 +12,12 @@
 > `research/01-feasibility-codebase.md`, audited 2026-06-30 with `file:line`; **re-verify the exact line at
 > edit time**) and/or the smoke evidence (`prep/gate1-smoke-result.md`) and/or a reviewer concern. All MIST
 > changes go on branch `main_track`. **Build additively — with every flag OFF, behavior is byte-for-byte
-> unchanged.** v7 (five review rounds; round-5 = three goal-aligned cold reviewers, **3/3 OVERALL SATISFIED** —
-> feasibility+prep, novelty+contribution, and design-logic each SATISFIED; their fixable completeness items
-> (benchmark scale plan, C3 defect-yield relabel, comparator pre-commit, adminbasic smoke-pending propagation,
-> B2 in-process state channel, benign-trap taxonomy, compensation FN, anti-gaming async blind spot, numeric
-> sync-FP bar) all folded in here + README/EXECUTION/benchmark/prep), 2026-06-30.
+> unchanged.** v8 (six review rounds; round-5 on v6 AND round-6 on v7 EACH returned **3/3 cold-reviewer OVERALL
+> SATISFIED** across feasibility+prep / novelty+contribution / design-logic, with **zero BLOCKING findings** on
+> v7. Round-6's non-blocking polish is cleaned here: the last per-entity A-error residue (a seed-case note),
+> the §8 benchmark-count arithmetic, the ≤5% sync-FP bar propagated cross-doc, the state-channel made precise
+> (sibling static holder), same-JVM wording, and stale version stamps. The plan is executable and
+> reviewer-cleared; **execution of B1/B2 remains BLOCKED until the user says "yes."**), 2026-06-30.
 
 ## 0. Facts the smoke + review established (this plan's footing — not assumptions)
 1. On a real, fully-deployed TrainTicket, the SUT-side `LOST_WRITE` makes `POST /adminroute` return **HTTP
@@ -118,8 +119,9 @@ behind the flag and frame it as a mode, or the "no SUT instrumentation" identity
 **generate-the-test-then-run-it** (`MistRunner.java:506 executeGeneratedTestsWithJUnit`); the writer *emits a
 standalone RestAssured/JUnit test as a String* — `MultiServiceRESTAssuredWriter.java:706-707` and `:714` are
 `pw.println(...)` that **emit** the response-staple and the per-run `oracle.evaluate(model,…)` *into the
-generated test*, which then runs in the generated test's JVM (NOT a MIST-side runtime). So B2 spans **two
-layers that v4 wrongly conflated:**
+generated test*, which then runs **in-process under `JUnitCore` (same JVM — the generated-test execution
+layer, NOT a separate process; this is exactly what lets the orchestration layer read the emitted state,
+below)**. So B2 spans **two layers that v4 wrongly conflated:**
 - **Codegen layer (inside the generated test, the `:706-714` region):** emit the **read-back GET** + the
   per-run check `X ∈ its own read-back` as additional generated steps, beside the existing emitted oracle.
   "Reuse `:714`" means the verdict-**emission pattern**, not the single-trace `oracle.evaluate` (which stays
@@ -128,10 +130,12 @@ layers that v4 wrongly conflated:**
 - **Orchestration layer (mist-cli, B1.3):** `inject → run generated test → clear` (`kubectl set env` +
   rollout), executed **twice** (control flag-off, fault flag-on); collect each run's emitted read-back state +
   acknowledgement **through the existing in-process channel** — the generated test runs in-process under
-  `JUnitCore` (`MistRunner.java:1127`), so read-back state crosses back via the same thread-local/static the
-  writer already uses to surface a verdict (the `MultiServiceRESTAssuredWriter.java:715` `LAST_VERDICT.set`
-  pattern), **not a new IPC** (cold-review D-M2 confirmed this is the enabler); do the **pairwise** fire
-  decision (control as FP-guard) + stratified reporting HERE.
+  `JUnitCore` (`MistRunner.java:1127`, same JVM), so read-back state crosses back via a **sibling shared static
+  holder** (the SAME pattern the writer already uses to surface a verdict — `MultiServiceRESTAssuredWriter.java:715`
+  `LAST_VERDICT.set`, a `private static ThreadLocal` at `:252`; B2 adds its OWN holder, read by the
+  orchestration thread after `JUnitCore.run()` returns — `MistRunner.java:1158` already treats generated-test
+  statics as shared in-process state), **not a new IPC** (cold-review D-M2/G confirmed the enabler); do the
+  **pairwise** fire decision (control as FP-guard) + stratified reporting HERE.
 A pairwise control-vs-fault verdict **cannot** be surfaced through the per-run `:714` as-is — it lives in the
 orchestration layer (cold-review MAJOR: writer = codegen, not runtime plumbing).
 
@@ -168,7 +172,7 @@ trace-derived gate (see B2.3).
     an FP/confidence label); this async *sensitivity* gap is bounded globally to G3 (§3.5), stated here so the
     DoD is not misread as covering compensation recall. **Code-built at Gate-1 but VALIDATED AT G3** against the
     named saga site — Gate-1's shallow CRUD targets have no compensation flow to exercise it (its Gate-1 verify
-    row is dropped from §5 — cold-review MODERATE #2).
+    row is reduced to a **compile-only check** in §5, not a fire/FP test — cold-review MODERATE #2).
   - **Normalization:** idempotency keys; strip volatile fields (timestamps, server-generated ids) before diff.
 - **B2.3 Fire rule — a bounded, FP-measured differential relation (per-run), in TWO modes reported separately.**
   (Not called an "invariant": R3's standing point is "a race, not an invariant" — the per-run framing kills
@@ -204,9 +208,10 @@ trace-derived gate (see B2.3).
     (reuse `MultiServiceRESTAssuredWriter.java:714`).
 - **B2.4 MEASURE the read-back FP rate (make-or-break, §8.5):**
   - Build a **benign-trap stratum** the oracle must NOT fire on: eventually-consistent-then-correct writes
-    **AND the `2xx-accepted-but-by-design-never-persists` sub-class (idempotent no-op, accept-then-drop) — the
-    exact residual FP class B2.3's control-rescoping delegates here, so the trap MUST operationalize it, not
-    just delayed-persistence (cold-review F-MOD-1).**
+    **AND the `2xx-accepted-but-by-design-never-persists` sub-class (accept-then-drop — e.g. a write silently
+    dropped by a documented filter/quota/dedup; NOT "idempotent no-op," which under B2.2's fresh business keys
+    leaves X *present* = a true negative, cold-review I) — the exact residual FP class B2.3's control-rescoping
+    delegates here, so the trap MUST operationalize it, not just delayed-persistence (cold-review F-MOD-1).**
     **It MUST include a broker-mediated async write path** (TrainTicket's rabbitmq paths), **not just a
     synchronous `DELAYED_WRITE` sleep** — because R3's real soundness fear is the async regime where OTel
     yields span *links*, producer/consumer spans need not co-occur in one trace, and trace-driven quiescence
@@ -258,8 +263,9 @@ research-novelty claim. **ALL novelty evidence is back-loaded to G2 (a fair Cast
   wall-clock timeout** (lengthen it → FP drops trivially). So: **pre-register the quiescence/compensation
   timeout independent of the trap; report async FP as a CURVE over that timeout, not a point; report the
   non-timeout-gated fraction per stratum INCLUDING async.** PASS = fires-on-the-constructed-case AND
-  characterized-low **sync** FP (**pre-register this bar NUMERICALLY — e.g. ≤5% non-timeout-gated sync FP —
-  cold-review F-MINOR-1; "characterized" is falsifiable but "low" must be a pinned number**) AND **either** a
+  characterized-low **sync** FP (**pre-registered NUMERIC bar: ≤5% non-timeout-gated sync FP — cold-review
+  F-MINOR-1/I; "characterized" is falsifiable, "low" must be this pinned number, fixed at pre-registration**)
+  AND **either** a
   non-trivial *observed-gated* async fraction **or** an explicit
   disclaimer that Gate-1's async-FP is a low-confidence lower bound making **no** async-soundness claim
   (trustworthy async-FP deferred to G3 with instrumented broker context). A green FP that is ~100%
@@ -270,7 +276,10 @@ research-novelty claim. **ALL novelty evidence is back-loaded to G2 (a fair Cast
   undeclared broker consumer), "all expected spans completed" is **vacuously true** → the observed-gated
   fraction **over-counts in exactly the async regime it must certify**. So the G3 async-sensitivity claim
   REQUIRES per-async-path **P2-completeness validation** (declare every consumer before trusting the fraction);
-  Gate-1 (sync-only) is unaffected.
+  Gate-1 (sync-only) is unaffected. **So any Gate-1 async observed-gated fraction is DESCRIPTIVE-ONLY /
+  non-load-bearing (cold-review I):** the load-bearing Gate-1 pass is SYNC soundness (fires + ≤5%
+  non-timeout-gated sync FP); the async fraction reported at Gate-1 supports **no** async-soundness claim until
+  the G3 P2-completeness validation exists.
   **Gate-1 DoD = SYNC-mechanism soundness on one SUT (cold-review C-M2):** a PASS via the async-disclaimer path
   establishes the **sync** regime only; the oracle's advertised **async/CQRS** regime gets ZERO validation
   until G3. Do NOT read a disclaimer-path PASS (or EXECUTION's "sound on one SUT") as *general* soundness.
@@ -290,8 +299,9 @@ B2.2 normalization     → verify: idempotency key + volatile-field strip before
 B2.3 fire rule         → verify: pure-differential fires on S2 (per-run X∉read-back); gated path compiles,
                          validated at G3 (needs Toxiproxy S1); two strata reported separately
 B2.4 FP measurement    → verify: P3 resolved; FP-vs-timeout curve + gate-coverage per-SUT AND per-stratum  ← make-or-break
-Gate-1 verdict         → PASS = fires + low SYNC FP + (observed-gated async fraction OR explicit low-conf async
-                         disclaimer); ~100% timeout-gated async does NOT pass the async axis
+Gate-1 verdict         → PASS = fires + ≤5% non-timeout-gated SYNC FP + (observed-gated async fraction OR
+                         low-conf async disclaimer; async fraction is descriptive-only); ~100% timeout-gated
+                         async does NOT pass the async axis
 ```
 
 ## 6. Decisions made deliberately (so they're not re-litigated mid-build)

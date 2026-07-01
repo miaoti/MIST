@@ -1,4 +1,4 @@
-# MIST → A-conference: the next contribution (plan v4, 2026-06-30)
+# MIST → A-conference: the next contribution (plan v7 — v4 base, review-hardened through round-6 cold review, 2026-06-30)
 
 > **Purpose.** Concrete, citation-grounded plan for taking MIST from a tool-demo to a top-venue
 > (ICSE/FSE/ASE/ISSTA) paper: what to build, what to change, what to evaluate, and — stated frankly —
@@ -128,8 +128,9 @@ generation + open-benchmark** combination, not the masking idea itself.
   events MIST surfaces, how many hide a *genuine* defect vs a lived-with non-fatal error (**defect-yield +
   oracle precision** — most masked-2xx on generated OSS workloads are MIST-*induced*, so this is NOT
   ecosystem population-prevalence — cold-review E), and how much status/schema/assertion oracles miss.
-  **Population-prevalence** is claimed ONLY from the **stratum-3 adjudicated *wild* sample**, whose size +
-  source are **pre-registered** (benchmark §8 / §6). *Honest weight: the external-validity backbone; framed as
+  **Population-prevalence** is claimed ONLY from the **stratum-3 adjudicated *wild* sample** — where "wild" =
+  naturally-occurring masked-2xx under a realistic **un-faulted** workload on the OSS SUTs (**NOT** production
+  traffic, which these demos lack — cold-review H), whose size + source are **pre-registered** (benchmark §8 / §6). *Honest weight: the external-validity backbone; framed as
   the DEFECT subset, never Uber's 29% (not a defect rate — §6).*
 
 Supporting only (not headline): FP-controlled invariant mining (if corpus captured; near-twin MINES
@@ -348,16 +349,20 @@ idea's novelty ceiling, and their unanimous path to Accept is **empirical** (Gat
    delta + open benchmark is a strong fit for an **empirical / benchmark-dataset MAIN track (ISSTA, FSE,
    ICSE) — a full research paper, NOT SEIP** (cold-review E: a labeled benchmark + a blind-adjudicated defect
    study is a legitimate main-track dataset/empirical contribution, a stronger A than an industry track),
-   where it is a clear accept rather than a borderline research-track bet.
+   where it is a **credible-to-clear** accept — **"clear" conditional on C2 released at the benchmark §8 scale
+   + C3 executed** (cold-review H: until then *credible*, not yet *clear*) — rather than a borderline
+   research-track bet.
 3. **Pivot the core idea** — accept that masked-failure *detection* is now occupied (Cast/Microusity) and
    look for a less-crowded core (e.g., a genuinely new *generation* objective, or a different fault class).
    This is the honest implication of "the contribution is the problem," but it discards MIST's built assets.
 
-**Bottom line to a skeptical PC (the one sentence):** *We do not claim a new fault-injection technique or to
-be first to see masked failures; we claim the first black-box, generation-driven, instrumentation-free way to
-make silent cross-service failures and lost writes testable on any OTel system without production traffic or
-authored assertions, the first open benchmark of such faults, and a measurement of how often they are real
-defects.* Whether that clears the bar is decided by Gate 3, not by this document.
+**Bottom line to a skeptical PC (the one sentence — harmonized with the canonical §0 claim, cold-review H):**
+*We do not claim a new fault-injection technique or to be first to see masked failures; we claim a black-box,
+generation-driven capability needing **no test-specific instrumentation** (beyond the OTel a system already
+runs) that makes silent cross-service failures testable on any OTel system — and, **on write-path services
+with a black-box read-back**, acknowledged-but-lost writes — without production traffic or authored
+assertions, together with the **first open-source labeled benchmark** of such faults and a measurement of how
+often they are real defects.* Whether that clears the bar is decided by Gate 3, not by this document.
 
 ---
 
@@ -385,6 +390,8 @@ arXiv:2302.01894. Internal: `research/01..05`, `research/REVIEW-R1..R3-*.md`, `a
 
 ---
 
-*Status 2026-06-30: v4 = post-review, post-verification. The three FATALs are fixed; the residual is the
-idea's novelty ceiling, which only Gate 3 (execution) can resolve. NEXT: a confirmatory re-review of v4 to
-verify the fixes move Weak Reject → Borderline, then the §9 strategic decision is the team's.*
+*Status 2026-06-30: plan hardened v4 → v7 through five review rounds; round-5 (on v6) and round-6 (on v7)
+each returned **3/3 cold-reviewer OVERALL SATISFIED**, with the primary A-path re-anchored to the
+Cast-independent empirical/benchmark leg (+ Gate-3 upside). The three FATALs are fixed; the residual is the
+idea's mechanism-novelty ceiling, which only Gate 3 (execution) can lift. NEXT: the §9 strategic decision is
+the team's — execution of B1/B2 remains BLOCKED until the user says "yes".*

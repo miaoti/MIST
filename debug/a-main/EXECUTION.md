@@ -88,10 +88,12 @@ async/CQRS regime is NOT validated here (async FP is largely timeout-gated ⇒ d
   succeed, optional-dependency), **which MUST include a broker-mediated async write path** (TOOL-PLAN B2.4 /
   prerequisite P3 — a synchronous sleep does not exercise the async span-link degradation R3 fears) → measure
   the read-back oracle's **FP/FN rate**; report it **per-SUT AND per-stratum (sync vs async)** with
-  quiescence-gate coverage (plan §8.5). Target: low/characterized **sync** FP; async FP as a curve over the
-  pre-registered timeout (TOOL-PLAN §4), not a point.
-- **Gate 1 verdict:** PASS = fires on the constructed case + measured low FP ⇒ proceed to G2/G3.
-  FAIL ⇒ mechanism unsound ⇒ plan §9 (re-venue or pivot).
+  quiescence-gate coverage (plan §8.5). Target: **≤5% non-timeout-gated sync FP** (the pre-registered numeric
+  bar, TOOL-PLAN §4); async FP as a curve over the pre-registered timeout, not a point (the async fraction is
+  descriptive-only until G3 P2-completeness validation).
+- **Gate 1 verdict:** PASS = fires on the constructed case + **≤5% non-timeout-gated sync FP** (the
+  pre-registered numeric bar; async deferred to G3) ⇒ proceed to G2/G3. FAIL ⇒ mechanism unsound ⇒ plan §9
+  (re-venue or pivot).
 
 ---
 
