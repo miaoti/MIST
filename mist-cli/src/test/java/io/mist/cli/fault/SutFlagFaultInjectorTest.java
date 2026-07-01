@@ -17,16 +17,19 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 /**
- * Pins the B1.1 SutFlagFaultInjector against a recorded Exec seam: exact
- * kubectl argv construction (the -D system property form is load-bearing,
- * smoke fact #4), set-env→rollout sequencing, explicit-context passing, and
- * failure propagation. Live-cluster behavior is verified separately by the
- * B1 smoke-parity run.
+ * Pins the B1.1 SutFlagFaultInjector against a recorded Exec seam. The
+ * critical contract is APPEND/STRIP on JAVA_TOOL_OPTIONS: the traced
+ * TrainTicket topology loads the OTel javaagent through the same variable, so
+ * inject must preserve it and clear must restore it — never overwrite or
+ * unset wholesale. Live-cluster behavior is verified by the Gate-1 session.
  */
 public class SutFlagFaultInjectorTest {
 
     private static final FaultInjector.FaultTarget TARGET =
             new FaultInjector.FaultTarget("ts-admin-route-service", "mist.fault.lostwrite.enabled");
+    private static final String TOKEN = "-Dmist.fault.lostwrite.enabled=true";
+    private static final String AGENT = "-javaagent:/otel/opentelemetry-javaagent.jar";
+    private static final String LIST_HEADER = "# Deployment ts-admin-route-service, container ts-admin-route-service\n";
 
     private static final class RecordingExec implements SutFlagFaultInjector.Exec {
         final List<List<String>> calls = new ArrayList<>();
@@ -61,39 +64,79 @@ public class SutFlagFaultInjectorTest {
         System.clearProperty(FaultInjector.ENABLED_PROPERTY);
     }
 
+    private void scriptList(String javaToolOptionsValue) {
+        String body = LIST_HEADER + "OTHER_VAR=x\n"
+                + (javaToolOptionsValue == null ? "" : "JAVA_TOOL_OPTIONS=" + javaToolOptionsValue + "\n");
+        exec.scripted.add(new SutFlagFaultInjector.ExecResult(0, body));
+    }
+
     @Test
-    public void inject_setsDFlagThenAwaitsRollout() {
+    public void inject_onBareDeployment_setsOnlyTheFlag() {
+        scriptList(null);
         injector.inject(TARGET);
-        assertEquals(2, exec.calls.size());
+        assertEquals(3, exec.calls.size());
+        assertEquals(Arrays.asList(
+                "kubectl", "--context=minikube", "set", "env",
+                "deployment/ts-admin-route-service", "--list",
+                "--request-timeout=30s",
+                "-n", "default"), exec.calls.get(0));
         assertEquals(Arrays.asList(
                 "kubectl", "--context=minikube", "set", "env",
                 "deployment/ts-admin-route-service",
-                "JAVA_TOOL_OPTIONS=-Dmist.fault.lostwrite.enabled=true",
+                "JAVA_TOOL_OPTIONS=" + TOKEN,
                 "--request-timeout=30s",
-                "-n", "default"), exec.calls.get(0));
+                "-n", "default"), exec.calls.get(1));
         assertEquals(Arrays.asList(
                 "kubectl", "--context=minikube", "rollout", "status",
                 "deployment/ts-admin-route-service",
                 "--timeout=180s",
-                "-n", "default"), exec.calls.get(1));
+                "-n", "default"), exec.calls.get(2));
     }
 
     @Test
-    public void clear_unsetsFlagThenAwaitsRollout() {
+    public void inject_onTracedDeployment_appendsAfterTheAgent() {
+        scriptList(AGENT);
+        injector.inject(TARGET);
+        assertEquals("JAVA_TOOL_OPTIONS=" + AGENT + " " + TOKEN, exec.calls.get(1).get(5));
+    }
+
+    @Test
+    public void inject_whenFlagAlreadyPresent_isANoOp() {
+        scriptList(AGENT + " " + TOKEN);
+        injector.inject(TARGET);
+        assertEquals("read only — no set, no rollout", 1, exec.calls.size());
+    }
+
+    @Test
+    public void clear_onTracedDeployment_restoresAgentOnly() {
+        scriptList(AGENT + " " + TOKEN);
+        injector.clear(TARGET);
+        assertEquals(3, exec.calls.size());
+        assertEquals("JAVA_TOOL_OPTIONS=" + AGENT, exec.calls.get(1).get(5));
+        assertEquals("rollout", exec.calls.get(2).get(2));
+    }
+
+    @Test
+    public void clear_whenOnlyOurFlag_unsetsTheVariable() {
+        scriptList(TOKEN);
+        injector.clear(TARGET);
+        assertEquals("JAVA_TOOL_OPTIONS-", exec.calls.get(1).get(5));
+    }
+
+    @Test
+    public void clear_whenFlagAbsent_isANoOpWithoutRollout() {
+        scriptList(AGENT);
+        injector.clear(TARGET);
+        assertEquals(1, exec.calls.size());
+        scriptList(null);
         injector.clear(TARGET);
         assertEquals(2, exec.calls.size());
-        assertEquals(Arrays.asList(
-                "kubectl", "--context=minikube", "set", "env",
-                "deployment/ts-admin-route-service",
-                "JAVA_TOOL_OPTIONS-",
-                "--request-timeout=30s",
-                "-n", "default"), exec.calls.get(0));
-        assertEquals("rollout", exec.calls.get(1).get(2));
     }
 
     @Test
     public void nullContext_omitsContextArg() {
         injector = new SutFlagFaultInjector(null, "default", 180, exec);
+        scriptList(null);
         injector.inject(TARGET);
         assertEquals("kubectl", exec.calls.get(0).get(0));
         assertEquals("set", exec.calls.get(0).get(1));
@@ -102,6 +145,7 @@ public class SutFlagFaultInjectorTest {
 
     @Test
     public void setEnvFailure_throwsAndSkipsRollout() {
+        scriptList(null);
         exec.scripted.add(new SutFlagFaultInjector.ExecResult(1, "error: deployment not found"));
         try {
             injector.inject(TARGET);
@@ -109,11 +153,12 @@ public class SutFlagFaultInjectorTest {
         } catch (FaultInjector.FaultInjectionException e) {
             assertTrue(e.getMessage(), e.getMessage().contains("deployment not found"));
         }
-        assertEquals("rollout must not run after a failed set env", 1, exec.calls.size());
+        assertEquals("rollout must not run after a failed set env", 2, exec.calls.size());
     }
 
     @Test
     public void rolloutFailure_throwsWithOutput() {
+        scriptList(null);
         exec.scripted.add(new SutFlagFaultInjector.ExecResult(0, "env updated"));
         exec.scripted.add(new SutFlagFaultInjector.ExecResult(1, "error: rollout timed out"));
         try {
@@ -125,7 +170,7 @@ public class SutFlagFaultInjectorTest {
     }
 
     @Test
-    public void execIOException_wrapped() {
+    public void readFailure_onClear_propagates() {
         exec.failNextWith = new IOException("kubectl not on PATH");
         try {
             injector.clear(TARGET);

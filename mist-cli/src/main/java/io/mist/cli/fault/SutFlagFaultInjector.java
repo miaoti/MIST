@@ -14,25 +14,29 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * Gate-1 {@link FaultInjector} backend: toggles a SUT-side fault flag by
- * setting {@code JAVA_TOOL_OPTIONS=-D<property>=true} on the target
- * deployment and waiting for the rollout to converge. The {@code -D} system
- * property is load-bearing — env relaxed binding silently fails on
- * TrainTicket's Spring Cloud + nacos bootstrap (gate1-smoke-result.md), so
- * the flag must reach the JVM as a system property.
+ * editing {@code JAVA_TOOL_OPTIONS} on the target deployment and waiting for
+ * the rollout to converge. The {@code -D} system property is load-bearing —
+ * env relaxed binding silently fails on TrainTicket's Spring Cloud + nacos
+ * bootstrap (gate1-smoke-result.md), so the flag must reach the JVM as a
+ * system property.
  *
- * <p>{@code inject} = {@code kubectl set env deployment/<d>
- * JAVA_TOOL_OPTIONS=-D<p>=true} + {@code rollout status};
- * {@code clear} = {@code kubectl set env deployment/<d> JAVA_TOOL_OPTIONS-}
- * + {@code rollout status}. Set/unset semantics assume the target deployment
- * does not otherwise use {@code JAVA_TOOL_OPTIONS} — verified true for every
- * TrainTicket deployment in the deployed manifest (deploy.yaml has zero
- * occurrences; only the unused SkyWalking sample sets it).
+ * <p><b>Append/strip semantics, never overwrite:</b> the traced TrainTicket
+ * topology (run22's {@code --with-tracing} = sw_deploy variant) loads the
+ * OpenTelemetry javaagent through this same variable
+ * ({@code -javaagent:/otel/opentelemetry-javaagent.jar}), so {@code inject}
+ * first reads the current value ({@code kubectl set env --list}) and appends
+ * the flag token, and {@code clear} strips exactly our token and restores
+ * the remainder (unsetting only when nothing else was there). Clearing a
+ * deployment that does not carry the token is a no-op without a rollout,
+ * which also makes the batch hygiene pass cheap.
  *
- * <p>Each toggle costs a rollout (tens of seconds on minikube), so callers
- * batch fault runs rather than toggling per request. The kubectl context is
- * always passed explicitly when configured — the host may also have an
- * unrelated cluster (kind/Istio), and inheriting the current context could
- * target it.
+ * <p>Each real toggle costs a rollout (tens of seconds on minikube), so
+ * callers batch fault runs rather than toggling per request. The kubectl
+ * context is always passed explicitly when configured — the host may also
+ * run an unrelated cluster (kind/Istio), and inheriting the current context
+ * could target it. Multi-container pods: the first JAVA_TOOL_OPTIONS
+ * reported by {@code --list} wins (TrainTicket app containers are the only
+ * JVM containers).
  */
 public final class SutFlagFaultInjector implements FaultInjector {
 
@@ -89,9 +93,16 @@ public final class SutFlagFaultInjector implements FaultInjector {
 
     @Override
     public void inject(FaultTarget target) {
-        logger.info("FaultInjector: INJECT {} — setting JAVA_TOOL_OPTIONS and waiting for rollout", target);
+        String token = flagToken(target);
+        List<String> parts = currentJavaToolOptions(target);
+        if (parts.contains(token)) {
+            logger.info("FaultInjector: INJECT {} — flag already present, nothing to do", target);
+            return;
+        }
+        parts.add(token);
+        logger.info("FaultInjector: INJECT {} — appending to JAVA_TOOL_OPTIONS and waiting for rollout", target);
         kubectl("set", "env", "deployment/" + target.deployment,
-                "JAVA_TOOL_OPTIONS=-D" + target.property + "=true",
+                "JAVA_TOOL_OPTIONS=" + String.join(" ", parts),
                 "--request-timeout=" + SET_ENV_REQUEST_TIMEOUT);
         awaitRollout(target);
         logger.info("FaultInjector: INJECT {} converged", target);
@@ -99,12 +110,38 @@ public final class SutFlagFaultInjector implements FaultInjector {
 
     @Override
     public void clear(FaultTarget target) {
-        logger.info("FaultInjector: CLEAR {} — unsetting JAVA_TOOL_OPTIONS and waiting for rollout", target);
+        String token = flagToken(target);
+        List<String> parts = currentJavaToolOptions(target);
+        if (!parts.remove(token)) {
+            logger.info("FaultInjector: CLEAR {} — flag not present, nothing to do", target);
+            return;
+        }
+        logger.info("FaultInjector: CLEAR {} — stripping from JAVA_TOOL_OPTIONS and waiting for rollout", target);
         kubectl("set", "env", "deployment/" + target.deployment,
-                "JAVA_TOOL_OPTIONS-",
+                parts.isEmpty() ? "JAVA_TOOL_OPTIONS-" : "JAVA_TOOL_OPTIONS=" + String.join(" ", parts),
                 "--request-timeout=" + SET_ENV_REQUEST_TIMEOUT);
         awaitRollout(target);
         logger.info("FaultInjector: CLEAR {} converged", target);
+    }
+
+    static String flagToken(FaultTarget target) {
+        return "-D" + target.property + "=true";
+    }
+
+    /** Whitespace-split current JAVA_TOOL_OPTIONS of the deployment (empty when unset). */
+    private List<String> currentJavaToolOptions(FaultTarget target) {
+        ExecResult result = kubectlCapture("set", "env", "deployment/" + target.deployment,
+                "--list", "--request-timeout=" + SET_ENV_REQUEST_TIMEOUT);
+        for (String line : result.output.split("\\R")) {
+            if (line.startsWith("JAVA_TOOL_OPTIONS=")) {
+                String value = line.substring("JAVA_TOOL_OPTIONS=".length()).trim();
+                if (value.isEmpty()) {
+                    return new ArrayList<>();
+                }
+                return new ArrayList<>(Arrays.asList(value.split("\\s+")));
+            }
+        }
+        return new ArrayList<>();
     }
 
     private void awaitRollout(FaultTarget target) {
@@ -116,6 +153,10 @@ public final class SutFlagFaultInjector implements FaultInjector {
     }
 
     private void kubectl(String... args) {
+        kubectlCapture(args);
+    }
+
+    private ExecResult kubectlCapture(String... args) {
         List<String> argv = new ArrayList<>();
         argv.add("kubectl");
         if (kubectlContext != null && !kubectlContext.trim().isEmpty()) {
@@ -138,6 +179,7 @@ public final class SutFlagFaultInjector implements FaultInjector {
             throw new FaultInjectionException("kubectl exited " + result.exitCode + ": "
                     + String.join(" ", argv) + "\n" + result.output);
         }
+        return result;
     }
 
     /** Production {@link Exec}: ProcessBuilder with merged stderr. */

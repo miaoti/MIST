@@ -124,8 +124,12 @@ behind the flag and frame it as a mode, or the "no SUT instrumentation" identity
   results appear.
   **✅ DONE (code+unit) 2026-07-01** — `io.mist.cli.fault.FaultInjector` (interface + ENABLED_PROPERTY gate +
   FaultTarget + FaultInjectionException) and `SutFlagFaultInjector` (kubectl set env `-D` → rollout status;
-  explicit `--context` because the host also runs an unrelated kind cluster; set/unset semantics safe —
-  deploy.yaml has zero JAVA_TOOL_OPTIONS uses). Registry extended with optional `fault_flag`
+  explicit `--context` because the host also runs an unrelated kind cluster). **Semantics upgraded to
+  APPEND/STRIP during the Gate-1 session prep (supersedes the earlier "set/unset safe — deploy.yaml has zero
+  JAVA_TOOL_OPTIONS" note): the run22 traced topology (`--with-tracing` = sw_deploy variant) loads the OTel
+  javaagent through JAVA_TOOL_OPTIONS on EVERY service, so inject reads the current value and appends the
+  flag token, clear strips exactly our token and restores the rest (unset only when empty; absent-token
+  clear = no-op, no rollout) — the R3-F5 clobber hazard was real on the topology Gate-1 actually needs.** Registry extended with optional `fault_flag`
   {deployment, property} per triple — the injector coordinates had no other home; deployment ≠ `dependency`
   for both Gate-1 triples so it is not derivable. **Also (disclosed per R3-F7): a top-level optional
   `cluster {context, namespace, rollout_timeout_s}` block landed with the B1.3 wiring — the injector's
