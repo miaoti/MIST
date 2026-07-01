@@ -21,6 +21,16 @@
    `kubectl port-forward svc/<jaeger-query-svc> 30005:... ` per the deployed tracing setup).
 4. Java 21 + Maven in WSL2 (verified 2026-07-01). LLM: config uses deepseek via `DEEPSEEK_API_KEY` or the
    seeded LLM cache (`mist.llm.cache.read=auto`); export the key if cache misses are expected.
+5. **Traceparent precheck (load-bearing for the observation-gated absence stratum):** the absence upgrade
+   queries Jaeger by the exact client-fabricated traceparent id. Verify once on THIS deploy (run22 evidence
+   says it works, re-verify):
+   ```bash
+   TID=$(openssl rand -hex 16); curl -s -H "traceparent: 00-$TID-$(openssl rand -hex 8)-01" \
+     http://localhost:32677/api/v1/adminrouteservice/adminroute -H "Authorization: Bearer <token>" >/dev/null
+   sleep 5; curl -s "http://localhost:30005/jaeger/ui/api/traces/$TID" | head -c 200   # expect a trace, not 404
+   ```
+   If the deploy does NOT honor traceparent, every absent verdict lands timeout-gated — record that and read
+   the §3 strata accordingly (the FIRE itself still stands; only its confidence stratum changes).
 
 ## 1. Build + config
 ```bash
@@ -57,6 +67,11 @@ re-run so the scenario materializes. Record whichever path was taken in gate1-re
   (pre-registered). Async: DESCRIPTIVE-ONLY at Gate-1 + explicit disclaimer (P3 verdict: no clean
   broker-async path; Option A injector deferred to G3).
 - Any `NOT_EVALUABLE` pair = environment/protocol failure → diagnose before drawing conclusions.
+- **Evidence hygiene:** the pairing legs also feed the legacy channels (fault-detection report counts each
+  test twice — control+fault; parameter observations drained to the on-disk registry include fault-run
+  harvests, which are validation-passing values either way). Gate-1 pairing evidence is read ONLY from
+  `logs/data-integrity-reports/pairing_*.json`; the legacy fault-detection report of a pairing run is noise
+  for this purpose and is not cited.
 - Record everything in `debug/a-main/prep/gate1-result.md`; FAIL ⇒ README §9 fallback.
 
 ## 4. Post-session cleanup

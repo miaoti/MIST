@@ -57,8 +57,18 @@ public final class DataIntegrityRuntime {
     /** Pre-registered quiescence knobs (B2.4: independent of any trap). */
     public static final String POLL_MS_PROPERTY = "mst.oracle.dataintegrity.poll.ms";
     public static final String TIMEOUT_MS_PROPERTY = "mst.oracle.dataintegrity.timeout.ms";
+    /**
+     * Settle window for the trace-completeness check (absence upgrade). Kept
+     * well above typical OTel batch-exporter flush intervals so a
+     * still-arriving trace is not mistaken for a complete one; the residual
+     * weakness (spans dropped by the exporter yield a stable-but-partial
+     * trace) is disclosed in the plan and bounded to the sync targets at
+     * Gate-1.
+     */
+    public static final String TRACE_SETTLE_MS_PROPERTY = "mst.oracle.dataintegrity.trace.settle.ms";
     static final long DEFAULT_POLL_MS = 500;
     static final long DEFAULT_TIMEOUT_MS = 10_000;
+    static final long DEFAULT_TRACE_SETTLE_MS = 3_000;
 
     /** TrainTicket station catalogue consulted by the STATION_PAIR adapter. */
     static final String STATIONS_PATH = "/api/v1/stationservice/stations";
@@ -158,11 +168,12 @@ public final class DataIntegrityRuntime {
         final Http http;
         final long pollMs;
         final long timeoutMs;
+        final long traceSettleMs;
         final List<RunRecord> records = Collections.synchronizedList(new ArrayList<>());
         final ThreadLocal<Pending> pending = new ThreadLocal<>();
 
         Session(List<TargetTripleRegistry.Triple> triples, String runLabel, Http http,
-                long pollMs, long timeoutMs) {
+                long pollMs, long timeoutMs, long traceSettleMs) {
             Map<String, TargetTripleRegistry.Triple> keyed = new HashMap<>();
             for (TargetTripleRegistry.Triple t : triples) {
                 keyed.put(t.writeEndpoint, t);
@@ -177,6 +188,7 @@ public final class DataIntegrityRuntime {
             this.http = http;
             this.pollMs = pollMs;
             this.timeoutMs = timeoutMs;
+            this.traceSettleMs = traceSettleMs;
         }
     }
 
@@ -196,17 +208,18 @@ public final class DataIntegrityRuntime {
         Http http = defaultHttpOverride != null ? defaultHttpOverride : new RestAssuredHttp();
         beginRun(triples, runLabel, http,
                 Long.getLong(POLL_MS_PROPERTY, DEFAULT_POLL_MS),
-                Long.getLong(TIMEOUT_MS_PROPERTY, DEFAULT_TIMEOUT_MS));
+                Long.getLong(TIMEOUT_MS_PROPERTY, DEFAULT_TIMEOUT_MS),
+                Long.getLong(TRACE_SETTLE_MS_PROPERTY, DEFAULT_TRACE_SETTLE_MS));
     }
 
     static void beginRun(List<TargetTripleRegistry.Triple> triples, String runLabel, Http http,
-                         long pollMs, long timeoutMs) {
+                         long pollMs, long timeoutMs, long traceSettleMs) {
         if (session != null) {
             throw new IllegalStateException("DataIntegrityRuntime: a run is already active");
         }
-        session = new Session(triples, runLabel, http, pollMs, timeoutMs);
-        logger.info("DataIntegrity: run '{}' active for {} triple(s), poll={}ms timeout={}ms",
-                runLabel, triples.size(), pollMs, timeoutMs);
+        session = new Session(triples, runLabel, http, pollMs, timeoutMs, traceSettleMs);
+        logger.info("DataIntegrity: run '{}' active for {} triple(s), poll={}ms timeout={}ms settle={}ms",
+                runLabel, triples.size(), pollMs, timeoutMs, traceSettleMs);
     }
 
     /** Deactivates the session and returns its records (B1.3 calls this). */
@@ -311,7 +324,7 @@ public final class DataIntegrityRuntime {
                 }
                 long elapsedMs = (System.nanoTime() - start) / 1_000_000;
                 if (elapsedMs >= s.timeoutMs) {
-                    gate = traceComplete(s.http, traceId, s.pollMs)
+                    gate = traceComplete(s.http, traceId, s.traceSettleMs)
                             ? QuiescenceGate.OBSERVED_COMPLETE_ABSENT
                             : QuiescenceGate.TIMEOUT_ABSENT;
                     break;

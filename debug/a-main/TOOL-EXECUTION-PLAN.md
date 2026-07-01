@@ -127,7 +127,10 @@ behind the flag and frame it as a mode, or the "no SUT instrumentation" identity
   explicit `--context` because the host also runs an unrelated kind cluster; set/unset semantics safe —
   deploy.yaml has zero JAVA_TOOL_OPTIONS uses). Registry extended with optional `fault_flag`
   {deployment, property} per triple — the injector coordinates had no other home; deployment ≠ `dependency`
-  for both Gate-1 triples so it is not derivable. 8 injector + 3 new registry tests green (24 mist-cli total).
+  for both Gate-1 triples so it is not derivable. **Also (disclosed per R3-F7): a top-level optional
+  `cluster {context, namespace, rollout_timeout_s}` block landed with the B1.3 wiring — the injector's
+  kubectl coordinates are per-SUT data, so the registry (not new system properties) carries them.**
+  8 injector + 3 new registry tests green (24 mist-cli total).
   **Live inject/clear toggle check folded into the B1.3/B1.4 smoke-parity run** (one cluster session; WSL2
   reachable from this session, minikube currently Stopped). The first live clear() also flushes the stale
   smoke flag per gate1-smoke-result.md.
@@ -138,8 +141,10 @@ behind the flag and frame it as a mode, or the "no SUT instrumentation" identity
   **✅ DONE (code+unit) 2026-07-01** — realized as: the pairing test IS a normally-generated test (bodies from
   the generator/pool path, two-phase Phase B when `mst.two.phase.enabled=true` — the Gate-1 run config), and
   `DataIntegrityRuntime.beforeWrite` freshens ONLY the isolation-key fields (plus stripping server-assigned
-  `id`); all other fields keep their pool/generator values. Unit-pinned (`freshStrings_rewritesKeys...`,
-  `stationPair_...` keep pool fields).
+  `id`); all other fields keep their pool/generator values. Footnote (R3-F8): the station-pair strategy also
+  rewrites the COUPLED `stationList`/`distanceList` — required for route validity and applied symmetrically
+  to both runs, so the control/fault asymmetry is still only the injected fault. Unit-pinned
+  (`freshStrings_rewritesKeys...`, `stationPair_...` keep pool fields).
 - **B1.3 Control/fault pairing executor.** New orchestration: for target request R, execute control (no
   inject) then fault (inject → run → clear). Separate code path entered only when `mist.fault.injection.enabled`.
   **✅ DONE (code+unit) 2026-07-01** — `PairedFaultExecutor` (mist-cli): clear-all hygiene → control run →
@@ -232,9 +237,21 @@ trace-derived gate (see B2.3).
   (the lower-confidence stratum). **This makes the FIRE verdicts observation-gatable — R3 #1's exact demand —
   because absence, not just presence, can be observation-gated.** No early "stable-absent" exit: premature
   absence exits would bias benign eventually-consistent traps toward false fires (B2.4's metric), so absence
-  concludes only at the pre-registered cap. Pending-vs-missing (compensation) remains compile-only at Gate-1
-  per the reduced §5 row. Normalization = membership by business-key projection (volatile fields never
-  compared). All unit-pinned.
+  concludes only at the pre-registered cap. **Post-build corrections (cold review 2026-07-01, §8):**
+  (i) the committed first cut built the Jaeger lookup URL as base+`/api/traces` against a base that already
+  ends in `/api` — every absence would have silently stayed TIMEOUT-gated; caught pre-session and fixed
+  (near-miss recorded, the pinning test had encoded the same wrong convention). (ii) The completeness check's
+  settle window is its own pre-registered knob (`mst.oracle.dataintegrity.trace.settle.ms`, default 3000 ms ≫
+  typical OTel batch-exporter flush) with the residual weakness disclosed: an exporter-dropped span yields a
+  stable-but-partial trace that would still upgrade — bounded at Gate-1 to shallow sync targets, revisited
+  with G3's async work. (iii) The upgrade also presumes the deploy honors the client traceparent — verified
+  once by curl per the session runbook before any verdict is trusted. **Pending-vs-missing (compensation),
+  corrected per R3-F3: NOT built at Gate-1** — there is no saga target to shape it against; the earlier
+  "compile-only" phrasing wrongly implied existing code. G3 builds it against the named saga site.
+  "Idempotency keys" (the plan's normalization sub-item) are subsumed by per-run fresh business keys at
+  Gate-1 (disclosed, not separately implemented). Normalization = membership by business-key projection
+  (volatile fields never compared). Ack rule is TrainTicket-convention (2xx ∧ body `status==1` when a status
+  field exists; bare-2xx otherwise) — port note for G2/G3 SUTs recorded in code. All unit-pinned.
 - **B2.3 Fire rule — a bounded, FP-measured differential relation (per-run), in TWO modes reported separately.**
   (Not called an "invariant": R3's standing point is "a race, not an invariant" — the per-run framing kills
   *cross-run* contamination but not the *temporal* race, which only B2.2 + the measured FP bound.)
@@ -271,10 +288,12 @@ trace-derived gate (see B2.3).
   as specified (FIRE = fault 2xx-acks-X ∧ X∉fault-read-back ∧ control-X-present; X request-derived via the
   freshened business key, never from the response; per-run membership, not list-equality; control failures =
   NOT_EVALUABLE, never NO_FIRE evidence; isolation violation = NOT_EVALUABLE). Unit test drives a stateful
-  fake SUT through the REAL hook chain and the masked run FIREs. **Gated mode: implemented as a reported
-  stratum with verdict slot `NOT_EVALUATED (needs observed D-error; Toxiproxy → G3)` — code path exists,
-  never pooled with pure-differential, exercised at G3** (per §5 reduced row). JSON pairing report + console
-  summary carry both strata + the fault run's quiescence gate. Live S2 fire on the real SUT = Gate-1 session.
+  fake SUT through the REAL hook chain and the masked run FIREs. **Gated mode (corrected per post-build
+  cold review R3-F1): what exists at Gate-1 is the reported stratum slot `NOT_EVALUATED (needs observed
+  D-error; Toxiproxy → G3)` — the D-span locator itself is NOT built (`Triple.dependency` is carried but
+  unread); G3 must BUILD the gated mode, not merely exercise it.** Never pooled with pure-differential.
+  JSON pairing report + console summary carry both strata + the fault run's quiescence gate. Live S2 fire
+  on the real SUT = Gate-1 session.
 - **B2.4 MEASURE the read-back FP rate (make-or-break, §8.5):**
   - Build a **benign-trap stratum** the oracle must NOT fire on: eventually-consistent-then-correct writes
     **AND the `2xx-accepted-but-by-design-never-persists` sub-class (accept-then-drop — e.g. a write silently
@@ -363,10 +382,12 @@ B1.3 pairing executor  → verify: control persists, fault masks (smoke parity, 
 B2.1 read-back capture → verify: fault read-back lacks its own X; control read-back has its X (per-run, not list-eq)
 B2.2 isolation         → verify: fresh non-shared entity; runs never collide
 B2.2 quiescence        → verify: poll OR trace-completion; gate-coverage logged per verdict
-B2.2 pending-vs-missing→ (NOT Gate-1 — no saga target) code compiles; VALIDATED AT G3 vs named saga site
+B2.2 pending-vs-missing→ (NOT Gate-1 — no saga target) not built; BUILT+VALIDATED AT G3 vs named saga
+                         site (amended 2026-07-01, was "code compiles")
 B2.2 normalization     → verify: idempotency key + volatile-field strip before diff
-B2.3 fire rule         → verify: pure-differential fires on S2 (per-run X∉read-back); gated path compiles,
-                         validated at G3 (needs Toxiproxy S1); two strata reported separately
+B2.3 fire rule         → verify: pure-differential fires on S2 (per-run X∉read-back); gated verdict slot
+                         reported, D-span locator BUILT+validated at G3 (needs Toxiproxy S1; amended
+                         2026-07-01, was "gated path compiles"); two strata reported separately
 B2.4 FP measurement    → verify: P3 resolved; FP-vs-timeout curve + gate-coverage per-SUT AND per-stratum  ← make-or-break
 Gate-1 verdict         → PASS = fires + ≤5% non-timeout-gated SYNC FP + (observed-gated async fraction OR
                          low-conf async disclaimer; async fraction is descriptive-only); ~100% timeout-gated
@@ -416,3 +437,30 @@ Gate-1 verdict         → PASS = fires + ≤5% non-timeout-gated SYNC FP + (obs
   oracle-novelty baselines — research/02 §1d). A fair Cast wants production-replay + Java-AOP + historical
   baselines, exactly what OSS lacks (R1 MAJOR 4); a weak one invites "you beat a crippled comparator." Budget
   the real effort or the headline novelty comparison is contestable.
+
+## 8. Post-build cold review + fix wave (2026-07-01)
+The P1→B2.3 build (commits `6afbe8d..696a2fe`) was cold-reviewed by independent subagents per the ≥3-reviewer
+rule: **regression lens → ADDITIVITY HOLDS** (flags-off byte-identity confirmed on generated source, execution
+paths, config validation, reports; full reactor green incl. mist-llm); **plan-fidelity lens → DRIFTED
+(narrowly)** — Gate-1-critical core faithful, drift confined to G3-deferred components whose markers
+overclaimed ("code exists" for unbuilt gated/compensation code) plus the Jaeger-URL near-miss; **soundness
+lens → ABORTED on subagent session limits, to be re-run before the live Gate-1 session** (partial coverage
+exists: the regression reviewer audited hook inertness, verdict-join determinism and flag-leak paths; the
+fidelity reviewer audited the fire rule + gate strata).
+**Fixed in code (all test-pinned, suites green 331+49):** inject-loop moved inside try/finally +
+best-effort-per-target clear-all + loud failure when a flag may remain (R2-F2 MAJOR); Jaeger URL convention
+(R3-F2 MAJOR, fixed pre-review-return); trace-settle knob separated + pre-registered (R3-F4); enhancer
+conflict hoisted to run() start (R2-F3); zero-pairing-methods now fails fast instead of silently running the
+suite (R3-F6); verdict join prefers an evaluable record + per-run record counts surfaced (R2-F5); legacy
+method-filter log restored byte-identical via Filter-param refactor (R2-F1); Gate-1 properties enhancer-key
+dedupe (R3-F12). **Markers corrected** (gated + compensation honesty, cluster-block and stationList
+disclosures, idempotency-keys note, ack-rule port note). **Accepted, disclosed residuals:** pairing runs also
+feed the legacy fault-detection report + parameter-observation drain (control+fault observations; values are
+validation-passing either way) — Gate-1 result doc must read pairing evidence ONLY from the pairing report
+(R2-F4/R3-F11); bare-2xx ack fallback on SUTs without a body status field (R3-F10, G2/G3 port note);
+stable-but-partial-trace upgrade weakness bounded to sync targets (R3-F4 residual, §3 B2.2 marker).
+**B2.4 gap list (build BEFORE the session, from the fidelity reviewer):** benign-probe mode for flag-less
+trap triples + per-run FP rule; FP aggregation (rate, per-stratum, non-timeout-gated fraction, ≤5% bar);
+FP-vs-timeout curve emitter from RunRecord.elapsedMs; accept-then-drop trap disclosure (no TT representative
+exists — contacts dedupe soft-rejects with status:0, hence not acked, hence a true negative); async
+disclaimer + stratum labels in the report; adminbasic scenario/G0 smoke pre-session.

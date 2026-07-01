@@ -109,7 +109,7 @@ public class DataIntegrityRuntimeTest {
     }
 
     private void begin(String runLabel, TargetTripleRegistry.Triple... triples) {
-        DataIntegrityRuntime.beginRun(Arrays.asList(triples), runLabel, http, 1, 30);
+        DataIntegrityRuntime.beginRun(Arrays.asList(triples), runLabel, http, 1, 30, 1);
     }
 
     @Before

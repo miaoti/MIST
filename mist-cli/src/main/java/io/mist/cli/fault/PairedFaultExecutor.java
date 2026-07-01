@@ -58,6 +58,9 @@ public final class PairedFaultExecutor {
         public final DataIntegrityRuntime.RunRecord fault;
         public final PairVerdict pureDifferential;
         public final String reason;
+        /** How many records each run produced for this triple (join visibility). */
+        public int controlRecordCount = 1;
+        public int faultRecordCount = 1;
 
         PairResult(String tripleName, DataIntegrityRuntime.RunRecord control,
                    DataIntegrityRuntime.RunRecord fault, PairVerdict pureDifferential, String reason) {
@@ -103,10 +106,14 @@ public final class PairedFaultExecutor {
         }
 
         List<DataIntegrityRuntime.RunRecord> faultRecords;
-        for (TargetTripleRegistry.Triple t : injectable) {
-            injector.inject(t.faultFlag);
-        }
+        List<FaultInjector.FaultTarget> clearFailures = new ArrayList<>();
         try {
+            // Inject INSIDE the try: a failed inject (e.g. rollout timeout on
+            // the second triple) must still reach the clear-all below, or the
+            // first triple's flag would stay live on the SUT.
+            for (TargetTripleRegistry.Triple t : injectable) {
+                injector.inject(t.faultFlag);
+            }
             DataIntegrityRuntime.beginRun(triples, "fault");
             try {
                 run.run();
@@ -114,29 +121,68 @@ public final class PairedFaultExecutor {
                 faultRecords = DataIntegrityRuntime.endRun();
             }
         } finally {
-            // The SUT must never be left with a fault flag on.
+            // The SUT must never be left with a fault flag on. Best-effort
+            // over every target: one failed clear must not skip the rest.
             for (TargetTripleRegistry.Triple t : injectable) {
-                injector.clear(t.faultFlag);
+                try {
+                    injector.clear(t.faultFlag);
+                } catch (RuntimeException e) {
+                    logger.error("FAILED to clear fault flag on {} — the SUT may still be faulted: {}",
+                            t.faultFlag, e.toString());
+                    clearFailures.add(t.faultFlag);
+                }
             }
+        }
+        if (!clearFailures.isEmpty()) {
+            throw new FaultInjector.FaultInjectionException(
+                    "fault flag may still be active on: " + clearFailures
+                            + " — verify/clear manually before any further run");
         }
 
         List<PairResult> results = new ArrayList<>();
         for (TargetTripleRegistry.Triple t : injectable) {
-            results.add(verdict(t.name,
-                    first(controlRecords, t.name),
-                    first(faultRecords, t.name)));
+            PairResult verdict = verdict(t.name,
+                    pick(controlRecords, t.name),
+                    pick(faultRecords, t.name));
+            verdict.controlRecordCount = count(controlRecords, t.name);
+            verdict.faultRecordCount = count(faultRecords, t.name);
+            results.add(verdict);
         }
         return results;
     }
 
-    private static DataIntegrityRuntime.RunRecord first(List<DataIntegrityRuntime.RunRecord> records,
-                                                        String tripleName) {
+    /**
+     * Picks the triple's record for the verdict join. Several hooked methods
+     * can hit one triple; an evaluable (error-free, acknowledged) record is
+     * preferred over noise so the join is deterministic even when parallel
+     * execution reorders the list. The per-run record counts are surfaced on
+     * the report so multi-record joins are visible.
+     */
+    private static DataIntegrityRuntime.RunRecord pick(List<DataIntegrityRuntime.RunRecord> records,
+                                                       String tripleName) {
+        DataIntegrityRuntime.RunRecord fallback = null;
         for (DataIntegrityRuntime.RunRecord r : records) {
-            if (r.tripleName.equals(tripleName)) {
+            if (!r.tripleName.equals(tripleName)) {
+                continue;
+            }
+            if (r.error == null && r.acked) {
                 return r;
             }
+            if (fallback == null) {
+                fallback = r;
+            }
         }
-        return null;
+        return fallback;
+    }
+
+    private static int count(List<DataIntegrityRuntime.RunRecord> records, String tripleName) {
+        int n = 0;
+        for (DataIntegrityRuntime.RunRecord r : records) {
+            if (r.tripleName.equals(tripleName)) {
+                n++;
+            }
+        }
+        return n;
     }
 
     /**
@@ -203,6 +249,8 @@ public final class PairedFaultExecutor {
             pair.put("triple", r.tripleName);
             pair.put("pureDifferential", r.pureDifferential.name());
             pair.put("reason", r.reason);
+            pair.put("controlRecordCount", r.controlRecordCount);
+            pair.put("faultRecordCount", r.faultRecordCount);
             pair.put("control", toJson(r.control));
             pair.put("fault", toJson(r.fault));
             pairs.put(pair);

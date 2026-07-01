@@ -63,10 +63,14 @@ public class PairedFaultExecutorTest {
     private static final class RecordingInjector implements FaultInjector {
         final List<String> ops = new ArrayList<>();
         boolean active = false;
+        boolean failOnInject = false;
 
         @Override
         public void inject(FaultTarget target) {
             ops.add("inject:" + target.deployment);
+            if (failOnInject) {
+                throw new FaultInjectionException("rollout timed out");
+            }
             active = true;
         }
 
@@ -171,6 +175,24 @@ public class PairedFaultExecutorTest {
                 Collections.singletonList(contacts), injector, alwaysPersist).execute();
         assertEquals(PairedFaultExecutor.PairVerdict.NO_FIRE, results.get(0).pureDifferential);
         assertTrue(results.get(0).reason.contains("persisted"));
+    }
+
+    @Test
+    public void failedInject_stillRunsClearAll() {
+        injector.failOnInject = true;
+        try {
+            new PairedFaultExecutor(Collections.singletonList(contacts), injector, fakeGeneratedRun())
+                    .execute();
+            fail("expected the inject failure to propagate");
+        } catch (Exception expected) {
+            // expected
+        }
+        // hygiene clear, control run, failing inject — then the finally must
+        // still clear so no flag can stay live on the SUT.
+        assertEquals(java.util.Arrays.asList(
+                "clear:ts-admin-basic-info-service",
+                "inject:ts-admin-basic-info-service",
+                "clear:ts-admin-basic-info-service"), injector.ops);
     }
 
     @Test

@@ -1,0 +1,227 @@
+﻿[INFO] Scanning for projects...
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Build Order:
+[INFO] 
+[INFO] MIST (parent)                                                      [pom]
+[INFO] MIST LLM dispatch                                                  [jar]
+[INFO] MIST core                                                          [jar]
+[INFO] MIST CLI                                                           [jar]
+[INFO] 
+[INFO] -----------------------< es.us.isa:mist-parent >------------------------
+[INFO] Building MIST (parent) 1.6.0-SNAPSHOT                              [1/4]
+[INFO]   from pom.xml
+[INFO] --------------------------------[ pom ]---------------------------------
+[INFO] 
+[INFO] -------------------------< es.us.isa:mist-llm >-------------------------
+[INFO] Building MIST LLM dispatch 1.6.0-SNAPSHOT                          [2/4]
+[INFO]   from mist-llm\pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- resources:3.4.0:resources (default-resources) @ mist-llm ---
+[INFO] skip non existing resourceDirectory C:\Users\miaot\Github\MIST\mist-llm\src\main\resources
+[INFO] 
+[INFO] --- compiler:3.15.0:compile (default-compile) @ mist-llm ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- resources:3.4.0:testResources (default-testResources) @ mist-llm ---
+[INFO] skip non existing resourceDirectory C:\Users\miaot\Github\MIST\mist-llm\src\test\resources
+[INFO] 
+[INFO] --- compiler:3.15.0:testCompile (default-testCompile) @ mist-llm ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- surefire:3.5.4:test (default-test) @ mist-llm ---
+[INFO] Using auto detected provider org.apache.maven.surefire.junit4.JUnit4Provider
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+[INFO] Running io.mist.llm.LLMCallCacheTest
+[INFO] Tests run: 10, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.115 s -- in io.mist.llm.LLMCallCacheTest
+[INFO] Running io.mist.llm.LLMClientContractTest
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0 s -- in io.mist.llm.LLMClientContractTest
+[INFO] Running io.mist.llm.LLMConfigEnvResolverTest
+[INFO] Tests run: 7, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0 s -- in io.mist.llm.LLMConfigEnvResolverTest
+[INFO] Running io.mist.llm.LLMConfigSeedGateTest
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0 s -- in io.mist.llm.LLMConfigSeedGateTest
+[INFO] Running io.mist.llm.LLMServiceCacheGateTest
+[INFO] Tests run: 10, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.001 s -- in io.mist.llm.LLMServiceCacheGateTest
+[INFO] 
+[INFO] Results:
+[INFO] 
+[INFO] Tests run: 35, Failures: 0, Errors: 0, Skipped: 0
+[INFO] 
+[INFO] 
+[INFO] ------------------------< es.us.isa:mist-core >-------------------------
+[INFO] Building MIST core 1.6.0-SNAPSHOT                                  [3/4]
+[INFO]   from mist-core\pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- resources:3.4.0:resources (default-resources) @ mist-core ---
+[INFO] Copying 3 resources from src\main\resources to target\classes
+[INFO] 
+[INFO] --- compiler:3.15.0:compile (default-compile) @ mist-core ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- resources:3.4.0:testResources (default-testResources) @ mist-core ---
+[INFO] skip non existing resourceDirectory C:\Users\miaot\Github\MIST\mist-core\src\test\resources
+[INFO] 
+[INFO] --- compiler:3.15.0:testCompile (default-testCompile) @ mist-core ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- surefire:3.5.4:test (default-test) @ mist-core ---
+[INFO] Using auto detected provider org.apache.maven.surefire.junit4.JUnit4Provider
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+[INFO] Running io.mist.core.analysis.FaultDetectionTrackerAttributionTest
+[INFO] Tests run: 9, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.292 s -- in io.mist.core.analysis.FaultDetectionTrackerAttributionTest
+[INFO] Running io.mist.core.analysis.FaultDetectionTrackerIdempotencyTest
+[INFO] Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0 s -- in io.mist.core.analysis.FaultDetectionTrackerIdempotencyTest
+[INFO] Running io.mist.core.analysis.FaultDetectionTrackerOracleAnomalyTest
+[INFO] Tests run: 8, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.013 s -- in io.mist.core.analysis.FaultDetectionTrackerOracleAnomalyTest
+[INFO] Running io.mist.core.analysis.FaultDetectionTrackerSummaryTest
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.001 s -- in io.mist.core.analysis.FaultDetectionTrackerSummaryTest
+[INFO] Running io.mist.core.analysis.TraceShapeAdapterCacheTest
+[INFO] Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0 s -- in io.mist.core.analysis.TraceShapeAdapterCacheTest
+[INFO] Running io.mist.core.bandit.ThompsonSchedulerTest
+[INFO] Tests run: 8, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.005 s -- in io.mist.core.bandit.ThompsonSchedulerTest
+[INFO] Running io.mist.core.config.AblationProfileTest
+[INFO] Tests run: 8, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0 s -- in io.mist.core.config.AblationProfileTest
+[INFO] Running io.mist.core.config.CacheToggleTest
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0 s -- in io.mist.core.config.CacheToggleTest
+[INFO] Running io.mist.core.config.MstConfigAdaptiveTest
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0 s -- in io.mist.core.config.MstConfigAdaptiveTest
+[INFO] Running io.mist.core.config.MstConfigDataIntegrityTest
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0 s -- in io.mist.core.config.MstConfigDataIntegrityTest
+[INFO] Running io.mist.core.config.MstConfigOracleAndSchedulerTest
+[INFO] Tests run: 7, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0 s -- in io.mist.core.config.MstConfigOracleAndSchedulerTest
+[INFO] Running io.mist.core.coverage.LLMStatusCodeDiscoveryCacheTest
+[INFO] Tests run: 10, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.003 s -- in io.mist.core.coverage.LLMStatusCodeDiscoveryCacheTest
+[INFO] Running io.mist.core.enhancer.TestCaseEnhancerDedupTest
+[INFO] Tests run: 15, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.087 s -- in io.mist.core.enhancer.TestCaseEnhancerDedupTest
+[INFO] Running io.mist.core.enhancer.TestResultCaptureParameterObservationTest
+[INFO] Tests run: 12, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.004 s -- in io.mist.core.enhancer.TestResultCaptureParameterObservationTest
+[INFO] Running io.mist.core.fault.ApplicabilityMatrixTest
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.068 s -- in io.mist.core.fault.ApplicabilityMatrixTest
+[INFO] Running io.mist.core.fault.FaultMinerTest
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.044 s -- in io.mist.core.fault.FaultMinerTest
+[INFO] Running io.mist.core.fault.FaultTypeRegistryTest
+[INFO] Tests run: 7, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.017 s -- in io.mist.core.fault.FaultTypeRegistryTest
+[INFO] Running io.mist.core.fault.MistInvalidInputPoolTest
+[INFO] Tests run: 8, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.006 s -- in io.mist.core.fault.MistInvalidInputPoolTest
+[INFO] Running io.mist.core.generation.EnumViolationTest
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.005 s -- in io.mist.core.generation.EnumViolationTest
+[INFO] Running io.mist.core.generation.MistGeneratorAdaptiveTest
+[INFO] Tests run: 10, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.003 s -- in io.mist.core.generation.MistGeneratorAdaptiveTest
+[INFO] Running io.mist.core.generation.MistGeneratorBanditGateTest
+[INFO] Tests run: 7, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0 s -- in io.mist.core.generation.MistGeneratorBanditGateTest
+[INFO] Running io.mist.core.generation.MistGeneratorTwoPhaseTest
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.132 s -- in io.mist.core.generation.MistGeneratorTwoPhaseTest
+[INFO] Running io.mist.core.generation.SecretlyValidNegativeTest
+[INFO] Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0 s -- in io.mist.core.generation.SecretlyValidNegativeTest
+[INFO] Running io.mist.core.health.SutHealthCheckTest
+[INFO] Tests run: 18, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.048 s -- in io.mist.core.health.SutHealthCheckTest
+[INFO] Running io.mist.core.oracle.attribution.TraceAttributionTest
+[INFO] Tests run: 18, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.001 s -- in io.mist.core.oracle.attribution.TraceAttributionTest
+[INFO] Running io.mist.core.oracle.shape.invariant.HiddenDownstreamFailureInvariantTest
+[INFO] Tests run: 9, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.001 s -- in io.mist.core.oracle.shape.invariant.HiddenDownstreamFailureInvariantTest
+[INFO] Running io.mist.core.oracle.shape.invariant.TargetAttributionInvariantTest
+[INFO] Tests run: 10, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.001 s -- in io.mist.core.oracle.shape.invariant.TargetAttributionInvariantTest
+[INFO] Running io.mist.core.oracle.shape.ResponseEnvelopeInvariantTest
+[INFO] Tests run: 10, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0 s -- in io.mist.core.oracle.shape.ResponseEnvelopeInvariantTest
+[INFO] Running io.mist.core.oracle.shape.SpanTreeShapeInvariantTest
+[INFO] Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0 s -- in io.mist.core.oracle.shape.SpanTreeShapeInvariantTest
+[INFO] Running io.mist.core.oracle.shape.StatusPropagationInvariantTest
+[INFO] Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.002 s -- in io.mist.core.oracle.shape.StatusPropagationInvariantTest
+[INFO] Running io.mist.core.oracle.shape.TimingEnvelopeInvariantTest
+[INFO] Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.002 s -- in io.mist.core.oracle.shape.TimingEnvelopeInvariantTest
+[INFO] Running io.mist.core.oracle.shape.TraceShapeOracleIntegrationTest
+[INFO] Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.034 s -- in io.mist.core.oracle.shape.TraceShapeOracleIntegrationTest
+[INFO] Running io.mist.core.oracle.shape.TraceShapeOracleIntentTogglesTest
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.001 s -- in io.mist.core.oracle.shape.TraceShapeOracleIntentTogglesTest
+[INFO] Running io.mist.core.oracle.shape.TraceShapeOracleTogglesTest
+[INFO] Tests run: 8, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.034 s -- in io.mist.core.oracle.shape.TraceShapeOracleTogglesTest
+[INFO] Running io.mist.core.policy.EndpointPolicyResolverTest
+[INFO] Tests run: 21, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.001 s -- in io.mist.core.policy.EndpointPolicyResolverTest
+[INFO] Running io.mist.core.smart.InputFetchRegistryPoolStatusTest
+[INFO] Tests run: 8, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.087 s -- in io.mist.core.smart.InputFetchRegistryPoolStatusTest
+[INFO] Running io.mist.core.smart.ProducerRankingTest
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.002 s -- in io.mist.core.smart.ProducerRankingTest
+[INFO] Running io.mist.core.smart.ShippedRegistryDepoisonTest
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.228 s -- in io.mist.core.smart.ShippedRegistryDepoisonTest
+[INFO] Running io.mist.core.spi.MistServicesTest
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0 s -- in io.mist.core.spi.MistServicesTest
+[INFO] Running io.mist.core.value.ValueProvenanceTest
+[INFO] Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.001 s -- in io.mist.core.value.ValueProvenanceTest
+[INFO] Running io.mist.core.workflow.pipeline.stages.DedupFlagLeakRegressionTest
+[INFO] Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.003 s -- in io.mist.core.workflow.pipeline.stages.DedupFlagLeakRegressionTest
+[INFO] Running io.mist.core.workflow.pipeline.stages.StageSupportPathMatchTest
+[INFO] Tests run: 21, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.004 s -- in io.mist.core.workflow.pipeline.stages.StageSupportPathMatchTest
+[INFO] 
+[INFO] Results:
+[INFO] 
+[INFO] Tests run: 331, Failures: 0, Errors: 0, Skipped: 0
+[INFO] 
+[INFO] 
+[INFO] -------------------------< es.us.isa:mist-cli >-------------------------
+[INFO] Building MIST CLI 1.6.0-SNAPSHOT                                   [4/4]
+[INFO]   from mist-cli\pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[WARNING] The POM for com.sun.xml.bind:jaxb-osgi:jar:2.2.10 is invalid, transitive dependencies (if any) will not be available: 1 problem was encountered while building the effective model for com.sun.xml.bind:jaxb-osgi:2.2.10
+[ERROR] 'dependencyManagement.dependencies.dependency.systemPath' for com.sun:tools:jar must specify an absolute path but is ${tools.jar} @ 
+
+[INFO] 
+[INFO] --- resources:3.4.0:resources (default-resources) @ mist-cli ---
+[INFO] Copying 17 resources from src\main\resources to target\classes
+[INFO] 
+[INFO] --- compiler:3.15.0:compile (default-compile) @ mist-cli ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- resources:3.4.0:testResources (default-testResources) @ mist-cli ---
+[INFO] skip non existing resourceDirectory C:\Users\miaot\Github\MIST\mist-cli\src\test\resources
+[INFO] 
+[INFO] --- compiler:3.15.0:testCompile (default-testCompile) @ mist-cli ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- surefire:3.5.4:test (default-test) @ mist-cli ---
+[INFO] Using auto detected provider org.apache.maven.surefire.junit4.JUnit4Provider
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+[INFO] Running io.mist.cli.fault.DataIntegrityRuntimeTest
+WARN  DataIntegrity[control][adminroute-create]: beforeWrite failed (java.lang.IllegalStateException: no unused (start,end) station pair left among 2 stations and 2 baseline routes); passing body through
+[INFO] Tests run: 12, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.455 s -- in io.mist.cli.fault.DataIntegrityRuntimeTest
+[INFO] Running io.mist.cli.fault.PairedFaultExecutorTest
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.038 s -- in io.mist.cli.fault.PairedFaultExecutorTest
+[INFO] Running io.mist.cli.fault.SutFlagFaultInjectorTest
+[INFO] Tests run: 8, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.005 s -- in io.mist.cli.fault.SutFlagFaultInjectorTest
+[INFO] Running io.mist.cli.fault.TargetTripleRegistryTest
+[INFO] Tests run: 12, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.003 s -- in io.mist.cli.fault.TargetTripleRegistryTest
+[INFO] Running io.mist.cli.SpiDiscoveryIntegrationTest
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.004 s -- in io.mist.cli.SpiDiscoveryIntegrationTest
+[INFO] Running io.mist.cli.writer.DataIntegrityEmissionTest
+WARN  DataIntegrity: step POST /api/v1/adminrouteservice/adminroute matches triple 'adminroute-create' but has no request body; skipping hook emission for method RouteDemo
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.050 s -- in io.mist.cli.writer.DataIntegrityEmissionTest
+[INFO] Running io.mist.cli.writer.QueryParamEmissionTest
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.021 s -- in io.mist.cli.writer.QueryParamEmissionTest
+[INFO] 
+[INFO] Results:
+[INFO] 
+[INFO] Tests run: 48, Failures: 0, Errors: 0, Skipped: 0
+[INFO] 
+[WARNING] Corrupted channel by directly writing to native stream in forked JVM 1. See FAQ web page and the dump file C:\Users\miaot\Github\MIST\mist-cli\target\surefire-reports\2026-07-01T16-06-05_979-jvmRun1.dumpstream
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Summary for MIST (parent) 1.6.0-SNAPSHOT:
+[INFO] 
+[INFO] MIST (parent) ...................................... SUCCESS [  0.002 s]
+[INFO] MIST LLM dispatch .................................. SUCCESS [  1.000 s]
+[INFO] MIST core .......................................... SUCCESS [  1.918 s]
+[INFO] MIST CLI ........................................... SUCCESS [  1.287 s]
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  4.281 s
+[INFO] Finished at: 2026-07-01T16:06:09-05:00
+[INFO] ------------------------------------------------------------------------
