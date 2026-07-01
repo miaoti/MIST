@@ -98,9 +98,20 @@ async/CQRS regime is NOT validated here (async FP is largely timeout-gated ⇒ d
 ## G2 — Novelty articulation + comparator (before scaling) — Task #13 (part 1)
 - Write the one-paragraph Cast delta a skeptical PC accepts (generation vs replay / black-box vs Java-AOP /
   read-back vs metric-threshold / open vs closed) — verified facts in plan §2.
-- Stand up a **competently-configured assertion-based comparator** on the **same** injected faults:
-  Filibuster-style FI + hand-authored assertions, and/or a Cast-pattern oracle (metric thresholds +
-  assertion points). It must be visibly non-strawman.
+- Stand up a **competently-configured assertion-based comparator** on the **same** injected faults —
+  **pre-committed concrete configuration (cold-review E-MOD), NOT "where feasible":**
+  - **Comparator = Filibuster-style FI + hand-authored per-endpoint assertions** (the OSS-feasible fair
+    baseline; a full Cast wants production-replay + Java-AOP + historical baselines OSS lacks — R1 MAJOR 4, so
+    approximate Cast's *oracle*, not its *pipeline*).
+  - **Assertions authored by a competent engineer BLIND to the injected fault set** (from the OpenAPI contract
+    + service docs) — so the comparator is not hand-crippled; this is what makes "MIST catches what it misses"
+    fair rather than rigged.
+  - **Matched budget:** same target endpoints, same fault strata, same SUTs as B1/B2; report at **matched
+    recall**.
+  - **Decisive result:** a real defect MIST's read-back catches that this blind-authored assertion oracle
+    misses *because no human wrote that assertion* — the single result that moves a PC off "you automated an
+    assertion." If a fair comparator can't be stood up on a SUT, **disclose and drop that SUT from the
+    head-to-head, don't weaken the comparator.** It must be visibly non-strawman.
 
 ## G3 — The empirical bug hunt (make-or-break) — Task #13 (part 2)
 - Run B1+B2 across **≥2 write-path SUTs** (TrainTicket + TeaStore/Sock Shop; pre-specify the concrete

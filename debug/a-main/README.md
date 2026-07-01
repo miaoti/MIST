@@ -124,10 +124,13 @@ generation + open-benchmark** combination, not the masking idea itself.
   microservice systems, with an adjudication rubric (Cast ships a *closed* 48-bug benchmark; scope the claim
   to open + OSS). *Honest weight: the most durable, citable asset and the floor-raiser (R1: "a citable
   benchmark regardless of mechanism simplicity").*
-- **C3 — A defect-prevalence + detection study**: how often masked 2xx hides a *genuine* defect (not just a
-  lived-with non-fatal error), and how much status/schema/assertion oracles miss. *Honest weight: the
-  external-validity backbone; must be framed as the DEFECT subset, not Uber's 29% (which is not a defect
-  rate — §6).*
+- **C3 — A defect-yield / detection study (+ a bounded prevalence estimate)**: primarily, of the masked-2xx
+  events MIST surfaces, how many hide a *genuine* defect vs a lived-with non-fatal error (**defect-yield +
+  oracle precision** — most masked-2xx on generated OSS workloads are MIST-*induced*, so this is NOT
+  ecosystem population-prevalence — cold-review E), and how much status/schema/assertion oracles miss.
+  **Population-prevalence** is claimed ONLY from the **stratum-3 adjudicated *wild* sample**, whose size +
+  source are **pre-registered** (benchmark §8 / §6). *Honest weight: the external-validity backbone; framed as
+  the DEFECT subset, never Uber's 29% (not a defect rate — §6).*
 
 Supporting only (not headline): FP-controlled invariant mining (if corpus captured; near-twin MINES
 exists); service-level attribution (honest ceiling).
@@ -342,7 +345,9 @@ idea's novelty ceiling, and their unanimous path to Accept is **empirical** (Gat
    go/no-go signal. **Recommended if the team can absorb the variance** — it is also the cheapest way to
    *falsify* the idea before over-investing.
 2. **Reframe to a venue that rewards the real contribution** — the black-box/no-traffic/no-AOP accessibility
-   delta + open benchmark is a strong fit for an SEIP/industry/tools track or an empirical/benchmark venue,
+   delta + open benchmark is a strong fit for an **empirical / benchmark-dataset MAIN track (ISSTA, FSE,
+   ICSE) — a full research paper, NOT SEIP** (cold-review E: a labeled benchmark + a blind-adjudicated defect
+   study is a legitimate main-track dataset/empirical contribution, a stronger A than an industry track),
    where it is a clear accept rather than a borderline research-track bet.
 3. **Pivot the core idea** — accept that masked-failure *detection* is now occupied (Cast/Microusity) and
    look for a less-crowded core (e.g., a genuinely new *generation* objective, or a different fault class).

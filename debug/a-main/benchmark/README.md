@@ -24,12 +24,15 @@ benchmark/
   cases/
     TT-adminroute-lostwrite-001.json         stratum 1, POSITIVE  (acknowledged-but-lost write; only our oracle catches it)
     TT-adminroute-control-001.json           stratum 1, NEGATIVE  (clean control, same input, fault off)
-    TT-adminbasic-contacts-lostwrite-001.json stratum 1, POSITIVE  (lost write on a 2nd service; cleanest per-entity read-back)
+    TT-adminbasic-contacts-lostwrite-001.json stratum 1, POSITIVE  (lost write on a 2nd service; COLLECTION read-back — adminbasic has NO per-entity GET, cold-review A)
     bookinfo-ratings-benign-001.json         stratum 2, NEGATIVE  (designed degradation; the naive-oracle FP trap)
 ```
 The seed cases double as schema-validation fixtures (covering each stratum/role) and as the first real
 seeds; the two lost-write positives sit on different write-path services (adminroute, adminbasic/contacts)
-to show the oracle is not endpoint-specific.
+to show the oracle is not endpoint-specific. **Status (cold-review):** adminroute is
+live-smoke-demonstrated; adminbasic is build-verified with its read-back capture pending G0 (see
+`../prep/sut-fault-injection-capability.md` §9). Both read-backs are **collection membership by business
+key** — adminbasic has no per-entity GET.
 
 ## 3. The three strata (from the evaluation design, §4 of doc 05)
 - **Stratum 1 — positive ground truth.** Injected / replicated / vendor faults with a label known *by
@@ -99,3 +102,33 @@ cases today); `captured` = control/fault traces + read-back recorded on a live d
 - This is the **PREP location** (`debug/a-main/benchmark/`). At release, promote to a repo-root
   `benchmark/` or a standalone artifact repo with a DOI. Building B1/B2 and capturing traces is BLOCKED
   until the user says "yes"; the schema, rubric, and seed cases are prep and need no tool code.
+
+## 8. Scale plan (seed 4 → release N; the C2 floor-raiser — cold-review MAJOR)
+The 4 seed cases are validation fixtures + first seeds, **not** the deliverable. C2 is a *citable*
+floor-raiser only at release scale; until captured at scale it is a **credible** floor, not yet a **clear**
+one — do not label it "clear" in the paper before the corpus is released. Pre-registered target + budget:
+
+**Target: N ≈ 120–160 labeled cases** at first release. (RCAEval's 735 is a broad multi-fault RCA corpus,
+not the right yardstick; a *scoped* masked-fault / data-integrity oracle benchmark is A-grade in the low
+hundreds.)
+
+**Costed decomposition (SUTs × write endpoints × fault classes × strata):**
+- **SUTs (3 write-path):** TrainTicket, TeaStore, Sock Shop (README §4 item 6 — all have a black-box
+  read-back + achievable isolation).
+- **Write endpoints:** ~6–10 CRUD write paths per SUT (TrainTicket alone exposes 74 POST / 27 PUT / 26
+  DELETE — `../prep/target-triples.md`).
+- **Fault classes:** stratum-1 positives = {LOST_WRITE (S2), SWALLOW_DOWNSTREAM (S1), MISSING_COMPENSATION
+  (saga)} via the injection recipe below; stratum-2 benign traps = {eventual-consistency, retry-then-succeed,
+  optional-dependency, **and the accept-then-drop / idempotent-no-op sub-class**} incl. ≥1 broker-async path
+  per SUT (the make-or-break FP stratum — TOOL-PLAN P3/B2.4).
+- **Rough count:** 3 SUTs × ~7 endpoints × ~2 applicable positive classes ≈ 40–60 stratum-1; ~10 benign
+  traps/SUT ≈ 30 stratum-2; a **bounded, size-pre-registered** stratum-3 wild-adjudicated sample (see the C3
+  caveat in README §6 — this is the only genuinely population-*prevalence* element) ≈ 30–50. Total ≈ 120–160.
+
+**Injection recipe (reproducible case production):** S2 = SUT-flag `LOST_WRITE` (source-injected — the only
+way to get skip-persist, §0 fact 6); S1 = Toxiproxy TCP cut on D's socket (errored-D) OR SUT-flag
+`SWALLOW_DOWNSTREAM`; compensation = drive the named saga site, then fault a mid-saga dependency. Each case:
+capture control+fault traces + read-back, populate `provenance.*`, flip `capture_status` specified→captured.
+
+**This scale run IS the G3 corpus build** (EXECUTION G3) — gated behind B1/B2 (BLOCKED until "yes"). The
+seed 4 exist now to prove the schema + rubric + one live positive; the 120–160 are the release deliverable.

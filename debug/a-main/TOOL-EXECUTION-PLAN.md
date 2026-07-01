@@ -12,9 +12,11 @@
 > `research/01-feasibility-codebase.md`, audited 2026-06-30 with `file:line`; **re-verify the exact line at
 > edit time**) and/or the smoke evidence (`prep/gate1-smoke-result.md`) and/or a reviewer concern. All MIST
 > changes go on branch `main_track`. **Build additively — with every flag OFF, behavior is byte-for-byte
-> unchanged.** v6 (four review rounds; round-4 = three goal-aligned cold reviewers — 2/3 SATISFIED, with the
-> feasibility factual-errors, three design-logic overstatements, and the novelty-framing all folded in here and
-> in README/EXECUTION/prep), 2026-06-30.
+> unchanged.** v7 (five review rounds; round-5 = three goal-aligned cold reviewers, **3/3 OVERALL SATISFIED** —
+> feasibility+prep, novelty+contribution, and design-logic each SATISFIED; their fixable completeness items
+> (benchmark scale plan, C3 defect-yield relabel, comparator pre-commit, adminbasic smoke-pending propagation,
+> B2 in-process state channel, benign-trap taxonomy, compensation FN, anti-gaming async blind spot, numeric
+> sync-FP bar) all folded in here + README/EXECUTION/benchmark/prep), 2026-06-30.
 
 ## 0. Facts the smoke + review established (this plan's footing — not assumptions)
 1. On a real, fully-deployed TrainTicket, the SUT-side `LOST_WRITE` makes `POST /adminroute` return **HTTP
@@ -22,6 +24,10 @@
    fault loses it. → The differential read-back signal B2 targets is **real**.
 2. **All response-level oracles pass the fault run** (status 200, schema ok, body `status:1`). Only the
    control-vs-fault **read-back** distinguishes them. → B2's value is exactly read-back, not the response.
+   (**Naming precision, cold-review F-MINOR-2:** the FIRE is a *per-run metamorphic* relation — 2xx-acks-X ⟹
+   X ∈ its OWN read-back — plus a control *liveness* gate; "differential" names the control-vs-fault pairing
+   that supplies that liveness gate + labels, **NOT** a same-input A/B state-diff. Keep the name, read it this
+   way — see B2.3.)
 3. **read-back is a black-box GET**, so its signal is **independent of the trace signal floor** (research/01
    §D: status+topology+otel/response_flags) — **the pure-differential mode's signal** does **not** degrade on
    Envoy-only SUTs where the trace carries less (the **gated** mode, keying on an observed D-error, DOES ride
@@ -64,7 +70,10 @@
   property** in the `mist.fault.*` namespace mirroring `FaultMiner.ENABLED_PROPERTY` (`FaultMiner.java:54`,
   read via `System.getProperty` — it is **NOT** in `MstConfig`). **B2** = `mst.oracle.dataintegrity.enabled`,
   an opt-in `parseBool` field in **`MstConfig.Oracle`** (`MstConfig.java:403-417`, namespace `mst.oracle.*` —
-  note **`mst`**, not `mist`), mirroring the default-false `hidden_downstream_failure.enabled` (`:416`).
+  note **`mst`**, not `mist`), mirroring the default-false `hidden_downstream_failure.enabled` (`:415-416` —
+  which actually sits at `mst.oracle.shape.invariants.*`; place the new key as a **sibling at a different
+  depth**, `mst.oracle.dataintegrity.enabled`, reusing the parseBool/default-false/system-property *pattern*,
+  not the exact path — cold-review D-m1).
   *Verify:* with both off, a normal run diffs zero against today.
 - **P2. Target-triple registry.** Add a small per-SUT config (reuse the bundle's `real-system-conf.yaml`
   style) listing `{write_endpoint, dependency, readback_endpoint, isolation_key}` — exactly the
@@ -84,8 +93,10 @@ behind the flag and frame it as a mode, or the "no SUT instrumentation" identity
 - **B1.1 FaultInjector interface** `{ inject(target), clear() }` with swappable backends. Smoke evidence
   says the **cleanest ground-truth backend is the SUT-side flag**, so implement `SutFlagFaultInjector`
   FIRST: `inject` = `kubectl set env deploy/<svc> JAVA_TOOL_OPTIONS=-D<key>=true` + `rollout status`;
-  `clear` = unset + `rollout status`. (Toxiproxy backend deferred to Gate-3 unmodified-system per EXECUTION
-  G0. **When built, word it as connection/TCP-level faults, not per-D-span DB aborts** — Toxiproxy is not
+  `clear` = unset + `rollout status`. **(Throughput, cold-review D-m2: each toggle = set-env + rollout = tens
+  of seconds on minikube; benign-trap FP runs use flag-OFF ⇒ NO per-run toggle, and positives are few — not a
+  bottleneck, but BATCH positives to amortize rollouts.)** (Toxiproxy backend deferred to Gate-3
+  unmodified-system per EXECUTION G0. **When built, word it as connection/TCP-level faults, not per-D-span DB aborts** — Toxiproxy is not
   protocol-aware (R3 concern #5).)
   **Identity note (disclose, or an evaluation reviewer reads "you modified the SUT" as breaking black-box):**
   the SUT-flag injector is **scaffolding to manufacture labeled ground truth, not a tool dependency** — MIST
@@ -116,7 +127,11 @@ layers that v4 wrongly conflated:**
   no active GET).
 - **Orchestration layer (mist-cli, B1.3):** `inject → run generated test → clear` (`kubectl set env` +
   rollout), executed **twice** (control flag-off, fault flag-on); collect each run's emitted read-back state +
-  acknowledgement; do the **pairwise** fire decision (control as FP-guard) + stratified reporting HERE.
+  acknowledgement **through the existing in-process channel** — the generated test runs in-process under
+  `JUnitCore` (`MistRunner.java:1127`), so read-back state crosses back via the same thread-local/static the
+  writer already uses to surface a verdict (the `MultiServiceRESTAssuredWriter.java:715` `LAST_VERDICT.set`
+  pattern), **not a new IPC** (cold-review D-M2 confirmed this is the enabler); do the **pairwise** fire
+  decision (control as FP-guard) + stratified reporting HERE.
 A pairwise control-vs-fault verdict **cannot** be surfaced through the per-run `:714` as-is — it lives in the
 orchestration layer (cold-review MAJOR: writer = codegen, not runtime plumbing).
 
@@ -147,9 +162,13 @@ trace-derived gate (see B2.3).
     relies on the SAME async span-completion visibility quiescence needs — which R3 §5.1 shows is unobservable
     across brokers (span *links*, often absent). So in the async regime pending-vs-missing **IS** the same
     wall-clock race as quiescence, not an independent guarantee; compensation verdicts reached by timeout are
-    reported in the same **lower-confidence, timeout-gated stratum**. **Code-built at Gate-1 but VALIDATED AT
-    G3** against the named saga site — Gate-1's shallow CRUD targets have no compensation flow to exercise it
-    (its Gate-1 verify row is dropped from §5 — cold-review MODERATE #2).
+    reported in the same **lower-confidence, timeout-gated stratum**. **FN direction (cold-review F-MOD-2):**
+    black-box within the window, a *truly-missing* compensation is indistinguishable from *not-yet-arrived* → the
+    oracle can **silently MISS the very missing_compensation class it advertises** (a recall/FN hole, not only
+    an FP/confidence label); this async *sensitivity* gap is bounded globally to G3 (§3.5), stated here so the
+    DoD is not misread as covering compensation recall. **Code-built at Gate-1 but VALIDATED AT G3** against the
+    named saga site — Gate-1's shallow CRUD targets have no compensation flow to exercise it (its Gate-1 verify
+    row is dropped from §5 — cold-review MODERATE #2).
   - **Normalization:** idempotency keys; strip volatile fields (timestamps, server-generated ids) before diff.
 - **B2.3 Fire rule — a bounded, FP-measured differential relation (per-run), in TWO modes reported separately.**
   (Not called an "invariant": R3's standing point is "a race, not an invariant" — the per-run framing kills
@@ -184,7 +203,10 @@ trace-derived gate (see B2.3).
     IS present ⇒ pure-differential fires. Surface in report/Allure with both read-backs + the per-run diff
     (reuse `MultiServiceRESTAssuredWriter.java:714`).
 - **B2.4 MEASURE the read-back FP rate (make-or-break, §8.5):**
-  - Build a **benign-trap stratum** the oracle must NOT fire on: eventually-consistent-then-correct writes.
+  - Build a **benign-trap stratum** the oracle must NOT fire on: eventually-consistent-then-correct writes
+    **AND the `2xx-accepted-but-by-design-never-persists` sub-class (idempotent no-op, accept-then-drop) — the
+    exact residual FP class B2.3's control-rescoping delegates here, so the trap MUST operationalize it, not
+    just delayed-persistence (cold-review F-MOD-1).**
     **It MUST include a broker-mediated async write path** (TrainTicket's rabbitmq paths), **not just a
     synchronous `DELAYED_WRITE` sleep** — because R3's real soundness fear is the async regime where OTel
     yields span *links*, producer/consumer spans need not co-occur in one trace, and trace-driven quiescence
@@ -223,9 +245,11 @@ research-novelty claim. **ALL novelty evidence is back-loaded to G2 (a fair Cast
 ## 4. Gate-1 validation (EXECUTION G1c)
 - **Sensitivity (Gate-1 = pure-differential only):** drive B1+B2 over the adminroute + adminbasic triples;
   confirm the **pure-differential** mode FIRES on the constructed lost-write (S2) with the per-run diff as
-  evidence (smoke showed this manually; here it's automated). **The gated mode is NOT validated at Gate 1** —
-  it needs a real D failure (Toxiproxy), deferred to G3; Gate 1 ships the gated code path but exercises it
-  only once the Toxiproxy backend exists.
+  evidence. **Only adminroute is live-smoke-demonstrated** (`prep/gate1-smoke-result.md`); **adminbasic is
+  build-verified only — its read-back smoke is a G0 step** (`prep/sut-fault-injection-capability.md` §9), so do
+  NOT read "smoke showed this" as covering both targets (cold-review D-M1). Here both are automated. **The
+  gated mode is NOT validated at Gate 1** — it needs a real D failure (Toxiproxy), deferred to G3; Gate 1 ships
+  the gated code path but exercises it only once the Toxiproxy backend exists.
 - **Specificity:** run the benign-trap stratum (B2.4, incl. the broker-async path); confirm B2 does NOT fire
   after quiescence; record FP **+ quiescence-gate coverage per-SUT AND per-stratum (sync vs async)**.
 - **Gate-1 verdict (async-FP criterion tightened — cold-review MAJOR):** the broker-async trap's verdicts are
@@ -234,11 +258,19 @@ research-novelty claim. **ALL novelty evidence is back-loaded to G2 (a fair Cast
   wall-clock timeout** (lengthen it → FP drops trivially). So: **pre-register the quiescence/compensation
   timeout independent of the trap; report async FP as a CURVE over that timeout, not a point; report the
   non-timeout-gated fraction per stratum INCLUDING async.** PASS = fires-on-the-constructed-case AND
-  characterized-low **sync** FP AND **either** a non-trivial *observed-gated* async fraction **or** an explicit
+  characterized-low **sync** FP (**pre-register this bar NUMERICALLY — e.g. ≤5% non-timeout-gated sync FP —
+  cold-review F-MINOR-1; "characterized" is falsifiable but "low" must be a pinned number**) AND **either** a
+  non-trivial *observed-gated* async fraction **or** an explicit
   disclaimer that Gate-1's async-FP is a low-confidence lower bound making **no** async-soundness claim
   (trustworthy async-FP deferred to G3 with instrumented broker context). A green FP that is ~100%
   timeout-gated on the async path does **NOT** pass the async axis (R3 §4: "90% timeout-gated would not
   convince me"). FAIL ⇒ mechanism unsound ⇒ README §9. Record next to `prep/gate1-smoke-result.md`.
+  **Blind spot of the anti-gaming lever (cold-review F-MOD-3):** the *observed-gated fraction* presumes a
+  **complete** expected-dependency set (the P2 registry). On multi-hop async where P2 is incomplete (an
+  undeclared broker consumer), "all expected spans completed" is **vacuously true** → the observed-gated
+  fraction **over-counts in exactly the async regime it must certify**. So the G3 async-sensitivity claim
+  REQUIRES per-async-path **P2-completeness validation** (declare every consumer before trusting the fraction);
+  Gate-1 (sync-only) is unaffected.
   **Gate-1 DoD = SYNC-mechanism soundness on one SUT (cold-review C-M2):** a PASS via the async-disclaimer path
   establishes the **sync** regime only; the oracle's advertised **async/CQRS** regime gets ZERO validation
   until G3. Do NOT read a disclaimer-path PASS (or EXECUTION's "sound on one SUT") as *general* soundness.
