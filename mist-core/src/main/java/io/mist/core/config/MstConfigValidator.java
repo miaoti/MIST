@@ -88,6 +88,10 @@ public final class MstConfigValidator {
                 "negative.input.generation.mode",
                 // FaultMiner (gated directly via FaultMiner.ENABLED_PROPERTY)
                 "mist.fault.mining.enabled",
+                // Main-track B1: opt-in fault-injection mode (control/fault pairing
+                // executor in mist-cli; gated directly via System.getProperty like
+                // FaultMiner — NOT an MstConfig field)
+                "mist.fault.injection.enabled",
                 // ScenarioMerge
                 "trace.merge.max.session.gap.micros",
                 "trace.merge.max.roots.per.scenario",
@@ -138,6 +142,9 @@ public final class MstConfigValidator {
                 "mst.oracle.shape.invariants.target_attribution.enabled",
                 // Phase 3: intent-agnostic trace detector (opt-in, default off)
                 "mst.oracle.shape.invariants.hidden_downstream_failure.enabled",
+                // Main-track B2: differential data-integrity oracle (opt-in, default
+                // off; active read-back oracle, NOT a shape invariant — sibling depth)
+                "mst.oracle.dataintegrity.enabled",
                 // Phase 0: surface oracle violations in the fault-detection report
                 "mist.report.oracle.anomalies.enabled",
                 // Phase 1: opt-in two-phase positive-first / negative-second flow

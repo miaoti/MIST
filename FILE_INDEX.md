@@ -375,6 +375,7 @@ The core Maven module: OpenAPI spec model, test/input generation, oracle (shape/
 | `mist-core/src/test/java/io/mist/core/config/AblationProfileTest.java` | Pins AblationProfile.from(MstConfig) reads and single-line summary format across all-on, all-off, default, and mid ablation configurations. |
 | `mist-core/src/test/java/io/mist/core/config/CacheToggleTest.java` | Pins the four read/write states of the master cache toggle (CacheToggle.canRead/canWrite) with defaults read-on write-on. |
 | `mist-core/src/test/java/io/mist/core/config/MstConfigAdaptiveTest.java` | Pins MstConfig.Adaptive defaults (off, K=10/3, 5s token age) and system-property overrides so a disabled run stays byte-identical to legacy. |
+| `mist-core/src/test/java/io/mist/core/config/MstConfigDataIntegrityTest.java` | Pins the two main-track P1 flags (mst.oracle.dataintegrity.enabled, mist.fault.injection.enabled): default OFF, opt-in propagation, strict-validator whitelist survival. |
 | `mist-core/src/test/java/io/mist/core/config/MstConfigOracleAndSchedulerTest.java` | Pins the six ablation toggles for shape oracle, four invariants (timing off by default), and bandit; confirms each accessor reflects its property. |
 
 ### `mist-core/src/test/java/io/mist/core/coverage/`

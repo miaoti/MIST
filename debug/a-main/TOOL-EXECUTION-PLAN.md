@@ -76,6 +76,10 @@
   depth**, `mst.oracle.dataintegrity.enabled`, reusing the parseBool/default-false/system-property *pattern*,
   not the exact path — cold-review D-m1).
   *Verify:* with both off, a normal run diffs zero against today.
+  **✅ DONE 2026-07-01** — landed on `main_track`: `MstConfig.Oracle.dataIntegrityOracleEnabled` (parseBool,
+  default false), both keys whitelisted in `MstConfigValidator.KNOWN_KEYS`, pinned by
+  `MstConfigDataIntegrityTest` (default-off / opt-in / strict-validator survival). 338 tests green
+  (335 baseline + 3 new); neither flag has a consumer yet ⇒ flags-off behavior byte-identical by construction.
 - **P2. Target-triple registry.** Add a small per-SUT config (reuse the bundle's `real-system-conf.yaml`
   style) listing `{write_endpoint, dependency, readback_endpoint, isolation_key}` — exactly the
   `prep/target-triples.md` triples. The `dependency` must be a **trace-matchable service/operation key** (the

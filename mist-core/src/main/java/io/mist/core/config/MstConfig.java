@@ -399,6 +399,12 @@ public final class MstConfig {
         // Phase 3: intent-agnostic hidden-downstream-failure detector. Default
         // false (opt-in) so legacy verdicts stay byte-identical until enabled.
         private final boolean hiddenDownstreamFailureInvariantEnabled;
+        // Main-track B2: differential data-integrity oracle (active read-back
+        // GET on the control/fault pair). Default false (opt-in) so flags-off
+        // runs stay byte-identical. Deliberately NOT under shape.invariants.* —
+        // it is not a trace-shape invariant, hence the sibling depth
+        // mst.oracle.dataintegrity.enabled.
+        private final boolean dataIntegrityOracleEnabled;
 
         public Oracle() {
             this.shapeOracleEnabled = parseBool("mst.oracle.shape.enabled", "true");
@@ -414,6 +420,8 @@ public final class MstConfig {
                     "mst.oracle.shape.invariants.target_attribution.enabled", "true");
             this.hiddenDownstreamFailureInvariantEnabled = parseBool(
                     "mst.oracle.shape.invariants.hidden_downstream_failure.enabled", "false");
+            this.dataIntegrityOracleEnabled = parseBool(
+                    "mst.oracle.dataintegrity.enabled", "false");
         }
 
         public boolean shapeOracleEnabled() { return shapeOracleEnabled; }
@@ -423,6 +431,7 @@ public final class MstConfig {
         public boolean timingEnvelopeInvariantEnabled() { return timingEnvelopeInvariantEnabled; }
         public boolean targetAttributionInvariantEnabled() { return targetAttributionInvariantEnabled; }
         public boolean hiddenDownstreamFailureInvariantEnabled() { return hiddenDownstreamFailureInvariantEnabled; }
+        public boolean dataIntegrityOracleEnabled() { return dataIntegrityOracleEnabled; }
     }
 
     /**
