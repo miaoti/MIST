@@ -30,61 +30,89 @@ in the high-confidence stratum). Consequence, pre-registered now:
 
 ## 1. SUT-2 recommendation: Sock Shop (microservices-demo)
 
-Why: polyglot (Java Spring + Go + Node), Mongo-per-service, a real **broker-mediated
-async leg** (shipping → RabbitMQ → queue-master — confirmed by the project's design
-docs), k8s manifests maintained in the deploy repo, and a published per-service API
-spec. Ops caveats (disclose): the service repos were **archived Dec 2023** (pin
-images/tags; no upstream fixes), and **only the Java services** (orders, carts,
-shipping, queue-master) can take the OTel javaagent without rebuilding — the Go
-services (user, catalogue, payment) ship without OTel, so trace coverage is partial
-and the quiescence gate degrades to timeout on Go legs (pre-register this as the
-expected gate-coverage stratum, per README §8.5 item 2).
+**The harness already exists in-repo** (user-flagged 2026-07-02):
+`evaluation/suts/sockshop/` — `deploy/deploy.sh` (adds Sock Shop into the
+kind+Istio+Jaeger cluster that `evaluation/suts/bookinfo/deploy/deploy.sh` stands up;
+DBs excluded from the mesh; routed through the shared Istio ingress),
+`openapi/sockshop-swagger.yaml` (**26 ops incl. 12 writes**, 4 services by tags),
+`real-system-conf.yaml` + `sockshop-demo.properties` (zero hand-edits), captured
+traces. The generalization is **already validated**: MIST ran the catalogue tests on
+Sock Shop with no code edits, all 200 (that bundle's README). So SUT-2's remaining
+cost is exactly three engineering items, pre-registered below: (i) read-back
+completeness (§0), (ii) tracing depth, (iii) session-scoped writes.
 
-### Triple SS-A — carts add-item (the clean CRUD analogue of TT contacts) — SPEC-VERIFIED (paths), CANDIDATE (ack/body details)
-- **Write:** `POST /carts/{customerId}/items` (carts service, Java Spring,
-  carts-db = Mongo). Body: `{itemId, unitPrice}` (+quantity).
-- **Read-back:** `GET /carts/{customerId}/items` — a per-cart item list:
-  **naturally scoped, NOT globally paginated** → cleanest membership read-back.
-- **Isolation:** fresh `customerId` per run (register a fresh user, or a fresh
-  session cart id) → FRESH_STRINGS-style; key = `itemId` within that cart.
-- **Fault path:** S1 via Toxiproxy between carts service and carts-db (TCP cut /
-  latency) — the G3 unmodified-system backend. No SUT-flag injector here (Gate-1
-  scaffolding stays TT-only).
-- **Ack semantics:** expect 201/200 bare JSON (no TT-style `{status}` envelope) →
-  exercises the `bodyStatus==null ⇒ ack on 2xx` branch (cold-review R5) — verify the
-  error envelope on a live deploy before trusting the ack rule.
+Why Sock Shop: polyglot (Java Spring + Go + Node BFF), Mongo-per-service, a real
+**broker-mediated async leg** (shipping → RabbitMQ → queue-master), manifests +
+in-repo harness. Ops caveats (disclose): service repos **archived Dec 2023** (pin
+images; no upstream fixes).
 
-### Triple SS-B — user register — SPEC-VERIFIED (endpoint), CANDIDATE (read-back form)
-- **Write:** `POST /register` (user service, **Go**, user-db = Mongo);
-  body `{username,password,email,firstName,lastName}`.
-- **Read-back:** `GET /customers/{id}` / login-derived lookup — confirm exact form
-  live.
-- **Isolation:** fresh unique `username` (FRESH_STRINGS).
-- **Caveat:** Go service → no javaagent → absence upgrades rarely available on this
-  triple (mostly TIMEOUT_ABSENT stratum) — keep it as a breadth triple, not a
-  headline one.
+**Tracing reality (corrected from the in-repo bundle — do NOT assume javaagent
+depth):** as deployed, tracing is Istio-sidecar (Envoy) with the marker-first lookup
+via the ingress; **Sock Shop's Node front-end does NOT propagate W3C `traceparent`
+downstream**, so traces are `ingress→front-end` ONLY. Consequence for B2: the
+quiescence absence-upgrade (`traceComplete` on the write's own trace) would be
+**structurally shallow** — span-stability of a 2-span trace says nothing about the
+downstream write. Pre-registered mitigation, in order: (a) attach the OTel javaagent
+to the **Java** services (carts, orders, shipping, queue-master) via
+`JAVA_TOOL_OPTIONS` + OTLP export — the exact mechanism proven on TrainTicket — which
+restores W3C propagation and real spans on the two headline write legs; (b) if (a)
+fails on this stack, absences on Sock Shop land in the TIMEOUT_ABSENT stratum and are
+disclosed as such per README §8.5 item 2 (FP/gate-coverage per-SUT). The **Go**
+services (user, catalogue, payment) get no javaagent either way → triples through
+them are breadth-only.
 
-### Triple SS-C — order create (the depth triple) — SPEC-VERIFIED (POST /orders, 201; paginated GET)
-- **Write:** `POST /orders` (orders service, Java Spring, orders-db = Mongo); body
-  carries customer/address/card/items **as HATEOAS URIs** into the user+carts
-  services; response 201 with the order entity.
-- **Read-back:** `GET /orders/{id}` (HAL self-link) or paginate `GET /orders` —
-  **requires the §0 completeness support**.
-- **Isolation:** fresh user + fresh cart per run (order is derived state — the
-  scenario needs register→cart→order; MIST's trace/pool generation covers such
-  chains).
-- **Depth (README §8.5 item 3):** order creation fans out orders→(user, carts,
-  payment, shipping) sync HTTP, then shipping→RabbitMQ→queue-master async. This is
-  Sock Shop's genuine multi-service write site — the closest thing it has to a
-  saga/dual-write: order persisted in orders-db WHILE shipment is queued — a
-  **dual-write across a broker**.
+**Session reality (corrected):** the public API is the front-end BFF; `/cart`,
+`/orders`, `/addresses`, `/cards` are **session-scoped** (cookie after
+`/login`/`/register`). MIST needs cookie-session support in auth handling
+(TrainTicket used bearer tokens) — a small `MstAuthHandler` extension, pre-registered
+as SUT-2 engineering item (iii). The session-free path (catalogue) is read-only.
+
+The 12 write ops (swagger-verified): POST/DELETE `/cart`(+`/cart/update`,
+`/cart/{id}`), POST `/orders`, POST `/register`, POST/DELETE `/customers`,
+POST/DELETE `/cards`, POST/DELETE `/addresses`.
+
+### Triple SS-A — cart add-item (headline-clean, Java leg) — SPEC-VERIFIED (in-repo swagger)
+- **Write:** `POST /cart` (front-end BFF → carts service, Java Spring, carts-db =
+  Mongo, **out of mesh** per deploy.sh). Body: `{id: <catalogue itemId>}`.
+- **Read-back:** `GET /cart` — the session's item list: naturally scoped, not
+  paginated → clean membership read-back (key = `itemId`).
+- **Isolation:** **fresh session per run** (fresh registered user → empty cart
+  baseline), item picked from the existing catalogue (finite ~9–18 items — a
+  STATION_PAIR-flavored "existing-entity within a fresh scope" strategy; small
+  isolation-strategy extension, pre-registered).
+- **Fault path:** S1 via Toxiproxy between carts service and carts-db (DB out of
+  mesh = clean TCP path to proxy; repoint the service's Mongo URL env).
+- **Ack semantics:** bare 2xx (no TT `{status}` envelope) → exercises the
+  `bodyStatus==null ⇒ ack on 2xx` branch (R5) — verify the error envelope live.
+
+### Triple SS-B — address/card create (breadth, Go leg) — SPEC-VERIFIED (in-repo swagger)
+- **Write:** `POST /addresses` (or `/cards`) via BFF → user service (**Go**,
+  user-db Mongo); body = street/number/city/postcode/country (FRESH_STRINGS applies
+  directly).
+- **Read-back:** `GET /addresses` (session-scoped list).
+- **Caveat:** Go leg → no javaagent → absences mostly TIMEOUT_ABSENT; breadth
+  triple only. (`POST /register` + `GET /customers/{id}` is the same-shaped
+  alternative.)
+
+### Triple SS-C — order create (the depth triple) — SPEC-VERIFIED (POST /orders 201; orders-svc GET is PAGINATED per its api-spec)
+- **Write:** `POST /orders` via BFF (orders service, Java Spring, orders-db Mongo):
+  assembles the session's customer/address/card/cart and fans out
+  orders→(user, carts, payment, shipping) sync HTTP, then
+  shipping→RabbitMQ→queue-master async.
+- **Read-back:** `GET /orders` (session customer's orders via BFF) — the orders
+  service's own collection is **paginated HAL** (§0) → completeness support
+  REQUIRED here.
+- **Isolation:** fresh customer+cart per run (order = derived state; the
+  register→cart→order chain is MIST scenario-generation territory).
+- **Depth (README §8.5 item 3):** order persisted in orders-db WHILE shipment is
+  queued — a genuine **dual-write across a broker**; Sock Shop's closest thing to a
+  saga site.
 - **Async investigation (pre-registered as a QUESTION, not a claim):** whether any
-  black-box read-back reflects queue-master's consumption (shipment status
-  visible via the order entity or a shipping GET). If none exists, the async
-  stratum on Sock Shop gets the same honest verdict as TT's P3
-  (no clean black-box async read-back → async soundness still deferred), and G3's
-  async claim rests on the Option-A injector path or is dropped. Do NOT let the
-  RabbitMQ leg's existence be quietly upgraded to "async validated."
+  black-box read-back reflects queue-master's consumption (shipment status visible
+  via the order entity or a shipping GET). If none exists, Sock Shop's async stratum
+  gets the same honest verdict as TT's P3 (no clean black-box async read-back →
+  async soundness still deferred / Option-A injector). Do NOT quietly upgrade the
+  RabbitMQ leg's existence to "async validated."
 
 ## 2. SUT-3 candidates (breadth; pick one)
 
@@ -116,19 +144,31 @@ expected gate-coverage stratum, per README §8.5 item 2).
   TeaStore persistence triples; document the swap here before running.
 
 ## 4. Live-verification checklist (before any G3 run; per triple)
-1. Deploy + OTel javaagent on the Java services; confirm gateway/trace capture for
-   one write per triple (the Gate-1 traceparent precheck, ported).
-2. Confirm ack semantics (2xx form + error envelope) and read-back form
-   (pagination? per-entity GET? key echo verbatim?) — feed the R5 ack-decoder port
-   note.
-3. Confirm isolation key freshness works (no server-side normalization of keys —
-   cold-review A Finding 5).
-4. Confirm Toxiproxy placement per triple (service↔Mongo) produces the S1 fault
-   (errored D-span) — and that clearing restores health (F2-style hygiene).
-5. Station the §0 completeness support and re-run the Gate-1-style benign probe
-   per SUT (README §8.5 item 2: FP per-SUT, never pooled).
+0. Stand up via the EXISTING in-repo harness: `evaluation/suts/bookinfo/deploy/deploy.sh`
+   (base kind+Istio+Jaeger cluster) → `evaluation/suts/sockshop/deploy/deploy.sh` →
+   port-forwards → `workload/capture-traces.sh` (all idempotent per the bundle README).
+   NOTE: this cluster coexists with the Gate-1 minikube only if memory allows —
+   schedule G3 deploys AFTER the Gate-1 cluster is stopped (the run-#1/#2 incident
+   taught the 26 GB budget).
+1. Engineering item (ii): attach the OTel javaagent to carts/orders/shipping via
+   `JAVA_TOOL_OPTIONS` (+OTLP export target) and re-run the Gate-1 traceparent
+   precheck ported to Sock Shop; if it fails, record the TIMEOUT_ABSENT-stratum
+   disclosure instead.
+2. Engineering item (iii): cookie-session support in `MstAuthHandler`; verify a
+   register→login→POST /cart→GET /cart round-trip echoes the itemId verbatim.
+3. Confirm ack semantics (2xx form + error envelope) per triple — feed the R5
+   ack-decoder port note; confirm no server-side key normalization (cold-review A
+   Finding 5).
+4. Engineering item (i): §0 read-back completeness support; verify GET /cart is
+   unpaginated and GET /orders pagination is exhausted or per-entity.
+5. Confirm Toxiproxy placement per triple (service↔Mongo; DBs are out of the mesh
+   per deploy.sh — clean TCP path) produces the S1 fault and clears back to health
+   (F2-style hygiene).
+6. Re-run the Gate-1-style benign probe per SUT (README §8.5 item 2: FP per-SUT,
+   never pooled).
 
 *Review trail: pending ≥3 independent cold reviewers (one wave together with the G2
-prereg). Sources: microservices-demo GitHub org + orders api-spec (fetched
-2026-07-02); DescartesResearch/TeaStore persistence rest directory listing;
+prereg). Sources: IN-REPO `evaluation/suts/sockshop/` bundle (README, deploy.sh,
+swagger — primary, user-flagged); microservices-demo GitHub org + orders api-spec
+(fetched 2026-07-02); DescartesResearch/TeaStore persistence rest directory listing;
 spring-petclinic-microservices README.*
