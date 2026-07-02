@@ -351,18 +351,21 @@ research-novelty claim. **ALL novelty evidence is back-loaded to G2 (a fair Cast
 (a lost-write on an async path) — the latter is a G3 item.
 
 ## 4. Gate-1 validation (EXECUTION G1c)
-> **⚠️ RESULT 2026-07-02 — INCONCLUSIVE (infra-blocked), NOT a PASS and NOT a mechanism-FAIL.**
-> The automated pairing run reached and executed the pairing stage LIVE (full generation → control run →
-> SUT-flag inject via rollout → fault run) but **aborted before writing any FP/verdict report**, defeated by
-> host-memory exhaustion on a 25 GiB WSL box (2nd wedge): (1) `ts-station-service` degraded under swap pressure
-> → station-pair isolation fell back to pass-through for the whole adminroute fault run (unsound isolation),
-> and (2) the node wedged during the fault-flag CLEAR → the **F2 fail-safe correctly threw** ("fault flag may
-> still be active — verify/clear manually") → `writeReport()` was preempted (exit 1, no JSON). So §4's PASS
-> conditions (fires + ≤5% non-timeout-gated sync FP) were **never measured**. The core mechanism stays
-> validated **only** by the manual G0 evidence. Per the user's standing rule, **no 3rd relaunch** — the box
-> can't hold the traced topology + a pairing run. Full write-up + follow-up (≥32 GiB box) in
-> `prep/gate1-result.md`; incident+recovery in `prep/gate1-infra-incident.md`. The BUILD (P1–B2.4) is complete
-> + cold-reviewed and needs no change for the retry.
+> **✅ RESULT 2026-07-02 (run #3, lean deploy) — PASS on the pre-registered v1 bar.**
+> **FIRE on the constructed lost-write** (`adminroute-create`, **strong stratum** `OBSERVED_COMPLETE_ABSENT`:
+> fault run acked HTTP 200/status 1, X absent on its own read-back over 19 polls with the write's trace
+> complete+stable; control persisted in 181 ms) **AND sync FP = 0.0** — 0 fires / **2,127 acked benign
+> records** (30 iterations), FP interval **[0.0, 0.0]**, gate histogram `OBSERVED_PRESENT:2127,
+> NOT_APPLICABLE:3` (observation gate resolved 100% — zero timeout-gated records; the bar-v2 cross-reading
+> agrees) **AND the async disclaimer** (P3: no async path on TT). Exit 0; report JSON committed at
+> `prep/gate1-run3-report.json`. FP-vs-timeout curve: 500 ms → 12.98%, 1 s → 0.14%, ≥2 s → 0.0 (empirically
+> justifies the 10 s cap). Caveats: `adminbasic-contacts-create` = NOT_EVALUABLE (0/0 records — the known
+> unhooked-scenario gap; its LOST_WRITE stays manual-G0-validated); scope = SYNC mechanism soundness on ONE
+> SUT per §3.5/§3.6 (zero novelty evidence — G2/G3 carry that). Runs #1/#2 (full topology, 26 GiB WSL cap)
+> wedged and were INCONCLUSIVE — history + audit trail in `prep/gate1-result.md` (verdict, 6-point
+> reconciliation-checklist audit, disclosures: lean deploy, DEEPSEEK_API_KEY-absent LLM fallbacks
+> [pairing path LLM-free], -Xmx4g, ~7.8 h wall) + `prep/gate1-infra-incident.md`.
+> **Next per §4 routing: G2 comparator calibration + the hardening wave (prep/hardening-wave-spec.md) + G3.**
 - **Sensitivity (Gate-1 = pure-differential only):** drive B1+B2 over the adminroute + adminbasic triples;
   confirm the **pure-differential** mode FIRES on the constructed lost-write (S2) with the per-run diff as
   evidence. **Only adminroute is live-smoke-demonstrated** (`prep/gate1-smoke-result.md`); **adminbasic is

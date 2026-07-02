@@ -1,123 +1,165 @@
-# Gate-1 validation RESULT (2026-07-02)
+# Gate-1 validation RESULT — **PASS** (run #3, 2026-07-02)
 
-Records the outcome of the automated Gate-1 pairing session (plan `TOOL-EXECUTION-PLAN.md` §4).
-Companion to `gate1-infra-incident.md` (the memory-incident + recovery log) and
-`gate1-smoke-result.md` (the earlier manual adminroute smoke).
+Records the outcome of the automated Gate-1 pairing session (plan
+`TOOL-EXECUTION-PLAN.md` §4). **This supersedes the earlier INCONCLUSIVE entry from
+runs #1/#2 (kept in §6 + [gate1-infra-incident.md](gate1-infra-incident.md)).**
+Companions: [gate1-preflight-audit.md](gate1-preflight-audit.md) (run-#3 pre-flight
+evidence), [gate1-smoke-result.md](gate1-smoke-result.md) (manual G0),
+[REVIEW-B1B2-RECONCILIATION.md](../research/REVIEW-B1B2-RECONCILIATION.md) (the
+mechanism cold-review whose §2 checklist this result was audited against).
+Machine-readable report: committed copy at
+[gate1-run3-report.json](gate1-run3-report.json) (canonical:
+`logs/data-integrity-reports/pairing_trainticket_gate1_pairing_1782976771915.json`).
 
-## Verdict (plan §4): INCONCLUSIVE — infra-blocked at the pairing stage. NOT a PASS, NOT a mechanism-FAIL.
+## 1. Verdict (plan §4, pre-registered v1 bar): **PASS**
 
-The automated pairing run reached and **executed** the pairing stage live but **aborted before writing
-any verdict/FP report**, defeated by host-memory exhaustion. It therefore did **not** reach the point of
-measuring §4's PASS conditions (fires-on-constructed-case + ≤5% non-timeout-gated sync FP). Because no
-unsound FIRE was ever produced, it is **not** a §4 mechanism-FAIL either — it is an infrastructure abort
-with **no machine-readable result**. The core mechanism remains validated **only** by the manual G0 evidence
-(below), exactly as before this session.
+| §4 criterion | Result |
+|---|---|
+| **Fires on the constructed lost-write** | **YES — FIRE on `adminroute-create`, in the STRONG stratum** (`OBSERVED_COMPLETE_ABSENT`): fault run acked X (HTTP 200, body status 1), X absent from its own read-back across 19 polls (13.4 s incl. the 3 s trace-settle), control's X persisted (OBSERVED_PRESENT in 1 poll / 181 ms). |
+| **≤5 % non-timeout-gated sync FP over ≥20 acked benign runs** | **PASS at 0.0** — 0 fires / **2 127 acked benign records** (30 iterations × 71 hooked records − 3 invalid). FP **interval** `[observed-gated/acked, fires/acked]` = **[0.0, 0.0]** (both endpoints zero). Gate histogram: `OBSERVED_PRESENT: 2127, NOT_APPLICABLE: 3` — **zero timeout-gated records**, so the observation gate resolved **100 %** of acked runs. |
+| **Async** | Disclaimer path (pre-registered): TrainTicket has no broker-mediated async write path (P3 verdict NEW-INJECTOR-NEEDED); no async-FP claim is made; async soundness deferred to G3. |
 
-## What actually executed (the run got far — this is real evidence the pipeline works)
-Run #2 (the counted run, after the run-#1 recovery in `gate1-infra-incident.md`):
-1. Completed the full **two-phase generation** (capture → enhance → variant/dedup, ~100 scenarios; fingerprint
-   pool drained normally).
-2. Loaded the **data-integrity oracle** with 2 target triples (adminroute-create, adminbasic-contacts-create).
-3. Entered **pairing execution** for the adminroute triple (`S107`, 100 variant methods): ran the **control
-   run**, then **injected** the `-Dmist.fault.lostwrite.enabled` flag on `ts-admin-route-service` via
-   JAVA_TOOL_OPTIONS APPEND + rollout (**the inject rollout succeeded**), then ran the **batched fault run**
-   against the faulted SUT.
+**Bar-v2 cross-reading (per [hardening-wave-spec.md](hardening-wave-spec.md) — the
+run is NOT re-scored; both readings reported):** gateResolvedFraction = 2127/2127 =
+1.0 (≥ 0.5 ✓), timeoutGatedFraction = 0 (≤ 0.3 ✓) → under the draft bar-v2 floors the
+run is evaluable and also PASSes at 0.0. **The two readings agree.** The vacuous-PASS
+concern (recon R2: numerator structurally zero under a degraded gate) does NOT apply:
+the gate was fully functional — exactly what the pre-flight exact-id traceparent
+verification predicted.
 
-So the live pipeline — generation → control → SUT-flag inject via rollout → fault run — **executed
-end-to-end**. What it did **not** do is complete cleanup + verdict + FP probe + report.
+**Exit code 0; report written by `PairedFaultExecutor.writeReport` — the F2-abort
+path of run #2 did not recur.**
 
-## Why there is no report (two compounding memory-pressure failures)
-1. **Isolation degraded to pass-through for the entire adminroute fault run.** Every fault-run method logged:
-   `DataIntegrity[fault][adminroute-create]: beforeWrite failed (IllegalStateException: station catalogue has
-   fewer than 2 stations; cannot build a fresh pair); passing body through`. TrainTicket normally has dozens of
-   stations, and `ts-station-service` answered healthily earlier this session (200 @ 0.02–0.23 s). The "<2
-   stations" appeared **only at peak memory pressure** (swap ~7.5 GiB), consistent with the intermittent **503s**
-   the memory-starved SUT was returning — i.e. the station-catalogue query degraded, so the **station-pair
-   isolation strategy safely fell back to pass-through** (it warned, did not crash — correct fail-safe). Net: the
-   fault-run writes were **not soundly isolated**, so even had the run finished, the adminroute numbers from THIS
-   run would be untrustworthy. (Robustness note for the paper: station-pair isolation depends on a healthy
-   catalogue endpoint; confirm on a non-pressured box.)
-2. **The node wedged during the fault-flag CLEAR.** In the `finally` clear-all, `kubectl rollout status
-   deployment/ts-admin-route-service` (and `…admin-basic-info-service`) **timed out** — the crash tail shows
-   `net/http: TLS handshake timeout` / `client connection lost`: the **apiserver went down mid-clear** (second
-   memory wedge). The tool's **F2 fail-safe fired correctly**: it refused to silently proceed and threw
-   `FaultInjectionException: fault flag may still be active on [both] — verify/clear manually`, which **preempted
-   `writeReport()`**. Exit code **1**, no `data-integrity-reports/*.json`.
+## 2. The evidence in detail
 
-## Tool behaved correctly under adversity (positive robustness evidence)
-- **F2 clear-failure fail-safe worked as designed** (`PairedFaultExecutor.execute` → loud throw when a clear
-  cannot be confirmed) — it did not emit a possibly-unsound verdict and it surfaced the left-faulted SUT rather
-  than hiding it. This is the safety behavior the build was reviewed for.
-- **Station-pair isolation safe-fallback worked** — degraded catalogue → warn + pass-through, no crash.
-- The **inject** path (APPEND `-D` flag + rollout) worked live on the traced topology.
+**The FIRE (sensitivity).** Triple `adminroute-create`
+(`POST /api/v1/adminrouteservice/adminroute` → `ts-admin-route-service` →
+`GET .../adminroute` read-back), fault = SUT-side `LOST_WRITE` via
+`-Dmist.fault.lostwrite.enabled=true` (JAVA_TOOL_OPTIONS APPEND + rollout-confirmed).
+Fault-run isolation key (station-pair, freshened): `startStation=shanghai_hongqiao,
+endStation=new_station_name_1022`; `baselineContainedX=false` (isolation held);
+read-back stayed a healthy `{"status":1,...}` full collection that simply never
+contained X → absence is **observed — not visible on the read-back path — with the
+write's own trace complete and stable** (the strong stratum), not a timeout guess.
+Control record: fresh pair persisted and visible in 181 ms.
 
-## Mechanism status (unchanged by this run — still validated ONLY manually)
-The differential oracle's core signal (acknowledged-but-lost write caught only by black-box read-back) is
-live-validated by the **manual G0** evidence, not by this automated run:
-- **adminroute** LOST_WRITE control-vs-fault: `gate1-smoke-result.md` (HTTP 200/status:1, getAllRoutes unchanged;
-  status/schema/body oracles pass, only read-back catches it).
-- **adminbasic/contacts** LOST_WRITE + read-back: manual G0 this session (status:1 "create contacts success",
-  data:null, membership=0) — `sut-fault-injection-capability.md` §9.
-The **automated FP measurement (B2.4) and the pairing FIRE/NO_FIRE verdict remain UNMEASURED** on live TrainTicket.
+**The FP probe (specificity).** 30 flag-off iterations of the same generated pairing
+tests: 2 130 records, 2 127 acked, **0 false positives** (no acked benign write was
+ever absent at the 10 s cap). Denominator semantics per the B-6 review note: these
+are per-record observations (71 hooked adminroute records per iteration), not 30
+independent trials — stated as such.
 
-## Root cause & why no third relaunch
-The traced TrainTicket topology (~19–20 GiB) + a MIST pairing run (JVM heap spikes to load/execute 100 test
-classes, plus rollout churn for inject/clear) sum to ~24 GiB on a **25 GiB** WSL box → swap saturates → the
-in-node runtime/apiserver wedges. This wedged the box **twice** (run #1 in generation, run #2 at the clear). Per
-the user's explicit standing instruction ("if it OOMs again, write the honest verdict rather than looping"),
-**no third relaunch** was attempted — the box demonstrably cannot hold this workload. A mid-pairing emergency
-scale-down of orthogonal services was attempted and **correctly blocked by the safety classifier** as out of
-scope (`gate1-infra-incident.md`).
+**The FP-vs-timeout curve (pre-registered cap justification).** With shorter caps the
+benign eventual-consistency window WOULD have produced false positives:
+`500 ms → 12.98 %`, `1 000 ms → 0.14 %`, `≥2 000 ms → 0.0`. The SUT's benign
+convergence window is ~1–2 s; the pre-registered 10 s cap sits far above it — the
+curve empirically justifies the cap and quantifies the timeout-sensitivity of naive
+read-back oracles (paper figure material).
 
-## Disclosures (carry into any writeup)
-- **Run #1 discarded** (wedged in Phase-B generation, 1046 connection-refused); **run #2 is the counted run**.
-- **`prometheus` + `grafana` scaled to 0** for headroom (B2 needs only jaeger + otelcol); trace path verified intact.
-- **Peripheral-service caveat:** under memory pressure many non-target endpoints returned 5 s timeouts / 404 /
-  503; MIST itself WARNs detection counts may drop. The two **target** services stayed healthy until the final
-  pressure spike — but that spike is exactly what broke the adminroute isolation + the clear.
-- **adminroute (`S107`) = the load-bearing sync leg** that was paired here. The **contacts leg was body-less /
-  unhooked** in the generated Phase-B step (as before) — it has manual-G0 evidence and remains a follow-up.
-- **SUT left faulted + node wedged** at run end (see Cleanup below).
+**Corroborating signal (not part of §4):** the whole-trace-shape oracle concurrently
+recorded `missing required edges` on `POST /adminroute` (862 occurrences,
+`logs/fault-detection-reports/`) — the faulted service's persist-edge disappearing
+from traces during the fault run, consistent with the injected skip-persist.
 
-## Follow-up to actually obtain the Gate-1 numbers (not blocked by the tool — blocked by the box's memory budget)
-**Corrected diagnosis (2026-07-02):** the host is a **31.7 GiB** machine, but `C:\Users\miaot\.wslconfig` caps
-WSL at `memory=26GB` (WSL sees ~25 GiB). The run's **committed peak was ~31 GiB** (traced topology ~19–20 GiB +
-MIST's pairing-stage heap spike ~4 GiB loading/executing 100 test classes + rollout churn + swapped cold pages)
-→ it overshot the 26 GiB RAM cap by ~5–7 GiB → heavy swap → node-runtime syscall timeouts → wedge. So this is a
-**memory-budget** problem on a 32 GiB box, **not** a "need a bigger machine" problem. Fix on THIS machine, by
-lowering the footprint (and optionally raising the cap), in order of effectiveness:
-1. **Lean SUT deploy (biggest lever):** deploy TrainTicket with only the ~18 services on the adminroute/contacts
-   pairing path (gateway, auth, user, verification-code, security, station, route, train, basic, config,
-   contacts, admin-route, admin-basic + nacos/mysql + jaeger/otelcol) and scale the other ~26 orthogonal
-   services (food/travel/order/seat/consign/payment/delivery/… domains) to 0 **at deploy time** (not mid-run).
-   Topology ~20 GiB → ~8–10 GiB. Generation smart-fetch breadth drops on the trimmed services (already a
-   NOT_EVALUABLE/sample-size caveat), but the **pairing verdict path is unaffected**.
-2. **Cap MIST's heap** with `-Xmx4g` on the `java -jar mist.jar …` launch — bounds the ~4 GiB pairing spike
-   (it used only 1.8 GiB during generation; the spike is class-load/execute of 100 methods).
-3. **Raise `.wslconfig` `memory=26GB` → 28GB** (host has 31.7 GiB; leaves ~3.7 GiB for Windows) — needs
-   `wsl --shutdown`. Alone it only adds ~2 GiB (insufficient), but combined with 1+2 it is comfortable.
-Steps 1+2 should suffice; add 3 for margin. Then: healthy `ts-station-service` → station-pair isolation succeeds
-(no pass-through), enough memory → the inject/clear rollouts complete → `PairedFaultExecutor` writes the FP +
-FIRE/NO_FIRE report → evaluate §4 PASS (fires + ≤5% non-timeout-gated sync FP).
-The build itself is **complete + cold-reviewed** (all P1–B2.4 tasks) and needs no code change for the retry.
+## 3. Report-audit checklist outcomes (recon §2, applied to the JSON)
 
-## Cleanup performed at session end (2026-07-02)
-The run left the node wedged (2nd wedge) with the SUT possibly faulted. Cleanup outcome:
-- Attempted `minikube start` to recover-and-verify/clear the fault flags, but on the twice-wedged,
-  swap-saturated box the recovery **thrashed ~9 min without bringing the apiserver back** (residual swap
-  ~7.6 GiB never drained). Per caution (no further thrash), the recovery was abandoned.
-- Graceful `minikube stop` (rc=0, "powering off via SSH") could **not** halt the wedged node (container stayed
-  Up, memory not freed). Force-halted with **`docker stop minikube`** → container **Exited (137)**; **memory
-  freed: Mem 19.8 GiB → 1.4 GiB used, swap 7.6 GiB → 160 MiB, ~24.6 GiB free**. The minikube profile is
-  **stopped, not deleted** (restartable via `minikube start`).
-- **Fault-flag state:** kubectl verification was NOT possible (apiserver never recovered). But the clear's
-  `set env … JAVA_TOOL_OPTIONS=<agent-only>` had **already applied** (it triggered the rollout — "Waiting for …
-  new replicas"); only the rollout-*status* wait timed out. So both deployment **specs are agent-only**, the
-  force-stop killed the still-faulted running pod, and the next `minikube start` (or the ≥32 GiB restart) brings
-  up **clean, non-faulted** pods from the corrected specs. Confirm on next start (belt-and-suspenders):
-  `kubectl set env deployment/ts-admin-route-service --list -n default | grep JAVA_TOOL_OPTIONS`
-  → expect only `-javaagent:/otel/opentelemetry-javaagent.jar` (same for `ts-admin-basic-info-service`).
-- **prometheus + grafana** remain scaled to 0 (scale back to 1 on next start if the metrics dashboards are wanted).
-- **Local run byproducts** (not committed): 30 MB trace corpus under `…/trainticket/test-trace-gate1/`,
-  auto-learned `input-fetch-registry.yaml` / `root-api-registry.json` edits, and 81 generated Phase-A test
-  classes under `mist-cli/src/test/java/trainticket_gate1_pairing/` — safe to delete before the next build.
+1. **Read-back/baseline body audit (R1/C-P1-2):** control + fault + FIRE bodies are
+   well-formed `{"status":1,"msg":"Success","data":[…]}` collections — no
+   error-shaped or truncated read-backs behind any verdict. The 2 127 observed
+   presences over a monotonically growing collection are direct evidence the
+   `getAllRoutes` read-back returned complete lists at this scale (A-Finding-1's
+   truncation trigger did not bite on TrainTicket).
+2. **FP interval + gate histogram + per-triple (R2/B-6):** reported above; per-triple
+   == aggregate (only the adminroute triple was exercised); denominator = acked
+   records.
+3. **pick()-join check (R3):** controlRecordCount=71, faultRecordCount=70 (one
+   fault-run variant produced no record — count asymmetry noted). The FIRE's own
+   record is self-consistent (its absence is evaluated against its own freshened
+   key); per-record verdicts are not in the v1 report — R3fix (hardening wave) adds
+   them. No indication of a persisted fault-run sibling masking anything (the
+   representative itself FIREd).
+4. **pairs[] coverage (C-P1-7):** `adminbasic-contacts-create` = NOT_EVALUABLE with
+   record counts 0/0 — the generated scenario never reached the contacts hook (the
+   known body-less/unhooked generation gap, same as run #2). Sensitivity evidence =
+   **1/1 evaluable constructed case**; the second configured triple was NOT exercised
+   by the automated run (its LOST_WRITE remains validated only by manual G0,
+   `sut-fault-injection-capability.md` §9).
+5. **Wording:** all absence verdicts here mean "observed — not visible on the
+   read-back path"; the trace gate certifies request completion + stable trace, not
+   storage-level loss (recon R4).
+6. **Persisted-fault-writes / activation check:** N/A — the fault-run write was
+   absent (the flag demonstrably took effect after the rollout-confirmed inject).
+
+## 4. Scope (what this PASS does and does not establish)
+
+- **Establishes (Gate-1 DoD, EXECUTION G1c):** the B1+B2 mechanism is **sound on the
+  SYNC stratum of ONE SUT** — it fires on a constructed acknowledged-but-lost write
+  in the high-confidence stratum and produces **zero** false positives over 2 127
+  acked benign records, with a fully functional observation gate.
+- **Does NOT establish (plan §3.5/§3.6 — soundness only, essentially zero novelty
+  evidence):** async soundness (deferred to G3), depth beyond shallow CRUD, breadth
+  beyond adminroute (contacts unexercised), any novelty claim vs Cast/Filibuster
+  (G2/G3 carry that), or generality beyond TrainTicket (G3's ≥2 SUTs).
+- Gate-1 therefore routes: **proceed to G2** (comparator calibration per
+  [g2-novelty-comparator-prereg.md](g2-novelty-comparator-prereg.md)) **+ the
+  hardening wave** ([hardening-wave-spec.md](hardening-wave-spec.md)) **+ G3 prep**
+  ([g3-sut2-triples-prereg.md](g3-sut2-triples-prereg.md)).
+
+## 5. Run conditions & disclosures (run #3)
+
+- **Lean deploy:** ~30 orthogonal services (order/travel/food/payment/… domains) +
+  prometheus + grafana scaled to 0 at deploy time; topology ~13–15 GiB in the 26 GiB
+  WSL cap; MIST launched with `-Xmx4g`. The **pairing verdict path is unaffected**;
+  generation breadth on the trimmed services was reduced (their calls 503'd —
+  ~20–30 s each at the gateway, the main slowness driver).
+- **LLM condition:** `DEEPSEEK_API_KEY` was not exported by the launcher (runs #2
+  and #3 identically), so LLM-assisted input fetching fell back (incl. dead-Ollama
+  connection-refused noise in the log). **The pairing/oracle path is LLM-free**
+  (deterministic hooks/freshening/read-backs); impact = reduced non-target scenario
+  breadth + retry latency.
+- **Timeline:** launched 02:19, report 10:09 (−05:00), ~7.8 h wall (generation
+  ~5.2 h — dominated by dead-service waits + LLM retries — then pairing + 30-iteration
+  probe ~2.6 h). 3 of 2 130 probe records invalid (beforeWrite error / not acked) —
+  NOT_APPLICABLE, excluded from the acked denominator.
+- **Pre-flight evidence** ([gate1-preflight-audit.md](gate1-preflight-audit.md)):
+  exact-id traceparent propagation verified live before the run (predicting the
+  strong-stratum result); station catalogue = 87 (isolation could not degrade — and
+  did not: zero pass-through warnings this run); both target deployments agent-only
+  at baseline.
+- **Station-pair note:** the catalogue grew during the run (earlier freshened writes
+  create stations); isolation keys drew existing stations and `baselineContainedX`
+  stayed false throughout — the strategy worked as designed at this scale.
+
+## 6. Run history (runs #1/#2 — superseded, kept for the record)
+
+Runs #1 (2026-07-01) and #2 (2026-07-02 early) on the FULL traced topology wedged the
+26 GiB-capped WSL node (committed peak ~31 GiB on the 31.7 GiB host): run #1 in
+Phase-B generation; run #2 during the fault-flag clear — where the **F2 fail-safe
+correctly threw** (`fault flag may still be active…`) before `writeReport`, so no
+report was produced and the then-verdict was INCONCLUSIVE/infra-blocked. Run #2 also
+saw station-pair isolation degrade to pass-through under memory pressure. Root cause
+= memory **budget** (the `.wslconfig` 26 GB cap), not machine size. Full incident +
+recovery log: [gate1-infra-incident.md](gate1-infra-incident.md). Run #3's fixes:
+lean deploy + `-Xmx4g` (no tool-code change). Positive robustness evidence retained
+from run #2: the F2 fail-safe and the isolation safe-fallback both behaved exactly as
+reviewed. (Hardening-wave item C-P1-3fix will additionally persist the report BEFORE
+the F2 throw, making run-#2-style evidence loss impossible.)
+
+## 7. Artifacts
+
+- Report JSON: [gate1-run3-report.json](gate1-run3-report.json) (committed copy);
+  canonical under `logs/data-integrity-reports/`.
+- Run config (committed with this result): `trainticket-gate1-pairing.properties`,
+  `trainticket/test-trace-gate1/` (input trace corpus),
+  `trainticket/input-fetch-registry.yaml`, `trainticket/root-api-registry.json`.
+- Run log: `~/gate1-logs/pairing-run.log` (WSL, ~1.1 MB+; exit file `…/pairing-run.exit` = 0).
+- Generated tests: `mist-cli/src/test/java/trainticket_gate1_pairing/TrainTicketGate1Pairing_1782976771915/`
+  (local byproduct, not committed).
+- Trace-shape findings: `logs/fault-detection-reports/` (local).
+
+## 8. Cleanup (run #3, post-verdict)
+
+`minikube stop` after this result was committed (node healthy this time — no forced
+docker stop needed unless it fails; prometheus/grafana remain at 0 for the next
+session). Both target deployments' `JAVA_TOOL_OPTIONS` verified agent-only by the
+run's own final clear (rollout-confirmed, exit 0 — no F2 throw).
