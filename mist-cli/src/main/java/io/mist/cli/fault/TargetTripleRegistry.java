@@ -89,11 +89,19 @@ public final class TargetTripleRegistry {
         public final IsolationStrategy isolationStrategy;
         /** SUT-side ground-truth flag (B1.1); null on benign-trap-only targets. */
         public final FaultInjector.FaultTarget faultFlag;
+        /**
+         * Hardening-wave R1fix: optional read-back completeness bound. When
+         * > 0 and the read-back collection reaches this many items, an
+         * ABSENT verdict is unverifiable (the surface may truncate) — the
+         * record becomes an error/NOT_EVALUABLE, never "absent". 0 = off.
+         */
+        public final int readbackBound;
 
         Triple(String name, String writeEndpoint, String dependency,
                String readbackEndpoint, List<String> isolationKey,
                IsolationStrategy isolationStrategy,
-               FaultInjector.FaultTarget faultFlag) {
+               FaultInjector.FaultTarget faultFlag,
+               int readbackBound) {
             this.name = name;
             this.writeEndpoint = writeEndpoint;
             this.dependency = dependency;
@@ -101,6 +109,7 @@ public final class TargetTripleRegistry {
             this.isolationKey = Collections.unmodifiableList(new ArrayList<>(isolationKey));
             this.isolationStrategy = isolationStrategy;
             this.faultFlag = faultFlag;
+            this.readbackBound = readbackBound;
         }
     }
 
@@ -109,7 +118,7 @@ public final class TargetTripleRegistry {
 
     private static final Set<String> ALLOWED_KEYS = Collections.unmodifiableSet(new HashSet<>(
             Arrays.asList("name", "write_endpoint", "dependency", "readback_endpoint", "isolation_key",
-                    "isolation_strategy", "fault_flag")));
+                    "isolation_strategy", "fault_flag", "readback_bound")));
 
     private static final Set<String> ALLOWED_FAULT_FLAG_KEYS = Collections.unmodifiableSet(new HashSet<>(
             Arrays.asList("deployment", "property")));
@@ -177,14 +186,22 @@ public final class TargetTripleRegistry {
                 throw new IllegalArgumentException(
                         "TargetTripleRegistry: duplicate triple name '" + name + "' in " + origin);
             }
+            String readback = requireString(entry, "readback_endpoint", origin);
+            // R7fix/C-P1-9: the runtime hard-requires the "GET " form at use
+            // time; fail at load instead of mid-run.
+            if (!readback.startsWith("GET ")) {
+                throw new IllegalArgumentException("TargetTripleRegistry: 'readback_endpoint' for triple '"
+                        + name + "' in " + origin + " must start with \"GET \" (got: '" + readback + "')");
+            }
             triples.add(new Triple(
                     name,
                     requireString(entry, "write_endpoint", origin),
                     requireString(entry, "dependency", origin),
-                    requireString(entry, "readback_endpoint", origin),
+                    readback,
                     requireStringList(entry, "isolation_key", origin),
                     IsolationStrategy.parse(optionalString(entry, "isolation_strategy", origin), origin),
-                    optionalFaultFlag(entry, origin)));
+                    optionalFaultFlag(entry, origin),
+                    optionalBound(entry, origin)));
         }
         if (triples.isEmpty()) {
             throw new IllegalArgumentException(
@@ -246,6 +263,18 @@ public final class TargetTripleRegistry {
         return new FaultInjector.FaultTarget(
                 requireString(flag, "deployment", origin),
                 requireString(flag, "property", origin));
+    }
+
+    private static int optionalBound(Map<String, Object> entry, String origin) {
+        Object node = entry.get("readback_bound");
+        if (node == null) {
+            return 0;
+        }
+        if (!(node instanceof Integer) || ((Integer) node) <= 0) {
+            throw new IllegalArgumentException("TargetTripleRegistry: 'readback_bound' in " + origin
+                    + " must be a positive integer when present");
+        }
+        return (Integer) node;
     }
 
     private static String requireString(Map<String, Object> entry, String key, String origin) {

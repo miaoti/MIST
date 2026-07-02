@@ -102,12 +102,29 @@ public final class DataIntegrityRuntime {
         public final String baselineBody;
         public final String lastReadbackBody;
         public final String error;
+        /**
+         * Hardening-wave R1fix: HTTP status of the last read-back GET (null
+         * when no read-back ran). A non-2xx read-back is recorded as an
+         * error, never scored as absence.
+         */
+        public final Integer readbackHttpStatus;
 
         RunRecord(String runLabel, String tripleName, String stepKey, Map<String, String> isolationKey,
                   int ackHttpStatus, Integer ackBodyStatus, boolean acked,
                   boolean baselineContainedX, boolean readbackContainedX,
                   QuiescenceGate gate, int polls, long elapsedMs,
                   String baselineBody, String lastReadbackBody, String error) {
+            this(runLabel, tripleName, stepKey, isolationKey, ackHttpStatus, ackBodyStatus, acked,
+                    baselineContainedX, readbackContainedX, gate, polls, elapsedMs,
+                    baselineBody, lastReadbackBody, error, null);
+        }
+
+        RunRecord(String runLabel, String tripleName, String stepKey, Map<String, String> isolationKey,
+                  int ackHttpStatus, Integer ackBodyStatus, boolean acked,
+                  boolean baselineContainedX, boolean readbackContainedX,
+                  QuiescenceGate gate, int polls, long elapsedMs,
+                  String baselineBody, String lastReadbackBody, String error,
+                  Integer readbackHttpStatus) {
             this.runLabel = runLabel;
             this.tripleName = tripleName;
             this.stepKey = stepKey;
@@ -123,6 +140,7 @@ public final class DataIntegrityRuntime {
             this.baselineBody = baselineBody;
             this.lastReadbackBody = lastReadbackBody;
             this.error = error;
+            this.readbackHttpStatus = readbackHttpStatus;
         }
     }
 
@@ -224,6 +242,23 @@ public final class DataIntegrityRuntime {
         if (session != null) {
             throw new IllegalStateException("DataIntegrityRuntime: a run is already active");
         }
+        // R7fix/C-P1-1: single-threaded execution was previously guaranteed
+        // only by the caller setting mst.test.parallelism=1 — an invariant by
+        // convention. Refuse to arm when the property explicitly says
+        // otherwise (the ThreadLocal pending handoff and the verdict join
+        // assume one JUnit thread).
+        String parallelism = System.getProperty("mst.test.parallelism");
+        if (parallelism != null) {
+            try {
+                if (Integer.parseInt(parallelism.trim()) > 1) {
+                    throw new IllegalStateException("DataIntegrityRuntime: refusing to arm with "
+                            + "mst.test.parallelism=" + parallelism.trim()
+                            + " — the pairing hooks require single-threaded execution");
+                }
+            } catch (NumberFormatException ignored) {
+                // unparseable value: leave it to the runner's own resolution
+            }
+        }
         session = new Session(triples, runLabel, http, pollMs, timeoutMs, traceSettleMs);
         logger.info("DataIntegrity: run '{}' active for {} triple(s), poll={}ms timeout={}ms settle={}ms",
                 runLabel, triples.size(), pollMs, timeoutMs, traceSettleMs);
@@ -256,6 +291,15 @@ public final class DataIntegrityRuntime {
         }
         try {
             HttpResponse baseline = s.http.getSut(readbackPath(triple));
+            // R1fix: a failed baseline read must not silently weaken the
+            // isolation guard (empty usedPairs, false baselineContainedX).
+            if (baseline.status / 100 != 2) {
+                logger.warn("DataIntegrity[{}][{}]: baseline read-back HTTP {} — passing body through",
+                        s.runLabel, triple.name, baseline.status);
+                s.pending.set(new Pending(triple, new LinkedHashMap<>(), false, baseline.body,
+                        "baseline read-back HTTP " + baseline.status));
+                return requestBody;
+            }
             Map<String, String> freshKey = new LinkedHashMap<>();
             String freshened = freshen(triple, requestBody, baseline.body, freshKey, s.http,
                     s.claimedPairs);
@@ -312,7 +356,8 @@ public final class DataIntegrityRuntime {
                 s.records.add(new RunRecord(s.runLabel, triple.name, stepKey, pending.isolationKey,
                         httpStatus, bodyStatus, false, pending.baselineContainedX,
                         containsKey(now.body, pending.isolationKey),
-                        QuiescenceGate.NOT_APPLICABLE, 1, 0, pending.baselineBody, now.body, null));
+                        QuiescenceGate.NOT_APPLICABLE, 1, 0, pending.baselineBody, now.body, null,
+                        now.status));
                 return;
             }
 
@@ -320,11 +365,22 @@ public final class DataIntegrityRuntime {
             int polls = 0;
             boolean present = false;
             String last = null;
+            int lastStatus = -1;
             QuiescenceGate gate;
             while (true) {
                 HttpResponse readback = s.http.getSut(readbackPath(triple));
                 last = readback.body;
+                lastStatus = readback.status;
                 polls++;
+                // R1fix: a failing read-back endpoint is indistinguishable
+                // from a lost write under body-only scanning — record it as
+                // an error, never as absence.
+                if (readback.status / 100 != 2) {
+                    recordReadbackError(s, triple, stepKey, pending, httpStatus, bodyStatus, polls,
+                            (System.nanoTime() - start) / 1_000_000, last, lastStatus,
+                            "read-back HTTP " + readback.status);
+                    return;
+                }
                 if (containsKey(last, pending.isolationKey)) {
                     present = true;
                     gate = QuiescenceGate.OBSERVED_PRESENT;
@@ -332,9 +388,39 @@ public final class DataIntegrityRuntime {
                 }
                 long elapsedMs = (System.nanoTime() - start) / 1_000_000;
                 if (elapsedMs >= s.timeoutMs) {
-                    gate = traceComplete(s.http, traceId, s.traceSettleMs)
-                            ? QuiescenceGate.OBSERVED_COMPLETE_ABSENT
-                            : QuiescenceGate.TIMEOUT_ABSENT;
+                    if (traceComplete(s.http, traceId, s.traceSettleMs)) {
+                        // R4fix: absence was sampled BEFORE the settle window;
+                        // re-read once so a write landing during the settle is
+                        // not labeled a high-confidence loss.
+                        HttpResponse recheck = s.http.getSut(readbackPath(triple));
+                        polls++;
+                        last = recheck.body;
+                        lastStatus = recheck.status;
+                        if (recheck.status / 100 != 2) {
+                            recordReadbackError(s, triple, stepKey, pending, httpStatus, bodyStatus,
+                                    polls, (System.nanoTime() - start) / 1_000_000, last, lastStatus,
+                                    "read-back HTTP " + recheck.status + " on the post-settle re-read");
+                            return;
+                        }
+                        if (containsKey(last, pending.isolationKey)) {
+                            present = true;
+                            gate = QuiescenceGate.OBSERVED_PRESENT;
+                            break;
+                        }
+                        gate = QuiescenceGate.OBSERVED_COMPLETE_ABSENT;
+                    } else {
+                        gate = QuiescenceGate.TIMEOUT_ABSENT;
+                    }
+                    // R1fix: at the pre-registered collection bound an absence
+                    // is unverifiable (the surface may window/truncate).
+                    if (triple.readbackBound > 0
+                            && extractItems(last).size() >= triple.readbackBound) {
+                        recordReadbackError(s, triple, stepKey, pending, httpStatus, bodyStatus,
+                                polls, (System.nanoTime() - start) / 1_000_000, last, lastStatus,
+                                "read-back collection at the pre-registered bound ("
+                                        + triple.readbackBound + ") — absence unverifiable");
+                        return;
+                    }
                     break;
                 }
                 sleep(s.pollMs);
@@ -342,7 +428,7 @@ public final class DataIntegrityRuntime {
             long elapsedMs = (System.nanoTime() - start) / 1_000_000;
             s.records.add(new RunRecord(s.runLabel, triple.name, stepKey, pending.isolationKey,
                     httpStatus, bodyStatus, true, pending.baselineContainedX, present,
-                    gate, polls, elapsedMs, pending.baselineBody, last, null));
+                    gate, polls, elapsedMs, pending.baselineBody, last, null, lastStatus));
             logger.info("DataIntegrity[{}][{}]: acked={} X-present={} gate={} polls={} in {}ms",
                     s.runLabel, triple.name, true, present, gate, polls, elapsedMs);
         } catch (RuntimeException e) {
@@ -355,6 +441,19 @@ public final class DataIntegrityRuntime {
     }
 
     // ── internals ──────────────────────────────────────────────────────────
+
+    /** R1fix: one shape for every "the read-back itself failed" record. */
+    private static void recordReadbackError(Session s, TargetTripleRegistry.Triple triple,
+                                            String stepKey, Pending pending, int httpStatus,
+                                            Integer bodyStatus, int polls, long elapsedMs,
+                                            String lastBody, int lastStatus, String error) {
+        logger.warn("DataIntegrity[{}][{}]: {} — record is an error, not an absence",
+                s.runLabel, triple.name, error);
+        s.records.add(new RunRecord(s.runLabel, triple.name, stepKey, pending.isolationKey,
+                httpStatus, bodyStatus, true, pending.baselineContainedX, false,
+                QuiescenceGate.NOT_APPLICABLE, polls, elapsedMs, pending.baselineBody, lastBody,
+                error, lastStatus));
+    }
 
     static String readbackPath(TargetTripleRegistry.Triple triple) {
         String endpoint = triple.readbackEndpoint;

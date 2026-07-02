@@ -1,7 +1,12 @@
 # Post-Gate-1 hardening wave — spec (test-first), incl. bar v2 numeric floors
 
-**Status:** SPEC 2026-07-02 (written during the run-#3 wait; implementation starts
-AFTER the Gate-1 verdict is committed — no MIST code changes while run #3 lives).
+**Status:** BUILT 2026-07-02 (all six items implemented post-verdict; full suites
+green: 35 llm + 331 core + 70 cli, 0 failures — 14 new tests pin the wave incl.
+t1–t5). Implementation notes: R7fix's parallelism guard reads the explicit
+`mst.test.parallelism` system property (the seam the pairing path sets; unset ⇒
+allowed, documented); flags-off additivity holds by construction (all changes live
+inside the armed-session/pairing path; the writer is untouched). Pending: the
+standing ≥3-cold-reviewer wave on the diff. Original spec below.
 Scope = the G3 PREREQUISITES promoted in
 [REVIEW-B1B2-RECONCILIATION.md §3](../research/REVIEW-B1B2-RECONCILIATION.md)
 (R1fix, R2fix/bar v2, R3fix, R4fix) + the two non-prerequisite items (C-P1-3fix,

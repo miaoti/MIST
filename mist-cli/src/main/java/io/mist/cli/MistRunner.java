@@ -605,6 +605,21 @@ public final class MistRunner {
 
         io.mist.cli.fault.PairedFaultExecutor executor = new io.mist.cli.fault.PairedFaultExecutor(
                 dataIntegrityRegistry.triples, injector, filteredRun);
+        // C-P1-3fix: persist the collected evidence BEFORE the F2
+        // clear-failure throw — run #2 lost its whole report on this path.
+        java.nio.file.Path f2ReportPath = java.nio.file.Paths.get(
+                "logs", "data-integrity-reports",
+                "pairing_" + inputs.experimentName + "_" + id + ".json");
+        executor.onClearFailure(evidence -> {
+            try {
+                io.mist.cli.fault.PairedFaultExecutor.writeReport(
+                        f2ReportPath, evidence, null, 0, id, true);
+                logger.error("[MIST] clear-failure evidence persisted to {} (f2ClearFailure=true)",
+                        f2ReportPath);
+            } catch (java.io.IOException e) {
+                logger.error("[MIST] failed to persist clear-failure evidence: {}", e.toString());
+            }
+        });
 
         // Pairing/probe runs are single-threaded on purpose: concurrent hooked
         // methods can race on isolation-key freshness and baseline reads,

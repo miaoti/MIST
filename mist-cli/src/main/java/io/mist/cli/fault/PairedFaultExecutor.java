@@ -57,6 +57,19 @@ public final class PairedFaultExecutor {
      */
     static final int MIN_ACKED_FOR_BAR = 20;
 
+    /**
+     * Bar v2 (hardening-wave R2fix; floors pre-registered in
+     * prep/hardening-wave-spec.md §1): a degraded observation gate makes the
+     * bar NOT_EVALUABLE, never PASS — otherwise timeout-gated benign losses
+     * are excluded from the numerator while staying in the denominator, so
+     * gate degradation (Jaeger latency/outage) lowers the governed rate
+     * without lowering the true FP rate (cold-review B-1/B-2). Gate-1 run #3
+     * stays scored under the pre-registered v1 bar (no silent re-scoring);
+     * these guards bind every later run.
+     */
+    static final double GATE_RESOLVED_FLOOR = 0.5;
+    static final double TIMEOUT_GATED_CAP = 0.3;
+
     /** §4: async-FP carries no soundness claim at Gate-1 (P3 verdict: no clean broker path). */
     static final String ASYNC_DISCLAIMER =
             "Gate-1 measures the SYNC stratum only. No broker-mediated async write path exists on this SUT "
@@ -91,6 +104,17 @@ public final class PairedFaultExecutor {
         /** How many records each run produced for this triple (join visibility). */
         public int controlRecordCount = 1;
         public int faultRecordCount = 1;
+        /**
+         * Hardening-wave R3fix: per-record join tallies. The triple verdict
+         * is FIRE iff >=1 joined pair fires against its OWN control sibling —
+         * a persisted sibling can no longer mask a lost one (cold-review
+         * A-2/B-5/C-P1-6). Unjoined records (count mismatch between the two
+         * runs) are surfaced, never silently dropped.
+         */
+        public int firePairs = 0;
+        public int noFirePairs = 0;
+        public int notEvaluablePairs = 0;
+        public int unjoinedRecords = 0;
 
         PairResult(String tripleName, DataIntegrityRuntime.RunRecord control,
                    DataIntegrityRuntime.RunRecord fault, PairVerdict pureDifferential, String reason) {
@@ -105,12 +129,23 @@ public final class PairedFaultExecutor {
     private final List<TargetTripleRegistry.Triple> triples;
     private final FaultInjector injector;
     private final FilteredRun run;
+    /**
+     * Hardening-wave C-P1-3fix: invoked with the computed verdicts BEFORE the
+     * F2 clear-failure throw, so a failed flag-clear no longer discards the
+     * run's evidence (run #2 lost its entire report this way). Optional.
+     */
+    private java.util.function.Consumer<List<PairResult>> clearFailureSink;
 
     public PairedFaultExecutor(List<TargetTripleRegistry.Triple> triples, FaultInjector injector,
                                FilteredRun run) {
         this.triples = triples;
         this.injector = injector;
         this.run = run;
+    }
+
+    /** Registers the C-P1-3fix evidence sink (see {@link #clearFailureSink}). */
+    public void onClearFailure(java.util.function.Consumer<List<PairResult>> sink) {
+        this.clearFailureSink = sink;
     }
 
     public List<PairResult> execute() throws Exception {
@@ -164,30 +199,106 @@ public final class PairedFaultExecutor {
             }
         }
         if (!clearFailures.isEmpty()) {
+            // C-P1-3fix: the SUT-may-be-faulted throw stays loud, but the
+            // already-collected evidence is persisted first (best-effort — a
+            // sink failure must not mask the F2 signal).
+            if (clearFailureSink != null) {
+                try {
+                    clearFailureSink.accept(evaluate(injectable, controlRecords, faultRecords));
+                } catch (RuntimeException e) {
+                    logger.error("clear-failure evidence sink failed ({}); the F2 throw proceeds",
+                            e.toString());
+                }
+            }
             throw new FaultInjector.FaultInjectionException(
                     "fault flag may still be active on: " + clearFailures
                             + " — verify/clear manually before any further run");
         }
 
+        return evaluate(injectable, controlRecords, faultRecords);
+    }
+
+    /**
+     * Hardening-wave R3fix: verdict-aware per-record join. Every triple has
+     * exactly one write endpoint (duplicate endpoints are rejected at
+     * beginRun), so within one run the i-th record for a triple corresponds
+     * to the i-th hooked execution; execution is single-threaded (guarded at
+     * beginRun), making the order deterministic. The i-th control record is
+     * joined with the i-th fault record and each joined pair gets its own
+     * verdict; the triple FIREs iff at least one pair fires. Records without
+     * a sibling in the other run are surfaced as {@code unjoinedRecords}.
+     */
+    private static List<PairResult> evaluate(List<TargetTripleRegistry.Triple> injectable,
+                                             List<DataIntegrityRuntime.RunRecord> controlRecords,
+                                             List<DataIntegrityRuntime.RunRecord> faultRecords) {
         List<PairResult> results = new ArrayList<>();
         for (TargetTripleRegistry.Triple t : injectable) {
-            PairResult verdict = verdict(t.name,
-                    pick(controlRecords, t.name),
-                    pick(faultRecords, t.name));
-            verdict.controlRecordCount = count(controlRecords, t.name);
-            verdict.faultRecordCount = count(faultRecords, t.name);
-            results.add(verdict);
+            List<DataIntegrityRuntime.RunRecord> controls = recordsFor(controlRecords, t.name);
+            List<DataIntegrityRuntime.RunRecord> faults = recordsFor(faultRecords, t.name);
+            int joined = Math.min(controls.size(), faults.size());
+
+            PairResult firstFire = null;
+            PairResult firstNoFire = null;
+            PairResult firstAny = null;
+            int fires = 0;
+            int noFires = 0;
+            int notEvaluable = 0;
+            for (int i = 0; i < joined; i++) {
+                PairResult pair = verdict(t.name, controls.get(i), faults.get(i));
+                if (firstAny == null) {
+                    firstAny = pair;
+                }
+                switch (pair.pureDifferential) {
+                    case FIRE:
+                        fires++;
+                        if (firstFire == null) {
+                            firstFire = pair;
+                        }
+                        break;
+                    case NO_FIRE:
+                        noFires++;
+                        if (firstNoFire == null) {
+                            firstNoFire = pair;
+                        }
+                        break;
+                    default:
+                        notEvaluable++;
+                }
+            }
+            PairResult representative;
+            if (firstFire != null) {
+                representative = firstFire;
+            } else if (firstNoFire != null) {
+                representative = firstNoFire;
+            } else if (firstAny != null) {
+                representative = firstAny;
+            } else {
+                representative = verdict(t.name,
+                        controls.isEmpty() ? null : controls.get(0),
+                        faults.isEmpty() ? null : faults.get(0));
+            }
+            representative.controlRecordCount = controls.size();
+            representative.faultRecordCount = faults.size();
+            representative.firePairs = fires;
+            representative.noFirePairs = noFires;
+            representative.notEvaluablePairs = notEvaluable;
+            representative.unjoinedRecords = Math.abs(controls.size() - faults.size());
+            results.add(representative);
         }
         return results;
     }
 
-    /**
-     * Picks the triple's record for the verdict join. Several hooked methods
-     * can hit one triple; an evaluable (error-free, acknowledged) record is
-     * preferred over noise so the join is deterministic even when parallel
-     * execution reorders the list. The per-run record counts are surfaced on
-     * the report so multi-record joins are visible.
-     */
+    private static List<DataIntegrityRuntime.RunRecord> recordsFor(
+            List<DataIntegrityRuntime.RunRecord> records, String tripleName) {
+        List<DataIntegrityRuntime.RunRecord> out = new ArrayList<>();
+        for (DataIntegrityRuntime.RunRecord r : records) {
+            if (r.tripleName.equals(tripleName)) {
+                out.add(r);
+            }
+        }
+        return out;
+    }
+
     /**
      * B2.4 benign probe: N flag-off iterations of the same generated pairing
      * tests. Every acknowledged benign write must appear on its own read-back;
@@ -213,33 +324,6 @@ public final class PairedFaultExecutor {
             logger.info("Benign FP probe: iteration {}/{} complete ({} records so far)", i, runs, all.size());
         }
         return all;
-    }
-
-    private static DataIntegrityRuntime.RunRecord pick(List<DataIntegrityRuntime.RunRecord> records,
-                                                       String tripleName) {
-        DataIntegrityRuntime.RunRecord fallback = null;
-        for (DataIntegrityRuntime.RunRecord r : records) {
-            if (!r.tripleName.equals(tripleName)) {
-                continue;
-            }
-            if (r.error == null && r.acked) {
-                return r;
-            }
-            if (fallback == null) {
-                fallback = r;
-            }
-        }
-        return fallback;
-    }
-
-    private static int count(List<DataIntegrityRuntime.RunRecord> records, String tripleName) {
-        int n = 0;
-        for (DataIntegrityRuntime.RunRecord r : records) {
-            if (r.tripleName.equals(tripleName)) {
-                n++;
-            }
-        }
-        return n;
     }
 
     /**
@@ -323,24 +407,52 @@ public final class PairedFaultExecutor {
         int acked = aggregate.getInt("ackedBenignRuns");
         int fires = aggregate.getInt("fpFires");
         int observedGated = aggregate.getInt("observedGatedFpFires");
+        int timeoutGated = aggregate.getInt("timeoutGatedFpFires");
         JSONObject bar = new JSONObject();
-        bar.put("preRegistered", "non-timeout-gated sync FP <= " + SYNC_FP_BAR + " over >= "
-                + MIN_ACKED_FOR_BAR + " acked benign runs (plan section 4)");
+        bar.put("preRegistered", "bar v2: non-timeout-gated sync FP <= " + SYNC_FP_BAR + " over >= "
+                + MIN_ACKED_FOR_BAR + " acked benign runs (plan section 4), evaluable only while the "
+                + "observation gate held (gateResolvedFraction >= " + GATE_RESOLVED_FLOOR
+                + " AND timeoutGatedFraction <= " + TIMEOUT_GATED_CAP
+                + " — prep/hardening-wave-spec.md section 1)");
         if (acked < MIN_ACKED_FOR_BAR) {
             // A collapsed denominator must not auto-PASS the pre-registered bar.
             bar.put("value", JSONObject.NULL);
             bar.put("verdict", "NOT_EVALUABLE");
             bar.put("reason", "only " + acked + " acked benign run(s) — below the " + MIN_ACKED_FOR_BAR
                     + "-run minimum; diagnose invalid runs before reading the bar");
-        } else {
-            double nonTimeoutFpRate = (double) observedGated / acked;
-            bar.put("value", nonTimeoutFpRate);
-            bar.put("verdict", nonTimeoutFpRate <= SYNC_FP_BAR ? "PASS" : "FAIL");
-            if (fires > 0 && observedGated == 0) {
-                bar.put("caveat", "all " + fires + " fire(s) are timeout-gated — the observation gate "
-                        + "may have been unavailable (verify Jaeger reachability); the bar's numerator "
-                        + "is then structurally zero and this PASS is weak evidence");
-            }
+            out.put("syncFpBar", bar);
+            return out;
+        }
+        // Acked records resolve to exactly one of the three gates, so the
+        // timeout-gated fires ARE the timeout-gated acked records and the
+        // resolved fraction is their complement. Both guards are kept (not
+        // just the tighter cap) as defense in depth for future gate kinds.
+        double timeoutGatedFraction = (double) timeoutGated / acked;
+        double gateResolvedFraction = 1.0 - timeoutGatedFraction;
+        bar.put("gateResolvedFraction", gateResolvedFraction);
+        bar.put("timeoutGatedFraction", timeoutGatedFraction);
+        if (timeoutGatedFraction > TIMEOUT_GATED_CAP || gateResolvedFraction < GATE_RESOLVED_FLOOR) {
+            // Observation gate degraded: the numerator excludes exactly the
+            // stratum that ballooned, so a PASS label would be uninformative.
+            bar.put("value", JSONObject.NULL);
+            bar.put("verdict", "NOT_EVALUABLE");
+            bar.put("reason", (timeoutGatedFraction > TIMEOUT_GATED_CAP
+                    ? "timeout-gated fraction " + timeoutGatedFraction + " exceeds the "
+                            + TIMEOUT_GATED_CAP + " cap"
+                    : "gate-resolved fraction " + gateResolvedFraction + " below the "
+                            + GATE_RESOLVED_FLOOR + " floor")
+                    + " — observation gate degraded (verify Jaeger health); the excluded timeout-gated "
+                    + "stratum could hide benign losses, so no PASS/FAIL is claimed");
+            out.put("syncFpBar", bar);
+            return out;
+        }
+        double nonTimeoutFpRate = (double) observedGated / acked;
+        bar.put("value", nonTimeoutFpRate);
+        bar.put("verdict", nonTimeoutFpRate <= SYNC_FP_BAR ? "PASS" : "FAIL");
+        if (fires > 0 && observedGated == 0) {
+            bar.put("caveat", "all " + fires + " fire(s) are timeout-gated — the observation gate "
+                    + "may have been unavailable (verify Jaeger reachability); the bar's numerator "
+                    + "is then structurally zero and this PASS is weak evidence");
         }
         out.put("syncFpBar", bar);
         return out;
@@ -427,15 +539,29 @@ public final class PairedFaultExecutor {
 
     /** Writes the machine-readable pairing report (evidence + strata). */
     public static void writeReport(Path file, List<PairResult> results, String runId) throws IOException {
-        writeReport(file, results, null, 0, runId);
+        writeReport(file, results, null, 0, runId, false);
     }
 
     /** Report incl. the B2.4 benign-probe section when probe records exist. */
     public static void writeReport(Path file, List<PairResult> results,
                                    List<DataIntegrityRuntime.RunRecord> probeRecords, long timeoutMs,
                                    String runId) throws IOException {
+        writeReport(file, results, probeRecords, timeoutMs, runId, false);
+    }
+
+    /**
+     * Full report writer. {@code f2ClearFailure} marks a report persisted on
+     * the C-P1-3fix path: the flag-clear could not be confirmed and the F2
+     * exception followed — the evidence is valid, the SUT state is suspect.
+     */
+    public static void writeReport(Path file, List<PairResult> results,
+                                   List<DataIntegrityRuntime.RunRecord> probeRecords, long timeoutMs,
+                                   String runId, boolean f2ClearFailure) throws IOException {
         JSONObject report = new JSONObject();
         report.put("runId", runId);
+        if (f2ClearFailure) {
+            report.put("f2ClearFailure", true);
+        }
         report.put("generatedAtEpochMs", System.currentTimeMillis());
         report.put("fireRule", "pure-differential (headline): fault 2xx-acks-X AND X absent on fault"
                 + " read-back AND control X present; control = systemic FP-guard only");
@@ -451,6 +577,10 @@ public final class PairedFaultExecutor {
             pair.put("reason", r.reason);
             pair.put("controlRecordCount", r.controlRecordCount);
             pair.put("faultRecordCount", r.faultRecordCount);
+            pair.put("firePairs", r.firePairs);
+            pair.put("noFirePairs", r.noFirePairs);
+            pair.put("notEvaluablePairs", r.notEvaluablePairs);
+            pair.put("unjoinedRecords", r.unjoinedRecords);
             pair.put("control", toJson(r.control));
             pair.put("fault", toJson(r.fault));
             pairs.put(pair);
@@ -481,6 +611,8 @@ public final class PairedFaultExecutor {
         json.put("quiescenceGate", record.gate.name());
         json.put("polls", record.polls);
         json.put("elapsedMs", record.elapsedMs);
+        json.put("readbackHttpStatus",
+                record.readbackHttpStatus == null ? JSONObject.NULL : record.readbackHttpStatus);
         json.put("baselineBody", truncate(record.baselineBody));
         json.put("lastReadbackBody", truncate(record.lastReadbackBody));
         json.put("error", record.error == null ? JSONObject.NULL : record.error);
@@ -520,8 +652,12 @@ public final class PairedFaultExecutor {
         out.append("  Benign FP probe (sync stratum): ")
                 .append(aggregate.getInt("fpFires")).append(" fire(s) / ")
                 .append(aggregate.getInt("ackedBenignRuns")).append(" acked benign run(s)")
-                .append(", non-timeout-gated FP rate ").append(bar.getDouble("value"))
+                .append(", non-timeout-gated FP rate ")
+                .append(bar.isNull("value") ? "n/a" : String.valueOf(bar.getDouble("value")))
                 .append(" -> bar ").append(bar.getString("verdict")).append("\n");
+        if (bar.has("reason")) {
+            out.append("  bar reason: ").append(bar.getString("reason")).append("\n");
+        }
         out.append("  gate coverage: ").append(aggregate.getJSONObject("gateHistogram")).append("\n");
         out.append("  async: descriptive-only at Gate-1 (see report asyncDisclaimer)\n");
         return out.toString();

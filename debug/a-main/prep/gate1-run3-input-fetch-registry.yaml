@@ -2,12 +2,12 @@
 version: "1.0"
 lastUpdated:
 - 2026
-- 5
-- 21
-- 5
-- 15
-- 59
-- 274140354
+- 7
+- 2
+- 10
+- 9
+- 57
+- 37666109
 parameterMappings:
   boughtDateStart:
   - endpoint: "/api/v1/orderservice/order"
@@ -17,12 +17,12 @@ parameterMappings:
     priority: 7
     lastUsed:
     - 2026
-    - 3
-    - 22
-    - 17
-    - 24
-    - 50
-    - 151872121
+    - 7
+    - 2
+    - 2
+    - 34
+    - 44
+    - 401886086
     successRate: 0.0
     description: null
     consumerApiKey: null
@@ -33,12 +33,12 @@ parameterMappings:
     priority: 8
     lastUsed:
     - 2026
-    - 3
-    - 22
-    - 17
-    - 24
-    - 50
-    - 149990198
+    - 7
+    - 2
+    - 2
+    - 35
+    - 4
+    - 724429870
     successRate: 0.0
     description: null
     consumerApiKey: null
@@ -49,15 +49,335 @@ parameterMappings:
     priority: 9
     lastUsed:
     - 2026
+    - 7
+    - 2
     - 5
-    - 21
-    - 5
-    - 12
-    - 11
-    - 89670083
+    - 56
+    - 7
+    - 456729294
     successRate: 0.0
     description: null
     consumerApiKey: null
+  - endpoint: "/api/v1/orderservice/order"
+    method: "GET"
+    service: "ts-order-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 7
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 2
+    - 19
+    - 54
+    - 129153303
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/orderOtherService/orderOther/refresh"
+  - endpoint: "/api/v1/orderOtherService/orderOther"
+    method: "GET"
+    service: "ts-order-other-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 8
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 2
+    - 20
+    - 29
+    - 708841278
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/orderOtherService/orderOther/refresh"
+  - endpoint: "/api/v1/adminorderservice/adminorder"
+    method: "GET"
+    service: "ts-admin-order-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 5
+    - 44
+    - 4
+    - 403721770
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/orderOtherService/orderOther/refresh"
+  - endpoint: "/api/v1/preserveservice/welcome"
+    method: "GET"
+    service: "ts-preserve-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 5
+    - 44
+    - 4
+    - 409892795
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/orderOtherService/orderOther/refresh"
+  - endpoint: "/api/v1/waitorderservice/orders"
+    method: "GET"
+    service: "ts-wait-order-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 5
+    - 44
+    - 4
+    - 416036397
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/orderOtherService/orderOther/refresh"
+  - endpoint: "/api/v1/travelservice/trips"
+    method: "GET"
+    service: "ts-travel-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 8
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 2
+    - 20
+    - 25
+    - 708137038
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/orderOtherService/orderOther/refresh"
+  - endpoint: "/api/v1/rebookservice/welcome"
+    method: "GET"
+    service: "ts-rebook-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 5
+    - 44
+    - 4
+    - 422277625
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/orderOtherService/orderOther/refresh"
+  - endpoint: "/api/v1/orderservice/order"
+    method: "GET"
+    service: "ts-order-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 7
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 2
+    - 34
+    - 49
+    - 335350694
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/orderservice/order/refresh"
+  - endpoint: "/api/v1/travelservice/trips"
+    method: "GET"
+    service: "ts-travel-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 8
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 5
+    - 55
+    - 53
+    - 650384614
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/orderservice/order/refresh"
+  - endpoint: "/api/v1/preserveservice/welcome"
+    method: "GET"
+    service: "ts-preserve-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 5
+    - 56
+    - 27
+    - 675442941
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/orderservice/order/refresh"
+  - endpoint: "/api/v1/orderOtherService/orderOther"
+    method: "GET"
+    service: "ts-order-other-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 8
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 2
+    - 35
+    - 38
+    - 231944066
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/orderservice/order/refresh"
+  - endpoint: "/api/v1/cancelservice/cancel/refound/{orderId}"
+    method: "GET"
+    service: "ts-cancel-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 8
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 2
+    - 35
+    - 16
+    - 258151347
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/orderservice/order/refresh"
+  - endpoint: "/api/v1/waitorderservice/orders"
+    method: "GET"
+    service: "ts-wait-order-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 5
+    - 56
+    - 27
+    - 680942293
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/orderservice/order/refresh"
+  - endpoint: "/api/v1/adminorderservice/adminorder"
+    method: "GET"
+    service: "ts-admin-order-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 8
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 2
+    - 35
+    - 22
+    - 985683975
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/orderservice/order/refresh"
+  - endpoint: "/api/v1/cancelservice/welcome"
+    method: "GET"
+    service: "ts-cancel-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 5
+    - 56
+    - 27
+    - 686515868
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/orderservice/order/refresh"
+  - endpoint: "/api/v1/cancelservice/welcome"
+    method: "GET"
+    service: "ts-cancel-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 8
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 5
+    - 43
+    - 19
+    - 481845560
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/orderOtherService/orderOther/refresh"
+  - endpoint: "/api/v1/travel2service/trips"
+    method: "GET"
+    service: "ts-travel2-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 5
+    - 44
+    - 4
+    - 429357613
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/orderOtherService/orderOther/refresh"
+  - endpoint: "/api/v1/cancelservice/cancel/refound/{orderId}"
+    method: "GET"
+    service: "ts-cancel-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 8
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 5
+    - 44
+    - 7
+    - 670739993
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/orderOtherService/orderOther/refresh"
+  - endpoint: "/api/v1/rebookservice/welcome"
+    method: "GET"
+    service: "ts-rebook-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 5
+    - 56
+    - 27
+    - 691571029
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/orderservice/order/refresh"
+  - endpoint: "/api/v1/travel2service/trips"
+    method: "GET"
+    service: "ts-travel2-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 5
+    - 56
+    - 27
+    - 696627276
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/orderservice/order/refresh"
   loginId:
   - endpoint: "/api/v1/adminuserservice/users"
     method: "GET"
@@ -66,15 +386,191 @@ parameterMappings:
     priority: 8
     lastUsed:
     - 2026
+    - 7
+    - 2
     - 5
-    - 21
-    - 5
-    - 12
-    - 48
-    - 185331089
+    - 46
+    - 22
+    - 198670844
     successRate: 0.0
     description: null
     consumerApiKey: null
+  - endpoint: "/api/v1/userservice/users/{userName}"
+    method: "GET"
+    service: "ts-user-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 7
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 5
+    - 46
+    - 24
+    - 179705424
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/orderOtherService/orderOther/refresh"
+  - endpoint: "/api/v1/adminuserservice/users"
+    method: "GET"
+    service: "ts-admin-user-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 8
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 5
+    - 46
+    - 22
+    - 190769741
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/orderOtherService/orderOther/refresh"
+  - endpoint: "/api/v1/securityservice/securityConfigs"
+    method: "GET"
+    service: "ts-security-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 5
+    - 46
+    - 22
+    - 148273355
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/orderOtherService/orderOther/refresh"
+  - endpoint: "/api/v1/userservice/users/{userName}"
+    method: "GET"
+    service: "ts-user-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 7
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 20
+    - 39
+    - 39
+    - 944519572
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminrouteservice/adminroute"
+  - endpoint: "/api/v1/adminuserservice/users"
+    method: "GET"
+    service: "ts-admin-user-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 8
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 6
+    - 16
+    - 31
+    - 668309772
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminrouteservice/adminroute"
+  - endpoint: "/api/v1/securityservice/securityConfigs"
+    method: "GET"
+    service: "ts-security-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 6
+    - 16
+    - 28
+    - 486727770
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminrouteservice/adminroute"
+  - endpoint: "/api/v1/basicservice/basic/{stationName}"
+    method: "GET"
+    service: "ts-basic-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 6
+    - 16
+    - 28
+    - 494970193
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminrouteservice/adminroute"
+  - endpoint: "/api/v1/basicservice/welcome"
+    method: "GET"
+    service: "ts-basic-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 21
+    - 0
+    - 8
+    - 246171873
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminrouteservice/adminroute"
+  - endpoint: "/api/v1/userservice/users/id/{userId}"
+    method: "GET"
+    service: "ts-user-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 7
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 20
+    - 44
+    - 33
+    - 244280373
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminrouteservice/adminroute"
+  - endpoint: "/api/v1/securityservice/securityConfigs/{accountId}"
+    method: "GET"
+    service: "ts-security-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 6
+    - 16
+    - 31
+    - 665026022
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminrouteservice/adminroute"
+  - endpoint: "/api/v1/basicservice/basic/{stationName}"
+    method: "GET"
+    service: "ts-basic-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 5
+    - 46
+    - 22
+    - 183270351
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/orderOtherService/orderOther/refresh"
   orderId:
   - endpoint: "/api/v1/adminorderservice/adminorder"
     method: "GET"
@@ -83,15 +579,383 @@ parameterMappings:
     priority: 8
     lastUsed:
     - 2026
-    - 5
-    - 21
-    - 5
-    - 12
-    - 40
-    - 118601113
+    - 7
+    - 2
+    - 6
+    - 35
+    - 13
+    - 809936962
     successRate: 0.0
     description: null
     consumerApiKey: null
+  - endpoint: "/api/v1/orderservice/order/{orderId}"
+    method: "GET"
+    service: "ts-order-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 7
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 19
+    - 2
+    - 11
+    - 612507530
+    successRate: 0.0
+    description: null
+    consumerApiKey: "GET /api/v1/executeservice/execute/collected/{orderId}"
+  - endpoint: "/api/v1/adminorderservice/adminorder"
+    method: "GET"
+    service: "ts-admin-order-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 8
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 5
+    - 55
+    - 20
+    - 194407225
+    successRate: 0.0
+    description: null
+    consumerApiKey: "GET /api/v1/executeservice/execute/collected/{orderId}"
+  - endpoint: "/api/v1/orderOtherService/orderOther/{orderId}"
+    method: "GET"
+    service: "ts-order-other-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 5
+    - 55
+    - 20
+    - 177058816
+    successRate: 0.0
+    description: null
+    consumerApiKey: "GET /api/v1/executeservice/execute/collected/{orderId}"
+  - endpoint: "/api/v1/orderservice/order/{orderId}"
+    method: "GET"
+    service: "ts-order-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 7
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 21
+    - 51
+    - 7
+    - 586210605
+    successRate: 0.0
+    description: null
+    consumerApiKey: "PUT /api/v1/consignservice/consigns"
+  - endpoint: "/api/v1/orderOtherService/orderOther/{orderId}"
+    method: "GET"
+    service: "ts-order-other-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 8
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 6
+    - 31
+    - 16
+    - 562438017
+    successRate: 0.0
+    description: null
+    consumerApiKey: "PUT /api/v1/consignservice/consigns"
+  - endpoint: "/api/v1/adminorderservice/adminorder"
+    method: "GET"
+    service: "ts-admin-order-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 6
+    - 31
+    - 16
+    - 545568725
+    successRate: 0.0
+    description: null
+    consumerApiKey: "PUT /api/v1/consignservice/consigns"
+  - endpoint: "/api/v1/orderservice/order/{orderId}"
+    method: "GET"
+    service: "ts-order-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 7
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 6
+    - 35
+    - 13
+    - 815059962
+    successRate: 0.0
+    description: null
+    consumerApiKey: "GET /api/v1/executeservice/execute/execute/{orderId}"
+  - endpoint: "/api/v1/orderOtherService/orderOther/{orderId}"
+    method: "GET"
+    service: "ts-order-other-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 8
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 6
+    - 35
+    - 13
+    - 798803113
+    successRate: 0.0
+    description: null
+    consumerApiKey: "GET /api/v1/executeservice/execute/execute/{orderId}"
+  - endpoint: "/api/v1/cancelservice/cancel/refound/{orderId}"
+    method: "GET"
+    service: "ts-cancel-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 6
+    - 35
+    - 13
+    - 793225991
+    successRate: 0.0
+    description: null
+    consumerApiKey: "GET /api/v1/executeservice/execute/execute/{orderId}"
+  - endpoint: "/api/v1/cancelservice/cancel/refound/{orderId}"
+    method: "GET"
+    service: "ts-cancel-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 5
+    - 55
+    - 20
+    - 182368598
+    successRate: 0.0
+    description: null
+    consumerApiKey: "GET /api/v1/executeservice/execute/collected/{orderId}"
+  - endpoint: "/api/v1/waitorderservice/orders"
+    method: "GET"
+    service: "ts-wait-order-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 5
+    - 55
+    - 20
+    - 188259244
+    successRate: 0.0
+    description: null
+    consumerApiKey: "GET /api/v1/executeservice/execute/collected/{orderId}"
+  - endpoint: "/api/v1/preserveservice/welcome"
+    method: "GET"
+    service: "ts-preserve-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 19
+    - 4
+    - 58
+    - 428091405
+    successRate: 0.0
+    description: null
+    consumerApiKey: "GET /api/v1/executeservice/execute/collected/{orderId}"
+  - endpoint: "/api/v1/travel2service/trips"
+    method: "GET"
+    service: "ts-travel2-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 19
+    - 5
+    - 5
+    - 76393488
+    successRate: 0.0
+    description: null
+    consumerApiKey: "GET /api/v1/executeservice/execute/collected/{orderId}"
+  - endpoint: "/api/v1/travelservice/trips"
+    method: "GET"
+    service: "ts-travel-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 19
+    - 5
+    - 47
+    - 956739765
+    successRate: 0.0
+    description: null
+    consumerApiKey: "GET /api/v1/executeservice/execute/collected/{orderId}"
+  - endpoint: "/api/v1/cancelservice/cancel/refound/{orderId}"
+    method: "GET"
+    service: "ts-cancel-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 6
+    - 31
+    - 16
+    - 552040267
+    successRate: 0.0
+    description: null
+    consumerApiKey: "PUT /api/v1/consignservice/consigns"
+  - endpoint: "/api/v1/preserveservice/welcome"
+    method: "GET"
+    service: "ts-preserve-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 8
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 21
+    - 51
+    - 42
+    - 158065468
+    successRate: 0.0
+    description: null
+    consumerApiKey: "PUT /api/v1/consignservice/consigns"
+  - endpoint: "/api/v1/waitorderservice/orders"
+    method: "GET"
+    service: "ts-wait-order-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 6
+    - 31
+    - 16
+    - 557427356
+    successRate: 0.0
+    description: null
+    consumerApiKey: "PUT /api/v1/consignservice/consigns"
+  - endpoint: "/api/v1/travelservice/trips"
+    method: "GET"
+    service: "ts-travel-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 8
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 21
+    - 58
+    - 52
+    - 477480835
+    successRate: 0.0
+    description: null
+    consumerApiKey: "PUT /api/v1/consignservice/consigns"
+  - endpoint: "/api/v1/adminorderservice/adminorder"
+    method: "GET"
+    service: "ts-admin-order-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 8
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 6
+    - 35
+    - 13
+    - 804307864
+    successRate: 0.0
+    description: null
+    consumerApiKey: "GET /api/v1/executeservice/execute/execute/{orderId}"
+  - endpoint: "/api/v1/preserveservice/welcome"
+    method: "GET"
+    service: "ts-preserve-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 22
+    - 5
+    - 47
+    - 519807406
+    successRate: 0.0
+    description: null
+    consumerApiKey: "GET /api/v1/executeservice/execute/execute/{orderId}"
+  - endpoint: "/api/v1/rebookservice/welcome"
+    method: "GET"
+    service: "ts-rebook-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 23
+    - 9
+    - 29
+    - 508057
+    successRate: 0.0
+    description: null
+    consumerApiKey: "GET /api/v1/executeservice/execute/collected/{orderId}"
+  - endpoint: "/api/v1/preserveotherservice/welcome"
+    method: "GET"
+    service: "ts-preserve-other-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 23
+    - 49
+    - 0
+    - 148382217
+    successRate: 0.0
+    description: null
+    consumerApiKey: "PUT /api/v1/consignservice/consigns"
+  - endpoint: "/api/v1/rebookservice/welcome"
+    method: "GET"
+    service: "ts-rebook-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 4
+    - 43
+    - 55
+    - 913828200
+    successRate: 0.0
+    description: null
+    consumerApiKey: "GET /api/v1/executeservice/execute/execute/{orderId}"
   trainType:
   - endpoint: "/api/v1/trainservice/trains"
     method: "GET"
@@ -109,6 +973,279 @@ parameterMappings:
     successRate: 0.0
     description: null
     consumerApiKey: null
+  documentNumber:
+  - endpoint: "/api/v1/userservice/users"
+    method: "GET"
+    service: "ts-user-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 7
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 20
+    - 23
+    - 55
+    - 54248361
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/contactservice/contacts/admin"
+  - endpoint: "/api/v1/adminuserservice/users"
+    method: "GET"
+    service: "ts-admin-user-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 8
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 20
+    - 24
+    - 24
+    - 259714913
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/contactservice/contacts/admin"
+  - endpoint: "/api/v1/contactservice/contacts"
+    method: "GET"
+    service: "ts-contacts-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 20
+    - 25
+    - 12
+    - 350243493
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/contactservice/contacts/admin"
+  - endpoint: "/api/v1/configservice/configs"
+    method: "GET"
+    service: "ts-config-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 7
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 20
+    - 23
+    - 50
+    - 910114217
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/contactservice/contacts/admin"
+  - endpoint: "/api/v1/basicservice/basic/{stationName}"
+    method: "GET"
+    service: "ts-basic-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 8
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 20
+    - 24
+    - 19
+    - 331402816
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/contactservice/contacts/admin"
+  - endpoint: "/api/v1/adminbasicservice/adminbasic/contacts"
+    method: "GET"
+    service: "ts-admin-basic-info-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 20
+    - 25
+    - 12
+    - 352926448
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/contactservice/contacts/admin"
+  - endpoint: "/api/v1/orderservice/order/{orderId}"
+    method: "GET"
+    service: "ts-order-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 7
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 20
+    - 23
+    - 57
+    - 714054495
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/contactservice/contacts/admin"
+  - endpoint: "/api/v1/preserveservice/welcome"
+    method: "GET"
+    service: "ts-preserve-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 8
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 20
+    - 23
+    - 59
+    - 544260320
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/contactservice/contacts/admin"
+  - endpoint: "/api/v1/cancelservice/cancel/{orderId}/{loginId}"
+    method: "GET"
+    service: "ts-cancel-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 20
+    - 25
+    - 12
+    - 355949991
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/contactservice/contacts/admin"
+  - endpoint: "/api/v1/userservice/users/id/{userId}"
+    method: "GET"
+    service: "ts-user-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 7
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 20
+    - 24
+    - 4
+    - 306458905
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/contactservice/contacts/admin"
+  - endpoint: "/api/v1/orderOtherService/orderOther"
+    method: "GET"
+    service: "ts-order-other-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 8
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 20
+    - 24
+    - 17
+    - 504757052
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/contactservice/contacts/admin"
+  - endpoint: "/api/v1/securityservice/securityConfigs"
+    method: "GET"
+    service: "ts-security-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 20
+    - 25
+    - 12
+    - 358806225
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/contactservice/contacts/admin"
+  - endpoint: "/api/v1/orderservice/order"
+    method: "GET"
+    service: "ts-order-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 7
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 20
+    - 24
+    - 26
+    - 713049509
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/contactservice/contacts/admin"
+  - endpoint: "/api/v1/cancelservice/cancel/refound/{orderId}"
+    method: "GET"
+    service: "ts-cancel-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 20
+    - 25
+    - 12
+    - 359863956
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/contactservice/contacts/admin"
+  - endpoint: "/api/v1/adminorderservice/adminorder"
+    method: "GET"
+    service: "ts-admin-order-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 8
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 20
+    - 24
+    - 35
+    - 258568299
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/contactservice/contacts/admin"
+  - endpoint: "/api/v1/orderservice/order/security/{checkDate}/{accountId}"
+    method: "GET"
+    service: "ts-order-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 7
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 20
+    - 24
+    - 38
+    - 800626622
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/contactservice/contacts/admin"
+  - endpoint: "/api/v1/orderOtherService/orderOther/security/{checkDate}/{accountId}"
+    method: "GET"
+    service: "ts-order-other-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 20
+    - 24
+    - 55
+    - 170815172
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/contactservice/contacts/admin"
   confortClass:
   - endpoint: "/api/v1/priceservice/prices"
     method: "GET"
@@ -133,12 +1270,12 @@ parameterMappings:
     priority: 8
     lastUsed:
     - 2026
-    - 5
-    - 21
-    - 5
-    - 13
+    - 7
     - 2
-    - 755291128
+    - 6
+    - 35
+    - 19
+    - 716259986
     successRate: 0.0
     description: null
     consumerApiKey: null
@@ -150,15 +1287,143 @@ parameterMappings:
     priority: 7
     lastUsed:
     - 2026
-    - 5
-    - 21
-    - 5
-    - 13
-    - 24
-    - 930111965
+    - 7
+    - 1
+    - 20
+    - 7
+    - 1
+    - 379698766
     successRate: 0.0
     description: null
     consumerApiKey: null
+  - endpoint: "/api/v1/contactservice/contacts/{id}"
+    method: "GET"
+    service: "ts-contacts-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 7
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 20
+    - 7
+    - 48
+    - 154891195
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminorderservice/adminorder"
+  - endpoint: "/api/v1/basicservice/basic/{stationName}"
+    method: "GET"
+    service: "ts-basic-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 8
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 20
+    - 6
+    - 57
+    - 186889118
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminorderservice/adminorder"
+  - endpoint: "/api/v1/userservice/users"
+    method: "GET"
+    service: "ts-user-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 20
+    - 7
+    - 48
+    - 143470807
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminorderservice/adminorder"
+  - endpoint: "/api/v1/contactservice/contacts"
+    method: "GET"
+    service: "ts-contacts-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 7
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 20
+    - 7
+    - 34
+    - 677699221
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminorderservice/adminorder"
+  - endpoint: "/api/v1/adminuserservice/users"
+    method: "GET"
+    service: "ts-admin-user-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 8
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 20
+    - 6
+    - 56
+    - 308227390
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminorderservice/adminorder"
+  - endpoint: "/api/v1/preserveservice/welcome"
+    method: "GET"
+    service: "ts-preserve-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 20
+    - 7
+    - 48
+    - 145257798
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminorderservice/adminorder"
+  - endpoint: "/api/v1/preserveotherservice/welcome"
+    method: "GET"
+    service: "ts-preserve-other-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 20
+    - 7
+    - 48
+    - 147518768
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminorderservice/adminorder"
+  - endpoint: "/api/v1/orderservice/order"
+    method: "GET"
+    service: "ts-order-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 20
+    - 7
+    - 48
+    - 149966873
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminorderservice/adminorder"
   coachNumber:
   - endpoint: "/api/v1/routeservice/routes"
     method: "GET"
@@ -167,15 +1432,127 @@ parameterMappings:
     priority: 9
     lastUsed:
     - 2026
-    - 5
-    - 21
-    - 5
-    - 13
-    - 22
-    - 467880626
+    - 7
+    - 1
+    - 20
+    - 6
+    - 40
+    - 662717886
     successRate: 0.0
     description: null
     consumerApiKey: null
+  - endpoint: "/api/v1/trainservice/trains"
+    method: "GET"
+    service: "ts-train-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 7
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 20
+    - 5
+    - 23
+    - 735652700
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminorderservice/adminorder"
+  - endpoint: "/api/v1/adminbasicservice/adminbasic/trains"
+    method: "GET"
+    service: "ts-admin-basic-info-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 8
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 20
+    - 6
+    - 40
+    - 667826365
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminorderservice/adminorder"
+  - endpoint: "/api/v1/basicservice/basic/{stationName}"
+    method: "GET"
+    service: "ts-basic-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 6
+    - 7
+    - 34
+    - 61200215
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminorderservice/adminorder"
+  - endpoint: "/api/v1/seatservice/welcome"
+    method: "GET"
+    service: "ts-seat-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 8
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 20
+    - 5
+    - 45
+    - 756927226
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminorderservice/adminorder"
+  - endpoint: "/api/v1/travelservice/trips"
+    method: "GET"
+    service: "ts-travel-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 6
+    - 7
+    - 34
+    - 67767616
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminorderservice/adminorder"
+  - endpoint: "/api/v1/configservice/configs"
+    method: "GET"
+    service: "ts-config-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 20
+    - 6
+    - 40
+    - 654255947
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminorderservice/adminorder"
+  - endpoint: "/api/v1/travel2service/trips"
+    method: "GET"
+    service: "ts-travel2-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 8
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 20
+    - 6
+    - 22
+    - 87699347
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminorderservice/adminorder"
   enableBoughtDateQuery:
   - endpoint: "/api/v1/orderservice/order"
     method: "GET"
@@ -184,12 +1561,12 @@ parameterMappings:
     priority: 7
     lastUsed:
     - 2026
-    - 3
-    - 22
-    - 17
-    - 26
-    - 24
-    - 223021679
+    - 7
+    - 2
+    - 2
+    - 35
+    - 57
+    - 290277133
     successRate: 0.0
     description: null
     consumerApiKey: null
@@ -200,12 +1577,12 @@ parameterMappings:
     priority: 8
     lastUsed:
     - 2026
-    - 5
-    - 21
-    - 5
-    - 12
-    - 14
-    - 329296687
+    - 7
+    - 2
+    - 2
+    - 36
+    - 37
+    - 668433375
     successRate: 0.0
     description: null
     consumerApiKey: null
@@ -216,15 +1593,191 @@ parameterMappings:
     priority: 9
     lastUsed:
     - 2026
+    - 7
+    - 2
     - 5
-    - 5
-    - 23
-    - 0
-    - 22
-    - 934493253
+    - 57
+    - 33
+    - 805928222
     successRate: 0.0
     description: null
     consumerApiKey: null
+  - endpoint: "/api/v1/orderservice/order"
+    method: "GET"
+    service: "ts-order-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 7
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 2
+    - 20
+    - 58
+    - 763448684
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/orderOtherService/orderOther/refresh"
+  - endpoint: "/api/v1/adminorderservice/adminorder"
+    method: "GET"
+    service: "ts-admin-order-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 8
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 5
+    - 45
+    - 9
+    - 603064351
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/orderOtherService/orderOther/refresh"
+  - endpoint: "/api/v1/travelservice/trips"
+    method: "GET"
+    service: "ts-travel-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 5
+    - 45
+    - 9
+    - 580710306
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/orderOtherService/orderOther/refresh"
+  - endpoint: "/api/v1/orderOtherService/orderOther"
+    method: "GET"
+    service: "ts-order-other-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 8
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 2
+    - 21
+    - 46
+    - 272356665
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/orderOtherService/orderOther/refresh"
+  - endpoint: "/api/v1/preserveservice/welcome"
+    method: "GET"
+    service: "ts-preserve-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 5
+    - 45
+    - 9
+    - 586511237
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/orderOtherService/orderOther/refresh"
+  - endpoint: "/api/v1/cancelservice/cancel/refound/{orderId}"
+    method: "GET"
+    service: "ts-cancel-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 5
+    - 45
+    - 9
+    - 591631948
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/orderOtherService/orderOther/refresh"
+  - endpoint: "/api/v1/orderservice/order"
+    method: "GET"
+    service: "ts-order-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 7
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 2
+    - 36
+    - 37
+    - 674793047
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/orderservice/order/refresh"
+  - endpoint: "/api/v1/orderOtherService/orderOther"
+    method: "GET"
+    service: "ts-order-other-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 8
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 5
+    - 57
+    - 33
+    - 811918089
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/orderservice/order/refresh"
+  - endpoint: "/api/v1/adminorderservice/adminorder"
+    method: "GET"
+    service: "ts-admin-order-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 5
+    - 57
+    - 33
+    - 793494970
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/orderservice/order/refresh"
+  - endpoint: "/api/v1/travelservice/trips"
+    method: "GET"
+    service: "ts-travel-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 8
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 5
+    - 57
+    - 33
+    - 818507888
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/orderservice/order/refresh"
+  - endpoint: "/api/v1/preserveservice/welcome"
+    method: "GET"
+    service: "ts-preserve-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 5
+    - 57
+    - 33
+    - 799450726
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/orderservice/order/refresh"
   stayTime:
   - endpoint: "/api/v1/travelservice/trips"
     method: "GET"
@@ -233,12 +1786,12 @@ parameterMappings:
     priority: 7
     lastUsed:
     - 2026
-    - 3
-    - 27
-    - 20
-    - 27
-    - 16
-    - 481406704
+    - 7
+    - 2
+    - 4
+    - 47
+    - 14
+    - 154099584
     successRate: 0.0
     description: null
     consumerApiKey: null
@@ -249,15 +1802,255 @@ parameterMappings:
     priority: 8
     lastUsed:
     - 2026
-    - 5
-    - 21
+    - 7
+    - 2
     - 4
-    - 35
-    - 56
-    - 765345468
+    - 52
+    - 57
+    - 169684492
     successRate: 0.0
     description: null
     consumerApiKey: null
+  - endpoint: "/api/v1/travelservice/trips"
+    method: "GET"
+    service: "ts-travel-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 7
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 21
+    - 7
+    - 24
+    - 281549526
+    successRate: 0.0
+    description: null
+    consumerApiKey: "PUT /api/v1/adminbasicservice/adminbasic/stations"
+  - endpoint: "/api/v1/travel2service/trips"
+    method: "GET"
+    service: "ts-travel2-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 8
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 21
+    - 9
+    - 14
+    - 806955897
+    successRate: 0.0
+    description: null
+    consumerApiKey: "PUT /api/v1/adminbasicservice/adminbasic/stations"
+  - endpoint: "/api/v1/travelplanservice/welcome"
+    method: "GET"
+    service: "ts-travel-plan-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 6
+    - 16
+    - 55
+    - 967910106
+    successRate: 0.0
+    description: null
+    consumerApiKey: "PUT /api/v1/adminbasicservice/adminbasic/stations"
+  - endpoint: "/api/v1/trainservice/trains"
+    method: "GET"
+    service: "ts-train-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 21
+    - 9
+    - 14
+    - 804413471
+    successRate: 0.0
+    description: null
+    consumerApiKey: "PUT /api/v1/adminbasicservice/adminbasic/stations"
+  - endpoint: "/api/v1/routeplanservice/welcome"
+    method: "GET"
+    service: "ts-route-plan-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 21
+    - 9
+    - 14
+    - 805187539
+    successRate: 0.0
+    description: null
+    consumerApiKey: "PUT /api/v1/adminbasicservice/adminbasic/stations"
+  - endpoint: "/api/v1/basicservice/basic/{stationName}"
+    method: "GET"
+    service: "ts-basic-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 21
+    - 9
+    - 14
+    - 806010755
+    successRate: 0.0
+    description: null
+    consumerApiKey: "PUT /api/v1/adminbasicservice/adminbasic/stations"
+  - endpoint: "/api/v1/travelservice/trips"
+    method: "GET"
+    service: "ts-travel-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 7
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 4
+    - 47
+    - 19
+    - 159799499
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminbasicservice/adminbasic/stations"
+  - endpoint: "/api/v1/travel2service/trips"
+    method: "GET"
+    service: "ts-travel2-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 8
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 4
+    - 53
+    - 32
+    - 425774847
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminbasicservice/adminbasic/stations"
+  - endpoint: "/api/v1/travelplanservice/welcome"
+    method: "GET"
+    service: "ts-travel-plan-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 4
+    - 53
+    - 32
+    - 402976771
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminbasicservice/adminbasic/stations"
+  - endpoint: "/api/v1/routeplanservice/welcome"
+    method: "GET"
+    service: "ts-route-plan-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 4
+    - 53
+    - 32
+    - 410629946
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminbasicservice/adminbasic/stations"
+  - endpoint: "/api/v1/travel2service/trips/{tripId}"
+    method: "GET"
+    service: "ts-travel2-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 8
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 4
+    - 53
+    - 32
+    - 432502755
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminbasicservice/adminbasic/stations"
+  - endpoint: "/api/v1/waitorderservice/orders"
+    method: "GET"
+    service: "ts-wait-order-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 7
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 4
+    - 52
+    - 54
+    - 626746710
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminbasicservice/adminbasic/stations"
+  - endpoint: "/api/v1/orderservice/order/{orderId}"
+    method: "GET"
+    service: "ts-order-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 8
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 4
+    - 53
+    - 0
+    - 504008533
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminbasicservice/adminbasic/stations"
+  - endpoint: "/api/v1/orderOtherService/orderOther/{orderId}"
+    method: "GET"
+    service: "ts-order-other-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 4
+    - 53
+    - 32
+    - 418987509
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminbasicservice/adminbasic/stations"
+  - endpoint: "/api/v1/trainservice/trains"
+    method: "GET"
+    service: "ts-train-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 4
+    - 53
+    - 41
+    - 456010322
+    successRate: 0.1
+    description: null
+    consumerApiKey: "POST /api/v1/adminbasicservice/adminbasic/stations"
   price:
   - endpoint: "/api/v1/priceservice/prices"
     method: "GET"
@@ -266,12 +2059,12 @@ parameterMappings:
     priority: 7
     lastUsed:
     - 2026
-    - 5
-    - 5
-    - 23
-    - 4
+    - 7
     - 1
-    - 771637862
+    - 20
+    - 13
+    - 19
+    - 661952262
     successRate: 0.0
     description: null
     consumerApiKey: null
@@ -282,15 +2075,143 @@ parameterMappings:
     priority: 9
     lastUsed:
     - 2026
-    - 5
-    - 21
-    - 5
+    - 7
+    - 1
+    - 20
     - 13
-    - 44
-    - 290362967
+    - 37
+    - 698560464
     successRate: 0.0
     description: null
     consumerApiKey: null
+  - endpoint: "/api/v1/priceservice/prices"
+    method: "GET"
+    service: "ts-price-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 7
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 20
+    - 13
+    - 37
+    - 707388274
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminorderservice/adminorder"
+  - endpoint: "/api/v1/consignpriceservice/consignprice/price"
+    method: "GET"
+    service: "ts-consign-price-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 8
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 20
+    - 13
+    - 37
+    - 706214504
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminorderservice/adminorder"
+  - endpoint: "/api/v1/configservice/configs"
+    method: "GET"
+    service: "ts-config-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 20
+    - 12
+    - 50
+    - 269093116
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminorderservice/adminorder"
+  - endpoint: "/api/v1/travelservice/trips"
+    method: "GET"
+    service: "ts-travel-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 20
+    - 12
+    - 50
+    - 190084505
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminorderservice/adminorder"
+  - endpoint: "/api/v1/priceservice/prices/{routeId}/{trainType}"
+    method: "GET"
+    service: "ts-price-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 7
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 20
+    - 13
+    - 37
+    - 708518383
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminorderservice/adminorder"
+  - endpoint: "/api/v1/basicservice/basic/{stationName}"
+    method: "GET"
+    service: "ts-basic-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 20
+    - 12
+    - 57
+    - 678655133
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminorderservice/adminorder"
+  - endpoint: "/api/v1/travel2service/trips"
+    method: "GET"
+    service: "ts-travel2-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 20
+    - 13
+    - 19
+    - 631404253
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminorderservice/adminorder"
+  - endpoint: "/api/v1/adminbasicservice/adminbasic/prices"
+    method: "GET"
+    service: "ts-admin-basic-info-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 20
+    - 13
+    - 37
+    - 687635617
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminorderservice/adminorder"
   economyClass:
   - endpoint: "/api/v1/priceservice/prices"
     method: "GET"
@@ -315,12 +2236,12 @@ parameterMappings:
     priority: 8
     lastUsed:
     - 2026
-    - 5
-    - 5
-    - 3
-    - 46
+    - 7
     - 2
-    - 280009962
+    - 6
+    - 35
+    - 23
+    - 375308402
     successRate: 0.0
     description: null
     consumerApiKey: null
@@ -331,12 +2252,12 @@ parameterMappings:
     priority: 9
     lastUsed:
     - 2026
-    - 5
-    - 21
-    - 5
-    - 13
-    - 5
-    - 426578033
+    - 7
+    - 2
+    - 6
+    - 35
+    - 23
+    - 368667654
     successRate: 0.0
     description: null
     consumerApiKey: null
@@ -365,12 +2286,12 @@ parameterMappings:
     priority: 7
     lastUsed:
     - 2026
+    - 7
+    - 2
     - 3
-    - 22
-    - 18
-    - 32
-    - 30
-    - 128561493
+    - 15
+    - 35
+    - 2917989
     successRate: 0.0
     description: null
     consumerApiKey: null
@@ -381,12 +2302,12 @@ parameterMappings:
     priority: 8
     lastUsed:
     - 2026
-    - 5
-    - 5
-    - 23
-    - 8
-    - 21
-    - 75248937
+    - 7
+    - 2
+    - 3
+    - 57
+    - 46
+    - 541413282
     successRate: 0.0
     description: null
     consumerApiKey: null
@@ -397,15 +2318,191 @@ parameterMappings:
     priority: 9
     lastUsed:
     - 2026
-    - 5
-    - 21
+    - 7
+    - 2
     - 4
-    - 35
-    - 33
-    - 154275386
+    - 30
+    - 14
+    - 654139606
     successRate: 0.0
     description: null
     consumerApiKey: null
+  - endpoint: "/api/v1/travelservice/trips"
+    method: "GET"
+    service: "ts-travel-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 7
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 3
+    - 57
+    - 46
+    - 549231634
+    successRate: 0.0
+    description: null
+    consumerApiKey: "PUT /api/v1/consignservice/consigns"
+  - endpoint: "/api/v1/travel2service/trips"
+    method: "GET"
+    service: "ts-travel2-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 8
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 4
+    - 29
+    - 4
+    - 950783577
+    successRate: 0.0
+    description: null
+    consumerApiKey: "PUT /api/v1/consignservice/consigns"
+  - endpoint: "/api/v1/travelplanservice/welcome"
+    method: "GET"
+    service: "ts-travel-plan-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 4
+    - 30
+    - 14
+    - 632263865
+    successRate: 0.0
+    description: null
+    consumerApiKey: "PUT /api/v1/consignservice/consigns"
+  - endpoint: "/api/v1/waitorderservice/orders"
+    method: "GET"
+    service: "ts-wait-order-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 7
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 3
+    - 57
+    - 51
+    - 296644025
+    successRate: 0.0
+    description: null
+    consumerApiKey: "PUT /api/v1/consignservice/consigns"
+  - endpoint: "/api/v1/orderservice/order/security/{checkDate}/{accountId}"
+    method: "GET"
+    service: "ts-order-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 8
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 4
+    - 30
+    - 14
+    - 624387304
+    successRate: 0.0
+    description: null
+    consumerApiKey: "PUT /api/v1/consignservice/consigns"
+  - endpoint: "/api/v1/orderOtherService/orderOther"
+    method: "GET"
+    service: "ts-order-other-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 4
+    - 30
+    - 14
+    - 638875885
+    successRate: 0.0
+    description: null
+    consumerApiKey: "PUT /api/v1/consignservice/consigns"
+  - endpoint: "/api/v1/preserveservice/welcome"
+    method: "GET"
+    service: "ts-preserve-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 8
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 4
+    - 29
+    - 11
+    - 879493897
+    successRate: 0.0
+    description: null
+    consumerApiKey: "PUT /api/v1/consignservice/consigns"
+  - endpoint: "/api/v1/rebookservice/welcome"
+    method: "GET"
+    service: "ts-rebook-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 4
+    - 30
+    - 14
+    - 646437420
+    successRate: 0.0
+    description: null
+    consumerApiKey: "PUT /api/v1/consignservice/consigns"
+  - endpoint: "/api/v1/adminbasicservice/adminbasic/configs"
+    method: "GET"
+    service: "ts-admin-basic-info-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 7
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 4
+    - 30
+    - 16
+    - 559565801
+    successRate: 0.0
+    description: null
+    consumerApiKey: "PUT /api/v1/consignservice/consigns"
+  - endpoint: "/api/v1/configservice/configs"
+    method: "GET"
+    service: "ts-config-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 8
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 4
+    - 30
+    - 24
+    - 873029039
+    successRate: 0.1
+    description: null
+    consumerApiKey: "PUT /api/v1/consignservice/consigns"
+  - endpoint: "/api/v1/basicservice/basic/{stationName}"
+    method: "GET"
+    service: "ts-basic-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 4
+    - 30
+    - 19
+    - 541788043
+    successRate: 0.0
+    description: null
+    consumerApiKey: "PUT /api/v1/consignservice/consigns"
   from:
   - endpoint: "/api/v1/orderservice/order"
     method: "GET"
@@ -414,15 +2511,207 @@ parameterMappings:
     priority: 9
     lastUsed:
     - 2026
-    - 5
-    - 21
-    - 5
+    - 7
+    - 2
+    - 3
     - 13
-    - 40
-    - 38343456
+    - 8
+    - 414464923
     successRate: 0.0
     description: null
     consumerApiKey: null
+  - endpoint: "/api/v1/travelservice/trips"
+    method: "GET"
+    service: "ts-travel-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 7
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 20
+    - 11
+    - 32
+    - 202689602
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminorderservice/adminorder"
+  - endpoint: "/api/v1/travel2service/trips"
+    method: "GET"
+    service: "ts-travel2-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 8
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 20
+    - 12
+    - 29
+    - 324803285
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminorderservice/adminorder"
+  - endpoint: "/api/v1/preserveservice/welcome"
+    method: "GET"
+    service: "ts-preserve-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 6
+    - 7
+    - 53
+    - 497130602
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminorderservice/adminorder"
+  - endpoint: "/api/v1/basicservice/basic/{stationName}"
+    method: "GET"
+    service: "ts-basic-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 7
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 20
+    - 11
+    - 34
+    - 980075520
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminorderservice/adminorder"
+  - endpoint: "/api/v1/configservice/configs"
+    method: "GET"
+    service: "ts-config-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 8
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 20
+    - 12
+    - 11
+    - 215611724
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminorderservice/adminorder"
+  - endpoint: "/api/v1/adminbasicservice/adminbasic/stations"
+    method: "GET"
+    service: "ts-admin-basic-info-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 6
+    - 7
+    - 57
+    - 134758374
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminorderservice/adminorder"
+  - endpoint: "/api/v1/adminbasicservice/adminbasic/prices"
+    method: "GET"
+    service: "ts-admin-basic-info-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 8
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 20
+    - 11
+    - 41
+    - 500127008
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminorderservice/adminorder"
+  - endpoint: "/api/v1/travelplanservice/welcome"
+    method: "GET"
+    service: "ts-travel-plan-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 8
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 20
+    - 11
+    - 56
+    - 71936104
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminorderservice/adminorder"
+  - endpoint: "/api/v1/adminbasicservice/adminbasic/configs"
+    method: "GET"
+    service: "ts-admin-basic-info-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 20
+    - 12
+    - 29
+    - 322879925
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminorderservice/adminorder"
+  - endpoint: "/api/v1/basicservice/basic/{stationName}"
+    method: "GET"
+    service: "ts-basic-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 7
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 3
+    - 14
+    - 1
+    - 509462711
+    successRate: 0.0
+    description: null
+    consumerApiKey: "PUT /api/v1/consignservice/consigns"
+  - endpoint: "/api/v1/configservice/configs"
+    method: "GET"
+    service: "ts-config-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 8
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 3
+    - 15
+    - 34
+    - 978528865
+    successRate: 0.1
+    description: null
+    consumerApiKey: "PUT /api/v1/consignservice/consigns"
+  - endpoint: "/api/v1/orderservice/order"
+    method: "GET"
+    service: "ts-order-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 3
+    - 14
+    - 21
+    - 389318796
+    successRate: 0.0
+    description: null
+    consumerApiKey: "PUT /api/v1/consignservice/consigns"
   startStation:
   - endpoint: "/api/v1/stationservice/stations"
     method: "GET"
@@ -431,15 +2720,111 @@ parameterMappings:
     priority: 7
     lastUsed:
     - 2026
-    - 5
+    - 7
+    - 1
     - 21
-    - 4
-    - 34
-    - 33
-    - 746448003
+    - 0
+    - 15
+    - 67857692
     successRate: 0.0
     description: null
     consumerApiKey: null
+  - endpoint: "/api/v1/stationservice/stations"
+    method: "GET"
+    service: "ts-station-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 7
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 21
+    - 0
+    - 15
+    - 61801597
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminrouteservice/adminroute"
+  - endpoint: "/api/v1/basicservice/basic/{stationName}"
+    method: "GET"
+    service: "ts-basic-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 8
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 21
+    - 0
+    - 15
+    - 57140602
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminrouteservice/adminroute"
+  - endpoint: "/api/v1/adminbasicservice/adminbasic/stations"
+    method: "GET"
+    service: "ts-admin-basic-info-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 21
+    - 0
+    - 15
+    - 51034726
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminrouteservice/adminroute"
+  - endpoint: "/api/v1/routeservice/routes/{start}/{end}"
+    method: "GET"
+    service: "ts-route-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 8
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 21
+    - 0
+    - 15
+    - 59331729
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminrouteservice/adminroute"
+  - endpoint: "/api/v1/travelservice/trips"
+    method: "GET"
+    service: "ts-travel-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 20
+    - 48
+    - 12
+    - 539341917
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminrouteservice/adminroute"
+  - endpoint: "/api/v1/travel2service/trips"
+    method: "GET"
+    service: "ts-travel2-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 20
+    - 55
+    - 35
+    - 130358152
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminrouteservice/adminroute"
   state:
   - endpoint: "/api/v1/travelservice/trips"
     method: "GET"
@@ -497,15 +2882,847 @@ parameterMappings:
     priority: 9
     lastUsed:
     - 2026
-    - 5
+    - 7
+    - 1
     - 21
-    - 5
-    - 13
-    - 8
-    - 198693268
+    - 9
+    - 20
+    - 46601612
     successRate: 0.0
     description: null
     consumerApiKey: null
+  - endpoint: "/api/v1/userservice/users/id/{userId}"
+    method: "GET"
+    service: "ts-user-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 7
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 19
+    - 17
+    - 2
+    - 606628008
+    successRate: 0.0
+    description: null
+    consumerApiKey: "GET /api/v1/consignservice/consigns/account/{id}"
+  - endpoint: "/api/v1/adminuserservice/users"
+    method: "GET"
+    service: "ts-admin-user-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 8
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 19
+    - 17
+    - 20
+    - 497042248
+    successRate: 0.0
+    description: null
+    consumerApiKey: "GET /api/v1/consignservice/consigns/account/{id}"
+  - endpoint: "/api/v1/securityservice/securityConfigs"
+    method: "GET"
+    service: "ts-security-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 19
+    - 24
+    - 18
+    - 297448864
+    successRate: 0.0
+    description: null
+    consumerApiKey: "GET /api/v1/consignservice/consigns/account/{id}"
+  - endpoint: "/api/v1/basicservice/basic/{stationName}"
+    method: "GET"
+    service: "ts-basic-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 7
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 19
+    - 17
+    - 7
+    - 285633462
+    successRate: 0.0
+    description: null
+    consumerApiKey: "GET /api/v1/consignservice/consigns/account/{id}"
+  - endpoint: "/api/v1/configservice/configs"
+    method: "GET"
+    service: "ts-config-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 8
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 19
+    - 17
+    - 12
+    - 626298526
+    successRate: 0.0
+    description: null
+    consumerApiKey: "GET /api/v1/consignservice/consigns/account/{id}"
+  - endpoint: "/api/v1/trainservice/trains/{id}"
+    method: "GET"
+    service: "ts-train-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 19
+    - 24
+    - 18
+    - 298152448
+    successRate: 0.0
+    description: null
+    consumerApiKey: "GET /api/v1/consignservice/consigns/account/{id}"
+  - endpoint: "/api/v1/orderservice/order/{orderId}"
+    method: "GET"
+    service: "ts-order-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 19
+    - 24
+    - 18
+    - 298914105
+    successRate: 0.0
+    description: null
+    consumerApiKey: "GET /api/v1/consignservice/consigns/account/{id}"
+  - endpoint: "/api/v1/adminbasicservice/adminbasic/trains"
+    method: "GET"
+    service: "ts-admin-basic-info-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 19
+    - 24
+    - 18
+    - 299184582
+    successRate: 0.0
+    description: null
+    consumerApiKey: "GET /api/v1/consignservice/consigns/account/{id}"
+  - endpoint: "/api/v1/adminorderservice/adminorder"
+    method: "GET"
+    service: "ts-admin-order-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 8
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 19
+    - 17
+    - 27
+    - 147621089
+    successRate: 0.0
+    description: null
+    consumerApiKey: "GET /api/v1/consignservice/consigns/account/{id}"
+  - endpoint: "/api/v1/orderOtherService/orderOther/{orderId}"
+    method: "GET"
+    service: "ts-order-other-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 19
+    - 24
+    - 18
+    - 299462913
+    successRate: 0.0
+    description: null
+    consumerApiKey: "GET /api/v1/consignservice/consigns/account/{id}"
+  - endpoint: "/api/v1/travelservice/trips"
+    method: "GET"
+    service: "ts-travel-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 8
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 19
+    - 17
+    - 43
+    - 824360878
+    successRate: 0.0
+    description: null
+    consumerApiKey: "GET /api/v1/consignservice/consigns/account/{id}"
+  - endpoint: "/api/v1/contactservice/contacts/{id}"
+    method: "GET"
+    service: "ts-contacts-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 19
+    - 17
+    - 52
+    - 206843521
+    successRate: 0.0
+    description: null
+    consumerApiKey: "GET /api/v1/consignservice/consigns/account/{id}"
+  - endpoint: "/api/v1/adminbasicservice/adminbasic/configs"
+    method: "GET"
+    service: "ts-admin-basic-info-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 19
+    - 18
+    - 35
+    - 37929215
+    successRate: 0.0
+    description: null
+    consumerApiKey: "GET /api/v1/consignservice/consigns/account/{id}"
+  - endpoint: "/api/v1/preserveservice/welcome"
+    method: "GET"
+    service: "ts-preserve-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 8
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 19
+    - 18
+    - 47
+    - 99401135
+    successRate: 0.0
+    description: null
+    consumerApiKey: "GET /api/v1/consignservice/consigns/account/{id}"
+  - endpoint: "/api/v1/cancelservice/cancel/{orderId}/{loginId}"
+    method: "GET"
+    service: "ts-cancel-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 19
+    - 18
+    - 48
+    - 823911035
+    successRate: 0.0
+    description: null
+    consumerApiKey: "GET /api/v1/consignservice/consigns/account/{id}"
+  - endpoint: "/api/v1/adminbasicservice/adminbasic/stations"
+    method: "GET"
+    service: "ts-admin-basic-info-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 19
+    - 20
+    - 13
+    - 494201013
+    successRate: 0.0
+    description: null
+    consumerApiKey: "GET /api/v1/consignservice/consigns/account/{id}"
+  - endpoint: "/api/v1/travelservice/trips/{tripId}"
+    method: "GET"
+    service: "ts-travel-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 7
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 19
+    - 20
+    - 21
+    - 830243549
+    successRate: 0.0
+    description: null
+    consumerApiKey: "GET /api/v1/consignservice/consigns/account/{id}"
+  - endpoint: "/api/v1/travel2service/trips"
+    method: "GET"
+    service: "ts-travel2-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 8
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 19
+    - 20
+    - 22
+    - 572833987
+    successRate: 0.0
+    description: null
+    consumerApiKey: "GET /api/v1/consignservice/consigns/account/{id}"
+  - endpoint: "/api/v1/orderOtherService/orderOther"
+    method: "GET"
+    service: "ts-order-other-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 19
+    - 20
+    - 50
+    - 193564158
+    successRate: 0.0
+    description: null
+    consumerApiKey: "GET /api/v1/consignservice/consigns/account/{id}"
+  - endpoint: "/api/v1/waitorderservice/orders"
+    method: "GET"
+    service: "ts-wait-order-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 7
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 19
+    - 22
+    - 18
+    - 931704848
+    successRate: 0.0
+    description: null
+    consumerApiKey: "GET /api/v1/consignservice/consigns/account/{id}"
+  - endpoint: "/api/v1/cancelservice/cancel/refound/{orderId}"
+    method: "GET"
+    service: "ts-cancel-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 19
+    - 22
+    - 53
+    - 695156217
+    successRate: 0.0
+    description: null
+    consumerApiKey: "GET /api/v1/consignservice/consigns/account/{id}"
+  - endpoint: "/api/v1/routeservice/routes"
+    method: "GET"
+    service: "ts-route-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 19
+    - 24
+    - 7
+    - 681913418
+    successRate: 0.0
+    description: null
+    consumerApiKey: "GET /api/v1/consignservice/consigns/account/{id}"
+  - endpoint: "/api/v1/userservice/users/id/{userId}"
+    method: "GET"
+    service: "ts-user-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 7
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 19
+    - 34
+    - 11
+    - 744391891
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminbasicservice/adminbasic/trains"
+  - endpoint: "/api/v1/adminuserservice/users"
+    method: "GET"
+    service: "ts-admin-user-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 8
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 19
+    - 34
+    - 12
+    - 673836267
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminbasicservice/adminbasic/trains"
+  - endpoint: "/api/v1/contactservice/contacts/{id}"
+    method: "GET"
+    service: "ts-contacts-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 19
+    - 34
+    - 18
+    - 796962157
+    successRate: 0.1
+    description: null
+    consumerApiKey: "POST /api/v1/adminbasicservice/adminbasic/trains"
+  - endpoint: "/api/v1/userservice/users/id/{userId}"
+    method: "GET"
+    service: "ts-user-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 7
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 20
+    - 44
+    - 53
+    - 15796669
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminrouteservice/adminroute"
+  - endpoint: "/api/v1/contactservice/contacts/{id}"
+    method: "GET"
+    service: "ts-contacts-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 8
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 20
+    - 59
+    - 58
+    - 880106072
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminrouteservice/adminroute"
+  - endpoint: "/api/v1/adminuserservice/users"
+    method: "GET"
+    service: "ts-admin-user-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 6
+    - 16
+    - 24
+    - 236344930
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminrouteservice/adminroute"
+  - endpoint: "/api/v1/basicservice/basic/{stationName}"
+    method: "GET"
+    service: "ts-basic-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 6
+    - 16
+    - 24
+    - 247487617
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminrouteservice/adminroute"
+  - endpoint: "/api/v1/securityservice/securityConfigs"
+    method: "GET"
+    service: "ts-security-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 20
+    - 59
+    - 58
+    - 858548674
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminrouteservice/adminroute"
+  - endpoint: "/api/v1/userservice/users/id/{userId}"
+    method: "GET"
+    service: "ts-user-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 7
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 21
+    - 0
+    - 52
+    - 333260063
+    successRate: 0.0
+    description: null
+    consumerApiKey: "GET /api/v1/consignservice/consigns/order/{id}"
+  - endpoint: "/api/v1/adminuserservice/users"
+    method: "GET"
+    service: "ts-admin-user-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 8
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 21
+    - 1
+    - 3
+    - 265025336
+    successRate: 0.0
+    description: null
+    consumerApiKey: "GET /api/v1/consignservice/consigns/order/{id}"
+  - endpoint: "/api/v1/basicservice/basic/{stationName}"
+    method: "GET"
+    service: "ts-basic-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 6
+    - 16
+    - 48
+    - 558492300
+    successRate: 0.0
+    description: null
+    consumerApiKey: "GET /api/v1/consignservice/consigns/order/{id}"
+  - endpoint: "/api/v1/securityservice/securityConfigs"
+    method: "GET"
+    service: "ts-security-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 21
+    - 5
+    - 44
+    - 50169895
+    successRate: 0.0
+    description: null
+    consumerApiKey: "GET /api/v1/consignservice/consigns/order/{id}"
+  - endpoint: "/api/v1/adminbasicservice/adminbasic/configs"
+    method: "GET"
+    service: "ts-admin-basic-info-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 8
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 21
+    - 0
+    - 55
+    - 960585843
+    successRate: 0.0
+    description: null
+    consumerApiKey: "GET /api/v1/consignservice/consigns/order/{id}"
+  - endpoint: "/api/v1/configservice/configs"
+    method: "GET"
+    service: "ts-config-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 21
+    - 5
+    - 44
+    - 51115074
+    successRate: 0.0
+    description: null
+    consumerApiKey: "GET /api/v1/consignservice/consigns/order/{id}"
+  - endpoint: "/api/v1/adminbasicservice/adminbasic/stations"
+    method: "GET"
+    service: "ts-admin-basic-info-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 8
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 21
+    - 1
+    - 1
+    - 995978081
+    successRate: 0.0
+    description: null
+    consumerApiKey: "GET /api/v1/consignservice/consigns/order/{id}"
+  - endpoint: "/api/v1/orderservice/order/{orderId}"
+    method: "GET"
+    service: "ts-order-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 7
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 21
+    - 1
+    - 7
+    - 737196328
+    successRate: 0.0
+    description: null
+    consumerApiKey: "GET /api/v1/consignservice/consigns/order/{id}"
+  - endpoint: "/api/v1/preserveservice/welcome"
+    method: "GET"
+    service: "ts-preserve-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 8
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 21
+    - 1
+    - 10
+    - 126338590
+    successRate: 0.0
+    description: null
+    consumerApiKey: "GET /api/v1/consignservice/consigns/order/{id}"
+  - endpoint: "/api/v1/cancelservice/cancel/{orderId}/{loginId}"
+    method: "GET"
+    service: "ts-cancel-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 21
+    - 5
+    - 44
+    - 51998709
+    successRate: 0.0
+    description: null
+    consumerApiKey: "GET /api/v1/consignservice/consigns/order/{id}"
+  - endpoint: "/api/v1/contactservice/contacts/{id}"
+    method: "GET"
+    service: "ts-contacts-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 21
+    - 5
+    - 44
+    - 52927053
+    successRate: 0.0
+    description: null
+    consumerApiKey: "GET /api/v1/consignservice/consigns/order/{id}"
+  - endpoint: "/api/v1/trainservice/trains/{id}"
+    method: "GET"
+    service: "ts-train-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 8
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 21
+    - 2
+    - 45
+    - 750953746
+    successRate: 0.0
+    description: null
+    consumerApiKey: "GET /api/v1/consignservice/consigns/order/{id}"
+  - endpoint: "/api/v1/adminorderservice/adminorder"
+    method: "GET"
+    service: "ts-admin-order-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 8
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 21
+    - 3
+    - 21
+    - 952164034
+    successRate: 0.0
+    description: null
+    consumerApiKey: "GET /api/v1/consignservice/consigns/order/{id}"
+  - endpoint: "/api/v1/orderOtherService/orderOther/{orderId}"
+    method: "GET"
+    service: "ts-order-other-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 21
+    - 3
+    - 22
+    - 781809117
+    successRate: 0.0
+    description: null
+    consumerApiKey: "GET /api/v1/consignservice/consigns/order/{id}"
+  - endpoint: "/api/v1/adminbasicservice/adminbasic/trains"
+    method: "GET"
+    service: "ts-admin-basic-info-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 8
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 21
+    - 3
+    - 46
+    - 869148589
+    successRate: 0.0
+    description: null
+    consumerApiKey: "GET /api/v1/consignservice/consigns/order/{id}"
+  - endpoint: "/api/v1/stationservice/stations"
+    method: "GET"
+    service: "ts-station-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 21
+    - 5
+    - 5
+    - 69284031
+    successRate: 0.0
+    description: null
+    consumerApiKey: "GET /api/v1/consignservice/consigns/order/{id}"
+  - endpoint: "/api/v1/userservice/users/id/{userId}"
+    method: "GET"
+    service: "ts-user-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 7
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 21
+    - 8
+    - 12
+    - 695721189
+    successRate: 0.0
+    description: null
+    consumerApiKey: "PUT /api/v1/adminbasicservice/adminbasic/stations"
+  - endpoint: "/api/v1/contactservice/contacts/{id}"
+    method: "GET"
+    service: "ts-contacts-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 8
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 21
+    - 8
+    - 39
+    - 96336252
+    successRate: 0.0
+    description: null
+    consumerApiKey: "PUT /api/v1/adminbasicservice/adminbasic/stations"
+  - endpoint: "/api/v1/adminuserservice/users"
+    method: "GET"
+    service: "ts-admin-user-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 6
+    - 16
+    - 50
+    - 811150465
+    successRate: 0.0
+    description: null
+    consumerApiKey: "PUT /api/v1/adminbasicservice/adminbasic/stations"
+  - endpoint: "/api/v1/securityservice/securityConfigs"
+    method: "GET"
+    service: "ts-security-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 21
+    - 9
+    - 20
+    - 44250668
+    successRate: 0.0
+    description: null
+    consumerApiKey: "PUT /api/v1/adminbasicservice/adminbasic/stations"
+  - endpoint: "/api/v1/orderservice/order/{orderId}"
+    method: "GET"
+    service: "ts-order-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 21
+    - 9
+    - 20
+    - 45103651
+    successRate: 0.0
+    description: null
+    consumerApiKey: "PUT /api/v1/adminbasicservice/adminbasic/stations"
+  - endpoint: "/api/v1/basicservice/basic/{stationName}"
+    method: "GET"
+    service: "ts-basic-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 21
+    - 9
+    - 20
+    - 45815211
+    successRate: 0.0
+    description: null
+    consumerApiKey: "PUT /api/v1/adminbasicservice/adminbasic/stations"
   startPlace:
   - endpoint: "/api/v1/travelservice/trips"
     method: "GET"
@@ -514,12 +3731,12 @@ parameterMappings:
     priority: 7
     lastUsed:
     - 2026
-    - 3
-    - 22
-    - 17
-    - 12
-    - 20
-    - 894127065
+    - 7
+    - 2
+    - 4
+    - 39
+    - 21
+    - 347087332
     successRate: 0.0
     description: null
     consumerApiKey: null
@@ -530,15 +3747,351 @@ parameterMappings:
     priority: 8
     lastUsed:
     - 2026
-    - 5
-    - 21
-    - 5
-    - 12
-    - 55
-    - 281017347
+    - 7
+    - 2
+    - 4
+    - 41
+    - 11
+    - 291282176
     successRate: 0.0
     description: null
     consumerApiKey: null
+  - endpoint: "/api/v1/travelservice/trips"
+    method: "GET"
+    service: "ts-travel-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 7
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 2
+    - 43
+    - 14
+    - 153552189
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/travel2service/trips/left"
+  - endpoint: "/api/v1/travel2service/trips"
+    method: "GET"
+    service: "ts-travel2-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 8
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 6
+    - 3
+    - 7
+    - 206369775
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/travel2service/trips/left"
+  - endpoint: "/api/v1/routeplanservice/welcome"
+    method: "GET"
+    service: "ts-route-plan-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 6
+    - 3
+    - 7
+    - 185212041
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/travel2service/trips/left"
+  - endpoint: "/api/v1/travelplanservice/welcome"
+    method: "GET"
+    service: "ts-travel-plan-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 6
+    - 3
+    - 7
+    - 190710663
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/travel2service/trips/left"
+  - endpoint: "/api/v1/basicservice/basic/{stationName}"
+    method: "GET"
+    service: "ts-basic-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 7
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 19
+    - 30
+    - 3
+    - 60195089
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/travel2service/trips/left"
+  - endpoint: "/api/v1/admintravelservice/admintravel"
+    method: "GET"
+    service: "ts-admin-travel-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 6
+    - 3
+    - 7
+    - 196421334
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/travel2service/trips/left"
+  - endpoint: "/api/v1/preserveservice/welcome"
+    method: "GET"
+    service: "ts-preserve-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 6
+    - 3
+    - 7
+    - 201588586
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/travel2service/trips/left"
+  - endpoint: "/api/v1/travelservice/trips"
+    method: "GET"
+    service: "ts-travel-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 7
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 2
+    - 47
+    - 1
+    - 713601479
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/travelservice/trips/left"
+  - endpoint: "/api/v1/travel2service/trips"
+    method: "GET"
+    service: "ts-travel2-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 8
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 6
+    - 4
+    - 48
+    - 694820450
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/travelservice/trips/left"
+  - endpoint: "/api/v1/routeplanservice/welcome"
+    method: "GET"
+    service: "ts-route-plan-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 6
+    - 4
+    - 48
+    - 661881862
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/travelservice/trips/left"
+  - endpoint: "/api/v1/travelplanservice/welcome"
+    method: "GET"
+    service: "ts-travel-plan-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 6
+    - 4
+    - 48
+    - 667922403
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/travelservice/trips/left"
+  - endpoint: "/api/v1/preserveservice/welcome"
+    method: "GET"
+    service: "ts-preserve-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 6
+    - 4
+    - 48
+    - 673851807
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/travelservice/trips/left"
+  - endpoint: "/api/v1/basicservice/basic/{stationName}"
+    method: "GET"
+    service: "ts-basic-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 6
+    - 4
+    - 48
+    - 687888662
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/travelservice/trips/left"
+  - endpoint: "/api/v1/travelservice/trips"
+    method: "GET"
+    service: "ts-travel-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 7
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 4
+    - 40
+    - 8
+    - 85316574
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/travelplanservice/travelPlan/cheapest"
+  - endpoint: "/api/v1/travel2service/trips"
+    method: "GET"
+    service: "ts-travel2-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 8
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 4
+    - 42
+    - 36
+    - 223656715
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/travelplanservice/travelPlan/cheapest"
+  - endpoint: "/api/v1/basicservice/basic/{stationName}"
+    method: "GET"
+    service: "ts-basic-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 4
+    - 42
+    - 36
+    - 199101842
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/travelplanservice/travelPlan/cheapest"
+  - endpoint: "/api/v1/routeplanservice/welcome"
+    method: "GET"
+    service: "ts-route-plan-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 4
+    - 42
+    - 36
+    - 206100804
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/travelplanservice/travelPlan/cheapest"
+  - endpoint: "/api/v1/travelplanservice/welcome"
+    method: "GET"
+    service: "ts-travel-plan-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 4
+    - 42
+    - 36
+    - 212374928
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/travelplanservice/travelPlan/cheapest"
+  - endpoint: "/api/v1/preserveservice/welcome"
+    method: "GET"
+    service: "ts-preserve-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 4
+    - 42
+    - 36
+    - 218047390
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/travelplanservice/travelPlan/cheapest"
+  - endpoint: "/api/v1/adminbasicservice/adminbasic/stations"
+    method: "GET"
+    service: "ts-admin-basic-info-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 8
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 4
+    - 42
+    - 39
+    - 97895708
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/travelplanservice/travelPlan/cheapest"
+  - endpoint: "/api/v1/stationservice/stations"
+    method: "GET"
+    service: "ts-station-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 4
+    - 42
+    - 42
+    - 900924223
+    successRate: 0.1
+    description: null
+    consumerApiKey: "POST /api/v1/travelplanservice/travelPlan/cheapest"
   endStation:
   - endpoint: "/api/v1/routeservice/routes/{start}/{end}"
     method: "GET"
@@ -547,12 +4100,12 @@ parameterMappings:
     priority: 7
     lastUsed:
     - 2026
-    - 5
-    - 5
-    - 3
-    - 40
-    - 10
-    - 720709016
+    - 7
+    - 1
+    - 20
+    - 59
+    - 54
+    - 308908952
     successRate: 0.0
     description: null
     consumerApiKey: "POST /api/v1/adminrouteservice/adminroute"
@@ -563,12 +4116,12 @@ parameterMappings:
     priority: 8
     lastUsed:
     - 2026
-    - 5
-    - 5
-    - 3
-    - 40
-    - 13
-    - 21178284
+    - 7
+    - 1
+    - 20
+    - 59
+    - 54
+    - 307649933
     successRate: 0.0
     description: null
     consumerApiKey: "POST /api/v1/adminrouteservice/adminroute"
@@ -579,12 +4132,92 @@ parameterMappings:
     priority: 9
     lastUsed:
     - 2026
-    - 5
-    - 21
+    - 7
+    - 1
+    - 20
+    - 59
+    - 54
+    - 313141027
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminrouteservice/adminroute"
+  - endpoint: "/api/v1/basicservice/basic/{stationName}"
+    method: "GET"
+    service: "ts-basic-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 7
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 20
+    - 59
+    - 54
+    - 311811713
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminrouteservice/adminroute"
+  - endpoint: "/api/v1/adminbasicservice/adminbasic/stations"
+    method: "GET"
+    service: "ts-admin-basic-info-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 20
+    - 59
+    - 54
+    - 305206024
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminrouteservice/adminroute"
+  - endpoint: "/api/v1/travelservice/trips"
+    method: "GET"
+    service: "ts-travel-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 8
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 20
+    - 34
     - 4
+    - 823858708
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminrouteservice/adminroute"
+  - endpoint: "/api/v1/travel2service/trips"
+    method: "GET"
+    service: "ts-travel2-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 20
     - 34
-    - 34
-    - 257701619
+    - 5
+    - 708419793
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminrouteservice/adminroute"
+  - endpoint: "/api/v1/routeplanservice/welcome"
+    method: "GET"
+    service: "ts-route-plan-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 20
+    - 45
+    - 23
+    - 660923938
     successRate: 0.0
     description: null
     consumerApiKey: "POST /api/v1/adminrouteservice/adminroute"
@@ -596,15 +4229,63 @@ parameterMappings:
     priority: 8
     lastUsed:
     - 2026
-    - 5
-    - 21
-    - 5
-    - 14
-    - 4
-    - 209533002
+    - 7
+    - 1
+    - 20
+    - 22
+    - 44
+    - 876109728
     successRate: 0.0
     description: null
     consumerApiKey: null
+  - endpoint: "/api/v1/travelservice/trips"
+    method: "GET"
+    service: "ts-travel-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 7
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 6
+    - 9
+    - 25
+    - 401092995
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminorderservice/adminorder"
+  - endpoint: "/api/v1/travel2service/trips"
+    method: "GET"
+    service: "ts-travel2-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 8
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 6
+    - 9
+    - 25
+    - 406861628
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminorderservice/adminorder"
+  - endpoint: "/api/v1/travelplanservice/welcome"
+    method: "GET"
+    service: "ts-travel-plan-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 6
+    - 9
+    - 25
+    - 395324189
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminorderservice/adminorder"
   consignee:
   - endpoint: "/api/v1/orderservice/order"
     method: "GET"
@@ -679,15 +4360,95 @@ parameterMappings:
     priority: 8
     lastUsed:
     - 2026
-    - 5
-    - 21
-    - 4
-    - 35
     - 7
-    - 762033470
+    - 1
+    - 20
+    - 59
+    - 49
+    - 924286687
     successRate: 0.0
     description: null
     consumerApiKey: null
+  - endpoint: "/api/v1/travelservice/trips"
+    method: "GET"
+    service: "ts-travel-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 7
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 20
+    - 34
+    - 49
+    - 554216317
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminrouteservice/adminroute"
+  - endpoint: "/api/v1/travel2service/trips"
+    method: "GET"
+    service: "ts-travel2-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 8
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 20
+    - 59
+    - 49
+    - 914262036
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminrouteservice/adminroute"
+  - endpoint: "/api/v1/travelplanservice/welcome"
+    method: "GET"
+    service: "ts-travel-plan-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 6
+    - 16
+    - 18
+    - 590631887
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminrouteservice/adminroute"
+  - endpoint: "/api/v1/routeplanservice/welcome"
+    method: "GET"
+    service: "ts-route-plan-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 6
+    - 16
+    - 18
+    - 598128990
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminrouteservice/adminroute"
+  - endpoint: "/api/v1/routeservice/routes"
+    method: "GET"
+    service: "ts-route-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 20
+    - 59
+    - 49
+    - 908510558
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminrouteservice/adminroute"
   weight:
   - endpoint: "/api/v1/userservice/users"
     method: "GET"
@@ -712,12 +4473,12 @@ parameterMappings:
     priority: 8
     lastUsed:
     - 2026
-    - 5
-    - 21
-    - 4
-    - 35
-    - 34
-    - 593549840
+    - 7
+    - 2
+    - 6
+    - 17
+    - 42
+    - 12161940
     successRate: 0.0
     description: null
     consumerApiKey: null
@@ -746,15 +4507,175 @@ parameterMappings:
     priority: 8
     lastUsed:
     - 2026
-    - 5
-    - 21
-    - 5
-    - 13
-    - 34
-    - 271904734
+    - 7
+    - 1
+    - 20
+    - 9
+    - 29
+    - 590628700
     successRate: 0.0
     description: null
     consumerApiKey: null
+  - endpoint: "/api/v1/priceservice/prices"
+    method: "GET"
+    service: "ts-price-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 7
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 20
+    - 9
+    - 3
+    - 886924747
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminorderservice/adminorder"
+  - endpoint: "/api/v1/travelservice/trips"
+    method: "GET"
+    service: "ts-travel-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 8
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 20
+    - 9
+    - 47
+    - 121123808
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminorderservice/adminorder"
+  - endpoint: "/api/v1/travel2service/trips"
+    method: "GET"
+    service: "ts-travel2-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 6
+    - 7
+    - 45
+    - 219660032
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminorderservice/adminorder"
+  - endpoint: "/api/v1/paymentservice/payment"
+    method: "GET"
+    service: "ts-payment-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 8
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 20
+    - 9
+    - 33
+    - 5996896
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminorderservice/adminorder"
+  - endpoint: "/api/v1/inside_pay_service/inside_payment/drawback/{userId}/{money}"
+    method: "GET"
+    service: "ts-inside-payment-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 6
+    - 7
+    - 45
+    - 206673306
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminorderservice/adminorder"
+  - endpoint: "/api/v1/inside_pay_service/inside_payment/money"
+    method: "GET"
+    service: "ts-inside-payment-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 6
+    - 7
+    - 45
+    - 213892908
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminorderservice/adminorder"
+  - endpoint: "/api/v1/basicservice/basic/{stationName}"
+    method: "GET"
+    service: "ts-basic-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 8
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 20
+    - 9
+    - 36
+    - 259642235
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminorderservice/adminorder"
+  - endpoint: "/api/v1/adminbasicservice/adminbasic/prices"
+    method: "GET"
+    service: "ts-admin-basic-info-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 20
+    - 9
+    - 57
+    - 181838422
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminorderservice/adminorder"
+  - endpoint: "/api/v1/orderservice/order/price/{orderId}"
+    method: "GET"
+    service: "ts-order-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 8
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 20
+    - 9
+    - 46
+    - 258247955
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminorderservice/adminorder"
+  - endpoint: "/api/v1/configservice/configs"
+    method: "GET"
+    service: "ts-config-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 20
+    - 9
+    - 57
+    - 184205770
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminorderservice/adminorder"
   accountId:
   - endpoint: "/api/v1/userservice/users"
     method: "GET"
@@ -763,15 +4684,528 @@ parameterMappings:
     priority: 8
     lastUsed:
     - 2026
+    - 7
+    - 2
+    - 6
     - 5
-    - 21
-    - 5
-    - 15
-    - 59
-    - 241820287
+    - 17
+    - 544689553
     successRate: 0.0
     description: null
     consumerApiKey: null
+  - endpoint: "/api/v1/userservice/users"
+    method: "GET"
+    service: "ts-user-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 7
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 19
+    - 44
+    - 31
+    - 58463465
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminorderservice/adminorder"
+  - endpoint: "/api/v1/adminuserservice/users"
+    method: "GET"
+    service: "ts-admin-user-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 8
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 6
+    - 5
+    - 59
+    - 494170763
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminorderservice/adminorder"
+  - endpoint: "/api/v1/securityservice/securityConfigs/{accountId}"
+    method: "GET"
+    service: "ts-security-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 6
+    - 5
+    - 15
+    - 423788642
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminorderservice/adminorder"
+  - endpoint: "/api/v1/basicservice/basic/{stationName}"
+    method: "GET"
+    service: "ts-basic-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 6
+    - 5
+    - 59
+    - 487778662
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminorderservice/adminorder"
+  - endpoint: "/api/v1/userservice/users/id/{userId}"
+    method: "GET"
+    service: "ts-user-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 7
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 17
+    - 37
+    - 27
+    - 506455617
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminorderservice/adminorder"
+  - endpoint: "/api/v1/userservice/users"
+    method: "GET"
+    service: "ts-user-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 7
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 20
+    - 23
+    - 45
+    - 15112780
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/contactservice/contacts/admin"
+  - endpoint: "/api/v1/adminuserservice/users"
+    method: "GET"
+    service: "ts-admin-user-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 8
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 6
+    - 10
+    - 20
+    - 671892595
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/contactservice/contacts/admin"
+  - endpoint: "/api/v1/securityservice/securityConfigs/{accountId}"
+    method: "GET"
+    service: "ts-security-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 20
+    - 23
+    - 44
+    - 999845412
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/contactservice/contacts/admin"
+  - endpoint: "/api/v1/userservice/users/id/{userId}"
+    method: "GET"
+    service: "ts-user-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 7
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 20
+    - 23
+    - 45
+    - 19230503
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/contactservice/contacts/admin"
+  - endpoint: "/api/v1/userservice/users/id/{userId}"
+    method: "GET"
+    service: "ts-user-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 7
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 17
+    - 42
+    - 22
+    - 960814540
+    successRate: 0.0
+    description: null
+    consumerApiKey: "GET /api/v1/contactservice/contacts/account/{accountId}"
+  - endpoint: "/api/v1/adminuserservice/users"
+    method: "GET"
+    service: "ts-admin-user-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 8
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 6
+    - 16
+    - 12
+    - 744667033
+    successRate: 0.0
+    description: null
+    consumerApiKey: "GET /api/v1/contactservice/contacts/account/{accountId}"
+  - endpoint: "/api/v1/securityservice/securityConfigs/{accountId}"
+    method: "GET"
+    service: "ts-security-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 6
+    - 10
+    - 48
+    - 804009192
+    successRate: 0.0
+    description: null
+    consumerApiKey: "GET /api/v1/contactservice/contacts/account/{accountId}"
+  - endpoint: "/api/v1/userservice/users"
+    method: "GET"
+    service: "ts-user-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 7
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 17
+    - 42
+    - 38
+    - 516298291
+    successRate: 0.0
+    description: null
+    consumerApiKey: "GET /api/v1/contactservice/contacts/account/{accountId}"
+  - endpoint: "/api/v1/orderservice/order/security/{checkDate}/{accountId}"
+    method: "GET"
+    service: "ts-order-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 6
+    - 16
+    - 12
+    - 716555681
+    successRate: 0.0
+    description: null
+    consumerApiKey: "GET /api/v1/contactservice/contacts/account/{accountId}"
+  - endpoint: "/api/v1/basicservice/basic/{stationName}"
+    method: "GET"
+    service: "ts-basic-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 6
+    - 16
+    - 12
+    - 738353369
+    successRate: 0.0
+    description: null
+    consumerApiKey: "GET /api/v1/contactservice/contacts/account/{accountId}"
+  - endpoint: "/api/v1/userservice/users"
+    method: "GET"
+    service: "ts-user-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 7
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 17
+    - 49
+    - 26
+    - 652580356
+    successRate: 0.0
+    description: null
+    consumerApiKey: "PUT /api/v1/consignservice/consigns"
+  - endpoint: "/api/v1/adminuserservice/users"
+    method: "GET"
+    service: "ts-admin-user-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 8
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 21
+    - 50
+    - 58
+    - 450121634
+    successRate: 0.0
+    description: null
+    consumerApiKey: "PUT /api/v1/consignservice/consigns"
+  - endpoint: "/api/v1/securityservice/securityConfigs/{accountId}"
+    method: "GET"
+    service: "ts-security-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 6
+    - 18
+    - 5
+    - 708630433
+    successRate: 0.0
+    description: null
+    consumerApiKey: "PUT /api/v1/consignservice/consigns"
+  - endpoint: "/api/v1/basicservice/basic/{stationName}"
+    method: "GET"
+    service: "ts-basic-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 6
+    - 31
+    - 10
+    - 988913638
+    successRate: 0.0
+    description: null
+    consumerApiKey: "PUT /api/v1/consignservice/consigns"
+  - endpoint: "/api/v1/userservice/users/id/{userId}"
+    method: "GET"
+    service: "ts-user-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 7
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 17
+    - 49
+    - 52
+    - 670603796
+    successRate: 0.0
+    description: null
+    consumerApiKey: "PUT /api/v1/consignservice/consigns"
+  - endpoint: "/api/v1/contactservice/contacts/account/{accountId}"
+    method: "GET"
+    service: "ts-contacts-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 17
+    - 52
+    - 52
+    - 914591615
+    successRate: 0.0
+    description: null
+    consumerApiKey: "PUT /api/v1/consignservice/consigns"
+  - endpoint: "/api/v1/orderservice/order/security/{checkDate}/{accountId}"
+    method: "GET"
+    service: "ts-order-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 6
+    - 5
+    - 59
+    - 477308890
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminorderservice/adminorder"
+  - endpoint: "/api/v1/adminorderservice/adminorder"
+    method: "GET"
+    service: "ts-admin-order-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 8
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 20
+    - 28
+    - 14
+    - 953294475
+    successRate: 0.0
+    description: null
+    consumerApiKey: "GET /api/v1/contactservice/contacts/account/{accountId}"
+  - endpoint: "/api/v1/orderOtherService/orderOther/security/{checkDate}/{accountId}"
+    method: "GET"
+    service: "ts-order-other-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 6
+    - 16
+    - 12
+    - 723182735
+    successRate: 0.0
+    description: null
+    consumerApiKey: "GET /api/v1/contactservice/contacts/account/{accountId}"
+  - endpoint: "/api/v1/orderservice/order/security/{checkDate}/{accountId}"
+    method: "GET"
+    service: "ts-order-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 6
+    - 31
+    - 10
+    - 975243600
+    successRate: 0.0
+    description: null
+    consumerApiKey: "PUT /api/v1/consignservice/consigns"
+  - endpoint: "/api/v1/adminorderservice/adminorder"
+    method: "GET"
+    service: "ts-admin-order-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 6
+    - 31
+    - 10
+    - 995495803
+    successRate: 0.0
+    description: null
+    consumerApiKey: "PUT /api/v1/consignservice/consigns"
+  - endpoint: "/api/v1/basicservice/basic/{stationName}"
+    method: "GET"
+    service: "ts-basic-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 6
+    - 10
+    - 20
+    - 664520373
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/contactservice/contacts/admin"
+  phoneNumber:
+  - endpoint: "/api/v1/userservice/users"
+    method: "GET"
+    service: "ts-user-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 7
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 20
+    - 27
+    - 52
+    - 407612354
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/contactservice/contacts/admin"
+  - endpoint: "/api/v1/contactservice/contacts"
+    method: "GET"
+    service: "ts-contacts-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 8
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 20
+    - 27
+    - 52
+    - 403149601
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/contactservice/contacts/admin"
+  - endpoint: "/api/v1/adminuserservice/users"
+    method: "GET"
+    service: "ts-admin-user-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 6
+    - 10
+    - 27
+    - 66145197
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/contactservice/contacts/admin"
+  - endpoint: "/api/v1/userservice/users/{userName}"
+    method: "GET"
+    service: "ts-user-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 7
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 20
+    - 27
+    - 52
+    - 410307180
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/contactservice/contacts/admin"
+  - endpoint: "/api/v1/notifyservice/welcome"
+    method: "GET"
+    service: "ts-notification-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 6
+    - 10
+    - 27
+    - 73362482
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/contactservice/contacts/admin"
   boughtDateEnd:
   - endpoint: "/api/v1/orderservice/order"
     method: "GET"
@@ -812,12 +5246,12 @@ parameterMappings:
     priority: 9
     lastUsed:
     - 2026
+    - 7
+    - 2
     - 5
-    - 21
-    - 5
-    - 12
-    - 9
-    - 280022385
+    - 43
+    - 3
+    - 828702895
     successRate: 0.0
     description: null
     consumerApiKey: null
@@ -879,15 +5313,239 @@ parameterMappings:
     priority: 8
     lastUsed:
     - 2026
-    - 5
-    - 21
-    - 5
-    - 13
-    - 11
-    - 139467467
+    - 7
+    - 2
+    - 4
+    - 46
+    - 45
+    - 785725803
     successRate: 0.0
     description: null
     consumerApiKey: null
+  - endpoint: "/api/v1/userservice/users/{userName}"
+    method: "GET"
+    service: "ts-user-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 7
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 21
+    - 9
+    - 10
+    - 996470100
+    successRate: 0.0
+    description: null
+    consumerApiKey: "PUT /api/v1/adminbasicservice/adminbasic/stations"
+  - endpoint: "/api/v1/adminuserservice/users"
+    method: "GET"
+    service: "ts-admin-user-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 8
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 21
+    - 9
+    - 11
+    - 37826325
+    successRate: 0.0
+    description: null
+    consumerApiKey: "PUT /api/v1/adminbasicservice/adminbasic/stations"
+  - endpoint: "/api/v1/contactservice/contacts"
+    method: "GET"
+    service: "ts-contacts-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 21
+    - 9
+    - 11
+    - 7781746
+    successRate: 0.0
+    description: null
+    consumerApiKey: "PUT /api/v1/adminbasicservice/adminbasic/stations"
+  - endpoint: "/api/v1/securityservice/securityConfigs"
+    method: "GET"
+    service: "ts-security-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 21
+    - 9
+    - 11
+    - 29407957
+    successRate: 0.0
+    description: null
+    consumerApiKey: "PUT /api/v1/adminbasicservice/adminbasic/stations"
+  - endpoint: "/api/v1/basicservice/basic/{stationName}"
+    method: "GET"
+    service: "ts-basic-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 6
+    - 16
+    - 52
+    - 927373468
+    successRate: 0.0
+    description: null
+    consumerApiKey: "PUT /api/v1/adminbasicservice/adminbasic/stations"
+  - endpoint: "/api/v1/userservice/users/{userName}"
+    method: "GET"
+    service: "ts-user-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 7
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 2
+    - 45
+    - 38
+    - 731640136
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminbasicservice/adminbasic/trains"
+  - endpoint: "/api/v1/contactservice/contacts"
+    method: "GET"
+    service: "ts-contacts-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 8
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 2
+    - 45
+    - 44
+    - 723461466
+    successRate: 0.1
+    description: null
+    consumerApiKey: "POST /api/v1/adminbasicservice/adminbasic/trains"
+  - endpoint: "/api/v1/adminuserservice/users"
+    method: "GET"
+    service: "ts-admin-user-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 2
+    - 45
+    - 41
+    - 594328865
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminbasicservice/adminbasic/trains"
+  - endpoint: "/api/v1/userservice/users/{userName}"
+    method: "GET"
+    service: "ts-user-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 7
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 4
+    - 46
+    - 39
+    - 290077712
+    successRate: 0.0
+    description: null
+    consumerApiKey: "PUT /api/v1/adminbasicservice/adminbasic/trains"
+  - endpoint: "/api/v1/contactservice/contacts"
+    method: "GET"
+    service: "ts-contacts-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 8
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 4
+    - 46
+    - 43
+    - 555678373
+    successRate: 0.1
+    description: null
+    consumerApiKey: "PUT /api/v1/adminbasicservice/adminbasic/trains"
+  - endpoint: "/api/v1/adminuserservice/users"
+    method: "GET"
+    service: "ts-admin-user-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 4
+    - 46
+    - 40
+    - 971148039
+    successRate: 0.0
+    description: null
+    consumerApiKey: "PUT /api/v1/adminbasicservice/adminbasic/trains"
+  - endpoint: "/api/v1/userservice/users/{userName}"
+    method: "GET"
+    service: "ts-user-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 7
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 4
+    - 46
+    - 47
+    - 381161954
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminbasicservice/adminbasic/stations"
+  - endpoint: "/api/v1/contactservice/contacts"
+    method: "GET"
+    service: "ts-contacts-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 8
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 4
+    - 46
+    - 51
+    - 804928916
+    successRate: 0.1
+    description: null
+    consumerApiKey: "POST /api/v1/adminbasicservice/adminbasic/stations"
+  - endpoint: "/api/v1/adminuserservice/users"
+    method: "GET"
+    service: "ts-admin-user-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 4
+    - 46
+    - 49
+    - 51661421
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminbasicservice/adminbasic/stations"
   travelDateStart:
   - endpoint: "/api/v1/travelservice/trips"
     method: "GET"
@@ -896,12 +5554,12 @@ parameterMappings:
     priority: 7
     lastUsed:
     - 2026
-    - 3
-    - 22
-    - 18
-    - 31
-    - 52
-    - 931666679
+    - 7
+    - 2
+    - 6
+    - 0
+    - 59
+    - 133312721
     successRate: 0.0
     description: null
     consumerApiKey: null
@@ -912,15 +5570,143 @@ parameterMappings:
     priority: 8
     lastUsed:
     - 2026
+    - 7
+    - 2
     - 5
-    - 21
-    - 5
-    - 12
-    - 33
-    - 425731510
+    - 59
+    - 57
+    - 61270131
     successRate: 0.0
     description: null
     consumerApiKey: null
+  - endpoint: "/api/v1/travelservice/trips"
+    method: "GET"
+    service: "ts-travel-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 7
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 5
+    - 48
+    - 44
+    - 64351808
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/orderOtherService/orderOther/refresh"
+  - endpoint: "/api/v1/travel2service/trips"
+    method: "GET"
+    service: "ts-travel2-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 8
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 5
+    - 48
+    - 44
+    - 75619174
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/orderOtherService/orderOther/refresh"
+  - endpoint: "/api/v1/travelplanservice/welcome"
+    method: "GET"
+    service: "ts-travel-plan-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 5
+    - 48
+    - 44
+    - 42260376
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/orderOtherService/orderOther/refresh"
+  - endpoint: "/api/v1/travelservice/trips"
+    method: "GET"
+    service: "ts-travel-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 7
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 6
+    - 0
+    - 59
+    - 126334801
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/orderservice/order/refresh"
+  - endpoint: "/api/v1/travel2service/trips"
+    method: "GET"
+    service: "ts-travel2-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 8
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 6
+    - 0
+    - 59
+    - 140408845
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/orderservice/order/refresh"
+  - endpoint: "/api/v1/travelplanservice/welcome"
+    method: "GET"
+    service: "ts-travel-plan-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 6
+    - 0
+    - 59
+    - 112752359
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/orderservice/order/refresh"
+  - endpoint: "/api/v1/basicservice/basic/{stationName}"
+    method: "GET"
+    service: "ts-basic-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 5
+    - 48
+    - 44
+    - 57955222
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/orderOtherService/orderOther/refresh"
+  - endpoint: "/api/v1/preserveservice/welcome"
+    method: "GET"
+    service: "ts-preserve-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 6
+    - 0
+    - 59
+    - 119628899
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/orderservice/order/refresh"
   trainNumber:
   - endpoint: "/api/v1/trainservice/trains"
     method: "GET"
@@ -929,15 +5715,95 @@ parameterMappings:
     priority: 7
     lastUsed:
     - 2026
-    - 5
-    - 21
-    - 5
-    - 13
-    - 57
-    - 586123311
+    - 7
+    - 1
+    - 20
+    - 20
+    - 14
+    - 441625557
     successRate: 0.0
     description: null
     consumerApiKey: null
+  - endpoint: "/api/v1/trainservice/trains/byName/{name}"
+    method: "GET"
+    service: "ts-train-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 7
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 20
+    - 20
+    - 14
+    - 440787107
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminorderservice/adminorder"
+  - endpoint: "/api/v1/adminbasicservice/adminbasic/trains"
+    method: "GET"
+    service: "ts-admin-basic-info-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 8
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 20
+    - 20
+    - 14
+    - 430785837
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminorderservice/adminorder"
+  - endpoint: "/api/v1/basicservice/basic/{stationName}"
+    method: "GET"
+    service: "ts-basic-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 20
+    - 20
+    - 14
+    - 442175923
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminorderservice/adminorder"
+  - endpoint: "/api/v1/travelservice/trips"
+    method: "GET"
+    service: "ts-travel-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 8
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 20
+    - 19
+    - 19
+    - 323358132
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminorderservice/adminorder"
+  - endpoint: "/api/v1/travel2service/trips"
+    method: "GET"
+    service: "ts-travel2-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 20
+    - 20
+    - 14
+    - 445275130
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminorderservice/adminorder"
   trainTypeName:
   - endpoint: "/api/v1/routeservice/routes"
     method: "GET"
@@ -963,15 +5829,191 @@ parameterMappings:
     priority: 7
     lastUsed:
     - 2026
-    - 5
-    - 21
-    - 5
-    - 13
-    - 52
-    - 419819452
+    - 7
+    - 1
+    - 20
+    - 17
+    - 1
+    - 494453299
     successRate: 0.0
     description: null
     consumerApiKey: null
+  - endpoint: "/api/v1/orderservice/order/status/{orderId}/{status}"
+    method: "GET"
+    service: "ts-order-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 7
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 6
+    - 8
+    - 10
+    - 910764199
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminorderservice/adminorder"
+  - endpoint: "/api/v1/orderOtherService/orderOther/status/{orderId}/{status}"
+    method: "GET"
+    service: "ts-order-other-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 8
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 6
+    - 8
+    - 10
+    - 904314589
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminorderservice/adminorder"
+  - endpoint: "/api/v1/adminorderservice/adminorder"
+    method: "GET"
+    service: "ts-admin-order-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 6
+    - 8
+    - 10
+    - 916397896
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminorderservice/adminorder"
+  - endpoint: "/api/v1/travelservice/trips"
+    method: "GET"
+    service: "ts-travel-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 8
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 20
+    - 17
+    - 27
+    - 420643637
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminorderservice/adminorder"
+  - endpoint: "/api/v1/basicservice/basic/{stationName}"
+    method: "GET"
+    service: "ts-basic-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 7
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 20
+    - 17
+    - 4
+    - 417834088
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminorderservice/adminorder"
+  - endpoint: "/api/v1/configservice/configs"
+    method: "GET"
+    service: "ts-config-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 8
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 20
+    - 17
+    - 5
+    - 453928505
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminorderservice/adminorder"
+  - endpoint: "/api/v1/adminbasicservice/adminbasic/configs"
+    method: "GET"
+    service: "ts-admin-basic-info-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 20
+    - 17
+    - 35
+    - 106072017
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminorderservice/adminorder"
+  - endpoint: "/api/v1/travel2service/admin_trip"
+    method: "GET"
+    service: "ts-travel2-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 20
+    - 17
+    - 35
+    - 114763801
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminorderservice/adminorder"
+  - endpoint: "/api/v1/adminuserservice/users"
+    method: "GET"
+    service: "ts-admin-user-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 7
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 20
+    - 17
+    - 36
+    - 930850567
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminorderservice/adminorder"
+  - endpoint: "/api/v1/userservice/users"
+    method: "GET"
+    service: "ts-user-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 8
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 20
+    - 17
+    - 37
+    - 729795973
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminorderservice/adminorder"
+  - endpoint: "/api/v1/securityservice/securityConfigs"
+    method: "GET"
+    service: "ts-security-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 20
+    - 17
+    - 39
+    - 367795766
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminorderservice/adminorder"
   departureTime:
   - endpoint: "/api/v1/routeservice/routes"
     method: "GET"
@@ -980,15 +6022,143 @@ parameterMappings:
     priority: 9
     lastUsed:
     - 2026
-    - 5
-    - 21
-    - 5
-    - 12
-    - 48
-    - 227459855
+    - 7
+    - 1
+    - 19
+    - 34
+    - 56
+    - 403338106
     successRate: 0.0
     description: null
     consumerApiKey: null
+  - endpoint: "/api/v1/travelservice/trips"
+    method: "GET"
+    service: "ts-travel-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 7
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 19
+    - 25
+    - 8
+    - 174399656
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/travel2service/trips/left"
+  - endpoint: "/api/v1/travel2service/trips"
+    method: "GET"
+    service: "ts-travel2-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 8
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 19
+    - 25
+    - 51
+    - 700066029
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/travel2service/trips/left"
+  - endpoint: "/api/v1/preserveservice/welcome"
+    method: "GET"
+    service: "ts-preserve-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 6
+    - 1
+    - 3
+    - 614047069
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/travel2service/trips/left"
+  - endpoint: "/api/v1/travelplanservice/welcome"
+    method: "GET"
+    service: "ts-travel-plan-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 6
+    - 1
+    - 3
+    - 620713316
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/travel2service/trips/left"
+  - endpoint: "/api/v1/basicservice/basic/{stationName}"
+    method: "GET"
+    service: "ts-basic-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 6
+    - 1
+    - 3
+    - 638775165
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/travel2service/trips/left"
+  - endpoint: "/api/v1/travelservice/trips"
+    method: "GET"
+    service: "ts-travel-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 7
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 19
+    - 35
+    - 6
+    - 415947221
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/travelservice/trips/left"
+  - endpoint: "/api/v1/travel2service/trips"
+    method: "GET"
+    service: "ts-travel2-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 8
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 19
+    - 35
+    - 1
+    - 411075085
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/travelservice/trips/left"
+  - endpoint: "/api/v1/preserveservice/welcome"
+    method: "GET"
+    service: "ts-preserve-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 19
+    - 34
+    - 51
+    - 398197951
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/travelservice/trips/left"
   documentType:
   - endpoint: "/api/v1/orderservice/order"
     method: "GET"
@@ -997,12 +6167,12 @@ parameterMappings:
     priority: 7
     lastUsed:
     - 2026
-    - 5
-    - 21
-    - 5
-    - 13
-    - 38
-    - 593087165
+    - 7
+    - 1
+    - 20
+    - 10
+    - 8
+    - 612236029
     successRate: 0.0
     description: null
     consumerApiKey: "POST /api/v1/adminorderservice/adminorder"
@@ -1013,12 +6183,12 @@ parameterMappings:
     priority: 8
     lastUsed:
     - 2026
-    - 5
-    - 5
-    - 12
-    - 25
-    - 56
-    - 397315758
+    - 7
+    - 1
+    - 20
+    - 11
+    - 16
+    - 519081746
     successRate: 0.0
     description: null
     consumerApiKey: "POST /api/v1/adminorderservice/adminorder"
@@ -1029,15 +6199,335 @@ parameterMappings:
     priority: 9
     lastUsed:
     - 2026
-    - 5
-    - 5
-    - 23
-    - 3
-    - 44
-    - 942052876
+    - 7
+    - 2
+    - 6
+    - 7
+    - 49
+    - 8208648
     successRate: 0.0
     description: null
     consumerApiKey: "POST /api/v1/adminorderservice/adminorder"
+  - endpoint: "/api/v1/userservice/users"
+    method: "GET"
+    service: "ts-user-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 7
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 20
+    - 10
+    - 4
+    - 178947514
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminorderservice/adminorder"
+  - endpoint: "/api/v1/adminuserservice/users"
+    method: "GET"
+    service: "ts-admin-user-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 8
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 20
+    - 10
+    - 31
+    - 261198922
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminorderservice/adminorder"
+  - endpoint: "/api/v1/securityservice/securityConfigs"
+    method: "GET"
+    service: "ts-security-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 20
+    - 11
+    - 16
+    - 514371040
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminorderservice/adminorder"
+  - endpoint: "/api/v1/basicservice/basic/{stationName}"
+    method: "GET"
+    service: "ts-basic-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 8
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 20
+    - 10
+    - 13
+    - 777376129
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminorderservice/adminorder"
+  - endpoint: "/api/v1/contactservice/contacts"
+    method: "GET"
+    service: "ts-contacts-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 20
+    - 11
+    - 16
+    - 515806922
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminorderservice/adminorder"
+  - endpoint: "/api/v1/adminbasicservice/adminbasic/configs"
+    method: "GET"
+    service: "ts-admin-basic-info-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 8
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 20
+    - 10
+    - 35
+    - 10220170
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminorderservice/adminorder"
+  - endpoint: "/api/v1/configservice/configs"
+    method: "GET"
+    service: "ts-config-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 20
+    - 11
+    - 16
+    - 516999685
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminorderservice/adminorder"
+  - endpoint: "/api/v1/userservice/users"
+    method: "GET"
+    service: "ts-user-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 7
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 20
+    - 25
+    - 32
+    - 442931484
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/contactservice/contacts/admin"
+  - endpoint: "/api/v1/contactservice/contacts"
+    method: "GET"
+    service: "ts-contacts-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 8
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 20
+    - 26
+    - 21
+    - 491046321
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/contactservice/contacts/admin"
+  - endpoint: "/api/v1/adminuserservice/users"
+    method: "GET"
+    service: "ts-admin-user-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 20
+    - 26
+    - 49
+    - 605432102
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/contactservice/contacts/admin"
+  - endpoint: "/api/v1/basicservice/basic/{stationName}"
+    method: "GET"
+    service: "ts-basic-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 7
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 20
+    - 25
+    - 32
+    - 448661697
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/contactservice/contacts/admin"
+  - endpoint: "/api/v1/adminbasicservice/adminbasic/configs"
+    method: "GET"
+    service: "ts-admin-basic-info-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 8
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 20
+    - 26
+    - 2
+    - 666703221
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/contactservice/contacts/admin"
+  - endpoint: "/api/v1/travelservice/trips"
+    method: "GET"
+    service: "ts-travel-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 7
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 20
+    - 25
+    - 34
+    - 899544629
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/contactservice/contacts/admin"
+  - endpoint: "/api/v1/travel2service/trips"
+    method: "GET"
+    service: "ts-travel2-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 8
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 20
+    - 25
+    - 38
+    - 727935888
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/contactservice/contacts/admin"
+  - endpoint: "/api/v1/preserveservice/welcome"
+    method: "GET"
+    service: "ts-preserve-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 20
+    - 26
+    - 49
+    - 608207022
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/contactservice/contacts/admin"
+  - endpoint: "/api/v1/preserveotherservice/welcome"
+    method: "GET"
+    service: "ts-preserve-other-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 8
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 20
+    - 25
+    - 43
+    - 130877434
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/contactservice/contacts/admin"
+  - endpoint: "/api/v1/orderservice/order"
+    method: "GET"
+    service: "ts-order-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 20
+    - 26
+    - 49
+    - 610392090
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/contactservice/contacts/admin"
+  - endpoint: "/api/v1/rebookservice/welcome"
+    method: "GET"
+    service: "ts-rebook-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 20
+    - 26
+    - 49
+    - 611367295
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/contactservice/contacts/admin"
+  - endpoint: "/api/v1/cancelservice/cancel/refound/{orderId}"
+    method: "GET"
+    service: "ts-cancel-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 8
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 20
+    - 26
+    - 13
+    - 664586905
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/contactservice/contacts/admin"
+  - endpoint: "/api/v1/securityservice/securityConfigs"
+    method: "GET"
+    service: "ts-security-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 20
+    - 26
+    - 49
+    - 612103150
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/contactservice/contacts/admin"
   stationsName:
   - endpoint: "/api/v1/stationservice/stations"
     method: "GET"
@@ -1192,12 +6682,12 @@ parameterMappings:
     priority: 7
     lastUsed:
     - 2026
-    - 3
-    - 22
-    - 17
-    - 14
-    - 34
-    - 562851516
+    - 7
+    - 1
+    - 20
+    - 8
+    - 48
+    - 174547341
     successRate: 0.0
     description: null
     consumerApiKey: null
@@ -1208,12 +6698,12 @@ parameterMappings:
     priority: 8
     lastUsed:
     - 2026
-    - 3
-    - 22
-    - 17
-    - 14
-    - 34
-    - 559421412
+    - 7
+    - 1
+    - 20
+    - 7
+    - 53
+    - 656475515
     successRate: 0.0
     description: null
     consumerApiKey: null
@@ -1224,15 +6714,111 @@ parameterMappings:
     priority: 9
     lastUsed:
     - 2026
-    - 5
-    - 21
-    - 5
-    - 13
-    - 30
-    - 854288637
+    - 7
+    - 1
+    - 20
+    - 8
+    - 8
+    - 479107730
     successRate: 0.0
     description: null
     consumerApiKey: null
+  - endpoint: "/api/v1/contactservice/contacts"
+    method: "GET"
+    service: "ts-contacts-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 7
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 20
+    - 8
+    - 48
+    - 167165917
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminorderservice/adminorder"
+  - endpoint: "/api/v1/basicservice/basic/{stationName}"
+    method: "GET"
+    service: "ts-basic-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 8
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 20
+    - 8
+    - 48
+    - 164231542
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminorderservice/adminorder"
+  - endpoint: "/api/v1/userservice/users/{userName}"
+    method: "GET"
+    service: "ts-user-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 20
+    - 8
+    - 48
+    - 162736634
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminorderservice/adminorder"
+  - endpoint: "/api/v1/adminuserservice/users"
+    method: "GET"
+    service: "ts-admin-user-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 8
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 20
+    - 8
+    - 0
+    - 852443645
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminorderservice/adminorder"
+  - endpoint: "/api/v1/preserveservice/welcome"
+    method: "GET"
+    service: "ts-preserve-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 20
+    - 8
+    - 18
+    - 361642567
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminorderservice/adminorder"
+  - endpoint: "/api/v1/contactservice/contacts/{id}"
+    method: "GET"
+    service: "ts-contacts-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 7
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 20
+    - 8
+    - 48
+    - 170150057
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminorderservice/adminorder"
   seatNumber:
   - endpoint: "/api/v1/orderservice/order"
     method: "GET"
@@ -1241,15 +6827,191 @@ parameterMappings:
     priority: 9
     lastUsed:
     - 2026
-    - 5
-    - 21
-    - 5
-    - 13
-    - 49
-    - 835814122
+    - 7
+    - 1
+    - 20
+    - 15
+    - 42
+    - 968786100
     successRate: 0.0
     description: null
     consumerApiKey: null
+  - endpoint: "/api/v1/seatservice/welcome"
+    method: "GET"
+    service: "ts-seat-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 7
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 6
+    - 8
+    - 6
+    - 389743157
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminorderservice/adminorder"
+  - endpoint: "/api/v1/travelservice/trips"
+    method: "GET"
+    service: "ts-travel-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 8
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 20
+    - 15
+    - 24
+    - 617614158
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminorderservice/adminorder"
+  - endpoint: "/api/v1/trainservice/trains"
+    method: "GET"
+    service: "ts-train-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 20
+    - 16
+    - 29
+    - 522658410
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminorderservice/adminorder"
+  - endpoint: "/api/v1/travel2service/trips"
+    method: "GET"
+    service: "ts-travel2-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 20
+    - 16
+    - 29
+    - 530928080
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminorderservice/adminorder"
+  - endpoint: "/api/v1/travelservice/trips/{tripId}"
+    method: "GET"
+    service: "ts-travel-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 8
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 20
+    - 15
+    - 22
+    - 791200852
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminorderservice/adminorder"
+  - endpoint: "/api/v1/basicservice/basic/{stationName}"
+    method: "GET"
+    service: "ts-basic-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 20
+    - 16
+    - 29
+    - 534083026
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminorderservice/adminorder"
+  - endpoint: "/api/v1/travel2service/trips/{tripId}"
+    method: "GET"
+    service: "ts-travel2-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 20
+    - 16
+    - 0
+    - 749010552
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminorderservice/adminorder"
+  - endpoint: "/api/v1/configservice/configs"
+    method: "GET"
+    service: "ts-config-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 20
+    - 15
+    - 55
+    - 400167008
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminorderservice/adminorder"
+  - endpoint: "/api/v1/adminbasicservice/adminbasic/trains"
+    method: "GET"
+    service: "ts-admin-basic-info-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 20
+    - 16
+    - 0
+    - 741860203
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminorderservice/adminorder"
+  - endpoint: "/api/v1/preserveservice/welcome"
+    method: "GET"
+    service: "ts-preserve-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 8
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 20
+    - 16
+    - 4
+    - 956087285
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminorderservice/adminorder"
+  - endpoint: "/api/v1/orderservice/order/{travelDate}/{trainNumber}"
+    method: "GET"
+    service: "ts-order-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 6
+    - 8
+    - 6
+    - 383237731
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminorderservice/adminorder"
   routeId:
   - endpoint: "/api/v1/admintravelservice/admintravel"
     method: "GET"
@@ -1275,15 +7037,127 @@ parameterMappings:
     priority: 8
     lastUsed:
     - 2026
-    - 5
-    - 21
-    - 5
+    - 7
+    - 1
+    - 20
     - 13
-    - 47
-    - 249209503
+    - 54
+    - 709446939
     successRate: 0.0
     description: null
     consumerApiKey: null
+  - endpoint: "/api/v1/seatservice/welcome"
+    method: "GET"
+    service: "ts-seat-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 7
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 6
+    - 8
+    - 3
+    - 322490736
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminorderservice/adminorder"
+  - endpoint: "/api/v1/basicservice/basic/{stationName}"
+    method: "GET"
+    service: "ts-basic-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 8
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 20
+    - 14
+    - 16
+    - 52092603
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminorderservice/adminorder"
+  - endpoint: "/api/v1/trainservice/trains"
+    method: "GET"
+    service: "ts-train-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 20
+    - 14
+    - 57
+    - 979410724
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminorderservice/adminorder"
+  - endpoint: "/api/v1/configservice/configs"
+    method: "GET"
+    service: "ts-config-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 20
+    - 14
+    - 57
+    - 979985129
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminorderservice/adminorder"
+  - endpoint: "/api/v1/travelservice/trips"
+    method: "GET"
+    service: "ts-travel-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 8
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 20
+    - 13
+    - 58
+    - 113788627
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminorderservice/adminorder"
+  - endpoint: "/api/v1/travel2service/trips"
+    method: "GET"
+    service: "ts-travel2-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 20
+    - 14
+    - 57
+    - 981157194
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminorderservice/adminorder"
+  - endpoint: "/api/v1/adminbasicservice/adminbasic/prices"
+    method: "GET"
+    service: "ts-admin-basic-info-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 20
+    - 14
+    - 57
+    - 981759922
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminorderservice/adminorder"
   startTime:
   - endpoint: "/api/v1/travelservice/trips"
     method: "GET"
@@ -1390,12 +7264,12 @@ parameterMappings:
     priority: 7
     lastUsed:
     - 2026
-    - 3
-    - 22
-    - 17
-    - 27
-    - 57
-    - 127152292
+    - 7
+    - 2
+    - 5
+    - 58
+    - 40
+    - 531665139
     successRate: 0.0
     description: null
     consumerApiKey: null
@@ -1406,15 +7280,127 @@ parameterMappings:
     priority: 8
     lastUsed:
     - 2026
+    - 7
+    - 2
     - 5
-    - 21
-    - 5
-    - 12
-    - 19
-    - 620972673
+    - 46
+    - 16
+    - 32865356
     successRate: 0.0
     description: null
     consumerApiKey: null
+  - endpoint: "/api/v1/travelservice/trips"
+    method: "GET"
+    service: "ts-travel-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 7
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 5
+    - 46
+    - 16
+    - 14636526
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/orderOtherService/orderOther/refresh"
+  - endpoint: "/api/v1/travel2service/trips"
+    method: "GET"
+    service: "ts-travel2-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 8
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 5
+    - 46
+    - 16
+    - 27469466
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/orderOtherService/orderOther/refresh"
+  - endpoint: "/api/v1/travelplanservice/welcome"
+    method: "GET"
+    service: "ts-travel-plan-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 5
+    - 46
+    - 16
+    - 9758629
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/orderOtherService/orderOther/refresh"
+  - endpoint: "/api/v1/travelservice/trips"
+    method: "GET"
+    service: "ts-travel-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 7
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 5
+    - 58
+    - 40
+    - 525620369
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/orderservice/order/refresh"
+  - endpoint: "/api/v1/travel2service/trips"
+    method: "GET"
+    service: "ts-travel2-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 8
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 5
+    - 58
+    - 40
+    - 538049743
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/orderservice/order/refresh"
+  - endpoint: "/api/v1/travelplanservice/welcome"
+    method: "GET"
+    service: "ts-travel-plan-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 5
+    - 58
+    - 40
+    - 512714085
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/orderservice/order/refresh"
+  - endpoint: "/api/v1/preserveservice/welcome"
+    method: "GET"
+    service: "ts-preserve-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 5
+    - 58
+    - 40
+    - 519347018
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/orderservice/order/refresh"
   within:
   - endpoint: "/api/v1/adminuserservice/users"
     method: "GET"
@@ -1423,12 +7409,12 @@ parameterMappings:
     priority: 8
     lastUsed:
     - 2026
+    - 7
+    - 2
     - 3
-    - 27
-    - 20
-    - 28
+    - 32
     - 55
-    - 17393818
+    - 750728816
     successRate: 0.0
     description: null
     consumerApiKey: null
@@ -1439,15 +7425,143 @@ parameterMappings:
     priority: 9
     lastUsed:
     - 2026
-    - 5
-    - 21
+    - 7
+    - 2
     - 4
-    - 35
-    - 36
-    - 251600659
+    - 4
+    - 46
+    - 337999080
     successRate: 0.0
     description: null
     consumerApiKey: null
+  - endpoint: "/api/v1/travelservice/trips"
+    method: "GET"
+    service: "ts-travel-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 7
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 3
+    - 32
+    - 55
+    - 757076204
+    successRate: 0.0
+    description: null
+    consumerApiKey: "PUT /api/v1/consignservice/consigns"
+  - endpoint: "/api/v1/travel2service/trips"
+    method: "GET"
+    service: "ts-travel2-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 8
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 4
+    - 2
+    - 18
+    - 37877314
+    successRate: 0.0
+    description: null
+    consumerApiKey: "PUT /api/v1/consignservice/consigns"
+  - endpoint: "/api/v1/preserveservice/welcome"
+    method: "GET"
+    service: "ts-preserve-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 4
+    - 4
+    - 46
+    - 268505513
+    successRate: 0.0
+    description: null
+    consumerApiKey: "PUT /api/v1/consignservice/consigns"
+  - endpoint: "/api/v1/preserveotherservice/welcome"
+    method: "GET"
+    service: "ts-preserve-other-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 8
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 3
+    - 48
+    - 7
+    - 11445804
+    successRate: 0.0
+    description: null
+    consumerApiKey: "PUT /api/v1/consignservice/consigns"
+  - endpoint: "/api/v1/orderservice/order"
+    method: "GET"
+    service: "ts-order-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 4
+    - 4
+    - 46
+    - 275027942
+    successRate: 0.0
+    description: null
+    consumerApiKey: "PUT /api/v1/consignservice/consigns"
+  - endpoint: "/api/v1/travelplanservice/welcome"
+    method: "GET"
+    service: "ts-travel-plan-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 4
+    - 4
+    - 46
+    - 281297732
+    successRate: 0.0
+    description: null
+    consumerApiKey: "PUT /api/v1/consignservice/consigns"
+  - endpoint: "/api/v1/basicservice/basic/{stationName}"
+    method: "GET"
+    service: "ts-basic-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 4
+    - 4
+    - 46
+    - 331000146
+    successRate: 0.0
+    description: null
+    consumerApiKey: "PUT /api/v1/consignservice/consigns"
+  - endpoint: "/api/v1/configservice/configs"
+    method: "GET"
+    service: "ts-config-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 8
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 4
+    - 12
+    - 23
+    - 513493052
+    successRate: 0.1
+    description: null
+    consumerApiKey: "PUT /api/v1/consignservice/consigns"
   firstClassPriceRate:
   - endpoint: "/api/v1/priceservice/prices"
     method: "GET"
@@ -1505,12 +7619,12 @@ parameterMappings:
     priority: 7
     lastUsed:
     - 2026
-    - 3
-    - 23
-    - 12
-    - 18
-    - 24
-    - 721629144
+    - 7
+    - 2
+    - 5
+    - 59
+    - 50
+    - 617067845
     successRate: 0.0
     description: null
     consumerApiKey: null
@@ -1521,15 +7635,159 @@ parameterMappings:
     priority: 8
     lastUsed:
     - 2026
-    - 5
-    - 21
-    - 5
-    - 12
-    - 30
-    - 126929526
+    - 7
+    - 2
+    - 2
+    - 38
+    - 42
+    - 501214798
     successRate: 0.0
     description: null
     consumerApiKey: null
+  - endpoint: "/api/v1/travelservice/trips"
+    method: "GET"
+    service: "ts-travel-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 7
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 5
+    - 47
+    - 42
+    - 21922216
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/orderOtherService/orderOther/refresh"
+  - endpoint: "/api/v1/travel2service/trips"
+    method: "GET"
+    service: "ts-travel2-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 8
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 5
+    - 47
+    - 42
+    - 35079786
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/orderOtherService/orderOther/refresh"
+  - endpoint: "/api/v1/travelplanservice/welcome"
+    method: "GET"
+    service: "ts-travel-plan-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 5
+    - 47
+    - 42
+    - 9278144
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/orderOtherService/orderOther/refresh"
+  - endpoint: "/api/v1/preserveservice/welcome"
+    method: "GET"
+    service: "ts-preserve-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 5
+    - 47
+    - 42
+    - 15735933
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/orderOtherService/orderOther/refresh"
+  - endpoint: "/api/v1/travelservice/trips"
+    method: "GET"
+    service: "ts-travel-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 7
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 5
+    - 59
+    - 50
+    - 611352545
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/orderservice/order/refresh"
+  - endpoint: "/api/v1/travel2service/trips"
+    method: "GET"
+    service: "ts-travel2-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 8
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 5
+    - 59
+    - 13
+    - 208262279
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/orderservice/order/refresh"
+  - endpoint: "/api/v1/travelplanservice/welcome"
+    method: "GET"
+    service: "ts-travel-plan-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 5
+    - 59
+    - 50
+    - 586715013
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/orderservice/order/refresh"
+  - endpoint: "/api/v1/rebookservice/welcome"
+    method: "GET"
+    service: "ts-rebook-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 5
+    - 59
+    - 50
+    - 593637695
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/orderservice/order/refresh"
+  - endpoint: "/api/v1/basicservice/basic/{stationName}"
+    method: "GET"
+    service: "ts-basic-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 5
+    - 59
+    - 50
+    - 604820252
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/orderservice/order/refresh"
   averageSpeed:
   - endpoint: "/api/v1/routeservice/routes"
     method: "GET"
@@ -1571,15 +7829,367 @@ parameterMappings:
     priority: 8
     lastUsed:
     - 2026
-    - 5
-    - 21
-    - 5
-    - 12
-    - 53
-    - 216225678
+    - 7
+    - 2
+    - 6
+    - 1
+    - 40
+    - 481887809
     successRate: 0.0
     description: null
     consumerApiKey: null
+  - endpoint: "/api/v1/travelservice/trips"
+    method: "GET"
+    service: "ts-travel-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 7
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 2
+    - 41
+    - 52
+    - 767093684
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/travel2service/trips/left"
+  - endpoint: "/api/v1/travel2service/trips"
+    method: "GET"
+    service: "ts-travel2-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 8
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 6
+    - 1
+    - 40
+    - 475702776
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/travel2service/trips/left"
+  - endpoint: "/api/v1/routeplanservice/welcome"
+    method: "GET"
+    service: "ts-route-plan-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 6
+    - 1
+    - 40
+    - 456146861
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/travel2service/trips/left"
+  - endpoint: "/api/v1/travelplanservice/welcome"
+    method: "GET"
+    service: "ts-travel-plan-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 6
+    - 1
+    - 40
+    - 462953154
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/travel2service/trips/left"
+  - endpoint: "/api/v1/travelservice/trips"
+    method: "GET"
+    service: "ts-travel-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 7
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 19
+    - 37
+    - 48
+    - 612682225
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/travelservice/trips/left"
+  - endpoint: "/api/v1/travel2service/trips"
+    method: "GET"
+    service: "ts-travel2-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 8
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 19
+    - 40
+    - 25
+    - 12877779
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/travelservice/trips/left"
+  - endpoint: "/api/v1/routeplanservice/welcome"
+    method: "GET"
+    service: "ts-route-plan-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 19
+    - 40
+    - 22
+    - 572572877
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/travelservice/trips/left"
+  - endpoint: "/api/v1/admintravelservice/admintravel"
+    method: "GET"
+    service: "ts-admin-travel-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 19
+    - 40
+    - 23
+    - 568365408
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/travelservice/trips/left"
+  - endpoint: "/api/v1/travelplanservice/welcome"
+    method: "GET"
+    service: "ts-travel-plan-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 19
+    - 40
+    - 24
+    - 302591052
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/travelservice/trips/left"
+  - endpoint: "/api/v1/stationservice/stations"
+    method: "GET"
+    service: "ts-station-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 7
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 19
+    - 39
+    - 35
+    - 653709063
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/travelservice/trips/left"
+  - endpoint: "/api/v1/routeservice/routes/{start}/{end}"
+    method: "GET"
+    service: "ts-route-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 8
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 19
+    - 40
+    - 19
+    - 837336389
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/travelservice/trips/left"
+  - endpoint: "/api/v1/admintravelservice/admintravel"
+    method: "GET"
+    service: "ts-admin-travel-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 6
+    - 1
+    - 40
+    - 469361681
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/travel2service/trips/left"
+  - endpoint: "/api/v1/basicservice/basic/{stationName}"
+    method: "GET"
+    service: "ts-basic-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 7
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 2
+    - 42
+    - 19
+    - 697208598
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/travel2service/trips/left"
+  - endpoint: "/api/v1/travelservice/trips"
+    method: "GET"
+    service: "ts-travel-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 7
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 4
+    - 40
+    - 30
+    - 365815460
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/travelplanservice/travelPlan/cheapest"
+  - endpoint: "/api/v1/travel2service/trips"
+    method: "GET"
+    service: "ts-travel2-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 8
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 4
+    - 42
+    - 8
+    - 439355159
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/travelplanservice/travelPlan/cheapest"
+  - endpoint: "/api/v1/routeplanservice/welcome"
+    method: "GET"
+    service: "ts-route-plan-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 4
+    - 42
+    - 8
+    - 414165437
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/travelplanservice/travelPlan/cheapest"
+  - endpoint: "/api/v1/admintravelservice/admintravel"
+    method: "GET"
+    service: "ts-admin-travel-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 4
+    - 42
+    - 8
+    - 419615933
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/travelplanservice/travelPlan/cheapest"
+  - endpoint: "/api/v1/travelplanservice/welcome"
+    method: "GET"
+    service: "ts-travel-plan-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 4
+    - 42
+    - 8
+    - 425395803
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/travelplanservice/travelPlan/cheapest"
+  - endpoint: "/api/v1/preserveservice/welcome"
+    method: "GET"
+    service: "ts-preserve-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 4
+    - 42
+    - 8
+    - 432199373
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/travelplanservice/travelPlan/cheapest"
+  - endpoint: "/api/v1/basicservice/basic/{stationName}"
+    method: "GET"
+    service: "ts-basic-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 7
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 4
+    - 42
+    - 11
+    - 362603133
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/travelplanservice/travelPlan/cheapest"
+  - endpoint: "/api/v1/adminbasicservice/adminbasic/stations"
+    method: "GET"
+    service: "ts-admin-basic-info-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 8
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 4
+    - 42
+    - 17
+    - 165137140
+    successRate: 0.1
+    description: null
+    consumerApiKey: "POST /api/v1/travelplanservice/travelPlan/cheapest"
+  - endpoint: "/api/v1/routeservice/routes/{start}/{end}"
+    method: "GET"
+    service: "ts-route-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 6
+    - 1
+    - 46
+    - 706126648
+    successRate: 0.1
+    description: null
+    consumerApiKey: "POST /api/v1/travel2service/trips/left"
   basicPriceRate:
   - endpoint: "/api/v1/priceservice/prices"
     method: "GET"
@@ -1605,15 +8215,79 @@ parameterMappings:
     priority: 8
     lastUsed:
     - 2026
-    - 5
+    - 7
+    - 2
+    - 6
+    - 9
     - 21
-    - 5
-    - 14
-    - 1
-    - 248337607
+    - 437257374
     successRate: 0.0
     description: null
     consumerApiKey: null
+  - endpoint: "/api/v1/travelservice/trips"
+    method: "GET"
+    service: "ts-travel-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 7
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 6
+    - 9
+    - 21
+    - 414328240
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminorderservice/adminorder"
+  - endpoint: "/api/v1/travel2service/trips"
+    method: "GET"
+    service: "ts-travel2-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 8
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 6
+    - 9
+    - 21
+    - 431535977
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminorderservice/adminorder"
+  - endpoint: "/api/v1/travelplanservice/welcome"
+    method: "GET"
+    service: "ts-travel-plan-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 6
+    - 9
+    - 21
+    - 407591070
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminorderservice/adminorder"
+  - endpoint: "/api/v1/basicservice/basic/{stationName}"
+    method: "GET"
+    service: "ts-basic-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 6
+    - 9
+    - 21
+    - 424576061
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminorderservice/adminorder"
   boughtDate:
   - endpoint: "/api/v1/admintravelservice/admintravel"
     method: "GET"
@@ -1622,15 +8296,191 @@ parameterMappings:
     priority: 8
     lastUsed:
     - 2026
-    - 5
-    - 21
-    - 5
-    - 13
-    - 20
-    - 670920061
+    - 7
+    - 1
+    - 19
+    - 51
+    - 7
+    - 388619725
     successRate: 0.0
     description: null
     consumerApiKey: null
+  - endpoint: "/api/v1/preserveservice/welcome"
+    method: "GET"
+    service: "ts-preserve-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 7
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 19
+    - 49
+    - 31
+    - 247845519
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminorderservice/adminorder"
+  - endpoint: "/api/v1/preserveotherservice/welcome"
+    method: "GET"
+    service: "ts-preserve-other-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 8
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 19
+    - 54
+    - 24
+    - 660350856
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminorderservice/adminorder"
+  - endpoint: "/api/v1/rebookservice/welcome"
+    method: "GET"
+    service: "ts-rebook-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 6
+    - 7
+    - 27
+    - 949856606
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminorderservice/adminorder"
+  - endpoint: "/api/v1/orderservice/order"
+    method: "GET"
+    service: "ts-order-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 7
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 19
+    - 49
+    - 33
+    - 71195037
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminorderservice/adminorder"
+  - endpoint: "/api/v1/travelservice/trips"
+    method: "GET"
+    service: "ts-travel-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 8
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 19
+    - 53
+    - 34
+    - 797808105
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminorderservice/adminorder"
+  - endpoint: "/api/v1/travel2service/trips"
+    method: "GET"
+    service: "ts-travel2-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 6
+    - 7
+    - 27
+    - 956209863
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminorderservice/adminorder"
+  - endpoint: "/api/v1/cancelservice/cancel/refound/{orderId}"
+    method: "GET"
+    service: "ts-cancel-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 6
+    - 7
+    - 27
+    - 961885739
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminorderservice/adminorder"
+  - endpoint: "/api/v1/cancelservice/welcome"
+    method: "GET"
+    service: "ts-cancel-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 6
+    - 7
+    - 27
+    - 967648702
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminorderservice/adminorder"
+  - endpoint: "/api/v1/adminorderservice/adminorder"
+    method: "GET"
+    service: "ts-admin-order-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 6
+    - 7
+    - 27
+    - 973357379
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminorderservice/adminorder"
+  - endpoint: "/api/v1/orderOtherService/orderOther"
+    method: "GET"
+    service: "ts-order-other-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 2
+    - 50
+    - 9
+    - 648134307
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminorderservice/adminorder"
+  - endpoint: "/api/v1/executeservice/execute/collected/{orderId}"
+    method: "GET"
+    service: "ts-execute-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 6
+    - 6
+    - 15
+    - 462931599
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminorderservice/adminorder"
   stationList:
   - endpoint: "/api/v1/stationservice/stations"
     method: "GET"
@@ -1639,15 +8489,127 @@ parameterMappings:
     priority: 7
     lastUsed:
     - 2026
-    - 5
+    - 7
+    - 1
     - 21
-    - 4
-    - 34
-    - 33
-    - 763741945
+    - 0
+    - 20
+    - 208958337
     successRate: 0.0
     description: null
     consumerApiKey: null
+  - endpoint: "/api/v1/stationservice/stations"
+    method: "GET"
+    service: "ts-station-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 7
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 21
+    - 0
+    - 20
+    - 200938571
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminrouteservice/adminroute"
+  - endpoint: "/api/v1/basicservice/basic/{stationName}"
+    method: "GET"
+    service: "ts-basic-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 8
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 21
+    - 0
+    - 20
+    - 197383144
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminrouteservice/adminroute"
+  - endpoint: "/api/v1/adminbasicservice/adminbasic/stations"
+    method: "GET"
+    service: "ts-admin-basic-info-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 21
+    - 0
+    - 20
+    - 193170512
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminrouteservice/adminroute"
+  - endpoint: "/api/v1/routeservice/routes"
+    method: "GET"
+    service: "ts-route-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 21
+    - 0
+    - 20
+    - 214385759
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminrouteservice/adminroute"
+  - endpoint: "/api/v1/configservice/configs"
+    method: "GET"
+    service: "ts-config-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 20
+    - 37
+    - 46
+    - 151497780
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminrouteservice/adminroute"
+  - endpoint: "/api/v1/routeplanservice/welcome"
+    method: "GET"
+    service: "ts-route-plan-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 20
+    - 44
+    - 17
+    - 306400642
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminrouteservice/adminroute"
+  - endpoint: "/api/v1/travelservice/trips"
+    method: "GET"
+    service: "ts-travel-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 20
+    - 45
+    - 11
+    - 943349802
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminrouteservice/adminroute"
   endTime:
   - endpoint: "/api/v1/travelservice/trips"
     method: "GET"
@@ -1689,12 +8651,12 @@ parameterMappings:
     priority: 8
     lastUsed:
     - 2026
-    - 5
-    - 5
-    - 23
-    - 8
-    - 37
-    - 90890269
+    - 7
+    - 1
+    - 20
+    - 17
+    - 47
+    - 168078799
     successRate: 0.0
     description: null
     consumerApiKey: null
@@ -1705,15 +8667,207 @@ parameterMappings:
     priority: 9
     lastUsed:
     - 2026
-    - 5
-    - 21
-    - 5
-    - 13
-    - 53
-    - 774690735
+    - 7
+    - 1
+    - 20
+    - 18
+    - 37
+    - 105793314
     successRate: 0.0
     description: null
     consumerApiKey: null
+  - endpoint: "/api/v1/preserveservice/welcome"
+    method: "GET"
+    service: "ts-preserve-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 7
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 20
+    - 17
+    - 47
+    - 168917280
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminorderservice/adminorder"
+  - endpoint: "/api/v1/preserveotherservice/welcome"
+    method: "GET"
+    service: "ts-preserve-other-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 8
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 20
+    - 18
+    - 5
+    - 643116565
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminorderservice/adminorder"
+  - endpoint: "/api/v1/orderservice/order"
+    method: "GET"
+    service: "ts-order-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 2
+    - 6
+    - 8
+    - 13
+    - 561898885
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminorderservice/adminorder"
+  - endpoint: "/api/v1/basicservice/basic/{stationName}"
+    method: "GET"
+    service: "ts-basic-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 7
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 20
+    - 17
+    - 49
+    - 866840642
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminorderservice/adminorder"
+  - endpoint: "/api/v1/userservice/users"
+    method: "GET"
+    service: "ts-user-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 8
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 20
+    - 17
+    - 53
+    - 367422276
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminorderservice/adminorder"
+  - endpoint: "/api/v1/contactservice/contacts"
+    method: "GET"
+    service: "ts-contacts-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 20
+    - 19
+    - 5
+    - 228697671
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminorderservice/adminorder"
+  - endpoint: "/api/v1/rebookservice/welcome"
+    method: "GET"
+    service: "ts-rebook-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 20
+    - 19
+    - 5
+    - 238444291
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminorderservice/adminorder"
+  - endpoint: "/api/v1/configservice/configs"
+    method: "GET"
+    service: "ts-config-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 8
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 20
+    - 18
+    - 8
+    - 900858738
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminorderservice/adminorder"
+  - endpoint: "/api/v1/adminbasicservice/adminbasic/configs"
+    method: "GET"
+    service: "ts-admin-basic-info-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 20
+    - 19
+    - 5
+    - 246779588
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminorderservice/adminorder"
+  - endpoint: "/api/v1/travelservice/trips"
+    method: "GET"
+    service: "ts-travel-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 20
+    - 19
+    - 5
+    - 249386110
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminorderservice/adminorder"
+  - endpoint: "/api/v1/travel2service/trips"
+    method: "GET"
+    service: "ts-travel2-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 8
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 20
+    - 18
+    - 44
+    - 955080756
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminorderservice/adminorder"
+  - endpoint: "/api/v1/travelplanservice/welcome"
+    method: "GET"
+    service: "ts-travel-plan-service"
+    extractPath: "DIRECT_EXTRACTION"
+    priority: 9
+    lastUsed:
+    - 2026
+    - 7
+    - 1
+    - 20
+    - 18
+    - 46
+    - 667491743
+    successRate: 0.0
+    description: null
+    consumerApiKey: "POST /api/v1/adminorderservice/adminorder"
 servicePatterns:
 - pattern: ".*[Ss]tation.*"
   services:
@@ -15454,12 +22608,12 @@ parameterErrors:
       parameterName: "distanceList"
       timestamp:
       - 2026
-      - 5
-      - 4
-      - 16
-      - 44
-      - 47
-      - 372521129
+      - 7
+      - 2
+      - 0
+      - 38
+      - 11
+      - 377344851
       additionalInfo: null
     - errorType: "FORMAT_ERROR"
       errorReason: "Unknown (HTTP 400)"
@@ -56698,3 +63852,82 @@ parameterErrors:
       - 36
       - 206696900
       additionalInfo: null
+poolEntryStatus:
+  POST /api/v1/adminrouteservice/adminroute:
+    endStation:
+      newstationcode: "VERIFIED_VALID"
+      oldstationname: "VERIFIED_VALID"
+      main_station_name: "VERIFIED_VALID"
+      central_station: "VERIFIED_VALID"
+      centralstation: "VERIFIED_VALID"
+      old_station_name: "VERIFIED_VALID"
+      north_station_name: "VERIFIED_VALID"
+      new_station_name: "VERIFIED_VALID"
+      northstationname: "VERIFIED_VALID"
+      mainstationname: "VERIFIED_VALID"
+      newstationname: "VERIFIED_VALID"
+      new_station_code: "VERIFIED_VALID"
+    loginId:
+      fdse_microservice: "VERIFIED_VALID"
+      "2135488099312X": "VERIFIED_VALID"
+      user12345: "VERIFIED_VALID"
+      user123: "VERIFIED_VALID"
+      "111111": "VERIFIED_VALID"
+      trainticket_notify@163.com: "VERIFIED_VALID"
+    stationList:
+      new_central_station: "VERIFIED_VALID"
+      newstationname,new_station_name: "VERIFIED_VALID"
+      main_station_name: "VERIFIED_VALID"
+      northstationname: "VERIFIED_VALID"
+      eaststationname: "VERIFIED_VALID"
+      west_station_name: "VERIFIED_VALID"
+      new_stationname: "VERIFIED_VALID"
+      oldstationname: "VERIFIED_VALID"
+      newstation_name: "VERIFIED_VALID"
+      new_station_name: "VERIFIED_VALID"
+      station_name_new: "VERIFIED_VALID"
+      newstationname: "VERIFIED_VALID"
+      stationname_new: "VERIFIED_VALID"
+      south_station_name: "VERIFIED_VALID"
+    distanceList:
+      "1000": "VERIFIED_VALID"
+      "150": "VERIFIED_VALID"
+      "250": "VERIFIED_VALID"
+      "350": "VERIFIED_VALID"
+      "0": "VERIFIED_VALID"
+      "100": "VERIFIED_VALID"
+      "200": "VERIFIED_VALID"
+      "300": "VERIFIED_VALID"
+      "1500": "VERIFIED_VALID"
+      "950": "VERIFIED_VALID"
+      "400": "VERIFIED_VALID"
+      "1300": "VERIFIED_VALID"
+      "500": "VERIFIED_VALID"
+      "1200": "VERIFIED_VALID"
+      "700": "VERIFIED_VALID"
+      "1100": "VERIFIED_VALID"
+      "800": "VERIFIED_VALID"
+      "0,350,1000,1300": "VERIFIED_VALID"
+      "0,350,1000,1300,0,500,700,1200": "VERIFIED_VALID"
+      "50": "VERIFIED_VALID"
+    startStation:
+      stationnamenew: "VERIFIED_VALID"
+      new_east_station: "VERIFIED_VALID"
+      newstationdescription: "VERIFIED_VALID"
+      new_central_station: "VERIFIED_VALID"
+      new_west_station: "VERIFIED_VALID"
+      newstationbeta: "VERIFIED_VALID"
+      current_station_name: "VERIFIED_VALID"
+      old_station_name: "VERIFIED_VALID"
+      newstation_gamma: "VERIFIED_VALID"
+      oldstationname: "VERIFIED_VALID"
+      currentstationname: "VERIFIED_VALID"
+      new_station_name: "VERIFIED_VALID"
+      station_name_new: "VERIFIED_VALID"
+      newstationname: "VERIFIED_VALID"
+      newstation_alpha: "VERIFIED_VALID"
+      new_station_description: "VERIFIED_VALID"
+    id:
+      "1d43ef96-9368-4a3c-8599-e5e1918916e6": "VERIFIED_VALID"
+      "4d2a46c7-71cb-4cf1-b5bb-b68406d9da6f": "VERIFIED_VALID"
+      "72ca0080-ab64-49d2-8609-afdec44cbfb9": "VERIFIED_VALID"

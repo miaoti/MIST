@@ -213,4 +213,44 @@ public class TargetTripleRegistryTest {
             assertTrue(e.getMessage(), e.getMessage().contains("triples"));
         }
     }
+
+    // ── hardening wave: R7fix load-time GET validation + R1fix readback_bound ──
+
+    @Test
+    public void nonGetReadback_failsAtLoad() {
+        String doc = "triples:\n"
+                + "  - name: t1\n"
+                + "    write_endpoint: \"POST /x\"\n"
+                + "    dependency: ts-x\n"
+                + "    readback_endpoint: \"get /x\"\n"
+                + "    isolation_key: [a]\n";
+        try {
+            TargetTripleRegistry.parse(yaml(doc), "test-doc");
+            fail("expected IllegalArgumentException for a non-'GET ' readback_endpoint");
+        } catch (IllegalArgumentException e) {
+            assertTrue(e.getMessage(), e.getMessage().contains("GET "));
+        }
+    }
+
+    @Test
+    public void readbackBound_parsesAndDefaultsToOff() {
+        TargetTripleRegistry.Registry registry = TargetTripleRegistry.parse(
+                yaml("triples:\n" + MINIMAL_TRIPLE + "    readback_bound: 500\n"), "test-doc");
+        assertEquals(500, registry.triples.get(0).readbackBound);
+
+        TargetTripleRegistry.Registry noBound = TargetTripleRegistry.parse(
+                yaml("triples:\n" + MINIMAL_TRIPLE), "test-doc");
+        assertEquals("readback_bound defaults to 0 = off", 0, noBound.triples.get(0).readbackBound);
+    }
+
+    @Test
+    public void readbackBound_rejectsNonPositive() {
+        try {
+            TargetTripleRegistry.parse(
+                    yaml("triples:\n" + MINIMAL_TRIPLE + "    readback_bound: 0\n"), "test-doc");
+            fail("expected IllegalArgumentException for readback_bound: 0");
+        } catch (IllegalArgumentException e) {
+            assertTrue(e.getMessage(), e.getMessage().contains("readback_bound"));
+        }
+    }
 }

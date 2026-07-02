@@ -32,6 +32,13 @@ public class PairedFaultExecutorTest {
     /** In-memory contacts table served through the runtime's Http seam. */
     private static final class FakeSut implements DataIntegrityRuntime.Http {
         final List<Map<String, String>> rows = new ArrayList<>();
+        /** R1fix seam: read-back status after the first (baseline) GET. */
+        int readbackStatusAfterBaseline = 200;
+        int getSutCalls = 0;
+        /** R4fix seam: hide rows until the trace-completeness check ran twice. */
+        boolean hideRowsUntilTraceStable = false;
+        boolean traceStable = false;
+        int getAbsoluteCalls = 0;
 
         void persist(Map<String, String> row) {
             rows.add(new LinkedHashMap<>(row));
@@ -42,12 +49,20 @@ public class PairedFaultExecutorTest {
             if (!CONTACT_READBACK.equals(path)) {
                 return new DataIntegrityRuntime.HttpResponse(404, "");
             }
+            getSutCalls++;
+            if (getSutCalls > 1 && readbackStatusAfterBaseline / 100 != 2) {
+                return new DataIntegrityRuntime.HttpResponse(readbackStatusAfterBaseline,
+                        "{\"error\":\"boom\"}");
+            }
+            boolean hidden = hideRowsUntilTraceStable && !traceStable;
             StringBuilder data = new StringBuilder("[");
-            for (int i = 0; i < rows.size(); i++) {
-                if (i > 0) {
-                    data.append(',');
+            if (!hidden) {
+                for (int i = 0; i < rows.size(); i++) {
+                    if (i > 0) {
+                        data.append(',');
+                    }
+                    data.append(new JSONObject(rows.get(i)));
                 }
-                data.append(new JSONObject(rows.get(i)));
             }
             data.append(']');
             return new DataIntegrityRuntime.HttpResponse(200,
@@ -56,7 +71,12 @@ public class PairedFaultExecutorTest {
 
         @Override
         public DataIntegrityRuntime.HttpResponse getAbsolute(String url) {
-            return new DataIntegrityRuntime.HttpResponse(404, "");
+            getAbsoluteCalls++;
+            if (getAbsoluteCalls >= 2) {
+                traceStable = true;
+            }
+            return new DataIntegrityRuntime.HttpResponse(200,
+                    "{\"data\":[{\"spans\":[{},{}]}]}");
         }
     }
 
@@ -64,6 +84,8 @@ public class PairedFaultExecutorTest {
         final List<String> ops = new ArrayList<>();
         boolean active = false;
         boolean failOnInject = false;
+        /** C-P1-3fix seam: the final clear (after an inject) fails. */
+        boolean failOnFinalClear = false;
 
         @Override
         public void inject(FaultTarget target) {
@@ -77,6 +99,9 @@ public class PairedFaultExecutorTest {
         @Override
         public void clear(FaultTarget target) {
             ops.add("clear:" + target.deployment);
+            if (failOnFinalClear && ops.stream().anyMatch(op -> op.startsWith("inject:"))) {
+                throw new FaultInjectionException("clear rollout timed out");
+            }
             active = false;
         }
     }
@@ -360,6 +385,74 @@ public class PairedFaultExecutorTest {
         assertEquals(10_000, maxCutoff);
     }
 
+    // ── bar v2 (hardening-wave R2fix): observation-gate degradation guards ──
+    // Floors pre-registered in prep/hardening-wave-spec.md §1:
+    // gateResolvedFraction >= 0.5 AND timeoutGatedFraction <= 0.3, else the
+    // bar is NOT_EVALUABLE (never PASS) with the tripped guard named.
+
+    private static void addProbeRecords(List<DataIntegrityRuntime.RunRecord> records, int n,
+                                        boolean present, DataIntegrityRuntime.QuiescenceGate gate) {
+        for (int i = 0; i < n; i++) {
+            records.add(probeRecord(true, present, 5_000, gate, null));
+        }
+    }
+
+    @Test
+    public void barV2_t1_healthyGate_overBar_fails() {
+        List<DataIntegrityRuntime.RunRecord> records = new ArrayList<>();
+        addProbeRecords(records, 25, true, DataIntegrityRuntime.QuiescenceGate.OBSERVED_PRESENT);
+        addProbeRecords(records, 10, false, DataIntegrityRuntime.QuiescenceGate.TIMEOUT_ABSENT);
+        addProbeRecords(records, 5, false, DataIntegrityRuntime.QuiescenceGate.OBSERVED_COMPLETE_ABSENT);
+        JSONObject bar = PairedFaultExecutor.fpProbeJson(records, 10_000).getJSONObject("syncFpBar");
+        // resolved 30/40 = 0.75, timeout-gated 10/40 = 0.25 -> evaluable; 5/40 = 0.125 > 0.05
+        assertEquals("FAIL", bar.getString("verdict"));
+    }
+
+    @Test
+    public void barV2_t2_timeoutFractionOverCap_notEvaluable() {
+        List<DataIntegrityRuntime.RunRecord> records = new ArrayList<>();
+        addProbeRecords(records, 10, true, DataIntegrityRuntime.QuiescenceGate.OBSERVED_PRESENT);
+        addProbeRecords(records, 25, false, DataIntegrityRuntime.QuiescenceGate.TIMEOUT_ABSENT);
+        addProbeRecords(records, 5, false, DataIntegrityRuntime.QuiescenceGate.OBSERVED_COMPLETE_ABSENT);
+        JSONObject bar = PairedFaultExecutor.fpProbeJson(records, 10_000).getJSONObject("syncFpBar");
+        // timeout-gated 25/40 = 0.625 > 0.3 cap
+        assertEquals("NOT_EVALUABLE", bar.getString("verdict"));
+        assertTrue("reason must name the tripped guard",
+                bar.getString("reason").contains("timeout-gated fraction"));
+    }
+
+    @Test
+    public void barV2_t3_reviewerScenario_hiddenLossCannotPass() {
+        // Reviewer B-1: acked=100, observedGated=4 (4% would 'PASS'),
+        // timeoutGated=50 -> the cap makes it NOT_EVALUABLE, not PASS.
+        List<DataIntegrityRuntime.RunRecord> records = new ArrayList<>();
+        addProbeRecords(records, 46, true, DataIntegrityRuntime.QuiescenceGate.OBSERVED_PRESENT);
+        addProbeRecords(records, 50, false, DataIntegrityRuntime.QuiescenceGate.TIMEOUT_ABSENT);
+        addProbeRecords(records, 4, false, DataIntegrityRuntime.QuiescenceGate.OBSERVED_COMPLETE_ABSENT);
+        JSONObject bar = PairedFaultExecutor.fpProbeJson(records, 10_000).getJSONObject("syncFpBar");
+        assertEquals("NOT_EVALUABLE", bar.getString("verdict"));
+    }
+
+    @Test
+    public void barV2_t4_jaegerDownAllTimeoutGated_noVacuousPass() {
+        List<DataIntegrityRuntime.RunRecord> records = new ArrayList<>();
+        addProbeRecords(records, 10, true, DataIntegrityRuntime.QuiescenceGate.OBSERVED_PRESENT);
+        addProbeRecords(records, 20, false, DataIntegrityRuntime.QuiescenceGate.TIMEOUT_ABSENT);
+        JSONObject bar = PairedFaultExecutor.fpProbeJson(records, 10_000).getJSONObject("syncFpBar");
+        // observedGated == 0 would read 0.0 <= 0.05 under v1; v2 blocks the PASS label.
+        assertEquals("NOT_EVALUABLE", bar.getString("verdict"));
+    }
+
+    @Test
+    public void barV2_t5_cleanRun_passes() {
+        List<DataIntegrityRuntime.RunRecord> records = new ArrayList<>();
+        addProbeRecords(records, 29, true, DataIntegrityRuntime.QuiescenceGate.OBSERVED_PRESENT);
+        addProbeRecords(records, 1, false, DataIntegrityRuntime.QuiescenceGate.OBSERVED_COMPLETE_ABSENT);
+        JSONObject bar = PairedFaultExecutor.fpProbeJson(records, 10_000).getJSONObject("syncFpBar");
+        assertEquals("PASS", bar.getString("verdict"));
+        assertEquals(1.0 / 30, bar.getDouble("value"), 1e-9);
+    }
+
     @Test
     public void fpProbeJson_lowTimeout_trimsCurveToCap() {
         List<DataIntegrityRuntime.RunRecord> records = new java.util.ArrayList<>();
@@ -383,6 +476,160 @@ public class PairedFaultExecutorTest {
         return new DataIntegrityRuntime.RunRecord("benign-1", "t", "POST /x", key, 200,
                 acked ? Integer.valueOf(1) : null, acked, false, present, gate, 1, elapsedMs,
                 "{}", "{}", error);
+    }
+
+    // ── hardening wave: R3fix / C-P1-3fix / R1fix / R4fix / R7fix ──────────
+
+    @Test
+    public void r3fix_persistedSiblingCannotMaskALostOne() throws Exception {
+        // Two hooked writes per run: variant #1 persists in BOTH runs (immune
+        // to the fault), variant #2 honors the flag. The old first-acked
+        // representative join returned NO_FIRE here; the per-record join must
+        // surface variant #2's genuine acknowledged-but-lost write.
+        PairedFaultExecutor.FilteredRun twoWrites = () -> {
+            for (int variant = 0; variant < 2; variant++) {
+                String freshened = DataIntegrityRuntime.beforeWrite(CONTACT_STEP,
+                        "{\"accountId\":\"pool\",\"documentNumber\":\"pool\"}");
+                JSONObject body = new JSONObject(freshened);
+                boolean immuneVariant = variant == 0;
+                if (immuneVariant || !injector.active) {
+                    Map<String, String> row = new LinkedHashMap<>();
+                    row.put("accountId", body.getString("accountId"));
+                    row.put("documentNumber", body.getString("documentNumber"));
+                    sut.persist(row);
+                }
+                DataIntegrityRuntime.afterWrite(CONTACT_STEP, 200, "{\"status\":1}", "trace-x");
+            }
+        };
+        List<PairedFaultExecutor.PairResult> results = new PairedFaultExecutor(
+                Collections.singletonList(contacts), injector, twoWrites).execute();
+        assertEquals(1, results.size());
+        PairedFaultExecutor.PairResult pair = results.get(0);
+        assertEquals(PairedFaultExecutor.PairVerdict.FIRE, pair.pureDifferential);
+        assertEquals(2, pair.controlRecordCount);
+        assertEquals(2, pair.faultRecordCount);
+        assertEquals(1, pair.firePairs);
+        assertEquals(1, pair.noFirePairs);
+        assertEquals(0, pair.unjoinedRecords);
+    }
+
+    @Test
+    public void cP13fix_clearFailure_persistsEvidenceBeforeThrow() {
+        injector.failOnFinalClear = true;
+        PairedFaultExecutor executor = new PairedFaultExecutor(
+                Collections.singletonList(contacts), injector, fakeGeneratedRun());
+        List<List<PairedFaultExecutor.PairResult>> sunk = new ArrayList<>();
+        executor.onClearFailure(sunk::add);
+        try {
+            executor.execute();
+            fail("expected the F2 clear-failure to propagate");
+        } catch (FaultInjector.FaultInjectionException expected) {
+            // expected — the SUT-may-be-faulted signal must stay loud
+        } catch (Exception e) {
+            fail("expected FaultInjectionException, got " + e);
+        }
+        assertEquals("evidence must be sunk exactly once before the throw", 1, sunk.size());
+        assertEquals(PairedFaultExecutor.PairVerdict.FIRE,
+                sunk.get(0).get(0).pureDifferential);
+    }
+
+    @Test
+    public void r1fix_failingReadback_isErrorNotAbsence() throws Exception {
+        sut.readbackStatusAfterBaseline = 500;
+        DataIntegrityRuntime.beginRun(Collections.singletonList(contacts), "control");
+        String freshened = DataIntegrityRuntime.beforeWrite(CONTACT_STEP,
+                "{\"accountId\":\"pool\",\"documentNumber\":\"pool\"}");
+        assertNotNull(freshened);
+        DataIntegrityRuntime.afterWrite(CONTACT_STEP, 200, "{\"status\":1}", "trace-x");
+        List<DataIntegrityRuntime.RunRecord> records = DataIntegrityRuntime.endRun();
+        assertEquals(1, records.size());
+        DataIntegrityRuntime.RunRecord record = records.get(0);
+        assertNotNull("a 5xx read-back must be an error, never an absence", record.error);
+        assertTrue(record.error, record.error.contains("read-back HTTP 500"));
+        assertTrue(!record.readbackContainedX);
+        assertEquals(Integer.valueOf(500), record.readbackHttpStatus);
+        assertEquals("errored records are NOT_EVALUABLE, not NO_FIRE",
+                PairedFaultExecutor.PairVerdict.NOT_EVALUABLE,
+                PairedFaultExecutor.verdict("t",
+                        record("control", true, false, true,
+                                DataIntegrityRuntime.QuiescenceGate.OBSERVED_PRESENT, null),
+                        record).pureDifferential);
+    }
+
+    @Test
+    public void r4fix_writeLandingDuringSettle_isPresentNotCompleteAbsent() throws Exception {
+        String prevJaeger = System.getProperty("jaeger.base.url");
+        String prevSettle = System.getProperty(DataIntegrityRuntime.TRACE_SETTLE_MS_PROPERTY);
+        System.setProperty("jaeger.base.url", "http://fake/api");
+        System.setProperty(DataIntegrityRuntime.TRACE_SETTLE_MS_PROPERTY, "1");
+        try {
+            sut.hideRowsUntilTraceStable = true;
+            DataIntegrityRuntime.beginRun(Collections.singletonList(contacts), "benign-1");
+            String freshened = DataIntegrityRuntime.beforeWrite(CONTACT_STEP,
+                    "{\"accountId\":\"pool\",\"documentNumber\":\"pool\"}");
+            JSONObject body = new JSONObject(freshened);
+            Map<String, String> row = new LinkedHashMap<>();
+            row.put("accountId", body.getString("accountId"));
+            row.put("documentNumber", body.getString("documentNumber"));
+            sut.persist(row);
+            DataIntegrityRuntime.afterWrite(CONTACT_STEP, 200, "{\"status\":1}", "abc123");
+            List<DataIntegrityRuntime.RunRecord> records = DataIntegrityRuntime.endRun();
+            assertEquals(1, records.size());
+            assertEquals("a write visible on the post-settle re-read is PRESENT, "
+                            + "not a high-confidence loss",
+                    DataIntegrityRuntime.QuiescenceGate.OBSERVED_PRESENT, records.get(0).gate);
+            assertTrue(records.get(0).readbackContainedX);
+        } finally {
+            restore("jaeger.base.url", prevJaeger);
+            restore(DataIntegrityRuntime.TRACE_SETTLE_MS_PROPERTY, prevSettle);
+        }
+    }
+
+    @Test
+    public void r7fix_beginRunRefusesParallelExecution() {
+        String prev = System.getProperty("mst.test.parallelism");
+        System.setProperty("mst.test.parallelism", "4");
+        try {
+            DataIntegrityRuntime.beginRun(Collections.singletonList(contacts), "control");
+            DataIntegrityRuntime.endRun();
+            fail("expected beginRun to refuse mst.test.parallelism=4");
+        } catch (IllegalStateException expected) {
+            assertTrue(expected.getMessage(), expected.getMessage().contains("parallelism"));
+        } finally {
+            restore("mst.test.parallelism", prev);
+        }
+    }
+
+    @Test
+    public void r1fix_readbackAtBound_isErrorNotAbsence() throws Exception {
+        TargetTripleRegistry.Triple bounded = TargetTripleRegistry.parse(
+                new java.io.ByteArrayInputStream(("triples:\n"
+                        + "  - name: contacts-bounded\n"
+                        + "    write_endpoint: \"" + CONTACT_STEP + "\"\n"
+                        + "    dependency: ts-contacts\n"
+                        + "    readback_endpoint: \"GET " + CONTACT_READBACK + "\"\n"
+                        + "    isolation_key: [accountId, documentNumber]\n"
+                        + "    readback_bound: 2\n").getBytes(java.nio.charset.StandardCharsets.UTF_8)),
+                "inline").triples.get(0);
+        Map<String, String> filler = new LinkedHashMap<>();
+        filler.put("accountId", "other-1");
+        filler.put("documentNumber", "other-1");
+        sut.persist(filler);
+        Map<String, String> filler2 = new LinkedHashMap<>();
+        filler2.put("accountId", "other-2");
+        filler2.put("documentNumber", "other-2");
+        sut.persist(filler2);
+
+        DataIntegrityRuntime.beginRun(Collections.singletonList(bounded), "benign-1");
+        String freshened = DataIntegrityRuntime.beforeWrite(CONTACT_STEP,
+                "{\"accountId\":\"pool\",\"documentNumber\":\"pool\"}");
+        assertNotNull(freshened);
+        // The fresh write is silently dropped; the collection sits AT the bound.
+        DataIntegrityRuntime.afterWrite(CONTACT_STEP, 200, "{\"status\":1}", "trace-x");
+        List<DataIntegrityRuntime.RunRecord> records = DataIntegrityRuntime.endRun();
+        assertEquals(1, records.size());
+        assertNotNull("absence at the completeness bound must be an error", records.get(0).error);
+        assertTrue(records.get(0).error, records.get(0).error.contains("bound"));
     }
 
     @Test
