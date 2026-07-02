@@ -198,6 +198,14 @@ gate1-infra-incident lesson).
 1. Freeze this prereg v2 (post-reconciliation) → **DONE: frozen at `5045b36` with
    amendment A1 above; the assertion set + provisioning manifest freeze by commit
    hash when the author returns (step 2).**
+2. **DONE — assertion set FROZEN at commit `15954a8`:**
+   `../g2-comparator/blind-assertions-trainticket.yaml` (79 mutating endpoints ×
+   22 services, upstream pinned at `FudanSELab/train-ticket@313886e`; spot-check
+   verification recorded in the freeze-commit message). **Disclosure:** the
+   author's tool transcript was NOT retained (harness output empty) — A1's
+   "transcript-audited" claim is process-level attestation for this set
+   (`../g2-comparator/transcript-retention-note.md`). The G3 eval-fault/defect
+   list is NOT yet finalized, so the freeze-before-reveal ordering holds.
 2. Provision + author the blind assertion set for ALL TrainTicket write-path
    endpoints (per §2 provisioning list); commit set + brief + manifest (freeze
    hash).
