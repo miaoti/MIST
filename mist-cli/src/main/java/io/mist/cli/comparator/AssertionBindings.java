@@ -213,14 +213,16 @@ public final class AssertionBindings {
                 if (path == null) {
                     throw new IllegalArgumentException("AssertionBindings: STATE_GET needs 'path' in " + origin);
                 }
-                if ("contains-submitted-fields".equals(expect)) {
+                if ("contains-submitted-fields".equals(expect)
+                        || "entity-matches-submitted-fields".equals(expect)) {
                     if (fieldsRaw == null || fieldsRaw.trim().isEmpty()) {
                         throw new IllegalArgumentException("AssertionBindings: STATE_GET "
-                                + "contains-submitted-fields needs 'fields' in " + origin);
+                                + expect + " needs 'fields' in " + origin);
                     }
                 } else if (!"absent".equals(expect)) {
                     throw new IllegalArgumentException("AssertionBindings: STATE_GET expect must be "
-                            + "'contains-submitted-fields' or 'absent' in " + origin);
+                            + "'contains-submitted-fields', 'entity-matches-submitted-fields' or "
+                            + "'absent' in " + origin);
                 }
                 break;
             case NOT_CHECKABLE:

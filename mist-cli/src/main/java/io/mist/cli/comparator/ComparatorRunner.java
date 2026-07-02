@@ -35,11 +35,13 @@ public final class ComparatorRunner {
     /** Per-endpoint calibration result. */
     public static final class EndpointResult {
         public final String endpoint;
-        /** flag | no_flag | comparator-infra-failure */
+        /** flag | no_flag | comparator-infra-failure | not-run */
         public final String verdict;
         public final String detail;
         public final ContractEvaluator.EndpointOutcome control;
         public final ContractEvaluator.EndpointOutcome fault;
+        /** Injected fault manifest (review F6b): "deployment/-Dproperty" or null. */
+        public String faultManifest;
 
         EndpointResult(String endpoint, String verdict, String detail,
                        ContractEvaluator.EndpointOutcome control,
@@ -69,58 +71,34 @@ public final class ComparatorRunner {
 
     /**
      * Runs the calibration over every bound endpoint and writes the report.
-     * The report is persisted before a clear-failure exception propagates.
+     * The report is ALWAYS persisted — before a clear-failure exception
+     * propagates and even when an endpoint dies mid-loop (review F3/F4).
      */
     public List<EndpointResult> run(String runId, Path reportFile) throws IOException {
         List<EndpointResult> results = new ArrayList<>();
         List<FaultInjector.FaultTarget> clearFailures = new ArrayList<>();
 
         for (AssertionBindings.BoundEndpoint endpoint : bindings.endpoints) {
-            TargetTripleRegistry.Triple triple = tripleFor(endpoint.triple);
-            if (triple.faultFlag == null) {
-                results.add(new EndpointResult(endpoint.endpoint, "comparator-infra-failure",
-                        "triple '" + triple.name + "' has no fault_flag — cannot calibrate", null, null));
+            if (!clearFailures.isEmpty()) {
+                // Review F3: a failed clear means the SUT may still be
+                // faulted — later verdicts would be contaminated. Stop
+                // verdict work; surface the skip.
+                results.add(new EndpointResult(endpoint.endpoint, "not-run",
+                        "skipped: a prior fault-flag clear failed — SUT state suspect", null, null));
                 continue;
             }
-            injector.clear(triple.faultFlag);
-
-            String controlBody = substitute(endpoint.bodyTemplate);
-            ContractEvaluator.Response controlResp = client.post(path(endpoint.endpoint), controlBody);
-            ContractEvaluator.EndpointOutcome control = ContractEvaluator.evaluate(
-                    endpoint, "control", controlBody, controlResp, client);
-            if (control.flagged) {
-                // Design §3: a failing control clause means the bindings (or
-                // the deploy) are suspect — never a detection; skip the fault
-                // leg so no flag is left at risk for a worthless run.
-                results.add(new EndpointResult(endpoint.endpoint, "comparator-infra-failure",
-                        "control run violated the frozen contract — bindings/deploy suspect",
-                        control, null));
-                logger.error("Comparator[{}]: control run violated the contract — infra-failure",
-                        endpoint.endpoint);
-                continue;
-            }
-
-            ContractEvaluator.EndpointOutcome fault = null;
             try {
-                injector.inject(triple.faultFlag);
-                String faultBody = substitute(endpoint.bodyTemplate);
-                ContractEvaluator.Response faultResp = client.post(path(endpoint.endpoint), faultBody);
-                fault = ContractEvaluator.evaluate(endpoint, "fault", faultBody, faultResp, client);
-            } finally {
-                try {
-                    injector.clear(triple.faultFlag);
-                } catch (RuntimeException e) {
-                    logger.error("Comparator: FAILED to clear {} — the SUT may still be faulted: {}",
-                            triple.faultFlag, e.toString());
-                    clearFailures.add(triple.faultFlag);
-                }
+                results.add(runEndpoint(endpoint, clearFailures));
+            } catch (RuntimeException e) {
+                // Review F4: a mid-loop failure (binding error at run time,
+                // inject rollout timeout, transport exception) must not
+                // destroy the run's evidence — it is comparator-infra-failure
+                // for THIS endpoint, and the loop continues.
+                logger.error("Comparator[{}]: endpoint failed ({}) — comparator-infra-failure",
+                        endpoint.endpoint, e.toString());
+                results.add(new EndpointResult(endpoint.endpoint, "comparator-infra-failure",
+                        "endpoint run failed: " + e, null, null));
             }
-            results.add(new EndpointResult(endpoint.endpoint,
-                    fault != null && fault.flagged ? "flag" : "no_flag",
-                    fault != null && fault.flagged
-                            ? "the frozen contract failed under the injected fault"
-                            : "the frozen contract held under the injected fault",
-                    control, fault));
         }
 
         // F2 lesson: persist the evidence BEFORE the loud throw.
@@ -131,6 +109,79 @@ public final class ComparatorRunner {
                             + " — verify/clear manually before any further run");
         }
         return results;
+    }
+
+    private EndpointResult runEndpoint(AssertionBindings.BoundEndpoint endpoint,
+                                       List<FaultInjector.FaultTarget> clearFailures) {
+        TargetTripleRegistry.Triple triple = tripleFor(endpoint.triple);
+        if (triple.faultFlag == null) {
+            return new EndpointResult(endpoint.endpoint, "comparator-infra-failure",
+                    "triple '" + triple.name + "' has no fault_flag — cannot calibrate", null, null);
+        }
+        injector.clear(triple.faultFlag);
+
+        String controlBody = substitute(endpoint.bodyTemplate);
+        ContractEvaluator.Response controlResp = client.post(path(endpoint.endpoint), controlBody);
+        ContractEvaluator.EndpointOutcome control = ContractEvaluator.evaluate(
+                endpoint, "control", controlBody, controlResp, client);
+        if (control.flagged) {
+            // Design §3: a failing control clause means the bindings (or the
+            // deploy) are suspect — never a detection; skip the fault leg so
+            // no flag is left at risk for a worthless run.
+            logger.error("Comparator[{}]: control run violated the contract — infra-failure",
+                    endpoint.endpoint);
+            return new EndpointResult(endpoint.endpoint, "comparator-infra-failure",
+                    "control run violated the frozen contract — bindings/deploy suspect",
+                    control, null);
+        }
+
+        ContractEvaluator.EndpointOutcome fault = null;
+        try {
+            injector.inject(triple.faultFlag);
+            String faultBody = substitute(endpoint.bodyTemplate);
+            ContractEvaluator.Response faultResp = client.post(path(endpoint.endpoint), faultBody);
+            fault = ContractEvaluator.evaluate(endpoint, "fault", faultBody, faultResp, client);
+        } finally {
+            try {
+                injector.clear(triple.faultFlag);
+            } catch (RuntimeException e) {
+                logger.error("Comparator: FAILED to clear {} — the SUT may still be faulted: {}",
+                        triple.faultFlag, e.toString());
+                clearFailures.add(triple.faultFlag);
+            }
+        }
+        EndpointResult result;
+        if (fault != null && fault.flagged && onlyTransportFailures(fault)) {
+            // Review F2: an infra blip on the fault leg's state GET is not
+            // bug evidence — mirror MIST's read-back-error category instead
+            // of inflating the comparator's recall.
+            result = new EndpointResult(endpoint.endpoint, "comparator-infra-failure",
+                    "fault-leg failures are transport-only (state GET non-2xx) — not a detection",
+                    control, fault);
+        } else {
+            result = new EndpointResult(endpoint.endpoint,
+                    fault != null && fault.flagged ? "flag" : "no_flag",
+                    fault != null && fault.flagged
+                            ? "the frozen contract failed under the injected fault"
+                            : "the frozen contract held under the injected fault",
+                    control, fault);
+        }
+        result.faultManifest = triple.faultFlag.deployment + "/-D" + triple.faultFlag.property
+                + "=true";
+        return result;
+    }
+
+    private static boolean onlyTransportFailures(ContractEvaluator.EndpointOutcome outcome) {
+        boolean sawFailure = false;
+        for (ContractEvaluator.CheckOutcome co : outcome.outcomes) {
+            if ("FAIL".equals(co.result)) {
+                sawFailure = true;
+                if (!co.transportFailure) {
+                    return false;
+                }
+            }
+        }
+        return sawFailure;
     }
 
     private TargetTripleRegistry.Triple tripleFor(String name) {
@@ -188,6 +239,7 @@ public final class ComparatorRunner {
             ep.put("endpoint", r.endpoint);
             ep.put("verdict", r.verdict);
             ep.put("detail", r.detail);
+            ep.put("faultManifest", r.faultManifest == null ? JSONObject.NULL : r.faultManifest);
             ep.put("control", outcomeJson(r.control));
             ep.put("fault", outcomeJson(r.fault));
             endpoints.put(ep);
@@ -214,8 +266,10 @@ public final class ComparatorRunner {
             check.put("primitive", co.check.primitive.name());
             check.put("expect", co.check.expect == null ? JSONObject.NULL : co.check.expect);
             check.put("path", co.check.path == null ? JSONObject.NULL : co.check.path);
+            check.put("cite", co.cite == null ? JSONObject.NULL : co.cite);
             check.put("result", co.result);
             check.put("detail", co.detail);
+            check.put("transportFailure", co.transportFailure);
             checks.put(check);
         }
         json.put("checks", checks);

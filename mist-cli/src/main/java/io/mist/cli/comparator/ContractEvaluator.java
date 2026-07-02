@@ -41,11 +41,27 @@ public final class ContractEvaluator {
         public final AssertionBindings.Check check;
         public final String result;
         public final String detail;
+        /** The frozen clause this check binds (review F6b: adjudication traceability). */
+        public String cite;
+        /**
+         * Review F2: true when a FAIL is a TRANSPORT failure (non-2xx state
+         * GET), not a contract violation — the runner reclassifies fault-leg
+         * verdicts whose only failures are transport as
+         * comparator-infra-failure, mirroring MIST's read-back-error
+         * category so an infra blip is never scored as a detection.
+         */
+        public final boolean transportFailure;
 
         CheckOutcome(AssertionBindings.Check check, String result, String detail) {
+            this(check, result, detail, false);
+        }
+
+        CheckOutcome(AssertionBindings.Check check, String result, String detail,
+                     boolean transportFailure) {
             this.check = check;
             this.result = result;
             this.detail = detail;
+            this.transportFailure = transportFailure;
         }
     }
 
@@ -90,6 +106,7 @@ public final class ContractEvaluator {
         for (AssertionBindings.Clause clause : endpoint.clauses) {
             for (AssertionBindings.Check check : clause.checks) {
                 CheckOutcome outcome = evaluateCheck(check, submitted, writeResponse, client);
+                outcome.cite = clause.cite;
                 outcomes.add(outcome);
                 if ("FAIL".equals(outcome.result)) {
                     flagged = true;
@@ -138,29 +155,123 @@ public final class ContractEvaluator {
                                 + check.expect + "'");
             }
             case STATE_GET: {
-                Response readback = client.get(check.path);
-                if (readback.status / 100 != 2) {
-                    // A failing state GET cannot verify the contract either
-                    // way; recorded as FAIL with the transport detail — the
-                    // control-run all-pass gate turns this into
-                    // comparator-infra-failure (design §3), never a detection.
+                String path = resolvePath(check.path, submitted);
+                boolean presenceExpect = "contains-submitted-fields".equals(check.expect)
+                        || "entity-matches-submitted-fields".equals(check.expect);
+                // Design amendment A3 (review wave): presence checks retry up
+                // to the SAME pre-registered cap MIST's read-back uses, so a
+                // benign convergence delay (~1-2s on this SUT) neither aborts
+                // the control leg nor lets a delay-type fault masquerade as a
+                // loss. Harness-level read timing only — still no trace gate,
+                // no differential. Absence-expect stays single-shot.
+                long capMs = presenceExpect
+                        ? Long.getLong("mst.comparator.state.retry.cap.ms", 10_000) : 0;
+                long pollMs = Math.max(1, Long.getLong("mst.comparator.state.poll.ms", 500));
+                long start = System.nanoTime();
+                Response readback;
+                boolean ok;
+                boolean satisfied = false;
+                int polls = 0;
+                while (true) {
+                    readback = client.get(path);
+                    polls++;
+                    ok = readback.status / 100 == 2;
+                    if (ok && presenceExpect) {
+                        satisfied = "entity-matches-submitted-fields".equals(check.expect)
+                                ? entityMatchesSubmittedFields(readback.body, submitted, check.fields)
+                                : containsSubmittedFields(readback.body, submitted, check.fields);
+                        if (satisfied) {
+                            break;
+                        }
+                    }
+                    long elapsedMs = (System.nanoTime() - start) / 1_000_000;
+                    if (elapsedMs >= capMs) {
+                        break;
+                    }
+                    try {
+                        Thread.sleep(pollMs);
+                    } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
+                        throw new IllegalStateException("interrupted during state-GET retry", e);
+                    }
+                }
+                if (!ok) {
+                    // The DECISIVE read failed at the transport level: FAIL
+                    // marked as a TRANSPORT failure. The control gate maps it
+                    // to comparator-infra-failure; on the fault leg the runner
+                    // reclassifies transport-only failures the same way
+                    // (review F2) — never a detection.
                     return new CheckOutcome(check, "FAIL",
-                            "state GET " + check.path + " returned HTTP " + readback.status);
+                            "state GET " + path + " returned HTTP " + readback.status
+                                    + " on the decisive read (" + polls + " poll(s))", true);
+                }
+                if (presenceExpect) {
+                    return satisfied
+                            ? new CheckOutcome(check, "PASS", "submitted state present on " + path
+                                    + " (" + polls + " poll(s))")
+                            : new CheckOutcome(check, "FAIL", "submitted state ABSENT from " + path
+                                    + " at the cap (fields " + check.fields + ", " + polls
+                                    + " poll(s))");
                 }
                 boolean present = containsSubmittedFields(readback.body, submitted, check.fields);
-                if ("contains-submitted-fields".equals(check.expect)) {
-                    return present
-                            ? new CheckOutcome(check, "PASS", "submitted key present on " + check.path)
-                            : new CheckOutcome(check, "FAIL", "submitted key ABSENT from " + check.path
-                                    + " (fields " + check.fields + ")");
-                }
                 return present
-                        ? new CheckOutcome(check, "FAIL", "submitted key still present on " + check.path)
-                        : new CheckOutcome(check, "PASS", "submitted key absent from " + check.path);
+                        ? new CheckOutcome(check, "FAIL", "submitted key still present on " + path)
+                        : new CheckOutcome(check, "PASS", "submitted key absent from " + path);
             }
             default:
                 throw new IllegalStateException("unhandled primitive " + check.primitive);
         }
+    }
+
+    /**
+     * ${field:NAME} tokens in a STATE_GET path resolve to the submitted
+     * body's field value (e.g. the per-entity read
+     * {@code /routes/${field:id}} — bindings amendment A2).
+     */
+    static String resolvePath(String path, JSONObject submitted) {
+        java.util.regex.Matcher m = java.util.regex.Pattern
+                .compile("\\$\\{field:([A-Za-z0-9_]+)}").matcher(path);
+        StringBuffer out = new StringBuffer();
+        while (m.find()) {
+            String field = m.group(1);
+            if (!submitted.has(field)) {
+                throw new IllegalArgumentException("ContractEvaluator: STATE_GET path references "
+                        + "field '" + field + "' absent from the submitted body — binding error");
+            }
+            m.appendReplacement(out,
+                    java.util.regex.Matcher.quoteReplacement(String.valueOf(submitted.get(field))));
+        }
+        m.appendTail(out);
+        return out.toString();
+    }
+
+    /**
+     * Per-entity read (amendment A2): the envelope's {@code data} is a single
+     * OBJECT whose fields must all match the submitted values.
+     */
+    static boolean entityMatchesSubmittedFields(String body, JSONObject submitted,
+                                                List<String> fields) {
+        JSONObject entity;
+        try {
+            JSONObject envelope = new JSONObject(body.trim());
+            if (!envelope.has("data") || envelope.isNull("data")) {
+                return false;
+            }
+            entity = envelope.getJSONObject("data");
+        } catch (RuntimeException e) {
+            return false;
+        }
+        for (String field : fields) {
+            if (!submitted.has(field)) {
+                throw new IllegalArgumentException("ContractEvaluator: STATE_GET field '" + field
+                        + "' is not present in the submitted body — binding error");
+            }
+            if (!entity.has(field) || !String.valueOf(entity.get(field))
+                    .equals(String.valueOf(submitted.get(field)))) {
+                return false;
+            }
+        }
+        return true;
     }
 
     /** Membership by the submitted fields' values over the collection body. */

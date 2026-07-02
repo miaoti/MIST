@@ -17,6 +17,12 @@ public final class RestAssuredSutClient implements ContractEvaluator.SutClient {
             throw new IllegalStateException("comparator mode needs base.url (set in the .properties file)");
         }
         RestAssured.baseURI = baseUrl.trim();
+        // Review F6 (integration): bound the client — a black-holed gateway
+        // request must not hang the calibration run.
+        RestAssured.config = RestAssured.config().httpClient(
+                io.restassured.config.HttpClientConfig.httpClientConfig()
+                        .setParam("http.connection.timeout", 10_000)
+                        .setParam("http.socket.timeout", 20_000));
     }
 
     @Override

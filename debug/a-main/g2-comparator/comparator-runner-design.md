@@ -1,6 +1,48 @@
 # G2 comparator runner — design spec (test-first; implement next)
 
-**Status:** SPEC 2026-07-02. Consumes the FROZEN assertion set
+**Status:** BUILT (666c461) + 3-COLD-REVIEWED + FIX WAVE APPLIED 2026-07-02
+(reviews: research/REVIEW-COMPARATOR-{A-soundness,B-bindings,C-integration}.md;
+reconciliation REVIEW-COMPARATOR-RECONCILIATION.md). **Disclosed amendments
+(pre-run — no comparator run has executed):**
+- **A2 (bindings completed, review B):** the v1 state clauses narrowed exactly onto
+  MIST's registry keys; v2 binds adminroute's second frozen read path (per-entity
+  `GET /routes/{id}` via `${field:id}` path templating + the new
+  `entity-matches-submitted-fields` mode) and extends membership fields
+  (adminroute id+start+end; contacts all five submitted fields).
+- **A3 (read timing, reviews A-F5/C-F3):** presence-expect STATE_GET checks retry to
+  the SAME pre-registered 10 s/500 ms budget MIST's read-back uses — harness-level
+  read timing (still no trace gate, no differential); kills the transient
+  control-abort risk (~5-15%/endpoint per the Gate-1 curve) and blunts the
+  delay-type-fault recall inflation at G3. Decisive-read transport failures are
+  transport-marked; **fault-leg verdicts whose only failures are transport are
+  reclassified comparator-infra-failure** (mirroring MIST's read-back-error
+  category) — an infra blip is never a detection (review A-F2).
+- **§3 correction ("matched inputs"):** the comparator uses frozen body TEMPLATES,
+  not literally the pairing's bodies (run #3's contacts pairing produced zero
+  records — no body exists to reuse; reusing adminroute's would smuggle in MIST's
+  isolation adapter, which §1 forbids). The `${uuid:id}` membership key is licensed
+  verbatim by the frozen contract and is comparator-favoring if anything. The paper
+  claims matched ENDPOINTS + FAULTS + budget, not byte-identical bodies.
+- **§4 correction (review B finding 4):** the pre-stated "response clauses alone do
+  NOT flag" is FALSIFIED by committed G0 evidence — the injected fault fabricates a
+  SLOPPY ack (adminroute: msg lowercase variant + data:null; contacts: msg case
+  variant), so MSG_CONTAINS/ENVELOPE_DATA will likely also fail under the fault.
+  This is an INJECTION-REALISM artifact (a real masked failure returns the pristine
+  ack), disclosed: calibration acceptance now reads on the PER-CLAUSE outcomes —
+  the STATE clauses must FAIL under fault and PASS under control (validating the
+  state machinery independent of the artifact); response-clause flags are recorded
+  and attributed to the artifact.
+- **Operational preconditions (review C):** comparator mode fail-fasts on
+  `mist.fault.injection.enabled=true` and a successful `MstAuthHandler.ensureReady()`
+  login (review A-F1: nothing else on the path logs in); the client carries
+  connect/socket timeouts; a clear failure STOPS the endpoint loop (later endpoints
+  = not-run); every mid-loop failure is per-endpoint comparator-infra-failure and
+  the report is always written. Runbook: run from repo root (assertions.path is
+  CWD-relative), point `root.api.registry.path` at a target/ scratch copy (H9
+  extension — the preflight otherwise dirties the shipped file), and the G3 binding
+  round must bind the FULL frozen set incl. failure contracts.
+
+Original spec below. Consumes the FROZEN assertion set
 ([blind-assertions-trainticket.yaml](blind-assertions-trainticket.yaml), frozen at
 `15954a8`) per the G2 prereg §2. Scope = **calibration** on the two public Gate-1
 faults first (prereg §3 step 4); the full head-to-head reuses the same runner at G3.

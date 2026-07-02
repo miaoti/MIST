@@ -567,6 +567,21 @@ public final class MistRunner {
                     + "mst.oracle.dataintegrity.enabled=true (the registry supplies the fault "
                     + "coordinates)");
         }
+        // Review F4 (integration): the comparator injects real faults — it must
+        // honor the same opt-in the pairing does, never mutate a cluster
+        // "silently" behind a false flag.
+        if (!io.mist.cli.fault.FaultInjector.enabled()) {
+            throw new IllegalStateException("mst.comparator.enabled=true needs "
+                    + "mist.fault.injection.enabled=true — the comparator toggles the same SUT "
+                    + "fault flags the pairing does");
+        }
+        // Review F1: nothing on the comparator path triggers the login (the
+        // preflight is best-effort and skippable). Fail loud before any
+        // kubectl action rather than burning the session on 401s.
+        if (!io.mist.cli.auth.MstAuthHandler.ensureReady()) {
+            throw new IllegalStateException("comparator mode: auth login failed "
+                    + "(MstAuthHandler.ensureReady) — check base.url and the auth.* properties");
+        }
         io.mist.cli.fault.TargetTripleRegistry.Cluster cluster = dataIntegrityRegistry.cluster;
         if (cluster == null) {
             throw new IllegalStateException("target-triples.yaml needs a 'cluster' block for the "

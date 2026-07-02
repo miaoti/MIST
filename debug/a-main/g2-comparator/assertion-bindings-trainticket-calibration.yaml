@@ -7,6 +7,24 @@
 # change is a disclosed protocol amendment. Binding errors found at run time are
 # comparator-infra-failure, never a detection (design §2).
 #
+# ── AMENDMENT A2 (2026-07-02, PRE-RUN — no comparator run has executed; applied
+# from the 3-cold-reviewer wave on c4b9a08, review B findings 1-2): the v1 state
+# clauses were narrower than the frozen text and the narrowing coincided with
+# MIST's own registry keys (the most attackable pattern). Completed here:
+# (a) adminroute's SECOND frozen read path (GET /api/v1/routeservice/routes/{id})
+# is now bound via the entity-matches primitive with a ${field:id}-templated
+# path; the list-membership fields extend to id,startStation,endStation;
+# (b) contacts membership extends to ALL FIVE submitted fields per the frozen
+# "with submitted fields". Also documented: the NOT_CHECKABLE category is used
+# for "not-exercisable at calibration" clauses (a broadening of design §2's
+# "UNKNOWN" wording — failure contracts MUST come back into scope in the G3
+# binding round or the comparator will false-flag legitimate rejections).
+# AMENDMENT A3 (same wave, review A-F5/C-F3): presence-expect STATE_GET checks
+# retry to the SAME pre-registered 10s/500ms budget MIST's read-back uses
+# (harness-level read timing; still no trace gate, no differential); absence
+# checks and single-shot transport failures on the DECISIVE read are
+# transport-marked and reclassified comparator-infra-failure, never detections.
+#
 # Input notes (harness-level, oracle-neutral): each run substitutes fresh values
 # so the state clause has an unambiguous membership key — ${uuid:FIELD} -> fresh
 # UUID string, ${fresh:FIELD} -> fresh short string. adminroute exploits the
@@ -39,7 +57,11 @@ endpoints:
           - primitive: STATE_GET
             path: "/api/v1/adminrouteservice/adminroute"
             expect: "contains-submitted-fields"
-            fields: "id"
+            fields: "id,startStation,endStation"
+          - primitive: STATE_GET
+            path: "/api/v1/routeservice/routes/${field:id}"
+            expect: "entity-matches-submitted-fields"
+            fields: "id,startStation,endStation"
       - cite: "pre-validation {0,'start or end station not include in stationList.', null}; a failing station-existence check response is passed through (status 0); downstream {0,'Station Number Not Equal To Distance Number', null}"
         checks:
           - primitive: NOT_CHECKABLE
@@ -64,7 +86,7 @@ endpoints:
           - primitive: STATE_GET
             path: "/api/v1/adminbasicservice/adminbasic/contacts"
             expect: "contains-submitted-fields"
-            fields: "accountId,documentNumber"
+            fields: "accountId,documentNumber,name,documentType,phoneNumber"
       - cite: "{0,'Already Exists', existing contact} passed through"
         checks:
           - primitive: NOT_CHECKABLE
