@@ -897,6 +897,7 @@ Developer design notes / investigation logs (excluding inputs), plus the input-q
 | `debug/a-main/benchmark/cases/TT-adminroute-control-001.json` | Seed case — stratum 1 NEGATIVE control: same input, fault off; the read-back oracle must not fire (per-case specificity check) |
 | `debug/a-main/benchmark/cases/TT-adminbasic-contacts-lostwrite-001.json` | Seed case — stratum 1 POSITIVE: second lost write on a different service (adminbasic addContact → ts-contacts-service); fresh-UUID per-entity create = cleanest read-back FP-measurement target (triple B) |
 | `debug/a-main/benchmark/cases/bookinfo-ratings-benign-001.json` | Seed case — stratum 2 NEGATIVE benign trap: Bookinfo reviews→ratings designed degradation; the naive span-error oracle false-positives, the MIST target is no_flag (the A1 precision/FP test) |
+| `debug/a-main/benchmark/cases/sockshop-shipping-swallowed-enqueue-001.json` | Case 5 — stratum 1 NATURAL POSITIVE (source-grounded, schema-validated): Sock Shop shipping swallows a RabbitMQ enqueue failure and still acks ("Accepting anyway. Don't do this for real!") while the order is 2xx-acked with shipment set at creation → shipping task silently lost; found by prereg cold-reviewer B (INFO-1); status/schema/body no_flag, naive-span+trace-shape flag (REQUIRES the G3 two-part tracing mitigation), dataintegrity not_applicable BY DESIGN — documents the read-back oracle's applicability boundary (no black-box read-back reflects broker consumption) |
 
 ### `debug/a-main/archive-2026-06-01/`
 

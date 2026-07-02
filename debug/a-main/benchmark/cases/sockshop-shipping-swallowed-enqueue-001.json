@@ -1,0 +1,53 @@
+{
+  "case_id": "sockshop-shipping-swallowed-enqueue-001",
+  "schema_version": "0.1.0",
+  "stratum": 1,
+  "fault_class": "swallowed_downstream_error",
+  "capture_status": "specified",
+  "sut": {
+    "name": "Sock Shop (microservices-demo)",
+    "repo": "github.com/microservices-demo/shipping",
+    "branch": "master",
+    "commit": "",
+    "deploy": "k8s complete-demo.yaml into the kind+Istio+Jaeger cluster (evaluation/suts/sockshop/deploy/deploy.sh); repos archived Dec 2023, images pinned"
+  },
+  "target": {
+    "entry_endpoint": {
+      "method": "POST",
+      "path": "/orders",
+      "service": "orders"
+    },
+    "dependency": {
+      "service": "shipping",
+      "kind": "downstream_service"
+    }
+  },
+  "injection": {
+    "mechanism": "natural",
+    "config": {
+      "note": "RabbitMQ made unavailable (scale rabbitmq to 0, or toxiproxy on the AMQP leg) while POST /orders executes. The fault-swallowing code path itself is UNMODIFIED SUT source: shipping's controller catches the enqueue failure and still returns success — source comment: 'Unable to add to queue... Accepting anyway. Don't do this for real!' (ShippingController). queue-master then never receives the shipping task."
+    },
+    "injected_by": "",
+    "trigger_input": "valid session order flow (register -> login -> add cart item -> POST /orders) while RabbitMQ is unavailable"
+  },
+  "ground_truth": {
+    "label": "positive",
+    "rationale": "Genuine masked failure, grounded in the unmodified SUT's source: the shipping service acknowledges the shipment request although the enqueue to RabbitMQ failed, and the source comment itself marks the swallow as an anti-pattern ('Don't do this for real!'). The order is 2xx-acked with a shipment object set at creation, while the shipping task is silently lost (queue-master persists nothing and never processes it). Unlike Bookinfo's ratings fallback there is no intended degraded UX communicated to the caller - the caller is told the shipment is accepted. Contestability note: a rater could argue 'demo code, author aware'; the code comment cuts the other way (the author flags it as wrong practice). Live adjudication may revisit the label when the case is captured.",
+    "source": "natural"
+  },
+  "oracle_expectation": {
+    "status_code_oracle": "no_flag",
+    "schema_oracle": "no_flag",
+    "body_marker_oracle": "no_flag",
+    "naive_span_error_oracle": "flag",
+    "mist_trace_shape_oracle": "flag",
+    "mist_dataintegrity_oracle": "not_applicable"
+  },
+  "provenance": {
+    "control_trace": null,
+    "fault_trace": null,
+    "readback_response": null,
+    "notes": "Found by source inspection during the G3 prereg cold-review wave (research/REVIEW-PREREG-B-tech.md INFO-1); pre-registered in prep/g3-sut2-triples-prereg.md SS-C as a masking-oracle/benchmark candidate. PRECONDITION for the trace-based expectations: the two-part tracing mitigation from the G3 prereg (OTel Node auto-instrumentation on front-end + javaagents on orders/shipping) must be active, otherwise the AMQP-send failure span is invisible and naive_span_error/mist_trace_shape cannot run (not_applicable as-deployed). mist_dataintegrity is not_applicable BY DESIGN and that is the honest point of this case: no black-box read-back reflects broker consumption (order.shipment is written at creation regardless of enqueue success), so the case documents the read-back oracle's applicability boundary - only the trace-shape/masking oracle can see this class. Stratum note: this is a NATURAL positive grounded in source inspection (stratum-1 'known label' via the committed code path, mechanism=natural); on live capture it either stays stratum 1 (trigger reproduced deterministically) or graduates to stratum-3 adjudication if the label is contested."
+  },
+  "adjudication": null
+}
