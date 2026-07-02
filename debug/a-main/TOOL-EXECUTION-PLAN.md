@@ -351,6 +351,18 @@ research-novelty claim. **ALL novelty evidence is back-loaded to G2 (a fair Cast
 (a lost-write on an async path) — the latter is a G3 item.
 
 ## 4. Gate-1 validation (EXECUTION G1c)
+> **⚠️ RESULT 2026-07-02 — INCONCLUSIVE (infra-blocked), NOT a PASS and NOT a mechanism-FAIL.**
+> The automated pairing run reached and executed the pairing stage LIVE (full generation → control run →
+> SUT-flag inject via rollout → fault run) but **aborted before writing any FP/verdict report**, defeated by
+> host-memory exhaustion on a 25 GiB WSL box (2nd wedge): (1) `ts-station-service` degraded under swap pressure
+> → station-pair isolation fell back to pass-through for the whole adminroute fault run (unsound isolation),
+> and (2) the node wedged during the fault-flag CLEAR → the **F2 fail-safe correctly threw** ("fault flag may
+> still be active — verify/clear manually") → `writeReport()` was preempted (exit 1, no JSON). So §4's PASS
+> conditions (fires + ≤5% non-timeout-gated sync FP) were **never measured**. The core mechanism stays
+> validated **only** by the manual G0 evidence. Per the user's standing rule, **no 3rd relaunch** — the box
+> can't hold the traced topology + a pairing run. Full write-up + follow-up (≥32 GiB box) in
+> `prep/gate1-result.md`; incident+recovery in `prep/gate1-infra-incident.md`. The BUILD (P1–B2.4) is complete
+> + cold-reviewed and needs no change for the retry.
 - **Sensitivity (Gate-1 = pure-differential only):** drive B1+B2 over the adminroute + adminbasic triples;
   confirm the **pure-differential** mode FIRES on the constructed lost-write (S2) with the per-run diff as
   evidence. **Only adminroute is live-smoke-demonstrated** (`prep/gate1-smoke-result.md`); **adminbasic is
