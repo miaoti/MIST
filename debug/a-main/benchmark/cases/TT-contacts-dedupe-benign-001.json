@@ -1,0 +1,58 @@
+{
+  "case_id": "TT-contacts-dedupe-benign-001",
+  "schema_version": "0.1.0",
+  "stratum": 2,
+  "fault_class": "acknowledged_lost_write",
+  "capture_status": "specified",
+  "sut": {
+    "name": "TrainTicket (train-ticket-injection fork)",
+    "repo": "github.com/FudanSELab/train-ticket (fork: train-ticket-injection)",
+    "branch": "MIST-trainticket",
+    "commit": "",
+    "deploy": "k8s/minikube via make deploy (evaluation/suts/trainticket/deploy/deploy.sh)"
+  },
+  "target": {
+    "entry_endpoint": {
+      "method": "POST",
+      "path": "/api/v1/contactservice/contacts",
+      "service": "ts-contacts-service"
+    },
+    "dependency": {
+      "service": "ts-contacts-service",
+      "kind": "persistence"
+    },
+    "readback_endpoint": {
+      "method": "GET",
+      "path": "/api/v1/contactservice/contacts",
+      "service": "ts-contacts-service"
+    }
+  },
+  "injection": {
+    "mechanism": "natural",
+    "config": {
+      "note": "No fault injected. The trigger is a DUPLICATE create: POST the same contact (same accountId + documentNumber business key) twice. The unmodified SUT's dedupe path soft-rejects the second create."
+    },
+    "injected_by": "",
+    "trigger_input": "POST an identical contact twice in a row (second call is the case)"
+  },
+  "ground_truth": {
+    "label": "negative",
+    "rationale": "Designed duplicate-rejection, not a lost write: the second create returns HTTP 2xx with a TrainTicket envelope carrying status:0 ('already exists' semantics) and by design persists nothing. The surface phenomenon matches accept-then-drop (2xx + absent from read-back), which is why this is the canonical benign trap for the acknowledged-lost-write class on this SUT - but the response body explicitly signals non-acceptance (status:0), so a correct ack rule must exclude it. Grounded in the Gate-1 G0 evidence (prep/sut-fault-injection-capability.md section 9; the ACCEPT_THEN_DROP_DISCLOSURE in PairedFaultExecutor documents that TrainTicket's only by-design drop soft-rejects with status:0).",
+    "source": "natural"
+  },
+  "oracle_expectation": {
+    "status_code_oracle": "no_flag",
+    "schema_oracle": "no_flag",
+    "body_marker_oracle": "flag",
+    "naive_span_error_oracle": "no_flag",
+    "mist_trace_shape_oracle": "no_flag",
+    "mist_dataintegrity_oracle": "no_flag"
+  },
+  "provenance": {
+    "control_trace": null,
+    "fault_trace": null,
+    "readback_response": null,
+    "notes": "Stratum-2 benign trap for the ack rule specifically: mist_dataintegrity must NOT fire because its acknowledgement predicate (2xx AND body status in {null,1}) excludes the status:0 soft-reject - the write is not acknowledged, so the base relation is vacuous (a true negative, NOT a false positive avoided by luck). body_marker_oracle FLAGS the status:0 marker and is therefore WRONG on this case (the rejection is intended business behavior, not a fault) - that gap is the discriminating value of the case. The case also documents the disclosed limitation that TrainTicket has NO representative of the 2xx-accepted-but-never-persists trap class whose body claims success (the only by-design drop signals status:0), per the ACCEPT_THEN_DROP_DISCLOSURE shipped in the pairing report."
+  },
+  "adjudication": null
+}
