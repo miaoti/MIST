@@ -54,7 +54,8 @@ write the honest infra-limited verdict rather than looping.*
   manual-G0 evidence + follow-up).
 
 ## Environment note for the verdict
-This is a resource-constrained single-box WSL2 minikube; the traced topology + a MIST run sum to
-~21 GiB on a 25 GiB box, i.e. the base footprint is near the ceiling. A larger box (or 32 GiB
-`.wslconfig`) is the durable fix for repeat automated runs; run #2 proceeds on the freshly-recovered
-clean topology with slow-swap headroom.
+Single-box WSL2 minikube. Host is **31.7 GiB**, but `.wslconfig` caps WSL at `memory=26GB` (WSL sees ~25 GiB);
+the traced topology + a MIST run peak at ~31 GiB committed, near/over the cap. This is a **memory-budget**
+problem on a 32 GiB box, not a need-a-bigger-machine problem. Durable fix (see `gate1-result.md` follow-up):
+lean SUT deploy (only the ~18 pairing-path services) + `-Xmx4g` on MIST + optionally raise `.wslconfig` to
+28 GB (`wsl --shutdown`). run #2 proceeded on the freshly-recovered clean topology with slow-swap headroom.

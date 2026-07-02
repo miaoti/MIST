@@ -79,13 +79,26 @@ scope (`gate1-infra-incident.md`).
   unhooked** in the generated Phase-B step (as before) — it has manual-G0 evidence and remains a follow-up.
 - **SUT left faulted + node wedged** at run end (see Cleanup below).
 
-## Follow-up to actually obtain the Gate-1 numbers (not blocked by the tool — blocked by the box)
-Re-run the automated pairing on a box where the topology + run fit with headroom:
-- Bump WSL to **≥32 GiB** (`.wslconfig`) — needs `wsl --shutdown` (was user-gated this session), **or** run on a
-  larger host / real cluster.
-- Then: healthy `ts-station-service` → station-pair isolation succeeds (no pass-through), and enough memory →
-  the inject/clear rollouts complete → `PairedFaultExecutor` writes the FP + FIRE/NO_FIRE report → evaluate §4
-  PASS (fires + ≤5% non-timeout-gated sync FP).
+## Follow-up to actually obtain the Gate-1 numbers (not blocked by the tool — blocked by the box's memory budget)
+**Corrected diagnosis (2026-07-02):** the host is a **31.7 GiB** machine, but `C:\Users\miaot\.wslconfig` caps
+WSL at `memory=26GB` (WSL sees ~25 GiB). The run's **committed peak was ~31 GiB** (traced topology ~19–20 GiB +
+MIST's pairing-stage heap spike ~4 GiB loading/executing 100 test classes + rollout churn + swapped cold pages)
+→ it overshot the 26 GiB RAM cap by ~5–7 GiB → heavy swap → node-runtime syscall timeouts → wedge. So this is a
+**memory-budget** problem on a 32 GiB box, **not** a "need a bigger machine" problem. Fix on THIS machine, by
+lowering the footprint (and optionally raising the cap), in order of effectiveness:
+1. **Lean SUT deploy (biggest lever):** deploy TrainTicket with only the ~18 services on the adminroute/contacts
+   pairing path (gateway, auth, user, verification-code, security, station, route, train, basic, config,
+   contacts, admin-route, admin-basic + nacos/mysql + jaeger/otelcol) and scale the other ~26 orthogonal
+   services (food/travel/order/seat/consign/payment/delivery/… domains) to 0 **at deploy time** (not mid-run).
+   Topology ~20 GiB → ~8–10 GiB. Generation smart-fetch breadth drops on the trimmed services (already a
+   NOT_EVALUABLE/sample-size caveat), but the **pairing verdict path is unaffected**.
+2. **Cap MIST's heap** with `-Xmx4g` on the `java -jar mist.jar …` launch — bounds the ~4 GiB pairing spike
+   (it used only 1.8 GiB during generation; the spike is class-load/execute of 100 methods).
+3. **Raise `.wslconfig` `memory=26GB` → 28GB** (host has 31.7 GiB; leaves ~3.7 GiB for Windows) — needs
+   `wsl --shutdown`. Alone it only adds ~2 GiB (insufficient), but combined with 1+2 it is comfortable.
+Steps 1+2 should suffice; add 3 for margin. Then: healthy `ts-station-service` → station-pair isolation succeeds
+(no pass-through), enough memory → the inject/clear rollouts complete → `PairedFaultExecutor` writes the FP +
+FIRE/NO_FIRE report → evaluate §4 PASS (fires + ≤5% non-timeout-gated sync FP).
 The build itself is **complete + cold-reviewed** (all P1–B2.4 tasks) and needs no code change for the retry.
 
 ## Cleanup performed at session end (2026-07-02)
