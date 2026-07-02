@@ -178,7 +178,26 @@ G2 must not leak Gate-3 claims.
 Cluster lifecycle: **TrainTicket minikube stays up through G2 calibration → then
 stopped → then the kind+Istio cluster for G3 SUTs** (single-box 26 GB budget;
 gate1-infra-incident lesson).
-1. Freeze this prereg v2 (post-reconciliation) → record commit hash here.
+
+> **FREEZE RECORD + disclosed amendment A1 (2026-07-02, G2 execution start).**
+> v2 as committed in `5045b36` is the frozen protocol; this block is the freeze
+> record. **Amendment A1 (provisioning realization):** upstream TrainTicket ships
+> no single OpenAPI document (its swagger is served per-service at runtime), and
+> the in-repo merged spec is MIST-tooling-derived — so the blind author's
+> provisioning is realized as **the upstream FudanSELab/train-ticket source tree
+> only** (REST controllers + service impls + repo docs, fetched read-only from
+> GitHub), from which the author enumerates ALL state-mutating endpoints
+> themselves (this strengthens the F6 endpoint-superset rule: the list cannot be
+> seeded by our registry). The brief's phrase "this OpenAPI spec" is accordingly
+> realized as "the provisioned upstream source tree". **Blindness enforcement is
+> process-level and transcript-audited:** the authoring agent is instructed to
+> use ONLY web fetches of the upstream tree (no local-repo reads); its full tool
+> transcript is retained as the audit trail and ships with the benchmark
+> (auditable, not merely attested).
+
+1. Freeze this prereg v2 (post-reconciliation) → **DONE: frozen at `5045b36` with
+   amendment A1 above; the assertion set + provisioning manifest freeze by commit
+   hash when the author returns (step 2).**
 2. Provision + author the blind assertion set for ALL TrainTicket write-path
    endpoints (per §2 provisioning list); commit set + brief + manifest (freeze
    hash).
