@@ -613,8 +613,12 @@ public final class DataIntegrityRuntime {
         return false;
     }
 
-    /** TrainTicket convention: collections arrive as {@code {status,msg,data:[..]}} or a bare array. */
-    static List<Object> extractItems(String body) {
+    /**
+     * TrainTicket convention: collections arrive as {@code {status,msg,data:[..]}}
+     * or a bare array. Public: the G2 comparator reuses this envelope parsing so
+     * both oracles read collections identically (a JSON utility, not oracle logic).
+     */
+    public static List<Object> extractItems(String body) {
         List<Object> items = new ArrayList<>();
         if (body == null || body.trim().isEmpty()) {
             return items;

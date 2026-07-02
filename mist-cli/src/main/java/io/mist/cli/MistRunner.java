@@ -345,6 +345,15 @@ public final class MistRunner {
             }
         }
 
+        // G2 comparator mode (flag-gated, additive): standalone calibration of
+        // the blind-authored assertion oracle against the same injected faults
+        // — no generation, no pairing. OFF by default; with the flag off this
+        // block is a no-op and everything below is byte-identical.
+        if (Boolean.getBoolean("mst.comparator.enabled")) {
+            runComparatorMode(id);
+            return MistRunResult.builder().exitCode(0).testCaseCount(0).runId(id).build();
+        }
+
         // Phase 1 part 2: two-phase positive-first / negative-second flow.
         // When enabled, run the generate→write→execute pipeline twice with
         // different config:
@@ -544,6 +553,49 @@ public final class MistRunner {
             }
         }
         return testCases;
+    }
+
+    /**
+     * G2 comparator calibration mode (comparator-runner-design.md): evaluates
+     * the FROZEN blind-authored contracts against the same injected faults the
+     * pairing uses. Standalone — no generation, no pairing; reuses the
+     * registry's cluster block for the injector and the run's auth/base-url.
+     */
+    private void runComparatorMode(String id) throws Exception {
+        if (dataIntegrityRegistry == null) {
+            throw new IllegalStateException("mst.comparator.enabled=true needs "
+                    + "mst.oracle.dataintegrity.enabled=true (the registry supplies the fault "
+                    + "coordinates)");
+        }
+        io.mist.cli.fault.TargetTripleRegistry.Cluster cluster = dataIntegrityRegistry.cluster;
+        if (cluster == null) {
+            throw new IllegalStateException("target-triples.yaml needs a 'cluster' block for the "
+                    + "comparator's injector");
+        }
+        String bindingsPath = System.getProperty("mst.comparator.assertions.path");
+        if (bindingsPath == null || bindingsPath.trim().isEmpty()) {
+            throw new IllegalStateException("mst.comparator.enabled=true needs "
+                    + "mst.comparator.assertions.path (the FROZEN bindings yaml)");
+        }
+        io.mist.cli.comparator.AssertionBindings.Bindings bindings =
+                io.mist.cli.comparator.AssertionBindings.load(java.nio.file.Paths.get(bindingsPath.trim()));
+        io.mist.cli.fault.SutFlagFaultInjector injector = new io.mist.cli.fault.SutFlagFaultInjector(
+                cluster.context, cluster.namespace, cluster.rolloutTimeoutSeconds, 15);
+        java.nio.file.Path reportPath = java.nio.file.Paths.get(
+                "logs", "comparator-reports", "comparator_" + inputs.experimentName + "_" + id + ".json");
+        logger.warn("[MIST] COMPARATOR MODE: {} bound endpoint(s) from {} — calibration run",
+                bindings.endpoints.size(), bindingsPath);
+        java.util.List<io.mist.cli.comparator.ComparatorRunner.EndpointResult> results =
+                new io.mist.cli.comparator.ComparatorRunner(bindings, dataIntegrityRegistry, injector,
+                        new io.mist.cli.comparator.RestAssuredSutClient()).run(id, reportPath);
+        StringBuilder summary = new StringBuilder("\n  Comparator calibration verdicts:\n");
+        for (io.mist.cli.comparator.ComparatorRunner.EndpointResult r : results) {
+            summary.append("  ").append(r.verdict).append("  ").append(r.endpoint)
+                    .append("\n      ").append(r.detail).append("\n");
+        }
+        summary.append("  report: ").append(reportPath).append("\n");
+        io.mist.core.util.ConsoleProgressBar.printRaw(summary.toString());
+        logger.info("Comparator calibration summary:{}", summary);
     }
 
     /**
