@@ -88,5 +88,23 @@ Re-run the automated pairing on a box where the topology + run fit with headroom
   PASS (fires + ≤5% non-timeout-gated sync FP).
 The build itself is **complete + cold-reviewed** (all P1–B2.4 tasks) and needs no code change for the retry.
 
-## Cleanup performed at session end
-See the trailer appended below once cleanup ran (recover node → verify/clear the two fault flags → `minikube stop`).
+## Cleanup performed at session end (2026-07-02)
+The run left the node wedged (2nd wedge) with the SUT possibly faulted. Cleanup outcome:
+- Attempted `minikube start` to recover-and-verify/clear the fault flags, but on the twice-wedged,
+  swap-saturated box the recovery **thrashed ~9 min without bringing the apiserver back** (residual swap
+  ~7.6 GiB never drained). Per caution (no further thrash), the recovery was abandoned.
+- Graceful `minikube stop` (rc=0, "powering off via SSH") could **not** halt the wedged node (container stayed
+  Up, memory not freed). Force-halted with **`docker stop minikube`** → container **Exited (137)**; **memory
+  freed: Mem 19.8 GiB → 1.4 GiB used, swap 7.6 GiB → 160 MiB, ~24.6 GiB free**. The minikube profile is
+  **stopped, not deleted** (restartable via `minikube start`).
+- **Fault-flag state:** kubectl verification was NOT possible (apiserver never recovered). But the clear's
+  `set env … JAVA_TOOL_OPTIONS=<agent-only>` had **already applied** (it triggered the rollout — "Waiting for …
+  new replicas"); only the rollout-*status* wait timed out. So both deployment **specs are agent-only**, the
+  force-stop killed the still-faulted running pod, and the next `minikube start` (or the ≥32 GiB restart) brings
+  up **clean, non-faulted** pods from the corrected specs. Confirm on next start (belt-and-suspenders):
+  `kubectl set env deployment/ts-admin-route-service --list -n default | grep JAVA_TOOL_OPTIONS`
+  → expect only `-javaagent:/otel/opentelemetry-javaagent.jar` (same for `ts-admin-basic-info-service`).
+- **prometheus + grafana** remain scaled to 0 (scale back to 1 on next start if the metrics dashboards are wanted).
+- **Local run byproducts** (not committed): 30 MB trace corpus under `…/trainticket/test-trace-gate1/`,
+  auto-learned `input-fetch-registry.yaml` / `root-api-registry.json` edits, and 81 generated Phase-A test
+  classes under `mist-cli/src/test/java/trainticket_gate1_pairing/` — safe to delete before the next build.
