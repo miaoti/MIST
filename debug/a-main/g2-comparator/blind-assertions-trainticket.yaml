@@ -1,0 +1,565 @@
+# FROZEN blind assertion set — TrainTicket (G2 comparator, the Filibuster-style oracle)
+# Authored 2026-07-02 by a fresh-context agent under the G2 prereg's blindness protocol
+# (prep/g2-novelty-comparator-prereg.md §2 + amendment A1: upstream-source-only
+# provisioning). The author's frozen brief and provisioning rules are recorded in the
+# prereg; audit evidence = the provisioning manifest below + the freeze-commit
+# spot-checks (transcript retention failed — see transcript-retention-note.md).
+# DO NOT EDIT: any change after the freeze commit is a disclosed protocol amendment.
+
+provisioning_manifest:
+  repo: github.com/FudanSELab/train-ticket
+  ref: "master @ 313886e99befb94be6cd45f085c98e0019f59829 (HEAD of default branch 'master' at fetch time; commit 'Hotfix (#243)', authored 2022-11-01; repo pushed_at 2025-11-21 reflects non-master branches)"
+  fetched: "2026-07-02"
+  method: "GitHub API (repos/, git/trees with recursive per-module listing) + raw.githubusercontent.com file fetches, all pinned to commit 313886e. No local files read."
+  envelope: "All controllers return edu.fudan.common.util.Response<T>{Integer status (source comment: '1 true, 0 false'), String msg, T data} (verified in ts-common/src/main/java/edu/fudan/common/util/Response.java), wrapped in ResponseEntity."
+  coverage:
+    covered_full: [ts-station-service, ts-route-service, ts-train-service, ts-contacts-service,
+      ts-order-service, ts-order-other-service, ts-config-service, ts-travel-service,
+      ts-travel2-service, ts-price-service, ts-food-service, ts-consign-service,
+      ts-consign-price-service, ts-user-service, ts-auth-service, ts-assurance-service,
+      ts-security-service, ts-admin-basic-info-service, ts-admin-order-service,
+      ts-admin-route-service, ts-admin-travel-service, ts-admin-user-service]
+    not_covered: [ts-avatar-service, ts-basic-service, ts-cancel-service, ts-delivery-service,
+      ts-execute-service, ts-food-delivery-service, ts-gateway-service, ts-inside-payment-service,
+      ts-news-service, ts-notification-service, ts-payment-service, ts-preserve-service,
+      ts-preserve-other-service, ts-rebook-service, ts-route-plan-service, ts-seat-service,
+      ts-station-food-service, ts-ticket-office-service, ts-train-food-service,
+      ts-travel-plan-service, ts-ui-dashboard, ts-verification-code-service,
+      ts-voucher-service, ts-wait-order-service, ts-common(library)]
+  global_caveats:
+    - "HTTP status rarely signals outcome. Most mutating endpoints return 200 via ok() on BOTH success and business failure; outcome is carried in the envelope (status 1 vs 0). The endpoints that return 201 CREATED (station create, contacts create x2, config create, price create, travel/travel2 create, user register, auth create) return 201 UNCONDITIONALLY, including on business rejection."
+    - "ts-travel / ts-travel2 quirk (verified in both impls): create-on-duplicate and update-on-missing return envelope status 1 with a failure msg ('... already exists' / '...doesn 't exists' [sic]); for these, outcome must be asserted on msg/data + a follow-up GET, not on status."
+    - "Exact msg strings below were extracted from the fetched sources via automated summarization; envelope status and data shape are the primary assertions, msg equality secondary. Entries where two extraction passes disagreed are flagged in notes."
+    - "Per-endpoint authorization (Spring Security roles) was not extracted; all contracts assume an authorized caller. Behavior on malformed JSON/type errors (Spring default 4xx/5xx) is outside these contracts."
+    - "Assertions assume a single-writer test context (no concurrent mutation between the call and the verifying GET)."
+
+assertions:
+  # ---------------- ts-station-service (base /api/v1/stationservice) ----------------
+  - service: ts-station-service
+    endpoint: "POST /api/v1/stationservice/stations"
+    success_response: "HTTP 201 (unconditional); envelope {status:1, msg:'Create success', data:=submitted station (name, stayTime)}"
+    state_postcondition: "GET /api/v1/stationservice/stations returns status 1 and its data list contains a station with the submitted name and stayTime; GET /api/v1/stationservice/stations/id/{name} returns {status:1, msg:'Success', data:=that station's id}"
+    failure_contract: "HTTP 201 still; {0,'Name not specify', submitted station} when name empty; {0,'Already exists', submitted station} when a station with that name exists (uniqueness key = name)"
+    notes: "Whether id is client-supplied or generated was not established from the fetched code (UNKNOWN) — assert by name, not id."
+  - service: ts-station-service
+    endpoint: "PUT /api/v1/stationservice/stations"
+    success_response: "HTTP 200; {1,'Update success', updated station}"
+    state_postcondition: "GET /stations list shows the station with matching id carrying the new name/stayTime; GET /stations/name/{id} returns the new name"
+    failure_contract: "HTTP 200; {0,'Station not exist', null} when no station with submitted id"
+    notes: ""
+  - service: ts-station-service
+    endpoint: "DELETE /api/v1/stationservice/stations/{stationsId}"
+    success_response: "HTTP 200; {1,'Delete success', deleted station}"
+    state_postcondition: "station id absent from GET /stations data; GET /stations/name/{stationsId} returns {0,'No that stationId', stationsId}"
+    failure_contract: "HTTP 200; {0,'Station not exist', null} when id unknown"
+    notes: "POST /stations/idlist and /stations/namelist are query-POSTs (read-only), not state-mutating."
+
+  # ---------------- ts-route-service (base /api/v1/routeservice) ----------------
+  - service: ts-route-service
+    endpoint: "POST /api/v1/routeservice/routes  (create-or-modify)"
+    success_response: "HTTP 200; {1,'Save and Modify success', saved Route} — data.id is a fresh UUID when submitted id is null/len<32, otherwise the submitted id; data.stations/distances are the comma-separated inputs parsed into lists; startStation/endStation echo input"
+    state_postcondition: "GET /api/v1/routeservice/routes/{data.id} returns {1,'Success', route} with identical stations/distances/start/end; route present in GET /api/v1/routeservice/routes"
+    failure_contract: "HTTP 200; {0,'Station Number Not Equal To Distance Number', null} when |stations| != |distances|"
+    notes: "Upsert semantics: same endpoint modifies an existing route when a full-length id is supplied."
+  - service: ts-route-service
+    endpoint: "DELETE /api/v1/routeservice/routes/{routeId}"
+    success_response: "HTTP 200; {1,'Delete Success', routeId}"
+    state_postcondition: "GET /routes/{routeId} returns {0,'No content with the routeId', null}; id absent from GET /routes"
+    failure_contract: "HTTP 200; {0,'Delete failed, Reason unKnown with this routeId', routeId} only if the route still exists after the delete attempt"
+    notes: "Success is decided by a post-delete existence re-check, so deleting a NON-EXISTENT id also returns 'Delete Success' (idempotent-success)."
+
+  # ---------------- ts-train-service (base /api/v1/trainservice) ----------------
+  - service: ts-train-service
+    endpoint: "POST /api/v1/trainservice/trains"
+    success_response: "HTTP 200; {1,'create success', null}"
+    state_postcondition: "GET /api/v1/trainservice/trains returns status 1 with the new TrainType (submitted id/name, economyClass, confortClass, avgSpeed) in data; GET /trains/{id} returns {1,'success', trainType}"
+    failure_contract: "HTTP 200; {0,'train type already exist', submitted trainType} — NOTE controller conflates both impl failure causes (name empty OR already exists) into this one msg"
+    notes: "Success data is null — state must be asserted via the GETs."
+  - service: ts-train-service
+    endpoint: "PUT /api/v1/trainservice/trains"
+    success_response: "HTTP 200; {1,'update success', true}"
+    state_postcondition: "GET /trains/{id} shows the updated field values"
+    failure_contract: "HTTP 200; {0,'there is no trainType with the trainType id', false} when id unknown"
+    notes: ""
+  - service: ts-train-service
+    endpoint: "DELETE /api/v1/trainservice/trains/{id}"
+    success_response: "HTTP 200; {1,'delete success', true}"
+    state_postcondition: "GET /trains/{id} returns {0,'here is no TrainType with the trainType id: '+id, null}; absent from GET /trains"
+    failure_contract: "HTTP 200; {0,'there is no train according to id', null}"
+    notes: ""
+
+  # ---------------- ts-contacts-service (base api/v1/contactservice) ----------------
+  - service: ts-contacts-service
+    endpoint: "POST /api/v1/contactservice/contacts"
+    success_response: "HTTP 201 (unconditional); {1,'Create contacts success', saved contact incl. accountId, name, documentType, documentNumber, phoneNumber}"
+    state_postcondition: "GET /api/v1/contactservice/contacts/account/{accountId} returns status 1 and contains the new contact; GET /contacts/{data.id} returns it"
+    failure_contract: "HTTP 201 still; {0,'Contacts already exists', null} when a contact with the same accountId + document identity already exists"
+    notes: "Exact duplicate key (accountId+documentType+documentNumber) partially garbled in extraction — key composition UNKNOWN beyond 'accountId + document fields'."
+  - service: ts-contacts-service
+    endpoint: "POST /api/v1/contactservice/contacts/admin"
+    success_response: "HTTP 201 (unconditional); {1,'Create Success', null}"
+    state_postcondition: "contact appears in GET /api/v1/contactservice/contacts (admin list-all) and in GET /contacts/account/{accountId} with submitted fields"
+    failure_contract: "HTTP 201 still; {0,'Already Exists', existing contact} on duplicate"
+    notes: "Success data is null — assert via GETs."
+  - service: ts-contacts-service
+    endpoint: "PUT /api/v1/contactservice/contacts"
+    success_response: "HTTP 200; {1,'Modify success', updated contact}"
+    state_postcondition: "GET /contacts/{id} returns the updated name/documentType/documentNumber/phoneNumber"
+    failure_contract: "HTTP 200; {0,'Contacts not found', null} when submitted id unknown"
+    notes: ""
+  - service: ts-contacts-service
+    endpoint: "DELETE /api/v1/contactservice/contacts/{contactsId}"
+    success_response: "HTTP 200; {1,'Delete success', contactsId}"
+    state_postcondition: "GET /contacts/{contactsId} returns {0,'No contacts according to contacts id', null}; absent from account list"
+    failure_contract: "HTTP 200; {0,'Delete failed', contactsId} only if the row survives the post-delete re-query"
+    notes: "Post-check pattern: deleting a non-existent id reports success."
+
+  # ---------------- ts-order-service (base /api/v1/orderservice; G/D trains) ----------------
+  - service: ts-order-service
+    endpoint: "POST /api/v1/orderservice/order"
+    success_response: "HTTP 200; {1,'Success', created Order} — data.id is a server-generated UUID; business fields (accountId, trainNumber, from/to, seatClass, travelDate, contacts fields, price) echo the submission"
+    state_postcondition: "GET /api/v1/orderservice/order/{data.id} returns {1,'Success.', order}; order appears in POST /api/v1/orderservice/order/query for that accountId and in GET /api/v1/orderservice/order (list-all)"
+    failure_contract: "HTTP 200; {0,'Order already exist', null} when an equal order already exists among that account's orders"
+    notes: "Duplicate detection = object equality over the account's orders — weak in practice; do not rely on it firing for near-duplicates."
+  - service: ts-order-service
+    endpoint: "POST /api/v1/orderservice/order/admin"
+    success_response: "HTTP 200; {1,'Add new Order Success', created Order with fresh UUID id}"
+    state_postcondition: "GET /order/{data.id} returns it; appears in GET /order list"
+    failure_contract: "HTTP 200; {0,'Order already exist', null}"
+    notes: ""
+  - service: ts-order-service
+    endpoint: "PUT /api/v1/orderservice/order  (saveOrderInfo)"
+    success_response: "HTTP 200; {1,'Success', updated order}"
+    state_postcondition: "GET /order/{id} reflects every submitted field change"
+    failure_contract: "HTTP 200; {0,'Order Not Found', null} when submitted order.id unknown"
+    notes: ""
+  - service: ts-order-service
+    endpoint: "PUT /api/v1/orderservice/order/admin  (updateOrder)"
+    success_response: "HTTP 200; {1,'Admin Update Order Success', updated order}"
+    state_postcondition: "GET /order/{id} reflects the update"
+    failure_contract: "HTTP 200; {0,\"Order Not Found, Can't update\", null}"
+    notes: ""
+  - service: ts-order-service
+    endpoint: "DELETE /api/v1/orderservice/order/{orderId}"
+    success_response: "HTTP 200; {1,'Delete Order Success', deleted order (extraction also plausible as the order id)}"
+    state_postcondition: "GET /order/{orderId} returns {0,'Order Not Found', null}; absent from GET /order"
+    failure_contract: "HTTP 200; {0,'Order Not Exist.', null}"
+    notes: "data payload of success flagged: two extraction passes differed (order vs id)."
+  - service: ts-order-service
+    endpoint: "GET /api/v1/orderservice/order/orderPay/{orderId}  [state-mutating GET — outside POST/PUT/DELETE brief, included for completeness]"
+    success_response: "HTTP 200; {1,'Pay Order Success.', order with status set to PAID code}"
+    state_postcondition: "GET /order/{orderId} shows order.status == PAID"
+    failure_contract: "HTTP 200; {0,'Order Not Found', null}"
+    notes: "Verb anomaly in source: payment status change via GET. Same for GET /order/status/{orderId}/{status} (modifyOrder): success {1,'Modify Order Success', order}, failure {0,'Order Not Found', null}, postcondition = GET /order/{orderId} shows the given status code."
+
+  # ---------------- ts-order-other-service (base /api/v1/orderOtherService; non-G/D trains) ----------------
+  - service: ts-order-other-service
+    endpoint: "POST /api/v1/orderOtherService/orderOther"
+    success_response: "HTTP 200; {1,'Success', created Order with fresh UUID id}"
+    state_postcondition: "GET /api/v1/orderOtherService/orderOther/{data.id} returns {1,'Success', order}; appears in GET /orderOther list and POST /orderOther/refresh for the account"
+    failure_contract: "HTTP 200; {0,'Order already exist', order}"
+    notes: "Mirror of ts-order-service; msg strings differ (plain 'Success')."
+  - service: ts-order-other-service
+    endpoint: "POST /api/v1/orderOtherService/orderOther/admin"
+    success_response: "HTTP 200; {1,'Success', created Order}"
+    state_postcondition: "GET /orderOther/{data.id} returns it"
+    failure_contract: "HTTP 200; {0,'Order already exist', null}"
+    notes: ""
+  - service: ts-order-other-service
+    endpoint: "PUT /api/v1/orderOtherService/orderOther"
+    success_response: "HTTP 200; {1,'Success', updated order}"
+    state_postcondition: "GET /orderOther/{id} reflects changes"
+    failure_contract: "HTTP 200; {0,'Order Not Found', null}"
+    notes: ""
+  - service: ts-order-other-service
+    endpoint: "PUT /api/v1/orderOtherService/orderOther/admin"
+    success_response: "HTTP 200; {1,'Success', updated order}"
+    state_postcondition: "GET /orderOther/{id} reflects changes"
+    failure_contract: "HTTP 200; {0,'Order Not Found', null}"
+    notes: ""
+  - service: ts-order-other-service
+    endpoint: "DELETE /api/v1/orderOtherService/orderOther/{orderId}"
+    success_response: "HTTP 200; {1,'Success', orderId (uuid)}"
+    state_postcondition: "GET /orderOther/{orderId} returns {0,'Order Not Found', null}"
+    failure_contract: "HTTP 200; {0,'Order Not Exist.', null}"
+    notes: "GET /orderOther/orderPay/{orderId} and GET /orderOther/status/{orderId}/{status} are state-mutating GETs mirroring ts-order-service."
+
+  # ---------------- ts-config-service (base api/v1/configservice) ----------------
+  - service: ts-config-service
+    endpoint: "POST /api/v1/configservice/configs"
+    success_response: "HTTP 201 (unconditional); {1,'Create success', config{name,value,description}}"
+    state_postcondition: "GET /api/v1/configservice/configs/{name} returns {1,'Success', config} with submitted value/description; present in GET /configs"
+    failure_contract: "HTTP 201 still; {0,'Config {name} already exists.', null}"
+    notes: "Uniqueness key = name."
+  - service: ts-config-service
+    endpoint: "PUT /api/v1/configservice/configs"
+    success_response: "HTTP 200; {1,'Update success', config}"
+    state_postcondition: "GET /configs/{name} shows new value/description"
+    failure_contract: "HTTP 200; {0,\"Config {name} doesn't exist.\", null}"
+    notes: ""
+  - service: ts-config-service
+    endpoint: "DELETE /api/v1/configservice/configs/{configName}"
+    success_response: "HTTP 200; {1,'Delete success', deleted config}"
+    state_postcondition: "GET /configs/{configName} returns {0,'No content', null}; absent from GET /configs"
+    failure_contract: "HTTP 200; {0,\"Config {name} doesn't exist.\", null}"
+    notes: ""
+
+  # ---------------- ts-travel-service (base /api/v1/travelservice; G/D trips) ----------------
+  - service: ts-travel-service
+    endpoint: "POST /api/v1/travelservice/trips"
+    success_response: "HTTP 201 (unconditional); {1,'Create trip:'+<trip>+'.', null}"
+    state_postcondition: "GET /api/v1/travelservice/trips/{tripId} returns {1,'Search Trip Success by Trip Id '+tripId, trip} with submitted trainTypeName/route/stations/times; trip appears in GET /trips (queryAll) and GET /admin_trip"
+    failure_contract: "HTTP 201 still; duplicate tripId returns envelope status 1 (not 0) with msg 'Trip {id} already exists', data null — distinguishable ONLY by msg (both branches have data null)"
+    notes: "QUIRK verified in source: failure keeps status=1. Assert on msg + follow-up GET. Query-POSTs /trips/routes, /trips/left, /trips/left_parallel, /trip_detail are read-only."
+  - service: ts-travel-service
+    endpoint: "PUT /api/v1/travelservice/trips"
+    success_response: "HTTP 200; {1,'Update trip:'+<trip>, updated trip}"
+    state_postcondition: "GET /trips/{tripId} reflects submitted stationsName/terminalStationName/startTime/endTime/routeId"
+    failure_contract: "HTTP 200; missing trip returns status 1 with msg 'Trip{id}doesn 't exists' [sic], data null"
+    notes: "Extraction hinted a possible source-level field mix-up on trainTypeName during update — per-field echo of trainTypeName after PUT marked UNKNOWN; other fields assertable."
+  - service: ts-travel-service
+    endpoint: "DELETE /api/v1/travelservice/trips/{tripId}"
+    success_response: "HTTP 200; {1,'Delete trip:'+tripId+'.', tripId}"
+    state_postcondition: "GET /trips/{tripId} returns {0,'No Content according to tripId'+tripId, null}; absent from GET /admin_trip"
+    failure_contract: "HTTP 200; {0,\"Trip {id} doesn't exist.\", null}"
+    notes: ""
+
+  # ---------------- ts-travel2-service (base /api/v1/travel2service; other trains) ----------------
+  - service: ts-travel2-service
+    endpoint: "POST /api/v1/travel2service/trips"
+    success_response: "HTTP 201 (unconditional); {1,'Create trip info:'+<trip>+'.', null}"
+    state_postcondition: "GET /api/v1/travel2service/trips/{tripId} returns {1,'Search Trip Success by Trip Id '+tripId, trip}; appears in GET /trips and GET /admin_trip (msg 'Travel Service Admin Query All Travel Success')"
+    failure_contract: "HTTP 201 still; duplicate returns status 1, msg 'Trip {id} already exists', data null (same quirk as ts-travel-service)"
+    notes: ""
+  - service: ts-travel2-service
+    endpoint: "PUT /api/v1/travel2service/trips"
+    success_response: "HTTP 200; {1,'Update trip info:'+<trip>, updated trip}"
+    state_postcondition: "GET /trips/{tripId} reflects submitted fields"
+    failure_contract: "HTTP 200; status 1, msg 'Trip{id}doesn 't exists', data null"
+    notes: ""
+  - service: ts-travel2-service
+    endpoint: "DELETE /api/v1/travel2service/trips/{tripId}"
+    success_response: "HTTP 200; {1,'Delete trip:'+tripId+'.', tripId}"
+    state_postcondition: "GET /trips/{tripId} returns {0,'No Content according to tripId'+tripId, null}"
+    failure_contract: "HTTP 200; {0,\"Trip {id} doesn't exist.\", null}"
+    notes: ""
+
+  # ---------------- ts-price-service (base /api/v1/priceservice) ----------------
+  - service: ts-price-service
+    endpoint: "POST /api/v1/priceservice/prices"
+    success_response: "HTTP 201 (unconditional); {1,'Create success', priceConfig} — data.id fresh UUID when submitted id null/short (<10 chars); routeId, trainType, basicPriceRate, firstClassPriceRate echo input"
+    state_postcondition: "GET /api/v1/priceservice/prices returns status 1 with the config in data; GET /prices/{routeId}/{trainType} returns {1,'Success', config}"
+    failure_contract: "No business-failure branch in source (create-or-update upsert; saves regardless)"
+    notes: "With a long existing id this endpoint UPDATES that config."
+  - service: ts-price-service
+    endpoint: "PUT /api/v1/priceservice/prices"
+    success_response: "HTTP 200; {1,'Update success', priceConfig}"
+    state_postcondition: "GET /prices/{routeId}/{trainType} shows updated rates"
+    failure_contract: "HTTP 200; {0,'No that config', null} when id unknown"
+    notes: ""
+  - service: ts-price-service
+    endpoint: "DELETE /api/v1/priceservice/prices/{pricesId}"
+    success_response: "HTTP 200; {1,'Delete success', deleted config}"
+    state_postcondition: "config absent from GET /prices; GET /prices/{routeId}/{trainType} for it returns {0,'No that config', null}"
+    failure_contract: "HTTP 200; {0,'No that config', null}"
+    notes: ""
+
+  # ---------------- ts-food-service (base /api/v1/foodservice) ----------------
+  - service: ts-food-service
+    endpoint: "POST /api/v1/foodservice/orders"
+    success_response: "HTTP 200; {1,'Success.', saved FoodOrder with fresh UUID id; foodType/orderId/foodName/price/stationName/storeName echo input}"
+    state_postcondition: "GET /api/v1/foodservice/orders/{orderId} returns {1,'Success.', foodOrder}; present in GET /orders"
+    failure_contract: "HTTP 200; {0,'Order Id Has Existed.', null} when a food order for that orderId exists"
+    notes: "Also enqueues a delivery message (side channel, not REST-observable)."
+  - service: ts-food-service
+    endpoint: "POST /api/v1/foodservice/createOrderBatch"
+    success_response: "HTTP 200; {1,'Success.', null}"
+    state_postcondition: "each submitted orderId retrievable via GET /orders/{orderId} with status 1"
+    failure_contract: "HTTP 200; {0,'Order Id '+<id>+'Existed', null} on first duplicate found"
+    notes: "Partial-write behavior on mid-batch failure UNKNOWN from extraction — do not assert atomicity."
+  - service: ts-food-service
+    endpoint: "PUT /api/v1/foodservice/orders"
+    success_response: "HTTP 200; {1,'Success', updated FoodOrder}"
+    state_postcondition: "GET /orders/{orderId} shows updated foodType/stationName/storeName/foodName/price"
+    failure_contract: "HTTP 200; {0,'Order Id Is Non-Existent.', null}"
+    notes: ""
+  - service: ts-food-service
+    endpoint: "DELETE /api/v1/foodservice/orders/{orderId}"
+    success_response: "envelope {1,'Success.', null}; HTTP status ambiguous in source: method returns ok() (200) but is annotated @ResponseStatus(HttpStatus.ACCEPTED) (202) — accept 200 or 202, assert the envelope"
+    state_postcondition: "GET /orders/{orderId} returns {0,'Order Id Is Non-Existent.', null}; absent from GET /orders"
+    failure_contract: "HTTP as above; {0,'Order Id Is Non-Existent.', null}"
+    notes: "Annotation/ResponseEntity conflict quoted verbatim from FoodController."
+
+  # ---------------- ts-consign-service (base /api/v1/consignservice) ----------------
+  - service: ts-consign-service
+    endpoint: "POST /api/v1/consignservice/consigns"
+    success_response: "HTTP 200; {1,'You have consigned successfully! The price is '+<price>, saved ConsignRecord} — data.id fresh UUID; accountId/orderId/from/to/consignee/phone/weight echo input; data.price computed by ts-consign-price-service from weight+isWithin"
+    state_postcondition: "GET /api/v1/consignservice/consigns/order/{orderId} returns {1,'Find consign by order id success', record}; record in GET /consigns/account/{accountId} ({1,'Find consign by account id success', list})"
+    failure_contract: "No documented rejection branch; if the consign-price call fails the behavior is UNKNOWN (unhandled in source — likely 5xx)"
+    notes: ""
+  - service: ts-consign-service
+    endpoint: "PUT /api/v1/consignservice/consigns"
+    success_response: "HTTP 200; existing id → {1,'Update consign success', updated record (price recomputed when weight changed)}; missing id → falls through to INSERT and returns the insert success envelope"
+    state_postcondition: "GET /consigns/order/{orderId} reflects submitted consignee/phone/weight and the (re)computed price"
+    failure_contract: "None documented (upsert)"
+    notes: "Upsert semantics verified in impl: not-found delegates to insertConsignRecord."
+
+  # ---------------- ts-consign-price-service (base /api/v1/consignpriceservice) ----------------
+  - service: ts-consign-price-service
+    endpoint: "POST /api/v1/consignpriceservice/consignprice"
+    success_response: "HTTP 200; {1,'Success', saved ConsignPrice with index forced to 0 (singleton config)}"
+    state_postcondition: "GET /api/v1/consignpriceservice/consignprice/config returns {1,'Success', the same config}; GET /consignprice/price returns a description string derived from it; GET /consignprice/{weight}/{isWithinRegion} prices according to the new initialWeight/initialPrice/withinPrice/beyondPrice"
+    failure_contract: "No failure branch in source (always overwrites index 0)"
+    notes: ""
+
+  # ---------------- ts-user-service (base /api/v1/userservice/users) ----------------
+  - service: ts-user-service
+    endpoint: "POST /api/v1/userservice/users/register"
+    success_response: "HTTP 201 (unconditional); {1,'REGISTER USER SUCCESS', saved User} — userId = submitted or fresh UUID; userName/gender/documentType/documentNum/email echo input"
+    state_postcondition: "GET /api/v1/userservice/users/{userName} returns {1,'Find User Success', user}; GET /users/id/{userId} likewise; user in GET /users list; side effect: matching auth user created in ts-auth-service, so POST /api/v1/users/login with the credentials succeeds"
+    failure_contract: "HTTP 201 still; {0,'USER HAS ALREADY EXISTS', null} on duplicate userName"
+    notes: ""
+  - service: ts-user-service
+    endpoint: "PUT /api/v1/userservice/users"
+    success_response: "HTTP 200; {1,'SAVE USER SUCCESS', updated user}"
+    state_postcondition: "GET /users/{userName} reflects updated fields"
+    failure_contract: "HTTP 200; {0,'USER NOT EXISTS', null}"
+    notes: "Impl uses delete-then-save replacement; lookup key (userName vs userId) not fully pinned by extraction — UNKNOWN."
+  - service: ts-user-service
+    endpoint: "DELETE /api/v1/userservice/users/{userId}"
+    success_response: "HTTP 200; {1,'DELETE SUCCESS', null}"
+    state_postcondition: "GET /users/id/{userId} returns {0,'No User', null}; absent from GET /users; auth-side login for that user stops working (auth user deleted first)"
+    failure_contract: "HTTP 200; {0,'USER NOT EXISTS', null}"
+    notes: ""
+
+  # ---------------- ts-auth-service ----------------
+  - service: ts-auth-service
+    endpoint: "POST /api/v1/auth"
+    success_response: "HTTP 201; {1,'SUCCESS', submitted AuthDto} — controller constructs this envelope unconditionally"
+    state_postcondition: "created auth user (ROLE_USER, encoded password) can obtain a token via POST /api/v1/users/login; visible in GET /api/v1/users (list of auth users)"
+    failure_contract: "No failure envelope in controller; impl validation (empty username/password, password <6 chars) throws UserOperationException whose HTTP manifestation is UNKNOWN from fetched code; NO duplicate-username check in this impl"
+    notes: "Contract is response-shape-only; assert the state via login/user list."
+  - service: ts-auth-service
+    endpoint: "POST /api/v1/users/login"
+    success_response: "HTTP 200; {1, msg (exact string not captured — UNKNOWN), TokenDto{userId, username, token}}"
+    state_postcondition: "none — token issuance only; no documented persistent-state change (include as response contract only)"
+    failure_contract: "HTTP 200; {0,'get token error', null} on bad credentials / token failure"
+    notes: "Not state-mutating; listed because it is a POST on a covered service."
+  - service: ts-auth-service
+    endpoint: "DELETE /api/v1/users/{userId}"
+    success_response: "HTTP 200; {1,'DELETE USER SUCCESS', null}"
+    state_postcondition: "auth user gone from GET /api/v1/users; login with those credentials returns {0,'get token error', null}"
+    failure_contract: "No not-found branch in source: unknown userId still yields {1,'DELETE USER SUCCESS', null} (silent no-op)"
+    notes: ""
+
+  # ---------------- ts-assurance-service (base /api/v1/assuranceservice) ----------------
+  - service: ts-assurance-service
+    endpoint: "GET /api/v1/assuranceservice/assurances/{typeIndex}/{orderId}  [CREATE — state-mutating GET, the only create route for assurance]"
+    success_response: "HTTP 200; {1,'Success', assurance{id, orderId, type}}"
+    state_postcondition: "GET /assurance/orderid/{orderId} returns {1,'Find Assurance Success', assurance}; appears in GET /assurances (PlainAssurance list, {1,'Success',...})"
+    failure_contract: "HTTP 200; {0,'Fail.Assurance already exists', null} when the orderId already has one; {0,\"Fail.Assurance type doesn't exist\", null} for invalid typeIndex"
+    notes: "Verb anomaly in source (create via GET). One assurance per orderId."
+  - service: ts-assurance-service
+    endpoint: "PATCH /api/v1/assuranceservice/assurances/{assuranceId}/{orderId}/{typeIndex}"
+    success_response: "HTTP 200; {1,'Modify Success', updated assurance}"
+    state_postcondition: "GET /assurance/orderid/{orderId} shows the new type/orderId binding"
+    failure_contract: "HTTP 200; {0,'Fail.Assurance not found.', null} unknown assuranceId; {0,'Assurance Type not exist', null} bad typeIndex"
+    notes: "PATCH (not PUT) — included as a mutating mapping."
+  - service: ts-assurance-service
+    endpoint: "DELETE /api/v1/assuranceservice/assurances/assuranceid/{assuranceId}"
+    success_response: "HTTP 200; {1,'Delete Success with Assurance id', null}"
+    state_postcondition: "absent from GET /assurances; GET /assurance/orderid/{itsOrderId} returns {0,'No Content by this orderId', null}"
+    failure_contract: "HTTP 200; {0,'Fail.Assurance not clear', assuranceId} only if row survives post-delete re-check (non-existent id ⇒ success)"
+    notes: ""
+  - service: ts-assurance-service
+    endpoint: "DELETE /api/v1/assuranceservice/assurances/orderid/{orderId}"
+    success_response: "HTTP 200; {1,'Delete Success with Order Id', null}"
+    state_postcondition: "GET /assurance/orderid/{orderId} returns {0,'No Content by this orderId', null}"
+    failure_contract: "HTTP 200; {0,'Fail.Assurance not clear', orderId}"
+    notes: ""
+
+  # ---------------- ts-security-service (base /api/v1/securityservice) ----------------
+  - service: ts-security-service
+    endpoint: "POST /api/v1/securityservice/securityConfigs"
+    success_response: "HTTP 200; {1,'Success', config with fresh UUID id; name/value/description echo input}"
+    state_postcondition: "GET /api/v1/securityservice/securityConfigs returns status 1 with the config in data"
+    failure_contract: "HTTP 200; {0,'Security Config Already Exist', null} on duplicate name"
+    notes: ""
+  - service: ts-security-service
+    endpoint: "PUT /api/v1/securityservice/securityConfigs"
+    success_response: "HTTP 200; {1,'Success', updated config}"
+    state_postcondition: "GET /securityConfigs shows updated value/description for that id"
+    failure_contract: "HTTP 200; {0,'Security Config Not Exist', null}"
+    notes: ""
+  - service: ts-security-service
+    endpoint: "DELETE /api/v1/securityservice/securityConfigs/{id}"
+    success_response: "HTTP 200; {1,'Success', id}"
+    state_postcondition: "id absent from GET /securityConfigs (list may become {0,'No Content', null} if last)"
+    failure_contract: "HTTP 200; {0,'Reason Not clear', id} (post-delete re-check pattern)"
+    notes: ""
+
+  # ---------------- ts-admin-basic-info-service (base /api/v1/adminbasicservice; verified pure pass-through of downstream envelopes, HTTP always 200 via ok()) ----------------
+  - service: ts-admin-basic-info-service
+    endpoint: "POST /api/v1/adminbasicservice/adminbasic/contacts"
+    success_response: "HTTP 200 (note: NOT 201 — admin wrapper absorbs downstream status); envelope = ts-contacts POST /contacts/admin pass-through: {1,'Create Success', null}"
+    state_postcondition: "contact in GET /adminbasic/contacts (pass-through of contacts list) with submitted fields"
+    failure_contract: "{0,'Already Exists', existing contact} passed through"
+    notes: "All 15 adminbasic mutating endpoints return the downstream Response body unchanged (verified snippet: restTemplate.exchange(...); return re.getBody())."
+  - service: ts-admin-basic-info-service
+    endpoint: "PUT /api/v1/adminbasicservice/adminbasic/contacts"
+    success_response: "HTTP 200; pass-through {1,'Modify success', updated contact}"
+    state_postcondition: "GET /adminbasic/contacts reflects update"
+    failure_contract: "{0,'Contacts not found', null}"
+    notes: ""
+  - service: ts-admin-basic-info-service
+    endpoint: "DELETE /api/v1/adminbasicservice/adminbasic/contacts/{contactsId}"
+    success_response: "HTTP 200; pass-through {1,'Delete success', contactsId}"
+    state_postcondition: "absent from GET /adminbasic/contacts"
+    failure_contract: "{0,'Delete failed', contactsId}"
+    notes: ""
+  - service: ts-admin-basic-info-service
+    endpoint: "POST /api/v1/adminbasicservice/adminbasic/stations"
+    success_response: "HTTP 200; pass-through {1,'Create success', station}"
+    state_postcondition: "station (name, stayTime) in GET /adminbasic/stations"
+    failure_contract: "{0,'Name not specify'|'Already exists', station}"
+    notes: ""
+  - service: ts-admin-basic-info-service
+    endpoint: "PUT /api/v1/adminbasicservice/adminbasic/stations"
+    success_response: "HTTP 200; pass-through {1,'Update success', station}"
+    state_postcondition: "GET /adminbasic/stations reflects new name/stayTime"
+    failure_contract: "{0,'Station not exist', null}"
+    notes: ""
+  - service: ts-admin-basic-info-service
+    endpoint: "DELETE /api/v1/adminbasicservice/adminbasic/stations/{id}"
+    success_response: "HTTP 200; pass-through {1,'Delete success', station}"
+    state_postcondition: "absent from GET /adminbasic/stations"
+    failure_contract: "{0,'Station not exist', null}"
+    notes: ""
+  - service: ts-admin-basic-info-service
+    endpoint: "POST /api/v1/adminbasicservice/adminbasic/trains"
+    success_response: "HTTP 200; pass-through {1,'create success', null}"
+    state_postcondition: "trainType in GET /adminbasic/trains"
+    failure_contract: "{0,'train type already exist', trainType}"
+    notes: ""
+  - service: ts-admin-basic-info-service
+    endpoint: "PUT /api/v1/adminbasicservice/adminbasic/trains"
+    success_response: "HTTP 200; pass-through {1,'update success', true}"
+    state_postcondition: "GET /adminbasic/trains reflects update"
+    failure_contract: "{0,'there is no trainType with the trainType id', false}"
+    notes: ""
+  - service: ts-admin-basic-info-service
+    endpoint: "DELETE /api/v1/adminbasicservice/adminbasic/trains/{id}"
+    success_response: "HTTP 200; pass-through {1,'delete success', true}"
+    state_postcondition: "absent from GET /adminbasic/trains"
+    failure_contract: "{0,'there is no train according to id', null}"
+    notes: ""
+  - service: ts-admin-basic-info-service
+    endpoint: "POST /api/v1/adminbasicservice/adminbasic/configs"
+    success_response: "HTTP 200; pass-through {1,'Create success', config}"
+    state_postcondition: "config in GET /adminbasic/configs"
+    failure_contract: "{0,'Config {name} already exists.', null}"
+    notes: ""
+  - service: ts-admin-basic-info-service
+    endpoint: "PUT /api/v1/adminbasicservice/adminbasic/configs"
+    success_response: "HTTP 200; pass-through {1,'Update success', config}"
+    state_postcondition: "GET /adminbasic/configs shows new value"
+    failure_contract: "{0,\"Config {name} doesn't exist.\", null}"
+    notes: ""
+  - service: ts-admin-basic-info-service
+    endpoint: "DELETE /api/v1/adminbasicservice/adminbasic/configs/{name}"
+    success_response: "HTTP 200; pass-through {1,'Delete success', config}"
+    state_postcondition: "absent from GET /adminbasic/configs"
+    failure_contract: "{0,\"Config {name} doesn't exist.\", null}"
+    notes: ""
+  - service: ts-admin-basic-info-service
+    endpoint: "POST /api/v1/adminbasicservice/adminbasic/prices"
+    success_response: "HTTP 200; pass-through {1,'Create success', priceConfig (UUID id)}"
+    state_postcondition: "config in GET /adminbasic/prices with submitted routeId/trainType/rates"
+    failure_contract: "none documented (downstream upsert)"
+    notes: "Request body is adminbasic PriceInfo mapped onto price service's PriceConfig."
+  - service: ts-admin-basic-info-service
+    endpoint: "PUT /api/v1/adminbasicservice/adminbasic/prices"
+    success_response: "HTTP 200; pass-through {1,'Update success', priceConfig}"
+    state_postcondition: "GET /adminbasic/prices reflects new rates"
+    failure_contract: "{0,'No that config', null}"
+    notes: ""
+  - service: ts-admin-basic-info-service
+    endpoint: "DELETE /api/v1/adminbasicservice/adminbasic/prices/{pricesId}"
+    success_response: "HTTP 200; pass-through {1,'Delete success', priceConfig}"
+    state_postcondition: "absent from GET /adminbasic/prices"
+    failure_contract: "{0,'No that config', null}"
+    notes: ""
+
+  # ---------------- ts-admin-order-service (base /api/v1/adminorderservice; routes by trainNumber prefix: 'G'/'D' -> ts-order-service, else ts-order-other-service) ----------------
+  - service: ts-admin-order-service
+    endpoint: "POST /api/v1/adminorderservice/adminorder"
+    success_response: "HTTP 200; pass-through of downstream addNewOrder envelope: {1,'Add new Order Success', order} (G/D) or {1,'Success', order} (other); data.id = fresh UUID"
+    state_postcondition: "order appears in GET /adminorder (aggregate of both order services, {1,'Get the orders successfully!', list}) and via the routed service's GET /order/{id} (or /orderOther/{id})"
+    failure_contract: "pass-through {0,'Order already exist', null}"
+    notes: ""
+  - service: ts-admin-order-service
+    endpoint: "PUT /api/v1/adminorderservice/adminorder"
+    success_response: "HTTP 200; pass-through {1,'Admin Update Order Success', order} (G/D) or {1,'Success', order} (other)"
+    state_postcondition: "GET /adminorder reflects the updated fields for that order id"
+    failure_contract: "pass-through {0,\"Order Not Found, Can't update\"|'Order Not Found', null}"
+    notes: ""
+  - service: ts-admin-order-service
+    endpoint: "DELETE /api/v1/adminorderservice/adminorder/{orderId}/{trainNumber}"
+    success_response: "HTTP 200; pass-through {1,'Delete Order Success', order/id} (G/D) or {1,'Success', orderId} (other)"
+    state_postcondition: "order id absent from GET /adminorder aggregate"
+    failure_contract: "pass-through {0,'Order Not Exist.', null}"
+    notes: "trainNumber path segment exists only to route the call."
+
+  # ---------------- ts-admin-route-service (base /api/v1/adminrouteservice) ----------------
+  - service: ts-admin-route-service
+    endpoint: "POST /api/v1/adminrouteservice/adminroute"
+    success_response: "HTTP 200; pass-through of route service: {1,'Save and Modify success', saved Route (UUID id when new)}"
+    state_postcondition: "route in GET /adminroute ({1,'Success', all routes}) and GET /api/v1/routeservice/routes/{id}"
+    failure_contract: "pre-validation {0,'start or end station not include in stationList.', null}; a failing station-existence check response is passed through (status 0); downstream {0,'Station Number Not Equal To Distance Number', null}"
+    notes: "Station-existence check calls ts-station-service before forwarding; exact msg of that pass-through depends on station service."
+  - service: ts-admin-route-service
+    endpoint: "DELETE /api/v1/adminrouteservice/adminroute/{routeId}"
+    success_response: "HTTP 200; pass-through {1,'Delete Success', routeId}"
+    state_postcondition: "absent from GET /adminroute; GET /api/v1/routeservice/routes/{routeId} returns {0,'No content with the routeId', null}"
+    failure_contract: "pass-through {0,'Delete failed, Reason unKnown with this routeId', routeId} (see route service idempotent-success caveat)"
+    notes: ""
+
+  # ---------------- ts-admin-travel-service (base /api/v1/admintravelservice; routes by tripId first char 'G'/'D' -> travel, else travel2) ----------------
+  - service: ts-admin-travel-service
+    endpoint: "POST /api/v1/admintravelservice/admintravel"
+    success_response: "HTTP 200; re-wrapped {1,'[Admin add new travel]', null} when downstream status==1"
+    state_postcondition: "trip appears in GET /admintravel (merged admin_trip data of travel+travel2)"
+    failure_contract: "{0,'Admin add new travel failed', null} when downstream status!=1 — CAVEAT: downstream duplicate-create returns status 1 (travel quirk), so a duplicate add still reports SUCCESS here; only the follow-up GET can distinguish"
+    notes: "Success msg string flagged: extraction quoted '[Admin add new travel]' verbatim; treat exact msg as low-confidence, status/data as firm."
+  - service: ts-admin-travel-service
+    endpoint: "PUT /api/v1/admintravelservice/admintravel"
+    success_response: "HTTP 200; pass-through of downstream update envelope {1,'Update trip:...', trip} — but downstream not-found ALSO returns status 1 ('...doesn 't exists') and would pass through as success-status"
+    state_postcondition: "GET /admintravel reflects the submitted trip fields"
+    failure_contract: "{0,'Admin update travel failed', null} when downstream status!=1"
+    notes: "Same travel-quirk caveat as POST."
+  - service: ts-admin-travel-service
+    endpoint: "DELETE /api/v1/admintravelservice/admintravel/{tripId}"
+    success_response: "HTTP 200; pass-through {1,'Delete trip:'+tripId+'.', tripId}"
+    state_postcondition: "trip absent from GET /admintravel"
+    failure_contract: "{0,'Admin delete travel failed', null} when downstream returns status 0 (trip doesn't exist)"
+    notes: ""
+
+  # ---------------- ts-admin-user-service (base /api/v1/adminuserservice/users) ----------------
+  - service: ts-admin-user-service
+    endpoint: "POST /api/v1/adminuserservice/users"
+    success_response: "HTTP 200 (note: NOT the 201 of the underlying register); pass-through {1,'REGISTER USER SUCCESS', saved user}"
+    state_postcondition: "user in GET /api/v1/adminuserservice/users (pass-through of user list); also GET /api/v1/userservice/users/{userName} returns it; login becomes possible (auth user created)"
+    failure_contract: "wrapper checks body==null || status!=1 and returns {0,'Add user error', null} (downstream 'USER HAS ALREADY EXISTS' is replaced by this wrap)"
+    notes: ""
+  - service: ts-admin-user-service
+    endpoint: "PUT /api/v1/adminuserservice/users"
+    success_response: "HTTP 200; pass-through {1,'SAVE USER SUCCESS', updated user}"
+    state_postcondition: "GET /adminuserservice/users reflects the update"
+    failure_contract: "{0,'Update user error', null} when downstream fails (e.g., USER NOT EXISTS)"
+    notes: ""
+  - service: ts-admin-user-service
+    endpoint: "DELETE /api/v1/adminuserservice/users/{userId}"
+    success_response: "HTTP 200; pass-through {1,'DELETE SUCCESS', null}"
+    state_postcondition: "userId absent from GET /adminuserservice/users; downstream GET /userservice/users/id/{userId} returns {0,'No User', null}"
+    failure_contract: "{0,'delete user error', null} when downstream fails"
+    notes: ""
