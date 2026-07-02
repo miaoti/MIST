@@ -1,0 +1,71 @@
+# FROZEN executable bindings — TrainTicket CALIBRATION endpoints only (G2).
+# Mechanical per-clause translation of the frozen blind assertion set
+# (blind-assertions-trainticket.yaml @ commit 15954a8) into the closed primitive
+# set of comparator-runner-design.md §2. Every binding cites its frozen clause
+# verbatim. UNKNOWN / not-exercisable clauses are NOT_CHECKABLE with a reason,
+# never guessed. Committed BEFORE any comparator run (freeze rule); any later
+# change is a disclosed protocol amendment. Binding errors found at run time are
+# comparator-infra-failure, never a detection (design §2).
+#
+# Input notes (harness-level, oracle-neutral): each run substitutes fresh values
+# so the state clause has an unambiguous membership key — ${uuid:FIELD} -> fresh
+# UUID string, ${fresh:FIELD} -> fresh short string. adminroute exploits the
+# FROZEN contract's own documented create-with-submitted-id behavior ("data.id
+# is a fresh UUID when submitted id is null/len<32, otherwise the submitted id")
+# to make `id` the client-controlled membership key; startStation/endStation use
+# EXISTING seeded stations (shanghai/nanjing) because the frozen failure
+# contract documents the station-existence pre-check.
+
+sut: trainticket
+frozen_set: "blind-assertions-trainticket.yaml @ commit 15954a8"
+
+endpoints:
+  - endpoint: "POST /api/v1/adminrouteservice/adminroute"
+    triple: adminroute-create
+    body_template: '{"id":"${uuid:id}","startStation":"shanghai","endStation":"nanjing","stationList":"shanghai,nanjing","distanceList":"0,350"}'
+    clauses:
+      - cite: "HTTP 200; pass-through of route service: {1,'Save and Modify success', saved Route (UUID id when new)}"
+        checks:
+          - primitive: HTTP_STATUS
+            expect: "200"
+          - primitive: ENVELOPE_STATUS
+            expect: "1"
+          - primitive: ENVELOPE_DATA
+            expect: "non-null"
+          - primitive: MSG_CONTAINS
+            expect: "Save and Modify success"
+      - cite: "route in GET /adminroute ({1,'Success', all routes}) and GET /api/v1/routeservice/routes/{id}"
+        checks:
+          - primitive: STATE_GET
+            path: "/api/v1/adminrouteservice/adminroute"
+            expect: "contains-submitted-fields"
+            fields: "id"
+      - cite: "pre-validation {0,'start or end station not include in stationList.', null}; a failing station-existence check response is passed through (status 0); downstream {0,'Station Number Not Equal To Distance Number', null}"
+        checks:
+          - primitive: NOT_CHECKABLE
+            reason: "failure contract — exercised only by crafted invalid inputs, out of calibration scope (calibration drives valid writes)"
+
+  - endpoint: "POST /api/v1/adminbasicservice/adminbasic/contacts"
+    triple: adminbasic-contacts-create
+    body_template: '{"name":"comparator-cal","accountId":"${uuid:accountId}","documentType":1,"documentNumber":"${fresh:documentNumber}","phoneNumber":"12345678901"}'
+    clauses:
+      - cite: "HTTP 200 (note: NOT 201 — admin wrapper absorbs downstream status); envelope = ts-contacts POST /contacts/admin pass-through: {1,'Create Success', null}"
+        checks:
+          - primitive: HTTP_STATUS
+            expect: "200"
+          - primitive: ENVELOPE_STATUS
+            expect: "1"
+          - primitive: ENVELOPE_DATA
+            expect: "null"
+          - primitive: MSG_CONTAINS
+            expect: "Create Success"
+      - cite: "contact in GET /adminbasic/contacts (pass-through of contacts list) with submitted fields"
+        checks:
+          - primitive: STATE_GET
+            path: "/api/v1/adminbasicservice/adminbasic/contacts"
+            expect: "contains-submitted-fields"
+            fields: "accountId,documentNumber"
+      - cite: "{0,'Already Exists', existing contact} passed through"
+        checks:
+          - primitive: NOT_CHECKABLE
+            reason: "failure contract — duplicate-create path, out of calibration scope (each run submits a fresh business key)"
