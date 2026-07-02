@@ -19,7 +19,7 @@ All three independently said *"more SUTs/baselines/stats will not help — the c
 
 **Primary-source verification confirms the core risk but also pins the real, defensible deltas.** I read
 Cast in full (arXiv:2602.00972). Cast already detects masked-2xx failures *and* silent dual-write
-inconsistency (89 production-confirmed bugs) — so **MIST cannot claim to be first to detect masked or
+inconsistency (89 dev-confirmed bugs) — so **MIST cannot claim to be first to detect masked or
 silent cross-service failures.** But Cast's oracle is *not* specification-free (it uses phase-based
 metric-threshold criteria from historical traces + configured "granular assertion points"), and Cast
 *requires production-traffic replay* (it admits missing bugs when traffic doesn't cover the path) and
