@@ -1,12 +1,36 @@
 # Post-Gate-1 hardening wave — spec (test-first), incl. bar v2 numeric floors
 
-**Status:** BUILT 2026-07-02 (all six items implemented post-verdict; full suites
-green: 35 llm + 331 core + 70 cli, 0 failures — 14 new tests pin the wave incl.
-t1–t5). Implementation notes: R7fix's parallelism guard reads the explicit
-`mst.test.parallelism` system property (the seam the pairing path sets; unset ⇒
-allowed, documented); flags-off additivity holds by construction (all changes live
-inside the armed-session/pairing path; the writer is untouched). Pending: the
-standing ≥3-cold-reviewer wave on the diff. Original spec below.
+**Status:** BUILT + 3-COLD-REVIEWED + FIX WAVE APPLIED 2026-07-02 (reviews:
+research/REVIEW-HARDENING-{A-soundness,B-conformance,C-integration}.md;
+reconciliation: research/REVIEW-HARDENING-RECONCILIATION.md — verdicts: sound /
+substantially conformant / safe to ship). **The G3 prerequisites (recon §3 items
+1,2,4,5) are MET.** Disclosed amendments + deferrals (per the reconciliation):
+- **H2 amendment (R1fix v2):** non-2xx polls are tolerated WITHOUT scanning (error
+  bodies are never evidence) and polling continues; absence is concluded only from a
+  2xx DECISIVE read (timeout-hit poll / post-settle re-read), which errors the record
+  when non-2xx. Strictly sounder than the pre-wave loop, strictly more robust than
+  abort-on-first (reviewer C's formulation — cures the 503-prone-SUT attrition risk).
+- **H1 (join alignment):** orphaned-pending detection emits a synthetic error record
+  when a write dies between its hooks, keeping the per-record join aligned for
+  within-method transport failures. Steps that die BEFORE their hooked write remain
+  count-visible only (unjoinedRecords) — **per-pair tallies are DESCRIPTIVE-ONLY
+  until the writer-side method/ordinal correlator lands (G3-prerequisite rider)**.
+- **Item 2(c) DEFERRED:** paginate-to-exhaustion / per-entity read-back adapters
+  await the G3 SUT surfaces (TeaStore windowing, petclinic); the bounded check is
+  the shipped portable default.
+- **H5:** the `gateResolvedFraction ≥ 0.5` floor is DERIVED (1 − timeoutGatedFraction)
+  and subsumed by the 0.3 cap under the current three-gate taxonomy — kept as schema
+  for future gate kinds, NOT an independent check.
+- **H7:** the report carries pair tallies + one representative pair (itemized
+  per-record verdicts ride with the H1 correlator).
+- **H9 (runbook rule for G2/G3 runs):** point `smart.input.fetch.registry.path` at a
+  `target/` copy so the learned write-back never dirties the shipped depoisoned
+  registry (the run-#3 accident class).
+- R7fix's parallelism guard reads the explicit `mst.test.parallelism` system property
+  (unset/"auto" ⇒ allowed — the pairing path force-sets "1"); flags-off additivity
+  holds by construction (one caveat: oracle-on/injection-off runs now reach the
+  load-time GET validation — an intended fail-fast).
+Original spec below.
 Scope = the G3 PREREQUISITES promoted in
 [REVIEW-B1B2-RECONCILIATION.md §3](../research/REVIEW-B1B2-RECONCILIATION.md)
 (R1fix, R2fix/bar v2, R3fix, R4fix) + the two non-prerequisite items (C-P1-3fix,

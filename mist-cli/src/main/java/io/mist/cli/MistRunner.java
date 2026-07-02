@@ -605,17 +605,19 @@ public final class MistRunner {
 
         io.mist.cli.fault.PairedFaultExecutor executor = new io.mist.cli.fault.PairedFaultExecutor(
                 dataIntegrityRegistry.triples, injector, filteredRun);
-        // C-P1-3fix: persist the collected evidence BEFORE the F2
-        // clear-failure throw — run #2 lost its whole report on this path.
-        java.nio.file.Path f2ReportPath = java.nio.file.Paths.get(
+        // Single source of truth for the report path (review H10) — used by
+        // the C-P1-3fix failure sink and the normal-path writes below.
+        java.nio.file.Path pairingReportPath = java.nio.file.Paths.get(
                 "logs", "data-integrity-reports",
                 "pairing_" + inputs.experimentName + "_" + id + ".json");
-        executor.onClearFailure(evidence -> {
+        // C-P1-3fix: persist the collected evidence BEFORE the F2
+        // clear-failure throw — run #2 lost its whole report on this path.
+        executor.onClearFailure((evidence, failedFlags) -> {
             try {
                 io.mist.cli.fault.PairedFaultExecutor.writeReport(
-                        f2ReportPath, evidence, null, 0, id, true);
-                logger.error("[MIST] clear-failure evidence persisted to {} (f2ClearFailure=true)",
-                        f2ReportPath);
+                        pairingReportPath, evidence, null, 0, id, true, failedFlags);
+                logger.error("[MIST] clear-failure evidence persisted to {} (f2ClearFailure=true, "
+                        + "failed flags: {})", pairingReportPath, failedFlags);
             } catch (java.io.IOException e) {
                 logger.error("[MIST] failed to persist clear-failure evidence: {}", e.toString());
             }
@@ -632,9 +634,7 @@ public final class MistRunner {
         long quiescenceTimeoutMs = Long.getLong(
                 io.mist.cli.fault.DataIntegrityRuntime.TIMEOUT_MS_PROPERTY,
                 io.mist.cli.fault.DataIntegrityRuntime.DEFAULT_TIMEOUT_MS);
-        java.nio.file.Path reportPath = java.nio.file.Paths.get(
-                "logs", "data-integrity-reports",
-                "pairing_" + inputs.experimentName + "_" + id + ".json");
+        java.nio.file.Path reportPath = pairingReportPath;
         try {
             results = executor.execute();
             // Persist the pairing evidence BEFORE the probe: a probe crash must

@@ -130,11 +130,13 @@ public final class PairedFaultExecutor {
     private final FaultInjector injector;
     private final FilteredRun run;
     /**
-     * Hardening-wave C-P1-3fix: invoked with the computed verdicts BEFORE the
-     * F2 clear-failure throw, so a failed flag-clear no longer discards the
-     * run's evidence (run #2 lost its entire report this way). Optional.
+     * Hardening-wave C-P1-3fix: invoked with the computed verdicts AND the
+     * flags whose clear failed (review H6), BEFORE the F2 clear-failure
+     * throw, so a failed flag-clear no longer discards the run's evidence
+     * (run #2 lost its entire report this way). Optional.
      */
-    private java.util.function.Consumer<List<PairResult>> clearFailureSink;
+    private java.util.function.BiConsumer<List<PairResult>, List<FaultInjector.FaultTarget>>
+            clearFailureSink;
 
     public PairedFaultExecutor(List<TargetTripleRegistry.Triple> triples, FaultInjector injector,
                                FilteredRun run) {
@@ -144,7 +146,8 @@ public final class PairedFaultExecutor {
     }
 
     /** Registers the C-P1-3fix evidence sink (see {@link #clearFailureSink}). */
-    public void onClearFailure(java.util.function.Consumer<List<PairResult>> sink) {
+    public void onClearFailure(
+            java.util.function.BiConsumer<List<PairResult>, List<FaultInjector.FaultTarget>> sink) {
         this.clearFailureSink = sink;
     }
 
@@ -204,7 +207,8 @@ public final class PairedFaultExecutor {
             // sink failure must not mask the F2 signal).
             if (clearFailureSink != null) {
                 try {
-                    clearFailureSink.accept(evaluate(injectable, controlRecords, faultRecords));
+                    clearFailureSink.accept(evaluate(injectable, controlRecords, faultRecords),
+                            clearFailures);
                 } catch (RuntimeException e) {
                     logger.error("clear-failure evidence sink failed ({}); the F2 throw proceeds",
                             e.toString());
@@ -539,28 +543,37 @@ public final class PairedFaultExecutor {
 
     /** Writes the machine-readable pairing report (evidence + strata). */
     public static void writeReport(Path file, List<PairResult> results, String runId) throws IOException {
-        writeReport(file, results, null, 0, runId, false);
+        writeReport(file, results, null, 0, runId, false, null);
     }
 
     /** Report incl. the B2.4 benign-probe section when probe records exist. */
     public static void writeReport(Path file, List<PairResult> results,
                                    List<DataIntegrityRuntime.RunRecord> probeRecords, long timeoutMs,
                                    String runId) throws IOException {
-        writeReport(file, results, probeRecords, timeoutMs, runId, false);
+        writeReport(file, results, probeRecords, timeoutMs, runId, false, null);
     }
 
     /**
      * Full report writer. {@code f2ClearFailure} marks a report persisted on
      * the C-P1-3fix path: the flag-clear could not be confirmed and the F2
      * exception followed — the evidence is valid, the SUT state is suspect.
+     * {@code f2FailedFlags} names the flags whose clear failed (review H6).
      */
     public static void writeReport(Path file, List<PairResult> results,
                                    List<DataIntegrityRuntime.RunRecord> probeRecords, long timeoutMs,
-                                   String runId, boolean f2ClearFailure) throws IOException {
+                                   String runId, boolean f2ClearFailure,
+                                   List<FaultInjector.FaultTarget> f2FailedFlags) throws IOException {
         JSONObject report = new JSONObject();
         report.put("runId", runId);
         if (f2ClearFailure) {
             report.put("f2ClearFailure", true);
+            if (f2FailedFlags != null && !f2FailedFlags.isEmpty()) {
+                JSONArray failed = new JSONArray();
+                for (FaultInjector.FaultTarget flag : f2FailedFlags) {
+                    failed.put(String.valueOf(flag));
+                }
+                report.put("f2FailedFlags", failed);
+            }
         }
         report.put("generatedAtEpochMs", System.currentTimeMillis());
         report.put("fireRule", "pure-differential (headline): fault 2xx-acks-X AND X absent on fault"

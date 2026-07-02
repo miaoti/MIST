@@ -289,6 +289,22 @@ public final class DataIntegrityRuntime {
         if (triple == null) {
             return requestBody;
         }
+        // Review H1(i): an unconsumed pending means the PREVIOUS hooked write
+        // died between its hooks (transport failure before afterWrite). Emit
+        // a synthetic error record in its slot so the per-record join stays
+        // aligned instead of silently shifting.
+        Pending orphaned = s.pending.get();
+        if (orphaned != null) {
+            s.pending.remove();
+            logger.warn("DataIntegrity[{}][{}]: previous write orphaned (no afterWrite — transport "
+                    + "failure?) — synthetic error record keeps the join aligned",
+                    s.runLabel, orphaned.triple.name);
+            s.records.add(new RunRecord(s.runLabel, orphaned.triple.name,
+                    orphaned.triple.writeEndpoint, orphaned.isolationKey, -1, null, false,
+                    orphaned.baselineContainedX, false, QuiescenceGate.NOT_APPLICABLE, 0, 0,
+                    orphaned.baselineBody, null,
+                    "hook orphaned: beforeWrite ran but afterWrite never fired"));
+        }
         try {
             HttpResponse baseline = s.http.getSut(readbackPath(triple));
             // R1fix: a failed baseline read must not silently weaken the
@@ -363,31 +379,41 @@ public final class DataIntegrityRuntime {
 
             long start = System.nanoTime();
             int polls = 0;
+            int nonOkPolls = 0;
             boolean present = false;
             String last = null;
             int lastStatus = -1;
             QuiescenceGate gate;
             while (true) {
                 HttpResponse readback = s.http.getSut(readbackPath(triple));
-                last = readback.body;
-                lastStatus = readback.status;
                 polls++;
-                // R1fix: a failing read-back endpoint is indistinguishable
-                // from a lost write under body-only scanning — record it as
-                // an error, never as absence.
-                if (readback.status / 100 != 2) {
-                    recordReadbackError(s, triple, stepKey, pending, httpStatus, bodyStatus, polls,
-                            (System.nanoTime() - start) / 1_000_000, last, lastStatus,
-                            "read-back HTTP " + readback.status);
-                    return;
-                }
-                if (containsKey(last, pending.isolationKey)) {
-                    present = true;
-                    gate = QuiescenceGate.OBSERVED_PRESENT;
-                    break;
+                lastStatus = readback.status;
+                boolean ok = readback.status / 100 == 2;
+                // R1fix v2 (review H2): error bodies are never evidence — a
+                // non-2xx poll is not scanned — but a transient blip must not
+                // burn the record either (the old abort-on-first made runs on
+                // a 503-prone SUT attrition-prone). Keep polling; only the
+                // DECISIVE read (timeout-hit poll / post-settle re-read) must
+                // be 2xx for an absence verdict.
+                if (ok) {
+                    last = readback.body;
+                    if (containsKey(last, pending.isolationKey)) {
+                        present = true;
+                        gate = QuiescenceGate.OBSERVED_PRESENT;
+                        break;
+                    }
+                } else {
+                    nonOkPolls++;
                 }
                 long elapsedMs = (System.nanoTime() - start) / 1_000_000;
                 if (elapsedMs >= s.timeoutMs) {
+                    if (!ok) {
+                        recordReadbackError(s, triple, stepKey, pending, httpStatus, bodyStatus,
+                                polls, elapsedMs, readback.body, lastStatus,
+                                "read-back HTTP " + readback.status + " on the decisive read ("
+                                        + nonOkPolls + " of " + polls + " polls non-2xx)");
+                        return;
+                    }
                     if (traceComplete(s.http, traceId, s.traceSettleMs)) {
                         // R4fix: absence was sampled BEFORE the settle window;
                         // re-read once so a write landing during the settle is

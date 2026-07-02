@@ -34,6 +34,10 @@ public class PairedFaultExecutorTest {
         final List<Map<String, String>> rows = new ArrayList<>();
         /** R1fix seam: read-back status after the first (baseline) GET. */
         int readbackStatusAfterBaseline = 200;
+        /** R1fix seam: status of the very first (baseline) GET. */
+        int baselineStatus = 200;
+        /** H2 seam: calls #2..#(1+N) return 500, then recover to 200. */
+        int failReadbackPollsUpTo = 0;
         int getSutCalls = 0;
         /** R4fix seam: hide rows until the trace-completeness check ran twice. */
         boolean hideRowsUntilTraceStable = false;
@@ -50,9 +54,16 @@ public class PairedFaultExecutorTest {
                 return new DataIntegrityRuntime.HttpResponse(404, "");
             }
             getSutCalls++;
+            if (getSutCalls == 1 && baselineStatus / 100 != 2) {
+                return new DataIntegrityRuntime.HttpResponse(baselineStatus,
+                        "{\"error\":\"baseline down\"}");
+            }
             if (getSutCalls > 1 && readbackStatusAfterBaseline / 100 != 2) {
                 return new DataIntegrityRuntime.HttpResponse(readbackStatusAfterBaseline,
                         "{\"error\":\"boom\"}");
+            }
+            if (getSutCalls > 1 && getSutCalls <= 1 + failReadbackPollsUpTo) {
+                return new DataIntegrityRuntime.HttpResponse(500, "{\"error\":\"transient\"}");
             }
             boolean hidden = hideRowsUntilTraceStable && !traceStable;
             StringBuilder data = new StringBuilder("[");
@@ -519,7 +530,11 @@ public class PairedFaultExecutorTest {
         PairedFaultExecutor executor = new PairedFaultExecutor(
                 Collections.singletonList(contacts), injector, fakeGeneratedRun());
         List<List<PairedFaultExecutor.PairResult>> sunk = new ArrayList<>();
-        executor.onClearFailure(sunk::add);
+        List<FaultInjector.FaultTarget> sunkFlags = new ArrayList<>();
+        executor.onClearFailure((evidence, flags) -> {
+            sunk.add(evidence);
+            sunkFlags.addAll(flags);
+        });
         try {
             executor.execute();
             fail("expected the F2 clear-failure to propagate");
@@ -531,6 +546,137 @@ public class PairedFaultExecutorTest {
         assertEquals("evidence must be sunk exactly once before the throw", 1, sunk.size());
         assertEquals(PairedFaultExecutor.PairVerdict.FIRE,
                 sunk.get(0).get(0).pureDifferential);
+        assertEquals("the sink must receive the failed flags (review H6)", 1, sunkFlags.size());
+    }
+
+    @Test
+    public void h2_transientNon2xxPolls_recoverToPresent() throws Exception {
+        // Two polls 500, then recovery — the old abort-on-first would have
+        // burned the record; poll-through must converge to OBSERVED_PRESENT.
+        sut.failReadbackPollsUpTo = 2;
+        DataIntegrityRuntime.beginRun(Collections.singletonList(contacts), "control");
+        String freshened = DataIntegrityRuntime.beforeWrite(CONTACT_STEP,
+                "{\"accountId\":\"pool\",\"documentNumber\":\"pool\"}");
+        JSONObject body = new JSONObject(freshened);
+        Map<String, String> row = new LinkedHashMap<>();
+        row.put("accountId", body.getString("accountId"));
+        row.put("documentNumber", body.getString("documentNumber"));
+        sut.persist(row);
+        DataIntegrityRuntime.afterWrite(CONTACT_STEP, 200, "{\"status\":1}", "trace-x");
+        List<DataIntegrityRuntime.RunRecord> records = DataIntegrityRuntime.endRun();
+        assertEquals(1, records.size());
+        assertEquals(DataIntegrityRuntime.QuiescenceGate.OBSERVED_PRESENT, records.get(0).gate);
+        assertTrue(records.get(0).readbackContainedX);
+        assertEquals("transient blips must not error the record", null, records.get(0).error);
+    }
+
+    @Test
+    public void r1fix_baselineNon2xx_isErrorNotWeakenedIsolation() throws Exception {
+        sut.baselineStatus = 503;
+        DataIntegrityRuntime.beginRun(Collections.singletonList(contacts), "control");
+        String passedThrough = DataIntegrityRuntime.beforeWrite(CONTACT_STEP,
+                "{\"accountId\":\"pool\",\"documentNumber\":\"pool\"}");
+        assertTrue("body must pass through unfreshened on a baseline failure",
+                passedThrough.contains("pool"));
+        DataIntegrityRuntime.afterWrite(CONTACT_STEP, 200, "{\"status\":1}", "trace-x");
+        List<DataIntegrityRuntime.RunRecord> records = DataIntegrityRuntime.endRun();
+        assertEquals(1, records.size());
+        assertNotNull(records.get(0).error);
+        assertTrue(records.get(0).error, records.get(0).error.contains("baseline read-back HTTP 503"));
+    }
+
+    @Test
+    public void r3fix_countMismatch_surfacesNonzeroUnjoined() throws Exception {
+        // The fault run executes only ONE of the two writes (the second step
+        // never runs at all — the C-F1 shape): counts 2 vs 1 must surface as
+        // unjoinedRecords=1, never silently.
+        PairedFaultExecutor.FilteredRun skipSecondUnderFault = () -> {
+            int writes = injector.active ? 1 : 2;
+            for (int i = 0; i < writes; i++) {
+                fakeGeneratedRun().run();
+            }
+        };
+        List<PairedFaultExecutor.PairResult> results = new PairedFaultExecutor(
+                Collections.singletonList(contacts), injector, skipSecondUnderFault).execute();
+        PairedFaultExecutor.PairResult pair = results.get(0);
+        assertEquals(2, pair.controlRecordCount);
+        assertEquals(1, pair.faultRecordCount);
+        assertEquals(1, pair.unjoinedRecords);
+        assertEquals("the joined pair still verdicts", PairedFaultExecutor.PairVerdict.FIRE,
+                pair.pureDifferential);
+    }
+
+    @Test
+    public void r4fix_absentOnPostSettleReread_staysCompleteAbsent() throws Exception {
+        String prevJaeger = System.getProperty("jaeger.base.url");
+        String prevSettle = System.getProperty(DataIntegrityRuntime.TRACE_SETTLE_MS_PROPERTY);
+        System.setProperty("jaeger.base.url", "http://fake/api");
+        System.setProperty(DataIntegrityRuntime.TRACE_SETTLE_MS_PROPERTY, "1");
+        try {
+            // Nothing is ever persisted: the re-read is also absent, so the
+            // high-confidence absence stands.
+            DataIntegrityRuntime.beginRun(Collections.singletonList(contacts), "fault");
+            String freshened = DataIntegrityRuntime.beforeWrite(CONTACT_STEP,
+                    "{\"accountId\":\"pool\",\"documentNumber\":\"pool\"}");
+            assertNotNull(freshened);
+            DataIntegrityRuntime.afterWrite(CONTACT_STEP, 200, "{\"status\":1}", "abc123");
+            List<DataIntegrityRuntime.RunRecord> records = DataIntegrityRuntime.endRun();
+            assertEquals(1, records.size());
+            assertEquals(DataIntegrityRuntime.QuiescenceGate.OBSERVED_COMPLETE_ABSENT,
+                    records.get(0).gate);
+            assertTrue(!records.get(0).readbackContainedX);
+        } finally {
+            restore("jaeger.base.url", prevJaeger);
+            restore(DataIntegrityRuntime.TRACE_SETTLE_MS_PROPERTY, prevSettle);
+        }
+    }
+
+    @Test
+    public void h1fix_orphanedBeforeWrite_getsSyntheticErrorRecord() throws Exception {
+        DataIntegrityRuntime.beginRun(Collections.singletonList(contacts), "control");
+        // First write dies between its hooks: beforeWrite runs, afterWrite never fires.
+        DataIntegrityRuntime.beforeWrite(CONTACT_STEP,
+                "{\"accountId\":\"pool\",\"documentNumber\":\"pool\"}");
+        // Second write proceeds normally; its beforeWrite must detect the orphan.
+        String freshened = DataIntegrityRuntime.beforeWrite(CONTACT_STEP,
+                "{\"accountId\":\"pool\",\"documentNumber\":\"pool\"}");
+        JSONObject body = new JSONObject(freshened);
+        Map<String, String> row = new LinkedHashMap<>();
+        row.put("accountId", body.getString("accountId"));
+        row.put("documentNumber", body.getString("documentNumber"));
+        sut.persist(row);
+        DataIntegrityRuntime.afterWrite(CONTACT_STEP, 200, "{\"status\":1}", "trace-x");
+        List<DataIntegrityRuntime.RunRecord> records = DataIntegrityRuntime.endRun();
+        assertEquals("synthetic orphan record + the normal record", 2, records.size());
+        assertNotNull(records.get(0).error);
+        assertTrue(records.get(0).error, records.get(0).error.contains("orphaned"));
+        assertEquals(DataIntegrityRuntime.QuiescenceGate.OBSERVED_PRESENT, records.get(1).gate);
+    }
+
+    @Test
+    public void f2Report_carriesMarkerAndFlags_cleanReportDoesNot() throws Exception {
+        PairedFaultExecutor.PairResult fire = PairedFaultExecutor.verdict("t",
+                record("control", true, false, true,
+                        DataIntegrityRuntime.QuiescenceGate.OBSERVED_PRESENT, null),
+                record("fault", true, false, false,
+                        DataIntegrityRuntime.QuiescenceGate.TIMEOUT_ABSENT, null));
+        java.nio.file.Path dir = java.nio.file.Files.createTempDirectory("di-f2");
+
+        java.nio.file.Path f2File = dir.resolve("f2.json");
+        PairedFaultExecutor.writeReport(f2File, Collections.singletonList(fire), null, 0, "run-f2",
+                true, Collections.singletonList(
+                        new FaultInjector.FaultTarget("ts-x", "mist.fault.x.enabled")));
+        JSONObject f2 = new JSONObject(new String(java.nio.file.Files.readAllBytes(f2File),
+                java.nio.charset.StandardCharsets.UTF_8));
+        assertTrue(f2.getBoolean("f2ClearFailure"));
+        assertEquals(1, f2.getJSONArray("f2FailedFlags").length());
+
+        java.nio.file.Path cleanFile = dir.resolve("clean.json");
+        PairedFaultExecutor.writeReport(cleanFile, Collections.singletonList(fire), "run-clean");
+        JSONObject clean = new JSONObject(new String(java.nio.file.Files.readAllBytes(cleanFile),
+                java.nio.charset.StandardCharsets.UTF_8));
+        assertTrue("clean reports must not carry the f2 marker", !clean.has("f2ClearFailure"));
+        assertTrue(!clean.has("f2FailedFlags"));
     }
 
     @Test

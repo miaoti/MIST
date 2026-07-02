@@ -151,7 +151,11 @@ the F2 throw, making run-#2-style evidence loss impossible.)
   canonical under `logs/data-integrity-reports/`.
 - Run config (committed with this result): `trainticket-gate1-pairing.properties`,
   `trainticket/test-trace-gate1/` (input trace corpus),
-  `trainticket/input-fetch-registry.yaml`, `trainticket/root-api-registry.json`.
+  `trainticket/root-api-registry.json`. Registry note (post-e5af35b): the shipped
+  `trainticket/input-fetch-registry.yaml` was restored to its depoisoned PRE-run
+  state (the run's INPUT — the ShippedRegistryDepoisonTest invariant forbids
+  committing learned successRate fields there); the run's learned OUTPUT snapshot
+  lives at [gate1-run3-input-fetch-registry.yaml](gate1-run3-input-fetch-registry.yaml).
 - Run log: `~/gate1-logs/pairing-run.log` (WSL, ~1.1 MB+; exit file `…/pairing-run.exit` = 0).
 - Generated tests: `mist-cli/src/test/java/trainticket_gate1_pairing/TrainTicketGate1Pairing_1782976771915/`
   (local byproduct, not committed).
