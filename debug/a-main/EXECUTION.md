@@ -116,6 +116,15 @@ async/CQRS regime is NOT validated here (async FP is largely timeout-gated ⇒ d
     head-to-head, don't weaken the comparator.** It must be visibly non-strawman.
 
 ## G3 — The empirical bug hunt (make-or-break) — Task #13 (part 2)
+- **PREREQUISITES (added 2026-07-02, per prep/g3-sut2-triples-prereg.md §0 + the
+  B1+B2/prereg cold-review waves):** before any G3 data collection, the hardening
+  wave must land R1fix (read-back completeness — BFF-compatible bounded-collection
+  check; Sock Shop/TeaStore surfaces truncate or grow), bar v2/R2fix (gate-degraded
+  → NOT_EVALUABLE; FP reported as interval + gate histogram), R3fix (verdict-aware
+  join), R4fix (post-settle re-read). A SUT whose bar is NOT_EVALUABLE does NOT
+  count toward the ≥2-SUT requirement. Pre-specs: G2 comparator protocol =
+  prep/g2-novelty-comparator-prereg.md (v2); SUT-2/3 triples + TT depth site =
+  prep/g3-sut2-triples-prereg.md (v2).
 - Run B1+B2 across **≥2 write-path SUTs** (TrainTicket + TeaStore/Sock Shop; pre-specify the concrete
   saga/dual-write/compensation site per SUT — plan §8.5 item 3).
 - **Target:** ≥1–2 real lost-write/missing-compensation defects the comparator misses because no human wrote

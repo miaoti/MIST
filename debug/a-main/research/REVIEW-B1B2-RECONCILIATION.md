@@ -69,18 +69,26 @@ the audit.**
 
 ## 3. Post-run hardening candidates (NOT during run #3 — changing oracle semantics mid-gate would unpre-register the bar)
 
-Priority order, each traceable to a consensus finding:
-1. **R2fix:** `syncFpBar` → NOT_EVALUABLE (not PASS) when the observation gate is
-   degraded (e.g. observedGated+observedPresent below a floor, or timeout-gated
-   fraction above a cap); report the FP interval explicitly. Document as bar v2 —
-   pre-registered before any run that uses it.
-2. **R1fix:** read-back completeness assertion (paginate-to-exhaustion or row-count
-   bound) + wire the available per-row DELETE as teardown; record read-back HTTP
+Priority order, each traceable to a consensus finding. **PROMOTIONS (2026-07-02,
+per the G3 prereg + its cold-review wave — see REVIEW-PREREG-RECONCILIATION.md):
+items 1, 2, 4, 5 are G3 PREREQUISITES (pre-registered in
+prep/g3-sut2-triples-prereg.md §0), not optional candidates — they land in the
+post-Gate-1 hardening wave BEFORE any G3 data collection. Bar v2 (item 1) is the
+pre-registered bar for every G3 FP run.**
+1. **R2fix [G3 PREREQUISITE — bar v2]:** `syncFpBar` → NOT_EVALUABLE (not PASS) when
+   the observation gate is degraded (e.g. observedGated+observedPresent below a
+   floor, or timeout-gated fraction above a cap); report the FP interval explicitly.
+   Document as bar v2 — pre-registered before any run that uses it.
+2. **R1fix [G3 PREREQUISITE]:** read-back completeness assertion — bounded-collection
+   / row-count check via the tested surface (BFFs may not expose pagination — B
+   MAJOR-2), plus paginate-to-exhaustion / per-entity read-back where the surface
+   offers it; wire the available per-row DELETE as teardown; record read-back HTTP
    status on the RunRecord (C-P1-2).
 3. **C-P1-3fix:** persist RunRecords/report BEFORE the F2 clear-failure throw.
-4. **R3fix:** verdict-aware join (evaluate all records; a triple FIREs iff ≥1 record
-   fires AND its control sibling persisted — or emit per-record verdicts).
-5. **R4fix:** one post-settle read-back re-read before labeling
+4. **R3fix [G3 PREREQUISITE]:** verdict-aware join (evaluate all records; a triple
+   FIREs iff ≥1 record fires AND its control sibling persisted — or emit per-record
+   verdicts).
+5. **R4fix [G3 PREREQUISITE]:** one post-settle read-back re-read before labeling
    OBSERVED_COMPLETE_ABSENT.
 6. **R7fix:** `beginRun` refuses to arm when resolved parallelism > 1; registry-load
    validation of `readback_endpoint` (R5).
