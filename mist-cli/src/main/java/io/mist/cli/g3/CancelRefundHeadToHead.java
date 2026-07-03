@@ -157,6 +157,45 @@ public final class CancelRefundHeadToHead {
         List<PairedFaultExecutor.PairResult> mist = PairedFaultExecutor.evaluate(
                 Collections.singletonList(triple), control.mistRecords, fault.mistRecords);
         printCell(stratum, mist, control.comparator, fault.comparator);
+        printProbeValues(control.mistRecords, fault.mistRecords);
+    }
+
+    /**
+     * Evidence-only (does not affect any verdict): prints each leg's buyer /account balance at
+     * baseline vs final read-back, so the log shows the value-delta is a real ARITHMETIC delta —
+     * a non-zero baseline PRESENT in both legs, moving by the refund only on control — and not an
+     * appear-vs-absent MEMBERSHIP signal a response-assertion STATE_GET could also express
+     * (head-to-head cold-review A/B; the pre-fund lives in TrainTicketStimulus#baseFund).
+     */
+    private static void printProbeValues(List<DataIntegrityRuntime.RunRecord> control,
+                                         List<DataIntegrityRuntime.RunRecord> fault) {
+        System.out.println("  value-delta probe (buyer /account balance, evidence only):");
+        System.out.println("      control " + probeLine(control));
+        System.out.println("      fault   " + probeLine(fault));
+    }
+
+    private static String probeLine(List<DataIntegrityRuntime.RunRecord> records) {
+        if (records == null || records.isEmpty()) {
+            return "<no record>";
+        }
+        DataIntegrityRuntime.RunRecord r = records.get(records.size() - 1);
+        String userId = r.isolationKey == null ? null : r.isolationKey.get("userId");
+        return "baseline=" + balanceOf(r.baselineBody, userId)
+                + " -> final=" + balanceOf(r.lastReadbackBody, userId);
+    }
+
+    /** Pulls {@code userId}'s balance out of an /account list body, or a marker if absent/unread. */
+    private static String balanceOf(String accountBody, String userId) {
+        if (accountBody == null) {
+            return "<no-read>";
+        }
+        if (userId == null) {
+            return "<no-userId>";
+        }
+        java.util.regex.Matcher m = java.util.regex.Pattern.compile(
+                "\"userId\"\\s*:\\s*\"" + java.util.regex.Pattern.quote(userId)
+                        + "\"\\s*,\\s*\"balance\"\\s*:\\s*\"([^\"]*)\"").matcher(accountBody);
+        return m.find() ? m.group(1) : "<ABSENT>";
     }
 
     /** Prints one stratum's cell: MIST verdict + the comparator's control/fault flags. */

@@ -13,7 +13,9 @@ import static io.restassured.RestAssured.given;
  * Live TrainTicket implementation of {@link CancelRefundHeadToHead.Stimulus}, verified by
  * hand against the deployed SUT (debug/a-main/prep/g3-tt-deploy-progress.md, FIDELITY
  * GATE). Per leg it registers a FRESH buyer (RUNBOOK isolation — each leg's value-delta
- * is against a clean /account), creates ONE PAID far-future order, and cancels it.
+ * is against its own /account baseline), PRE-FUNDS the buyer to a non-zero balance (so the
+ * value-delta is a real arithmetic delta, not an appear-vs-absent membership signal — see
+ * {@link #baseFund}), creates ONE PAID far-future order, and cancels it.
  *
  * <p>Two SUT quirks the recipe pins:
  * <ul>
@@ -77,6 +79,20 @@ public final class TrainTicketStimulus implements CancelRefundHeadToHead.Stimulu
     private final String travelTime = "2027-12-01 10:00:00";
     private final String price = "100.0";
 
+    /**
+     * Pre-fund each buyer's /account to this NON-ZERO balance before the cancel, so MIST's
+     * value-delta read-back discriminates on a real arithmetic delta ({@code baseFund ->
+     * baseFund+refund} on the control leg vs an unchanged {@code baseFund} on the fault leg)
+     * rather than on the buyer merely APPEARING in /account. A zero-balance fresh buyer is
+     * ABSENT from /account at baseline (queryAccount only emits userIds with a Money row), which
+     * degenerates the value-delta into an appear-vs-absent MEMBERSHIP signal that a
+     * response-assertion STATE_GET could also express — making the constructed "clean win"
+     * contestable (head-to-head cold-review A/B). With a non-zero baseline the buyer is PRESENT
+     * in both legs, so only the +refund delta — which the closed comparator primitive set cannot
+     * compute — distinguishes them.
+     */
+    private final String baseFund = "50.00";
+
     @Override
     public CancelRefundHeadToHead.Order createPaidOrder() {
         long n = SEQ.incrementAndGet();
@@ -106,6 +122,14 @@ public final class TrainTicketStimulus implements CancelRefundHeadToHead.Stimulu
                     + ": " + login.asString());
         }
         String bearer = "Bearer " + token;
+
+        // 2.5) pre-fund the buyer's /account to a non-zero balance (addMoney, a type-A Money row)
+        // BEFORE the cancel, so the value-delta is a genuine arithmetic delta and not a mere
+        // appear-vs-absent membership signal (see baseFund). This makes the constructed clean win
+        // un-contestable: the buyer is PRESENT in both legs, so only the +refund delta discriminates.
+        Response fund = given().header("Authorization", bearer)
+                .get("/api/v1/inside_pay_service/inside_payment/" + userId + "/" + baseFund);
+        require(fund, "pre-fund addMoney", userName);
 
         // 3) create a PAID order (status 1); the response id is unreliable (see class doc)
         Response create = given().contentType("application/json").header("Authorization", bearer)
