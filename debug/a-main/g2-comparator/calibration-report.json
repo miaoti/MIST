@@ -1,0 +1,289 @@
+{
+  "comparator": "blind-authored per-endpoint assertion oracle (Filibuster-style); frozen contracts evaluated verbatim via the committed bindings",
+  "endpoints": [
+    {
+      "endpoint": "POST /api/v1/adminrouteservice/adminroute",
+      "verdict": "flag",
+      "fault": {
+        "writeHttpStatus": 200,
+        "checks": [
+          {
+            "result": "PASS",
+            "expect": "200",
+            "path": null,
+            "primitive": "HTTP_STATUS",
+            "cite": "HTTP 200; pass-through of route service: {1,'Save and Modify success', saved Route (UUID id when new)}",
+            "detail": "http 200",
+            "transportFailure": false
+          },
+          {
+            "result": "PASS",
+            "expect": "1",
+            "path": null,
+            "primitive": "ENVELOPE_STATUS",
+            "cite": "HTTP 200; pass-through of route service: {1,'Save and Modify success', saved Route (UUID id when new)}",
+            "detail": "envelope status 1",
+            "transportFailure": false
+          },
+          {
+            "result": "FAIL",
+            "expect": "non-null",
+            "path": null,
+            "primitive": "ENVELOPE_DATA",
+            "cite": "HTTP 200; pass-through of route service: {1,'Save and Modify success', saved Route (UUID id when new)}",
+            "detail": "data null, expected non-null",
+            "transportFailure": false
+          },
+          {
+            "result": "FAIL",
+            "expect": "Save and Modify success",
+            "path": null,
+            "primitive": "MSG_CONTAINS",
+            "cite": "HTTP 200; pass-through of route service: {1,'Save and Modify success', saved Route (UUID id when new)}",
+            "detail": "msg 'create and modify success' lacks 'Save and Modify success'",
+            "transportFailure": false
+          },
+          {
+            "result": "FAIL",
+            "expect": "contains-submitted-fields",
+            "path": "/api/v1/adminrouteservice/adminroute",
+            "primitive": "STATE_GET",
+            "cite": "route in GET /adminroute ({1,'Success', all routes}) and GET /api/v1/routeservice/routes/{id}",
+            "detail": "submitted state ABSENT from /api/v1/adminrouteservice/adminroute at the cap (fields [id, startStation, endStation], 10 poll(s))",
+            "transportFailure": false
+          },
+          {
+            "result": "FAIL",
+            "expect": "entity-matches-submitted-fields",
+            "path": "/api/v1/routeservice/routes/${field:id}",
+            "primitive": "STATE_GET",
+            "cite": "route in GET /adminroute ({1,'Success', all routes}) and GET /api/v1/routeservice/routes/{id}",
+            "detail": "submitted state ABSENT from /api/v1/routeservice/routes/33f4da72-21a5-4c0f-8471-09c466f3b814 at the cap (fields [id, startStation, endStation], 21 poll(s))",
+            "transportFailure": false
+          },
+          {
+            "result": "NOT_CHECKABLE",
+            "expect": null,
+            "path": null,
+            "primitive": "NOT_CHECKABLE",
+            "cite": "pre-validation {0,'start or end station not include in stationList.', null}; a failing station-existence check response is passed through (status 0); downstream {0,'Station Number Not Equal To Distance Number', null}",
+            "detail": "failure contract \u2014 exercised only by crafted invalid inputs, out of calibration scope (calibration drives valid writes)",
+            "transportFailure": false
+          }
+        ],
+        "flagged": true,
+        "writeBody": "{\"status\":1,\"msg\":\"create and modify success\",\"data\":null}",
+        "submittedBody": "{\"id\":\"33f4da72-21a5-4c0f-8471-09c466f3b814\",\"startStation\":\"shanghai\",\"endStation\":\"nanjing\",\"stationList\":\"shanghai,nanjing\",\"distanceList\":\"0,350\"}",
+        "runLabel": "fault"
+      },
+      "faultManifest": "ts-admin-route-service/-Dmist.fault.lostwrite.enabled=true",
+      "control": {
+        "writeHttpStatus": 200,
+        "checks": [
+          {
+            "result": "PASS",
+            "expect": "200",
+            "path": null,
+            "primitive": "HTTP_STATUS",
+            "cite": "HTTP 200; pass-through of route service: {1,'Save and Modify success', saved Route (UUID id when new)}",
+            "detail": "http 200",
+            "transportFailure": false
+          },
+          {
+            "result": "PASS",
+            "expect": "1",
+            "path": null,
+            "primitive": "ENVELOPE_STATUS",
+            "cite": "HTTP 200; pass-through of route service: {1,'Save and Modify success', saved Route (UUID id when new)}",
+            "detail": "envelope status 1",
+            "transportFailure": false
+          },
+          {
+            "result": "PASS",
+            "expect": "non-null",
+            "path": null,
+            "primitive": "ENVELOPE_DATA",
+            "cite": "HTTP 200; pass-through of route service: {1,'Save and Modify success', saved Route (UUID id when new)}",
+            "detail": "data non-null",
+            "transportFailure": false
+          },
+          {
+            "result": "PASS",
+            "expect": "Save and Modify success",
+            "path": null,
+            "primitive": "MSG_CONTAINS",
+            "cite": "HTTP 200; pass-through of route service: {1,'Save and Modify success', saved Route (UUID id when new)}",
+            "detail": "msg contains expected text",
+            "transportFailure": false
+          },
+          {
+            "result": "PASS",
+            "expect": "contains-submitted-fields",
+            "path": "/api/v1/adminrouteservice/adminroute",
+            "primitive": "STATE_GET",
+            "cite": "route in GET /adminroute ({1,'Success', all routes}) and GET /api/v1/routeservice/routes/{id}",
+            "detail": "submitted state present on /api/v1/adminrouteservice/adminroute (1 poll(s))",
+            "transportFailure": false
+          },
+          {
+            "result": "PASS",
+            "expect": "entity-matches-submitted-fields",
+            "path": "/api/v1/routeservice/routes/${field:id}",
+            "primitive": "STATE_GET",
+            "cite": "route in GET /adminroute ({1,'Success', all routes}) and GET /api/v1/routeservice/routes/{id}",
+            "detail": "submitted state present on /api/v1/routeservice/routes/dd89ced0-adb9-4290-957a-df65f01cd3fb (1 poll(s))",
+            "transportFailure": false
+          },
+          {
+            "result": "NOT_CHECKABLE",
+            "expect": null,
+            "path": null,
+            "primitive": "NOT_CHECKABLE",
+            "cite": "pre-validation {0,'start or end station not include in stationList.', null}; a failing station-existence check response is passed through (status 0); downstream {0,'Station Number Not Equal To Distance Number', null}",
+            "detail": "failure contract \u2014 exercised only by crafted invalid inputs, out of calibration scope (calibration drives valid writes)",
+            "transportFailure": false
+          }
+        ],
+        "flagged": false,
+        "writeBody": "{\"status\":1,\"msg\":\"Save and Modify success\",\"data\":{\"id\":\"dd89ced0-adb9-4290-957a-df65f01cd3fb\",\"stations\":[\"shanghai\",\"nanjing\"],\"distances\":[0,350],\"startStation\":\"shanghai\",\"endStation\":\"nanjing\"}}",
+        "submittedBody": "{\"id\":\"dd89ced0-adb9-4290-957a-df65f01cd3fb\",\"startStation\":\"shanghai\",\"endStation\":\"nanjing\",\"stationList\":\"shanghai,nanjing\",\"distanceList\":\"0,350\"}",
+        "runLabel": "control"
+      },
+      "detail": "the frozen contract failed under the injected fault"
+    },
+    {
+      "endpoint": "POST /api/v1/adminbasicservice/adminbasic/contacts",
+      "verdict": "flag",
+      "fault": {
+        "writeHttpStatus": 200,
+        "checks": [
+          {
+            "result": "PASS",
+            "expect": "200",
+            "path": null,
+            "primitive": "HTTP_STATUS",
+            "cite": "HTTP 200 (note: NOT 201 \u2014 admin wrapper absorbs downstream status); envelope = ts-contacts POST /contacts/admin pass-through: {1,'Create Success', null}",
+            "detail": "http 200",
+            "transportFailure": false
+          },
+          {
+            "result": "PASS",
+            "expect": "1",
+            "path": null,
+            "primitive": "ENVELOPE_STATUS",
+            "cite": "HTTP 200 (note: NOT 201 \u2014 admin wrapper absorbs downstream status); envelope = ts-contacts POST /contacts/admin pass-through: {1,'Create Success', null}",
+            "detail": "envelope status 1",
+            "transportFailure": false
+          },
+          {
+            "result": "PASS",
+            "expect": "null",
+            "path": null,
+            "primitive": "ENVELOPE_DATA",
+            "cite": "HTTP 200 (note: NOT 201 \u2014 admin wrapper absorbs downstream status); envelope = ts-contacts POST /contacts/admin pass-through: {1,'Create Success', null}",
+            "detail": "data null",
+            "transportFailure": false
+          },
+          {
+            "result": "FAIL",
+            "expect": "Create Success",
+            "path": null,
+            "primitive": "MSG_CONTAINS",
+            "cite": "HTTP 200 (note: NOT 201 \u2014 admin wrapper absorbs downstream status); envelope = ts-contacts POST /contacts/admin pass-through: {1,'Create Success', null}",
+            "detail": "msg 'create contacts success' lacks 'Create Success'",
+            "transportFailure": false
+          },
+          {
+            "result": "FAIL",
+            "expect": "contains-submitted-fields",
+            "path": "/api/v1/adminbasicservice/adminbasic/contacts",
+            "primitive": "STATE_GET",
+            "cite": "contact in GET /adminbasic/contacts (pass-through of contacts list) with submitted fields",
+            "detail": "submitted state ABSENT from /api/v1/adminbasicservice/adminbasic/contacts at the cap (fields [accountId, documentNumber, name, documentType, phoneNumber], 19 poll(s))",
+            "transportFailure": false
+          },
+          {
+            "result": "NOT_CHECKABLE",
+            "expect": null,
+            "path": null,
+            "primitive": "NOT_CHECKABLE",
+            "cite": "{0,'Already Exists', existing contact} passed through",
+            "detail": "failure contract \u2014 duplicate-create path, out of calibration scope (each run submits a fresh business key)",
+            "transportFailure": false
+          }
+        ],
+        "flagged": true,
+        "writeBody": "{\"status\":1,\"msg\":\"create contacts success\",\"data\":null}",
+        "submittedBody": "{\"name\":\"comparator-cal\",\"accountId\":\"11b1bfba-e625-4d16-812c-52a63d75e70f\",\"documentType\":1,\"documentNumber\":\"cmp-667afc14913d\",\"phoneNumber\":\"12345678901\"}",
+        "runLabel": "fault"
+      },
+      "faultManifest": "ts-admin-basic-info-service/-Dmist.fault.lostwrite.enabled=true",
+      "control": {
+        "writeHttpStatus": 200,
+        "checks": [
+          {
+            "result": "PASS",
+            "expect": "200",
+            "path": null,
+            "primitive": "HTTP_STATUS",
+            "cite": "HTTP 200 (note: NOT 201 \u2014 admin wrapper absorbs downstream status); envelope = ts-contacts POST /contacts/admin pass-through: {1,'Create Success', null}",
+            "detail": "http 200",
+            "transportFailure": false
+          },
+          {
+            "result": "PASS",
+            "expect": "1",
+            "path": null,
+            "primitive": "ENVELOPE_STATUS",
+            "cite": "HTTP 200 (note: NOT 201 \u2014 admin wrapper absorbs downstream status); envelope = ts-contacts POST /contacts/admin pass-through: {1,'Create Success', null}",
+            "detail": "envelope status 1",
+            "transportFailure": false
+          },
+          {
+            "result": "PASS",
+            "expect": "null",
+            "path": null,
+            "primitive": "ENVELOPE_DATA",
+            "cite": "HTTP 200 (note: NOT 201 \u2014 admin wrapper absorbs downstream status); envelope = ts-contacts POST /contacts/admin pass-through: {1,'Create Success', null}",
+            "detail": "data null",
+            "transportFailure": false
+          },
+          {
+            "result": "PASS",
+            "expect": "Create Success",
+            "path": null,
+            "primitive": "MSG_CONTAINS",
+            "cite": "HTTP 200 (note: NOT 201 \u2014 admin wrapper absorbs downstream status); envelope = ts-contacts POST /contacts/admin pass-through: {1,'Create Success', null}",
+            "detail": "msg contains expected text",
+            "transportFailure": false
+          },
+          {
+            "result": "PASS",
+            "expect": "contains-submitted-fields",
+            "path": "/api/v1/adminbasicservice/adminbasic/contacts",
+            "primitive": "STATE_GET",
+            "cite": "contact in GET /adminbasic/contacts (pass-through of contacts list) with submitted fields",
+            "detail": "submitted state present on /api/v1/adminbasicservice/adminbasic/contacts (1 poll(s))",
+            "transportFailure": false
+          },
+          {
+            "result": "NOT_CHECKABLE",
+            "expect": null,
+            "path": null,
+            "primitive": "NOT_CHECKABLE",
+            "cite": "{0,'Already Exists', existing contact} passed through",
+            "detail": "failure contract \u2014 duplicate-create path, out of calibration scope (each run submits a fresh business key)",
+            "transportFailure": false
+          }
+        ],
+        "flagged": false,
+        "writeBody": "{\"status\":1,\"msg\":\"Create Success\",\"data\":null}",
+        "submittedBody": "{\"name\":\"comparator-cal\",\"accountId\":\"c8ecb8d8-b890-4432-9c51-e861e387a1b2\",\"documentType\":1,\"documentNumber\":\"cmp-d462c7fb6232\",\"phoneNumber\":\"12345678901\"}",
+        "runLabel": "control"
+      },
+      "detail": "the frozen contract failed under the injected fault"
+    }
+  ],
+  "generatedAtEpochMs": 1783032849616,
+  "runId": "1783032488954"
+}

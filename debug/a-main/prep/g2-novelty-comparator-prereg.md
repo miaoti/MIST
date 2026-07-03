@@ -206,6 +206,16 @@ gate1-infra-incident lesson).
    "transcript-audited" claim is process-level attestation for this set
    (`../g2-comparator/transcript-retention-note.md`). The G3 eval-fault/defect
    list is NOT yet finalized, so the freeze-before-reveal ordering holds.
+3. **DONE — comparator runner BUILT (`666c461`) + 3-cold-reviewed + fix wave
+   (`f42ea2a`);** executable bindings frozen `c4b9a08` + pre-run amendments A2/A3.
+4. **DONE — CALIBRATION ACCEPTED (run 1783032488954, 2026-07-02):** both Gate-1
+   faults flagged via genuine STATE-clause failures with all-clean control legs —
+   the competence floor is met; record + per-clause table in
+   `../g2-comparator/calibration-result.md`.
+5. **DONE — G2 CLOSED.** Both Gate-2 deliverables met (§1 v2 paragraph;
+   competently-configured + calibrated comparator). Next: G3 with the carried
+   riders (full-set binding round incl. failure contracts, infra-failure-rate
+   reporting, delay-vs-loss stratification).
 2. Provision + author the blind assertion set for ALL TrainTicket write-path
    endpoints (per §2 provisioning list); commit set + brief + manifest (freeze
    hash).
