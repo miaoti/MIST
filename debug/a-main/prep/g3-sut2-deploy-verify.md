@@ -51,14 +51,44 @@ Live round-trip (cookie session):
 - **CONFIRMED — membership viable.** `GET /cart` returns the itemId verbatim in an
   unpaginated per-scope list.
 
+## Sensitivity probe (C-pin 2, prereg §4 item 3) — **branch β TAKEN**
+Question: does the carts write path 2xx-**mask** a Mongo failure (→ constructed
+acknowledged-but-lost writes exist, branch α) or honestly 5xx (branch β)? **Two
+independent data points, both HONEST 5xx:**
+1. Under `mongo:8` the driver's OP_QUERY was rejected → `POST /cart` returned **500**
+   (`Unable to add to cart. Status code: 500`).
+2. With `carts-db` scaled to 0 (unreachable) during a write → `POST /cart` returned
+   **500** on 3/3 tries.
+
+carts **does not acknowledge** a write it cannot persist — it propagates the failure
+as HTTP 500. There is therefore **no S1 path to an acknowledged-but-lost write** on the
+cleanest Java+Mongo candidate (SS-A/carts). **Decision — branch β** (pre-registered):
+> SUT-2 (Sock Shop) carries **FP/breadth + the wild-defect hunt ONLY**, with **NO
+> constructed-sensitivity claim**; comparator calibration stays **TrainTicket-only**;
+> the benchmark's SUT-2 injected stratum is **empty and disclosed**. The depth +
+> constructed-fault story remains TrainTicket's (prereg §0.5 cancel→refund).
+
+Scope note (honest): the probe was the DB-unreachable (loss) shape via scale-to-0, not
+Toxiproxy — a valid S1 loss fault; a service that 5xxes on connection-refused does not
+2xx-mask, so the Toxiproxy-latency refinement is very unlikely to flip β→α. `orders`
+(SS-C) was not separately faulted (a full checkout state is needed to POST an order);
+its role was already pre-registered as **sync fan-out breadth, not saga depth**
+(prereg §1 SS-C, async question resolved negative), so β for the SUT does not hinge on
+it. SUT-2 still contributes to Gate-3 as an **FP/generalization SUT** (benign probe
+N=30) + the wild-hunt inventory (shipping swallowed-enqueue), which is what the ≥2-SUT
+breadth claim needs; recall/detection leans on TrainTicket + the wild defects.
+
 ## Status / next (prereg §4)
 - item 0 (healthy state): **DONE** (with the two fixes).
 - item (iv) ingress routes: **DONE**.
 - item (iii) sessions: cookie-session path **validated** for cart; the
   `MstAuthHandler` cookie-session wiring for the MIST run is the remaining code piece.
+- item 3 sensitivity: **DONE — branch β** (above).
 - **NEXT:** item (ii) two-part tracing (Node front-end auto-instr + Java javaagents —
-  the load-bearing half); item 3 the C-pin-2 sensitivity probe (Toxiproxy carts-db:
-  does `POST /cart` 2xx-mask a Mongo failure? → branch α/β); item (i) completeness;
-  then author + freeze the SUT-2 blind set (A1) and the benign probe (N=30).
+  under β this is breadth/FP-quality, not depth-critical); item (i) completeness (the
+  runtime's `readback_bound` already implements the bounded check); then the benign
+  probe (N=30, bar v2) for the FP claim, and the wild-defect confirmation. The SUT-2
+  **blind set** (comparator) is **not needed under β** (comparator calibration is
+  TT-only) — an honest scope reduction from the pre-registration.
 
 Cluster left UP (kind `mist`) for the continuation; minikube stays stopped.

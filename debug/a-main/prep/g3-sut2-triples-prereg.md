@@ -124,16 +124,23 @@ DB note (B MINOR-5): triple-relevant services (carts, orders, user) are
 Mongo-backed; catalogue is Go+MySQL; rabbitmq and session-db are NOT mesh-excluded →
 live-verify the AMQP leg under Envoy.
 
-**SUT-2 sensitivity branch (C-pin 2, pre-registered):** Sock Shop has NO SUT-flag
-injector; S2 is producible only invasively. Live-verify FIRST whether carts/orders
-**2xx-mask a Toxiproxy'd Mongo failure** (that is the only S1 path to an
-acknowledged-but-lost write here). Branch: (α) if they mask → S1 constructed
-positives exist; sensitivity + comparator calibration + injected benchmark stratum
-proceed on SUT-2. (β) if they honestly 5xx → **SUT-2 carries FP/breadth + the wild
-hunt ONLY, with NO constructed-sensitivity claim**; comparator calibration stays
-TT-only; the benchmark's SUT-2 injected stratum is empty and disclosed. Gated-mode
-(S1 D-span) validation happens on whichever SUT yields an errored D-span under (a)
-tracing — TT primary.
+**SUT-2 sensitivity branch (C-pin 2, pre-registered) — RESOLVED 2026-07-02 → branch β
+TAKEN.** Sock Shop has NO SUT-flag injector; S2 is producible only invasively.
+Live-verify FIRST whether carts/orders **2xx-mask a Toxiproxy'd Mongo failure** (the
+only S1 path to an acknowledged-but-lost write here). Branch: (α) if they mask → S1
+constructed positives exist; sensitivity + comparator calibration + injected benchmark
+stratum proceed on SUT-2. (β) if they honestly 5xx → **SUT-2 carries FP/breadth + the
+wild hunt ONLY, with NO constructed-sensitivity claim**; comparator calibration stays
+TT-only; the benchmark's SUT-2 injected stratum is empty and disclosed.
+> **RESULT (disclosed amendment; evidence in
+> [g3-sut2-deploy-verify.md](g3-sut2-deploy-verify.md) §Sensitivity):** `POST /cart`
+> returned HTTP **500 honestly** on BOTH a Mongo driver-level error (OP_QUERY) AND a
+> DB-unreachable (carts-db→0) write — carts does not acknowledge an unpersisted write.
+> **Branch β taken.** SUT-2 = FP/breadth + wild-hunt; comparator calibration TT-only;
+> SUT-2 injected stratum empty. The SUT-2 blind set is consequently not authored
+> (comparator is TT-only). Depth/constructed story stays TT's (§0.5).
+Gated-mode (S1 D-span) validation happens on whichever SUT yields an errored D-span
+under (a) tracing — TT primary.
 
 ### Triple SS-A — cart add-item (headline-clean, Java leg) — SPEC-VERIFIED
 - **Write:** `POST /cart` body `{id: <catalogue itemId>}` (front-end resolves the
