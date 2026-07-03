@@ -1,0 +1,117 @@
+service: ts-cancel-service
+endpoint: "GET /api/v1/cancelservice/cancel/{orderId}/{loginId}"
+
+response_contract: |
+  HTTP 200 OK in ALL outcomes (CancelController.cancelTicket always wraps the body in
+  ResponseEntity.ok(...), even on failure/exception). The body is the TrainTicket envelope
+  {status:int, msg:string, data:object}.
+  On a correct SUCCESSFUL cancel of a cancellable order:
+    - G/D-train order (resolved in ts-order-service):        {status:1, msg:"Success.", data:"test not null"}
+    - other-train order (resolved in ts-order-other-service): {status:1, msg:"Success.", data:null}
+  SUCCESS MUST be asserted as (status == 1 AND msg == "Success."), NOT status==1 alone:
+  the controller's catch-all returns {status:1, msg:"error", data:null} on any thrown exception
+  (a false-success envelope), and the G/D path can even return status:0 AFTER a real cancel
+  (see failure_contracts). The `data` payload carries no business meaning (literal string
+  "test not null" or null) and must not be asserted beyond status+msg.
+
+state_postcondition: |
+  A correct cancel of a valid PAID (status 1), non-expired order must make ALL THREE of the
+  following black-box-observable facts true. Capture a pre-cancel snapshot of #2 and #3 and
+  assert the deltas.
+
+  (1) ORDER STATUS FLIPS TO CANCEL(4).
+      GET /api/v1/orderservice/order/{orderId}   (ts-order-service; permitAll / public)
+        -> {status:1, msg:"Success.", data:{Order}} with data.id == orderId and
+           data.status == 4  (OrderStatus.CANCEL; was 1/PAID before the cancel).
+        -> every other Order field is UNCHANGED: accountId, price, trainNumber, coachNumber,
+           seatClass, seatNumber, from, to, travelDate, travelTime, contactsName,
+           contactsDocumentNumber, documentType.
+      For non-G/D trains use GET /api/v1/orderOtherService/orderOther/{orderId}
+        -> data.status == 4  (same shape, other.entity.Order).
+      Customer-facing equivalent ("my orders" page): POST /api/v1/orderservice/order/refresh
+      (and /orderOtherService/orderOther/refresh) with body
+        {"loginId":"<order.accountId>","enableStateQuery":false,
+         "enableTravelDateQuery":false,"enableBoughtDateQuery":false}
+        -> data[] contains an entry whose order.id == orderId with status == 4.
+
+  (2) REFUND OF 80% OF PRICE CREDITED TO THE BUYER'S INSIDE-PAYMENT BALANCE.
+      Refund amount R that a correct cancel draws back (CancelServiceImpl.calculateRefund(order),
+      then drawbackMoney(R, loginId)):
+        - PAID & now <= travelTime:   R = DecimalFormat("0.00").format(0.80 * Double.parse(order.price))
+        - PAID & now  > travelTime:   R = "0"        (ticket expired)
+        - NOTPAID(0):                 R = "0.00"
+      Observable ONLY as a balance delta via:
+      GET /api/v1/inside_pay_service/inside_payment/account
+        (requires header Authorization: Bearer <JWT> with role USER or ADMIN)
+        -> {status:1, msg:"Success", data:[{userId, balance}, ...]}.
+      The Balance entry with userId == loginId MUST satisfy
+        balance_after == balance_before + R   (numeric, using the pre-cancel snapshot).
+      Mechanism: drawBack saves a Money row type=D keyed by loginId; queryAccount sums EVERY
+      Money row (types A and D) and subtracts the user's Payment rows, so the type-D refund row
+      raises that user's balance by exactly R.
+
+  (3) THE TICKET NO LONGER OCCUPIES INVENTORY (SEAT RELEASED FOR RESALE).
+      GET /api/v1/orderservice/order/{travelDate}/{trainNumber}   (permitAll; travelDate string
+      == order.travelDate, trainNumber == order.trainNumber; use /orderOtherService/orderOther/
+      {travelDate}/{trainNumber} for other trains)
+        -> {status:1, ..., data:{SoldTicket}} where the seat-class counter for the cancelled
+           order's seatClass is EXACTLY ONE LESS than the pre-cancel snapshot. seatClass->field:
+           NONE->noSeat, BUSINESS->businessSeat, FIRSTCLASS->firstClassSeat,
+           SECONDCLASS->secondClassSeat, HARDSEAT->hardSeat, SOFTSEAT->softSeat,
+           HARDBED->hardBed, SOFTBED->softBed.
+      Mechanism: queryAlreadySoldOrders skips orders with status >= CHANGE(3), so a CANCEL(4)
+      order stops being counted as sold. Customer equivalent: the trip's remaining-ticket count
+      (ts-travel-service left-tickets query for that date/train/seatclass) increases by 1.
+
+failure_contracts:
+  - "Order found but status NOT in {NOTPAID(0), PAID(1), CHANGE(3)} (i.e. COLLECTED(2), already CANCEL(4), REFUNDS(5), USED(6)) -> HTTP 200 {status:0, msg:\"Order Status Cancel Not Permitted\", data:null}; and NO state change: order.status unchanged, no new type-D drawback row (balance unchanged), sold-count unchanged."
+  - "Order id not found in ts-order-service NOR ts-order-other-service -> HTTP 200 {status:0, msg:\"Order Not Found.\", data:null}; no state change."
+  - "Downstream order status-flip (PUT /order or /orderOther) returns status!=1 -> G/D path: {status:0, msg:<order-service msg>, data:null}; other path: {status:0, msg:\"Fail.Reason:\"+<msg>, data:null}. No refund performed (drawback runs only AFTER a successful status flip)."
+  - "Any exception thrown in the controller path -> HTTP 200 {status:1, msg:\"error\", data:null} (false-success envelope; msg!=\"Success.\" must be treated as NON-success)."
+  - "G/D path only, post-mutation buyer-account lookup fails -> {status:0, msg:\"Cann't find userinfo by user id.\", data:null} EVEN THOUGH the order is already CANCEL(4) and the refund row is already written -- response reports failure while state is fully mutated (inconsistency)."
+
+notes: |
+  - Assert SUCCESS by STATE, not the envelope alone. Two envelope quirks make status a weak
+    oracle: (a) the controller catch returns {status:1, msg:"error"}; (b) the G/D success path
+    can return {status:0, "Cann't find userinfo..."} after already cancelling+refunding. So gate
+    on msg=="Success." AND independently verify postconditions (1)-(3).
+  - Refund is credited to loginId (the path param), NOT necessarily order.accountId. For a valid
+    self-service cancel loginId == order.accountId (the buyer), which is the assumed case; if they
+    differ (e.g. admin acting on behalf) the balance delta lands on loginId. Assert against
+    whichever id the drawback used = loginId.
+  - NO cancellation email/notification is emitted: sendEmail(...) is commented out (TODO async).
+    NotifyInfo is built but never sent -> there is no notification endpoint to assert.
+  - The original Payment record is NOT deleted; the refund is a compensating type-D money row.
+    GET /api/v1/inside_pay_service/inside_payment/payment still lists the order's payment -> do
+    NOT assert payment removal.
+  - Refund rounding uses DecimalFormat("0.00") (half-even) on 0.80*price; expired => "0";
+    NOTPAID => "0.00". drawBack still writes a "0.00"/"0" row (balance delta 0) in those cases.
+  - Seat release is IMPLICIT: ts-cancel-service makes NO ts-seat-service call, so there is no
+    seat-inventory table write to query directly. The only black-box seat observables are the
+    sold-ticket count (excludes CANCEL orders) and the derived travel-service left-ticket count.
+  - Observability limits for the refund: there is no per-user refund-record endpoint;
+    GET /inside_pay_service/inside_payment/money returns data:null; queryAccount returns ALL
+    users (filter by userId==loginId) and needs a USER/ADMIN JWT. Hence the refund is provable
+    only as a balance DELTA against a pre-cancel snapshot, not as an absolute value.
+  - Auth: order get-by-id, sold-ticket, and the order-other equivalents are permitAll (public);
+    inside-payment account query requires Authorization: Bearer <JWT> (USER/ADMIN). The cancel
+    endpoint itself is reached through the gateway, which injects the caller's JWT.
+
+sources_consulted:
+  - "C:/Users/miaot/Github/train-ticket-injection/ts-cancel-service/src/main/java/cancel/controller/CancelController.java"
+  - "C:/Users/miaot/Github/train-ticket-injection/ts-cancel-service/src/main/java/cancel/service/CancelService.java"
+  - "C:/Users/miaot/Github/train-ticket-injection/ts-cancel-service/src/main/java/cancel/service/CancelServiceImpl.java"
+  - "C:/Users/miaot/Github/train-ticket-injection/ts-cancel-service/src/main/java/cancel/config/SecurityConfig.java"
+  - "C:/Users/miaot/Github/train-ticket-injection/ts-common/src/main/java/edu/fudan/common/entity/OrderStatus.java"
+  - "C:/Users/miaot/Github/train-ticket-injection/ts-common/src/main/java/edu/fudan/common/entity/Order.java"
+  - "C:/Users/miaot/Github/train-ticket-injection/ts-common/src/main/java/edu/fudan/common/entity/SoldTicket.java"
+  - "C:/Users/miaot/Github/train-ticket-injection/ts-common/src/main/java/edu/fudan/common/util/Response.java"
+  - "C:/Users/miaot/Github/train-ticket-injection/ts-order-service/src/main/java/order/controller/OrderController.java"
+  - "C:/Users/miaot/Github/train-ticket-injection/ts-order-service/src/main/java/order/service/OrderServiceImpl.java"
+  - "C:/Users/miaot/Github/train-ticket-injection/ts-order-service/src/main/java/order/config/SecurityConfig.java"
+  - "C:/Users/miaot/Github/train-ticket-injection/ts-order-service/src/main/java/order/entity/OrderInfo.java"
+  - "C:/Users/miaot/Github/train-ticket-injection/ts-order-other-service/src/main/java/other/controller/OrderOtherController.java"
+  - "C:/Users/miaot/Github/train-ticket-injection/ts-inside-payment-service/src/main/java/inside_payment/controller/InsidePaymentController.java"
+  - "C:/Users/miaot/Github/train-ticket-injection/ts-inside-payment-service/src/main/java/inside_payment/service/InsidePaymentServiceImpl.java"
+  - "C:/Users/miaot/Github/train-ticket-injection/ts-inside-payment-service/src/main/java/inside_payment/entity/MoneyType.java"
+  - "C:/Users/miaot/Github/train-ticket-injection/ts-inside-payment-service/src/main/java/inside_payment/config/SecurityConfig.java"
