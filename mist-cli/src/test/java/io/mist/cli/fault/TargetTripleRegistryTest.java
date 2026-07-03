@@ -381,8 +381,8 @@ public class TargetTripleRegistryTest {
     public void shippedG3Configs_parseToTheCancelRefundTriples() throws Exception {
         // The two committed G3 head-to-head registries (evaluation/suts/trainticket/g3)
         // must parse through the reviewed loader to the expected supplied+value-delta
-        // cancel->refund triple — natural without a fault_flag (EnvoyFilter fault),
-        // constructed with the fork's fabricated-ack flag.
+        // cancel->refund triple — natural with the fork's drawback-fail flag, constructed
+        // with the fork's fabricated-ack flag (both toggled by the SutFlagFaultInjector).
         java.nio.file.Path g3 = locateG3Dir();
 
         TargetTripleRegistry.Registry natural =
@@ -396,7 +396,9 @@ public class TargetTripleRegistryTest {
         assertEquals(TargetTripleRegistry.ReadbackMode.VALUE_DELTA, n.readbackMode);
         assertEquals("userId", n.valueProbe.matchField);
         assertEquals("balance", n.valueProbe.valueField);
-        assertNull("natural stratum fault is the EnvoyFilter, not a SUT flag", n.faultFlag);
+        assertNotNull("natural stratum toggles the fork drawback-fail flag", n.faultFlag);
+        assertEquals("ts-inside-payment-service", n.faultFlag.deployment);
+        assertEquals("mist.fault.drawback.fail.enabled", n.faultFlag.property);
         assertEquals("kind-mist", natural.cluster.context);
         assertEquals("trainticket", natural.cluster.namespace);
 

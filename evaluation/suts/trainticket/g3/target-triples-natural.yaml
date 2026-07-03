@@ -1,21 +1,29 @@
-# G3 head-to-head — NATURAL stratum triple (cancel->refund on the UNMODIFIED fork).
-# The fault is the route-scoped EnvoyFilter abort (drawback-abort-envoyfilter.yaml),
-# applied by the IstioRouteFaultInjector — NOT a SUT flag, so there is no fault_flag.
+# G3 head-to-head — NATURAL stratum triple (cancel->refund, the {1,"error"} acked-but-lost
+# shape). The fault is the fork's opt-in drawback-FAIL flag (mist.fault.drawback.fail.enabled):
+# drawBack throws -> HTTP 500 -> ts-cancel-service's RestTemplate throws -> cancelOrder runs its
+# GENUINE compensation-failure catch -> returns {1,"error"} while the order is cancelled and the
+# refund lost. Toggled by the SutFlagFaultInjector (JAVA_TOOL_OPTIONS -D + rollout).
 #
-# The write is the bodyless cancel GET; isolation is `supplied` (the harness hands in
-# the freshly registered buyer's loginId as userId — nothing in a body to freshen).
-# The refund is observable only as the buyer's balance moving on /account (the discrete
-# /money endpoint returns data:null even on success), so readback_mode is value-delta:
-# X-present == the buyer's balance differs from this leg's own pre-cancel baseline.
+# WHY not the route-scoped EnvoyFilter mesh abort (the original design, drawback-abort-
+# envoyfilter.yaml): the per-leg toggle races ts-cancel-service's pooled Apache-HttpClient
+# connection to inside-payment — the gateway convergence probe (fresh connection) reflects the
+# new Envoy config before the reused write-path connection does, so the leg observes the wrong
+# filter state (g3-headtohead-results.md, proxy-log ground truth). The app flag is reliable,
+# path-scoped (only /drawback fails; the /account read-back stays live) and exercises the SAME
+# natural cancelOrder catch. REQUIRES the fork-built inside-payment image carrying the flag.
 #
-# RUNBOOK (REVIEW-DEPTH-RECONCILIATION.md): per-leg fresh buyer; the cancelled order is
-# PAID, price>0, far-future travelTime (else the refund is "0"/"0.00" and invisible);
-# key = loginId. The pre-write baseline stability double-read guards an unsettled
-# register/pay step.
+# The write is the bodyless cancel GET; isolation is `supplied` (the harness hands in the freshly
+# registered buyer's loginId as userId). The refund is observable only as the buyer's balance
+# moving on /account (the discrete /money endpoint returns data:null even on success), so
+# readback_mode is value-delta: X-present == the buyer's balance differs from this leg's own
+# pre-cancel baseline.
+#
+# RUNBOOK (REVIEW-DEPTH-RECONCILIATION.md): per-leg fresh buyer; the cancelled order is PAID,
+# price>0, far-future travelTime (else the refund is "0"/"0.00" and invisible); key = loginId.
 cluster:
   context: kind-mist
   namespace: trainticket
-  rollout_timeout_s: 180
+  rollout_timeout_s: 360
 triples:
   - name: tt-cancel-refund-natural
     write_endpoint: "GET /api/v1/cancelservice/cancel/{orderId}/{loginId}"
@@ -27,3 +35,6 @@ triples:
     value_probe:
       match_field: userId
       value_field: balance
+    fault_flag:
+      deployment: ts-inside-payment-service
+      property: mist.fault.drawback.fail.enabled

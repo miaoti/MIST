@@ -9,85 +9,84 @@ stimulus under two fault strata. Runner: `io.mist.cli.g3.CancelRefundHeadToHead`
 Status: **PRELIMINARY** — records runs as they land. NOT yet reviewer-accepted;
 the standing ≥3-cold-review gates these numbers before they feed any claim.
 
-## SUT / deployment
+## Both cells (run #1, 2026-07-03, log `tmp/g3-toggle1.log`)
 
-- kind cluster `mist`, ns `trainticket`, upstream `codewisdom/*:1.0.0` graph +
-  the two measured services fork-built to `:1.0.2` (`ts-inside-payment-service`,
-  `ts-cancel-service`) carrying the opt-in fabricated-ack drawback flag
-  (`mist.fault.drawback.fabricatedack.enabled`, fork commit f57102e6).
-- Reached from the host via `kubectl port-forward svc/ts-gateway-service 18888`.
-
-### Operational caveat (reproducibility) — nacos gRPC 1.X-mode
-
-A nacos StatefulSet rolling-restart earlier (memory-thrash recovery) left the
-3-node cluster stuck in **"1.X mode, can't accept gRPC request"**: newly
-(re)starting services intermittently failed to re-register (6+ crash-loops),
-which made the SutFlag rollout time out and, when an upstream 1.0.0 replica kept
-serving, silently masked the fault (a false NO_FIRE). Fix that restored reliable
-registration: `kubectl rollout restart statefulset/nacos` (rolling — peers retain
-the registry) → services re-register in ≤3 tries. **Any re-run must confirm
-inside-payment restarts converge to a single ready pod before trusting a cell.**
-
-## Cell: CONSTRUCTED stratum (fabricated-ack drawback) — the clean win
-
-Fault = the fork flag toggled by `SutFlagFaultInjector` (JAVA_TOOL_OPTIONS `-D` +
-rollout). `drawBack` returns the EXACT success envelope without persisting the
-refund `Money` row → `ts-cancel-service` returns a perfectly clean
-`{status:1,msg:"Success."}` while the refund is lost.
-
-Run #1 (2026-07-03, log `tmp/g3-constructed5.log`):
+| stratum | fault → cancel response | MIST B2 (value-delta) | Comparator (frozen contract) |
+|---|---|---|---|
+| **natural** | drawBack throws → `{1,"error"}` | **FIRE** | **CAUGHT** (fault flagged) |
+| **constructed** | fabricated-ack → `{1,"Success."}` | **FIRE** | **MISSED** |
 
 ```
+=== stratum: natural ===
+  MIST B2 (differential value-delta): FIRE
+      fault run acknowledged X (http 200, body status 1) but X is absent from its own
+      read-back (20 poll(s), gate TIMEOUT_ABSENT); control's X persisted — acknowledged-but-lost write
+  Comparator (frozen response contract): control flagged=false, fault flagged=true  -> CAUGHT
 === stratum: constructed ===
   MIST B2 (differential value-delta): FIRE
-      fault run acknowledged X (http 200, body status 1) but X is absent from its
-      own read-back (20 poll(s), gate TIMEOUT_ABSENT); control's X persisted —
-      acknowledged-but-lost write
+      fault run acknowledged X ... X absent ... control's X persisted — acknowledged-but-lost write
   Comparator (frozen response contract): control flagged=false, fault flagged=false  -> MISSED
 ```
 
-- **MIST FIRE** — the value-delta oracle: control leg's /account balance moved
-  by the refund (X present), the fault leg's never did despite a 200/status-1 ack
-  → acknowledged-but-lost write.
-- **Comparator MISSED** — the clean `{1,"Success."}` passes HTTP_STATUS 200 +
-  ENVELOPE_STATUS 1 + MSG_CONTAINS "Success."; the three refund/state
-  postconditions are NOT_CHECKABLE (no snapshot/delta/JWT primitive), so nothing
-  binds that could catch the lost refund. Neither leg flags.
+- **constructed = the clean win.** The fabricated `{1,"Success."}` passes every bindable
+  comparator check (HTTP_STATUS 200 + ENVELOPE_STATUS 1 + MSG_CONTAINS "Success."); the three
+  refund/state postconditions are NOT_CHECKABLE (no snapshot/delta/JWT primitive) → the
+  comparator cannot catch the lost refund. MIST's differential value-delta catches it (control
+  balance moves +refund, fault balance never moves despite the ack).
+- **natural = detection tie + MIST diagnosis, and the comparator is NO STRAWMAN.** The
+  `{1,"error"}` fails the MSG_CONTAINS "Success." gate → the comparator flags the fault leg
+  (CAUGHT). MIST also FIREs; its edge here is localizing the acked-but-lost refund at the
+  inside-payment hop, not detection.
+- In both, `control flagged=false` (the clean control leg passes) — no systemic false alarm.
 
-Mechanism cross-checked by hand (flag ON → cancel `{1,"Success."}` + NO /account
-row for the buyer; flag OFF → refund row appears at balance 80.00).
+**Stability: N=5 (run #1 + reps 2–5, `tmp/g3-reps.txt`), 100 % consistent** — every run:
+natural = FIRE + CAUGHT, constructed = FIRE + MISSED, control never flagged. Runs are ~24 s
+each (no restarts/settles), so the verdict is deterministic, not a routing coin-flip.
 
-## Cell: NATURAL stratum — EnvoyFilter mesh abort FOUND UNRELIABLE → pivot
+## Fault mechanism — runtime in-memory toggle (and why two earlier mechanisms failed)
 
-Attempted first via a route-scoped inbound EnvoyFilter (`drawback-abort-envoyfilter.yaml`)
-on an Istio sidecar injected into `ts-inside-payment-service` only (ns labelled
-`istio-injection=enabled`, nacos+mysql outbound ports excluded from the mesh +
-`holdApplicationUntilProxyStarts` so the fragile gRPC registration bypasses Envoy —
-that part worked: 2/2 pod, 0 restarts, normal cancel still refunds through the sidecar,
-and a stably-applied filter DOES abort `/drawback` → cancel `{1,"error"}` + refund lost,
-verified by hand).
+Final mechanism (`HttpToggleFaultInjector`): a fork endpoint
+`GET /api/v1/inside_pay_service/inside_payment/test/faultmode/{none|fail|fabricatedack}` flips
+an in-memory `volatile` mode on inside-payment; `drawBack` reads it. **No pod restart**, so
+ts-cancel-service's pooled connection + Ribbon routing to the single stable inside-payment
+instance stay valid, and the per-leg toggle is reliable + instant. `fail` = throw → HTTP 500 →
+cancel-service's RestTemplate throws → `cancelOrder`'s genuine compensation-failure catch acks
+`{1,"error"}`; `fabricatedack` = the exact success envelope without the persist → clean
+`{1,"Success."}`, refund lost. The route is gateway-guarded, so the toggle carries the reader JWT.
 
-**But the per-leg toggle is unreliable.** The harness's `IstioRouteFaultInjector` probes
-`/drawback/x/1.0` via the gateway (a FRESH connection each probe) to detect convergence,
-but the measured write goes cancel-service → inside-payment over a POOLED
-Apache-HttpClient connection. Proxy-log ground truth from a run: the control-leg drawback
-returned **418 (abort live)** while the convergence probe 0.36 s earlier returned **403
-(abort gone)** — the fresh-connection probe reflects the new Envoy config before
-cancel-service's reused connection does. Both directions lag (a just-applied filter is not
-yet seen on the pooled path; a just-removed one still is). Net: the probe says "converged"
-but the leg observes the opposite filter state → false NO_FIRE / NOT_EVALUABLE.
-Making it reliable would need cancel-service's pool refreshed at every leg boundary
-(a cancel-service restart per leg — slow + re-introduces the nacos gRPC gamble).
+This is the endpoint that finally worked; **two restart/mesh-based mechanisms were tried and
+found unreliable** — a real methodological finding worth keeping in the writeup, because both
+failure modes are about the SUT caller's client-side caching, not about MIST:
 
-**PIVOT (decided):** drive the natural `{1,"error"}` observable with a reliable app-level
-SUT flag on inside-payment's `drawBack` (a second fork flag that makes drawback FAIL →
-cancel-service's RestTemplate throws → `cancelOrder`'s GENUINE compensation-failure catch
-returns `{1,"error"}`), toggled by the already-proven `SutFlagFaultInjector`. Same
-acked-but-lost observable, same natural catch-block code path, path-scoped (only drawback
-fails; the /account read-back stays live), no mesh-convergence race. The mesh-abort finding
-itself is worth keeping in the writeup: it is a real limitation of LDS/HTTP-filter fault
-injection against connection-pooling clients.
+1. **EnvoyFilter mesh abort** (route-scoped inbound fault on an inside-payment sidecar). A
+   stably-applied filter aborts `/drawback` correctly, but the *per-leg toggle* races
+   ts-cancel-service's **pooled** Apache-HttpClient connection: the harness's convergence probe
+   hits the gateway on a FRESH connection and sees the new Envoy config before cancel-service's
+   REUSED connection does. Proxy-log ground truth: a control-leg drawback returned 418 (abort
+   live) while the probe 0.36 s earlier returned 403 (abort gone). Both directions lag → the leg
+   observes the wrong filter state → false NO_FIRE / NOT_EVALUABLE.
+2. **JAVA_TOOL_OPTIONS `-D` flag rollout** (`SutFlagFaultInjector`). The rollout RESTARTS
+   inside-payment; ts-cancel-service's stale connection pool / Ribbon instance cache then races.
+   With a short settle the old pod is still up → the caller round-robins and observes the wrong
+   flag ~50 % of the time; with a 60 s settle the old pod is gone but its dead IP lingers in the
+   caller's cache → the fault-leg cancel connects to it and **read-timeout-hangs** (the run
+   crashed here). Also gated on the nacos ipDeleteTimeout (~30 s) + Ribbon refresh (~30 s).
 
-## Cell: AGREEMENT anchor (body-carrying write, both catch) — PENDING
+## SUT / deployment
+
+- kind cluster `mist`, ns `trainticket`, upstream `codewisdom/*:1.0.0` graph; the measured
+  service `ts-inside-payment-service` fork-built to `:1.0.4` (branch MIST-trainticket) carrying
+  the runtime fault-mode toggle. Sidecar-free (the EnvoyFilter attempt's sidecar was removed).
+- Reached from the host via `kubectl port-forward svc/ts-gateway-service 18888`.
+
+### Reproducibility caveats
+
+- **nacos gRPC 1.X-mode.** An earlier nacos StatefulSet rolling-restart (memory-thrash recovery)
+  left the 3-node cluster stuck in "1.X mode, can't accept gRPC request" → restarting services
+  intermittently failed to re-register. Fixed with `kubectl rollout restart statefulset/nacos`.
+  The runtime toggle no longer restarts inside-payment, so this no longer affects a run, but a
+  fresh deploy should confirm nacos is in 2.0 mode.
+- The toggle route is gateway-guarded (403 without a JWT); the injector sends a registered
+  USER JWT (same as the /account read-back).
 
 ## Cell: AGREEMENT anchor (body-carrying write, both catch) — PENDING

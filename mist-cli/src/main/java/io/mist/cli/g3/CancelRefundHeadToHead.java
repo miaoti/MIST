@@ -5,9 +5,8 @@ import io.mist.cli.comparator.ContractEvaluator;
 import io.mist.cli.comparator.RestAssuredSutClient;
 import io.mist.cli.fault.DataIntegrityRuntime;
 import io.mist.cli.fault.FaultInjector;
-import io.mist.cli.fault.IstioRouteFaultInjector;
+import io.mist.cli.fault.HttpToggleFaultInjector;
 import io.mist.cli.fault.PairedFaultExecutor;
-import io.mist.cli.fault.SutFlagFaultInjector;
 import io.mist.cli.fault.TargetTripleRegistry;
 import io.restassured.RestAssured;
 import org.json.JSONObject;
@@ -28,13 +27,17 @@ import java.util.List;
  *
  * <p>Two strata, one stimulus:
  * <ul>
- *   <li><b>natural</b> — unmodified SUT, fault = the inbound EnvoyFilter abort on
- *       /drawback ({@link IstioRouteFaultInjector}); cancel returns {@code {1,"error"}} →
- *       both oracles flag (detection tie; MIST additionally localizes the lost refund).</li>
- *   <li><b>constructed</b> — the fork's fabricated-ack drawback flag
- *       ({@link SutFlagFaultInjector}); cancel returns a clean {@code {1,"Success."}} →
- *       the comparator misses, MIST fires (the clean win).</li>
+ *   <li><b>natural</b> — the fork's drawback fault mode "fail": drawBack throws →
+ *       cancelOrder's genuine compensation-failure catch returns {@code {1,"error"}} → both
+ *       oracles flag (detection tie; MIST additionally localizes the lost refund).</li>
+ *   <li><b>constructed</b> — the fork's drawback fault mode "fabricatedack": cancel returns a
+ *       clean {@code {1,"Success."}} → the comparator misses, MIST fires (the clean win).</li>
  * </ul>
+ *
+ * <p>Both modes are toggled by {@link HttpToggleFaultInjector} — a RUNTIME in-memory switch on
+ * the un-restarted inside-payment pod. Earlier restart-based mechanisms (a JAVA_TOOL_OPTIONS flag
+ * rollout, an EnvoyFilter mesh abort) both raced ts-cancel-service's client-side connection pool /
+ * instance cache and were unreliable per leg (g3-headtohead-results.md).
  *
  * <p>The one SUT-specific piece is {@link Stimulus}: create a fresh PAID order and issue
  * the bodyless cancel. Everything else is SUT-agnostic and compile-checkable without the
@@ -195,10 +198,10 @@ public final class CancelRefundHeadToHead {
 
     /**
      * Wiring. Config via -D properties (all live/SUT-specific): g3.base.url (gateway),
-     * g3.kube.context, g3.namespace, g3.drawback.probe.url (a non-mutating incomplete
-     * /drawback path via an inside-payment port-forward, answers 418 when the abort is
-     * live), g3.envoyfilter.manifest, g3.contract.path, g3.triples.natural,
-     * g3.triples.constructed. The {@link Stimulus} impl is supplied by the live launcher.
+     * g3.contract.path, g3.triples.natural, g3.triples.constructed, g3.strata (default
+     * "natural,constructed"). Both strata toggle a fork drawback flag via the
+     * SutFlagFaultInjector (cluster context/namespace/rollout come from each triple's
+     * cluster block). The {@link Stimulus} impl is supplied by the live launcher.
      */
     public static void run(Stimulus stimulus) throws Exception {
         String baseUrl = required("g3.base.url");
@@ -217,26 +220,27 @@ public final class CancelRefundHeadToHead {
 
         CancelRefundHeadToHead harness = new CancelRefundHeadToHead(stimulus, sutClient);
 
-        // Which strata to run (default both); lets the mesh-heavy natural stratum be
-        // brought up separately from the SutFlag-only constructed one during validation.
+        // Which strata to run (default both).
         java.util.Set<String> strata = new java.util.HashSet<>(java.util.Arrays.asList(
                 System.getProperty("g3.strata", "natural,constructed").toLowerCase().split(",")));
 
+        // ONE injector for both strata: a RUNTIME in-memory toggle of inside-payment's drawback
+        // fault mode (natural="fail" → {1,"error"}; constructed="fabricatedack" → clean
+        // {1,"Success."}), derived from each triple's fault_flag property. inside-payment is never
+        // restarted, so ts-cancel-service's pooled connection + Ribbon routing stay valid — the
+        // SutFlag rollout and the EnvoyFilter mesh abort both raced that client-side caching and
+        // were unreliable per leg (g3-headtohead-results.md). Reader JWT in case the route is guarded.
+        HttpToggleFaultInjector toggle = new HttpToggleFaultInjector(
+                baseUrl, io.mist.cli.auth.MstAuthHandler.getDefaultToken());
+
         if (strata.contains("natural")) {
-            // route-scoped EnvoyFilter abort on /drawback (unmodified SUT).
-            IstioRouteFaultInjector istio = new IstioRouteFaultInjector(natural.cluster.context,
-                    natural.cluster.namespace, Paths.get(required("g3.envoyfilter.manifest")),
-                    required("g3.drawback.probe.url"), 418, 120);
-            harness.runStratum("natural", natural.triples.get(0), contract, istio,
-                    new FaultInjector.FaultTarget("ts-inside-payment-service", "istio.drawback.abort"));
+            TargetTripleRegistry.Triple naturalTriple = natural.triples.get(0);
+            harness.runStratum("natural", naturalTriple, contract, toggle, naturalTriple.faultFlag);
         }
 
         if (strata.contains("constructed")) {
-            // the fork's fabricated-ack drawback SUT flag.
             TargetTripleRegistry.Triple constructedTriple = constructed.triples.get(0);
-            SutFlagFaultInjector sutFlag = new SutFlagFaultInjector(constructed.cluster.context,
-                    constructed.cluster.namespace, constructed.cluster.rolloutTimeoutSeconds, 15);
-            harness.runStratum("constructed", constructedTriple, contract, sutFlag,
+            harness.runStratum("constructed", constructedTriple, contract, toggle,
                     constructedTriple.faultFlag);
         }
 
