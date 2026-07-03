@@ -39,7 +39,15 @@ public final class TargetTripleRegistry {
          * TrainTicket adminroute adapter: ordered pair of EXISTING stations
          * unused by any baseline route (the SUT validates station existence).
          */
-        STATION_PAIR;
+        STATION_PAIR,
+        /**
+         * G3 depth adapter: the key is established by the scenario's own setup
+         * (e.g. the freshly registered user whose order the bodyless cancel
+         * GET operates on) and handed to the runtime via
+         * {@code DataIntegrityRuntime.beforeWriteSupplied} — nothing in the
+         * request body is freshened.
+         */
+        SUPPLIED;
 
         static IsolationStrategy parse(String raw, String origin) {
             if (raw == null) {
@@ -48,10 +56,53 @@ public final class TargetTripleRegistry {
             switch (raw) {
                 case "fresh-strings": return FRESH_STRINGS;
                 case "station-pair":  return STATION_PAIR;
+                case "supplied":      return SUPPLIED;
                 default:
                     throw new IllegalArgumentException("TargetTripleRegistry: unknown isolation_strategy '"
-                            + raw + "' in " + origin + " (allowed: fresh-strings, station-pair)");
+                            + raw + "' in " + origin + " (allowed: fresh-strings, station-pair, supplied)");
             }
+        }
+    }
+
+    /** What the read-back observes: business-key membership or a value change. */
+    public enum ReadbackMode {
+        /** Default: the freshened/supplied key fields appear as a collection item. */
+        MEMBERSHIP,
+        /**
+         * G3 depth adapter for aggregate-only observables (TT refund: the only
+         * working surface is the /account balance): X-present means the probed
+         * value DIFFERS from the same leg's own baseline read. The paired
+         * verdict semantics are unchanged — control legs observe the change,
+         * fault legs observe none.
+         */
+        VALUE_DELTA;
+
+        static ReadbackMode parse(String raw, String origin) {
+            if (raw == null) {
+                return MEMBERSHIP;
+            }
+            switch (raw) {
+                case "membership":  return MEMBERSHIP;
+                case "value-delta": return VALUE_DELTA;
+                default:
+                    throw new IllegalArgumentException("TargetTripleRegistry: unknown readback_mode '"
+                            + raw + "' in " + origin + " (allowed: membership, value-delta)");
+            }
+        }
+    }
+
+    /**
+     * VALUE_DELTA probe: in the read-back collection (same envelope convention
+     * as membership), the item whose {@code matchField} equals the supplied
+     * isolation-key value carries the observed value in {@code valueField}.
+     */
+    public static final class ValueProbe {
+        public final String matchField;
+        public final String valueField;
+
+        ValueProbe(String matchField, String valueField) {
+            this.matchField = matchField;
+            this.valueField = valueField;
         }
     }
 
@@ -96,12 +147,16 @@ public final class TargetTripleRegistry {
          * record becomes an error/NOT_EVALUABLE, never "absent". 0 = off.
          */
         public final int readbackBound;
+        /** MEMBERSHIP unless the registry opts the triple into value-delta. */
+        public final ReadbackMode readbackMode;
+        /** Non-null iff {@link #readbackMode} == VALUE_DELTA. */
+        public final ValueProbe valueProbe;
 
         Triple(String name, String writeEndpoint, String dependency,
                String readbackEndpoint, List<String> isolationKey,
                IsolationStrategy isolationStrategy,
                FaultInjector.FaultTarget faultFlag,
-               int readbackBound) {
+               int readbackBound, ReadbackMode readbackMode, ValueProbe valueProbe) {
             this.name = name;
             this.writeEndpoint = writeEndpoint;
             this.dependency = dependency;
@@ -110,6 +165,8 @@ public final class TargetTripleRegistry {
             this.isolationStrategy = isolationStrategy;
             this.faultFlag = faultFlag;
             this.readbackBound = readbackBound;
+            this.readbackMode = readbackMode;
+            this.valueProbe = valueProbe;
         }
     }
 
@@ -118,7 +175,10 @@ public final class TargetTripleRegistry {
 
     private static final Set<String> ALLOWED_KEYS = Collections.unmodifiableSet(new HashSet<>(
             Arrays.asList("name", "write_endpoint", "dependency", "readback_endpoint", "isolation_key",
-                    "isolation_strategy", "fault_flag", "readback_bound")));
+                    "isolation_strategy", "fault_flag", "readback_bound", "readback_mode", "value_probe")));
+
+    private static final Set<String> ALLOWED_VALUE_PROBE_KEYS = Collections.unmodifiableSet(new HashSet<>(
+            Arrays.asList("match_field", "value_field")));
 
     private static final Set<String> ALLOWED_FAULT_FLAG_KEYS = Collections.unmodifiableSet(new HashSet<>(
             Arrays.asList("deployment", "property")));
@@ -193,15 +253,39 @@ public final class TargetTripleRegistry {
                 throw new IllegalArgumentException("TargetTripleRegistry: 'readback_endpoint' for triple '"
                         + name + "' in " + origin + " must start with \"GET \" (got: '" + readback + "')");
             }
+            List<String> isolationKey = requireStringList(entry, "isolation_key", origin);
+            IsolationStrategy strategy =
+                    IsolationStrategy.parse(optionalString(entry, "isolation_strategy", origin), origin);
+            ReadbackMode mode = ReadbackMode.parse(optionalString(entry, "readback_mode", origin), origin);
+            ValueProbe probe = optionalValueProbe(entry, origin);
+            // Cross-field validation, loud like everything else in this file.
+            if (mode == ReadbackMode.VALUE_DELTA && probe == null) {
+                throw new IllegalArgumentException("TargetTripleRegistry: triple '" + name + "' in "
+                        + origin + " declares readback_mode value-delta but no value_probe");
+            }
+            if (mode == ReadbackMode.MEMBERSHIP && probe != null) {
+                throw new IllegalArgumentException("TargetTripleRegistry: triple '" + name + "' in "
+                        + origin + " declares a value_probe without readback_mode value-delta");
+            }
+            if (probe != null && !isolationKey.contains(probe.matchField)) {
+                throw new IllegalArgumentException("TargetTripleRegistry: triple '" + name + "' in "
+                        + origin + " value_probe.match_field '" + probe.matchField
+                        + "' is not one of the isolation_key fields " + isolationKey);
+            }
+            if (strategy == IsolationStrategy.SUPPLIED && isolationKey.size() != 1) {
+                throw new IllegalArgumentException("TargetTripleRegistry: triple '" + name + "' in "
+                        + origin + " uses supplied isolation, which takes exactly one isolation_key"
+                        + " field (got " + isolationKey + ")");
+            }
             triples.add(new Triple(
                     name,
                     requireString(entry, "write_endpoint", origin),
                     requireString(entry, "dependency", origin),
                     readback,
-                    requireStringList(entry, "isolation_key", origin),
-                    IsolationStrategy.parse(optionalString(entry, "isolation_strategy", origin), origin),
+                    isolationKey,
+                    strategy,
                     optionalFaultFlag(entry, origin),
-                    optionalBound(entry, origin)));
+                    optionalBound(entry, origin), mode, probe));
         }
         if (triples.isEmpty()) {
             throw new IllegalArgumentException(
@@ -263,6 +347,28 @@ public final class TargetTripleRegistry {
         return new FaultInjector.FaultTarget(
                 requireString(flag, "deployment", origin),
                 requireString(flag, "property", origin));
+    }
+
+    @SuppressWarnings("unchecked")
+    private static ValueProbe optionalValueProbe(Map<String, Object> entry, String origin) {
+        Object node = entry.get("value_probe");
+        if (node == null) {
+            return null;
+        }
+        if (!(node instanceof Map)) {
+            throw new IllegalArgumentException("TargetTripleRegistry: 'value_probe' in " + origin
+                    + " must be a map with 'match_field' and 'value_field'");
+        }
+        Map<String, Object> probe = (Map<String, Object>) node;
+        for (String key : probe.keySet()) {
+            if (!ALLOWED_VALUE_PROBE_KEYS.contains(key)) {
+                throw new IllegalArgumentException("TargetTripleRegistry: unknown value_probe key '" + key
+                        + "' in " + origin + " (typo? allowed: " + ALLOWED_VALUE_PROBE_KEYS + ")");
+            }
+        }
+        return new ValueProbe(
+                requireString(probe, "match_field", origin),
+                requireString(probe, "value_field", origin));
     }
 
     private static int optionalBound(Map<String, Object> entry, String origin) {

@@ -253,4 +253,121 @@ public class TargetTripleRegistryTest {
             assertTrue(e.getMessage(), e.getMessage().contains("readback_bound"));
         }
     }
+
+    // ── G3 depth adapter: supplied isolation + value-delta read-back ──
+
+    private static final String SUPPLIED_VALUE_TRIPLE =
+            "  - name: tt-cancel-refund\n"
+                    + "    write_endpoint: \"GET /api/v1/cancelservice/cancel/{orderId}/{loginId}\"\n"
+                    + "    dependency: ts-inside-payment-service\n"
+                    + "    readback_endpoint: \"GET /api/v1/inside_pay_service/inside_payment/account\"\n"
+                    + "    isolation_key: [userId]\n"
+                    + "    isolation_strategy: supplied\n"
+                    + "    readback_mode: value-delta\n"
+                    + "    value_probe:\n"
+                    + "      match_field: userId\n"
+                    + "      value_field: balance\n";
+
+    @Test
+    public void suppliedValueDelta_parses() {
+        TargetTripleRegistry.Registry registry = TargetTripleRegistry.parse(
+                yaml("triples:\n" + SUPPLIED_VALUE_TRIPLE), "test-doc");
+        TargetTripleRegistry.Triple t = registry.triples.get(0);
+        assertEquals(TargetTripleRegistry.IsolationStrategy.SUPPLIED, t.isolationStrategy);
+        assertEquals(TargetTripleRegistry.ReadbackMode.VALUE_DELTA, t.readbackMode);
+        assertEquals("userId", t.valueProbe.matchField);
+        assertEquals("balance", t.valueProbe.valueField);
+    }
+
+    @Test
+    public void readbackMode_defaultsToMembership_withoutProbe() {
+        TargetTripleRegistry.Triple t = TargetTripleRegistry.parse(
+                yaml("triples:\n" + MINIMAL_TRIPLE), "test-doc").triples.get(0);
+        assertEquals(TargetTripleRegistry.ReadbackMode.MEMBERSHIP, t.readbackMode);
+        assertNull(t.valueProbe);
+    }
+
+    @Test
+    public void valueDelta_withoutProbe_fails() {
+        try {
+            TargetTripleRegistry.parse(
+                    yaml("triples:\n" + MINIMAL_TRIPLE + "    readback_mode: value-delta\n"),
+                    "test-doc");
+            fail("expected IllegalArgumentException for value-delta without value_probe");
+        } catch (IllegalArgumentException e) {
+            assertTrue(e.getMessage(), e.getMessage().contains("value_probe"));
+        }
+    }
+
+    @Test
+    public void probe_withoutValueDelta_fails() {
+        String doc = "triples:\n" + MINIMAL_TRIPLE
+                + "    value_probe:\n"
+                + "      match_field: a\n"
+                + "      value_field: v\n";
+        try {
+            TargetTripleRegistry.parse(yaml(doc), "test-doc");
+            fail("expected IllegalArgumentException for value_probe without value-delta");
+        } catch (IllegalArgumentException e) {
+            assertTrue(e.getMessage(), e.getMessage().contains("value_probe"));
+        }
+    }
+
+    @Test
+    public void probeMatchField_outsideIsolationKey_fails() {
+        String doc = "triples:\n"
+                + "  - name: t1\n"
+                + "    write_endpoint: \"POST /x\"\n"
+                + "    dependency: ts-x\n"
+                + "    readback_endpoint: \"GET /x\"\n"
+                + "    isolation_key: [a]\n"
+                + "    readback_mode: value-delta\n"
+                + "    value_probe:\n"
+                + "      match_field: other\n"
+                + "      value_field: v\n";
+        try {
+            TargetTripleRegistry.parse(yaml(doc), "test-doc");
+            fail("expected IllegalArgumentException for match_field outside isolation_key");
+        } catch (IllegalArgumentException e) {
+            assertTrue(e.getMessage(), e.getMessage().contains("match_field"));
+        }
+    }
+
+    @Test
+    public void suppliedIsolation_requiresSingleKeyField() {
+        String doc = "triples:\n"
+                + "  - name: t1\n"
+                + "    write_endpoint: \"POST /x\"\n"
+                + "    dependency: ts-x\n"
+                + "    readback_endpoint: \"GET /x\"\n"
+                + "    isolation_key: [a, b]\n"
+                + "    isolation_strategy: supplied\n";
+        try {
+            TargetTripleRegistry.parse(yaml(doc), "test-doc");
+            fail("expected IllegalArgumentException for supplied isolation with two key fields");
+        } catch (IllegalArgumentException e) {
+            assertTrue(e.getMessage(), e.getMessage().contains("supplied"));
+        }
+    }
+
+    @Test
+    public void valueProbe_unknownKey_fails() {
+        String doc = "triples:\n"
+                + "  - name: t1\n"
+                + "    write_endpoint: \"POST /x\"\n"
+                + "    dependency: ts-x\n"
+                + "    readback_endpoint: \"GET /x\"\n"
+                + "    isolation_key: [a]\n"
+                + "    readback_mode: value-delta\n"
+                + "    value_probe:\n"
+                + "      match_field: a\n"
+                + "      value_field: v\n"
+                + "      list_field: data\n";
+        try {
+            TargetTripleRegistry.parse(yaml(doc), "test-doc");
+            fail("expected IllegalArgumentException for unknown value_probe key");
+        } catch (IllegalArgumentException e) {
+            assertTrue(e.getMessage(), e.getMessage().contains("list_field"));
+        }
+    }
 }

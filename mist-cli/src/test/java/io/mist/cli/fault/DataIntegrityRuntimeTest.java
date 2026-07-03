@@ -356,4 +356,183 @@ public class DataIntegrityRuntimeTest {
             // expected
         }
     }
+
+    // ── G3 depth adapter: supplied isolation + value-delta read-back ──
+
+    private static final String CANCEL_STEP = "GET /api/v1/cancelservice/cancel/{orderId}/{loginId}";
+    private static final String ACCOUNT_READBACK = "/api/v1/inside_pay_service/inside_payment/account";
+
+    private static TargetTripleRegistry.Triple cancelTriple() {
+        String yaml = "triples:\n"
+                + "  - name: tt-cancel-refund\n"
+                + "    write_endpoint: \"" + CANCEL_STEP + "\"\n"
+                + "    dependency: ts-inside-payment-service\n"
+                + "    readback_endpoint: \"GET " + ACCOUNT_READBACK + "\"\n"
+                + "    isolation_key: [userId]\n"
+                + "    isolation_strategy: supplied\n"
+                + "    readback_mode: value-delta\n"
+                + "    value_probe:\n"
+                + "      match_field: userId\n"
+                + "      value_field: balance\n";
+        return TargetTripleRegistry.parse(
+                new java.io.ByteArrayInputStream(yaml.getBytes(java.nio.charset.StandardCharsets.UTF_8)),
+                "inline").triples.get(0);
+    }
+
+    private static String account(String... userBalancePairs) {
+        StringBuilder sb = new StringBuilder("{\"status\":1,\"msg\":\"Success\",\"data\":[");
+        for (int i = 0; i + 1 < userBalancePairs.length; i += 2) {
+            if (i > 0) {
+                sb.append(',');
+            }
+            sb.append("{\"userId\":\"").append(userBalancePairs[i])
+                    .append("\",\"balance\":\"").append(userBalancePairs[i + 1]).append("\"}");
+        }
+        return sb.append("]}").toString();
+    }
+
+    @Test
+    public void suppliedValueDelta_controlLeg_refundMovesBalance_present() {
+        // Baseline: buyer u-1 at 100.00. The cancel's refund lands on the
+        // second post-write poll (180.00) — X-present, OBSERVED_PRESENT.
+        http.script(ACCOUNT_READBACK, account("u-1", "100.00", "other", "5"));
+        begin("control", cancelTriple());
+        assertNull("bodyless write passes its (null) body through",
+                DataIntegrityRuntime.beforeWriteSupplied(CANCEL_STEP, "cancel#0", null,
+                        "userId", "u-1"));
+        http.script(ACCOUNT_READBACK, account("u-1", "100.00", "other", "5"),
+                account("u-1", "180.00", "other", "5"));
+        DataIntegrityRuntime.afterWrite(CANCEL_STEP, "cancel#0", 200,
+                "{\"status\":1,\"msg\":\"Success.\",\"data\":\"test not null\"}", null);
+        List<DataIntegrityRuntime.RunRecord> records = DataIntegrityRuntime.endRun();
+        assertEquals(1, records.size());
+        DataIntegrityRuntime.RunRecord r = records.get(0);
+        assertTrue(r.acked);
+        assertFalse("value-delta baseline never contains X", r.baselineContainedX);
+        assertTrue("balance moved — refund landed", r.readbackContainedX);
+        assertEquals(DataIntegrityRuntime.QuiescenceGate.OBSERVED_PRESENT, r.gate);
+        assertEquals("cancel#0", r.correlationId);
+        assertNull(r.error);
+        assertEquals("u-1", r.isolationKey.get("userId"));
+    }
+
+    @Test
+    public void suppliedValueDelta_faultLeg_ackedErrorEnvelope_balanceNeverMoves_absent() {
+        // The REAL fault-leg shape on the TT fork: the drawback hop dies, the
+        // cancel controller's catch-all returns {1,"error"} — acked under the
+        // runtime's predicate — and the buyer's balance never moves.
+        http.script(ACCOUNT_READBACK, account("u-1", "100.00"));
+        begin("fault", cancelTriple());
+        DataIntegrityRuntime.beforeWriteSupplied(CANCEL_STEP, "cancel#0", null, "userId", "u-1");
+        DataIntegrityRuntime.afterWrite(CANCEL_STEP, "cancel#0", 200,
+                "{\"status\":1,\"msg\":\"error\",\"data\":null}", null);
+        List<DataIntegrityRuntime.RunRecord> records = DataIntegrityRuntime.endRun();
+        assertEquals(1, records.size());
+        DataIntegrityRuntime.RunRecord r = records.get(0);
+        assertTrue("{1,\"error\"} is an acknowledged envelope", r.acked);
+        assertFalse("balance never moved — the refund is lost", r.readbackContainedX);
+        assertEquals(DataIntegrityRuntime.QuiescenceGate.TIMEOUT_ABSENT, r.gate);
+        assertNull(r.error);
+    }
+
+    @Test
+    public void suppliedValueDelta_buyerAbsentFromBaseline_appearing_isPresent() {
+        // A fresh buyer with no Money rows is absent from /account entirely;
+        // the refund row makes them appear — that IS the value moving.
+        http.script(ACCOUNT_READBACK, account("other", "5"));
+        begin("control", cancelTriple());
+        DataIntegrityRuntime.beforeWriteSupplied(CANCEL_STEP, "cancel#0", null, "userId", "u-1");
+        http.script(ACCOUNT_READBACK, account("other", "5", "u-1", "80.00"));
+        DataIntegrityRuntime.afterWrite(CANCEL_STEP, "cancel#0", 200, "{\"status\":1}", null);
+        assertTrue(DataIntegrityRuntime.endRun().get(0).readbackContainedX);
+    }
+
+    @Test
+    public void suppliedValueDelta_numericallyEqualStrings_notAChange() {
+        // "100.0" vs "100.00" is the same balance — BigDecimal, not string, math.
+        http.script(ACCOUNT_READBACK, account("u-1", "100.0"));
+        begin("fault", cancelTriple());
+        DataIntegrityRuntime.beforeWriteSupplied(CANCEL_STEP, "cancel#0", null, "userId", "u-1");
+        http.script(ACCOUNT_READBACK, account("u-1", "100.00"));
+        DataIntegrityRuntime.afterWrite(CANCEL_STEP, "cancel#0", 200, "{\"status\":1}", null);
+        DataIntegrityRuntime.RunRecord r = DataIntegrityRuntime.endRun().get(0);
+        assertFalse("numerically equal balances are no movement", r.readbackContainedX);
+        assertEquals(DataIntegrityRuntime.QuiescenceGate.TIMEOUT_ABSENT, r.gate);
+    }
+
+    @Test
+    public void legacyFresheningHook_onSuppliedTriple_recordsWiringError() {
+        begin("control", cancelTriple());
+        assertEquals("body passes through untouched", "{}",
+                DataIntegrityRuntime.beforeWrite(CANCEL_STEP, "{}"));
+        DataIntegrityRuntime.afterWrite(CANCEL_STEP, 200, "{\"status\":1}", null);
+        List<DataIntegrityRuntime.RunRecord> records = DataIntegrityRuntime.endRun();
+        assertEquals(1, records.size());
+        assertNotNull(records.get(0).error);
+        assertTrue(records.get(0).error, records.get(0).error.contains("beforeWriteSupplied"));
+    }
+
+    @Test
+    public void suppliedHook_onFresheningTriple_recordsWiringError() {
+        begin("control", contactTriple());
+        DataIntegrityRuntime.beforeWriteSupplied(CONTACT_STEP, "c#0", "{\"name\":\"n\"}",
+                "name", "n");
+        DataIntegrityRuntime.afterWrite(CONTACT_STEP, "c#0", 200, "{\"status\":1}", null);
+        List<DataIntegrityRuntime.RunRecord> records = DataIntegrityRuntime.endRun();
+        assertEquals(1, records.size());
+        assertNotNull(records.get(0).error);
+        assertTrue(records.get(0).error, records.get(0).error.contains("non-supplied"));
+    }
+
+    @Test
+    public void suppliedHook_keyFieldOutsideRegistry_recordsError() {
+        http.script(ACCOUNT_READBACK, account("u-1", "100.00"));
+        begin("control", cancelTriple());
+        DataIntegrityRuntime.beforeWriteSupplied(CANCEL_STEP, "cancel#0", null,
+                "accountId", "u-1");
+        DataIntegrityRuntime.afterWrite(CANCEL_STEP, "cancel#0", 200, "{\"status\":1}", null);
+        DataIntegrityRuntime.RunRecord r = DataIntegrityRuntime.endRun().get(0);
+        assertNotNull(r.error);
+        assertTrue(r.error, r.error.contains("unusable supplied key"));
+    }
+
+    @Test
+    public void suppliedHook_baselineReadFails_recordsError() {
+        http.byPath.computeIfAbsent(ACCOUNT_READBACK, k -> new ArrayDeque<>())
+                .add(new DataIntegrityRuntime.HttpResponse(503, "down"));
+        begin("control", cancelTriple());
+        DataIntegrityRuntime.beforeWriteSupplied(CANCEL_STEP, "cancel#0", null, "userId", "u-1");
+        DataIntegrityRuntime.afterWrite(CANCEL_STEP, "cancel#0", 200, "{\"status\":1}", null);
+        DataIntegrityRuntime.RunRecord r = DataIntegrityRuntime.endRun().get(0);
+        assertNotNull(r.error);
+        assertTrue(r.error, r.error.contains("baseline read-back HTTP 503"));
+    }
+
+    @Test
+    public void extractProbeValue_missingRowOrField_isNull() {
+        TargetTripleRegistry.Triple t = cancelTriple();
+        Map<String, String> key = new HashMap<>();
+        key.put("userId", "u-1");
+        assertEquals("100.00",
+                DataIntegrityRuntime.extractProbeValue(t, account("u-1", "100.00"), key));
+        assertNull("no row for the buyer",
+                DataIntegrityRuntime.extractProbeValue(t, account("other", "5"), key));
+        assertNull("unparseable body",
+                DataIntegrityRuntime.extractProbeValue(t, "not json", key));
+        assertNull("value field absent",
+                DataIntegrityRuntime.extractProbeValue(t,
+                        "{\"status\":1,\"data\":[{\"userId\":\"u-1\"}]}", key));
+    }
+
+    @Test
+    public void valueDiffers_nullAndNumericSemantics() {
+        assertFalse(DataIntegrityRuntime.valueDiffers(null, null));
+        assertTrue(DataIntegrityRuntime.valueDiffers(null, "80.00"));
+        assertTrue(DataIntegrityRuntime.valueDiffers("80.00", null));
+        assertFalse(DataIntegrityRuntime.valueDiffers("100.0", "100.00"));
+        assertTrue(DataIntegrityRuntime.valueDiffers("100.00", "180.00"));
+        assertTrue("non-numeric falls back to string equality",
+                DataIntegrityRuntime.valueDiffers("abc", "abd"));
+        assertFalse(DataIntegrityRuntime.valueDiffers("abc", "abc"));
+    }
 }

@@ -321,22 +321,16 @@ public final class DataIntegrityRuntime {
         if (triple == null) {
             return requestBody;
         }
-        // Review H1(i): an unconsumed pending means the PREVIOUS hooked write
-        // died between its hooks (transport failure before afterWrite). Emit
-        // a synthetic error record in its slot so the per-record join stays
-        // aligned instead of silently shifting.
-        Pending orphaned = s.pending.get();
-        if (orphaned != null) {
-            s.pending.remove();
-            logger.warn("DataIntegrity[{}][{}]: previous write orphaned (no afterWrite — transport "
-                    + "failure?) — synthetic error record keeps the join aligned",
-                    s.runLabel, orphaned.triple.name);
-            s.records.add(new RunRecord(s.runLabel, orphaned.triple.name,
-                    orphaned.triple.writeEndpoint, orphaned.isolationKey, -1, null, false,
-                    orphaned.baselineContainedX, false, QuiescenceGate.NOT_APPLICABLE, 0, 0,
-                    orphaned.baselineBody, null,
-                    "hook orphaned: beforeWrite ran but afterWrite never fired", null,
-                    orphaned.correlationId));
+        drainOrphan(s);
+        // A supplied-isolation triple has no body fields to freshen — the key
+        // must come through beforeWriteSupplied. Reaching this hook instead is
+        // a wiring bug; record it loudly rather than proceeding keyless.
+        if (triple.isolationStrategy == TargetTripleRegistry.IsolationStrategy.SUPPLIED) {
+            logger.warn("DataIntegrity[{}][{}]: supplied-isolation triple hit the freshening hook — "
+                    + "use beforeWriteSupplied", s.runLabel, triple.name);
+            s.pending.set(new Pending(triple, new LinkedHashMap<>(), false, null,
+                    "supplied-isolation triple requires beforeWriteSupplied", correlationId));
+            return requestBody;
         }
         try {
             HttpResponse baseline = s.http.getSut(readbackPath(triple));
@@ -364,6 +358,92 @@ public final class DataIntegrityRuntime {
                     "beforeWrite: " + e, correlationId));
             return requestBody;
         }
+    }
+
+    /**
+     * G3 depth hook for supplied-isolation triples (bodyless writes such as the
+     * TT cancel GET): the scenario's own setup established the key (e.g. the
+     * freshly registered user) and hands it in explicitly; nothing is freshened
+     * and {@code requestBody} (usually null) is returned untouched. Captures
+     * the same baseline read-back as the freshening hook so VALUE_DELTA legs
+     * compare against their own pre-write observation.
+     */
+    public static String beforeWriteSupplied(String stepKey, String correlationId, String requestBody,
+                                             String keyField, String keyValue) {
+        Session s = session;
+        if (s == null) {
+            return requestBody;
+        }
+        TargetTripleRegistry.Triple triple = s.byStepKey.get(stepKey);
+        if (triple == null) {
+            return requestBody;
+        }
+        drainOrphan(s);
+        if (triple.isolationStrategy != TargetTripleRegistry.IsolationStrategy.SUPPLIED) {
+            logger.warn("DataIntegrity[{}][{}]: beforeWriteSupplied on a {} triple — use beforeWrite",
+                    s.runLabel, triple.name, triple.isolationStrategy);
+            s.pending.set(new Pending(triple, new LinkedHashMap<>(), false, null,
+                    "beforeWriteSupplied on a non-supplied triple (" + triple.isolationStrategy + ")",
+                    correlationId));
+            return requestBody;
+        }
+        if (keyField == null || !triple.isolationKey.contains(keyField)
+                || keyValue == null || keyValue.trim().isEmpty()) {
+            logger.warn("DataIntegrity[{}][{}]: unusable supplied key {}={}",
+                    s.runLabel, triple.name, keyField, keyValue);
+            s.pending.set(new Pending(triple, new LinkedHashMap<>(), false, null,
+                    "unusable supplied key " + keyField + "=" + keyValue, correlationId));
+            return requestBody;
+        }
+        try {
+            HttpResponse baseline = s.http.getSut(readbackPath(triple));
+            if (baseline.status / 100 != 2) {
+                logger.warn("DataIntegrity[{}][{}]: baseline read-back HTTP {} — passing body through",
+                        s.runLabel, triple.name, baseline.status);
+                s.pending.set(new Pending(triple, new LinkedHashMap<>(), false, baseline.body,
+                        "baseline read-back HTTP " + baseline.status, correlationId));
+                return requestBody;
+            }
+            Map<String, String> key = new LinkedHashMap<>();
+            key.put(keyField, keyValue);
+            // VALUE_DELTA X is defined against this same baseline, so the
+            // baseline trivially contains no X; membership keeps its meaning.
+            boolean baselineHasX = triple.readbackMode == TargetTripleRegistry.ReadbackMode.MEMBERSHIP
+                    && containsKey(baseline.body, key);
+            s.pending.set(new Pending(triple, key, baselineHasX, baseline.body, null, correlationId));
+            logger.info("DataIntegrity[{}][{}]: baseline captured, supplied key {}",
+                    s.runLabel, triple.name, key);
+            return requestBody;
+        } catch (RuntimeException e) {
+            logger.warn("DataIntegrity[{}][{}]: beforeWriteSupplied failed ({}); passing body through",
+                    s.runLabel, triple.name, e.toString());
+            s.pending.set(new Pending(triple, new LinkedHashMap<>(), false, null,
+                    "beforeWriteSupplied: " + e, correlationId));
+            return requestBody;
+        }
+    }
+
+    /**
+     * Review H1(i): an unconsumed pending means the PREVIOUS hooked write died
+     * between its hooks (transport failure before afterWrite). Emit a synthetic
+     * error record in its slot so the per-record join stays aligned instead of
+     * silently shifting.
+     */
+    private static void drainOrphan(Session s) {
+        Pending orphaned = s.pending.get();
+        if (orphaned == null) {
+            return;
+        }
+        s.pending.remove();
+        logger.warn("DataIntegrity[{}][{}]: previous write orphaned (no afterWrite — transport "
+                + "failure?) — synthetic error record keeps the join aligned",
+                s.runLabel, orphaned.triple.name);
+        s.records.add(new RunRecord(s.runLabel, orphaned.triple.name,
+                orphaned.triple.writeEndpoint, orphaned.isolationKey, -1, null, false,
+                orphaned.baselineContainedX, false, QuiescenceGate.NOT_APPLICABLE, 0, 0,
+                orphaned.baselineBody, null,
+                "hook orphaned: beforeWrite ran but afterWrite never fired", null,
+                orphaned.correlationId));
     }
 
     /**
@@ -415,7 +495,7 @@ public final class DataIntegrityRuntime {
                 HttpResponse now = s.http.getSut(readbackPath(triple));
                 s.records.add(new RunRecord(s.runLabel, triple.name, stepKey, pending.isolationKey,
                         httpStatus, bodyStatus, false, pending.baselineContainedX,
-                        containsKey(now.body, pending.isolationKey),
+                        presentX(triple, now.body, pending),
                         QuiescenceGate.NOT_APPLICABLE, 1, 0, pending.baselineBody, now.body, null,
                         now.status, pending.correlationId));
                 return;
@@ -441,7 +521,7 @@ public final class DataIntegrityRuntime {
                 // be 2xx for an absence verdict.
                 if (ok) {
                     last = readback.body;
-                    if (containsKey(last, pending.isolationKey)) {
+                    if (presentX(triple, last, pending)) {
                         present = true;
                         gate = QuiescenceGate.OBSERVED_PRESENT;
                         break;
@@ -472,7 +552,7 @@ public final class DataIntegrityRuntime {
                                     "read-back HTTP " + recheck.status + " on the post-settle re-read");
                             return;
                         }
-                        if (containsKey(last, pending.isolationKey)) {
+                        if (presentX(triple, last, pending)) {
                             present = true;
                             gate = QuiescenceGate.OBSERVED_PRESENT;
                             break;
@@ -629,6 +709,65 @@ public final class DataIntegrityRuntime {
         }
         throw new IllegalStateException("no unused (start,end) station pair left among "
                 + stations.size() + " stations and " + usedPairs.size() + " baseline routes");
+    }
+
+    /**
+     * X-presence dispatch: MEMBERSHIP asks whether the key appears as a
+     * collection item; VALUE_DELTA asks whether the probed value moved away
+     * from this leg's own baseline (the refund landing on the /account
+     * aggregate). Same polling, gating, and verdict machinery either way.
+     */
+    private static boolean presentX(TargetTripleRegistry.Triple triple, String body, Pending pending) {
+        if (triple.readbackMode == TargetTripleRegistry.ReadbackMode.VALUE_DELTA) {
+            return valueDiffers(
+                    extractProbeValue(triple, pending.baselineBody, pending.isolationKey),
+                    extractProbeValue(triple, body, pending.isolationKey));
+        }
+        return containsKey(body, pending.isolationKey);
+    }
+
+    /**
+     * VALUE_DELTA probe: the {@code valueField} of the collection item whose
+     * {@code matchField} equals the supplied key value; null when the item or
+     * either field is absent (an absent account row reads as "no value yet").
+     */
+    static String extractProbeValue(TargetTripleRegistry.Triple triple, String body,
+                                    Map<String, String> key) {
+        TargetTripleRegistry.ValueProbe probe = triple.valueProbe;
+        String expected = probe == null ? null : key.get(probe.matchField);
+        if (expected == null) {
+            return null;
+        }
+        for (Object item : extractItems(body)) {
+            if (!(item instanceof JSONObject)) {
+                continue;
+            }
+            JSONObject obj = (JSONObject) item;
+            if (obj.has(probe.matchField)
+                    && String.valueOf(obj.get(probe.matchField)).equals(expected)
+                    && obj.has(probe.valueField)) {
+                return String.valueOf(obj.get(probe.valueField));
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Numeric-aware inequality: "100.0" and "100.00" are the same balance.
+     * Both-absent is "no movement"; a value appearing or vanishing is one.
+     */
+    static boolean valueDiffers(String baseline, String current) {
+        if (baseline == null && current == null) {
+            return false;
+        }
+        if (baseline == null || current == null) {
+            return true;
+        }
+        try {
+            return new java.math.BigDecimal(baseline).compareTo(new java.math.BigDecimal(current)) != 0;
+        } catch (NumberFormatException e) {
+            return !baseline.equals(current);
+        }
     }
 
     /**
