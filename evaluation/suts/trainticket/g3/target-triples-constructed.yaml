@@ -1,0 +1,31 @@
+# G3 head-to-head — CONSTRUCTED stratum triple (cancel->refund with a fabricated-ack
+# drawback). Identical to the natural triple EXCEPT the fault is the fork's opt-in
+# SUT flag (fork commit f57102e6): drawBack returns the EXACT success envelope without
+# persisting the Money row, so ts-cancel-service returns a perfectly CLEAN {1,"Success."}
+# while the refund is lost — the case a response-assertion comparator cannot catch.
+#
+# The fault_flag is toggled by the SutFlagFaultInjector (JAVA_TOOL_OPTIONS -D on the
+# ts-inside-payment-service deployment). REQUIRES the fork-built ts-inside-payment image
+# (the upstream codewisdom image has no such flag) — build that one service, kind-load,
+# repoint the Deployment (g3-tt-deploy-progress.md).
+#
+# Everything else (supplied isolation, value-delta on /account, RUNBOOK) is the same as
+# the natural triple.
+cluster:
+  context: kind-mist
+  namespace: trainticket
+  rollout_timeout_s: 180
+triples:
+  - name: tt-cancel-refund-constructed
+    write_endpoint: "GET /api/v1/cancelservice/cancel/{orderId}/{loginId}"
+    dependency: ts-inside-payment-service
+    readback_endpoint: "GET /api/v1/inside_pay_service/inside_payment/account"
+    isolation_key: [userId]
+    isolation_strategy: supplied
+    readback_mode: value-delta
+    value_probe:
+      match_field: userId
+      value_field: balance
+    fault_flag:
+      deployment: ts-inside-payment-service
+      property: mist.fault.drawback.fabricatedack.enabled

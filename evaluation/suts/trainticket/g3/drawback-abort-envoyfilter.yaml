@@ -1,0 +1,58 @@
+# G3 natural-stratum fault: a route-scoped abort of the inside-payment /drawback hop.
+#
+# WHY an EnvoyFilter (not a VirtualService): TrainTicket's inter-service calls use a
+# @LoadBalanced RestTemplate, so the HTTP authority the sidecar sees is a pod IP, not
+# the service host — a VirtualService host-match would miss it (g3-tt-mesh-fault-note.md).
+# An inbound EnvoyFilter on ts-inside-payment-service sees ALL traffic to the pod
+# regardless of authority.
+#
+# WHAT: inject envoy.filters.http.fault on the SIDECAR_INBOUND chain, aborting ONLY
+# requests whose :path starts with the drawback prefix. /account (the value-delta
+# read-back) and every other inside-payment route stay live, so the refund is still
+# observable as a balance delta while the drawback write fails.
+#
+# STATUS 418: outside both the app's and Envoy's natural status space (review DEPTH-C
+# F2) — a transient app/mesh 5xx can never be mistaken for "the fault is live". The
+# caller's restTemplate throws on the non-2xx, cancelOrder's catch returns {1,"error"}
+# (the natural-stratum response), and MIST's value-delta sees the balance never move.
+#
+# PREREQUISITE: ts-inside-payment-service must carry an Istio sidecar (the namespace is
+# deployed sidecar-free to avoid the infra startup race, so inject the sidecar into this
+# one Deployment before applying this filter).
+#
+# The IstioRouteFaultInjector applies/deletes this manifest and probes an incomplete
+# /drawback path: 418 when live, the app's 404/405 when not.
+apiVersion: networking.istio.io/v1alpha3
+kind: EnvoyFilter
+metadata:
+  name: drawback-abort
+  namespace: trainticket
+spec:
+  workloadSelector:
+    labels:
+      app: ts-inside-payment-service
+  configPatches:
+    - applyTo: HTTP_FILTER
+      match:
+        context: SIDECAR_INBOUND
+        listener:
+          filterChain:
+            filter:
+              name: envoy.filters.network.http_connection_manager
+              subFilter:
+                name: envoy.filters.http.router
+      patch:
+        operation: INSERT_BEFORE
+        value:
+          name: envoy.filters.http.fault
+          typed_config:
+            "@type": type.googleapis.com/envoy.extensions.filters.http.fault.v3.HTTPFault
+            abort:
+              http_status: 418
+              percentage:
+                numerator: 100
+                denominator: HUNDRED
+            headers:
+              - name: ":path"
+                string_match:
+                  prefix: "/api/v1/inside_pay_service/inside_payment/drawback"

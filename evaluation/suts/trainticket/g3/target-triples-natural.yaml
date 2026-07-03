@@ -1,0 +1,29 @@
+# G3 head-to-head — NATURAL stratum triple (cancel->refund on the UNMODIFIED fork).
+# The fault is the route-scoped EnvoyFilter abort (drawback-abort-envoyfilter.yaml),
+# applied by the IstioRouteFaultInjector — NOT a SUT flag, so there is no fault_flag.
+#
+# The write is the bodyless cancel GET; isolation is `supplied` (the harness hands in
+# the freshly registered buyer's loginId as userId — nothing in a body to freshen).
+# The refund is observable only as the buyer's balance moving on /account (the discrete
+# /money endpoint returns data:null even on success), so readback_mode is value-delta:
+# X-present == the buyer's balance differs from this leg's own pre-cancel baseline.
+#
+# RUNBOOK (REVIEW-DEPTH-RECONCILIATION.md): per-leg fresh buyer; the cancelled order is
+# PAID, price>0, far-future travelTime (else the refund is "0"/"0.00" and invisible);
+# key = loginId. The pre-write baseline stability double-read guards an unsettled
+# register/pay step.
+cluster:
+  context: kind-mist
+  namespace: trainticket
+  rollout_timeout_s: 180
+triples:
+  - name: tt-cancel-refund-natural
+    write_endpoint: "GET /api/v1/cancelservice/cancel/{orderId}/{loginId}"
+    dependency: ts-inside-payment-service
+    readback_endpoint: "GET /api/v1/inside_pay_service/inside_payment/account"
+    isolation_key: [userId]
+    isolation_strategy: supplied
+    readback_mode: value-delta
+    value_probe:
+      match_field: userId
+      value_field: balance

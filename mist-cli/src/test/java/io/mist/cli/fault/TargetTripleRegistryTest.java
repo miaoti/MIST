@@ -378,6 +378,54 @@ public class TargetTripleRegistryTest {
     }
 
     @Test
+    public void shippedG3Configs_parseToTheCancelRefundTriples() throws Exception {
+        // The two committed G3 head-to-head registries (evaluation/suts/trainticket/g3)
+        // must parse through the reviewed loader to the expected supplied+value-delta
+        // cancel->refund triple — natural without a fault_flag (EnvoyFilter fault),
+        // constructed with the fork's fabricated-ack flag.
+        java.nio.file.Path g3 = locateG3Dir();
+
+        TargetTripleRegistry.Registry natural =
+                TargetTripleRegistry.load(g3.resolve("target-triples-natural.yaml"));
+        assertEquals(1, natural.triples.size());
+        TargetTripleRegistry.Triple n = natural.triples.get(0);
+        assertEquals("tt-cancel-refund-natural", n.name);
+        assertEquals("GET /api/v1/cancelservice/cancel/{orderId}/{loginId}", n.writeEndpoint);
+        assertEquals(TargetTripleRegistry.IsolationStrategy.SUPPLIED, n.isolationStrategy);
+        assertEquals(java.util.Arrays.asList("userId"), n.isolationKey);
+        assertEquals(TargetTripleRegistry.ReadbackMode.VALUE_DELTA, n.readbackMode);
+        assertEquals("userId", n.valueProbe.matchField);
+        assertEquals("balance", n.valueProbe.valueField);
+        assertNull("natural stratum fault is the EnvoyFilter, not a SUT flag", n.faultFlag);
+        assertEquals("kind-mist", natural.cluster.context);
+        assertEquals("trainticket", natural.cluster.namespace);
+
+        TargetTripleRegistry.Registry constructed =
+                TargetTripleRegistry.load(g3.resolve("target-triples-constructed.yaml"));
+        TargetTripleRegistry.Triple c = constructed.triples.get(0);
+        assertEquals("tt-cancel-refund-constructed", c.name);
+        assertEquals(TargetTripleRegistry.IsolationStrategy.SUPPLIED, c.isolationStrategy);
+        assertEquals(TargetTripleRegistry.ReadbackMode.VALUE_DELTA, c.readbackMode);
+        assertNotNull("constructed stratum toggles the fork fabricated-ack flag", c.faultFlag);
+        assertEquals("ts-inside-payment-service", c.faultFlag.deployment);
+        assertEquals("mist.fault.drawback.fabricatedack.enabled", c.faultFlag.property);
+    }
+
+    /** The g3 configs live in evaluation/ (not the classpath); find them from either
+     *  the module basedir or the repo root, so the test works under -pl and the reactor. */
+    private static java.nio.file.Path locateG3Dir() {
+        for (String rel : new String[]{
+                "../evaluation/suts/trainticket/g3", "evaluation/suts/trainticket/g3"}) {
+            java.nio.file.Path p = java.nio.file.Paths.get(rel);
+            if (java.nio.file.Files.isDirectory(p)) {
+                return p;
+            }
+        }
+        throw new IllegalStateException("cannot locate evaluation/suts/trainticket/g3 from "
+                + java.nio.file.Paths.get("").toAbsolutePath());
+    }
+
+    @Test
     public void valueDelta_withReadbackBound_fails() {
         // Review DEPTH-A F2: the bound is a membership-absence guard; in
         // value-delta a truncated list must surface as an error instead.
