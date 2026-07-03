@@ -91,15 +91,17 @@ public class DataIntegrityEmissionTest {
         String src = written.src;
 
         // The writer numbers steps itself, so assertions are step-index-agnostic.
-        assertTrue("beforeWrite must rewrite the body literal",
+        // G3 rider: both hooks now carry the generation-time correlator
+        // "<method>#<stepIdx>" whose index must match the step's own number.
+        assertTrue("beforeWrite must rewrite the body literal and carry the correlator",
                 src.matches("(?s).*requestBody(\\d+) = io\\.mist\\.cli\\.fault\\.DataIntegrityRuntime"
-                        + "\\.beforeWrite\\(\"POST " + ROUTE_PATH + "\", requestBody\\1\\);.*"));
+                        + "\\.beforeWrite\\(\"POST " + ROUTE_PATH + "\", \"[^\"]*#\\1\", requestBody\\1\\);.*"));
         assertTrue("beforeWrite must run before req.body picks the body up",
                 src.indexOf("DataIntegrityRuntime.beforeWrite") < src.indexOf("req = req.body(requestBody"));
-        assertTrue("afterWrite must receive status, body and the step's traceparent id",
+        assertTrue("afterWrite must receive the correlator, status, body and the step's traceparent id",
                 src.matches("(?s).*io\\.mist\\.cli\\.fault\\.DataIntegrityRuntime\\.afterWrite\\(\"POST "
-                        + ROUTE_PATH + "\", actualStatusCode(\\d+), stepResponse\\1\\.getBody\\(\\)\\.asString\\(\\), "
-                        + "__mstTraceId\\1\\);.*"));
+                        + ROUTE_PATH + "\", \"[^\"]*#(\\d+)\", actualStatusCode\\1, "
+                        + "stepResponse\\1\\.getBody\\(\\)\\.asString\\(\\), __mstTraceId\\1\\);.*"));
         assertEquals("the hooked method must be recorded for the pairing filter",
                 1, writer.getDataIntegrityMethods().size());
     }

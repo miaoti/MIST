@@ -9,7 +9,10 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Deque;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -232,14 +235,14 @@ public final class PairedFaultExecutor {
      * verdict; the triple FIREs iff at least one pair fires. Records without
      * a sibling in the other run are surfaced as {@code unjoinedRecords}.
      */
-    private static List<PairResult> evaluate(List<TargetTripleRegistry.Triple> injectable,
-                                             List<DataIntegrityRuntime.RunRecord> controlRecords,
-                                             List<DataIntegrityRuntime.RunRecord> faultRecords) {
+    static List<PairResult> evaluate(List<TargetTripleRegistry.Triple> injectable,
+                                     List<DataIntegrityRuntime.RunRecord> controlRecords,
+                                     List<DataIntegrityRuntime.RunRecord> faultRecords) {
         List<PairResult> results = new ArrayList<>();
         for (TargetTripleRegistry.Triple t : injectable) {
             List<DataIntegrityRuntime.RunRecord> controls = recordsFor(controlRecords, t.name);
             List<DataIntegrityRuntime.RunRecord> faults = recordsFor(faultRecords, t.name);
-            int joined = Math.min(controls.size(), faults.size());
+            Join join = joinRecords(controls, faults);
 
             PairResult firstFire = null;
             PairResult firstNoFire = null;
@@ -247,8 +250,8 @@ public final class PairedFaultExecutor {
             int fires = 0;
             int noFires = 0;
             int notEvaluable = 0;
-            for (int i = 0; i < joined; i++) {
-                PairResult pair = verdict(t.name, controls.get(i), faults.get(i));
+            for (DataIntegrityRuntime.RunRecord[] p : join.pairs) {
+                PairResult pair = verdict(t.name, p[0], p[1]);
                 if (firstAny == null) {
                     firstAny = pair;
                 }
@@ -286,10 +289,65 @@ public final class PairedFaultExecutor {
             representative.firePairs = fires;
             representative.noFirePairs = noFires;
             representative.notEvaluablePairs = notEvaluable;
-            representative.unjoinedRecords = Math.abs(controls.size() - faults.size());
+            representative.unjoinedRecords = join.unjoined;
             results.add(representative);
         }
         return results;
+    }
+
+    /** A join result: the aligned (control, fault) pairs plus the unpaired count. */
+    private static final class Join {
+        final List<DataIntegrityRuntime.RunRecord[]> pairs = new ArrayList<>();
+        int unjoined = 0;
+    }
+
+    /**
+     * G3 rider (H1 / comparator-C13): align the two legs' records by the
+     * generation-time correlator when EVERY record on both sides carries one,
+     * so an asymmetric skip in one leg (run #3's 71-vs-70) leaves only that
+     * write unjoined instead of shifting every subsequent positional pair.
+     * Falls back to the original positional join whenever any record lacks a
+     * correlator (legacy suites), preserving prior behaviour byte-for-byte.
+     */
+    private static Join joinRecords(List<DataIntegrityRuntime.RunRecord> controls,
+                                    List<DataIntegrityRuntime.RunRecord> faults) {
+        Join j = new Join();
+        if (canCorrelate(controls) && canCorrelate(faults)) {
+            Map<String, Deque<DataIntegrityRuntime.RunRecord>> faultBy = new LinkedHashMap<>();
+            for (DataIntegrityRuntime.RunRecord f : faults) {
+                faultBy.computeIfAbsent(f.correlationId, k -> new ArrayDeque<>()).add(f);
+            }
+            for (DataIntegrityRuntime.RunRecord c : controls) {
+                Deque<DataIntegrityRuntime.RunRecord> q = faultBy.get(c.correlationId);
+                if (q != null && !q.isEmpty()) {
+                    j.pairs.add(new DataIntegrityRuntime.RunRecord[]{c, q.poll()});
+                } else {
+                    j.unjoined++;                       // control write with no fault sibling
+                }
+            }
+            for (Deque<DataIntegrityRuntime.RunRecord> q : faultBy.values()) {
+                j.unjoined += q.size();                 // fault writes with no control sibling
+            }
+            return j;
+        }
+        int joined = Math.min(controls.size(), faults.size());
+        for (int i = 0; i < joined; i++) {
+            j.pairs.add(new DataIntegrityRuntime.RunRecord[]{controls.get(i), faults.get(i)});
+        }
+        j.unjoined = Math.abs(controls.size() - faults.size());
+        return j;
+    }
+
+    private static boolean canCorrelate(List<DataIntegrityRuntime.RunRecord> records) {
+        if (records.isEmpty()) {
+            return false;
+        }
+        for (DataIntegrityRuntime.RunRecord r : records) {
+            if (r.correlationId == null) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private static List<DataIntegrityRuntime.RunRecord> recordsFor(
@@ -611,6 +669,7 @@ public final class PairedFaultExecutor {
         JSONObject json = new JSONObject();
         json.put("runLabel", record.runLabel);
         json.put("stepKey", record.stepKey);
+        json.put("correlationId", record.correlationId == null ? JSONObject.NULL : record.correlationId);
         JSONObject key = new JSONObject();
         for (Map.Entry<String, String> e : record.isolationKey.entrySet()) {
             key.put(e.getKey(), e.getValue());

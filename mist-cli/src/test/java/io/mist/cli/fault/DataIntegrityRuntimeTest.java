@@ -259,6 +259,29 @@ public class DataIntegrityRuntimeTest {
     }
 
     @Test
+    public void g3Correlator_flowsFromHooksOntoRecord() {
+        // The writer's <method>#<stepIdx> label passes through both hooks onto
+        // the RunRecord so the pairing join can align by it. Legacy 2-arg /
+        // 4-arg callers leave it null (positional fallback).
+        begin("control", contactTriple());
+        DataIntegrityRuntime.beforeWrite(CONTACT_STEP, "testCreateContact_0#3", "{\"name\":\"n\"}");
+        DataIntegrityRuntime.afterWrite(CONTACT_STEP, "testCreateContact_0#3", 200,
+                "{\"status\":1}", "t1");
+        List<DataIntegrityRuntime.RunRecord> records = DataIntegrityRuntime.endRun();
+        assertEquals(1, records.size());
+        assertEquals("testCreateContact_0#3", records.get(0).correlationId);
+    }
+
+    @Test
+    public void g3Correlator_legacyHooksLeaveItNull() {
+        begin("control", contactTriple());
+        DataIntegrityRuntime.beforeWrite(CONTACT_STEP, "{\"name\":\"n\"}");
+        DataIntegrityRuntime.afterWrite(CONTACT_STEP, 200, "{\"status\":1}", "t1");
+        List<DataIntegrityRuntime.RunRecord> records = DataIntegrityRuntime.endRun();
+        assertNull(records.get(0).correlationId);
+    }
+
+    @Test
     public void softRejectedWrite_isNotAcked_noQuiescenceWait() {
         begin("control", contactTriple());
         DataIntegrityRuntime.beforeWrite(CONTACT_STEP, "{\"name\":\"n\"}");

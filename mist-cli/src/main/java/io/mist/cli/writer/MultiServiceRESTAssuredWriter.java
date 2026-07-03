@@ -1987,8 +1987,11 @@ public class MultiServiceRESTAssuredWriter {
                                 pw.println("                        req = req.contentType(\"application/json\");");
                                 pw.println("                        String requestBody" + stepIdx + " = \"" + escape(requestBody) + "\";");
                                 if (__diTriple != null) {
+                                    // G3 rider: the generation-time correlator <method>#<stepIdx> is
+                                    // identical across the control and fault legs (the same generated
+                                    // file runs twice), so the pairing join aligns by it, not position.
                                     pw.println("                        // Main-track B2: baseline read-back + isolation-key freshening (no-op outside pairing runs)");
-                                    pw.println("                        requestBody" + stepIdx + " = io.mist.cli.fault.DataIntegrityRuntime.beforeWrite(\"" + escape(__diStepKey) + "\", requestBody" + stepIdx + ");");
+                                    pw.println("                        requestBody" + stepIdx + " = io.mist.cli.fault.DataIntegrityRuntime.beforeWrite(\"" + escape(__diStepKey) + "\", \"" + escape(testMethodName) + "#" + stepIdx + "\", requestBody" + stepIdx + ");");
                                 }
                                 pw.println("                        req = req.body(requestBody" + stepIdx + ");");
                                 pw.println("                        ");
@@ -2204,7 +2207,7 @@ public class MultiServiceRESTAssuredWriter {
                                 // recorded on the in-process holder for the pairing executor.
                                 // The step's own traceparent id lets an absent verdict be
                                 // upgraded from timeout- to observation-gated.
-                                pw.println("                        io.mist.cli.fault.DataIntegrityRuntime.afterWrite(\"" + escape(__diStepKey) + "\", actualStatusCode" + stepIdx + ", stepResponse" + stepIdx + ".getBody().asString(), __mstTraceId" + stepIdx + ");");
+                                pw.println("                        io.mist.cli.fault.DataIntegrityRuntime.afterWrite(\"" + escape(__diStepKey) + "\", \"" + escape(testMethodName) + "#" + stepIdx + "\", actualStatusCode" + stepIdx + ", stepResponse" + stepIdx + ".getBody().asString(), __mstTraceId" + stepIdx + ");");
                                 dataIntegrityMethods.add(testMethodName);
                             }
 

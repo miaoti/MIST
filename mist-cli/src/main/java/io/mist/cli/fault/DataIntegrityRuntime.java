@@ -108,6 +108,15 @@ public final class DataIntegrityRuntime {
          * error, never scored as absence.
          */
         public final Integer readbackHttpStatus;
+        /**
+         * G3 rider (H1 / comparator-C13): a generation-time correlator —
+         * {@code <testMethodName>#<stepIdx>} — stamped by the writer so the
+         * per-record pairing join survives an asymmetric skip in one leg
+         * (run #3's 71-vs-70). Identical across the control and fault legs
+         * (the same generated file runs twice); {@code null} for legacy
+         * records, which fall back to the positional join.
+         */
+        public final String correlationId;
 
         RunRecord(String runLabel, String tripleName, String stepKey, Map<String, String> isolationKey,
                   int ackHttpStatus, Integer ackBodyStatus, boolean acked,
@@ -125,6 +134,17 @@ public final class DataIntegrityRuntime {
                   QuiescenceGate gate, int polls, long elapsedMs,
                   String baselineBody, String lastReadbackBody, String error,
                   Integer readbackHttpStatus) {
+            this(runLabel, tripleName, stepKey, isolationKey, ackHttpStatus, ackBodyStatus, acked,
+                    baselineContainedX, readbackContainedX, gate, polls, elapsedMs,
+                    baselineBody, lastReadbackBody, error, readbackHttpStatus, null);
+        }
+
+        RunRecord(String runLabel, String tripleName, String stepKey, Map<String, String> isolationKey,
+                  int ackHttpStatus, Integer ackBodyStatus, boolean acked,
+                  boolean baselineContainedX, boolean readbackContainedX,
+                  QuiescenceGate gate, int polls, long elapsedMs,
+                  String baselineBody, String lastReadbackBody, String error,
+                  Integer readbackHttpStatus, String correlationId) {
             this.runLabel = runLabel;
             this.tripleName = tripleName;
             this.stepKey = stepKey;
@@ -141,6 +161,7 @@ public final class DataIntegrityRuntime {
             this.lastReadbackBody = lastReadbackBody;
             this.error = error;
             this.readbackHttpStatus = readbackHttpStatus;
+            this.correlationId = correlationId;
         }
     }
 
@@ -169,14 +190,16 @@ public final class DataIntegrityRuntime {
         final boolean baselineContainedX;
         final String baselineBody;
         final String error;
+        final String correlationId;
 
         Pending(TargetTripleRegistry.Triple triple, Map<String, String> isolationKey,
-                boolean baselineContainedX, String baselineBody, String error) {
+                boolean baselineContainedX, String baselineBody, String error, String correlationId) {
             this.triple = triple;
             this.isolationKey = isolationKey;
             this.baselineContainedX = baselineContainedX;
             this.baselineBody = baselineBody;
             this.error = error;
+            this.correlationId = correlationId;
         }
     }
 
@@ -281,6 +304,15 @@ public final class DataIntegrityRuntime {
      * keys; otherwise returns the body unchanged.
      */
     public static String beforeWrite(String stepKey, String requestBody) {
+        return beforeWrite(stepKey, null, requestBody);
+    }
+
+    /**
+     * G3-rider overload: {@code correlationId} = the writer's generation-time
+     * {@code <method>#<stepIdx>} label, carried onto the RunRecord so the
+     * pairing join can align by correlator instead of position.
+     */
+    public static String beforeWrite(String stepKey, String correlationId, String requestBody) {
         Session s = session;
         if (s == null) {
             return requestBody;
@@ -303,7 +335,8 @@ public final class DataIntegrityRuntime {
                     orphaned.triple.writeEndpoint, orphaned.isolationKey, -1, null, false,
                     orphaned.baselineContainedX, false, QuiescenceGate.NOT_APPLICABLE, 0, 0,
                     orphaned.baselineBody, null,
-                    "hook orphaned: beforeWrite ran but afterWrite never fired"));
+                    "hook orphaned: beforeWrite ran but afterWrite never fired", null,
+                    orphaned.correlationId));
         }
         try {
             HttpResponse baseline = s.http.getSut(readbackPath(triple));
@@ -313,14 +346,14 @@ public final class DataIntegrityRuntime {
                 logger.warn("DataIntegrity[{}][{}]: baseline read-back HTTP {} — passing body through",
                         s.runLabel, triple.name, baseline.status);
                 s.pending.set(new Pending(triple, new LinkedHashMap<>(), false, baseline.body,
-                        "baseline read-back HTTP " + baseline.status));
+                        "baseline read-back HTTP " + baseline.status, correlationId));
                 return requestBody;
             }
             Map<String, String> freshKey = new LinkedHashMap<>();
             String freshened = freshen(triple, requestBody, baseline.body, freshKey, s.http,
                     s.claimedPairs);
             boolean baselineHasX = containsKey(baseline.body, freshKey);
-            s.pending.set(new Pending(triple, freshKey, baselineHasX, baseline.body, null));
+            s.pending.set(new Pending(triple, freshKey, baselineHasX, baseline.body, null, correlationId));
             logger.info("DataIntegrity[{}][{}]: baseline captured, fresh key {}",
                     s.runLabel, triple.name, freshKey);
             return freshened;
@@ -328,7 +361,7 @@ public final class DataIntegrityRuntime {
             logger.warn("DataIntegrity[{}][{}]: beforeWrite failed ({}); passing body through",
                     s.runLabel, triple.name, e.toString());
             s.pending.set(new Pending(triple, new LinkedHashMap<>(), false, null,
-                    "beforeWrite: " + e));
+                    "beforeWrite: " + e, correlationId));
             return requestBody;
         }
     }
@@ -339,6 +372,16 @@ public final class DataIntegrityRuntime {
      * and records the run observation. Never throws.
      */
     public static void afterWrite(String stepKey, int httpStatus, String responseBody, String traceId) {
+        afterWrite(stepKey, null, httpStatus, responseBody, traceId);
+    }
+
+    /**
+     * G3-rider overload: {@code correlationId} = the writer's generation-time
+     * {@code <method>#<stepIdx>} label; every record this call emits carries it
+     * so the pairing join can align by correlator instead of position.
+     */
+    public static void afterWrite(String stepKey, String correlationId, int httpStatus,
+                                  String responseBody, String traceId) {
         Session s = session;
         if (s == null) {
             return;
@@ -352,7 +395,7 @@ public final class DataIntegrityRuntime {
         if (pending == null || pending.triple != triple) {
             s.records.add(new RunRecord(s.runLabel, triple.name, stepKey, new LinkedHashMap<>(),
                     httpStatus, null, false, false, false, QuiescenceGate.NOT_APPLICABLE, 0, 0,
-                    null, null, "afterWrite without matching beforeWrite"));
+                    null, null, "afterWrite without matching beforeWrite", null, correlationId));
             return;
         }
         try {
@@ -362,7 +405,8 @@ public final class DataIntegrityRuntime {
                 s.records.add(new RunRecord(s.runLabel, triple.name, stepKey, pending.isolationKey,
                         httpStatus, bodyStatus, acked, pending.baselineContainedX, false,
                         QuiescenceGate.NOT_APPLICABLE, 0, 0, pending.baselineBody, null,
-                        pending.error != null ? pending.error : "no isolation key established"));
+                        pending.error != null ? pending.error : "no isolation key established", null,
+                        pending.correlationId));
                 return;
             }
             if (!acked) {
@@ -373,7 +417,7 @@ public final class DataIntegrityRuntime {
                         httpStatus, bodyStatus, false, pending.baselineContainedX,
                         containsKey(now.body, pending.isolationKey),
                         QuiescenceGate.NOT_APPLICABLE, 1, 0, pending.baselineBody, now.body, null,
-                        now.status));
+                        now.status, pending.correlationId));
                 return;
             }
 
@@ -454,7 +498,8 @@ public final class DataIntegrityRuntime {
             long elapsedMs = (System.nanoTime() - start) / 1_000_000;
             s.records.add(new RunRecord(s.runLabel, triple.name, stepKey, pending.isolationKey,
                     httpStatus, bodyStatus, true, pending.baselineContainedX, present,
-                    gate, polls, elapsedMs, pending.baselineBody, last, null, lastStatus));
+                    gate, polls, elapsedMs, pending.baselineBody, last, null, lastStatus,
+                    pending.correlationId));
             logger.info("DataIntegrity[{}][{}]: acked={} X-present={} gate={} polls={} in {}ms",
                     s.runLabel, triple.name, true, present, gate, polls, elapsedMs);
         } catch (RuntimeException e) {
@@ -462,7 +507,7 @@ public final class DataIntegrityRuntime {
             s.records.add(new RunRecord(s.runLabel, triple.name, stepKey, pending.isolationKey,
                     httpStatus, null, false, pending.baselineContainedX, false,
                     QuiescenceGate.NOT_APPLICABLE, 0, 0, pending.baselineBody, null,
-                    "afterWrite: " + e));
+                    "afterWrite: " + e, null, pending.correlationId));
         }
     }
 
@@ -478,7 +523,7 @@ public final class DataIntegrityRuntime {
         s.records.add(new RunRecord(s.runLabel, triple.name, stepKey, pending.isolationKey,
                 httpStatus, bodyStatus, true, pending.baselineContainedX, false,
                 QuiescenceGate.NOT_APPLICABLE, polls, elapsedMs, pending.baselineBody, lastBody,
-                error, lastStatus));
+                error, lastStatus, pending.correlationId));
     }
 
     static String readbackPath(TargetTripleRegistry.Triple triple) {

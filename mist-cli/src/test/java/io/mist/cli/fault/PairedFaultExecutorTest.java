@@ -606,6 +606,85 @@ public class PairedFaultExecutorTest {
                 pair.pureDifferential);
     }
 
+    // ── G3 rider: writer-side correlator join (H1 / comparator-C13) ─────────
+
+    /** A record carrying a generation-time correlator (17-arg ctor). */
+    private static DataIntegrityRuntime.RunRecord corrRecord(String label, String corr, String triple,
+                                                             boolean acked, boolean readbackHasX) {
+        Map<String, String> key = new LinkedHashMap<>();
+        key.put("accountId", corr == null ? "legacy" : corr);
+        return new DataIntegrityRuntime.RunRecord(label, triple, "POST /x", key, 200,
+                acked ? Integer.valueOf(1) : Integer.valueOf(0), acked, false, readbackHasX,
+                readbackHasX ? DataIntegrityRuntime.QuiescenceGate.OBSERVED_PRESENT
+                        : DataIntegrityRuntime.QuiescenceGate.OBSERVED_COMPLETE_ABSENT,
+                1, 5, "{}", "{}", null, 200, corr);
+    }
+
+    @Test
+    public void correlatorJoin_middleSkip_avoidsMisalignedFalseFire() {
+        // Control ran two writes; the fault leg skipped the FIRST (A), leaving
+        // only B (absent in BOTH legs). A positional join pairs A's PRESENT
+        // control against B's absent fault and FALSELY fires; the correlator
+        // join pairs like-with-like, so nothing fires and A is left unjoined.
+        String t = contacts.name;
+        List<DataIntegrityRuntime.RunRecord> controls = new ArrayList<>();
+        controls.add(corrRecord("control", "m#0", t, true, true));
+        controls.add(corrRecord("control", "m#1", t, true, false));
+        List<DataIntegrityRuntime.RunRecord> faults = new ArrayList<>();
+        faults.add(corrRecord("fault", "m#1", t, true, false));
+
+        PairedFaultExecutor.PairResult pair = PairedFaultExecutor.evaluate(
+                Collections.singletonList(contacts), controls, faults).get(0);
+        assertEquals("B is absent in both legs → nothing fires", 0, pair.firePairs);
+        assertEquals(PairedFaultExecutor.PairVerdict.NOT_EVALUABLE, pair.pureDifferential);
+        assertEquals("A's control write had no fault sibling", 1, pair.unjoinedRecords);
+        assertEquals(2, pair.controlRecordCount);
+        assertEquals(1, pair.faultRecordCount);
+    }
+
+    @Test
+    public void positionalFallback_nullCorrelators_reproducesMisalignedFire() {
+        // The SAME record shapes without correlators fall back to the positional
+        // join, which pairs A-control with B-fault and fires — the legacy
+        // behavior the correlator supersedes, kept green so the fallback path
+        // stays exercised (byte-for-byte prior behavior on legacy suites).
+        String t = contacts.name;
+        List<DataIntegrityRuntime.RunRecord> controls = new ArrayList<>();
+        controls.add(corrRecord("control", null, t, true, true));
+        controls.add(corrRecord("control", null, t, true, false));
+        List<DataIntegrityRuntime.RunRecord> faults = new ArrayList<>();
+        faults.add(corrRecord("fault", null, t, true, false));
+
+        PairedFaultExecutor.PairResult pair = PairedFaultExecutor.evaluate(
+                Collections.singletonList(contacts), controls, faults).get(0);
+        assertEquals("positional pairs A-control with B-fault", 1, pair.firePairs);
+        assertEquals(PairedFaultExecutor.PairVerdict.FIRE, pair.pureDifferential);
+        assertEquals(1, pair.unjoinedRecords);
+    }
+
+    @Test
+    public void correlatorJoin_reorderedFaultLeg_pairsLikeForLike() {
+        // The fault leg emits its two writes in the opposite order (async
+        // timing). The correlator must pair a↔a and b↔b: only a (lost under
+        // fault) fires, and the fired pair is provably like-for-like.
+        String t = contacts.name;
+        List<DataIntegrityRuntime.RunRecord> controls = new ArrayList<>();
+        controls.add(corrRecord("control", "m#0", t, true, true));   // a present
+        controls.add(corrRecord("control", "m#1", t, true, true));   // b present
+        List<DataIntegrityRuntime.RunRecord> faults = new ArrayList<>();
+        faults.add(corrRecord("fault", "m#1", t, true, true));       // b persisted (immune)
+        faults.add(corrRecord("fault", "m#0", t, true, false));      // a lost → FIRE
+
+        PairedFaultExecutor.PairResult pair = PairedFaultExecutor.evaluate(
+                Collections.singletonList(contacts), controls, faults).get(0);
+        assertEquals(1, pair.firePairs);
+        assertEquals(1, pair.noFirePairs);
+        assertEquals(0, pair.unjoinedRecords);
+        assertEquals(PairedFaultExecutor.PairVerdict.FIRE, pair.pureDifferential);
+        assertEquals("the fired pair must be like-for-like, not crossed",
+                pair.control.correlationId, pair.fault.correlationId);
+    }
+
     @Test
     public void r4fix_absentOnPostSettleReread_staysCompleteAbsent() throws Exception {
         String prevJaeger = System.getProperty("jaeger.base.url");
