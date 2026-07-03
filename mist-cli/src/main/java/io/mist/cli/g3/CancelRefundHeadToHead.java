@@ -57,14 +57,19 @@ public final class CancelRefundHeadToHead {
         Resp cancel(Order order) throws Exception;
     }
 
-    /** A created order: the id to cancel and the buyer login (== the value-delta userId key). */
+    /**
+     * A created order: the id to cancel, the buyer login (== the value-delta userId key),
+     * and the buyer's JWT (used for the cancel and for MIST's /account read-back auth).
+     */
     public static final class Order {
         public final String orderId;
         public final String loginId;
+        public final String token;
 
-        public Order(String orderId, String loginId) {
+        public Order(String orderId, String loginId, String token) {
             this.orderId = orderId;
             this.loginId = loginId;
+            this.token = token;
         }
     }
 
