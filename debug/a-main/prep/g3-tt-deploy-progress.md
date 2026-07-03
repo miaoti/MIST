@@ -55,6 +55,27 @@ Two background ops now running (both logged in /home/miaot/gate1-logs):
    (maven-in-docker, WSL-native context ~/ttbuild) → `kind load … --name mist`. On
    completion: repoint those 2 Deployments to `:1.0.2` with imagePullPolicy IfNotPresent.
 
+## RESOURCE BLOCKER + strategic fix (minimal subgraph)
+Running the FULL 40-service graph pull concurrently with the maven fork-build
+over-committed the ~22 GB WSL budget: vmmemWSL ~17.3 GB, host free ~0.6-0.8 GB → WSL2's
+relay starved → `wsl.exe` calls time out (Wsl/Service/0x8007274c). The VM is alive
+(distros still listed running), just thrashing. Per the standing rule I do NOT
+`wsl --shutdown` (nor `--terminate`, which would kill the kind cluster + all deploy
+progress). Recovery = let the transient maven load finish / OOM-reclaim so the relay
+responds; a per-probe-`timeout` background loop detects it.
+
+**Strategic fix (not just recovery):** this machine is marginal for a full 40-service
+TrainTicket + Istio + builds. The head-to-head only exercises
+register→create→pay→cancel→refund + the /account read-back — a ~20-service SUBGRAPH.
+So run TrainTicket as a **minimal cancel→refund subgraph**: scale the ~17 services not
+on that path to 0 permanently (admin-*, news, voucher, notification, avatar, wait-order,
+rebook, execute, delivery, food-delivery, ui-dashboard, ticketoffice). If still tight,
+also drop food*/consign*/assurance/plan by using a BASIC order stimulus (no food, no
+consign, no insurance) so those services are never called. This halves the footprint and
+stops the thrash — the correct long-term configuration, staged in
+$CLAUDE_JOB_DIR/tmp/scale-down-nonessential.sh. Sequence the 2 fork builds AFTER the
+core subgraph is up (not concurrent) to avoid the peak.
+
 ## Order from here
 1. ⏳ deploy infra + 40 services (running). Verify: all ts-* pods Running; the gateway
    reachable; register→login→create-order→pay works end-to-end (the harness stimulus).
