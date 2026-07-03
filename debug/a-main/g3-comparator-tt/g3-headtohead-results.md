@@ -1,15 +1,16 @@
 # G3 cancel→refund head-to-head — live results
 
-MIST's B2 differential value-delta oracle vs the FROZEN blind response-assertion
-comparator (`blind-cancel-refund-contract.yaml` @ 38e7aa6 → executable
-`assertion-bindings-cancel-refund.yaml`), both observing the SAME cancel→refund
-stimulus under two fault strata. Runner: `io.mist.cli.g3.CancelRefundHeadToHead`
-+ `TrainTicketStimulus`. Design: `prep/g3-headtohead-run-architecture.md`.
+MIST's B2 differential value-delta oracle vs the FROZEN blind response-assertion comparator
+(`blind-cancel-refund-contract.yaml` @ 38e7aa6 → executable `assertion-bindings-cancel-refund.yaml`),
+both observing the SAME cancel→refund stimulus under two fault strata. Runner:
+`io.mist.cli.g3.CancelRefundHeadToHead` + `TrainTicketStimulus`. Design:
+`prep/g3-headtohead-run-architecture.md`. Faithfulness + ground truth:
+`g3-natural-faithfulness-source-check.md`, `g3-value-delta-ground-truth.md`.
 
-Status: **PRELIMINARY** — records runs as they land. NOT yet reviewer-accepted;
-the standing ≥3-cold-review gates these numbers before they feed any claim.
+Status: **PRELIMINARY** — a first ≥3-cold-review (A/B/C) returned ACCEPT-WITH-FIXES and its fixes
+are folded in below; a re-review gates these numbers before they feed any claim.
 
-## Both cells (run #1, 2026-07-03, log `tmp/g3-toggle1.log`)
+## Both cells (N=5 stable, `runs/prefunded-*.log`)
 
 | stratum | fault → cancel response | MIST B2 (value-delta) | Comparator (frozen contract) |
 |---|---|---|---|
@@ -18,78 +19,118 @@ the standing ≥3-cold-review gates these numbers before they feed any claim.
 
 ```
 === stratum: natural ===
-  MIST B2 (differential value-delta): FIRE
-      fault run acknowledged X (http 200, body status 1) but X is absent from its own
-      read-back (20 poll(s), gate TIMEOUT_ABSENT); control's X persisted — acknowledged-but-lost write
+  MIST B2 (differential value-delta): FIRE   (acked-but-lost: acked http 200/status 1, X absent, control's X persisted)
   Comparator (frozen response contract): control flagged=false, fault flagged=true  -> CAUGHT
+  value-delta probe (buyer /account balance):  control baseline=50.00 -> final=130.00 ;  fault baseline=50.00 -> final=50.00
 === stratum: constructed ===
-  MIST B2 (differential value-delta): FIRE
-      fault run acknowledged X ... X absent ... control's X persisted — acknowledged-but-lost write
+  MIST B2 (differential value-delta): FIRE   (same shape)
   Comparator (frozen response contract): control flagged=false, fault flagged=false  -> MISSED
+  value-delta probe (buyer /account balance):  control baseline=50.00 -> final=130.00 ;  fault baseline=50.00 -> final=50.00
 ```
 
-- **constructed = the clean win.** The fabricated `{1,"Success."}` passes every bindable
-  comparator check (HTTP_STATUS 200 + ENVELOPE_STATUS 1 + MSG_CONTAINS "Success."); the three
-  refund/state postconditions are NOT_CHECKABLE (no snapshot/delta/JWT primitive) → the
-  comparator cannot catch the lost refund. MIST's differential value-delta catches it (control
-  balance moves +refund, fault balance never moves despite the ack).
-- **natural = detection tie + MIST diagnosis, and the comparator is NO STRAWMAN.** The
-  `{1,"error"}` fails the MSG_CONTAINS "Success." gate → the comparator flags the fault leg
-  (CAUGHT). MIST also FIREs; its edge here is diagnostic, not detection: it identifies the
-  specific acked-but-lost write (the cancel) and the missing observable (the refund
-  balance-delta on /account), whereas the comparator only reports that the response message is
-  wrong. (MIST is black-box on cancel + /account — it does NOT attribute the fault to the
-  inside-payment hop; the internal cause is out of its view.)
-- In both, `control flagged=false` (the clean control leg passes) — no systemic false alarm.
+Every run (run #1 + reps 2–5): natural = FIRE + CAUGHT, constructed = FIRE + MISSED, control never
+flagged, ~24 s each (no restarts) → deterministic, not a routing coin-flip. Each buyer is
+**PRE-FUNDED** to a non-zero `/account` balance (50.00) before the cancel, so the value-delta is a
+real arithmetic delta (control 50→130, fault 50→50), not an appear-vs-absent membership signal.
 
-**Stability: N=5 (run #1 + reps 2–5, `tmp/g3-reps.txt`), 100 % consistent** — every run:
-natural = FIRE + CAUGHT, constructed = FIRE + MISSED, control never flagged. Runs are ~24 s
-each (no restarts/settles), so the verdict is deterministic, not a routing coin-flip.
+## Why the constructed miss is un-contestable (fairness of the clean win)
+
+The obvious skeptic attack is "a contract tool could just `STATE_GET /account` and check the buyer
+is present, so the miss is unfair." It fails on the merits, and all three grounds are on the page:
+
+1. **Presence ≠ refund; membership is INSUFFICIENT.** With the pre-funded buyer, the buyer is
+   PRESENT in `/account` both BEFORE and AFTER the cancel (baseline 50.00). A membership `STATE_GET`
+   (does the buyer appear) therefore PASSES on the control AND the fault leg → it cannot catch the
+   lost refund. Only the numeric delta distinguishes them: control 50→130 (+R), fault 50→50. (An
+   earlier fresh-zero-buyer config made MIST's own value-delta degenerate to appearance, which the
+   comparator *could* match — review A/B; the pre-fund closes that, and the run's probe line proves
+   the delta is arithmetic.)
+2. **The blocker is a missing primitive, not auth or field-naming.** The comparator's client DOES
+   carry a JWT (`RestAssuredSutClient.applyAuth`) and `/account` is readable — auth is not the
+   blocker (the frozen bindings' earlier "no auth-token" reason was factually wrong and has been
+   corrected; verdict unchanged). The decisive ground is that the closed primitive set has **no
+   snapshot / delta / arithmetic primitive**, so it cannot express `balance_after == balance_before
+   + R`. `/money` returns `data:null` even on success and `/account` is a summed aggregate, so no
+   single response field carries the refund either.
+3. **A baseline that could catch it would be MIST.** A comparator extended with snapshot + delta +
+   arithmetic is re-implementing MIST's differential value oracle — i.e. conceding the contribution.
+
+Scope note: "the comparator" here is the class of **response / contract-assertion oracles**
+(schema/Pact/response-shape checks + follow-up existence/`STATE_GET` membership). The claim is that
+this class cannot catch a numeric-delta lost write, not that no conceivable oracle can.
+
+## MIST is complementary to the baseline, not a strict superset
+
+MIST fires only on **acked** writes (`acked = 2xx && (bodyStatus==null || ==1)`). A loud `status:0`
+failure would make MIST NO_FIRE ("base relation vacuous") while the comparator's `ENVELOPE_STATUS==1`
+gate still catches it. So MIST does not dominate the baseline everywhere; it targets **silent/acked**
+data loss, complementary to response assertions on loud failures. The natural cell is a **tie**
+precisely because the fault kept `status:1` and corrupted only `msg` — the comparator's msg gate
+catches that, and MIST independently catches the state loss.
+
+## Natural cell — what makes it "natural" (faithfulness)
+
+The `{1,"error"}` is produced by UNMODIFIED cancel-service code: `cancelFromOrder` flips the order to
+CANCEL *before* `drawbackMoney` is called, and when drawback throws (HTTP 500) the exception
+propagates out of `cancelOrder` to `CancelController`'s genuine `catch` → HTTP-200 `{1,"error"}`
+(`CancelController.java:45-51`). Only drawBack's throw is injected; the response shaping is the
+fork's own. So "natural" means "the fork's own compensation-failure path, triggered by a dependency
+fault," not "occurs with no injection." The clean `{1,"Success."}`+lost path is **dead code** on the
+unmodified fork (drawBack's `{0}` return is unreachable — `findByUserId` returns an empty-not-null
+`List`), so a clean-ack lost refund genuinely requires the DISCLOSED constructed fabricated-ack. Full
+source derivation: `g3-natural-faithfulness-source-check.md`. MIST's edge on this tie is diagnostic,
+not detection: it names the specific acked-but-lost write (the cancel) and the missing observable
+(the refund balance-delta), where the comparator only reports a wrong `msg` — but MIST is black-box
+on cancel + `/account` and does NOT attribute the fault to the inside-payment hop (effect
+localization, not fault localization).
 
 ## Fault mechanism — runtime in-memory toggle (and why two earlier mechanisms failed)
 
-Final mechanism (`HttpToggleFaultInjector`): a fork endpoint
-`GET /api/v1/inside_pay_service/inside_payment/test/faultmode/{none|fail|fabricatedack}` flips
-an in-memory `volatile` mode on inside-payment; `drawBack` reads it. **No pod restart**, so
-ts-cancel-service's pooled connection + Ribbon routing to the single stable inside-payment
-instance stay valid, and the per-leg toggle is reliable + instant. `fail` = throw → HTTP 500 →
-cancel-service's RestTemplate throws → `cancelOrder`'s genuine compensation-failure catch acks
-`{1,"error"}`; `fabricatedack` = the exact success envelope without the persist → clean
-`{1,"Success."}`, refund lost. The route is gateway-guarded, so the toggle carries the reader JWT.
+`HttpToggleFaultInjector`: a fork endpoint
+`GET …/inside_payment/test/faultmode/{none|fail|fabricatedack}` flips an in-memory `volatile` mode on
+inside-payment. **No pod restart**, so ts-cancel-service's pooled connection + Ribbon routing to the
+single stable pod stay valid → the per-leg toggle is reliable + instant. `fail` = throw → 500 →
+`{1,"error"}`; `fabricatedack` = exact success envelope without the persist → clean `{1,"Success."}`.
+The route is gateway-guarded, so the toggle carries a reader JWT.
 
-This is the endpoint that finally worked; **two restart/mesh-based mechanisms were tried and
-found unreliable** — a real methodological finding worth keeping in the writeup, because both
-failure modes are about the SUT caller's client-side caching, not about MIST:
+Two restart/mesh mechanisms were tried and **rejected** — a real methodological finding, because both
+failure modes are about the SUT caller's client-side caching, not MIST:
 
-1. **EnvoyFilter mesh abort** (route-scoped inbound fault on an inside-payment sidecar). A
-   stably-applied filter aborts `/drawback` correctly, but the *per-leg toggle* races
-   ts-cancel-service's **pooled** Apache-HttpClient connection: the harness's convergence probe
-   hits the gateway on a FRESH connection and sees the new Envoy config before cancel-service's
-   REUSED connection does. Proxy-log ground truth: a control-leg drawback returned 418 (abort
-   live) while the probe 0.36 s earlier returned 403 (abort gone). Both directions lag → the leg
-   observes the wrong filter state → false NO_FIRE / NOT_EVALUABLE.
+1. **EnvoyFilter mesh abort.** A stably-applied filter aborts `/drawback`, but the per-leg toggle
+   races ts-cancel-service's **pooled** connection: the convergence probe (fresh connection) sees the
+   new Envoy config before the reused write-path connection. Proxy-log ground truth: a control-leg
+   drawback returned 418 (abort live) while the probe 0.36 s earlier returned 403 (abort gone) →
+   the leg observes the wrong filter state → false NO_FIRE / NOT_EVALUABLE.
 2. **JAVA_TOOL_OPTIONS `-D` flag rollout** (`SutFlagFaultInjector`). The rollout RESTARTS
-   inside-payment; ts-cancel-service's stale connection pool / Ribbon instance cache then races.
-   With a short settle the old pod is still up → the caller round-robins and observes the wrong
-   flag ~50 % of the time; with a 60 s settle the old pod is gone but its dead IP lingers in the
-   caller's cache → the fault-leg cancel connects to it and **read-timeout-hangs** (the run
-   crashed here). Also gated on the nacos ipDeleteTimeout (~30 s) + Ribbon refresh (~30 s).
+   inside-payment; the caller's stale pool / Ribbon cache then races — short settle → wrong-flag
+   round-robin (old pod up); long settle → dead-IP read-timeout hang (old pod gone). Also gated on
+   the nacos ipDeleteTimeout (~30 s) + Ribbon refresh (~30 s).
 
 ## SUT / deployment
 
-- kind cluster `mist`, ns `trainticket`, upstream `codewisdom/*:1.0.0` graph; the measured
-  service `ts-inside-payment-service` fork-built to `:1.0.4` (branch MIST-trainticket) carrying
-  the runtime fault-mode toggle. Sidecar-free (the EnvoyFilter attempt's sidecar was removed).
-- Reached from the host via `kubectl port-forward svc/ts-gateway-service 18888`.
+- kind cluster `mist`, ns `trainticket`, upstream `codewisdom/*:1.0.0` graph; `ts-inside-payment-service`
+  fork-built to `:1.0.4` (branch MIST-trainticket) carrying the runtime toggle, **replicas=1**,
+  sidecar-free. Reached via `kubectl port-forward svc/ts-gateway-service 18888`.
 
-### Reproducibility caveats
+## Soundness scope / disclosures (from review A/B/C — none is a false-FIRE path)
 
-- **nacos gRPC 1.X-mode.** An earlier nacos StatefulSet rolling-restart (memory-thrash recovery)
-  left the 3-node cluster stuck in "1.X mode, can't accept gRPC request" → restarting services
-  intermittently failed to re-register. Fixed with `kubectl rollout restart statefulset/nacos`.
-  The runtime toggle no longer restarts inside-payment, so this no longer affects a run, but a
-  fresh deploy should confirm nacos is in 2.0 mode.
-- The toggle route is gateway-guarded (403 without a JWT); the injector sends a registered
-  USER JWT (same as the /account read-back).
+- **Isolation is a runbook rule, not machine-enforced.** VALUE_DELTA hardcodes `baselineHasX=false`,
+  so the executor's isolation tripwire cannot fire; isolation relies on the harness registering a
+  FRESH pre-funded buyer per leg. The pre-write baseline **stability double-read** catches a
+  still-settling baseline (→ error, not FIRE).
+- **Traceless timeout-gate.** The sidecar-free cancel is traceless → the fault-leg absence is
+  `TIMEOUT_ABSENT`, not `OBSERVED_COMPLETE_ABSENT`. This is a confidence-label limitation, not a
+  false-FIRE: the control leg observes the refund on ~the first poll, the injected loss is permanent,
+  and the source has no async refund path, so the 10 s cap cannot hide a slow-but-real refund.
+- **replicas=1.** The toggle sets a volatile on one pod; >1 could miss on a fault leg → NO_FIRE
+  (fault X present), never a false FIRE. N=5 100% FIRE confirms a single stable instance.
+- **Same nonzero R both legs.** The stimulus creates identical PAID far-future orders; a zero-R
+  control degrades to NOT_EVALUABLE, never FIRE.
 
 ## Cell: AGREEMENT anchor (body-carrying write, both catch) — PENDING
+
+Review B: before the clean-win claim ships, demonstrate a body-carrying write where the comparator's
+`STATE_GET` clause BINDS and catches (both oracles catch), so the comparator is shown able to catch a
+lost write when its primitives suffice — not defined to lose on cancel→refund. (Mitigated already by
+the live natural-cell msg-gate catch + the G2 calibration's STATE_GET catches on contacts/adminroute,
+but not yet run beside these two cells.)
