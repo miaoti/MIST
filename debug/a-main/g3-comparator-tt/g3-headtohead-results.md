@@ -35,8 +35,11 @@ the standing ≥3-cold-review gates these numbers before they feed any claim.
   balance moves +refund, fault balance never moves despite the ack).
 - **natural = detection tie + MIST diagnosis, and the comparator is NO STRAWMAN.** The
   `{1,"error"}` fails the MSG_CONTAINS "Success." gate → the comparator flags the fault leg
-  (CAUGHT). MIST also FIREs; its edge here is localizing the acked-but-lost refund at the
-  inside-payment hop, not detection.
+  (CAUGHT). MIST also FIREs; its edge here is diagnostic, not detection: it identifies the
+  specific acked-but-lost write (the cancel) and the missing observable (the refund
+  balance-delta on /account), whereas the comparator only reports that the response message is
+  wrong. (MIST is black-box on cancel + /account — it does NOT attribute the fault to the
+  inside-payment hop; the internal cause is out of its view.)
 - In both, `control flagged=false` (the clean control leg passes) — no systemic false alarm.
 
 **Stability: N=5 (run #1 + reps 2–5, `tmp/g3-reps.txt`), 100 % consistent** — every run:
