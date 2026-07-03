@@ -6,10 +6,19 @@
 # express are NOT_CHECKABLE with the genuine reason, never guessed or dropped.
 # This implements the bindability the 3-cold-review wave (REVIEW-BLIND-CANCEL-*)
 # already decided: the response envelope is executable via the status+msg gate;
-# all THREE state postconditions are NOT_CHECKABLE (no snapshot/delta/arithmetic
-# primitive, no per-request JWT binding, and the bodyless cancel GET carries no
-# submitted body for a STATE_GET field match). Binding errors at run time are
+# all THREE state postconditions are NOT_CHECKABLE — the refund clause because the
+# closed primitive set has no snapshot/delta/arithmetic primitive (and a membership
+# fallback is insufficient: presence != refund once the buyer has any prior balance),
+# and the order-flip / seat-decrement clauses because they need value-transition /
+# counter-arithmetic the closed set also lacks. Binding errors at run time are
 # comparator-infra-failure, never a detection.
+#
+# CORRECTION (post head-to-head cold-review A/B): an earlier version of the refund
+# clause's NOT_CHECKABLE reason cited "no per-request auth-token binding" — that was
+# FACTUALLY WRONG (the comparator's RestAssuredSutClient DOES apply a JWT and /account
+# is readable). The reason now rests on the decisive, correct ground: no arithmetic-
+# delta primitive, and membership is insufficient against a non-zero baseline. The
+# NOT_CHECKABLE verdicts are unchanged; only the justification was corrected.
 #
 # NOTE the head-to-head harness (io.mist.cli.g3) supplies the submitted body
 # ({orderId, loginId} = the cancel's path-param identity) directly to
@@ -41,7 +50,7 @@ endpoints:
       - cite: "state_postcondition (2): refund of 80% of price credited to the buyer's inside-payment balance, observable ONLY as balance_after == balance_before + R against a pre-cancel snapshot on GET /inside_payment/account (JWT USER/ADMIN)."
         checks:
           - primitive: NOT_CHECKABLE
-            reason: "requires a NUMERIC DELTA against a PRE-CANCEL SNAPSHOT (balance_after == balance_before + R) plus a per-request JWT read-back; the closed primitive set has no snapshot / delta / arithmetic primitive and no per-request auth-token binding. Bindability review: NOT_CHECKABLE. (This is exactly the differential+value observable MIST's B2 oracle adds.)"
+            reason: "the refund is provable ONLY as a NUMERIC DELTA against a pre-cancel snapshot (balance_after == balance_before + R): /money returns data:null even on success and /account is a summed aggregate, so no single response field carries the refund. The closed primitive set has no snapshot / delta / arithmetic primitive, so it cannot express this. The weaker fallback — a membership STATE_GET (does the buyer appear on /account) — is BOTH unavailable AND insufficient: unavailable because the closed STATE_GET matches identical field names but the cancel submits `loginId` while /account keys on `userId`; and, DECISIVELY, insufficient because with any pre-existing balance the buyer is PRESENT on /account both BEFORE and AFTER the cancel (presence != refund) — only the +R value delta separates a real refund from a lost one. Auth is NOT the blocker: the comparator's client DOES carry a JWT (RestAssuredSutClient.applyAuth) and /account is readable; the blocker is the missing arithmetic-delta primitive. This is exactly the differential+value observable MIST's B2 oracle adds. [Reason corrected after head-to-head cold-review A/B — the earlier 'no per-request auth-token binding' ground was factually wrong; the NOT_CHECKABLE VERDICT is unchanged and now rests on the decisive arithmetic-delta ground.]"
       - cite: "state_postcondition (3): the ticket no longer occupies inventory — the sold-ticket seat-class counter for the cancelled order is EXACTLY ONE LESS than the pre-cancel snapshot (GET /order/{travelDate}/{trainNumber})."
         checks:
           - primitive: NOT_CHECKABLE

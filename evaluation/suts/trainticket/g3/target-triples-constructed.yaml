@@ -1,19 +1,22 @@
 # G3 head-to-head — CONSTRUCTED stratum triple (cancel->refund with a fabricated-ack
-# drawback). Identical to the natural triple EXCEPT the fault is the fork's opt-in
-# SUT flag (fork commit f57102e6): drawBack returns the EXACT success envelope without
-# persisting the Money row, so ts-cancel-service returns a perfectly CLEAN {1,"Success."}
-# while the refund is lost — the case a response-assertion comparator cannot catch.
+# drawback). Identical to the natural triple EXCEPT the fault mode is fabricatedack:
+# drawBack returns the EXACT success envelope without persisting the Money row, so
+# ts-cancel-service returns a perfectly CLEAN {1,"Success."} while the refund is lost —
+# the case a response-assertion comparator cannot catch. This is a DISCLOSED synthetic
+# fault (a faithful model of the acked-but-lost class); the natural {1,"Success."}+lost
+# path is dead code on the unmodified fork (g3-natural-faithfulness-source-check.md).
 #
-# The fault_flag is toggled by the SutFlagFaultInjector (JAVA_TOOL_OPTIONS -D on the
-# ts-inside-payment-service deployment). REQUIRES the fork-built ts-inside-payment image
-# (the upstream codewisdom image has no such flag) — build that one service, kind-load,
-# repoint the Deployment (g3-tt-deploy-progress.md).
+# The fault mode is toggled at RUNTIME by HttpToggleFaultInjector (no pod restart; see the
+# natural triple's header for why the restart/mesh mechanisms were rejected). REQUIRES the
+# fork-built ts-inside-payment image (upstream codewisdom has no such mode) — build that one
+# service, kind-load, repoint the Deployment (g3-tt-deploy-progress.md).
 #
-# Everything else (supplied isolation, value-delta on /account, RUNBOOK) is the same as
-# the natural triple.
+# Everything else (supplied isolation, value-delta on /account, PRE-FUNDED buyer, RUNBOOK) is
+# the same as the natural triple.
 cluster:
   context: kind-mist
   namespace: trainticket
+  # rollout_timeout_s retained for schema completeness; the runtime HTTP toggle needs no rollout.
   rollout_timeout_s: 360
 triples:
   - name: tt-cancel-refund-constructed

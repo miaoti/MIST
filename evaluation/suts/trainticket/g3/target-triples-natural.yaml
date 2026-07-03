@@ -1,16 +1,17 @@
 # G3 head-to-head — NATURAL stratum triple (cancel->refund, the {1,"error"} acked-but-lost
-# shape). The fault is the fork's opt-in drawback-FAIL flag (mist.fault.drawback.fail.enabled):
-# drawBack throws -> HTTP 500 -> ts-cancel-service's RestTemplate throws -> cancelOrder runs its
-# GENUINE compensation-failure catch -> returns {1,"error"} while the order is cancelled and the
-# refund lost. Toggled by the SutFlagFaultInjector (JAVA_TOOL_OPTIONS -D + rollout).
+# shape). The fault is the fork's opt-in drawback-FAIL mode (mist.fault.drawback.fail.enabled):
+# drawBack throws -> HTTP 500 -> ts-cancel-service's RestTemplate throws -> the exception
+# propagates out of cancelOrder (the order was ALREADY flipped to CANCEL before drawback) ->
+# CancelController's GENUINE catch returns HTTP-200 {1,"error"} while the order is cancelled and
+# the refund lost. This is UNMODIFIED cancel-service code (CancelController.java:45-51); only
+# drawBack's throw is injected. Mode toggled at RUNTIME by HttpToggleFaultInjector (no pod restart).
 #
-# WHY not the route-scoped EnvoyFilter mesh abort (the original design, drawback-abort-
-# envoyfilter.yaml): the per-leg toggle races ts-cancel-service's pooled Apache-HttpClient
-# connection to inside-payment — the gateway convergence probe (fresh connection) reflects the
-# new Envoy config before the reused write-path connection does, so the leg observes the wrong
-# filter state (g3-headtohead-results.md, proxy-log ground truth). The app flag is reliable,
-# path-scoped (only /drawback fails; the /account read-back stays live) and exercises the SAME
-# natural cancelOrder catch. REQUIRES the fork-built inside-payment image carrying the flag.
+# WHY not a restart/mesh mechanism (both tried and REJECTED, g3-headtohead-results.md): the
+# EnvoyFilter mesh abort (drawback-abort-envoyfilter.yaml) and the SutFlagFaultInjector -D rollout
+# both restart/reconfigure inside-payment, and the per-leg toggle then races ts-cancel-service's
+# pooled Apache-HttpClient connection + Ribbon instance cache (wrong-flag round-robin or dead-IP
+# hang). The runtime in-memory toggle on the un-restarted pod has neither failure mode.
+# REQUIRES the fork-built inside-payment image carrying the runtime toggle.
 #
 # The write is the bodyless cancel GET; isolation is `supplied` (the harness hands in the freshly
 # registered buyer's loginId as userId). The refund is observable only as the buyer's balance
@@ -18,11 +19,14 @@
 # readback_mode is value-delta: X-present == the buyer's balance differs from this leg's own
 # pre-cancel baseline.
 #
-# RUNBOOK (REVIEW-DEPTH-RECONCILIATION.md): per-leg fresh buyer; the cancelled order is PAID,
-# price>0, far-future travelTime (else the refund is "0"/"0.00" and invisible); key = loginId.
+# RUNBOOK: per-leg fresh buyer, PRE-FUNDED to a non-zero /account balance (addMoney baseFund=50.00)
+# so the value-delta is a real arithmetic delta not an appear-vs-absent membership signal (review
+# A/B); the cancelled order is PAID, price>0, far-future travelTime (else refund "0"/"0.00" and
+# invisible); key = loginId; inside-payment replicas=1.
 cluster:
   context: kind-mist
   namespace: trainticket
+  # rollout_timeout_s retained for schema completeness; the runtime HTTP toggle needs no rollout.
   rollout_timeout_s: 360
 triples:
   - name: tt-cancel-refund-natural

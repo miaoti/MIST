@@ -1,0 +1,57 @@
+=== rep 2 17:49:32
+=== stratum: natural ===
+  MIST B2 (differential value-delta): FIRE
+  Comparator (frozen response contract): control flagged=false, fault flagged=true  -> CAUGHT
+  value-delta probe (buyer /account balance, evidence only):
+      control baseline=50.00 -> final=130.00
+      fault   baseline=50.00 -> final=50.00
+=== stratum: constructed ===
+  MIST B2 (differential value-delta): FIRE
+  Comparator (frozen response contract): control flagged=false, fault flagged=false  -> MISSED
+  value-delta probe (buyer /account balance, evidence only):
+      control baseline=50.00 -> final=130.00
+      fault   baseline=50.00 -> final=50.00
+
+=== rep 3 17:49:56
+=== stratum: natural ===
+  MIST B2 (differential value-delta): FIRE
+  Comparator (frozen response contract): control flagged=false, fault flagged=true  -> CAUGHT
+  value-delta probe (buyer /account balance, evidence only):
+      control baseline=50.00 -> final=130.00
+      fault   baseline=50.00 -> final=50.00
+=== stratum: constructed ===
+  MIST B2 (differential value-delta): FIRE
+  Comparator (frozen response contract): control flagged=false, fault flagged=false  -> MISSED
+  value-delta probe (buyer /account balance, evidence only):
+      control baseline=50.00 -> final=130.00
+      fault   baseline=50.00 -> final=50.00
+
+=== rep 4 17:50:20
+=== stratum: natural ===
+  MIST B2 (differential value-delta): FIRE
+  Comparator (frozen response contract): control flagged=false, fault flagged=true  -> CAUGHT
+  value-delta probe (buyer /account balance, evidence only):
+      control baseline=50.00 -> final=130.00
+      fault   baseline=50.00 -> final=50.00
+=== stratum: constructed ===
+  MIST B2 (differential value-delta): FIRE
+  Comparator (frozen response contract): control flagged=false, fault flagged=false  -> MISSED
+  value-delta probe (buyer /account balance, evidence only):
+      control baseline=50.00 -> final=130.00
+      fault   baseline=50.00 -> final=50.00
+
+=== rep 5 17:50:43
+=== stratum: natural ===
+  MIST B2 (differential value-delta): FIRE
+  Comparator (frozen response contract): control flagged=false, fault flagged=true  -> CAUGHT
+  value-delta probe (buyer /account balance, evidence only):
+      control baseline=50.00 -> final=130.00
+      fault   baseline=50.00 -> final=50.00
+=== stratum: constructed ===
+  MIST B2 (differential value-delta): FIRE
+  Comparator (frozen response contract): control flagged=false, fault flagged=false  -> MISSED
+  value-delta probe (buyer /account balance, evidence only):
+      control baseline=50.00 -> final=130.00
+      fault   baseline=50.00 -> final=50.00
+
+=== reps done 17:51:06
