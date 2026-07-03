@@ -530,9 +530,89 @@ public class DataIntegrityRuntimeTest {
         assertTrue(DataIntegrityRuntime.valueDiffers(null, "80.00"));
         assertTrue(DataIntegrityRuntime.valueDiffers("80.00", null));
         assertFalse(DataIntegrityRuntime.valueDiffers("100.0", "100.00"));
+        assertFalse("surrounding whitespace is not a change",
+                DataIntegrityRuntime.valueDiffers(" 100.00 ", "100.00"));
         assertTrue(DataIntegrityRuntime.valueDiffers("100.00", "180.00"));
         assertTrue("non-numeric falls back to string equality",
                 DataIntegrityRuntime.valueDiffers("abc", "abd"));
         assertFalse(DataIntegrityRuntime.valueDiffers("abc", "abc"));
+    }
+
+    // ── depth-review fix wave: value-delta soundness (A-F1/A-F2/B-F1) ──
+
+    @Test
+    public void suppliedValueDelta_probeRowVanishesFromA2xxRead_isError() {
+        // Review A-F2 (BLOCKING): a row present at baseline that disappears from
+        // a 2xx read is a truncated/garbage surface, NOT movement — recording it
+        // as X-present would latch a fault-leg false negative. It must be error.
+        http.script(ACCOUNT_READBACK, account("u-1", "100.00")); // baseline: buyer present
+        begin("fault", cancelTriple());
+        DataIntegrityRuntime.beforeWriteSupplied(CANCEL_STEP, "cancel#0", null, "userId", "u-1");
+        http.script(ACCOUNT_READBACK, account("other", "5")); // buyer row GONE
+        DataIntegrityRuntime.afterWrite(CANCEL_STEP, "cancel#0", 200, "{\"status\":1}", null);
+        DataIntegrityRuntime.RunRecord r = DataIntegrityRuntime.endRun().get(0);
+        assertNotNull(r.error);
+        assertTrue(r.error, r.error.contains("vanished"));
+        assertFalse("a vanish is never X-present", r.readbackContainedX);
+        assertEquals(DataIntegrityRuntime.QuiescenceGate.NOT_APPLICABLE, r.gate);
+    }
+
+    @Test
+    public void suppliedValueDelta_unstableBaseline_isError() {
+        // Review A-F1: two pre-write reads disagree — an earlier step (register /
+        // pay) has not settled — so no trustworthy baseline; record an error.
+        http.script(ACCOUNT_READBACK, account("u-1", "100.00"), account("u-1", "140.00"));
+        begin("control", cancelTriple());
+        DataIntegrityRuntime.beforeWriteSupplied(CANCEL_STEP, "cancel#0", null, "userId", "u-1");
+        DataIntegrityRuntime.afterWrite(CANCEL_STEP, "cancel#0", 200, "{\"status\":1}", null);
+        DataIntegrityRuntime.RunRecord r = DataIntegrityRuntime.endRun().get(0);
+        assertNotNull(r.error);
+        assertTrue(r.error, r.error.contains("not stable"));
+        assertEquals(DataIntegrityRuntime.QuiescenceGate.NOT_APPLICABLE, r.gate);
+    }
+
+    @Test
+    public void suppliedValueDelta_nonCollectionBaseline_isError() {
+        // Review A-F2: a 2xx body that is not a collection would read as an
+        // all-null probe surface; reject it at the hook.
+        http.byPath.computeIfAbsent(ACCOUNT_READBACK, k -> new ArrayDeque<>())
+                .add(new DataIntegrityRuntime.HttpResponse(200, "not a collection at all"));
+        begin("control", cancelTriple());
+        DataIntegrityRuntime.beforeWriteSupplied(CANCEL_STEP, "cancel#0", null, "userId", "u-1");
+        DataIntegrityRuntime.afterWrite(CANCEL_STEP, "cancel#0", 200, "{\"status\":1}", null);
+        DataIntegrityRuntime.RunRecord r = DataIntegrityRuntime.endRun().get(0);
+        assertNotNull(r.error);
+        assertTrue(r.error, r.error.contains("parseable collection"));
+    }
+
+    @Test
+    public void suppliedValueDelta_faultLeg_traceComplete_gatesObservedCompleteAbsent() {
+        // The gate the depth fault leg actually publishes: acked, balance never
+        // moves, trace complete → OBSERVED_COMPLETE_ABSENT (a high-confidence
+        // lost refund). Previously untested for value-delta (review test gap).
+        System.setProperty("jaeger.base.url", "http://jaeger.test:16686/api");
+        http.scriptAbsolute("http://jaeger.test:16686/api/traces/tcancel",
+                "{\"data\":[{\"spans\":[{},{}]}]}");
+        http.script(ACCOUNT_READBACK, account("u-1", "100.00")); // baseline, never moves
+        begin("fault", cancelTriple());
+        DataIntegrityRuntime.beforeWriteSupplied(CANCEL_STEP, "cancel#0", null, "userId", "u-1");
+        DataIntegrityRuntime.afterWrite(CANCEL_STEP, "cancel#0", 200,
+                "{\"status\":1,\"msg\":\"error\"}", "tcancel");
+        DataIntegrityRuntime.RunRecord r = DataIntegrityRuntime.endRun().get(0);
+        assertTrue(r.acked);
+        assertFalse(r.readbackContainedX);
+        assertEquals(DataIntegrityRuntime.QuiescenceGate.OBSERVED_COMPLETE_ABSENT, r.gate);
+        assertNull(r.error);
+    }
+
+    @Test
+    public void parsesToCollection_distinguishesGarbageFromEmpty() {
+        assertTrue(DataIntegrityRuntime.parsesToCollection("{\"status\":1,\"data\":[]}"));
+        assertTrue(DataIntegrityRuntime.parsesToCollection("[]"));
+        assertFalse("empty list is a collection but null data is not",
+                DataIntegrityRuntime.parsesToCollection("{\"status\":1,\"data\":null}"));
+        assertFalse(DataIntegrityRuntime.parsesToCollection("not json"));
+        assertFalse(DataIntegrityRuntime.parsesToCollection(""));
+        assertFalse(DataIntegrityRuntime.parsesToCollection(null));
     }
 }

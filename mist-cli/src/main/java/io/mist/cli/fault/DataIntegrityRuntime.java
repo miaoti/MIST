@@ -395,17 +395,50 @@ public final class DataIntegrityRuntime {
                     "unusable supplied key " + keyField + "=" + keyValue, correlationId));
             return requestBody;
         }
+        Map<String, String> key = new LinkedHashMap<>();
+        key.put(keyField, keyValue);
         try {
             HttpResponse baseline = s.http.getSut(readbackPath(triple));
+            // B-F3: message names the supplied hook so its origin is greppable.
             if (baseline.status / 100 != 2) {
-                logger.warn("DataIntegrity[{}][{}]: baseline read-back HTTP {} — passing body through",
+                logger.warn("DataIntegrity[{}][{}]: supplied baseline read-back HTTP {} — passing body through",
                         s.runLabel, triple.name, baseline.status);
                 s.pending.set(new Pending(triple, new LinkedHashMap<>(), false, baseline.body,
-                        "baseline read-back HTTP " + baseline.status, correlationId));
+                        "supplied baseline read-back HTTP " + baseline.status, correlationId));
                 return requestBody;
             }
-            Map<String, String> key = new LinkedHashMap<>();
-            key.put(keyField, keyValue);
+            // Review DEPTH-A F2: a 2xx body that is not a parseable collection
+            // would read as an all-null probe surface (every value "absent") —
+            // reject it here rather than mis-attribute movement later.
+            if (!parsesToCollection(baseline.body)) {
+                logger.warn("DataIntegrity[{}][{}]: supplied baseline is not a parseable collection — error",
+                        s.runLabel, triple.name);
+                s.pending.set(new Pending(triple, new LinkedHashMap<>(), false, baseline.body,
+                        "supplied baseline read-back is not a parseable collection", correlationId));
+                return requestBody;
+            }
+            // Review DEPTH-A F1: for value-delta the baseline is a numeric datum,
+            // not a membership fact — an earlier scenario step (register / pay)
+            // still settling would poison it. Require a stable pre-write read
+            // (two identical probe values) or record an error, never a guess.
+            if (triple.readbackMode == TargetTripleRegistry.ReadbackMode.VALUE_DELTA) {
+                HttpResponse baseline2 = s.http.getSut(readbackPath(triple));
+                if (baseline2.status / 100 != 2 || !parsesToCollection(baseline2.body)) {
+                    s.pending.set(new Pending(triple, new LinkedHashMap<>(), false, baseline2.body,
+                            "supplied baseline re-read unusable (HTTP " + baseline2.status + ")",
+                            correlationId));
+                    return requestBody;
+                }
+                if (valueDiffers(extractProbeValue(triple, baseline.body, key),
+                        extractProbeValue(triple, baseline2.body, key))) {
+                    logger.warn("DataIntegrity[{}][{}]: pre-write baseline not stable for {} — error",
+                            s.runLabel, triple.name, key);
+                    s.pending.set(new Pending(triple, new LinkedHashMap<>(), false, baseline2.body,
+                            "pre-write baseline not stable (probe moved before the write)", correlationId));
+                    return requestBody;
+                }
+                baseline = baseline2; // the settled read is the baseline of record
+            }
             // VALUE_DELTA X is defined against this same baseline, so the
             // baseline trivially contains no X; membership keeps its meaning.
             boolean baselineHasX = triple.readbackMode == TargetTripleRegistry.ReadbackMode.MEMBERSHIP
@@ -491,11 +524,13 @@ public final class DataIntegrityRuntime {
             }
             if (!acked) {
                 // Base relation is vacuous without an acknowledgement; one
-                // immediate read-back is kept as evidence.
+                // immediate read-back is kept as evidence. Review DEPTH-B F1:
+                // an error body is never evidence — only a 2xx read is scanned.
                 HttpResponse now = s.http.getSut(readbackPath(triple));
+                boolean x = now.status / 100 == 2
+                        && probeVerdict(triple, now.body, pending) == XVerdict.PRESENT;
                 s.records.add(new RunRecord(s.runLabel, triple.name, stepKey, pending.isolationKey,
-                        httpStatus, bodyStatus, false, pending.baselineContainedX,
-                        presentX(triple, now.body, pending),
+                        httpStatus, bodyStatus, false, pending.baselineContainedX, x,
                         QuiescenceGate.NOT_APPLICABLE, 1, 0, pending.baselineBody, now.body, null,
                         now.status, pending.correlationId));
                 return;
@@ -521,7 +556,15 @@ public final class DataIntegrityRuntime {
                 // be 2xx for an absence verdict.
                 if (ok) {
                     last = readback.body;
-                    if (presentX(triple, last, pending)) {
+                    XVerdict v = probeVerdict(triple, last, pending);
+                    if (v == XVerdict.VANISHED) {
+                        recordReadbackError(s, triple, stepKey, pending, httpStatus, bodyStatus,
+                                polls, (System.nanoTime() - start) / 1_000_000, last, lastStatus,
+                                "value-delta probe row vanished from a 2xx read-back — "
+                                        + "unreliable/truncated surface, not a value change");
+                        return;
+                    }
+                    if (v == XVerdict.PRESENT) {
                         present = true;
                         gate = QuiescenceGate.OBSERVED_PRESENT;
                         break;
@@ -552,7 +595,15 @@ public final class DataIntegrityRuntime {
                                     "read-back HTTP " + recheck.status + " on the post-settle re-read");
                             return;
                         }
-                        if (presentX(triple, last, pending)) {
+                        XVerdict v = probeVerdict(triple, last, pending);
+                        if (v == XVerdict.VANISHED) {
+                            recordReadbackError(s, triple, stepKey, pending, httpStatus, bodyStatus,
+                                    polls, (System.nanoTime() - start) / 1_000_000, last, lastStatus,
+                                    "value-delta probe row vanished on the post-settle re-read — "
+                                            + "unreliable/truncated surface, not a value change");
+                            return;
+                        }
+                        if (v == XVerdict.PRESENT) {
                             present = true;
                             gate = QuiescenceGate.OBSERVED_PRESENT;
                             break;
@@ -711,19 +762,30 @@ public final class DataIntegrityRuntime {
                 + stations.size() + " stations and " + usedPairs.size() + " baseline routes");
     }
 
+    /** X-presence with an explicit VANISHED failure state (value-delta only). */
+    private enum XVerdict { ABSENT, PRESENT, VANISHED }
+
     /**
      * X-presence dispatch: MEMBERSHIP asks whether the key appears as a
      * collection item; VALUE_DELTA asks whether the probed value moved away
      * from this leg's own baseline (the refund landing on the /account
-     * aggregate). Same polling, gating, and verdict machinery either way.
+     * aggregate). A row that was present at baseline but is gone from a 2xx
+     * read is VANISHED — a truncated/unreliable surface, NOT a value change
+     * (review DEPTH-A F2): reporting it as movement would latch a fault-leg
+     * false negative, so the caller turns it into an error record. Same
+     * polling, gating, and verdict machinery otherwise.
      */
-    private static boolean presentX(TargetTripleRegistry.Triple triple, String body, Pending pending) {
+    private static XVerdict probeVerdict(TargetTripleRegistry.Triple triple, String body,
+                                         Pending pending) {
         if (triple.readbackMode == TargetTripleRegistry.ReadbackMode.VALUE_DELTA) {
-            return valueDiffers(
-                    extractProbeValue(triple, pending.baselineBody, pending.isolationKey),
-                    extractProbeValue(triple, body, pending.isolationKey));
+            String base = extractProbeValue(triple, pending.baselineBody, pending.isolationKey);
+            String cur = extractProbeValue(triple, body, pending.isolationKey);
+            if (base != null && cur == null) {
+                return XVerdict.VANISHED;
+            }
+            return valueDiffers(base, cur) ? XVerdict.PRESENT : XVerdict.ABSENT;
         }
-        return containsKey(body, pending.isolationKey);
+        return containsKey(body, pending.isolationKey) ? XVerdict.PRESENT : XVerdict.ABSENT;
     }
 
     /**
@@ -763,10 +825,15 @@ public final class DataIntegrityRuntime {
         if (baseline == null || current == null) {
             return true;
         }
+        // Review DEPTH-A F4: two reads of the same balance can differ only in
+        // surrounding whitespace; trim before comparing (BigDecimal already
+        // absorbs scale drift like "100.0" vs "100.00").
+        String b = baseline.trim();
+        String c = current.trim();
         try {
-            return new java.math.BigDecimal(baseline).compareTo(new java.math.BigDecimal(current)) != 0;
+            return new java.math.BigDecimal(b).compareTo(new java.math.BigDecimal(c)) != 0;
         } catch (NumberFormatException e) {
-            return !baseline.equals(current);
+            return !b.equals(c);
         }
     }
 
@@ -827,6 +894,28 @@ public final class DataIntegrityRuntime {
             logger.debug("DataIntegrity: unparseable collection body ({}) — treating as empty", e.toString());
         }
         return items;
+    }
+
+    /**
+     * True when {@code body} is a JSON collection surface — a bare array or a
+     * {@code {..,data:[..]}} envelope. Distinguishes "parsed, row absent"
+     * (a legitimate no-value-yet) from "garbage/non-collection" (an error),
+     * which {@link #extractItems} alone cannot (it returns empty for both).
+     */
+    static boolean parsesToCollection(String body) {
+        if (body == null || body.trim().isEmpty()) {
+            return false;
+        }
+        String trimmed = body.trim();
+        try {
+            if (trimmed.startsWith("[")) {
+                new JSONArray(trimmed);
+                return true;
+            }
+            return new JSONObject(trimmed).opt("data") instanceof JSONArray;
+        } catch (RuntimeException e) {
+            return false;
+        }
     }
 
     static Integer bodyStatus(String body) {

@@ -62,6 +62,19 @@ public final class IstioRouteFaultInjector implements FaultInjector {
         int status(String url);
     }
 
+    /**
+     * @param abortStatus the HTTP status the manifest's fault.abort injects.
+     *                    It MUST lie outside BOTH the application's and the
+     *                    mesh's natural status space for this probe path
+     *                    (review DEPTH-C F2): a transient app/Envoy 5xx that
+     *                    coincides with abortStatus would falsely read as
+     *                    converged. Use e.g. 418 — neither the TT services nor
+     *                    Envoy emit it — never 500/503.
+     * @param probeUrl    a NON-MUTATING GET whose response equals abortStatus
+     *                    only when the fault is live (for the TT drawback route,
+     *                    an incomplete path under the aborted prefix: Envoy
+     *                    aborts it, the app answers 404/405 otherwise).
+     */
     public IstioRouteFaultInjector(String kubectlContext, String namespace, Path manifest,
                                    String probeUrl, int abortStatus, long convergeTimeoutSeconds) {
         this(kubectlContext, namespace, manifest, probeUrl, abortStatus, convergeTimeoutSeconds,
@@ -127,7 +140,8 @@ public final class IstioRouteFaultInjector implements FaultInjector {
     private void awaitProbe(boolean expectAbort, String operation) {
         long deadline = System.nanoTime() + TimeUnit.SECONDS.toNanos(convergeTimeoutSeconds);
         int last = Integer.MIN_VALUE;
-        while (System.nanoTime() < deadline) {
+        // Overflow-safe compare (nanoTime may be near Long.MAX): now - deadline < 0.
+        while (System.nanoTime() - deadline < 0) {
             last = probe.status(probeUrl);
             if (last != -1 && (last == abortStatus) == expectAbort) {
                 return;
@@ -139,10 +153,11 @@ public final class IstioRouteFaultInjector implements FaultInjector {
                 throw new FaultInjectionException("interrupted while probing after " + operation, e);
             }
         }
+        String observed = last == Integer.MIN_VALUE ? "nothing (no poll completed)"
+                : last == -1 ? "an I/O failure" : "HTTP " + last;
         throw new FaultInjectionException(operation + " did not converge within "
-                + convergeTimeoutSeconds + "s: probe " + probeUrl + " last returned "
-                + (last == Integer.MIN_VALUE ? "nothing" : String.valueOf(last))
-                + ", wanted " + (expectAbort ? "" : "anything but ") + abortStatus);
+                + convergeTimeoutSeconds + "s: probe " + probeUrl + " last returned " + observed
+                + ", wanted " + (expectAbort ? "HTTP " + abortStatus : "anything but HTTP " + abortStatus));
     }
 
     private void kubectl(String... args) {
