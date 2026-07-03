@@ -1,0 +1,30 @@
+# G3 head-to-head — AGREEMENT anchor triple (createAccount, a BODY-CARRYING create).
+#
+# The fairness / anti-strawman cell. Same SUT + service as the cancel→refund cells
+# (ts-inside-payment-service), but the write CARRIES A BODY ({userId, money}), so the comparator's
+# STATE_GET binds on the submitted userId and CATCHES a lost create — BOTH oracles flag (agreement).
+# This shows the comparator loses the cancel→refund clean win because that write is bodyless + the
+# refund is a numeric delta, NOT because its STATE machinery is vaporware.
+#
+# Fault = the fork's createAccount fabricated-ack (createAccountFaultMode), toggled at RUNTIME via
+# .../inside_payment/test/createfaultmode/{none|fabricatedack} (no pod restart). MEMBERSHIP read-back:
+# X = the submitted userId appears in GET /inside_payment/account. Control: the account persists (X
+# present); fault: acked but not persisted (X absent) -> MIST FIREs. Needs the fork-built 1.0.5 image.
+#
+# RUNBOOK: per-leg FRESH buyer (a fresh userId is absent from /account at baseline, present iff the
+# create persists); replicas=1; read-back JWT via the harness reader.
+cluster:
+  context: kind-mist
+  namespace: trainticket
+  rollout_timeout_s: 360
+triples:
+  - name: tt-account-create-agreement
+    write_endpoint: "POST /api/v1/inside_pay_service/inside_payment/account"
+    dependency: ts-inside-payment-service
+    readback_endpoint: "GET /api/v1/inside_pay_service/inside_payment/account"
+    isolation_key: [userId]
+    isolation_strategy: supplied
+    readback_mode: membership
+    fault_flag:
+      deployment: ts-inside-payment-service
+      property: mist.fault.createaccount.fabricatedack.enabled

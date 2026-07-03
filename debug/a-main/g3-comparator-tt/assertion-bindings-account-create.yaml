@@ -1,0 +1,35 @@
+# Executable bindings — TrainTicket createAccount AGREEMENT anchor (body-carrying create).
+#
+# Purpose: the anti-strawman / fairness anchor. On a body-carrying write, the comparator's STATE_GET
+# clause BINDS (the request body carries userId, which the /account read-back keys on) and CATCHES a
+# lost create — so BOTH oracles flag (agreement). This shows the comparator is NOT defined to lose on
+# the head-to-head; it loses the cancel→refund clean win specifically because that write is bodyless
+# and the observable is a numeric delta (no bindable field, no arithmetic primitive), not because the
+# comparator's STATE machinery is vaporware. Contrast, same SUT/service (ts-inside-payment-service):
+#   - cancel→refund (bodyless GET, delta observable): comparator MISSES, MIST FIREs  → clean win
+#   - createAccount (body {userId}, membership observable): comparator CATCHES, MIST FIREs → AGREEMENT
+#
+# This contract is straightforward (not blind-authored like the cancel contract): it is demonstrating
+# that the comparator CAN catch when its primitive binds, so a generous/faithful binding is the point.
+
+sut: trainticket
+frozen_set: "createAccount agreement anchor (not blind-authored — demonstrates the comparator CAN catch a lost body-carrying write when its STATE_GET binds)"
+endpoints:
+  - endpoint: "POST /api/v1/inside_pay_service/inside_payment/account"
+    triple: tt-account-create-agreement
+    body_template: '{"userId":"${supplied:userId}","money":"${supplied:money}"}'
+    clauses:
+      - cite: "HTTP 200 envelope {status,msg,data}; SUCCESS = status==1 AND msg contains 'Create Account Success'."
+        checks:
+          - primitive: HTTP_STATUS
+            expect: "200"
+          - primitive: ENVELOPE_STATUS
+            expect: "1"
+          - primitive: MSG_CONTAINS
+            expect: "Create Account Success"
+      - cite: "state postcondition: the created account appears in GET /inside_payment/account keyed by the submitted userId. The body carries userId, so this membership STATE_GET BINDS (unlike the bodyless cancel); a lost create leaves userId ABSENT -> the check FAILs -> the comparator CATCHES."
+        checks:
+          - primitive: STATE_GET
+            path: "/api/v1/inside_pay_service/inside_payment/account"
+            expect: "contains-submitted-fields"
+            fields: "userId"

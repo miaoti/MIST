@@ -1,0 +1,25 @@
+=== rep 2 18:12:45
+=== stratum: agreement (body-carrying create) ===
+  MIST B2 (membership): FIRE
+  Comparator (STATE_GET binds): control flagged=false, fault flagged=true  -> CAUGHT
+  => AGREEMENT (both catch — comparator is no strawman)
+
+=== rep 3 18:13:08
+=== stratum: agreement (body-carrying create) ===
+  MIST B2 (membership): FIRE
+  Comparator (STATE_GET binds): control flagged=false, fault flagged=true  -> CAUGHT
+  => AGREEMENT (both catch — comparator is no strawman)
+
+=== rep 4 18:13:31
+=== stratum: agreement (body-carrying create) ===
+  MIST B2 (membership): FIRE
+  Comparator (STATE_GET binds): control flagged=false, fault flagged=true  -> CAUGHT
+  => AGREEMENT (both catch — comparator is no strawman)
+
+=== rep 5 18:13:53
+=== stratum: agreement (body-carrying create) ===
+  MIST B2 (membership): FIRE
+  Comparator (STATE_GET binds): control flagged=false, fault flagged=true  -> CAUGHT
+  => AGREEMENT (both catch — comparator is no strawman)
+
+=== agreement reps done 18:14:16

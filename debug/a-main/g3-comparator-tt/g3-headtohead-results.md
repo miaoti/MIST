@@ -10,12 +10,18 @@ both observing the SAME cancel→refund stimulus under two fault strata. Runner:
 Status: **PRELIMINARY** — a first ≥3-cold-review (A/B/C) returned ACCEPT-WITH-FIXES and its fixes
 are folded in below; a re-review gates these numbers before they feed any claim.
 
-## Both cells (N=5 stable, `runs/prefunded-*.log`)
+## The three cells (N=5 stable each, `runs/*.log`)
 
-| stratum | fault → cancel response | MIST B2 (value-delta) | Comparator (frozen contract) |
+| cell | write / fault → response | MIST B2 | Comparator (frozen contract) |
 |---|---|---|---|
-| **natural** | drawBack throws → `{1,"error"}` | **FIRE** | **CAUGHT** (fault flagged) |
-| **constructed** | fabricated-ack → `{1,"Success."}` | **FIRE** | **MISSED** |
+| **natural** | bodyless cancel; drawBack throws → `{1,"error"}` | **FIRE** | **CAUGHT** (msg gate) |
+| **constructed** | bodyless cancel; fabricated-ack → `{1,"Success."}` | **FIRE** | **MISSED** (clean win) |
+| **agreement** | body-carrying createAccount; fabricated-ack → `{1,"Success"}` | **FIRE** | **CAUGHT** (STATE_GET binds) |
+
+The three cells together are the argument: the comparator CATCHES whenever its primitives bind
+(natural via the response msg gate; agreement via a STATE_GET on the body-carrying create), and
+MISSES only the constructed clean win — a bodyless write whose sole observable is a numeric delta.
+So MIST's win is attributable to the value-delta capability, not to a rigged baseline.
 
 ```
 === stratum: natural ===
@@ -127,10 +133,28 @@ failure modes are about the SUT caller's client-side caching, not MIST:
 - **Same nonzero R both legs.** The stimulus creates identical PAID far-future orders; a zero-R
   control degrades to NOT_EVALUABLE, never FIRE.
 
-## Cell: AGREEMENT anchor (body-carrying write, both catch) — PENDING
+## Cell: AGREEMENT anchor (body-carrying create, both catch) — DONE
 
-Review B: before the clean-win claim ships, demonstrate a body-carrying write where the comparator's
-`STATE_GET` clause BINDS and catches (both oracles catch), so the comparator is shown able to catch a
-lost write when its primitives suffice — not defined to lose on cancel→refund. (Mitigated already by
-the live natural-cell msg-gate catch + the G2 calibration's STATE_GET catches on contacts/adminroute,
-but not yet run beside these two cells.)
+Review B asked for a body-carrying write, beside the two core cells, where the comparator's
+`STATE_GET` clause BINDS and catches (both oracles catch) — so the comparator is demonstrably able
+to catch a lost write when its primitives suffice, not defined to lose on cancel→refund. Built as
+`AccountCreateAgreement` on the SAME service (ts-inside-payment-service): the write is
+`POST /inside_payment/account {userId, money}` — a body-carrying create — with a runtime fabricated-ack
+fault (createAccountFaultMode) that acks `{1,"Create Account Success"}` without persisting. Read-back
+is MEMBERSHIP (the submitted userId appears in `/account` iff the create persisted).
+
+```
+=== stratum: agreement (body-carrying create) ===
+  MIST B2 (membership): FIRE   (fault acked http 200/status 1, X absent, control's X persisted)
+  Comparator (STATE_GET binds): control flagged=false, fault flagged=true  -> CAUGHT
+  => AGREEMENT (both catch — comparator is no strawman)
+```
+
+Because the createAccount body carries `userId` (the `/account` key), the frozen comparator's
+`STATE_GET(contains-submitted-fields, userId)` binds and CATCHES the lost create; MIST catches it via
+membership. N=5 stable (`runs/agreement-*.log`). This is the direct anti-strawman evidence: the
+comparator's STATE machinery works in the head-to-head — it misses the cancel→refund clean win
+specifically because that write is bodyless and the observable is a numeric delta (no bindable field,
+no arithmetic primitive), not because the comparator was defined to lose. Contract:
+`assertion-bindings-account-create.yaml`; triple: `target-triples-agreement.yaml`.
+
