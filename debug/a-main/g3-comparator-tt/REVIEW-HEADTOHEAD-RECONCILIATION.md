@@ -28,7 +28,7 @@ framing gap. This drove the primary fix.
 | 1 | Constructed win is membership-degenerate for a fresh zero-balance buyer (A, B; framing C) | MAJOR | **FIXED** — pre-fund each buyer to a non-zero `/account` balance (addMoney 50.00) before the cancel → the discriminator is a real arithmetic +R delta (control 50→130, fault 50→50), membership true in both legs so it cannot catch it; harness prints a probe line as self-evidence; N=5 stable | `dca01b0` TrainTicketStimulus + CancelRefundHeadToHead; `runs/prefunded-*.log` |
 | 2 | Frozen bindings' refund-clause NOT_CHECKABLE reason cites "no per-request auth-token binding" — factually wrong, the comparator DOES carry a JWT (A, B) | MAJOR | **FIXED** — reason corrected to the decisive ground (no arithmetic-delta primitive; membership insufficient against a non-zero baseline; presence≠refund). NOT_CHECKABLE verdict unchanged | `81854cb` assertion-bindings (clause 2 + header + CORRECTION note) |
 | 3 | Artifact mismatch: README/triples describe EnvoyFilter/SutFlag + "No fault_flag" but the run used the HttpToggle + a fault_flag (C MAJOR; B MINOR) | MAJOR | **FIXED** — README + both triples rewritten to the runtime-toggle mechanism of record (restart/mesh kept as rejected); natural catch attributed to CancelController per the source check | `81854cb` README + target-triples-* |
-| 4 | Agreement anchor (body-carrying write, both catch) not run beside the two cells (B) | MAJOR | **BUILD-NEXT** — the next focused build; disclosed PENDING in the results doc. Mitigated already by the live natural-cell msg catch + G2 STATE_GET catches | results doc "AGREEMENT anchor" |
+| 4 | Agreement anchor (body-carrying write, both catch) not run beside the two cells (B) | MAJOR | **DONE** — built `AccountCreateAgreement` (body-carrying createAccount + runtime fabricated-ack); N=5 AGREEMENT (MIST FIRE via membership + comparator STATE_GET binds & CATCHES). Direct anti-strawman evidence beside the two cells | `9dcf5f2`; `runs/agreement-*.log` |
 | 5 | Frame "natural" precisely — injected trigger of the fork's own catch path, not "no injection" (C) | MINOR | **FIXED** — results doc "Natural cell" section: CancelController.java:45-51 catch, order flipped to CANCEL before drawback throws | results doc |
 | 6 | Don't overclaim dominance — MIST fires only on ACKED writes; a status:0 loud fail → MIST NO_FIRE but comparator catches (A, C) | MINOR | **FIXED** — results doc "complementary, not a strict superset" section | results doc |
 | 7 | "Diagnostic edge" = effect-localization, not fault/component localization (A, B, C) | MINOR | **FIXED** — results doc already scoped (`ad37b61`); kept | results doc |
@@ -40,5 +40,7 @@ framing gap. This drove the primary fix.
 
 ## Re-review plan
 
-Build the agreement anchor (#4), then a fresh ≥3-cold-review of the complete 3-cell result (both core
-cells with the pre-fund + the agreement cell) before any number feeds a paper claim.
+All 12 findings are FIXED/DISCLOSED (the agreement anchor is now built). Next: a fresh ≥3-cold
+re-review (round 2) of the complete 3-cell result — verify the round-1 fixes are sound (especially
+the pre-fund making the clean win a genuine arithmetic delta, and the agreement anchor being a fair
+both-catch demonstration) and that the claims now hold, before any number feeds a paper claim.
