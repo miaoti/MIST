@@ -110,6 +110,35 @@ proceeded via `docker exec mist-control-plane kubectl --kubeconfig /etc/kubernet
   nacos clients should reconnect once the cluster is back (restart individual pods only
   if their clients stay wedged).
 
+## FIDELITY GATE — PASSED (2026-07-03): full cancel→refund verified live end-to-end
+Ran the whole cycle by hand (docker-exec curl via the NodePort 30467):
+- register → `POST /api/v1/userservice/users/register` {userName,password,gender,
+  documentType,documentNum,email} → 201, returns the userId.
+- login → `POST /api/v1/users/login` {username,password} → data.token (JWT) + data.userId.
+- create PAID order → `POST /api/v1/orderservice/order` (Bearer) {accountId=userId,
+  status:1, price:"100.0", travelDate "2027-12-01", travelTime "2027-12-01 10:00:00",
+  from/to/trainNumber/coach/seat/contacts…} → persists.
+- **QUIRK (load-bearing for the stimulus): the create RESPONSE returns a DIFFERENT id
+  than what is persisted** (resp 51241a79… vs stored 8f77b8ad…; confirmed against the DB
+  — the order row carries the real id). So the stimulus MUST NOT use the create-response
+  id. Get the real id via `POST /api/v1/orderservice/order/query` (Bearer)
+  {loginId:userId, enableStateQuery/TravelDate/BoughtDate:false} → data[0].id (a
+  per-leg-fresh buyer has exactly one order → unambiguous).
+- cancel → `GET /api/v1/cancelservice/cancel/{realOrderId}/{userId}` (Bearer) →
+  `{status:1, msg:"Success.", data:"test not null"}` (the CLEAN success envelope), order
+  status → 4 (CANCEL).
+- read-back → `GET /api/v1/inside_pay_service/inside_payment/account` (Bearer): BEFORE
+  cancel the fresh buyer has NO row; AFTER, a row appears **{userId, balance:"80.00"}**
+  (100 price − a cancellation fee; nonzero, so visible). This is exactly MIST's
+  value-delta observable — control: X appears (fresh-buyer-appearing); fault (severed
+  drawback / fabricated-ack): row never appears → FIRE. Balance fields (userId, balance)
+  match the shipped triple's value_probe exactly.
+
+The DB is a **RadonDB 3-node cluster** (mysql+xenon+slowlog); services connect to
+`tsdb-mysql-leader` (creds ts/Ts_123456, DB `ts`) for RW — reads and writes both hit the
+leader, so persistence is consistent (the earlier "not found" was purely the create
+id-mismatch, not a cluster issue).
+
 ## Order from here (concrete; scripts staged in $CLAUDE_JOB_DIR/tmp)
 On WSL recovery (blocked on the maven build finishing + memory freeing):
 1. **Relieve + verify** — `scale-down-nonessential.sh` (17 off-path svcs → 0), then
