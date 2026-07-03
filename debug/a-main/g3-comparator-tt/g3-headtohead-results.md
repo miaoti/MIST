@@ -57,6 +57,37 @@ Run #1 (2026-07-03, log `tmp/g3-constructed5.log`):
 Mechanism cross-checked by hand (flag ON → cancel `{1,"Success."}` + NO /account
 row for the buyer; flag OFF → refund row appears at balance 80.00).
 
-## Cell: NATURAL stratum (EnvoyFilter /drawback abort) — PENDING
+## Cell: NATURAL stratum — EnvoyFilter mesh abort FOUND UNRELIABLE → pivot
+
+Attempted first via a route-scoped inbound EnvoyFilter (`drawback-abort-envoyfilter.yaml`)
+on an Istio sidecar injected into `ts-inside-payment-service` only (ns labelled
+`istio-injection=enabled`, nacos+mysql outbound ports excluded from the mesh +
+`holdApplicationUntilProxyStarts` so the fragile gRPC registration bypasses Envoy —
+that part worked: 2/2 pod, 0 restarts, normal cancel still refunds through the sidecar,
+and a stably-applied filter DOES abort `/drawback` → cancel `{1,"error"}` + refund lost,
+verified by hand).
+
+**But the per-leg toggle is unreliable.** The harness's `IstioRouteFaultInjector` probes
+`/drawback/x/1.0` via the gateway (a FRESH connection each probe) to detect convergence,
+but the measured write goes cancel-service → inside-payment over a POOLED
+Apache-HttpClient connection. Proxy-log ground truth from a run: the control-leg drawback
+returned **418 (abort live)** while the convergence probe 0.36 s earlier returned **403
+(abort gone)** — the fresh-connection probe reflects the new Envoy config before
+cancel-service's reused connection does. Both directions lag (a just-applied filter is not
+yet seen on the pooled path; a just-removed one still is). Net: the probe says "converged"
+but the leg observes the opposite filter state → false NO_FIRE / NOT_EVALUABLE.
+Making it reliable would need cancel-service's pool refreshed at every leg boundary
+(a cancel-service restart per leg — slow + re-introduces the nacos gRPC gamble).
+
+**PIVOT (decided):** drive the natural `{1,"error"}` observable with a reliable app-level
+SUT flag on inside-payment's `drawBack` (a second fork flag that makes drawback FAIL →
+cancel-service's RestTemplate throws → `cancelOrder`'s GENUINE compensation-failure catch
+returns `{1,"error"}`), toggled by the already-proven `SutFlagFaultInjector`. Same
+acked-but-lost observable, same natural catch-block code path, path-scoped (only drawback
+fails; the /account read-back stays live), no mesh-convergence race. The mesh-abort finding
+itself is worth keeping in the writeup: it is a real limitation of LDS/HTTP-filter fault
+injection against connection-pooling clients.
+
+## Cell: AGREEMENT anchor (body-carrying write, both catch) — PENDING
 
 ## Cell: AGREEMENT anchor (body-carrying write, both catch) — PENDING
