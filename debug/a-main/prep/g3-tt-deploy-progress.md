@@ -76,6 +76,40 @@ stops the thrash — the correct long-term configuration, staged in
 $CLAUDE_JOB_DIR/tmp/scale-down-nonessential.sh. Sequence the 2 fork builds AFTER the
 core subgraph is up (not concurrent) to avoid the peak.
 
+## RECOVERY (2026-07-03, the docker-exec bypass) — graph UP, fork images IN, nacos re-formed
+The Ubuntu WSL relay stayed starved long after pressure eased, but the **Docker Desktop
+engine answered from Windows** — and the kind node container survived (Up 15h). Everything
+proceeded via `docker exec mist-control-plane kubectl --kubeconfig /etc/kubernetes/admin.conf …`
+(full cluster control with no Ubuntu relay, no restart, nothing killed):
+- **All 56 trainticket pods reached Running** during the lockout (the 1.0.0 repoint
+  completed). Then the 17-service scale-down applied (16 scaled, 1 name-variant absent)
+  → the ~33-pod core subgraph (all 1/1, gateway + full cancel→refund path present).
+- **Fork images: BUILT + IMPORTED.** The earlier WSL-side build never started (no maven
+  base image — it died at the thrash). Rebuilt **from Windows** against a trimmed context
+  (pom.xml + ts-common + the 2 services, 0.15 MB): BuildKit reused the 2-week-old layer
+  cache (the P0-B screencast-era 0.2.0 builds of the same repo), so both images finished
+  in ~2 min; fabricated-ack source verified present in the context before building. Then
+  `docker save | docker cp | ctr -n k8s.io images import` into the kind node (no kind CLI
+  needed): `codewisdom/ts-cancel-service:1.0.2` + `codewisdom/ts-inside-payment-service:1.0.2`
+  now in the node's containerd (crictl-verified).
+- **Stimulus source-verified** (exact facts for the harness):
+  - register `POST /api/v1/userservice/users/register`; login `POST /api/v1/users/login`.
+  - `OrderServiceImpl.create` saves the order AS POSTED (only the id is regenerated) →
+    a PAID order is directly creatable: `POST /api/v1/orderservice/order` with status=1,
+    price>0, travelDate/travelTime far-future ("yyyy-MM-dd" / "yyyy-MM-dd HH:mm:ss").
+  - `calculateRefund`: status must be PAID and now<startTime else refund 0/0.00.
+  - `queryAccount` builds rows ONLY from Money records → a fresh buyer has NO /account
+    row until the drawback lands: control = null→refund (appearing = X present, the
+    value-delta fresh-buyer-appearing case), fault = null→null (X absent) → FIRE shape
+    confirmed. Balance fields = userId + balance (match the shipped triples exactly).
+- **First live probe found the real casualty:** register → gateway 500; user-service saw
+  nothing; the gateway's nacos client UNHEALTHY; a fresh gateway pod ALSO failed
+  (STARTING) — **nacos-0's server process had failed to boot during the thrash** ("Nacos
+  failed to start") while its container lingered Running. Fix: `rollout restart
+  statefulset nacos` (mysql is healthy now), then re-test register; services' wedged
+  nacos clients should reconnect once the cluster is back (restart individual pods only
+  if their clients stay wedged).
+
 ## Order from here (concrete; scripts staged in $CLAUDE_JOB_DIR/tmp)
 On WSL recovery (blocked on the maven build finishing + memory freeing):
 1. **Relieve + verify** — `scale-down-nonessential.sh` (17 off-path svcs → 0), then
