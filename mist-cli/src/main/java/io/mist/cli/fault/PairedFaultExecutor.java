@@ -246,8 +246,13 @@ public final class PairedFaultExecutor {
      * no sibling are surfaced as {@code unjoinedRecords}. When the correlator
      * aligns zero pairs but both legs are non-empty, the triple is
      * NOT_EVALUABLE — never a cross-paired verdict (review A-F1/B).
+     *
+     * <p>Public so the G3 head-to-head runner ({@code io.mist.cli.g3}) can reuse this
+     * exact, reviewed pure-differential verdict over legs it drives itself (its fault is
+     * a route-scoped EnvoyFilter, not a SUT flag, so it bypasses {@link #execute()} but
+     * must not fork the verdict logic). Behaviour is unchanged — visibility only.
      */
-    static List<PairResult> evaluate(List<TargetTripleRegistry.Triple> injectable,
+    public static List<PairResult> evaluate(List<TargetTripleRegistry.Triple> injectable,
                                      List<DataIntegrityRuntime.RunRecord> controlRecords,
                                      List<DataIntegrityRuntime.RunRecord> faultRecords) {
         List<PairResult> results = new ArrayList<>();
