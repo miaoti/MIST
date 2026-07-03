@@ -597,6 +597,7 @@ The core Maven module: OpenAPI spec model, test/input generation, oracle (shape/
 | `mist-cli/src/test/java/io/mist/cli/fault/DataIntegrityRuntimeTest.java` | Pins the B2 runtime against a scripted HTTP seam: passthrough when inactive, freshening per strategy, membership projection, and every quiescence-gate branch; hooks never throw. |
 | `mist-cli/src/test/java/io/mist/cli/fault/PairedFaultExecutorTest.java` | Pins B1.3+B2.3 against a stateful fake SUT: masked fault run FIREs, injector clear/inject/clear ordering, crash-safe flag clearing, full verdict rule table, JSON report shape. |
 | `mist-cli/src/test/java/io/mist/cli/fault/SutFlagFaultInjectorTest.java` | Pins the B1.1 injector against a recorded Exec seam: exact kubectl argv (-D form), set-env→rollout sequencing, context passing, failure propagation, enabled-gate default. |
+| `mist-cli/src/test/java/io/mist/cli/fault/HttpToggleFaultInjectorTest.java` | Unit-covers HttpToggleFaultInjector.modeOf (drawback property → mode segment; rejects too-few segments); the HTTP call is exercised live by the G3 head-to-head run. |
 | `mist-cli/src/test/java/io/mist/cli/fault/TargetTripleRegistryTest.java` | Pins the P2 registry: shipped TrainTicket file parses to the two Gate-1 triples (incl. fault_flag); strict parser rejects missing/unknown/duplicate/empty-key malformations. |
 
 ### `mist-cli/src/test/java/io/mist/cli/writer/`
