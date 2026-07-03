@@ -258,6 +258,7 @@ public final class TargetTripleRegistry {
                     IsolationStrategy.parse(optionalString(entry, "isolation_strategy", origin), origin);
             ReadbackMode mode = ReadbackMode.parse(optionalString(entry, "readback_mode", origin), origin);
             ValueProbe probe = optionalValueProbe(entry, origin);
+            int bound = optionalBound(entry, origin);
             // Cross-field validation, loud like everything else in this file.
             if (mode == ReadbackMode.VALUE_DELTA && probe == null) {
                 throw new IllegalArgumentException("TargetTripleRegistry: triple '" + name + "' in "
@@ -266,6 +267,31 @@ public final class TargetTripleRegistry {
             if (mode == ReadbackMode.MEMBERSHIP && probe != null) {
                 throw new IllegalArgumentException("TargetTripleRegistry: triple '" + name + "' in "
                         + origin + " declares a value_probe without readback_mode value-delta");
+            }
+            // Review DEPTH-A F5: value-delta semantics are defined (and tested)
+            // only for setup-supplied keys — a freshened key would mix untested
+            // isolation semantics into the depth oracle.
+            if (mode == ReadbackMode.VALUE_DELTA && strategy != IsolationStrategy.SUPPLIED) {
+                throw new IllegalArgumentException("TargetTripleRegistry: triple '" + name + "' in "
+                        + origin + " declares readback_mode value-delta with isolation_strategy "
+                        + strategy + " — value-delta requires 'supplied'");
+            }
+            // Review DEPTH-B F2: a probe whose match and value field coincide is
+            // a constant — it can never observe the value moving on an existing
+            // row, and would silently read as a dead oracle.
+            if (probe != null && probe.matchField.equals(probe.valueField)) {
+                throw new IllegalArgumentException("TargetTripleRegistry: triple '" + name + "' in "
+                        + origin + " value_probe match_field and value_field are both '"
+                        + probe.matchField + "' — a constant probe cannot observe a value change");
+            }
+            // Review DEPTH-A F2: readback_bound guards MEMBERSHIP absence (a full
+            // list may truncate the row). In value-delta the hazard points the
+            // other way — a truncated list makes the probed row VANISH, which
+            // must surface as an error, not trip an absence bound.
+            if (mode == ReadbackMode.VALUE_DELTA && bound > 0) {
+                throw new IllegalArgumentException("TargetTripleRegistry: triple '" + name + "' in "
+                        + origin + " sets readback_bound with readback_mode value-delta — the bound"
+                        + " is a membership-absence guard and does not apply to value probes");
             }
             if (probe != null && !isolationKey.contains(probe.matchField)) {
                 throw new IllegalArgumentException("TargetTripleRegistry: triple '" + name + "' in "
@@ -285,7 +311,7 @@ public final class TargetTripleRegistry {
                     isolationKey,
                     strategy,
                     optionalFaultFlag(entry, origin),
-                    optionalBound(entry, origin), mode, probe));
+                    bound, mode, probe));
         }
         if (triples.isEmpty()) {
             throw new IllegalArgumentException(

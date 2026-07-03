@@ -321,6 +321,7 @@ public class TargetTripleRegistryTest {
                 + "    dependency: ts-x\n"
                 + "    readback_endpoint: \"GET /x\"\n"
                 + "    isolation_key: [a]\n"
+                + "    isolation_strategy: supplied\n"
                 + "    readback_mode: value-delta\n"
                 + "    value_probe:\n"
                 + "      match_field: other\n"
@@ -330,6 +331,62 @@ public class TargetTripleRegistryTest {
             fail("expected IllegalArgumentException for match_field outside isolation_key");
         } catch (IllegalArgumentException e) {
             assertTrue(e.getMessage(), e.getMessage().contains("match_field"));
+        }
+    }
+
+    @Test
+    public void valueDelta_onNonSuppliedStrategy_fails() {
+        // Review DEPTH-A F5: value-delta is defined only for supplied keys.
+        String doc = "triples:\n"
+                + "  - name: t1\n"
+                + "    write_endpoint: \"POST /x\"\n"
+                + "    dependency: ts-x\n"
+                + "    readback_endpoint: \"GET /x\"\n"
+                + "    isolation_key: [a]\n"
+                + "    readback_mode: value-delta\n"
+                + "    value_probe:\n"
+                + "      match_field: a\n"
+                + "      value_field: v\n";
+        try {
+            TargetTripleRegistry.parse(yaml(doc), "test-doc");
+            fail("expected IllegalArgumentException for value-delta on FRESH_STRINGS");
+        } catch (IllegalArgumentException e) {
+            assertTrue(e.getMessage(), e.getMessage().contains("requires 'supplied'"));
+        }
+    }
+
+    @Test
+    public void probe_matchFieldEqualsValueField_fails() {
+        // Review DEPTH-B F2: a constant probe can never observe a change.
+        String doc = "triples:\n"
+                + "  - name: t1\n"
+                + "    write_endpoint: \"POST /x\"\n"
+                + "    dependency: ts-x\n"
+                + "    readback_endpoint: \"GET /x\"\n"
+                + "    isolation_key: [a]\n"
+                + "    isolation_strategy: supplied\n"
+                + "    readback_mode: value-delta\n"
+                + "    value_probe:\n"
+                + "      match_field: a\n"
+                + "      value_field: a\n";
+        try {
+            TargetTripleRegistry.parse(yaml(doc), "test-doc");
+            fail("expected IllegalArgumentException for match_field == value_field");
+        } catch (IllegalArgumentException e) {
+            assertTrue(e.getMessage(), e.getMessage().contains("constant probe"));
+        }
+    }
+
+    @Test
+    public void valueDelta_withReadbackBound_fails() {
+        // Review DEPTH-A F2: the bound is a membership-absence guard; in
+        // value-delta a truncated list must surface as an error instead.
+        String doc = "triples:\n" + SUPPLIED_VALUE_TRIPLE + "    readback_bound: 100\n";
+        try {
+            TargetTripleRegistry.parse(yaml(doc), "test-doc");
+            fail("expected IllegalArgumentException for value-delta + readback_bound");
+        } catch (IllegalArgumentException e) {
+            assertTrue(e.getMessage(), e.getMessage().contains("readback_bound"));
         }
     }
 
