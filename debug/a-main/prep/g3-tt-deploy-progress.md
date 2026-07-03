@@ -76,15 +76,25 @@ stops the thrash — the correct long-term configuration, staged in
 $CLAUDE_JOB_DIR/tmp/scale-down-nonessential.sh. Sequence the 2 fork builds AFTER the
 core subgraph is up (not concurrent) to avoid the peak.
 
-## Order from here
-1. ⏳ deploy infra + 40 services (running). Verify: all ts-* pods Running; the gateway
-   reachable; register→login→create-order→pay works end-to-end (the harness stimulus).
-2. Add a sidecar to ts-inside-payment-service (namespace/pod annotation + restart) +
-   author & apply the EnvoyFilter abort (inbound, 418, /drawback prefix); live-verify it
-   severs /drawback while /account stays 200.
-3. Build + kind-load the fork ts-inside-payment image for the constructed stratum.
-4. Author the two target-triples configs + the head-to-head harness (per
-   g3-headtohead-run-architecture.md), then run natural + constructed + agreement.
+## Order from here (concrete; scripts staged in $CLAUDE_JOB_DIR/tmp)
+On WSL recovery (blocked on the maven build finishing + memory freeing):
+1. **Relieve + verify** — `scale-down-nonessential.sh` (17 off-path svcs → 0), then
+   confirm the ~20-service core subgraph is 1/1 (nacos/mysql/rabbitmq + user, auth,
+   verification-code, order(+other), preserve(+other), basic, travel(+2), route, train,
+   price, seat, config, station, contacts, security, payment, cancel, inside-payment,
+   gateway). Chase stragglers (missing 1.0.0 tag → :latest for that svc).
+2. **Fork images** — check `fork-build.log` / `docker images`. If done →
+   `repoint-fork-images.sh` (ts-cancel + ts-inside-payment → fork :1.0.2, IfNotPresent).
+   If the build died under memory pressure, rerun `build-fork-images.sh` NOW (core is up,
+   no longer concurrent with 40 pulls).
+3. **Mesh + fault** — `enable-inside-payment-mesh.sh` (sidecar opt-in on inside-payment +
+   apply the EnvoyFilter) then live-verify /drawback=418 while /account reachable.
+4. **Fidelity gate** — register→login→PAID order→cancel: confirm on the FORK images that
+   cancel of a paid order = {1,"Success."}, drawback moves /account balance, /money=null.
+   Record exact curls here (the harness stimulus).
+5. **Harness** — author per g3-headtohead-run-architecture.md (verified-signature
+   blueprint appended there 5d886dd); compile; run natural + constructed + agreement;
+   ≥3-cold-review before the numbers feed claims.
 
 *Feeds: the G3 head-to-head runs. The depth oracle code + injector are done+reviewed
 (REVIEW-DEPTH-RECONCILIATION.md); this doc tracks the live SUT bring-up.*
