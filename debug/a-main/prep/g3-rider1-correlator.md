@@ -1,10 +1,27 @@
 # G3 Rider 1 — writer-side correlator join (H1 / comparator-C13) — BUILT
 
-**Status:** BUILT + test-first, full suites green (35 llm + 331 core + 98 cli, +5
-tests). Awaiting the standing 3-cold-reviewer wave. Closes the DESCRIPTIVE-ONLY
-caveat that [REVIEW-HARDENING-RECONCILIATION](../research/REVIEW-HARDENING-RECONCILIATION.md)
+**Status:** BUILT + 3-cold-reviewed + FIX WAVE APPLIED, full suites green (35 llm +
+331 core + 104 cli, +8 tests). Reviews
+[A](../research/REVIEW-RIDER1-A-soundness.md)/[B](../research/REVIEW-RIDER1-B-additivity.md)/[C](../research/REVIEW-RIDER1-C-tests.md)
+→ [reconciliation](../research/REVIEW-RIDER1-RECONCILIATION.md). Closes the
+DESCRIPTIVE-ONLY caveat that
+[REVIEW-HARDENING-RECONCILIATION](../research/REVIEW-HARDENING-RECONCILIATION.md)
 (H1) and [REVIEW-COMPARATOR-RECONCILIATION](../research/REVIEW-COMPARATOR-RECONCILIATION.md)
-(C13) placed on the per-pair tallies: they may now feed claims.
+(C13) placed on the per-pair tallies — **under the evidence gate below.**
+
+> **Graduation (post-review, earned).** The per-pair FIRE tallies are
+> **misalignment-proof** — a reported FIRE is a genuine like-for-like fire —
+> **gated on `joinMode==correlator ∧ correlatorUnique==true`** (both emitted per
+> pair in the report). A triple showing `positional` or `correlatorUnique==false`
+> does NOT feed its tallies into the G3 claims. **Direction (review C):** the
+> misalignment error is a false POSITIVE — an acknowledged-but-absent fault record
+> is "sticky" and tends to spuriously fire against a mispaired control — so the
+> correlator's contribution is **precision** (a reported detection is real, not a
+> pairing artifact); it does NOT manufacture detections, so no recall-recovery
+> claim rides on it. **Uniqueness is a named precondition** (not "no new
+> assumption"): the writer's `<class>.<method>#<stepIdx>` is unique when a method
+> runs at most once; a duplicate degrades to FIFO-within-group and is surfaced via
+> `correlatorUnique=false`.
 
 ## Problem
 The pairing verdict join (hardening R3fix) pairs the *i*-th control record with the
@@ -19,10 +36,12 @@ pairs.
 
 ## Mechanism
 The writer already generates one test method per scenario and numbers each step. It
-now stamps a **generation-time correlator `<testMethodName>#<stepIdx>`** onto both
-data-integrity hooks. Because the *same generated test file is compiled once and run
-twice* (control label, then fault label), the correlator for a given hooked write is
-**identical across the two legs** — a free, deterministic join key, no runtime state.
+now stamps a **generation-time correlator `<className>.<testMethodName>#<stepIdx>`**
+onto both data-integrity hooks (the class prefix keeps it unique across a run's many
+generated classes, whose method names reset per class — review A-F2). Because the
+*same generated test file is compiled once and run twice* (control label, then fault
+label), the correlator for a given hooked write is **identical across the two legs**
+— a free, deterministic join key, no runtime state.
 
 - `MultiServiceRESTAssuredWriter` emits `beforeWrite(stepKey, "<method>#<idx>", body)`
   and `afterWrite(stepKey, "<method>#<idx>", status, body, traceId)` — only inside
@@ -36,8 +55,11 @@ twice* (control label, then fault label), the correlator for a given hooked writ
   sides carries one** (`joinRecords`): builds a multimap fault-correlator→records,
   matches each control to its like-correlator fault, and counts the leftovers on
   BOTH sides as `unjoinedRecords`. Any null correlator (legacy suites) → the exact
-  prior positional join, byte-for-byte. The correlator is also emitted per record in
-  the pairing report JSON for audit.
+  prior positional join, byte-for-byte. When the correlator aligns **zero** pairs
+  but both legs are non-empty, the triple is `NOT_EVALUABLE` — never a cross-paired
+  verdict (review A-F1/B). `joinMode` (`correlator`/`positional`), `correlatorUnique`,
+  and each record's `correlationId` are emitted in the pairing report JSON for audit
+  and the claim gate.
 
 ## Why it is sound (not a claim-inflator)
 - **Comparator-neutral / MIST-neutral:** the correlator only *aligns* pairs; it never

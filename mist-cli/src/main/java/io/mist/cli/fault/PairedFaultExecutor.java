@@ -118,6 +118,18 @@ public final class PairedFaultExecutor {
         public int noFirePairs = 0;
         public int notEvaluablePairs = 0;
         public int unjoinedRecords = 0;
+        /**
+         * G3 rider 1 (review A-F2 / C-MAJOR-2): how the two legs were aligned —
+         * {@code "correlator"} (by the writer's {@code <class>.<method>#<stepIdx>})
+         * or {@code "positional"} (legacy fallback) — and, for correlator mode,
+         * whether every record's correlator was UNIQUE within its leg. Tallies
+         * are claim-eligible for G3 only when joinMode=correlator AND
+         * correlatorUnique=true; a duplicate correlator (a method run more than
+         * once) degrades to positional-within-group and is surfaced here, never
+         * silently counted as aligned.
+         */
+        public String joinMode = "positional";
+        public boolean correlatorUnique = false;
 
         PairResult(String tripleName, DataIntegrityRuntime.RunRecord control,
                    DataIntegrityRuntime.RunRecord fault, PairVerdict pureDifferential, String reason) {
@@ -226,14 +238,14 @@ public final class PairedFaultExecutor {
     }
 
     /**
-     * Hardening-wave R3fix: verdict-aware per-record join. Every triple has
-     * exactly one write endpoint (duplicate endpoints are rejected at
-     * beginRun), so within one run the i-th record for a triple corresponds
-     * to the i-th hooked execution; execution is single-threaded (guarded at
-     * beginRun), making the order deterministic. The i-th control record is
-     * joined with the i-th fault record and each joined pair gets its own
-     * verdict; the triple FIREs iff at least one pair fires. Records without
-     * a sibling in the other run are surfaced as {@code unjoinedRecords}.
+     * Hardening-wave R3fix + G3 rider 1: verdict-aware per-record join. Records
+     * are aligned by the writer's generation-time correlator when every record
+     * carries one (joinMode=correlator; see {@link #joinRecords}), else by
+     * position (legacy fallback). Each joined pair gets its own verdict and the
+     * triple FIREs iff at least one CORRECTLY-ALIGNED pair fires; records with
+     * no sibling are surfaced as {@code unjoinedRecords}. When the correlator
+     * aligns zero pairs but both legs are non-empty, the triple is
+     * NOT_EVALUABLE — never a cross-paired verdict (review A-F1/B).
      */
     static List<PairResult> evaluate(List<TargetTripleRegistry.Triple> injectable,
                                      List<DataIntegrityRuntime.RunRecord> controlRecords,
@@ -279,10 +291,23 @@ public final class PairedFaultExecutor {
                 representative = firstNoFire;
             } else if (firstAny != null) {
                 representative = firstAny;
-            } else {
+            } else if (controls.isEmpty() || faults.isEmpty()) {
+                // A leg is entirely absent — the null-sibling verdict is
+                // NOT_EVALUABLE and preserves the present leg's evidence.
                 representative = verdict(t.name,
                         controls.isEmpty() ? null : controls.get(0),
                         faults.isEmpty() ? null : faults.get(0));
+            } else {
+                // Review A-F1 / B: both legs produced records but the correlator
+                // aligned NONE of them (opposite asymmetric skips / disjoint
+                // scenarios). Every record is unjoined; there is no like-for-like
+                // sibling to verdict against, so the triple is NOT_EVALUABLE —
+                // NEVER a cross-paired FIRE (the exact misalignment the rider
+                // removes; positionally this branch was unreachable with both
+                // legs non-empty).
+                representative = new PairResult(t.name, null, null, PairVerdict.NOT_EVALUABLE,
+                        "no records aligned by correlator (" + controls.size() + " control, "
+                                + faults.size() + " fault record(s) — all unjoined)");
             }
             representative.controlRecordCount = controls.size();
             representative.faultRecordCount = faults.size();
@@ -290,15 +315,19 @@ public final class PairedFaultExecutor {
             representative.noFirePairs = noFires;
             representative.notEvaluablePairs = notEvaluable;
             representative.unjoinedRecords = join.unjoined;
+            representative.joinMode = join.mode;
+            representative.correlatorUnique = join.correlatorUnique;
             results.add(representative);
         }
         return results;
     }
 
-    /** A join result: the aligned (control, fault) pairs plus the unpaired count. */
+    /** A join result: the aligned (control, fault) pairs, the unpaired count, the mode, uniqueness. */
     private static final class Join {
         final List<DataIntegrityRuntime.RunRecord[]> pairs = new ArrayList<>();
         int unjoined = 0;
+        String mode = "positional";
+        boolean correlatorUnique = false;
     }
 
     /**
@@ -308,11 +337,17 @@ public final class PairedFaultExecutor {
      * write unjoined instead of shifting every subsequent positional pair.
      * Falls back to the original positional join whenever any record lacks a
      * correlator (legacy suites), preserving prior behaviour byte-for-byte.
+     * The correlator is unique per write ONLY if a method runs at most once
+     * (review A-F2/C-MAJOR-2); duplicates degrade to FIFO-within-group, so the
+     * join reports {@code correlatorUnique} rather than silently claiming full
+     * alignment.
      */
     private static Join joinRecords(List<DataIntegrityRuntime.RunRecord> controls,
                                     List<DataIntegrityRuntime.RunRecord> faults) {
         Join j = new Join();
         if (canCorrelate(controls) && canCorrelate(faults)) {
+            j.mode = "correlator";
+            j.correlatorUnique = allUnique(controls) && allUnique(faults);
             Map<String, Deque<DataIntegrityRuntime.RunRecord>> faultBy = new LinkedHashMap<>();
             for (DataIntegrityRuntime.RunRecord f : faults) {
                 faultBy.computeIfAbsent(f.correlationId, k -> new ArrayDeque<>()).add(f);
@@ -336,6 +371,16 @@ public final class PairedFaultExecutor {
         }
         j.unjoined = Math.abs(controls.size() - faults.size());
         return j;
+    }
+
+    private static boolean allUnique(List<DataIntegrityRuntime.RunRecord> records) {
+        java.util.Set<String> seen = new java.util.HashSet<>();
+        for (DataIntegrityRuntime.RunRecord r : records) {
+            if (!seen.add(r.correlationId)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private static boolean canCorrelate(List<DataIntegrityRuntime.RunRecord> records) {
@@ -652,6 +697,8 @@ public final class PairedFaultExecutor {
             pair.put("noFirePairs", r.noFirePairs);
             pair.put("notEvaluablePairs", r.notEvaluablePairs);
             pair.put("unjoinedRecords", r.unjoinedRecords);
+            pair.put("joinMode", r.joinMode);
+            pair.put("correlatorUnique", r.correlatorUnique);
             pair.put("control", toJson(r.control));
             pair.put("fault", toJson(r.fault));
             pairs.put(pair);

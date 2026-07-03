@@ -282,6 +282,36 @@ public class DataIntegrityRuntimeTest {
     }
 
     @Test
+    public void g3Correlator_afterWriteWithoutBefore_usesAfterWriteCorrelator() {
+        // The synthetic "afterWrite without matching beforeWrite" record must
+        // carry the afterWrite hook's OWN correlator — proves the afterWrite arg
+        // is live, not dead code (review C-MEDIUM-3).
+        begin("control", contactTriple());
+        DataIntegrityRuntime.afterWrite(CONTACT_STEP, "afterOnly#7", 200, "{\"status\":1}", "t1");
+        List<DataIntegrityRuntime.RunRecord> records = DataIntegrityRuntime.endRun();
+        assertEquals(1, records.size());
+        assertNotNull(records.get(0).error);
+        assertEquals("afterOnly#7", records.get(0).correlationId);
+    }
+
+    @Test
+    public void g3Correlator_orphanRecordCarriesPriorWritesCorrelator() {
+        // A second beforeWrite with no afterWrite between orphans the first; the
+        // synthetic orphan record must carry the FIRST write's correlator so the
+        // join stays aligned (review C-MEDIUM-4 — the orphan id is load-bearing).
+        begin("control", contactTriple());
+        DataIntegrityRuntime.beforeWrite(CONTACT_STEP, "first#0", "{\"name\":\"n\"}");
+        DataIntegrityRuntime.beforeWrite(CONTACT_STEP, "second#1", "{\"name\":\"n\"}");
+        DataIntegrityRuntime.afterWrite(CONTACT_STEP, "second#1", 200, "{\"status\":1}", "t1");
+        List<DataIntegrityRuntime.RunRecord> records = DataIntegrityRuntime.endRun();
+        assertEquals(2, records.size());
+        assertEquals("first#0", records.get(0).correlationId);
+        assertNotNull(records.get(0).error);
+        assertTrue(records.get(0).error.contains("orphaned"));
+        assertEquals("second#1", records.get(1).correlationId);
+    }
+
+    @Test
     public void softRejectedWrite_isNotAcked_noQuiescenceWait() {
         begin("control", contactTriple());
         DataIntegrityRuntime.beforeWrite(CONTACT_STEP, "{\"name\":\"n\"}");

@@ -683,6 +683,118 @@ public class PairedFaultExecutorTest {
         assertEquals(PairedFaultExecutor.PairVerdict.FIRE, pair.pureDifferential);
         assertEquals("the fired pair must be like-for-like, not crossed",
                 pair.control.correlationId, pair.fault.correlationId);
+        assertEquals("correlator", pair.joinMode);
+        assertTrue(pair.correlatorUnique);
+    }
+
+    @Test
+    public void correlatorJoin_equalCountDivergentSkip_positionalWouldSilentlyMispair() {
+        // The case the correlator is INDISPENSABLE for (review C-MAJOR-1): equal
+        // record counts on both legs but a DIFFERENT write skipped each side, so
+        // the positional count-delta gives NO warning (unjoined=0). control ran
+        // {a present, b present}; fault ran {a present, c absent}. Positional
+        // pairs b-control (present) with c-fault (absent+acked) => a SILENT false
+        // FIRE. The correlator joins only a↔a (NO_FIRE) and leaves b, c unjoined.
+        String t = contacts.name;
+        List<DataIntegrityRuntime.RunRecord> controls = new ArrayList<>();
+        controls.add(corrRecord("control", "m#0", t, true, true));   // a present
+        controls.add(corrRecord("control", "m#1", t, true, true));   // b present (control-only)
+        List<DataIntegrityRuntime.RunRecord> faults = new ArrayList<>();
+        faults.add(corrRecord("fault", "m#0", t, true, true));       // a present (benign)
+        faults.add(corrRecord("fault", "m#2", t, true, false));      // c absent (fault-only)
+
+        PairedFaultExecutor.PairResult corr = PairedFaultExecutor.evaluate(
+                Collections.singletonList(contacts), controls, faults).get(0);
+        assertEquals("only a↔a aligns; nothing fires", 0, corr.firePairs);
+        assertEquals(PairedFaultExecutor.PairVerdict.NO_FIRE, corr.pureDifferential);
+        assertEquals("b and c are both unjoined", 2, corr.unjoinedRecords);
+
+        // Same shapes, correlators stripped => the silent positional mispair.
+        List<DataIntegrityRuntime.RunRecord> cN = new ArrayList<>();
+        cN.add(corrRecord("control", null, t, true, true));
+        cN.add(corrRecord("control", null, t, true, true));
+        List<DataIntegrityRuntime.RunRecord> fN = new ArrayList<>();
+        fN.add(corrRecord("fault", null, t, true, true));
+        fN.add(corrRecord("fault", null, t, true, false));
+        PairedFaultExecutor.PairResult pos = PairedFaultExecutor.evaluate(
+                Collections.singletonList(contacts), cN, fN).get(0);
+        assertEquals("positional silently mispairs b-control with c-fault",
+                PairedFaultExecutor.PairVerdict.FIRE, pos.pureDifferential);
+        assertEquals("and gives NO count-delta warning", 0, pos.unjoinedRecords);
+    }
+
+    @Test
+    public void correlatorJoin_bothLegsNonEmptyDisjoint_isNotEvaluableNotCrossFire() {
+        // Review A-F1/B: both legs produced records but the correlator aligns
+        // ZERO pairs (opposite asymmetric skips). The representative must be
+        // NOT_EVALUABLE, never a cross-paired FIRE. Positionally this branch was
+        // unreachable with both legs non-empty — the correlator makes it real.
+        String t = contacts.name;
+        List<DataIntegrityRuntime.RunRecord> controls = new ArrayList<>();
+        controls.add(corrRecord("control", "m#0", t, true, true));    // present
+        List<DataIntegrityRuntime.RunRecord> faults = new ArrayList<>();
+        faults.add(corrRecord("fault", "m#1", t, true, false));       // absent+acked
+
+        PairedFaultExecutor.PairResult corr = PairedFaultExecutor.evaluate(
+                Collections.singletonList(contacts), controls, faults).get(0);
+        assertEquals(0, corr.firePairs);
+        assertEquals(PairedFaultExecutor.PairVerdict.NOT_EVALUABLE, corr.pureDifferential);
+        assertEquals(2, corr.unjoinedRecords);
+
+        // The legacy positional path DOES cross-fire the same shapes (the bug).
+        List<DataIntegrityRuntime.RunRecord> cN = Collections.singletonList(
+                corrRecord("control", null, t, true, true));
+        List<DataIntegrityRuntime.RunRecord> fN = Collections.singletonList(
+                corrRecord("fault", null, t, true, false));
+        assertEquals(PairedFaultExecutor.PairVerdict.FIRE, PairedFaultExecutor.evaluate(
+                Collections.singletonList(contacts), cN, fN).get(0).pureDifferential);
+    }
+
+    @Test
+    public void execute_correlatorHooks_driveCorrelatorJoinEndToEnd() throws Exception {
+        // Review C-MEDIUM-5: the prior correlator tests call evaluate() directly;
+        // this drives the FULL execute() pipeline through the 3-arg/5-arg hooks
+        // (as a generated suite would), so the correlator join is exercised
+        // end-to-end. One hooked write, masked under fault → FIRE via correlator.
+        PairedFaultExecutor.FilteredRun run = () -> {
+            String freshened = DataIntegrityRuntime.beforeWrite(CONTACT_STEP, "Gen.m#0",
+                    "{\"accountId\":\"pool\",\"documentNumber\":\"pool\",\"name\":\"n\"}");
+            JSONObject body = new JSONObject(freshened);
+            if (!injector.active) {
+                Map<String, String> row = new LinkedHashMap<>();
+                row.put("accountId", body.getString("accountId"));
+                row.put("documentNumber", body.getString("documentNumber"));
+                sut.persist(row);
+            }
+            DataIntegrityRuntime.afterWrite(CONTACT_STEP, "Gen.m#0", 200, "{\"status\":1}", "trace-x");
+        };
+        PairedFaultExecutor.PairResult pair = new PairedFaultExecutor(
+                Collections.singletonList(contacts), injector, run).execute().get(0);
+        assertEquals(PairedFaultExecutor.PairVerdict.FIRE, pair.pureDifferential);
+        assertEquals("correlator", pair.joinMode);
+        assertTrue(pair.correlatorUnique);
+        assertEquals(1, pair.firePairs);
+        assertEquals(0, pair.unjoinedRecords);
+    }
+
+    @Test
+    public void correlatorJoin_duplicateCorrelator_isFlaggedNotUnique() {
+        // Review C-MAJOR-2: a method run more than once yields duplicate
+        // correlators; the FIFO pairing still runs but must NOT be silently
+        // labeled fully aligned — correlatorUnique=false makes the tallies
+        // claim-INELIGIBLE for G3 instead of quietly counting.
+        String t = contacts.name;
+        List<DataIntegrityRuntime.RunRecord> controls = new ArrayList<>();
+        controls.add(corrRecord("control", "m#0", t, true, true));
+        controls.add(corrRecord("control", "m#0", t, true, true));   // duplicate
+        List<DataIntegrityRuntime.RunRecord> faults = new ArrayList<>();
+        faults.add(corrRecord("fault", "m#0", t, true, true));
+        faults.add(corrRecord("fault", "m#0", t, true, true));
+
+        PairedFaultExecutor.PairResult pair = PairedFaultExecutor.evaluate(
+                Collections.singletonList(contacts), controls, faults).get(0);
+        assertEquals("correlator", pair.joinMode);
+        assertTrue("duplicate correlators must flag non-unique", !pair.correlatorUnique);
     }
 
     @Test
