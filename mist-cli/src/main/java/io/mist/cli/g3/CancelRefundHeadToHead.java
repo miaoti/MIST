@@ -112,7 +112,10 @@ public final class CancelRefundHeadToHead {
         List<DataIntegrityRuntime.RunRecord> records;
         try {
             Order order = stimulus.createPaidOrder();
-            String corr = triple.name + "#" + leg;
+            // Correlator identifies the WRITE, not the leg — it must be IDENTICAL across the
+            // control and fault legs so PairedFaultExecutor.joinRecords pairs them (one cancel
+            // write per leg, so a per-triple constant is unique within each leg).
+            String corr = triple.name + "#cancel";
             // MIST: capture the pre-cancel balance baseline for this fresh buyer.
             DataIntegrityRuntime.beforeWriteSupplied(triple.writeEndpoint, corr, null,
                     "userId", order.loginId);
@@ -214,21 +217,28 @@ public final class CancelRefundHeadToHead {
 
         CancelRefundHeadToHead harness = new CancelRefundHeadToHead(stimulus, sutClient);
 
-        // natural stratum — route-scoped EnvoyFilter abort on /drawback (unmodified SUT).
-        String context = natural.cluster.context;
-        String namespace = natural.cluster.namespace;
-        IstioRouteFaultInjector istio = new IstioRouteFaultInjector(context, namespace,
-                Paths.get(required("g3.envoyfilter.manifest")), required("g3.drawback.probe.url"),
-                418, 120);
-        harness.runStratum("natural", natural.triples.get(0), contract, istio,
-                new FaultInjector.FaultTarget("ts-inside-payment-service", "istio.drawback.abort"));
+        // Which strata to run (default both); lets the mesh-heavy natural stratum be
+        // brought up separately from the SutFlag-only constructed one during validation.
+        java.util.Set<String> strata = new java.util.HashSet<>(java.util.Arrays.asList(
+                System.getProperty("g3.strata", "natural,constructed").toLowerCase().split(",")));
 
-        // constructed stratum — the fork's fabricated-ack drawback SUT flag.
-        TargetTripleRegistry.Triple constructedTriple = constructed.triples.get(0);
-        SutFlagFaultInjector sutFlag = new SutFlagFaultInjector(constructed.cluster.context,
-                constructed.cluster.namespace, constructed.cluster.rolloutTimeoutSeconds, 15);
-        harness.runStratum("constructed", constructedTriple, contract, sutFlag,
-                constructedTriple.faultFlag);
+        if (strata.contains("natural")) {
+            // route-scoped EnvoyFilter abort on /drawback (unmodified SUT).
+            IstioRouteFaultInjector istio = new IstioRouteFaultInjector(natural.cluster.context,
+                    natural.cluster.namespace, Paths.get(required("g3.envoyfilter.manifest")),
+                    required("g3.drawback.probe.url"), 418, 120);
+            harness.runStratum("natural", natural.triples.get(0), contract, istio,
+                    new FaultInjector.FaultTarget("ts-inside-payment-service", "istio.drawback.abort"));
+        }
+
+        if (strata.contains("constructed")) {
+            // the fork's fabricated-ack drawback SUT flag.
+            TargetTripleRegistry.Triple constructedTriple = constructed.triples.get(0);
+            SutFlagFaultInjector sutFlag = new SutFlagFaultInjector(constructed.cluster.context,
+                    constructed.cluster.namespace, constructed.cluster.rolloutTimeoutSeconds, 15);
+            harness.runStratum("constructed", constructedTriple, contract, sutFlag,
+                    constructedTriple.faultFlag);
+        }
 
         // agreement anchor (both catch — comparator is no strawman): a body-carrying create
         // + fabricated-ack where the contract's STATE clause binds. Authored once the two

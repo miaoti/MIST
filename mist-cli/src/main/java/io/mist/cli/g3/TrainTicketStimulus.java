@@ -56,11 +56,18 @@ public final class TrainTicketStimulus implements CancelRefundHeadToHead.Stimulu
                         .put("documentNum", "G3R").put("email", reader + "@g3.test")
                         .toString())
                 .post("/api/v1/userservice/users/register");
+        System.setProperty("base.url", baseUrl.trim()); // MstAuthHandler composes the login URL from this
         System.setProperty("auth.mode", "per_jvm");
         System.setProperty("auth.login.url", "/api/v1/users/login");
         System.setProperty("auth.login.username", reader);
         System.setProperty("auth.login.password", readerPw);
         // token.json.path (data.token), body template, header/prefix defaults already match TT.
+        // Trigger the per_jvm login NOW so the read-back's applyAuth finds a cached token
+        // (applyAuth only reads getDefaultToken(); it does not log in on its own).
+        if (!io.mist.cli.auth.MstAuthHandler.ensureReady()) {
+            throw new IllegalStateException("read-back auth login failed for reader " + reader
+                    + " — /account read-back would be unauthenticated");
+        }
 
         CancelRefundHeadToHead.run(new TrainTicketStimulus());
     }

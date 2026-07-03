@@ -1,0 +1,52 @@
+# FROZEN executable bindings — TrainTicket G3 cancel->refund endpoint.
+# Mechanical per-clause translation of the frozen blind contract
+# (blind-cancel-refund-contract.yaml @ commit 38e7aa6) into the closed primitive
+# set of comparator-runner-design.md §2, exactly as the calibration bindings were.
+# Every binding cites its frozen clause; clauses the closed primitive set cannot
+# express are NOT_CHECKABLE with the genuine reason, never guessed or dropped.
+# This implements the bindability the 3-cold-review wave (REVIEW-BLIND-CANCEL-*)
+# already decided: the response envelope is executable via the status+msg gate;
+# all THREE state postconditions are NOT_CHECKABLE (no snapshot/delta/arithmetic
+# primitive, no per-request JWT binding, and the bodyless cancel GET carries no
+# submitted body for a STATE_GET field match). Binding errors at run time are
+# comparator-infra-failure, never a detection.
+#
+# NOTE the head-to-head harness (io.mist.cli.g3) supplies the submitted body
+# ({orderId, loginId} = the cancel's path-param identity) directly to
+# ContractEvaluator; body_template below documents that identity for schema
+# completeness (the cancel is a bodyless GET, so nothing is generated from it).
+#
+# PENDING the standing >=3-cold-review before its numbers feed any claim.
+
+sut: trainticket
+frozen_set: "blind-cancel-refund-contract.yaml @ commit 38e7aa6"
+
+endpoints:
+  - endpoint: "GET /api/v1/cancelservice/cancel/{orderId}/{loginId}"
+    triple: tt-cancel-refund
+    body_template: '{"orderId":"${supplied:orderId}","loginId":"${supplied:loginId}"}'
+    clauses:
+      - cite: "HTTP 200 in ALL outcomes; envelope {status,msg,data}. SUCCESS MUST be asserted as (status==1 AND msg=='Success.'), NOT status==1 alone (the controller catch returns {status:1, msg:'error'}); data carries no business meaning and must not be asserted beyond status+msg."
+        checks:
+          - primitive: HTTP_STATUS
+            expect: "200"
+          - primitive: ENVELOPE_STATUS
+            expect: "1"
+          - primitive: MSG_CONTAINS
+            expect: "Success."
+      - cite: "state_postcondition (1): a correct cancel FLIPS order status to CANCEL(4) (GET /order/{orderId} -> data.status==4, was 1/PAID), every other field unchanged."
+        checks:
+          - primitive: NOT_CHECKABLE
+            reason: "requires asserting a specific field-value TRANSITION (status 1->4) on a follow-up GET; the closed primitive set has no state-transition / value-equality assertion (STATE_GET tests submitted-field PRESENCE, not a post-write value flip) and the bodyless cancel submits no `status` to match. Bindability review REVIEW-BLIND-CANCEL: NOT_CHECKABLE."
+      - cite: "state_postcondition (2): refund of 80% of price credited to the buyer's inside-payment balance, observable ONLY as balance_after == balance_before + R against a pre-cancel snapshot on GET /inside_payment/account (JWT USER/ADMIN)."
+        checks:
+          - primitive: NOT_CHECKABLE
+            reason: "requires a NUMERIC DELTA against a PRE-CANCEL SNAPSHOT (balance_after == balance_before + R) plus a per-request JWT read-back; the closed primitive set has no snapshot / delta / arithmetic primitive and no per-request auth-token binding. Bindability review: NOT_CHECKABLE. (This is exactly the differential+value observable MIST's B2 oracle adds.)"
+      - cite: "state_postcondition (3): the ticket no longer occupies inventory — the sold-ticket seat-class counter for the cancelled order is EXACTLY ONE LESS than the pre-cancel snapshot (GET /order/{travelDate}/{trainNumber})."
+        checks:
+          - primitive: NOT_CHECKABLE
+            reason: "requires a numeric COUNTER DECREMENT (seat-class count == pre-snapshot - 1) against a pre-cancel snapshot; no snapshot / delta / arithmetic primitive in the closed set. Bindability review: NOT_CHECKABLE."
+      - cite: "failure_contracts (order-not-cancellable / not-found / downstream-flip-fails / controller-exception false-success {1,'error'} / post-mutation account-lookup-fails inconsistency)."
+        checks:
+          - primitive: NOT_CHECKABLE
+            reason: "failure contracts are exercised only by crafted invalid inputs or injected downstream failures, out of the success-cancel comparison scope the head-to-head drives (a valid PAID cancellable order), same convention as the G2 calibration's failure clauses. The controller-exception false-success {1,'error'} case IS caught by the response clause's msg=='Success.' gate above."

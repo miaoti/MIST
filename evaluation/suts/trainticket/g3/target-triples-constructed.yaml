@@ -14,7 +14,7 @@
 cluster:
   context: kind-mist
   namespace: trainticket
-  rollout_timeout_s: 180
+  rollout_timeout_s: 360
 triples:
   - name: tt-cancel-refund-constructed
     write_endpoint: "GET /api/v1/cancelservice/cancel/{orderId}/{loginId}"
