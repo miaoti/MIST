@@ -1,5 +1,11 @@
 # G3 TT cancel→refund head-to-head — engineering design analysis (pre-implementation)
 
+> **CORRECTION (2026-07-03, survey pass):** §4's expectation that the comparator PASSES
+> under the natural fault is WRONG (msg leaks "error" → the frozen contract's msg gate
+> flags it; detection tie, diagnosis gap). The comparator-blind clean miss needs the
+> constructed fabricated-ack stratum. See
+> [g3-tt-defect-survey.md](g3-tt-defect-survey.md) — authoritative design menu.
+
 Scopes the MIST-side engineering for the centerpiece head-to-head (MIST B2 vs the
 blind comparator on the natural cancel→refund missing-compensation defect,
 [g3-tt-cancel-refund-defect.md](g3-tt-cancel-refund-defect.md)). Written while the

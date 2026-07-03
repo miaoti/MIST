@@ -1,5 +1,12 @@
 # G3 TrainTicket depth site — cancel→refund missing-compensation (source-verified)
 
+> **CORRECTION (2026-07-03, survey pass):** the claim below that the response-assertion
+> comparator "PASSES/misses" under the fault is WRONG for injectable infra faults: the
+> exchange throws → CancelController's catch returns `{1,"error"}` → the frozen blind
+> contract's msg gate FAILs it (comparator flags; detection tie, MIST wins diagnosis).
+> The clean `{1,"Success."}` miss requires the constructed fabricated-ack stratum.
+> See [g3-tt-defect-survey.md](g3-tt-defect-survey.md) — authoritative.
+
 Prereg §0.5 live-verification against the TT fork
 (`../../../../train-ticket-injection`, our `ts-*` sources). **Result: the
 missing-compensation defect is NATURAL in the upstream source** — not injected — and
