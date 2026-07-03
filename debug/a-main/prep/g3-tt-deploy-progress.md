@@ -32,6 +32,29 @@ upstream). Build path: `hack/build-image.sh` builds `codewisdom/<svc>:1.0.2` fro
 into "mist", then `kubectl set image`/rollout. (This is the same channel Gate-1 used for
 its adminroute/adminbasic fork faults, but scoped to one service here.)
 
+## UPDATE — image-tag blocker + the fidelity split (resolved)
+The fork manifests pin `codewisdom/ts-*:1.0.2`, which **is not published** (that tag is
+meant to be built locally). Docker Hub has `1.0.0` + `latest`. The fork (1.0.2) is newer
+than public 1.0.0 and carries our source, so:
+- **Fidelity split:** the two services the head-to-head actually measures —
+  **ts-cancel-service** (the natural bug: cancelOrder returns {1,"Success."} despite a
+  failed drawback) and **ts-inside-payment-service** (drawBack / queryAccount / the
+  fabricated-ack flag) — are **built from fork source** so deployed behavior = the source
+  I analyzed + the frozen contract's basis. The ~38 supporting services (order, user,
+  auth, preserve, travel, …) only need to run the create→pay→cancel graph, so they use
+  public **1.0.0** — their version does not affect the measured oracle (MIST reads
+  /account on the fork inside-payment; the comparator's cancel contract is the fork
+  cancel-service).
+- **Live-verify** the cancel→refund behaviors against the deployed fork images before
+  any run (the fidelity gate).
+
+Two background ops now running (both logged in /home/miaot/gate1-logs):
+1. `tt-deploy.log` → graph on 1.0.0 (repointed live via kubectl set image; ~17/47
+   Deployments ready and climbing as pulls complete).
+2. `fork-build.log` → multi-stage `docker build` of ts-cancel + ts-inside-payment
+   (maven-in-docker, WSL-native context ~/ttbuild) → `kind load … --name mist`. On
+   completion: repoint those 2 Deployments to `:1.0.2` with imagePullPolicy IfNotPresent.
+
 ## Order from here
 1. ⏳ deploy infra + 40 services (running). Verify: all ts-* pods Running; the gateway
    reachable; register→login→create-order→pay works end-to-end (the harness stimulus).
