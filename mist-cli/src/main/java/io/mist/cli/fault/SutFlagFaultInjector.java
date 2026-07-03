@@ -211,8 +211,8 @@ public final class SutFlagFaultInjector implements FaultInjector {
         return result;
     }
 
-    /** Production {@link Exec}: ProcessBuilder with merged stderr. */
-    private static ExecResult runProcess(List<String> argv, long timeoutSeconds)
+    /** Production {@link Exec}: ProcessBuilder with merged stderr (shared with the Istio backend). */
+    static ExecResult runProcess(List<String> argv, long timeoutSeconds)
             throws IOException, InterruptedException {
         Process process = new ProcessBuilder(argv).redirectErrorStream(true).start();
         // kubectl output here is a few lines, far below pipe capacity, so it
