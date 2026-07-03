@@ -45,6 +45,17 @@ above a cap), and the FP result is always the interval
 and R4fix (post-settle re-read) are ALSO G3 prerequisites — they land in the
 post-Gate-1 hardening wave before any G3 data collection.
 
+**Riders BUILT/PRE-REGISTERED (2026-07-02):** R3fix is now the stronger
+**correlator join** — [Rider 1](g3-rider1-correlator.md) (`e640748`, test-first,
+suites green, under 3-cold-review) upgrades the positional join to a generation-time
+`<method>#<stepIdx>` correlator so an asymmetric skip leaves only that write
+unjoined; the per-pair tallies GRADUATE from DESCRIPTIVE-ONLY and may feed the G3
+detection claims. The comparator's G3 operating point is fixed by
+[Rider 2](g3-rider2-comparator-protocol.md): the full-frozen-set binding round incl.
+failure contracts (B-7), the comparator infra-failure-rate reporting rule, and the
+delay-vs-loss stratification (satisfied by the A3 bounded retry at the matched
+10 s/500 ms budget).
+
 **Per-SUT FP protocol (C-pin 4):** benign probe N=30 per SUT; the same
 pre-registered **≤5% observed-gated sync-FP bar per SUT** (never pooled across
 SUTs); quiescence knobs carried from Gate-1 (poll 500 ms / timeout 10 000 ms /
