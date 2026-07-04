@@ -865,9 +865,12 @@ public final class DataIntegrityRuntime {
     }
 
     /**
-     * TrainTicket convention: collections arrive as {@code {status,msg,data:[..]}}
-     * or a bare array. Public: the G2 comparator reuses this envelope parsing so
-     * both oracles read collections identically (a JSON utility, not oracle logic).
+     * Collections arrive in one of three shapes: a bare array {@code [..]}, the
+     * TrainTicket envelope {@code {status,msg,data:[..]}}, or the HAL/HATEOAS
+     * {@code {_embedded:{<rel>:[..]}}} convention (Spring HATEOAS — Sock Shop).
+     * Public: the G2 comparator reuses this envelope parsing so both oracles read
+     * collections identically (a JSON utility, not oracle logic). The HAL branch is
+     * inert on TrainTicket bodies (they never carry {@code _embedded}).
      */
     public static List<Object> extractItems(String body) {
         List<Object> items = new ArrayList<>();
@@ -876,24 +879,44 @@ public final class DataIntegrityRuntime {
         }
         String trimmed = body.trim();
         try {
-            JSONArray array;
             if (trimmed.startsWith("[")) {
-                array = new JSONArray(trimmed);
-            } else {
-                JSONObject obj = new JSONObject(trimmed);
-                Object data = obj.opt("data");
-                if (!(data instanceof JSONArray)) {
-                    return items;
-                }
-                array = (JSONArray) data;
+                addAll(items, new JSONArray(trimmed));
+                return items;
             }
-            for (int i = 0; i < array.length(); i++) {
-                items.add(array.get(i));
+            JSONObject obj = new JSONObject(trimmed);
+            Object data = obj.opt("data");
+            if (data instanceof JSONArray) {
+                addAll(items, (JSONArray) data);
+                return items;
+            }
+            // HAL/HATEOAS (Spring HATEOAS, IETF draft-kelly-json-hal): a collection
+            // resource nests its rows under _embedded.<relation>. A read-back GET
+            // returns one relation in practice, but flatten every relation for
+            // generality — membership stays sound because isolation keys are fresh
+            // unique strings, so a match cannot cross relations. INERT on TrainTicket:
+            // its bodies are bare arrays or {status,msg,data:[]}, never _embedded.
+            Object embedded = obj.opt("_embedded");
+            if (embedded instanceof JSONObject) {
+                JSONObject emb = (JSONObject) embedded;
+                for (String rel : emb.keySet()) {
+                    Object v = emb.opt(rel);
+                    if (v instanceof JSONArray) {
+                        addAll(items, (JSONArray) v);
+                    } else if (v instanceof JSONObject) {
+                        items.add(v);
+                    }
+                }
             }
         } catch (RuntimeException e) {
             logger.debug("DataIntegrity: unparseable collection body ({}) — treating as empty", e.toString());
         }
         return items;
+    }
+
+    private static void addAll(List<Object> items, JSONArray array) {
+        for (int i = 0; i < array.length(); i++) {
+            items.add(array.get(i));
+        }
     }
 
     /**
@@ -912,7 +935,23 @@ public final class DataIntegrityRuntime {
                 new JSONArray(trimmed);
                 return true;
             }
-            return new JSONObject(trimmed).opt("data") instanceof JSONArray;
+            JSONObject obj = new JSONObject(trimmed);
+            if (obj.opt("data") instanceof JSONArray) {
+                return true;
+            }
+            // HAL: a collection resource with at least one embedded relation
+            // (array or single object). See extractItems.
+            Object embedded = obj.opt("_embedded");
+            if (embedded instanceof JSONObject) {
+                JSONObject emb = (JSONObject) embedded;
+                for (String rel : emb.keySet()) {
+                    Object v = emb.opt(rel);
+                    if (v instanceof JSONArray || v instanceof JSONObject) {
+                        return true;
+                    }
+                }
+            }
+            return false;
         } catch (RuntimeException e) {
             return false;
         }

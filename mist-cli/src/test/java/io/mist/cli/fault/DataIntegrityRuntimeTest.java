@@ -347,6 +347,56 @@ public class DataIntegrityRuntimeTest {
     }
 
     @Test
+    public void extractItems_halEmbedded_flattensRelationsAndBindsMembership() {
+        // Sock Shop (Spring HATEOAS) read-backs nest rows under _embedded.<rel>.
+        // extractItems must flatten them so membership binds; without this every
+        // benign write reads ABSENT (a parsing artifact, not a real miss).
+        String addresses = "{\"_embedded\":{\"address\":["
+                + "{\"street\":\"SmokeSt\",\"number\":\"111\",\"id\":\"x\"},"
+                + "{\"street\":\"Other\",\"number\":\"9\",\"id\":\"y\"}]}}";
+        assertEquals(2, DataIntegrityRuntime.extractItems(addresses).size());
+        Map<String, String> key = new HashMap<>();
+        key.put("street", "SmokeSt");
+        key.put("number", "111");
+        assertTrue("submitted HAL row is present", DataIntegrityRuntime.containsKey(addresses, key));
+        Map<String, String> absent = new HashMap<>();
+        absent.put("street", "Nope");
+        absent.put("number", "0");
+        assertFalse("un-submitted HAL row is absent", DataIntegrityRuntime.containsKey(addresses, absent));
+        // Multiple relations under _embedded → union (fresh unique keys can't cross).
+        assertEquals(2, DataIntegrityRuntime.extractItems(
+                "{\"_embedded\":{\"address\":[{\"street\":\"A\"}],\"card\":[{\"longNum\":\"1\"}]}}").size());
+        // A single embedded resource (HAL to-one) counts as one item.
+        assertEquals(1, DataIntegrityRuntime.extractItems(
+                "{\"_embedded\":{\"address\":{\"street\":\"Solo\"}}}").size());
+        // Empty HAL collection → zero rows (a legitimate no-value-yet, not garbage).
+        assertEquals(0, DataIntegrityRuntime.extractItems("{\"_embedded\":{\"address\":[]}}").size());
+        assertEquals(0, DataIntegrityRuntime.extractItems("{\"_embedded\":{}}").size());
+    }
+
+    @Test
+    public void extractItems_trainTicketShapes_unchangedByHalBranch() {
+        // Freeze-inertness: the HAL branch must not alter extraction for any
+        // TrainTicket body (bare array or {status,msg,data:[]}, never _embedded).
+        assertEquals(1, DataIntegrityRuntime.extractItems(
+                "{\"status\":1,\"msg\":\"ok\",\"data\":[{\"documentNumber\":123}]}").size());
+        assertEquals(2, DataIntegrityRuntime.extractItems("[{\"a\":1},{\"a\":2}]").size());
+        assertEquals(0, DataIntegrityRuntime.extractItems("{\"status\":1,\"data\":null}").size());
+        assertEquals(0, DataIntegrityRuntime.extractItems("not json").size());
+    }
+
+    @Test
+    public void parsesToCollection_recognizesHalAndRejectsNonCollection() {
+        assertTrue(DataIntegrityRuntime.parsesToCollection("{\"_embedded\":{\"address\":[]}}"));
+        assertTrue(DataIntegrityRuntime.parsesToCollection("{\"_embedded\":{\"address\":{\"street\":\"S\"}}}"));
+        assertTrue(DataIntegrityRuntime.parsesToCollection("[]"));
+        assertTrue(DataIntegrityRuntime.parsesToCollection("{\"status\":1,\"data\":[]}"));
+        assertFalse("empty _embedded has no relation", DataIntegrityRuntime.parsesToCollection("{\"_embedded\":{}}"));
+        assertFalse(DataIntegrityRuntime.parsesToCollection("{\"id\":\"x\"}"));
+        assertFalse(DataIntegrityRuntime.parsesToCollection("not json"));
+    }
+
+    @Test
     public void beginRunTwice_failsFast() {
         begin("control", contactTriple());
         try {
