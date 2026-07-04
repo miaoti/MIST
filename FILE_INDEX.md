@@ -743,6 +743,8 @@ Evaluation harness and systems-under-test (bookinfo, boutique, sockshop, trainti
 |------|-------------|
 | `evaluation/suts/sockshop/README.md` | Sock Shop SUT guide: the generalization-validation SUT (different services/tags/basePath); proves MIST runs on a new SUT from its own inputs with no code edits. |
 | `evaluation/suts/sockshop/real-system-conf.yaml` | MIST test config for Sock Shop (generated from swagger): catalogue/cart/order/user services derived from OpenAPI tags, paths at root. |
+| `evaluation/suts/sockshop/target-triples.yaml` | SUT-2 β registry (benign-trap-only, NO fault_flag per branch β): SS-B addresses (isolation_key street+number) + cards (longNum), dependency user, fresh-strings, readback_bound 500 (R1fix — global seeded growing lists). SS-A cart deliberately ABSENT: the BFF renames id→itemId across the surface so containsKey (name+value) would false-absence; needs a reviewed membership alias first. Cookie auth via the run config |
+| `evaluation/suts/sockshop/sockshop-g3-benign.properties` | G3 β benign FP probe run config (prereg C-pin 4): demo conf + faulty.ratio 0.0 + enhancer/exploration OFF + auth per_jvm_cookie (/register register-as-login, ${unique} username, /register+/login cookie-skipped) + dataintegrity oracle ON (poll 500ms/timeout 10s/settle 3s carried from G1) + fpprobe.runs=30 (bar v2: interval + histogram, NOT_EVALUABLE on degraded gate) |
 | `evaluation/suts/sockshop/sockshop-demo.properties` | Single minimal MIST config profile for Sock Shop, relying on generalization defaults (auth.mode=none, smart-fetch OAS=oas.path, basePath auto). |
 
 ### `evaluation/suts/sockshop/deploy/`

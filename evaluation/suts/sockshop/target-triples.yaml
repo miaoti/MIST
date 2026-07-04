@@ -1,0 +1,40 @@
+# Target-triple registry — Sock Shop (SUT-2, G3 β phase: FP/breadth + wild-hunt ONLY,
+# branch β per g3-sut2-triples-prereg.md C-pin 2: carts/orders honestly 5xx on Mongo
+# failure, so there are NO constructed positives and NO fault_flag here — both triples
+# are benign-trap-only (fault_flag absent, exactly the registry's documented optional).
+#
+# SS-B pair (addresses + cards): the BFF proxies POST /addresses and POST /cards to the
+# user service (Go, user-db Mongo) and the list GETs return GLOBAL, seeded, growing
+# collections (prereg B MEDIUM-3) — hence `readback_bound` (hardening-wave R1fix): at or
+# beyond the bound an ABSENT verdict is unverifiable and the record degrades to
+# error/NOT_EVALUABLE, never "absent". Field names are IDENTICAL between the write body
+# and the read-back items (street/number/... ; longNum/...), so MEMBERSHIP matching
+# (DataIntegrityRuntime.containsKey: field name + value) binds with no aliasing.
+#
+# SS-A (cart) is deliberately ABSENT: the BFF renames the key across the surface
+# (write body field `id` -> read-back item field `itemId`; the read-back's own `id` is
+# the cart-item Mongo id), so containsKey would report a guaranteed false-absence.
+# Hooking SS-A honestly needs a small membership read-back alias in the registry —
+# tool code + tests + >=3-cold-review BEFORE use (recorded in the β runbook).
+#
+# Auth: the front-end session is cookie-based; the run config sets
+# auth.mode=per_jvm_cookie (register-as-login with a ${unique} per-JVM username).
+cluster:
+  context: kind-mist
+  namespace: sock-shop
+  rollout_timeout_s: 360
+triples:
+  - name: ss-b-address-create
+    write_endpoint: "POST /addresses"
+    dependency: user
+    readback_endpoint: "GET /addresses"
+    isolation_key: [street, number]
+    isolation_strategy: fresh-strings
+    readback_bound: 500
+  - name: ss-b-card-create
+    write_endpoint: "POST /cards"
+    dependency: user
+    readback_endpoint: "GET /cards"
+    isolation_key: [longNum]
+    isolation_strategy: fresh-strings
+    readback_bound: 500
