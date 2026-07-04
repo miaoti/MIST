@@ -156,8 +156,27 @@ public final class CancelRefundHeadToHead {
         }
         List<PairedFaultExecutor.PairResult> mist = PairedFaultExecutor.evaluate(
                 Collections.singletonList(triple), control.mistRecords, fault.mistRecords);
+        requireClaimEligible(mist);
         printCell(stratum, mist, control.comparator, fault.comparator);
         printProbeValues(control.mistRecords, fault.mistRecords);
+    }
+
+    /**
+     * Rider-1 claim-eligibility guard (round-2 review C): a MIST tally may feed a G3 claim only
+     * when the pair was joined by CORRELATOR with a UNIQUE correlator in each leg. That holds by
+     * construction here (one cancel per leg, a leg-shared per-triple correlator) — asserted
+     * defensively so a silent regression to a positional join can never feed a claim.
+     */
+    static void requireClaimEligible(List<PairedFaultExecutor.PairResult> mist) {
+        if (mist.isEmpty()) {
+            return; // NO_RESULT prints as such; nothing feeds a claim
+        }
+        PairedFaultExecutor.PairResult r = mist.get(0);
+        if (!"correlator".equals(r.joinMode) || !r.correlatorUnique) {
+            throw new IllegalStateException("claim-eligibility violated: joinMode=" + r.joinMode
+                    + ", correlatorUnique=" + r.correlatorUnique
+                    + " (G3 claims require a correlator join with a unique correlator)");
+        }
     }
 
     /**
@@ -211,6 +230,10 @@ public final class CancelRefundHeadToHead {
                 + control.flagged + ", fault flagged=" + fault.flagged
                 + "  -> " + (fault.flagged ? "CAUGHT" : "MISSED")
                 + (control.flagged ? " (control also flagged — systemic, verify)" : ""));
+        if (!mist.isEmpty()) {
+            System.out.println("  claim-eligibility: joinMode=" + mist.get(0).joinMode
+                    + ", correlatorUnique=" + mist.get(0).correlatorUnique);
+        }
     }
 
     /** Picks the single cancel endpoint from the frozen contract (it binds exactly one). */
@@ -238,9 +261,10 @@ public final class CancelRefundHeadToHead {
     /**
      * Wiring. Config via -D properties (all live/SUT-specific): g3.base.url (gateway),
      * g3.contract.path, g3.triples.natural, g3.triples.constructed, g3.strata (default
-     * "natural,constructed"). Both strata toggle a fork drawback flag via the
-     * SutFlagFaultInjector (cluster context/namespace/rollout come from each triple's
-     * cluster block). The {@link Stimulus} impl is supplied by the live launcher.
+     * "natural,constructed"). Both strata flip inside-payment's drawback fault mode at
+     * RUNTIME via {@link HttpToggleFaultInjector} (mode derived from each triple's
+     * fault_flag property; no pod restart). The {@link Stimulus} impl is supplied by the
+     * live launcher.
      */
     public static void run(Stimulus stimulus) throws Exception {
         String baseUrl = required("g3.base.url");
@@ -283,8 +307,7 @@ public final class CancelRefundHeadToHead {
                     constructedTriple.faultFlag);
         }
 
-        // agreement anchor (both catch — comparator is no strawman): a body-carrying create
-        // + fabricated-ack where the contract's STATE clause binds. Authored once the two
-        // core cells run live (needs a second triple + contract endpoint).
+        // The agreement anchor (body-carrying create, both catch — comparator is no strawman)
+        // is a separate focused runner: io.mist.cli.g3.AccountCreateAgreement.
     }
 }

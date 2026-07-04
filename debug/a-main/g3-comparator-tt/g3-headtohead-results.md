@@ -34,10 +34,16 @@ So MIST's win is attributable to the value-delta capability, not to a rigged bas
   value-delta probe (buyer /account balance):  control baseline=50.00 -> final=130.00 ;  fault baseline=50.00 -> final=50.00
 ```
 
-Every run (run #1 + reps 2–5): natural = FIRE + CAUGHT, constructed = FIRE + MISSED, control never
-flagged, ~24 s each (no restarts) → deterministic, not a routing coin-flip. Each buyer is
-**PRE-FUNDED** to a non-zero `/account` balance (50.00) before the cancel, so the value-delta is a
-real arithmetic delta (control 50→130, fault 50→50), not an appear-vs-absent membership signal.
+Every run: natural = FIRE + CAUGHT, constructed = FIRE + MISSED, control never flagged, ~24 s each
+(no restarts) → deterministic, not a routing coin-flip. Each buyer is **PRE-FUNDED** to a non-zero
+`/account` balance (50.00) before the cancel, so the value-delta is a real arithmetic delta
+(control 50→130, fault 50→50), not an appear-vs-absent membership signal.
+
+Log bookkeeping: the probe-line evidence set is `prefunded-run2.log` + `prefunded-reps.txt` reps 2–5
+(five probe-carrying runs); `prefunded-run1.log` is an additional earlier pre-funded run whose
+harness predated the probe printing (same verdicts). `prefunded-run3-v105.log` +
+`agreement-run2-v105.log` re-verify all three cells on the final `:1.0.5` image with the
+claim-eligibility line (`joinMode=correlator, correlatorUnique=true`) printed per cell.
 
 ## Why the constructed miss is un-contestable (fairness of the clean win)
 
@@ -115,8 +121,13 @@ failure modes are about the SUT caller's client-side caching, not MIST:
 ## SUT / deployment
 
 - kind cluster `mist`, ns `trainticket`, upstream `codewisdom/*:1.0.0` graph; `ts-inside-payment-service`
-  fork-built to `:1.0.4` (branch MIST-trainticket) carrying the runtime toggle, **replicas=1**,
-  sidecar-free. Reached via `kubectl port-forward svc/ts-gateway-service 18888`.
+  fork-built (branch MIST-trainticket), **replicas=1**, sidecar-free. Reached via
+  `kubectl port-forward svc/ts-gateway-service 18888`.
+- **Image tags (run provenance):** the two cancel cells' original N=5 ran on `:1.0.4` (the drawback
+  runtime toggle, fork `ea4d60af`); the agreement cell ran on `:1.0.5` (= 1.0.4 + the createAccount
+  fabricated-ack, fork `d4679bd5` — the drawback code path is identical between the two tags). All
+  THREE cells were then re-verified on the uniform final `:1.0.5` with the claim-eligibility guard
+  live (`runs/prefunded-run3-v105.log`, `runs/agreement-run2-v105.log`) — same verdicts.
 
 ## Soundness scope / disclosures (from review A/B/C — none is a false-FIRE path)
 

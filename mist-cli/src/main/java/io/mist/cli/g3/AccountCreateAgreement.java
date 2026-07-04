@@ -97,6 +97,7 @@ public final class AccountCreateAgreement {
         }
         List<PairedFaultExecutor.PairResult> mist = PairedFaultExecutor.evaluate(
                 Collections.singletonList(triple), control.records, fault.records);
+        CancelRefundHeadToHead.requireClaimEligible(mist); // rider-1 guard (round-2 review C)
 
         String mistVerdict = mist.isEmpty() ? "NO_RESULT" : mist.get(0).pureDifferential.name();
         String mistReason = mist.isEmpty() ? "" : mist.get(0).reason;
@@ -107,6 +108,10 @@ public final class AccountCreateAgreement {
                 + ", fault flagged=" + fault.comparator.flagged
                 + "  -> " + (fault.comparator.flagged ? "CAUGHT" : "MISSED")
                 + (control.comparator.flagged ? " (control also flagged — verify)" : ""));
+        if (!mist.isEmpty()) {
+            System.out.println("  claim-eligibility: joinMode=" + mist.get(0).joinMode
+                    + ", correlatorUnique=" + mist.get(0).correlatorUnique);
+        }
         boolean agreement = "FIRE".equals(mistVerdict) && fault.comparator.flagged
                 && !control.comparator.flagged;
         System.out.println("  => " + (agreement ? "AGREEMENT (both catch — comparator is no strawman)"
