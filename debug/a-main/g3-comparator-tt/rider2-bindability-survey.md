@@ -6,12 +6,14 @@ pre-registered 2026-07-02) over the ENTIRE frozen blind assertion set
 entries × 22 services): for every entry, can the frozen **state postcondition** be expressed in the
 comparator's closed primitive set at all? This is the **bindability fraction** — the prepared
 answer to the round-2 head-to-head reviewers' external-validity question ("how often are
-observables delta-only / unbindable beyond the cancel scenario?"). Status: **REVIEW ROUND 1 FOLDED
-IN** (cold reviewers A+B converged on a BLOCKING three-row flip + recount, applied below; reviewer C
-pending) — still gated on the completed ≥3-cold-review before feeding claims. The per-endpoint
-EXECUTABLE bindings YAML is authored when the breadth comparison run is built (the protocol
-requires it before that run, not before this analysis); this survey fixes the dispositions the
-YAML must implement.
+observables delta-only / unbindable beyond the cancel scenario?"). Status: **ALL THREE cold
+reviewers returned ACCEPT-WITH-FIXES and every finding is folded in** — A+B converged on the
+OBJECT-ABSENCE three-row flip (#12/#23/#52), C additionally caught the NESTED-ITEM-SHAPE pair
+(#76/#77); all five flips run AGAINST the comparator, so the corrected residue is LARGER and the
+qualitative reading unchanged (reconciliation: `REVIEW-SURVEY-RECONCILIATION.md`). The
+per-endpoint EXECUTABLE bindings YAML is authored when the breadth comparison run is built (the
+protocol requires it before that run, not before this analysis); this survey fixes the
+dispositions the YAML must implement.
 
 Count note (review A/B): the freeze-commit message and Rider-2 §1 say "79 endpoints"; the frozen
 file (byte-stable since `15954a8`) contains **81 entries** — the 79 plausibly excluded the two
@@ -88,7 +90,7 @@ affects the state fraction.
 | 11 | contacts PUT | BINDS | per-entity echo by submitted id (entity-matches) |
 | 12 | contacts DELETE | **NC-OBJECT-ABSENCE** | (review A+B flip) frozen observables: per-entity `GET /contacts/{contactsId}` — single-object `data` → absence VACUOUS; "absent from account list" — path needs `accountId`, NOT submitted on the DELETE → unbuildable. No discriminating observable |
 | 13 | order POST | BINDS-P | list-all membership (fresh accountId); per-`data.id` GET part response-keyed → inexpressible |
-| 14 | order POST /admin | BINDS | list-all membership |
+| 14 | order POST /admin | BINDS-P | list-all membership; per-`data.id` GET part response-keyed → inexpressible |
 | 15 | order PUT | BINDS | per-entity echo by submitted order.id |
 | 16 | order PUT /admin | BINDS | per-entity echo |
 | 17 | order DELETE | BINDS a | LIST absence (GET /order); {orderId}→id |
@@ -111,7 +113,7 @@ affects the state fraction.
 | 34 | price PUT | BINDS | as 33 |
 | 35 | price DELETE | BINDS a | LIST absence (GET /prices); {pricesId}→id (routeId/trainType not submitted on delete) |
 | 36 | food order POST | BINDS | per-{orderId} GET — single-object read → presence via entity-matches; FoodOrder carries `orderId` as a real field |
-| 37 | food createOrderBatch | **NC-BATCH-SHAPE** | submission is a JSON ARRAY of orders; the closed set has no iteration/multi-entity construct; `${field:…}`/field-matching assume one flat submitted object (the evaluator even parses the submitted body as an object up front) |
+| 37 | food createOrderBatch | **NC-BATCH-SHAPE** | submission is a JSON ARRAY of orders; the closed set has no iteration/multi-entity construct; `${field:…}`/field-matching assume one flat submitted object (the evaluator even parses the submitted body as an object up front). A batch-of-ONE stimulus flattened into the submitted map is rejected (review C): it changes the tested behavior — the frozen clause is about the batch loop — and exceeds the disclosed submitted-map convention |
 | 38 | food order PUT | BINDS | per-{orderId} echo (entity-matches) |
 | 39 | food order DELETE | BINDS | LIST absence (GET /orders) by `orderId` (real field name — no alias) |
 | 40 | consign POST | BINDS-P | order/account-list membership binds; `data.price` is DERIVED (computed by consign-price) → that observable inexpressible |
@@ -124,40 +126,43 @@ affects the state fraction.
 | 47 | auth login POST | — | frozen: "none — token issuance only"; no state clause → excluded from the denominator |
 | 48 | auth user DELETE | BINDS-P | LIST absence binds; "login stops working" = POST → inexpressible |
 | 49 | assurance create [mutating GET] | BINDS | per-orderid GET — single-object read → presence via entity-matches on `orderId` (real field) |
-| 50 | assurance PATCH | BINDS | per-orderid membership (runner submits a fresh orderId → discriminating) |
+| 50 | assurance PATCH | BINDS | per-orderid single-object read → entity-matches (runner submits a fresh orderId → discriminating) |
 | 51 | assurance DELETE by assuranceId | BINDS a | LIST absence (GET /assurances); {assuranceId}→id |
 | 52 | assurance DELETE by orderId | **NC-OBJECT-ABSENCE** | (review A+B flip) the only frozen observable is per-entity `GET /assurance/orderid/{orderId}` — single-object `data` ("one assurance per orderId") → absence VACUOUS |
 | 53 | security POST | BINDS | list membership |
 | 54 | security PUT | BINDS | list echo by submitted id |
 | 55 | security DELETE | BINDS | LIST absence; {id} = entity `id` |
 | 56–70 | adminbasic 15× (contacts/stations/trains/configs/prices × POST/PUT/DELETE) | BINDS (2 deletes a) | pass-through LIST membership/echo/absence on GET /adminbasic/* (all list-shaped); deletes: {contactsId}→id a (#58), stations/trains `{id}` no alias, configs `{name}` no alias, {pricesId}→id a (#70) |
-| 71 | adminorder POST | BINDS | aggregate-list membership (fresh accountId) |
+| 71 | adminorder POST | BINDS-P | aggregate-list membership (fresh accountId); routed per-`{data.id}` GET part response-keyed → inexpressible |
 | 72 | adminorder PUT | BINDS | aggregate echo by submitted id |
 | 73 | adminorder DELETE | BINDS a | aggregate-LIST absence; {orderId}→id |
 | 74 | adminroute POST | BINDS | list + per-entity (G2-calibrated) |
 | 75 | adminroute DELETE | BINDS a | LIST absence (GET /adminroute); {routeId}→id |
-| 76 | admintravel POST | BINDS | merged-list membership by echoed flat fields (response gate weak — duplicate reports success; the STATE clause is what discriminates, disclosed in frozen text) |
-| 77 | admintravel PUT | BINDS | merged-list echo |
+| 76 | admintravel POST | **NC-NESTED-ITEM-SHAPE** | (review C flip) the ONLY frozen observable is membership in GET /admintravel — but the merged list's items are `AdminTrip{trip, trainType, route}` WRAPPERS (`AdminTrip.java:10-12`; `TravelServiceImpl.adminQueryAll:562-581` wraps every Trip), so items carry NO top-level trip fields and `containsSubmittedFields` (top-level keys only) is NEVER satisfiable — it fails healthy control legs, i.e. control-breaking, not merely non-discriminating. Doubly load-bearing: the response gate is disclosed-weak (duplicate reports success), so NOTHING catches a lost admintravel create |
+| 77 | admintravel PUT | **NC-NESTED-ITEM-SHAPE** | (review C flip) only frozen observable = "GET /admintravel reflects the submitted trip fields" — same nested-wrapper list; per the own-clause rule the per-{tripId} travel-service GET (which would bind) belongs to #28's contract, not #77's |
 | 78 | admintravel DELETE | **NC-KEY-SHAPE** | as 29 (nested TripId in the merged list) |
 | 79 | adminuser POST | BINDS | list membership by submitted userName |
 | 80 | adminuser PUT | BINDS | list echo |
 | 81 | adminuser DELETE | BINDS | LIST absence ("userId absent from GET /adminuserservice/users", real field name). The frozen text's OTHER observable (downstream per-{userId} read) is object-shaped → vacuous — the executable YAML must implement the list read |
 
-## The fraction (post-review recount)
+## The fraction (post-review recount, all three reviewers folded)
 
 Denominator = 80 entries with a frozen state postcondition (81 − login #47).
 
 | convention | state clause BINDS (incl. partial) | NC (state invisible) |
 |---|---|---|
-| **G (generous, primary)** | **71 / 80 = 88.75 %** | **9 / 80 = 11.25 %** |
-| S (strict, no aliases) | 61 / 80 = 76.25 % | 19 / 80 = 23.75 % (9 structural + 10 alias-dependent deletes) |
+| **G (generous, primary)** | **69 / 80 = 86.25 %** | **11 / 80 = 13.75 %** |
+| S (strict, no aliases) | 59 / 80 = 73.75 % | 21 / 80 = 26.25 % (11 structural + 10 alias-dependent deletes) |
 
-NC-under-G census (the structural residue no generosity fixes), 9 total:
+NC-under-G census (the structural residue no generosity fixes), 11 total:
 - **3× KEY-SHAPE** (travel/travel2/admintravel deletes, #29/#32/#78): non-flat server-side key
   serialization defeats identical-name value matching.
+- **2× NESTED-ITEM-SHAPE** (admintravel POST/PUT, #76/#77): the merged list's items are
+  `AdminTrip{trip,…}` wrappers with no top-level trip fields → membership never satisfiable
+  (review C; control-breaking if bound).
 - **3× OBJECT-ABSENCE** (contacts/orderOther/assurance-by-orderId deletes, #12/#23/#52): the only
   frozen absence observable is a single-object per-entity read, on which the closed set's absence
-  primitive is vacuous (review A+B).
+  primitive is vacuous (review A+B+C).
 - **1× TRANSITION** (orderPay, #18): the new value is not in the submission.
 - **1× RESPONSE-KEYED** (orderOther admin create, #20): read-back path needs a server-generated id.
 - **1× BATCH-SHAPE** (#37).
@@ -169,19 +174,20 @@ convention: DERIVED values (consign price ×2, consignprice pricing), out-of-ban
 
 ## Reading (two-sided, honest — reworded per review A+B)
 
-1. **The comparator class is a STRONG baseline on plain entity CRUD** — 88.75 % of the frozen set's
+1. **The comparator class is a STRONG baseline on plain entity CRUD** — 86.25 % of the frozen set's
    state clauses bind under the generous convention (membership/echo/collection-absence with
    same-name keys). This is the breadth-scale version of the agreement anchor: on ordinary
    create/update/delete surfaces, response-assertion + STATE_GET catches acked-but-lost writes, and
    any head-to-head claim must (and does) concede it. No strawman.
-2. **The on-surface residue (9/80) is STRUCTURAL, not random** — every NC is a primitive-vocabulary
-   gap, not a flaky contract: value TRANSITIONS (the new value is not in the submission — including
-   the one payment-shaped entry, orderPay, whose PAID flip is invisible), SERVER-KEYED /
-   response-derived observables, NON-FLAT key serialization, BATCH shape, and — the census's
-   largest single addition after review — **OBJECT-ABSENCE: endpoints whose only state observable
-   is a single-entity read-back, where the closed set cannot express "it is gone."** That last
-   category is exactly the cancel→refund read-back shape (no collection-membership surface; the
-   observable lives in one object/aggregate), which is why it matters beyond its count.
+2. **The on-surface residue (11/80) is STRUCTURAL, not random** — every NC is a
+   primitive-vocabulary gap where the closed set's flat-single-object assumptions break, not a
+   flaky contract: value TRANSITIONS (the new value is not in the submission — including the one
+   payment-shaped entry, orderPay, whose PAID flip is invisible), SERVER-KEYED / response-derived
+   observables, NON-FLAT key serialization and NESTED-WRAPPER list items, BATCH shape, and
+   **OBJECT-ABSENCE: endpoints whose only state observable is a single-entity read-back, where the
+   closed set cannot express "it is gone."** The object/aggregate-read categories are exactly the
+   cancel→refund read-back shape (no flat collection-membership surface; the observable lives in
+   one object/aggregate), which is why they matter beyond their count.
 3. **The payment/compensation axis is two SEPARATE, correctly-scoped facts** (not an extrapolation
    from the 9/80): (a) coverage fact — the frozen set's own `not_covered` list places the
    money-moving orchestration surface (`ts-inside-payment`, `ts-cancel`, `ts-preserve`,
@@ -191,10 +197,11 @@ convention: DERIVED values (consign price ×2, consignprice pricing), out-of-ban
    read-back, refund observable only as a balance DELTA). This survey asserts nothing about the
    bindability of the other five not-covered services.
 4. So the external-validity answer to "how often is the clean-win shape encountered?": on THIS
-   SUT's frozen CRUD surface, 11.25 % of specified state clauses are structurally unbindable even
-   generously (23.75 % strictly), the residue categories are the same primitive gaps the depth
+   SUT's frozen CRUD surface, 13.75 % of specified state clauses are structurally unbindable even
+   generously (26.25 % strictly), the residue categories are the same primitive gaps the depth
    cells exercise (delta/transition/object-shaped observables), and the deep
-   payment/compensation flows sit outside the bindable CRUD surface entirely. MIST is positioned as
+   payment/compensation flows sit outside the surveyed CRUD surface entirely (see point 3 for the
+   two separately-scoped facts). MIST is positioned as
    COMPLEMENTARY coverage of that residue (consistent with the accepted framing rule:
    complementary, not a superset — on the 88.75 % the comparator is fine; on loud failures it can
    be better).
