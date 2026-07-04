@@ -115,9 +115,59 @@ shipping healthy, queue-master→0 (scaffold), guest `.* .* .*`, no policies. EN
 rabbitmq:3.6.8-management, readOnlyRootFilesystem→true, delete mist user, queue-master→1. S1 surgical sever
 (shipping↛rabbitmq:5672, 15672 read-back stays up) via Istio L4 AuthorizationPolicy/EnvoyFilter = to build.
 
-## Step 3 — NEXT: build the g3-style harness `io.mist.cli.g3.ShippingEnqueueHeadToHead`
-Reuse PairedFaultExecutor.evaluate (MIST) + ContractEvaluator.evaluate (comparator); custom Http override
-(defaultHttpOverride) routing the read-back GET to pod:15672 with mist:mist basic auth; Stimulus = POST
-/shipping {id,name}; injectors = S1 Istio-sever + S2 reject-publish-policy. Value-delta triple: readback "GET
-/api/queues/%2f", match_field=name (supplied key shipping-task), value_field=messages. Unit test + ≥3-review
-before any claim (new tool code, standing rule); oracle stays reviewed-verbatim.
+## Step 3 — BUILD BLUEPRINT for the g3-style harness (think-before-coding; ~350 LOC new, oracle unchanged)
+Verified the full CancelRefundHeadToHead pattern + the Http seam. The shipping harness mirrors it with 2
+differences: (a) the read-back is a DIFFERENT host + basic auth → override the Http seam; (b) two
+stratum-specific injectors instead of one runtime toggle. Components:
+
+1. **`ShippingReadbackHttp implements DataIntegrityRuntime.Http`** (the novel wiring). `getSut(path)` →
+   `GET http://<rmqHost>:<rmqPort>/<path>` with **mist:mist** basic auth (guest is loopback-only on 3.8) →
+   `HttpResponse(status, body)` (raw HttpURLConnection or RestAssured). `getAbsolute(url)` likewise. Host/
+   port/creds from -D props (`g3.ship.rmq.base`, `g3.ship.rmq.user/pass`). Installed via
+   the `defaultHttpOverride` seam in `run()`. **ACCURACY CORRECTION: `Http`, `HttpResponse`, and
+   `defaultHttpOverride` are package-private in `io.mist.cli.fault`** → the out-of-package `io.mist.cli.g3`
+   harness CANNOT implement/install a custom Http as-is. A SMALL reviewed seam change to DataIntegrityRuntime
+   is required: widen `Http`/`HttpResponse` to public (or add a public `installHttpOverride(Http)` hook). The
+   oracle LOGIC (extraction/verdict/polling) stays verbatim — only the seam visibility widens. Minimal + safe,
+   but still main_track + test + ≥3-review. (Alternative avoiding an oracle edit: place the custom Http INSIDE
+   `io.mist.cli.fault` with a public installer there — still a visibility addition. Prefer the smallest seam.)
+2. **`ShippingEnqueueHeadToHead`** (mirror of CancelRefundHeadToHead): `run(Stimulus)` sets the Http override,
+   `RestAssured.baseURI = g3.ship.base` (shipping, for the Stimulus POST + comparator SutClient), loads ONE
+   value-delta triple + the blind contract, runs strata natural(S1)+constructed(S2). `runLeg`: `beginRun` →
+   `beforeWriteSupplied(writeEndpoint, corr="shipping#enqueue", null, "name", "shipping-task")` [supplied key
+   name=shipping-task] → `stimulus.postShipping()` → `afterWrite(writeEndpoint, corr, status, body, null)` →
+   `endRun`; comparator = `ContractEvaluator.evaluate(contract, leg, submittedBody, Response(status,body),
+   sutClient)`. `runStratum`: clear→control→inject→fault→clear→`PairedFaultExecutor.evaluate`→printCell.
+3. **`Stimulus` (shipping)**: `Resp postShipping()` = POST `/shipping` `{"id":uuid,"name":uuid}` → (201, body).
+   Simpler than TT (no order graph). Supplied to `run()` by the launcher.
+4. **Injectors** (both `implements FaultInjector`, exec-based like the depth wave's IstioRouteFaultInjector):
+   - **S1 `IstioAmqpSeverInjector`**: inject = `kubectl apply` an Istio L4 AuthorizationPolicy (or EnvoyFilter)
+     DENY on rabbitmq:5672 from shipping (15672 read-back stays up); clear = delete it. (kind CNI ignores
+     NetworkPolicy → must be Istio-sidecar-enforced; both pods have sidecars. VERIFY the sever actually
+     throws the swallow, as scaling rabbitmq→0 did — the surgical version is the run-time mechanism.)
+   - **S2 `RejectPublishInjector`**: inject = `rabbitmqctl set_policy ship-drop ^shipping-task$
+     '{"max-length":1,"overflow":"reject-publish"}' --apply-to queues`; clear = `clear_policy ship-drop`.
+     VERIFIED to give 201 + depth-unchanged + /health green on 3.8.
+5. **Value-delta triple YAML** (one triple, both strata; injector differs — NO fault_flag, harness owns the
+   injector): `write_endpoint: "POST /shipping"`, `readback_endpoint: "GET /api/queues/%2f"`, `dependency:
+   rabbitmq`, `isolation_strategy: supplied`, `readback_mode: value-delta`, `value_probe{match_field: name,
+   value_field: messages}`, `isolation_key: [name]`. (readback_bound unused for value-delta.)
+6. **Comparator contract (BLIND — independent author, freeze-before-reveal, per plan R3 fairness)**: response
+   clauses HTTP_STATUS 201 + the body echoes submitted id/name; PLUS a `/health` liveness clause
+   (shipping-rabbitmq == OK). OPEN DESIGN ITEM: the ContractEvaluator primitive set is {HTTP_STATUS,
+   ENVELOPE_STATUS, ENVELOPE_DATA, MSG_CONTAINS, STATE_GET, NOT_CHECKABLE}; a `/health` liveness assertion
+   ("the shipping-rabbitmq healthcheck reads OK") does not cleanly fit STATE_GET's contains/entity/absent
+   expects → the blind author needs either a STATE_GET variant expressing "entity {service:shipping-rabbitmq}
+   has status OK" or a small evaluator extension. Resolve during the blind-authoring sub-task; if it needs an
+   evaluator primitive, that is a reviewed tool change (main_track + test + ≥3-review). This is the S1-catching
+   clause, so it must be authored fairly, not by me tuning it to lose.
+7. **Test** `ShippingEnqueueHeadToHeadTest`: fake Stimulus + fake Http (canned /api/queues bodies) + recording
+   injector → pin control(depth+1→PRESENT)/fault(depth+0→ABSENT→FIRE) per stratum + the comparator legs;
+   mirror ComparatorRunnerTest/CancelRefundHeadToHead test seams.
+
+**RUN prereqs**: port-forwards shipping:80 + rabbitmq POD:15672 (host-run MIST); the S1 Istio manifest;
+queue-master→0 scaffold; quiescence ≫ ~5s stats lag; rabbitmqctl ground-truth alongside.
+
+**Standing rule**: this is new tool code → unit test + ≥3-cold-review BEFORE any result claim; the reviewed
+oracle (DataIntegrityRuntime/PairedFaultExecutor/ContractEvaluator) stays verbatim. Then: MIST run both
+strata + blind comparator + record + result ≥3-review.
