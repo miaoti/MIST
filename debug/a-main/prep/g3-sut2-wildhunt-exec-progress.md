@@ -84,3 +84,40 @@ image swap; will add a dedicated `mist` admin user for the read-back (3.7+ restr
 
 Cluster state: rabbitmq→1 (up), shipping healthy, queue-master→0 (scaffold), guest perms `.* .* .*`, no
 policies. Next: broker upgrade + control re-verify + S2 reject-publish; then build the g3-style harness.
+
+## Step 2 — COMPLETE: broker upgraded, BOTH strata + read-back empirically verified (2026-07-04)
+**Broker upgrade 3.6.8 → 3.8.34 DONE.** `kubectl set image deploy/rabbitmq rabbitmq=rabbitmq:3.8-management`;
+the 3.8 entrypoint needs to write `/etc/rabbitmq/rabbitmq.conf` but the container had
+`securityContext.readOnlyRootFilesystem:true` (sock-shop hardening) → CrashLoopBackOff. FIX: patched
+`readOnlyRootFilesystem:false` on the rabbitmq container (revert: true) → 3.8.34 booted 3/3. The old 3.6.8 pod
+served throughout the rolling update (no outage). shipping auto-reconnected + redeclared the non-durable
+`shipping-task` queue (/health OK). Added a dedicated read-back user **`mist`/`mist` (administrator, `.* .* .*`)**
+because 3.7+ restricts `guest` to loopback (the mgmt read-back is remote).
+
+- **CONTROL on 3.8 — VERIFIED:** POST /shipping → 201, depth 0→1.
+- **S2 (clean-win) on 3.8 — VERIFIED:** policy `{"max-length":1,"overflow":"reject-publish"}` applies cleanly
+  (3.8 supports `overflow`; queue already ≥1 → new publishes rejected) → POST /shipping → **HTTP 201 + depth
+  unchanged (message lost) + `/health` GREEN**. So a `/health`-aware comparator PASSES both legs → clean MIST
+  win. This is the constructed-realistic stratum, live-confirmed. Reverted (cleared ship-drop policy).
+- **READ-BACK on 3.8 — VERIFIED:** `GET /api/queues/%2f` via **mist:mist** → HTTP 200, JSON array with
+  `{name:"shipping-task", messages:N}`. The value-delta extraction (match_field=name→shipping-task,
+  value_field=messages) binds unchanged. IMPORTANT: the rabbitmq SERVICE exposes only 5672+9090 (NOT 15672) →
+  the mgmt read-back is reachable only via the **pod** (port-forward pod:15672 for host-run MIST, or add 15672
+  to the svc / use pod IP in-cluster). guest is now loopback-only → the harness read-back MUST use mist:mist.
+
+**Both fault strata + control + read-back are empirically confirmed. The plan's experimental feasibility is
+fully validated.** S1 (natural): broker-down → 201 + lost + /health err (diagnosis-gap; verified on 3.6.8, the
+shipping swallow is broker-version-independent — re-confirm on 3.8 with the surgical sever during the run). S2
+(clean win): reject-publish → 201 + lost + /health green (verified on 3.8).
+
+**Standing cluster state (for the run):** rabbitmq 3.8.34 (readOnlyRootFilesystem=false, mist:mist admin user),
+shipping healthy, queue-master→0 (scaffold), guest `.* .* .*`, no policies. END-OF-EXPERIMENT REVERTS: image→
+rabbitmq:3.6.8-management, readOnlyRootFilesystem→true, delete mist user, queue-master→1. S1 surgical sever
+(shipping↛rabbitmq:5672, 15672 read-back stays up) via Istio L4 AuthorizationPolicy/EnvoyFilter = to build.
+
+## Step 3 — NEXT: build the g3-style harness `io.mist.cli.g3.ShippingEnqueueHeadToHead`
+Reuse PairedFaultExecutor.evaluate (MIST) + ContractEvaluator.evaluate (comparator); custom Http override
+(defaultHttpOverride) routing the read-back GET to pod:15672 with mist:mist basic auth; Stimulus = POST
+/shipping {id,name}; injectors = S1 Istio-sever + S2 reject-publish-policy. Value-delta triple: readback "GET
+/api/queues/%2f", match_field=name (supplied key shipping-task), value_field=messages. Unit test + ≥3-review
+before any claim (new tool code, standing rule); oracle stays reviewed-verbatim.
