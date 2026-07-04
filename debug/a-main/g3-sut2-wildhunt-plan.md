@@ -1,9 +1,15 @@
-# SUT-2 wild-hunt plan v2 — the Sock Shop shipping enqueue-swallow (natural async acked-but-lost)
+# SUT-2 wild-hunt plan v3 — the Sock Shop shipping enqueue-swallow (natural async acked-but-lost)
 
-Status: **v2, reconciled from 3-cold-review of v1** (all three ACCEPT-WITH-CHANGES; see
-`g3-comparator-tt/REVIEW-WILDHUNT-PLAN-RECONCILIATION.md`). v1's "clean structural head-to-head win" framing
-was refuted (the service's own `GET /health` reflects broker connectivity) and is replaced by a TT-parity
-**two-stratum** design. Pending a confirming review round before execution. Same loop as TOOL-PLAN vN.
+Status: **v3 — EXECUTION-READY. Two review rounds done, both 3/3.** Round 1 (v1): all three
+ACCEPT-WITH-CHANGES → v2. Round 2 (confirming, v2): all three ACCEPT-WITH-CHANGES with only MINOR/fix-on-paper
+items, none design-breaking (A: "Execute after folding them in; no further re-review of the plan needed").
+v3 folds the round-2 punch-list: S2 primary = verified-feasible queue-policy drop (`overflow: reject-publish`
+/ `max-length`), invalid "unbind" removed, permission-revoke demoted to optional secondary; the two S2
+narratives pre-registered (broker-drop ≠ the shipped swallow); S1 sharpened (comparator detects the OUTAGE,
+not the write-loss — not a "tie"); kill-switch reduces to S1-sufficiency; flaky-stats-DB robustness caveat +
+FP0 load-bearing. See `g3-comparator-tt/REVIEW-WILDHUNT-PLAN-RECONCILIATION.md`. v1's "clean structural win"
+was refuted (the service's own `GET /health` reflects broker connectivity) → TT-parity **two-stratum** design.
+Same loop as TOOL-PLAN vN. **Now executing the §10 step plan.**
 
 ## 0. Thesis (honest scope — a rider that generalizes the accepted TT head-to-head)
 MIST detects a **natural, self-documented async acked-but-lost write** in a standard benchmark microservice
@@ -67,26 +73,44 @@ Queue `shipping-task` exists (`rabbitmqctl list_queues` → `shipping-task 0 0`,
   the durable-effect sink MIST reads would be the consumer's state. General capability claimed = "bind the
   read-back to the write's durable-effect sink," with this SUT a degenerate (transport-only) instance.
 
-## 4. Two strata (TT-parity: a natural tie+diagnosis stratum and a clean-win stratum)
+## 4. Two strata (TT-parity: a natural anchor stratum and a clean-win stratum)
 The self-documented swallow only fires on a real broker/connection failure — which is exactly what `/health`
 detects. So one cell cannot be both "self-documented" and "invisible to a health-aware comparator." Mirror
 the accepted TT design with two strata; the comparator is authored WITH a `/health` liveness clause (maximally
-fair to the comparator / adversarial to MIST) and the outcome is reported honestly per stratum:
+fair to the comparator / adversarial to MIST) and the outcome is reported honestly per stratum. (All three
+reviewers verified the S2-decisive facts: shipping publishes via the **default exchange** as **guest/guest**,
+the only broker user is `guest [administrator]` `.* .* .*`, and **no policies are set** — so a queue policy is
+available and exchange/permission-agnostic.)
 
 - **S1 — natural, self-documented (fault: sever shipping→rabbitmq AMQP 5672, fail-fast abort/RST).**
   `convertAndSend` throws → the swallow fires (confirm the "Accepting anyway…" log + low-latency 201) →
-  message lost. `/health` flips to `err`. Expected: MIST FIREs (acked-but-lost, localized to the specific
-  POST /shipping write); a response-only comparator MISSES; a `/health`-augmented comparator DETECTS the
-  outage but CANNOT localize the lost write → **detection tie, MIST wins on diagnosis/localization** (mirrors
-  the accepted TT natural stratum).
-- **S2 — clean structural win (fault: a `/health`-GREEN publish loss).** Candidate injections, selected
-  empirically in step 2 (whichever keeps `/health` green AND loses the message): (a) revoke the shipping
-  broker user's publish permission (connection stays up → `/health` green; publish denied → lost — test
-  whether this throws-then-swallows, carrying the self-documented log, or is a silent channel-close); (b)
-  queue policy `max-length=0` or unbind `shipping-task` from the default exchange (publish silently dropped,
-  no throw, `/health` green). Expected: 201 + `/health` green + message lost → the comparator PASSes both legs
-  **even with the `/health` clause** → **clean MIST win on detection** (mirrors the accepted TT constructed
-  stratum). Disclose S2's fault as constructed-but-realistic (broker permission/policy misconfig).
+  message lost. `/health` flips to `err`. Expected: MIST FIREs a **per-write** acked-but-lost verdict on the
+  specific POST /shipping write; a response-only comparator MISSES entirely; a `/health`-augmented comparator
+  detects only the **service-global OUTAGE** (its `/health` clause would fire even with ZERO writes) and never
+  asserts that an acked write lost its data. **This is NOT a detection tie** — the comparator detects the
+  outage, MIST detects the write-loss. MIST's edge = a per-write durable-effect verdict vs a global liveness
+  alarm (framed *qualitatively*: the focused harness runs one write type, so "localization" = kind-of-signal,
+  not needle-in-haystack). Mirrors the accepted TT natural stratum (naturalness anchor; makes S2 credible by
+  contrast). The write-up must SHOW the two outputs side by side (MIST: "write Wᵢ acked-but-lost" vs
+  comparator: "shipping-rabbitmq down"), not merely assert "localization."
+- **S2 — clean structural win (fault: a `/health`-GREEN publish loss; NO SUT code change).**
+  **PRIMARY (high-confidence, verified feasible): a broker-side silent drop via a queue policy** — `overflow:
+  reject-publish` (or `max-length` with the queue pre-filled; **verify `max-length: 0` semantics on 3.6.8 in
+  step 2**, as 0 may be rejected / historically mean "unlimited"). Exchange/permission-agnostic (drops at the
+  QUEUE regardless of the default-exchange routing), leaves the AMQP connection up → `/health` GREEN, does not
+  touch `guest` → mgmt read-back intact, queue stays present → observable readable; the publish "succeeds"
+  with no throw → 201, message never lands. This does NOT enter the app's catch — it demonstrates the
+  fire-and-forget-**without-publisher-confirms** anti-pattern (the absent confirm is the real bug), **DISTINCT
+  from S1's shipped-code swallow; keep the two separate in the write-up** (S2 is not "the self-documented
+  bug"). **SECONDARY/OPTIONAL: revoke the `guest` write permission** — only `guest` exists (shared with MIST's
+  reader), so revoke WRITE only, keep configure/read + the administrator tag so the mgmt read survives, and the
+  write regex must EXCLUDE the empty default-exchange name `""` (e.g. `write=^amq`). This variant MAY throw →
+  fire the self-documented swallow (carrying the S1 log flavor); it is fiddly and not required. **Removed:
+  "unbind from the default exchange" is INVALID** (the default binding is immutable; the declared
+  `shipping-task-exchange` is unused by the publish). Expected either way: 201 + `/health` GREEN + message lost
+  → the comparator PASSes both legs **even with the `/health` clause** → **clean MIST win**. Disclose S2 as a
+  constructed-but-realistic infra fault (queue overflow-drop / permission misconfig) against unmodified
+  shipping — arguably cleaner than TT's constructed cell (no code change).
 
 ## 5. Fault mechanics + controls
 - **S1 fault:** Istio EnvoyFilter/VirtualService **abort/RST** (fail-fast, not black-hole — a silent TCP
@@ -114,8 +138,10 @@ do not state an unqualified "comparator PASSes both legs."
    green.
 2. **MIST FIREs** on both fault legs (acked-but-lost) and is **clean on control** (FP 0 over N, with
    quiescence ≫ the stats interval; no false FIRE from read lag).
-3. **Comparator, per stratum:** S1 → detection tie (`/health` flags the outage), MIST wins on
-   diagnosis/localization; S2 → clean MIST win (comparator incl `/health` PASSes both legs).
+3. **Comparator, per stratum:** S1 → the comparator's `/health` clause flags the service-global OUTAGE (NOT
+   the write-loss — it fires even with zero writes), while MIST returns a per-write acked-but-lost verdict;
+   report the two OUTPUTS side by side (not "tie"). S2 → clean MIST win (comparator incl `/health` PASSes
+   both legs).
 4. N-stable across runs; the consumer-off scaffold + read-lag timing disclosed.
 5. **≥3-cold-reviewer ACCEPT** of the plan (this round) and of the result (after the run).
 
@@ -130,24 +156,32 @@ do not state an unqualified "comparator PASSes both legs."
   constructed-but-realistic (disclosed).
 - **R5 async + read-lag:** publish is sync-to-broker (disclaimer doesn't fatally bite), but the HTTP depth
   read lags ~5 s → false-FIRE risk on control → mitigated by quiescence ≫ interval + rabbitmqctl ground-truth.
+  MIST's SOLE observable here rides a partially-unhealthy stats DB (`/api/overview` 500; ~5 s sampling) that
+  could degrade DURING a run, not only before it → the **FP0 control leg is LOAD-BEARING** to rule out
+  read-lag artifacts. Disclosed as a real robustness caveat of the SUT-2 async observable.
 - **R6 sufficiency:** a rider generalizing the accepted head-to-head; value is contingent on S2 giving a real
-  clean win and S1 giving an honest diagnosis-gap tie — both established live, not asserted.
+  clean win (verified feasible via the queue-policy drop) and S1 giving an honest per-write-vs-global-liveness
+  contrast — both established live, not asserted.
 
 ## 9. Framing decision + kill-switch
-**Option A — two-stratum head-to-head** (S1 tie+diagnosis, S2 clean win), blind comparator incl `/health`,
-N-stable. Dominates the v1 "single clean win" (refuted) and the "demo-only" option (wastes the real S2 win).
-**Kill-switch (Option C):** consolidate the three accepted results instead — trigger ONLY if BOTH (a) no
-`/health`-green publish loss (S2) is surgically injectable on this deployment AND (b) the S1 diagnosis-gap
-reframe is judged an insufficient rider. Named so the hunt cannot open-endedly consume effort.
+**Option A — two-stratum head-to-head** (S1 per-write-vs-global-liveness contrast, S2 clean win), blind
+comparator incl `/health`, N-stable. Dominates the v1 "single clean win" (refuted) and the "demo-only" option
+(wastes the real S2 win). **Kill-switch (Option C):** consolidate the three accepted results instead — nominal
+trigger is BOTH (a) no `/health`-green publish loss (S2) is surgically injectable AND (b) the S1 reframe is
+judged an insufficient rider. **In practice (a) is pre-satisfied** — all three reviewers verified the
+queue-policy drop (`overflow: reject-publish` / `max-length`) is exchange- and permission-agnostic and keeps
+`/health` green — so the kill-switch reduces to (b). Named so the hunt cannot open-endedly consume effort.
 
 ## 10. Step plan (each step → verify; executed only after this plan is reviewer-accepted)
 1. **Read-back channel** — confirm mgmt-API depth read from the host/harness; scale `queue-master`→0; verify
    a manual `curl POST /shipping` raises the mgmt-API depth by exactly 1 AND matches `rabbitmqctl`; measure
    the stats lag; set quiescence ≫ it. Verify overview-500 doesn't affect the per-queue read.
 2. **Faults** — S1: author the Envoy abort/RST on egress:5672; verify control(+1)/fault(201,+0), the
-   "Accepting anyway…" log, and mgmt API still 200. S2: try permission-revoke and/or `max-length=0`; select
-   the injection that keeps `/health` green AND loses the message; verify control(+1)/fault(201,+0,/health
-   green). Ground-truth both via rabbitmqctl.
+   "Accepting anyway…" log, and mgmt API still 200. S2 (PRIMARY): apply a queue policy `overflow:
+   reject-publish` (or `max-length` pre-filled; first verify `max-length: 0` is accepted on 3.6.8, else use
+   reject-publish); verify it keeps `/health` GREEN AND loses the message (201, depth +0). S2 optional
+   secondary = write-only permission-revoke (regex excludes `""`). Ground-truth both via rabbitmqctl; record
+   the exact revert for every policy/permission change.
 3. **MIST wiring** — trace POST /shipping; bind value-delta read-back to the depth observable; quiescence
    gate; paired control/fault per stratum. Verify FP0 control + FIRE fault; N-stability.
 4. **Comparator** — blind-author the shipping contract (incl `/health` clause), freeze, run both strata,
