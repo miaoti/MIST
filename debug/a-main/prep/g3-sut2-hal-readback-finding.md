@@ -89,6 +89,25 @@ is singular here anyway; the union rule just keeps it deterministic and general.
   does not fix a key rename. That still needs a reviewed membership alias.
 - Bar v2 unchanged: NOT_EVALUABLE on a degraded gate; report the interval + gate histogram.
 
+## Runbook / known limitations (from the 3-cold-review, commit-folded)
+
+- **Empty-HAL asymmetry in `parsesToCollection` (review F1).** An empty HAL collection —
+  `{"_embedded":{}}` or Spring's omitted-`_embedded` `{"_links":{…}}` — reads as *not a
+  collection* here, asymmetric with empty `{"data":[]}` which reads as a collection. This is
+  **dead for SS-B** (membership uses `beforeWrite`, which never calls `parsesToCollection`), so
+  it does not affect the benign probe. It becomes live only for a *future* value-delta-on-HAL
+  **SUPPLIED** triple: an empty baseline would be recorded as an error instead of a clean empty
+  baseline. Left as a documented limitation (fixing it is speculative — the omitted-`_embedded`
+  case is genuinely indistinguishable from a non-collection single resource). Re-decide before
+  adding a value-delta-on-HAL supplied triple.
+- **Freshened isolation keys are non-numeric (review A4) — VERIFIED ACCEPTED.** `number`
+  (addresses) and `longNum` (cards) are FRESH_STRINGS isolation-key fields, so `freshValueLike`
+  (UUID-aware only) rewrites them to `mist-<hex>` — a non-numeric string. Live-verified the
+  Sock Shop user service (Go + Mongo, schemaless) accepts them: `POST /addresses` with
+  `number="mist-<hex>"` and `POST /cards` with `longNum="mist-<hex>"` both return **HTTP 200**,
+  and the freshened row appears in the HAL read-back. So the probe will not stall with
+  not-acked records on this axis.
+
 ## Verification plan (goal-driven)
 
 1. Implement HAL branch in `extractItems` + `parsesToCollection`. → verify: unit tests below pass.

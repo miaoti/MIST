@@ -940,7 +940,12 @@ public final class DataIntegrityRuntime {
                 return true;
             }
             // HAL: a collection resource with at least one embedded relation
-            // (array or single object). See extractItems.
+            // (array or single object). See extractItems. KNOWN LIMITATION: an
+            // EMPTY HAL collection ({_embedded:{}}, or Spring's omitted-_embedded
+            // {_links:..}) reads false here — asymmetric with empty {data:[]} which
+            // is true. Only matters for a future value-delta-on-HAL SUPPLIED triple
+            // (an empty baseline would record an error, not a clean empty); dead for
+            // SS-B membership. See g3-sut2-hal-readback-finding.md runbook.
             Object embedded = obj.opt("_embedded");
             if (embedded instanceof JSONObject) {
                 JSONObject emb = (JSONObject) embedded;

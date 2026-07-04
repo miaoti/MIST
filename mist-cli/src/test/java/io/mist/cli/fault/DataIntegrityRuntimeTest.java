@@ -351,27 +351,53 @@ public class DataIntegrityRuntimeTest {
         // Sock Shop (Spring HATEOAS) read-backs nest rows under _embedded.<rel>.
         // extractItems must flatten them so membership binds; without this every
         // benign write reads ABSENT (a parsing artifact, not a real miss).
+        // Verbatim-shaped Spring HATEOAS: each item carries its own _links and
+        // _embedded has a sibling top-level _links — both must be ignored by the
+        // top-level-field membership match (review A3/B5/C8c).
         String addresses = "{\"_embedded\":{\"address\":["
-                + "{\"street\":\"SmokeSt\",\"number\":\"111\",\"id\":\"x\"},"
-                + "{\"street\":\"Other\",\"number\":\"9\",\"id\":\"y\"}]}}";
+                + "{\"street\":\"SmokeSt\",\"number\":\"111\",\"country\":\"UK\",\"city\":\"London\","
+                + "\"postcode\":\"AB1 2CD\",\"id\":\"x\",\"_links\":{\"self\":{\"href\":\"http://user/addresses/x\"}}},"
+                + "{\"street\":\"Other\",\"number\":\"9\",\"id\":\"y\","
+                + "\"_links\":{\"self\":{\"href\":\"http://user/addresses/y\"}}}]},"
+                + "\"_links\":{\"self\":{\"href\":\"http://user/addresses\"}}}";
         assertEquals(2, DataIntegrityRuntime.extractItems(addresses).size());
         Map<String, String> key = new HashMap<>();
         key.put("street", "SmokeSt");
         key.put("number", "111");
-        assertTrue("submitted HAL row is present", DataIntegrityRuntime.containsKey(addresses, key));
+        assertTrue("submitted HAL row is present (item _links ignored)",
+                DataIntegrityRuntime.containsKey(addresses, key));
         Map<String, String> absent = new HashMap<>();
         absent.put("street", "Nope");
         absent.put("number", "0");
         assertFalse("un-submitted HAL row is absent", DataIntegrityRuntime.containsKey(addresses, absent));
-        // Multiple relations under _embedded → union (fresh unique keys can't cross).
-        assertEquals(2, DataIntegrityRuntime.extractItems(
-                "{\"_embedded\":{\"address\":[{\"street\":\"A\"}],\"card\":[{\"longNum\":\"1\"}]}}").size());
+        // Multiple relations under _embedded → union, but membership CANNOT stitch a
+        // key across relations: containsKey requires all fields on ONE item (claim 2).
+        String union = "{\"_embedded\":{\"address\":[{\"street\":\"A\",\"number\":\"1\"}],"
+                + "\"card\":[{\"longNum\":\"L9\"}]}}";
+        assertEquals(2, DataIntegrityRuntime.extractItems(union).size());
+        Map<String, String> addrKey = new HashMap<>();
+        addrKey.put("street", "A");
+        addrKey.put("number", "1");
+        assertTrue("address key matches only the address row",
+                DataIntegrityRuntime.containsKey(union, addrKey));
+        Map<String, String> cardKey = new HashMap<>();
+        cardKey.put("longNum", "L9");
+        assertTrue("card key matches only the card row", DataIntegrityRuntime.containsKey(union, cardKey));
+        Map<String, String> split = new HashMap<>();
+        split.put("street", "A");
+        split.put("longNum", "L9");
+        assertFalse("no single row carries fields from two relations",
+                DataIntegrityRuntime.containsKey(union, split));
         // A single embedded resource (HAL to-one) counts as one item.
         assertEquals(1, DataIntegrityRuntime.extractItems(
                 "{\"_embedded\":{\"address\":{\"street\":\"Solo\"}}}").size());
         // Empty HAL collection → zero rows (a legitimate no-value-yet, not garbage).
         assertEquals(0, DataIntegrityRuntime.extractItems("{\"_embedded\":{\"address\":[]}}").size());
         assertEquals(0, DataIntegrityRuntime.extractItems("{\"_embedded\":{}}").size());
+        // Robustness: a relation value that is neither array nor object (scalar or
+        // JSON-null) is skipped, never crashes (review A2/C8b).
+        assertEquals(0, DataIntegrityRuntime.extractItems("{\"_embedded\":{\"address\":\"oops\"}}").size());
+        assertEquals(0, DataIntegrityRuntime.extractItems("{\"_embedded\":{\"address\":null}}").size());
     }
 
     @Test
@@ -383,6 +409,11 @@ public class DataIntegrityRuntimeTest {
         assertEquals(2, DataIntegrityRuntime.extractItems("[{\"a\":1},{\"a\":2}]").size());
         assertEquals(0, DataIntegrityRuntime.extractItems("{\"status\":1,\"data\":null}").size());
         assertEquals(0, DataIntegrityRuntime.extractItems("not json").size());
+        // The load-bearing ordering (all 3 reviewers): a `data` array is taken
+        // FIRST; a coexisting `_embedded` is never consulted. This is exactly the
+        // property the freeze-inertness claim leans on.
+        assertEquals("data array wins over _embedded", 1, DataIntegrityRuntime.extractItems(
+                "{\"data\":[{\"a\":1}],\"_embedded\":{\"address\":[{\"b\":2},{\"b\":3}]}}").size());
     }
 
     @Test
