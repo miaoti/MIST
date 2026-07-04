@@ -1,0 +1,148 @@
+{
+  "gatedMode": "NOT_EVALUATED (needs an observed D-span error; the D-span locator + Toxiproxy backend land at G3)",
+  "fpProbe": {
+    "asyncDisclaimer": "Gate-1 measures the SYNC stratum only. No broker-mediated async write path exists on this SUT (prep/p3-async-path-resolution.md: verdict NEW-INJECTOR-NEEDED), so no async-FP claim is made; async soundness is deferred to G3 with the Option A injector + P2-completeness validation. Any async fraction reported before that is descriptive-only.",
+    "perTriple": {
+      "ss-b-card-create": {
+        "invalidRuns": 0,
+        "gateHistogram": {"OBSERVED_PRESENT": 600},
+        "observedGatedFpFires": 0,
+        "nonTimeoutGatedFpRate": 0,
+        "records": 600,
+        "fpFires": 0,
+        "fpRate": 0,
+        "curveNote": "points are observable only up to the pre-registered cap (10000 ms); absence beyond the cap is censored, so no larger cutoffs are reported",
+        "timeoutGatedFpFires": 0,
+        "ackedBenignRuns": 600,
+        "fpVsTimeoutCurve": [
+          {
+            "fpRate": 0,
+            "timeoutMs": 500
+          },
+          {
+            "fpRate": 0,
+            "timeoutMs": 1000
+          },
+          {
+            "fpRate": 0,
+            "timeoutMs": 2000
+          },
+          {
+            "fpRate": 0,
+            "timeoutMs": 3000
+          },
+          {
+            "fpRate": 0,
+            "timeoutMs": 5000
+          },
+          {
+            "fpRate": 0,
+            "timeoutMs": 7500
+          },
+          {
+            "fpRate": 0,
+            "timeoutMs": 10000
+          }
+        ]
+      },
+      "ss-b-address-create": {
+        "invalidRuns": 0,
+        "gateHistogram": {"OBSERVED_PRESENT": 600},
+        "observedGatedFpFires": 0,
+        "nonTimeoutGatedFpRate": 0,
+        "records": 600,
+        "fpFires": 0,
+        "fpRate": 0,
+        "curveNote": "points are observable only up to the pre-registered cap (10000 ms); absence beyond the cap is censored, so no larger cutoffs are reported",
+        "timeoutGatedFpFires": 0,
+        "ackedBenignRuns": 600,
+        "fpVsTimeoutCurve": [
+          {
+            "fpRate": 0,
+            "timeoutMs": 500
+          },
+          {
+            "fpRate": 0,
+            "timeoutMs": 1000
+          },
+          {
+            "fpRate": 0,
+            "timeoutMs": 2000
+          },
+          {
+            "fpRate": 0,
+            "timeoutMs": 3000
+          },
+          {
+            "fpRate": 0,
+            "timeoutMs": 5000
+          },
+          {
+            "fpRate": 0,
+            "timeoutMs": 7500
+          },
+          {
+            "fpRate": 0,
+            "timeoutMs": 10000
+          }
+        ]
+      }
+    },
+    "fpRule": "per-run: acknowledged (2xx/success) AND key absent from own read-back at the pre-registered cap = false positive on a benign write",
+    "syncFpBar": {
+      "preRegistered": "bar v2: non-timeout-gated sync FP <= 0.05 over >= 20 acked benign runs (plan section 4), evaluable only while the observation gate held (gateResolvedFraction >= 0.5 AND timeoutGatedFraction <= 0.3 \u2014 prep/hardening-wave-spec.md section 1)",
+      "gateResolvedFraction": 1,
+      "verdict": "PASS",
+      "timeoutGatedFraction": 0,
+      "value": 0
+    },
+    "acceptThenDropTrap": "The 2xx-accepted-but-by-design-never-persists trap class has NO representative on TrainTicket: the only by-design drop (contacts dedupe) soft-rejects with body status:0, which the ack rule already excludes (a true negative, not a trap). The residual FP class is therefore covered only by the eventually-consistent-then-correct benign runs measured here.",
+    "stratum": "sync",
+    "aggregate": {
+      "invalidRuns": 0,
+      "gateHistogram": {"OBSERVED_PRESENT": 1200},
+      "observedGatedFpFires": 0,
+      "nonTimeoutGatedFpRate": 0,
+      "records": 1200,
+      "fpFires": 0,
+      "fpRate": 0,
+      "curveNote": "points are observable only up to the pre-registered cap (10000 ms); absence beyond the cap is censored, so no larger cutoffs are reported",
+      "timeoutGatedFpFires": 0,
+      "ackedBenignRuns": 1200,
+      "fpVsTimeoutCurve": [
+        {
+          "fpRate": 0,
+          "timeoutMs": 500
+        },
+        {
+          "fpRate": 0,
+          "timeoutMs": 1000
+        },
+        {
+          "fpRate": 0,
+          "timeoutMs": 2000
+        },
+        {
+          "fpRate": 0,
+          "timeoutMs": 3000
+        },
+        {
+          "fpRate": 0,
+          "timeoutMs": 5000
+        },
+        {
+          "fpRate": 0,
+          "timeoutMs": 7500
+        },
+        {
+          "fpRate": 0,
+          "timeoutMs": 10000
+        }
+      ]
+    }
+  },
+  "fireRule": "pure-differential (headline): fault 2xx-acks-X AND X absent on fault read-back AND control X present; control = systemic FP-guard only",
+  "generatedAtEpochMs": 1783152790111,
+  "runId": "1783149661165",
+  "pairs": []
+}
