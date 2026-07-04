@@ -24,6 +24,18 @@ import java.util.regex.Pattern;
  *                              static field for the whole JVM. The whole MST
  *                              suite makes 1-2 login calls instead of N.</li>
  *   <li>{@code per_test}    - legacy behaviour: a fresh login per test method.</li>
+ *   <li>{@code per_jvm_cookie} - lazy login on first request, but the SESSION
+ *                              COOKIES from the login/register response are cached
+ *                              and attached to every request (no Authorization
+ *                              header). For cookie-session SUTs like Sock Shop
+ *                              (front-end sets {@code logged_in}+{@code md.sid} on
+ *                              POST /register; G3 SUT-2 engineering item iii).
+ *                              {@code ${unique}} in {@code auth.login.username}
+ *                              resolves to a per-JVM suffix so a register-as-login
+ *                              never collides across runs. {@code overrideToken}
+ *                              manipulations and the 401-refresh filter are
+ *                              Authorization-header-centric and do not apply in
+ *                              this mode (documented, not silently emulated).</li>
  * </ul>
  *
  * Configuration is read from {@code System.getProperty(...)} (loaded by
@@ -44,10 +56,15 @@ public final class MstAuthHandler {
 
     private static final Logger log = LogManager.getLogger(MstAuthHandler.class);
 
-    public enum Mode { NONE, STATIC_TOKEN, PER_JVM, PER_TEST }
+    public enum Mode { NONE, STATIC_TOKEN, PER_JVM, PER_TEST, PER_JVM_COOKIE }
 
     private static final Object LOGIN_LOCK = new Object();
     private static volatile String cachedToken;
+    /** PER_JVM_COOKIE: the session cookies captured from the login/register response. */
+    private static volatile io.restassured.http.Cookies cachedCookies;
+    /** Per-JVM suffix for the ${unique} username token (stable across reload()). */
+    private static final String UNIQUE_SUFFIX =
+            Long.toString(System.currentTimeMillis() % 100_000_000L);
     /** nanos when cachedToken was last set — lets the filter skip relogin if token is fresh. */
     private static volatile long tokenSetNanos = 0L;
     private static volatile boolean configLoaded;
@@ -89,11 +106,12 @@ public final class MstAuthHandler {
         // "no auth" rather than silently attempting a login).
         String modeStr = System.getProperty("auth.mode", "none").trim().toLowerCase();
         switch (modeStr) {
-            case "static_token": mode = Mode.STATIC_TOKEN; break;
-            case "per_test":     mode = Mode.PER_TEST; break;
-            case "per_jvm":      mode = Mode.PER_JVM; break;
+            case "static_token":   mode = Mode.STATIC_TOKEN; break;
+            case "per_test":       mode = Mode.PER_TEST; break;
+            case "per_jvm":        mode = Mode.PER_JVM; break;
+            case "per_jvm_cookie": mode = Mode.PER_JVM_COOKIE; break;
             case "none":
-            default:             mode = Mode.NONE; break;
+            default:               mode = Mode.NONE; break;
         }
         tokenHeader        = System.getProperty("auth.token.header", "Authorization");
         tokenPrefix        = System.getProperty("auth.token.prefix", "Bearer ");
@@ -119,6 +137,13 @@ public final class MstAuthHandler {
             }
         }
         cachedToken = null;
+        cachedCookies = null;
+    }
+
+    /** The login username with {@code ${unique}} resolved (package-visible for tests). */
+    static String resolvedLoginUsername() {
+        ensureConfigLoaded();
+        return loginUsername == null ? null : loginUsername.replace("${unique}", UNIQUE_SUFFIX);
     }
 
     /**
@@ -143,6 +168,14 @@ public final class MstAuthHandler {
                 cachedToken = fresh;
                 if (fresh != null) tokenSetNanos = System.nanoTime();
                 return fresh != null;
+            case PER_JVM_COOKIE:
+                if (cachedCookies != null) return true;
+                synchronized (LOGIN_LOCK) {
+                    if (cachedCookies == null) {
+                        cachedCookies = loginForCookies();
+                    }
+                }
+                return cachedCookies != null;
             case PER_JVM:
             default:
                 if (cachedToken != null) return true;
@@ -156,9 +189,10 @@ public final class MstAuthHandler {
         }
     }
 
-    /** Force the next {@link #ensureReady()} (PER_JVM only) to log in again. */
+    /** Force the next {@link #ensureReady()} (PER_JVM / PER_JVM_COOKIE) to log in again. */
     public static void invalidate() {
         cachedToken = null;
+        cachedCookies = null;
         tokenSetNanos = 0L;
     }
 
@@ -196,10 +230,15 @@ public final class MstAuthHandler {
 
     /** True when {@code auth.refresh.on.401=true} (default). Consulted by
      *  {@link MstAuthRefreshFilter}; disabled when mode is NONE or
-     *  STATIC_TOKEN (no point re-logging-in if there is no login flow). */
+     *  STATIC_TOKEN (no point re-logging-in if there is no login flow) and for
+     *  PER_JVM_COOKIE (the filter's retry re-stamps the Authorization HEADER,
+     *  which does not exist in cookie mode; session lifetime is expected to
+     *  exceed a run — disclosed, not silently emulated). */
     public static boolean isRefreshOn401Enabled() {
         ensureConfigLoaded();
-        if (mode == Mode.NONE || mode == Mode.STATIC_TOKEN) return false;
+        if (mode == Mode.NONE || mode == Mode.STATIC_TOKEN || mode == Mode.PER_JVM_COOKIE) {
+            return false;
+        }
         return refreshOn401;
     }
 
@@ -232,6 +271,13 @@ public final class MstAuthHandler {
         ensureConfigLoaded();
         if (disableAuth) return req;
         if (isSkipPath(path)) return req;
+        if (mode == Mode.PER_JVM_COOKIE) {
+            // Cookie-session SUT: attach the cached session cookies; there is no
+            // Authorization header in this mode (overrideToken manipulations are
+            // header-centric and intentionally not emulated — see class doc).
+            io.restassured.http.Cookies cookies = cachedCookies;
+            return (cookies == null || cookies.size() == 0) ? req : req.cookies(cookies);
+        }
         String token = overrideToken;
         if (token == null) token = getDefaultToken();
         if (token == null || token.isEmpty()) return req;
@@ -265,35 +311,7 @@ public final class MstAuthHandler {
      */
     private static String login() {
         try {
-            String body = loginBodyTemplate
-                    .replace("${username}", loginUsername)
-                    .replace("${password}", loginPassword);
-            // Compose a full URL when loginUrl is path-only ("/api/v1/users/login").
-            // RestAssured.post(path) needs RestAssured.baseURI set, which the
-            // writer-emitted setup in generated tests does — but the SUT
-            // preflight runs BEFORE any generated test, so baseURI is unset
-            // and the post hits localhost. base.url is pushed to System
-            // properties by MistMain (see commit fixing this bug).
-            String fullLoginUrl = loginUrl;
-            if (loginUrl != null && !loginUrl.startsWith("http://")
-                                 && !loginUrl.startsWith("https://")) {
-                String base = System.getProperty("base.url", "");
-                if (!base.isEmpty()) {
-                    String sep = (base.endsWith("/") || loginUrl.startsWith("/")) ? "" : "/";
-                    String trimmedBase = base.endsWith("/") && loginUrl.startsWith("/")
-                            ? base.substring(0, base.length() - 1) : base;
-                    fullLoginUrl = trimmedBase + sep + loginUrl;
-                }
-            }
-            log.info("MstAuthHandler: POST {} (mode={}, user={})", fullLoginUrl, mode, loginUsername);
-            Response res = RestAssured.given()
-                    .contentType("application/json")
-                    .body(body)
-                    .when()
-                    .post(fullLoginUrl)
-                    .then()
-                    .statusCode(loginExpectedStatus)
-                    .extract().response();
+            Response res = postLogin();
             String token = res.jsonPath().getString(loginTokenJsonPath);
             if (token == null || token.isEmpty()) {
                 log.error("MstAuthHandler: login succeeded but token at jsonPath '{}' was empty",
@@ -307,5 +325,66 @@ public final class MstAuthHandler {
                     t.getClass().getSimpleName(), t.getMessage());
             return null;
         }
+    }
+
+    /**
+     * PER_JVM_COOKIE: perform the login/register call and capture the SESSION
+     * COOKIES from the response (for Sock Shop: {@code logged_in} + {@code md.sid}
+     * set by POST /register). Returns {@code null} when the call fails or sets no
+     * cookies — the caller then treats requests as auth-less, same contract as
+     * {@link #login()}.
+     */
+    private static io.restassured.http.Cookies loginForCookies() {
+        try {
+            Response res = postLogin();
+            io.restassured.http.Cookies cookies = res.getDetailedCookies();
+            if (cookies == null || cookies.size() == 0) {
+                log.error("MstAuthHandler: cookie login returned no Set-Cookie (url={})", loginUrl);
+                return null;
+            }
+            List<String> names = new ArrayList<>();
+            cookies.asList().forEach(c -> names.add(c.getName()));
+            log.info("MstAuthHandler: cookie login OK, cached session cookies {}", names);
+            return cookies;
+        } catch (Throwable t) {
+            log.error("MstAuthHandler: cookie login failed - {}: {}",
+                    t.getClass().getSimpleName(), t.getMessage());
+            return null;
+        }
+    }
+
+    /** Shared login POST: URL composition + ${username}/${password}/${unique} body build. */
+    private static Response postLogin() {
+        String user = loginUsername.replace("${unique}", UNIQUE_SUFFIX);
+        String body = loginBodyTemplate
+                .replace("${username}", user)
+                .replace("${password}", loginPassword)
+                .replace("${unique}", UNIQUE_SUFFIX);
+        // Compose a full URL when loginUrl is path-only ("/api/v1/users/login").
+        // RestAssured.post(path) needs RestAssured.baseURI set, which the
+        // writer-emitted setup in generated tests does — but the SUT
+        // preflight runs BEFORE any generated test, so baseURI is unset
+        // and the post hits localhost. base.url is pushed to System
+        // properties by MistMain (see commit fixing this bug).
+        String fullLoginUrl = loginUrl;
+        if (loginUrl != null && !loginUrl.startsWith("http://")
+                             && !loginUrl.startsWith("https://")) {
+            String base = System.getProperty("base.url", "");
+            if (!base.isEmpty()) {
+                String sep = (base.endsWith("/") || loginUrl.startsWith("/")) ? "" : "/";
+                String trimmedBase = base.endsWith("/") && loginUrl.startsWith("/")
+                        ? base.substring(0, base.length() - 1) : base;
+                fullLoginUrl = trimmedBase + sep + loginUrl;
+            }
+        }
+        log.info("MstAuthHandler: POST {} (mode={}, user={})", fullLoginUrl, mode, user);
+        return RestAssured.given()
+                .contentType("application/json")
+                .body(body)
+                .when()
+                .post(fullLoginUrl)
+                .then()
+                .statusCode(loginExpectedStatus)
+                .extract().response();
     }
 }

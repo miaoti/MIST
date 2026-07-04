@@ -505,7 +505,8 @@ The core Maven module: OpenAPI spec model, test/input generation, oracle (shape/
 
 | Path | Description |
 |------|-------------|
-| `mist-cli/src/main/java/io/mist/cli/auth/MstAuthHandler.java` | Runtime auth helper for MST-generated tests with configurable login strategy (none/static/per-jvm/per-test), token caching and per-path skip patterns. |
+| `mist-cli/src/main/java/io/mist/cli/auth/MstAuthHandler.java` | Runtime auth helper for MST-generated tests with configurable login strategy (none/static/per-jvm/per-test/per_jvm_cookie), token caching and per-path skip patterns. per_jvm_cookie (G3 SUT-2 eng item iii, live-smoked vs Sock Shop): one register/login per JVM, SESSION COOKIES cached + attached by applyAuth (no Authorization header); ${unique} in auth.login.username/body resolves to a per-JVM suffix so register-as-login never collides; overrideToken + 401-refresh are header-centric and disabled in cookie mode (disclosed) |
+| `mist-cli/src/test/java/io/mist/cli/auth/MstAuthHandlerCookieModeTest.java` | Pins the PER_JVM_COOKIE pure-config contracts: mode parsing, null bearer token, 401-refresh disabled, ${unique} resolution stable + substituted, plain usernames untouched |
 | `mist-cli/src/main/java/io/mist/cli/auth/MstAuthRefreshFilter.java` | REST Assured filter for MST tests that on a 401/403 invalidates the cached JWT, re-logs in, swaps the header and retries the request once. |
 
 ### `mist-cli/src/main/java/io/mist/cli/fault/`
