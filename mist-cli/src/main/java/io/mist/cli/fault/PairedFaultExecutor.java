@@ -249,8 +249,9 @@ public final class PairedFaultExecutor {
      *
      * <p>Public so the G3 head-to-head runner ({@code io.mist.cli.g3}) can reuse this
      * exact, reviewed pure-differential verdict over legs it drives itself (its fault is
-     * a route-scoped EnvoyFilter, not a SUT flag, so it bypasses {@link #execute()} but
-     * must not fork the verdict logic). Behaviour is unchanged — visibility only.
+     * toggled at RUNTIME over HTTP on the SUT — {@code HttpToggleFaultInjector} — so it
+     * bypasses {@link #execute()} but must not fork the verdict logic). Behaviour is
+     * unchanged — visibility only.
      */
     public static List<PairResult> evaluate(List<TargetTripleRegistry.Triple> injectable,
                                      List<DataIntegrityRuntime.RunRecord> controlRecords,

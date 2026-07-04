@@ -130,6 +130,15 @@ public final class TrainTicketStimulus implements CancelRefundHeadToHead.Stimulu
         Response fund = given().header("Authorization", bearer)
                 .get("/api/v1/inside_pay_service/inside_payment/" + userId + "/" + baseFund);
         require(fund, "pre-fund addMoney", userName);
+        // Round-2 review B: a soft-failed 200-{status:0} addMoney would leave a ZERO baseline and
+        // silently regress the value-delta to the contestable appear-vs-absent membership shape.
+        // Gate the ENVELOPE, not just the transport (the harness additionally gates the parsed
+        // baselines per leg — CancelRefundHeadToHead#requirePreFundedBaselines).
+        Integer fundStatus = fund.jsonPath().get("status");
+        if (fundStatus == null || fundStatus != 1) {
+            throw new IllegalStateException("pre-fund addMoney envelope not a real success for "
+                    + userName + ": " + fund.asString());
+        }
 
         // 3) create a PAID order (status 1); the response id is unreliable (see class doc)
         Response create = given().contentType("application/json").header("Authorization", bearer)

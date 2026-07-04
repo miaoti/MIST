@@ -1,4 +1,48 @@
-# G3 head-to-head — ≥3-cold-review reconciliation (round 1)
+# G3 head-to-head — ≥3-cold-review reconciliation (rounds 1 + 2)
+
+## ROUND 2 (re-review of the fixed 3-cell result) — ALL THREE ACCEPT(-WITH-FIXES); fixes landed
+
+Three fresh independent cold reviewers verified the round-1 fixes are SOUND, not merely present
+(raw verdicts: `$CLAUDE_JOB_DIR/tmp/review-R2C-verdict.md` + the A/B emissions):
+- **A: ACCEPT-WITH-FIXES (doc-consistency only)** — "the code, verdict logic, fork faults, and
+  committed run evidence are sound and mutually consistent"; verified at fork-source level that the
+  refund is intrinsically delta-only observable (no endpoint exposes the Money row; /money returns
+  data:null always), so even a generously renamed membership binding cannot catch the clean win.
+- **B: ACCEPT-WITH-FIXES** — "no rerun is required for the three cells' numbers to be trustworthy";
+  verified the pre-fund is purely additive (no confound), directionally safe (a late pre-fund can
+  only suppress FIREs), and the agreement catch is attributable to the STATE clause.
+- **C: ACCEPT-WITH-(MINOR)-FIXES, leaning ACCEPT** — "the numbers can feed the paper"; verified
+  un-contestability compounds: membership passes both legs, the closed set STRUCTURALLY lacks a
+  pre-write snapshot seam, and even binding ALL three NOT_CHECKABLE clauses wouldn't discriminate
+  (the order flips to CANCEL in both legs; ENVELOPE_DATA identical).
+
+### Round-2 disposition (all landed)
+
+| # | Finding (reviewer) | Severity | Disposition |
+|---|---|---|---|
+| R2-1 | Stale ground-truth doc still showed the superseded ZERO-baseline capture while cited as clean-win evidence (A+B converged) | MAJOR | **FIXED** — recaptured byte-level with PRE-FUNDED buyers (both legs PRESENT at 50.00; acks identical; 130.00 vs 50.00); old capture retained as a clearly-marked SUPERSEDED appendix |
+| R2-2 | Pre-fund evidence-only → a soft-failed 200-{0} addMoney could silently regress the cell to the contestable membership shape (B) | MINOR | **FIXED** — stimulus asserts the addMoney envelope `{status:1}`; runner aborts unless both legs' parsed baselines are the SAME POSITIVE number (`requirePreFundedBaselines`); for-record rerun gated (`runs/prefunded-run4-gated.log`, `runs/agreement-run3-gated.log`) |
+| R2-3 | Claim-eligibility (rider-1 joinMode=correlator ∧ correlatorUnique) not asserted in the harness (C) | MINOR | **FIXED** — `requireClaimEligible` hard-asserts in both runners + prints the claim-eligibility line per cell |
+| R2-4 | `HttpToggleFaultInjector.modeOf` accepted any fault family → the agreement createaccount property would silently toggle the DRAWBACK endpoint (A+B) | MINOR | **FIXED** — segment 2 pinned to `drawback` + rejection test (suite 141) |
+| R2-5 | Stale comments: harness javadoc said SutFlagFaultInjector; agreement TODO; `PairedFaultExecutor` javadoc said EnvoyFilter; fork comment claimed an inert `-D` channel (A/B/C) | MINOR | **FIXED** — all four corrected (fork comment on MIST-trainticket) |
+| R2-6 | Image-tag provenance 1.0.4 vs 1.0.5 + N=5 log bookkeeping (A/C) | MINOR | **FIXED** — provenance section in the results doc; all three cells re-verified on the uniform `:1.0.5` (`*-v105.log`, `*-gated.log`) |
+| R2-7 | README omitted the agreement cell (A) | MINOR | **FIXED** — Files + cells table now list all three |
+| R2-8 | Precision nits: agreement envelope is `{1,"Create Account Success"}`; "catches whenever its primitives bind" must stay existence-scoped (A/B/C) | MINOR | **FIXED** — results doc corrected + scoped ("in every cell where …; frequency claims belong to the breadth / Rider-2 round") |
+
+### Standing framing rules for the PAPER (discipline, not artifact defects)
+1. The clean-win claim is scoped to the **response/contract-assertion oracle class**; keep the
+   concession adjacent ("an oracle with snapshot+delta+arithmetic IS MIST"). An unqualified "no
+   baseline can catch this" is an overclaim (C's biggest residual concern).
+2. External validity: one constructed (disclosed) defect, one SUT, one frozen comparator class —
+   expect reviewers to probe how often delta-only observables occur in the wild; the Rider-2
+   bindability fraction is the prepared answer (A's biggest residual concern).
+
+**STATUS: the 3-cell head-to-head result is REVIEWER-ACCEPTED for feeding paper claims** (round-1
+fix wave + round-2 verification, all findings landed), subject to the two standing framing rules.
+
+---
+
+# Round 1 (original review of the 2-cell result)
 
 Three independent cold reviewers (A/B/C, no shared context) reviewed the cancel→refund head-to-head
 (harness + frozen bindings + results + fork faults + the source faithfulness). Raw verdicts:
@@ -40,7 +84,6 @@ framing gap. This drove the primary fix.
 
 ## Re-review plan
 
-All 12 findings are FIXED/DISCLOSED (the agreement anchor is now built). Next: a fresh ≥3-cold
-re-review (round 2) of the complete 3-cell result — verify the round-1 fixes are sound (especially
-the pre-fund making the clean win a genuine arithmetic delta, and the agreement anchor being a fair
-both-catch demonstration) and that the claims now hold, before any number feeds a paper claim.
+All 12 round-1 findings were FIXED/DISCLOSED; the round-2 re-review then ran and accepted — see the
+ROUND 2 section at the top of this file for its verdicts, disposition table, and the two standing
+framing rules.

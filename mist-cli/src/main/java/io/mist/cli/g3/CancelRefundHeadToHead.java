@@ -157,8 +157,42 @@ public final class CancelRefundHeadToHead {
         List<PairedFaultExecutor.PairResult> mist = PairedFaultExecutor.evaluate(
                 Collections.singletonList(triple), control.mistRecords, fault.mistRecords);
         requireClaimEligible(mist);
+        requirePreFundedBaselines(control.mistRecords, fault.mistRecords);
         printCell(stratum, mist, control.comparator, fault.comparator);
         printProbeValues(control.mistRecords, fault.mistRecords);
+    }
+
+    /**
+     * Round-2 review B gate: the clean win's un-contestability REQUIRES a non-zero pre-funded
+     * baseline PRESENT in both legs (a silently soft-failed pre-fund would regress the value-delta
+     * to the contestable appear-vs-absent membership shape with no verdict-level signal). Both
+     * legs' probe baselines must parse to the SAME POSITIVE number, or the cell aborts instead of
+     * printing a mislabeled verdict. (The agreement runner does NOT use this gate — its membership
+     * cell intentionally starts from an absent baseline.)
+     */
+    private static void requirePreFundedBaselines(List<DataIntegrityRuntime.RunRecord> control,
+                                                  List<DataIntegrityRuntime.RunRecord> fault) {
+        java.math.BigDecimal c = parsedBaseline(control);
+        java.math.BigDecimal f = parsedBaseline(fault);
+        if (c == null || f == null || c.signum() <= 0 || c.compareTo(f) != 0) {
+            throw new IllegalStateException("pre-funded-baseline gate violated: control baseline="
+                    + c + ", fault baseline=" + f + " (need the SAME POSITIVE baseline in both legs;"
+                    + " see TrainTicketStimulus#baseFund)");
+        }
+    }
+
+    private static java.math.BigDecimal parsedBaseline(List<DataIntegrityRuntime.RunRecord> records) {
+        if (records == null || records.isEmpty()) {
+            return null;
+        }
+        DataIntegrityRuntime.RunRecord r = records.get(records.size() - 1);
+        String userId = r.isolationKey == null ? null : r.isolationKey.get("userId");
+        String balance = balanceOf(r.baselineBody, userId);
+        try {
+            return new java.math.BigDecimal(balance.trim());
+        } catch (NumberFormatException e) {
+            return null; // <ABSENT>/<no-read> markers land here → the gate throws
+        }
     }
 
     /**

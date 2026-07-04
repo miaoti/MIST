@@ -28,14 +28,21 @@ JAVA_TOOL_OPTIONS `-D` flag rollout (`SutFlagFaultInjector`).
 - `target-triples-constructed.yaml` — same triple with `fault_flag`
   `mist.fault.drawback.fabricatedack.enabled`: drawBack returns the exact success envelope without
   persisting → clean `{1,"Success."}`, refund lost. Needs the **fork-built** inside-payment image.
+- `target-triples-agreement.yaml` — the AGREEMENT anchor: a body-carrying createAccount write
+  (POST `{userId, money}`) with MEMBERSHIP read-back on `/inside_payment/account` and the fork's
+  createAccount fabricated-ack (runtime toggle `…/test/createfaultmode/{mode}`). Runner:
+  `io.mist.cli.g3.AccountCreateAgreement`; bindings:
+  `debug/a-main/g3-comparator-tt/assertion-bindings-account-create.yaml` (its STATE_GET BINDS on
+  the submitted userId). Needs the fork `:1.0.5` image.
 - `drawback-abort-envoyfilter.yaml` — the rejected EnvoyFilter mesh abort, retained for the
   connection-pool-race finding only (NOT used by the harness).
 
-## Strata (expected results — N=5 stable, runs/prefunded-*.log)
-| stratum | fault → cancel (fault leg) | comparator | MIST B2 |
+## Cells (expected results — N=5 stable each, runs/*.log)
+| cell | write / fault (fault leg) | comparator | MIST B2 |
 |---------|---------------------------|------------|---------|
-| natural | drawback throws → `{1,"error"}` | FLAG (msg gate) → **CAUGHT** | FIRE → detection tie + MIST diagnostic edge |
-| constructed | fabricated-ack → `{1,"Success."}` | PASS → **MISSED** | FIRE → clean MIST win |
+| natural | bodyless cancel; drawback throws → `{1,"error"}` | FLAG (msg gate) → **CAUGHT** | FIRE → detection tie + MIST diagnostic edge |
+| constructed | bodyless cancel; fabricated-ack → `{1,"Success."}` | PASS → **MISSED** | FIRE → clean MIST win |
+| agreement | body-carrying create; fabricated-ack → `{1,"Create Account Success"}` | STATE_GET binds → **CAUGHT** | FIRE → both catch (no strawman) |
 
 Control leg never flags. The constructed miss is un-contestable: with the pre-funded buyer the
 value-delta is a real arithmetic delta (`50.00 → 130.00` control vs `50.00` fault), so membership

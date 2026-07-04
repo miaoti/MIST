@@ -16,12 +16,14 @@ are folded in below; a re-review gates these numbers before they feed any claim.
 |---|---|---|---|
 | **natural** | bodyless cancel; drawBack throws → `{1,"error"}` | **FIRE** | **CAUGHT** (msg gate) |
 | **constructed** | bodyless cancel; fabricated-ack → `{1,"Success."}` | **FIRE** | **MISSED** (clean win) |
-| **agreement** | body-carrying createAccount; fabricated-ack → `{1,"Success"}` | **FIRE** | **CAUGHT** (STATE_GET binds) |
+| **agreement** | body-carrying createAccount; fabricated-ack → `{1,"Create Account Success"}` | **FIRE** | **CAUGHT** (STATE_GET binds) |
 
-The three cells together are the argument: the comparator CATCHES whenever its primitives bind
-(natural via the response msg gate; agreement via a STATE_GET on the body-carrying create), and
-MISSES only the constructed clean win — a bodyless write whose sole observable is a numeric delta.
-So MIST's win is attributable to the value-delta capability, not to a rigged baseline.
+The three cells together are the argument: in every cell where the comparator's primitives BIND it
+CATCHES (natural via the response msg gate; agreement via a STATE_GET on the body-carrying create),
+and it MISSES only the constructed clean win — a bodyless write whose sole observable is a numeric
+delta. So MIST's win is attributable to the value-delta capability, not to a rigged baseline. (This
+is a three-cell existence demonstration on this scenario; frequency claims belong to the breadth /
+Rider-2 bindability round.)
 
 ```
 === stratum: natural ===
@@ -135,6 +137,11 @@ failure modes are about the SUT caller's client-side caching, not MIST:
   so the executor's isolation tripwire cannot fire; isolation relies on the harness registering a
   FRESH pre-funded buyer per leg. The pre-write baseline **stability double-read** catches a
   still-settling baseline (→ error, not FIRE).
+- **The pre-fund itself IS machine-gated** (round-2 review B): the stimulus asserts the addMoney
+  envelope is a real `{status:1}` (a soft-failed 200-`{0}` would silently regress the cell to the
+  contestable membership shape), and the runner aborts the cell unless both legs' parsed baselines
+  are the SAME POSITIVE number (`requirePreFundedBaselines`) — the clean-win label can no longer be
+  printed for a degenerate configuration.
 - **Traceless timeout-gate.** The sidecar-free cancel is traceless → the fault-leg absence is
   `TIMEOUT_ABSENT`, not `OBSERVED_COMPLETE_ABSENT`. This is a confidence-label limitation, not a
   false-FIRE: the control leg observes the refund on ~the first poll, the injected loss is permanent,

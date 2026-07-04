@@ -22,4 +22,12 @@ public class HttpToggleFaultInjectorTest {
     public void modeOf_rejectsAPropertyWithTooFewSegments() {
         HttpToggleFaultInjector.modeOf(new FaultInjector.FaultTarget("ts-inside-payment-service", "too.short"));
     }
+
+    @Test(expected = FaultInjector.FaultInjectionException.class)
+    public void modeOf_rejectsANonDrawbackFaultFamily() {
+        // the agreement triple's createaccount property must NOT silently toggle the drawback
+        // endpoint (round-2 review A/B)
+        HttpToggleFaultInjector.modeOf(new FaultInjector.FaultTarget(
+                "ts-inside-payment-service", "mist.fault.createaccount.fabricatedack.enabled"));
+    }
 }

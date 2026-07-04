@@ -47,12 +47,19 @@ public final class HttpToggleFaultInjector implements FaultInjector {
         set("none", "CLEAR " + target);
     }
 
-    /** {@code mist.fault.drawback.fail.enabled} → {@code fail}; {@code ...fabricatedack...} → {@code fabricatedack}. */
+    /**
+     * {@code mist.fault.drawback.fail.enabled} → {@code fail}; {@code ...fabricatedack...} →
+     * {@code fabricatedack}. The fault family (segment 2) MUST be {@code drawback}: this injector
+     * drives ONLY inside-payment's drawback faultmode endpoint, so accepting another family's
+     * property (e.g. the agreement triple's {@code mist.fault.createaccount.fabricatedack.enabled})
+     * would silently toggle the WRONG fault (round-2 review A/B).
+     */
     static String modeOf(FaultTarget target) {
         String[] parts = target.property.split("\\.");
-        if (parts.length < 4 || parts[3].trim().isEmpty()) {
-            throw new FaultInjectionException("cannot derive a fault mode from property '"
-                    + target.property + "' (expected mist.fault.drawback.<mode>.enabled)");
+        if (parts.length < 4 || !"drawback".equals(parts[2]) || parts[3].trim().isEmpty()) {
+            throw new FaultInjectionException("cannot derive a DRAWBACK fault mode from property '"
+                    + target.property + "' (expected mist.fault.drawback.<mode>.enabled; this"
+                    + " injector toggles only the drawback faultmode endpoint)");
         }
         return parts[3];
     }
