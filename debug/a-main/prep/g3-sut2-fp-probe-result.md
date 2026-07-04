@@ -1,7 +1,7 @@
 # SUT-2 (Sock Shop) benign FP probe — RESULT OF RECORD
 
 **Date:** 2026-07-04 · **Phase:** G3 β external-validity (prereg C-pin 4, bar v2)
-**Status:** result captured; pending ≥3-cold-review of the RESULT.
+**Status:** RESULT REVIEWER-ACCEPTED (3× ACCEPT-WITH-FIXES, all folded — `REVIEW-SUT2-FP-RECONCILIATION.md`).
 **Evidence (committed):** `g3-sut2-fp-probe-report.json` (machine-readable), `g3-sut2-fp-probe-records.log`
 (the 1200 raw benign records). Run dir (gitignored): `evaluation/suts/sockshop/.runtime/`, runId `1783149661165`.
 
@@ -26,8 +26,8 @@ benign runs, evaluable only while the gate held (gateResolvedFraction ≥ 0.5 AN
 timeoutGatedFraction ≤ 0.3). **The reported FP interval `[observed-gated/acked, fires/acked]` = [0, 0].**
 
 **fpVsTimeoutCurve:** FP = 0 at every pre-registered cutoff (500 / 1000 / 2000 / 3000 / 5000 / 7500
-/ 10000 ms) — the zero is not a timeout artifact; every benign write appeared well within the cap
-(observed `polls=1`, ~12–19 ms).
+/ 10000 ms) — the zero is not a timeout artifact; every benign write appeared on the **first poll**,
+elapsed **9–38 ms** (all ≪ the 500 ms smallest cutoff).
 
 ## Setup (reproducible)
 
@@ -76,22 +76,68 @@ comment header, not a record.)
   injected and there is no control-vs-fault differential pair — the FP probe IS the whole SUT-2
   deliverable (per `g3-sut2-triples-prereg.md` C-pin 2: carts/orders honestly 5xx on Mongo failure,
   so Sock Shop has no constructed positives; SUT-2 = FP/breadth + wild-hunt only).
-- **Async disclaimer:** Gate-1/this probe measure the SYNC stratum only; no broker-mediated async
-  write path is claimed. (report `fpProbe.asyncDisclaimer`.)
-- **Accept-then-drop trap:** disclosed as having no representative on this stratum (report field).
 - **`gatedMode: NOT_EVALUATED`** is the async/D-span gated mode (deferred to G3), orthogonal to the
   sync FP probe reported here.
 
+### Disclosure-field provenance (review C — READ THIS with the committed JSON)
+Two string fields in `g3-sut2-fp-probe-report.json` are **reused Gate-1 constants** emitted verbatim
+by the shared `PairedFaultExecutor` fpProbe emitter for EVERY SUT — they were authored for
+TrainTicket and are **not** SUT-2-specific analysis. Do not read them as claims about Sock Shop:
+- **`asyncDisclaimer`** literally says "No broker-mediated async write path exists on this SUT." That
+  is the TrainTicket analysis and is **FALSE as a statement about Sock Shop**, which DOES run a broker
+  (RabbitMQ: orders → shipping → queue-master). It is true only of the **measured** SS-B write path
+  (`POST /addresses|/cards` are synchronous single-doc Mongo writes, no broker on that path). The
+  correct SUT-2 reading: this probe measures the SYNC SS-B stratum; **no async-FP claim is made**
+  either way; Sock Shop's async surface (SS-C orders/shipping) is out of scope here (branch β,
+  wild-hunt candidate only). The code constant is left unchanged (it is frozen Gate-1 wording used by
+  the TT reports); this note is the SUT-2 correction of record.
+- **`acceptThenDropTrap`** similarly analyzes TrainTicket's contacts-dedupe and says "no representative
+  on TrainTicket." For Sock Shop the correct reading is simply: no by-design accept-then-drop trap was
+  exercised on the SS-B path (benign-only, faulty.ratio=0). Reused constant, not SS analysis.
+
+## Threats to validity / scope (from the 3-cold-review — all three converged)
+
+- **The quiescence/gate machinery was NOT exercised on this SUT.** All 1200 writes were present on the
+  FIRST poll (9–38 ms), so the observation gate never had to discriminate — every record is
+  `OBSERVED_PRESENT` because nothing was ever transiently absent, not because the gate resolved a hard
+  case. Sock Shop's SS-B is a synchronously-consistent single-doc Mongo write, so the delay-induced
+  false-absent vector (a benign write momentarily absent then appearing — the exact case bar-v2's
+  timeout gate + trace-settle exist to handle, where a naive oracle WOULD false-fire) is **not part of
+  this SUT-2 evidence**; that rests on TT Gate-1 (0/2127 with a real gate-resolution histogram). So
+  SUT-2 demonstrates external validity of the **HAL parsing + exact-match membership + cookie auth** on
+  a second collection encoding — **not** of the quiescence machinery.
+- **Pseudo-replication — 1200 is correlated, not 1200 i.i.d. designs.** 1200 = 30 pre-registered
+  iterations × 40 generated write-shapes (2 endpoints × 20 variants). Freshening makes every one a
+  genuinely distinct membership trial (1200 unique keys verified), so "0 over 1200 acked writes" and
+  the observed interval `[0,0]` are literal and honest, and the ≥20-run bar is met (1200 aggregate,
+  600/triple). **But** the effective count of independent DESIGNS is ~40 (really 2 write endpoints);
+  any paper-stage confidence interval must use that correlated structure, NOT treat n=1200 as 1200
+  independent scenarios. The `[0,0]` here is a **descriptive observed interval, not a CI**.
+- **`readback_bound: 500` was not exercised.** The bound guard sits only on the ABSENT path
+  (reached after a timeout with `present=false`); with zero absences it never triggered. "Bound
+  honored on SS-B" rests on the unit tests, not this run. Immaterial to FP=0 (an exact fresh-key match
+  on a growing collection cannot yield a false PRESENT).
+- **Provenance.** The machine report `g3-sut2-fp-probe-report.json` is committed; the 1200 raw records
+  (`g3-sut2-fp-probe-records.log`) are a grep-extraction from the **gitignored** `.runtime/logs/mist.log`
+  (the full run dir is not committed — standard for this result class). Internal consistency is
+  complete (report ↔ extracted records ↔ code-computed bar all reconcile; 1200 unique keys over
+  monotonic timestamps spanning ~43 min), so the extraction faithfully represents the run.
+
 ## What it supports / does NOT claim
 
-- **Supports:** external validity of the oracle's FALSE-POSITIVE behavior — on a second,
-  independently-built system with a different collection encoding (HAL) and a different auth model
-  (cookies), the benign FP rate is 0.0 with a fully-resolved gate. This is the SUT-2 half of the
-  generalization story (the TT half is Gate-1's 0/2127).
-- **Does NOT claim:** any SUT-2 detection/constructed-positive result (branch β has none by design);
-  any async-FP result; any breadth-bindability claim (that is Rider-2, separate). External-validity
+- **Supports:** external validity of the oracle's FALSE-POSITIVE behavior on plain synchronous entity
+  CRUD — on a second, independently-built system with a different collection encoding (HAL/HATEOAS
+  `_embedded`) and a different auth model (cookie sessions), the benign FP rate is 0.0 with a
+  fully-resolved gate. Concretely this validates the **HAL read-back parsing + exact-match membership +
+  cookie-auth read-back** path. This is the SUT-2 half of the generalization story; the TT half
+  (Gate-1's 0/2127) is what validates the quiescence/gate machinery under real absence.
+- **Does NOT claim:** any SUT-2 detection/constructed-positive result (branch β has none by design —
+  carts/orders honestly 5xx on Mongo failure); any async-FP result (Sock Shop HAS a broker, but its
+  async surface is out of scope here); any quiescence-machinery robustness (not stressed on this
+  sync-consistent SUT); any breadth-bindability claim (that is Rider-2, separate). External validity
   of the DETECTION shape remains the TT head-to-head + the Rider-2 bindability fraction.
 
 ## Next
-≥3 independent cold reviewers on THIS result (report↔records consistency; bar-v2 compliance;
-gate-resolution soundness; HAL-dependency disclosure; no overclaim). Then update memory + FILE_INDEX.
+FP arc CLOSED (3-cold-reviewed, all fixes folded). Remaining SUT-2 β work: generalization + wild-hunt
+(SS-C shipping enqueue-swallow, trace-gated) — secondary. Primary next deliverable: the executable
+breadth-bindings YAML for TrainTicket (Rider-2), which needs the env swapped back (Sock Shop → 0, TT → up).
