@@ -115,6 +115,22 @@ shipping healthy, queue-master→0 (scaffold), guest `.* .* .*`, no policies. EN
 rabbitmq:3.6.8-management, readOnlyRootFilesystem→true, delete mist user, queue-master→1. S1 surgical sever
 (shipping↛rabbitmq:5672, 15672 read-back stays up) via Istio L4 AuthorizationPolicy/EnvoyFilter = to build.
 
+## Step 3 — HARNESS BUILT + UNIT-TESTED (commit f57dc7d; full mist-cli suite 158 green)
+Built exactly to the blueprint below. Files: `ShippingEnqueueHeadToHead` (orchestration + Stimulus +
+Fault + StratumResult), `ShippingReadbackHttp` (read-back Http override → mgmt API), `RabbitPolicyInjector`
+(S2 reject-publish via mgmt PUT/DELETE + applied-policy convergence poll), `IstioAmqpSeverInjector` (S1
+kubectl sever + /health-body convergence probe), `ShippingEnqueueHeadToHeadTest` (3 tests). The Http seam
+(`Http`/`HttpResponse`/`installHttpOverride`) was widened to PUBLIC in DataIntegrityRuntime — logic verbatim,
+all 34 DataIntegrityRuntimeTest + everything else still green. Two blueprint findings CONFIRMED against source:
+(1) `STATE_GET` expect is only `contains-submitted-fields|absent` → a `/health` liveness clause genuinely
+needs a blind-author decision / possible primitive; (2) bare-array read-back parses (extractItems line 899).
+The unit test pins the core claim: MIST FIRE (acked-but-lost, correlator-unique) while a response-only
+comparator misses BOTH legs; a violated contract flags both legs (not vacuous); fault cleared on exception.
+**NEXT: (a) ≥3-cold-review this tool code (standing rule, before any result claim); (b) author deploy
+artifacts — the value-delta triple YAML + the Istio sever manifest (config) + the BLIND comparator contract
+(independent author, incl. the /health-clause decision); (c) live run both strata + comparator + record +
+result ≥3-review.**
+
 ## Step 3 — BUILD BLUEPRINT for the g3-style harness (think-before-coding; ~350 LOC new, oracle unchanged)
 Verified the full CancelRefundHeadToHead pattern + the Http seam. The shipping harness mirrors it with 2
 differences: (a) the read-back is a DIFFERENT host + basic auth → override the Http seam; (b) two
