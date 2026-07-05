@@ -428,6 +428,41 @@ public class TargetTripleRegistryTest {
     }
 
     @Test
+    public void shippedShippingTriple_parsesToTheEnqueueValueDelta() throws Exception {
+        // The committed Sock Shop shipping-enqueue registry (evaluation/suts/sockshop/g3) must
+        // parse through the reviewed loader to the supplied+value-delta enqueue triple whose
+        // read-back is the broker-mgmt queue depth (name->shipping-task, messages) — and with
+        // NO fault_flag, because the head-to-head harness owns fault injection per stratum.
+        java.nio.file.Path g3 = locateSockShopG3Dir();
+        TargetTripleRegistry.Registry reg =
+                TargetTripleRegistry.load(g3.resolve("target-triple-shipping.yaml"));
+        assertEquals(1, reg.triples.size());
+        TargetTripleRegistry.Triple t = reg.triples.get(0);
+        assertEquals("shipping-enqueue", t.name);
+        assertEquals("POST /shipping", t.writeEndpoint);
+        assertEquals(TargetTripleRegistry.IsolationStrategy.SUPPLIED, t.isolationStrategy);
+        assertEquals(java.util.Arrays.asList("name"), t.isolationKey);
+        assertEquals(TargetTripleRegistry.ReadbackMode.VALUE_DELTA, t.readbackMode);
+        assertEquals("name", t.valueProbe.matchField);
+        assertEquals("messages", t.valueProbe.valueField);
+        org.junit.Assert.assertNull("the harness owns the fault (no SUT flag)", t.faultFlag);
+        assertEquals("kind-mist", reg.cluster.context);
+        assertEquals("sock-shop", reg.cluster.namespace);
+    }
+
+    private static java.nio.file.Path locateSockShopG3Dir() {
+        for (String rel : new String[]{
+                "../evaluation/suts/sockshop/g3", "evaluation/suts/sockshop/g3"}) {
+            java.nio.file.Path p = java.nio.file.Paths.get(rel);
+            if (java.nio.file.Files.isDirectory(p)) {
+                return p;
+            }
+        }
+        throw new IllegalStateException("cannot locate evaluation/suts/sockshop/g3 from "
+                + java.nio.file.Paths.get("").toAbsolutePath());
+    }
+
+    @Test
     public void valueDelta_withReadbackBound_fails() {
         // Review DEPTH-A F2: the bound is a membership-absence guard; in
         // value-delta a truncated list must surface as an error instead.

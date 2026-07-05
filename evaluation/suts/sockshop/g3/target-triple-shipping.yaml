@@ -1,0 +1,34 @@
+# G3 breadth head-to-head — Sock Shop shipping-enqueue value-delta triple.
+#
+# The write POST /shipping is a fire-and-forget enqueue onto the RabbitMQ "shipping-task"
+# queue (ShippingController.postShipping swallows any convertAndSend exception and returns
+# 201 unconditionally). Its durable effect is therefore observed on the BROKER management
+# API, not the SUT: the read-back GET /api/queues/%2f returns a bare JSON array of queue
+# objects, and the value-delta probe matches the item whose name == "shipping-task" and
+# reads its "messages" (depth). ShippingReadbackHttp (installed via installHttpOverride)
+# routes this GET at the mgmt API with basic auth; the reviewed oracle is unchanged.
+#
+# ONE triple serves BOTH strata (natural sever + constructed reject-publish); the fault is
+# supplied by the harness's Fault injector per stratum, so there is NO fault_flag here.
+# RUNBOOK: queue-master is scaffolded to 0 so the queue depth is monotonic during a run
+# (control moves depth baseline->baseline+1 = X present; a faulted leg leaves depth at its
+# own baseline = X absent -> FIRE). The mgmt read-back uses a dedicated mist:mist admin user
+# (guest is loopback-only on RabbitMQ 3.7+). Pinned against the reviewed loader by
+# ShippingEnqueueHeadToHeadTest (same schema).
+cluster:
+  context: kind-mist
+  namespace: sock-shop
+  # rollout_timeout_s retained for schema completeness; the harness owns fault injection
+  # (Istio sever / reject-publish policy), so no Deployment rollout is awaited here.
+  rollout_timeout_s: 60
+triples:
+  - name: shipping-enqueue
+    write_endpoint: "POST /shipping"
+    dependency: rabbitmq
+    readback_endpoint: "GET /api/queues/%2f"
+    isolation_key: [name]
+    isolation_strategy: supplied
+    readback_mode: value-delta
+    value_probe:
+      match_field: name
+      value_field: messages
