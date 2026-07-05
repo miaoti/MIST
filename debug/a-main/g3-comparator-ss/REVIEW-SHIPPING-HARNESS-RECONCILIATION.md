@@ -81,3 +81,20 @@ collection key (→ binds /health broker+app liveness).
 Recommendation: **Option 1** — it is the anti-strawman-correct choice and makes the constructed-stratum win
 demonstrated + robust. Deferred to the user (contribution-framing + scope). Contract + notes:
 debug/a-main/g3-comparator-ss/blind-shipping-contract{,.-notes}.md.
+
+## DECISION (user, 2026-07-04): OPTION 1 — P2 IMPLEMENTED
+P2 = STATE_GET expect **`contains-literal-fields`**: membership by literal `name=value` constraints over a
+collection, with a configurable **`collection_key`** to unwrap `{health:[..]}` (which the default
+array/{data}/{_embedded} shapes do not cover). Implemented ENTIRELY in the comparator package —
+`AssertionBindings` (allowed key + Check.collectionKey + parse validation: each field must be `name=value`) and
+`ContractEvaluator` (presenceSatisfied dispatch + containsLiteralFields + literalItems) — the reviewed oracle
+`DataIntegrityRuntime` is untouched. Tests: `ContractEvaluatorLiteralFieldsTest` (6: matcher PASS/FAIL/absent/
+bare-array + full STATE_GET flow PASS-healthy / FAIL-broker-err / transport-fail) + `AssertionBindingsTest` (+3:
+parse + a load pin of the amended contract), full mist-cli suite **171 green**. The frozen contract's `/health`
+clause is amended (DISCLOSED, pre-run, per the TT A2/A3 precedent) from NOT_CHECKABLE to TWO bound liveness
+checks (service=shipping-rabbitmq,status=OK + service=shipping,status=OK). Behaviour: natural sever → broker
+entry flips to `err` → first check FAILs → comparator CATCHES the outage (diagnosis gap; MIST additionally
+localizes the lost enqueue); constructed reject-publish → `/health` green → both checks PASS → comparator
+MISSES → the clean MIST win, now robust to "just add a health check". **NEXT: ≥3-cold-review P2 (new comparator
+primitive + the amendment) before any claim; then the live run (Istio sever manifest + ShippingStimulus +
+both strata + result ≥3-review).**

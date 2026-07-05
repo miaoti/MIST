@@ -59,5 +59,30 @@ endpoints:
             reason: "The true success postcondition — that the shipment reached the 'shipping-task' queue — has NO black-box HTTP observable on this service: shipping persists nothing queryable (GET /shipping and GET /shipping/{id} are hardcoded text/plain stubs, not reads of the created resource), and the enqueue outcome lives in RabbitMQ / queue-master, off this service's HTTP surface. No closed primitive — indeed no single-response HTTP oracle over this service alone — can observe it. This is the core acked-but-lost gap on POST /shipping; catching it requires a cross-service, broker-state, or differential observable outside the closed set (exactly what MIST's trace / differential oracle adds)."
       - cite: "GET /health (200 OK) reports a 'health' list with entries service='shipping-rabbitmq' status='OK'|'err' and service='shipping' status='OK'; the rabbitmq entry's status flips to 'err' when the broker is down (rabbitmq.setStatus('err')), while the HTTP code stays 200. A diligent success oracle would assert both the broker and app entries report status=='OK' (service plus message broker up). Verified live: both 'OK' with the broker healthy."
         checks:
-          - primitive: NOT_CHECKABLE
-            reason: "STATE_GET cannot express health/broker liveness, for two independent reasons. (1) No LITERAL matching: both presence expects (contains-submitted-fields, entity-matches-submitted-fields) key ONLY on the SUBMITTED body field VALUES {id,name}, which never appear in /health, so there is no way to assert an expected literal such as service=='shipping-rabbitmq' AND status=='OK'; the 'absent' expect only tests absence of the submitted key. (2) Collection shape plus HTTP code: DataIntegrityRuntime.extractItems unwraps only a bare array, a {data:[..]} envelope, or {_embedded:..}; the /health list is nested under the custom key 'health', so extractItems returns EMPTY and any membership check sees no items. Reachability is a useless broker oracle here anyway: /health returns HTTP 200 even when the broker is down (the failure shows only as in-body status 'err', never the HTTP status), and a non-2xx decisive read would be reclassified transportFailure -> comparator-infra-failure, never a detection. Expressing this needs a literal-match STATE_GET expect over a named collection entry plus a configurable collection key — see blind-shipping-contract-notes.md."
+          # AMENDMENT (post-P2, pre-run, DISCLOSED). The blind author originally recorded this
+          # clause NOT_CHECKABLE because the closed primitive set could not SOUNDLY express broker
+          # liveness (two obstructions: STATE_GET has no LITERAL matching — its presence expects key
+          # only on the submitted {id,name} values, never on /health; and extractItems does not
+          # unwrap the custom 'health' collection key). Rather than leave the comparator weaker than
+          # a diligent engineer would build it, the user chose (Option 1) to IMPLEMENT the exact
+          # primitive the author specified — STATE_GET expect 'contains-literal-fields' with a
+          # configurable collection_key — and the clause is now BOUND to the author's STATED intent
+          # (assert BOTH the broker and app /health entries report status=OK). This gives the
+          # comparator its strongest FAIR form: the natural stratum's broker sever flips
+          # shipping-rabbitmq to status 'err' so the first check FAILs (the comparator CATCHES the
+          # outage — a diagnosis gap, MIST additionally localizes the lost enqueue), while the
+          # constructed stratum keeps /health green so BOTH checks PASS (the clean MIST win, now
+          # robust to 'just add a health check'). The new primitive is reviewed tool code; /health
+          # stays HTTP 200 in both states so a broker-down read is a genuine in-body FAIL, not a
+          # transport failure. No comparator run executed before this amendment. See
+          # blind-shipping-contract-notes.md (P2) + REVIEW-SHIPPING-HARNESS-RECONCILIATION.md.
+          - primitive: STATE_GET
+            path: "/health"
+            expect: "contains-literal-fields"
+            collection_key: "health"
+            fields: "service=shipping-rabbitmq,status=OK"
+          - primitive: STATE_GET
+            path: "/health"
+            expect: "contains-literal-fields"
+            collection_key: "health"
+            fields: "service=shipping,status=OK"

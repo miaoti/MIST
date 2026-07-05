@@ -39,14 +39,23 @@ public final class AssertionBindings {
         public final List<String> fields;
         /** NOT_CHECKABLE only: why the clause is not executable. */
         public final String reason;
+        /**
+         * STATE_GET contains-literal-fields only (P2): the body key holding the collection to
+         * unwrap — e.g. {@code "health"} for a {@code {health:[..]}} body that the default
+         * array / {@code {data:[]}} / {@code {_embedded}} shapes do not cover. Null (the default)
+         * falls back to those shapes.
+         */
+        public final String collectionKey;
 
-        Check(Primitive primitive, String expect, String path, List<String> fields, String reason) {
+        Check(Primitive primitive, String expect, String path, List<String> fields, String reason,
+              String collectionKey) {
             this.primitive = primitive;
             this.expect = expect;
             this.path = path;
             this.fields = fields == null ? Collections.emptyList()
                     : Collections.unmodifiableList(new ArrayList<>(fields));
             this.reason = reason;
+            this.collectionKey = collectionKey;
         }
     }
 
@@ -93,7 +102,8 @@ public final class AssertionBindings {
     private static final Set<String> ALLOWED_TOP = set("sut", "frozen_set", "endpoints");
     private static final Set<String> ALLOWED_ENDPOINT = set("endpoint", "triple", "body_template", "clauses");
     private static final Set<String> ALLOWED_CLAUSE = set("cite", "checks");
-    private static final Set<String> ALLOWED_CHECK = set("primitive", "expect", "path", "fields", "reason");
+    private static final Set<String> ALLOWED_CHECK =
+            set("primitive", "expect", "path", "fields", "reason", "collection_key");
 
     private static Set<String> set(String... keys) {
         return Collections.unmodifiableSet(new HashSet<>(Arrays.asList(keys)));
@@ -177,6 +187,7 @@ public final class AssertionBindings {
         String path = optionalString(ch, "path");
         String fieldsRaw = optionalString(ch, "fields");
         String reason = optionalString(ch, "reason");
+        String collectionKey = optionalString(ch, "collection_key");
         switch (primitive) {
             case HTTP_STATUS:
                 requireExpect(expect, primitive, origin);
@@ -219,10 +230,25 @@ public final class AssertionBindings {
                         throw new IllegalArgumentException("AssertionBindings: STATE_GET "
                                 + expect + " needs 'fields' in " + origin);
                     }
+                } else if ("contains-literal-fields".equals(expect)) {
+                    // P2: literal name=value constraints (not submitted-body values), so a
+                    // liveness clause like service=shipping-rabbitmq,status=OK is expressible.
+                    if (fieldsRaw == null || fieldsRaw.trim().isEmpty()) {
+                        throw new IllegalArgumentException("AssertionBindings: STATE_GET "
+                                + "contains-literal-fields needs 'fields' (name=value constraints) in "
+                                + origin);
+                    }
+                    for (String f : fieldsRaw.split(",")) {
+                        if (!f.trim().isEmpty() && f.indexOf('=') <= 0) {
+                            throw new IllegalArgumentException("AssertionBindings: STATE_GET "
+                                    + "contains-literal-fields field '" + f.trim()
+                                    + "' must be 'name=value' in " + origin);
+                        }
+                    }
                 } else if (!"absent".equals(expect)) {
                     throw new IllegalArgumentException("AssertionBindings: STATE_GET expect must be "
-                            + "'contains-submitted-fields', 'entity-matches-submitted-fields' or "
-                            + "'absent' in " + origin);
+                            + "'contains-submitted-fields', 'entity-matches-submitted-fields', "
+                            + "'contains-literal-fields' or 'absent' in " + origin);
                 }
                 break;
             case NOT_CHECKABLE:
@@ -242,7 +268,7 @@ public final class AssertionBindings {
                 }
             }
         }
-        return new Check(primitive, expect, path, fields, reason);
+        return new Check(primitive, expect, path, fields, reason, collectionKey);
     }
 
     private static void requireExpect(String expect, Primitive primitive, String origin) {

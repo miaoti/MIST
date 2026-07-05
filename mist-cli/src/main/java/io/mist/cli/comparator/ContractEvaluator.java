@@ -157,7 +157,8 @@ public final class ContractEvaluator {
             case STATE_GET: {
                 String path = resolvePath(check.path, submitted);
                 boolean presenceExpect = "contains-submitted-fields".equals(check.expect)
-                        || "entity-matches-submitted-fields".equals(check.expect);
+                        || "entity-matches-submitted-fields".equals(check.expect)
+                        || "contains-literal-fields".equals(check.expect);
                 // Design amendment A3 (review wave): presence checks retry up
                 // to the SAME pre-registered cap MIST's read-back uses, so a
                 // benign convergence delay (~1-2s on this SUT) neither aborts
@@ -177,9 +178,7 @@ public final class ContractEvaluator {
                     polls++;
                     ok = readback.status / 100 == 2;
                     if (ok && presenceExpect) {
-                        satisfied = "entity-matches-submitted-fields".equals(check.expect)
-                                ? entityMatchesSubmittedFields(readback.body, submitted, check.fields)
-                                : containsSubmittedFields(readback.body, submitted, check.fields);
+                        satisfied = presenceSatisfied(check, readback.body, submitted);
                         if (satisfied) {
                             break;
                         }
@@ -303,6 +302,71 @@ public final class ContractEvaluator {
             }
         }
         return false;
+    }
+
+    /** Dispatches a presence-expect STATE_GET to its matcher. */
+    private static boolean presenceSatisfied(AssertionBindings.Check check, String body,
+                                             JSONObject submitted) {
+        switch (check.expect) {
+            case "entity-matches-submitted-fields":
+                return entityMatchesSubmittedFields(body, submitted, check.fields);
+            case "contains-literal-fields":
+                return containsLiteralFields(body, check.fields, check.collectionKey);
+            default:
+                return containsSubmittedFields(body, submitted, check.fields);
+        }
+    }
+
+    /**
+     * P2 (user-chosen design fork): membership by LITERAL {@code name=value} constraints over a
+     * collection, unwrapping a custom {@code collectionKey} (e.g. {@code health} for a
+     * {@code {health:[..]}} body the default array / {@code {data}} / {@code _embedded} shapes do
+     * not cover). PASS iff some item matches ALL constraints — so a broker-down {@code /health},
+     * whose shipping-rabbitmq entry flips to status {@code "err"}, has no item matching
+     * {@code service=shipping-rabbitmq,status=OK} and the liveness clause FAILs.
+     */
+    static boolean containsLiteralFields(String collectionBody, List<String> constraints,
+                                         String collectionKey) {
+        for (Object item : literalItems(collectionBody, collectionKey)) {
+            if (!(item instanceof JSONObject)) {
+                continue;
+            }
+            JSONObject obj = (JSONObject) item;
+            boolean all = true;
+            for (String c : constraints) {
+                int eq = c.indexOf('=');
+                String name = c.substring(0, eq).trim();
+                String value = c.substring(eq + 1).trim();
+                if (!obj.has(name) || !String.valueOf(obj.get(name)).equals(value)) {
+                    all = false;
+                    break;
+                }
+            }
+            if (all) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /** Items for a literal-fields check: {@code body.<collectionKey>} when set, else the default shapes. */
+    private static List<Object> literalItems(String body, String collectionKey) {
+        if (collectionKey == null || collectionKey.trim().isEmpty()) {
+            return DataIntegrityRuntime.extractItems(body);
+        }
+        List<Object> items = new ArrayList<>();
+        try {
+            org.json.JSONArray arr = new JSONObject(body.trim()).optJSONArray(collectionKey.trim());
+            if (arr != null) {
+                for (int i = 0; i < arr.length(); i++) {
+                    items.add(arr.get(i));
+                }
+            }
+        } catch (RuntimeException e) {
+            // unparseable / absent collection -> no items -> not satisfied (a malformed or
+            // broker-down /health reads as "liveness not shown", the correct direction).
+        }
+        return items;
     }
 
     private static Integer envelopeInt(String body, String field) {

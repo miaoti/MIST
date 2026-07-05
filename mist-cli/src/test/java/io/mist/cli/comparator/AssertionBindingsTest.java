@@ -102,4 +102,67 @@ public class AssertionBindingsTest {
             assertTrue(e.getMessage(), e.getMessage().contains("pth"));
         }
     }
+
+    @Test
+    public void stateGet_containsLiteralFields_loadsWithCollectionKey() throws Exception {
+        String doc = HEADER
+                + "      - cite: \"broker+app liveness\"\n"
+                + "        checks:\n"
+                + "          - primitive: STATE_GET\n"
+                + "            path: \"/health\"\n"
+                + "            expect: \"contains-literal-fields\"\n"
+                + "            collection_key: \"health\"\n"
+                + "            fields: \"service=shipping-rabbitmq,status=OK\"\n";
+        AssertionBindings.Bindings b = AssertionBindings.parse(yaml(doc), "test-doc");
+        AssertionBindings.Check c = b.endpoints.get(0).clauses.get(0).checks.get(0);
+        assertEquals(AssertionBindings.Primitive.STATE_GET, c.primitive);
+        assertEquals("contains-literal-fields", c.expect);
+        assertEquals("health", c.collectionKey);
+        assertEquals(java.util.Arrays.asList("service=shipping-rabbitmq", "status=OK"), c.fields);
+    }
+
+    @Test
+    public void containsLiteralFields_requiresNameEqualsValueFields() {
+        String doc = HEADER
+                + "      - cite: \"c\"\n"
+                + "        checks:\n"
+                + "          - primitive: STATE_GET\n"
+                + "            path: \"/health\"\n"
+                + "            expect: \"contains-literal-fields\"\n"
+                + "            fields: \"statusOK\"\n";
+        try {
+            AssertionBindings.parse(yaml(doc), "test-doc");
+            fail("expected a non name=value field to be rejected");
+        } catch (IllegalArgumentException e) {
+            assertTrue(e.getMessage(), e.getMessage().contains("name=value"));
+        }
+    }
+
+    @Test
+    public void shippedShippingContract_loadsWithBoundLiveness() throws Exception {
+        java.nio.file.Path p = null;
+        for (String rel : new String[]{
+                "../debug/a-main/g3-comparator-ss/blind-shipping-contract.yaml",
+                "debug/a-main/g3-comparator-ss/blind-shipping-contract.yaml"}) {
+            java.nio.file.Path cand = java.nio.file.Paths.get(rel);
+            if (java.nio.file.Files.isRegularFile(cand)) {
+                p = cand;
+                break;
+            }
+        }
+        org.junit.Assert.assertNotNull("cannot locate the frozen shipping contract", p);
+        AssertionBindings.Bindings b = AssertionBindings.load(p);
+        assertEquals("sockshop", b.sut);
+        assertEquals(1, b.endpoints.size());
+        AssertionBindings.BoundEndpoint ep = b.endpoints.get(0);
+        assertEquals("POST /shipping", ep.endpoint);
+        // The amended /health liveness clause is bound via TWO contains-literal-fields checks
+        // (broker + app), and the 201 ack check remains.
+        long literal = ep.clauses.stream().flatMap(c -> c.checks.stream())
+                .filter(ch -> "contains-literal-fields".equals(ch.expect)).count();
+        assertEquals("both /health liveness checks must be bound", 2, literal);
+        assertTrue("the 201 ack check must remain", ep.clauses.stream().flatMap(c -> c.checks.stream())
+                .anyMatch(ch -> ch.primitive == AssertionBindings.Primitive.HTTP_STATUS
+                        && "201".equals(ch.expect)));
+    }
 }
