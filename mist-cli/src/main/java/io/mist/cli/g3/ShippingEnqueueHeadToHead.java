@@ -163,9 +163,15 @@ public final class ShippingEnqueueHeadToHead {
             throws Exception {
         fault.clear(); // hygiene: start clean (flushes any stale fault)
         LegOutcome control = runLeg(triple, contract, stratum + "-control");
-        fault.inject();
         LegOutcome faulted;
         try {
+            // inject() INSIDE the try (review A-M1 / C-MAJOR-1): the injectors mutate a
+            // DURABLE external fault (an Istio manifest / a reject-publish policy) BEFORE
+            // their convergence probe, and that probe can throw (a mesh sever may not flip
+            // /health within budget). Outside the try, such a throw would leak the fault and
+            // leave the cluster partitioned. clear() is idempotent (delete --ignore-not-found
+            // / DELETE-404), so covering inject() with the finally is safe.
+            fault.inject();
             faulted = runLeg(triple, contract, stratum + "-fault");
         } finally {
             fault.clear(); // the SUT must never be left faulted
@@ -207,7 +213,10 @@ public final class ShippingEnqueueHeadToHead {
         System.out.println("      " + mistReason);
         System.out.println("  Comparator (frozen response contract): control flagged="
                 + r.controlComparator.flagged + ", fault flagged=" + r.faultComparator.flagged
-                + "  -> " + (r.faultComparator.flagged ? "CAUGHT" : "MISSED")
+                + "  -> " + (r.faultComparator.flagged
+                        ? "CAUGHT (response/liveness-level, NOT write-localized — MIST additionally"
+                                + " localizes the specific lost enqueue)"
+                        : "MISSED")
                 + (r.controlComparator.flagged ? " (control also flagged — systemic, verify)" : ""));
         if (!r.mist.isEmpty()) {
             System.out.println("  claim-eligibility: joinMode=" + r.mist.get(0).joinMode
@@ -235,20 +244,29 @@ public final class ShippingEnqueueHeadToHead {
         return "baseline=" + depthOf(r.baselineBody) + " -> final=" + depthOf(r.lastReadbackBody);
     }
 
-    /** Pulls the shipping-task queue's {@code messages} out of an /api/queues array body. */
+    /**
+     * Pulls the shipping-task queue's {@code messages} out of a bare /api/queues array body
+     * (evidence only — does not affect any verdict). Uses a REAL JSON parse so the live body's
+     * nested queue sub-objects (arguments{}, backing_queue_status{}, message_stats{}, … — 43
+     * fields) do not defeat it; the old brace-bounded regex matched only flat objects and would
+     * misreport &lt;ABSENT&gt; on a correct FIRE with real depth movement (review A-m5).
+     */
     private static String depthOf(String queuesBody) {
         if (queuesBody == null) {
             return "<no-read>";
         }
-        java.util.regex.Matcher m = java.util.regex.Pattern.compile(
-                "\\{[^{}]*\"name\"\\s*:\\s*\"" + java.util.regex.Pattern.quote(QUEUE_NAME)
-                        + "\"[^{}]*\\}").matcher(queuesBody);
-        if (!m.find()) {
+        try {
+            org.json.JSONArray arr = new org.json.JSONArray(queuesBody.trim());
+            for (int i = 0; i < arr.length(); i++) {
+                org.json.JSONObject q = arr.optJSONObject(i);
+                if (q != null && QUEUE_NAME.equals(q.optString("name", null)) && q.has("messages")) {
+                    return String.valueOf(q.get("messages"));
+                }
+            }
             return "<ABSENT>";
+        } catch (RuntimeException e) {
+            return "<unparseable>";
         }
-        java.util.regex.Matcher d = java.util.regex.Pattern.compile(
-                "\"messages\"\\s*:\\s*(\\d+)").matcher(m.group());
-        return d.find() ? d.group(1) : "<no-messages>";
     }
 
     /** Picks the single POST /shipping endpoint from the frozen contract (it binds exactly one). */
@@ -286,14 +304,21 @@ public final class ShippingEnqueueHeadToHead {
         RestAssured.baseURI = baseUrl;            // comparator SutClient + any Stimulus RestAssured use
         System.setProperty("base.url", baseUrl);  // comparator SutClient + preflight
         System.setProperty("mst.test.parallelism", "1"); // the hooks require single-threaded
+        // Review A-m4 / C read-lag: the mgmt `messages` datum is stats-DB-sampled (~5s), so the
+        // read-back must wait well beyond that or the control leg reads absence too early (a false
+        // NO_RESULT). Floor the oracle timeout >> the stats interval unless the launcher set one.
+        if (System.getProperty(DataIntegrityRuntime.TIMEOUT_MS_PROPERTY) == null) {
+            System.setProperty(DataIntegrityRuntime.TIMEOUT_MS_PROPERTY, "20000");
+        }
 
         String rmqBase = required("g3.ship.rmq.base");
         String rmqUser = required("g3.ship.rmq.user");
         String rmqPass = required("g3.ship.rmq.pass");
-        // Route the value-delta read-back at the broker mgmt API (off-SUT host + basic auth).
-        DataIntegrityRuntime.installHttpOverride(
-                new ShippingReadbackHttp(rmqBase, rmqUser, rmqPass, 5000));
         try {
+            // Route the value-delta read-back at the broker mgmt API (off-SUT host + basic auth).
+            // Installed INSIDE the try (review B-m4) so it is cleared in the finally on any throw.
+            DataIntegrityRuntime.installHttpOverride(
+                    new ShippingReadbackHttp(rmqBase, rmqUser, rmqPass, 5000));
             TargetTripleRegistry.Registry reg =
                     TargetTripleRegistry.load(Paths.get(required("g3.ship.triple")));
             TargetTripleRegistry.Triple triple = reg.triples.get(0);

@@ -1,5 +1,7 @@
 package io.mist.cli.g3;
 
+import org.json.JSONObject;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -23,6 +25,7 @@ import java.util.Base64;
 public final class RabbitPolicyInjector implements ShippingEnqueueHeadToHead.Fault {
 
     private static final String POLICY = "ship-drop";
+    private static final int MAX_LEN = 1;
     private static final int CONVERGE_POLLS = 60;
     private static final long CONVERGE_SLEEP_MS = 250;
 
@@ -40,25 +43,69 @@ public final class RabbitPolicyInjector implements ShippingEnqueueHeadToHead.Fau
     @Override
     public void inject() throws IOException, InterruptedException {
         String body = "{\"pattern\":\"^" + queue + "$\",\"apply-to\":\"queues\","
-                + "\"definition\":{\"max-length\":1,\"overflow\":\"reject-publish\"},\"priority\":10}";
+                + "\"definition\":{\"max-length\":" + MAX_LEN
+                + ",\"overflow\":\"reject-publish\"},\"priority\":10}";
         Resp put = send("PUT", policyUrl(), body);
         if (put.status / 100 != 2) {
             throw new IOException("reject-publish policy PUT failed: HTTP " + put.status + " " + put.body);
         }
         awaitPolicy(true);
+        requireRejectWillBite();
+    }
+
+    /**
+     * Review C-MAJOR-3: "policy applied" is NOT "the next publish is rejected". max-length +
+     * reject-publish rejects a publish only when the queue is already AT the limit AND nothing
+     * drains it between the control and fault legs. Assert both preconditions here (the control
+     * leg's message must be resident with no consumer) so a forgotten queue-master scale-down
+     * fails LOUD instead of silently degrading the clean-win cell to NO_FIRE.
+     */
+    private void requireRejectWillBite() throws IOException {
+        Resp q = send("GET", base + "/api/queues/%2f/" + queue, null);
+        if (q.status / 100 != 2) {
+            throw new IOException("cannot read " + queue + " detail to verify reject preconditions:"
+                    + " HTTP " + q.status);
+        }
+        int consumers = intField(q.body, "consumers");
+        int messages = intField(q.body, "messages");
+        if (consumers != 0) {
+            throw new IOException("reject-publish will not bite: " + queue + " has " + consumers
+                    + " consumer(s) — scale queue-master to 0 so depth is monotonic (RUNBOOK)");
+        }
+        if (messages < MAX_LEN) {
+            throw new IOException("reject-publish will not bite: " + queue + " depth " + messages
+                    + " < max-length " + MAX_LEN + " — the control leg's message must be resident"
+                    + " (no drainer) before the fault leg");
+        }
+    }
+
+    /** Reads a top-level integer field from the queue-detail JSON object (-1 if absent/unparseable). */
+    private static int intField(String body, String field) {
+        try {
+            return new JSONObject(body).optInt(field, -1);
+        } catch (RuntimeException e) {
+            return -1;
+        }
     }
 
     @Override
     public void clear() throws IOException, InterruptedException {
-        send("DELETE", policyUrl(), null); // idempotent (404 if absent)
+        // Review C-M-5: surface a genuine DELETE failure here (a 404 = already-absent is the
+        // idempotent no-op we want) instead of letting it masquerade as an awaitPolicy timeout.
+        Resp del = send("DELETE", policyUrl(), null);
+        if (del.status / 100 != 2 && del.status != 404) {
+            throw new IOException("reject-publish policy DELETE failed: HTTP " + del.status + " " + del.body);
+        }
         awaitPolicy(false);
     }
 
     /** Polls the queue detail until its applied policy matches the desired state, or times out. */
     private void awaitPolicy(boolean applied) throws IOException, InterruptedException {
         String queueUrl = base + "/api/queues/%2f/" + queue;
+        int lastStatus = -1;
         for (int i = 0; i < CONVERGE_POLLS; i++) {
             Resp q = send("GET", queueUrl, null);
+            lastStatus = q.status;
             if (q.status / 100 == 2) {
                 boolean shown = q.body.contains("\"policy\":\"" + POLICY + "\"");
                 if (shown == applied) {
@@ -67,8 +114,11 @@ public final class RabbitPolicyInjector implements ShippingEnqueueHeadToHead.Fau
             }
             Thread.sleep(CONVERGE_SLEEP_MS);
         }
+        // Review C-M-6: report the last observed read so a persistent queue-GET non-2xx (which
+        // reads identically to a genuinely stuck policy) is distinguishable in the failure.
         throw new IOException("reject-publish policy did not " + (applied ? "apply" : "clear")
-                + " within " + (CONVERGE_POLLS * CONVERGE_SLEEP_MS) + "ms");
+                + " within " + (CONVERGE_POLLS * CONVERGE_SLEEP_MS) + "ms (last queue-detail read: HTTP "
+                + lastStatus + ")");
     }
 
     private String policyUrl() {

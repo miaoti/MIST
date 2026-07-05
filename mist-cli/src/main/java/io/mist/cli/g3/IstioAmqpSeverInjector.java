@@ -154,6 +154,16 @@ public final class IstioAmqpSeverInjector implements ShippingEnqueueHeadToHead.F
     static ExecResult runProcess(List<String> argv, long timeoutSeconds)
             throws IOException, InterruptedException {
         Process p = new ProcessBuilder(argv).redirectErrorStream(true).start();
+        // Review C-MAJOR-2 (mirrors the reviewed SutFlagFaultInjector.runProcess): kubectl
+        // output here is a few lines, far below pipe capacity, so it is safe to wait FIRST and
+        // drain afterwards — the bounded wait is the hard upper bound that keeps a wedged
+        // kubectl (stuck exec-credential plugin, black-holed API server) from hanging the run.
+        // Draining first is an UNBOUNDED blocking read that would never reach the timeout.
+        if (!p.waitFor(timeoutSeconds, TimeUnit.SECONDS)) {
+            p.destroyForcibly();
+            throw new IOException("process timed out after " + timeoutSeconds + "s: "
+                    + String.join(" ", argv));
+        }
         StringBuilder out = new StringBuilder();
         try (InputStream in = p.getInputStream()) {
             byte[] buf = new byte[4096];
@@ -161,11 +171,6 @@ public final class IstioAmqpSeverInjector implements ShippingEnqueueHeadToHead.F
             while ((n = in.read(buf)) != -1) {
                 out.append(new String(buf, 0, n, StandardCharsets.UTF_8));
             }
-        }
-        if (!p.waitFor(timeoutSeconds, TimeUnit.SECONDS)) {
-            p.destroyForcibly();
-            throw new IOException("process timed out after " + timeoutSeconds + "s: "
-                    + String.join(" ", argv));
         }
         return new ExecResult(p.exitValue(), out.toString());
     }
@@ -180,6 +185,10 @@ public final class IstioAmqpSeverInjector implements ShippingEnqueueHeadToHead.F
             c.setReadTimeout(5000);
             int status = c.getResponseCode();
             if (status / 100 != 2) {
+                // Review C-M-2: this assumes shipping serves /health — INCLUDING the broker-"err"
+                // state — as HTTP 200 (true for this image; getHealth always ResponseEntity.ok).
+                // A non-2xx or unreachable /health is treated as UNREADABLE (never converged),
+                // never as "severed", so a health-endpoint outage cannot false-signal convergence.
                 return null;
             }
             InputStream in = c.getInputStream();

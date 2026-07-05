@@ -54,7 +54,13 @@ public class ShippingEnqueueHeadToHeadTest {
 
     // ---- fakes ------------------------------------------------------------------
 
-    /** Bare /api/queues array; shipping-task depth = 1 for the first two reads, 2 after. */
+    /**
+     * Bare /api/queues array; shipping-task depth = 1 for the first two reads, 2 after. This is
+     * coupled to value-delta doing exactly two baseline reads per leg (review B-m1), but the
+     * coupling is SELF-GUARDING: if the oracle ever changed that count, the control leg's
+     * post-write read would no longer differ from its own baseline, so the FIRE assertion below
+     * would FAIL rather than pass for the wrong reason. {@code calls} is asserted for good measure.
+     */
     private static final class DepthHttp implements DataIntegrityRuntime.Http {
         final AtomicInteger calls = new AtomicInteger();
 
@@ -155,13 +161,18 @@ public class ShippingEnqueueHeadToHeadTest {
 
     @Test
     public void mistFires_whileResponseComparatorMissesBothLegs() throws Exception {
-        DataIntegrityRuntime.installHttpOverride(new DepthHttp());
+        DepthHttp http = new DepthHttp();
+        DataIntegrityRuntime.installHttpOverride(http);
         RecordingFault fault = new RecordingFault();
         ShippingEnqueueHeadToHead harness =
                 new ShippingEnqueueHeadToHead(new FakeStimulus(), new NoStateClient());
 
         ShippingEnqueueHeadToHead.StratumResult r =
                 harness.runStratum("constructed", loadTriple(), contract("201"), fault);
+
+        // Sanity on the read sequence (review B-m1): control 2 baseline + >=1 poll, fault 2 baseline
+        // + >=1 poll -> >=5 getSut calls; a drift in the oracle's baseline count would trip this.
+        assertTrue("expected the value-delta baseline+poll read sequence", http.calls.get() >= 5);
 
         // MIST: acknowledged-but-lost -> FIRE, via a unique correlator join (claim-eligible).
         assertEquals(1, r.mist.size());

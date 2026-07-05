@@ -24,6 +24,11 @@ import java.util.Base64;
  * implemented for completeness. A transport failure is reported as a non-2xx
  * response so the oracle's decisive-read gate treats it as UNUSABLE (never as
  * evidence of presence or absence), matching RestAssuredHttp's contract.
+ *
+ * <p>SCOPE (review B-m3): this override routes EVERY {@code getSut} at the broker, so it is
+ * valid only for a triple whose ONLY {@code getSut} is the value-delta read-back path — a
+ * SUPPLIED triple with no station-pair / freshening SUT lookups. Do not reuse it with a triple
+ * that issues other SUT reads (they would be misrouted to the broker mgmt API).
  */
 public final class ShippingReadbackHttp implements DataIntegrityRuntime.Http {
 
