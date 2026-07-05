@@ -24,6 +24,15 @@ import java.util.regex.Pattern;
  * message is lost, and (because {@code getHealth} live-probes the broker on the same
  * connection factory) {@code /health} reads "err" — the diagnosis-gap stratum.
  *
+ * <p><b>The L4 policy blocks only NEW connections</b>, so an apply alone does not break shipping's
+ * already-CACHED broker connection (verified live: {@code /health} stays "OK" on apply). {@link
+ * #inject} therefore force-closes the cached connection inside the broker
+ * ({@code rabbitmqctl close_all_connections}) right after applying, so shipping's next publish and
+ * {@code /health} probe RECONNECT into the block — verified live: {@code /health} then flips to
+ * "err" within ~1s with no pod bounce. (Only shipping publishes here — queue-master is scaled to 0
+ * — so closing all connections closes exactly shipping's. The mgmt read-back is a pod port-forward
+ * that bypasses the sidecar, so it stays reachable regardless.)
+ *
  * <p><b>Convergence is probed, not assumed</b> (mirrors {@link io.mist.cli.fault} 's reviewed
  * IstioRouteFaultInjector): mesh-policy propagation is eventually consistent, and a fault leg
  * that starts before the sever is live silently degrades into a second control leg. The sever
@@ -31,14 +40,14 @@ import java.util.regex.Pattern;
  * whole point — so the convergence signal is the {@code /health} BODY: the
  * {@code shipping-rabbitmq} entry reads "err" once severed, "OK" once restored. A probe I/O
  * failure never satisfies either direction (a dead gateway must not pass for a converged
- * clear). Whether the L4 sever reliably breaks shipping's CACHED broker connection is a
- * live-tuned risk (fallback: bounce the shipping pod after applying) — if {@code /health}
- * never flips within the budget, inject() throws rather than run a degenerate leg.
+ * clear). If {@code /health} never flips within the budget, inject() throws rather than run a
+ * degenerate leg.
  */
 public final class IstioAmqpSeverInjector implements ShippingEnqueueHeadToHead.Fault {
 
     static final String REQUEST_TIMEOUT = "30s";
     static final long PROCESS_GRACE_SECONDS = 60;
+    static final String CLOSE_REASON = "mist-natural-sever";
 
     /** Runs a process to completion within a timeout. Test seam. */
     interface Exec {
@@ -66,19 +75,20 @@ public final class IstioAmqpSeverInjector implements ShippingEnqueueHeadToHead.F
     private final Path manifest;
     private final String healthUrl;
     private final long convergeTimeoutSeconds;
+    private final String brokerWorkload;
     private final long probePollMs;
     private final Exec exec;
     private final HealthProbe probe;
 
     public IstioAmqpSeverInjector(String kubectl, String kubeconfig, String namespace, Path manifest,
-                                  String healthUrl, long convergeTimeoutSeconds) {
-        this(kubectl, kubeconfig, namespace, manifest, healthUrl, convergeTimeoutSeconds, 500,
-                IstioAmqpSeverInjector::runProcess, IstioAmqpSeverInjector::readHealth);
+                                  String healthUrl, long convergeTimeoutSeconds, String brokerWorkload) {
+        this(kubectl, kubeconfig, namespace, manifest, healthUrl, convergeTimeoutSeconds, brokerWorkload,
+                500, IstioAmqpSeverInjector::runProcess, IstioAmqpSeverInjector::readHealth);
     }
 
     IstioAmqpSeverInjector(String kubectl, String kubeconfig, String namespace, Path manifest,
-                           String healthUrl, long convergeTimeoutSeconds, long probePollMs,
-                           Exec exec, HealthProbe probe) {
+                           String healthUrl, long convergeTimeoutSeconds, String brokerWorkload,
+                           long probePollMs, Exec exec, HealthProbe probe) {
         if (namespace == null || namespace.trim().isEmpty()) {
             throw new IllegalArgumentException("IstioAmqpSeverInjector needs a non-empty namespace");
         }
@@ -99,6 +109,7 @@ public final class IstioAmqpSeverInjector implements ShippingEnqueueHeadToHead.F
         this.manifest = manifest;
         this.healthUrl = healthUrl;
         this.convergeTimeoutSeconds = convergeTimeoutSeconds;
+        this.brokerWorkload = brokerWorkload == null ? "" : brokerWorkload.trim();
         this.probePollMs = probePollMs;
         this.exec = exec;
         this.probe = probe;
@@ -107,6 +118,14 @@ public final class IstioAmqpSeverInjector implements ShippingEnqueueHeadToHead.F
     @Override
     public void inject() throws IOException, InterruptedException {
         kubectl("apply", "-f", manifest.toString(), "--request-timeout=" + REQUEST_TIMEOUT);
+        // The L4 policy blocks only NEW connections; shipping's CACHED broker connection survives an
+        // apply (verified live — /health does not flip on apply alone). Force it closed inside the
+        // broker so shipping's next publish + /health probe reconnect INTO the block. Skipped only
+        // when no broker workload is configured, in which case awaitHealth is the loud backstop: it
+        // will not converge on the manifest alone, so inject() throws rather than run a degenerate leg.
+        if (!brokerWorkload.isEmpty()) {
+            brokerExec("rabbitmqctl", "close_all_connections", CLOSE_REASON);
+        }
         awaitHealth(true, "INJECT");
     }
 
@@ -147,6 +166,30 @@ public final class IstioAmqpSeverInjector implements ShippingEnqueueHeadToHead.F
         if (result.exitCode != 0) {
             throw new IOException("kubectl exited " + result.exitCode + ": " + String.join(" ", argv)
                     + "\n" + result.output);
+        }
+    }
+
+    /**
+     * {@code kubectl exec <brokerWorkload> -n <ns> -- <cmd...>} — used to close the cached broker
+     * connection. The {@code -n} MUST precede {@code --}, so this cannot reuse {@link #kubectl}
+     * (which appends {@code -n <ns>} last, which for an exec would be handed to the inner command).
+     */
+    private void brokerExec(String... cmd) throws IOException, InterruptedException {
+        List<String> argv = new ArrayList<>();
+        argv.add(kubectl);
+        if (kubeconfig != null && !kubeconfig.trim().isEmpty()) {
+            argv.add("--kubeconfig=" + kubeconfig.trim());
+        }
+        argv.add("exec");
+        argv.add(brokerWorkload);
+        argv.add("-n");
+        argv.add(namespace);
+        argv.add("--");
+        argv.addAll(Arrays.asList(cmd));
+        ExecResult result = exec.run(argv, convergeTimeoutSeconds + PROCESS_GRACE_SECONDS);
+        if (result.exitCode != 0) {
+            throw new IOException("kubectl exec exited " + result.exitCode + ": "
+                    + String.join(" ", argv) + "\n" + result.output);
         }
     }
 

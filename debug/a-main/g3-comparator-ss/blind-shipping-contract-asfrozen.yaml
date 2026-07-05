@@ -1,0 +1,63 @@
+# FROZEN executable bindings — Sock Shop SHIPPING service, POST /shipping (G3, SUT-2).
+# Blind-authored from PRIMARY SOURCES and frozen BEFORE use (freeze-before-reveal):
+#   - microservices-demo/shipping @master: ShippingController.java (POST /shipping handler +
+#     GET /health + the /shipping and /shipping/{id} GET stubs), Shipment.java {id,name},
+#     HealthCheck.java {service,status,date} — the canonical Sock Shop shipping service;
+#   - live confirmation on the DEPLOYED image weaveworksdemos/shipping:0.4.8 (kind cluster
+#     "mist", ns sock-shop) on 2026-07-04: POST /shipping, GET /health and GET /shipping/{id}
+#     response shapes captured verbatim (see blind-shipping-contract-notes.md).
+# Mechanical translation into the closed primitive set of comparator-runner-design.md §2,
+# same discipline as the TrainTicket bindings: every clause cites its source; a clause the
+# closed primitive set cannot SOUNDLY express is NOT_CHECKABLE with the genuine reason —
+# never guessed, and never padded with an always-true (vacuous) or false-firing check.
+# Binding errors at run time are comparator-infra-failure, never a detection.
+#
+# GROUND TRUTH (primary source + live):
+#   POST /shipping  -> 201 CREATED; body = the ECHOED Shipment as a BARE JSON object
+#                      {id:<submitted>, name:<submitted>} (NOT a {status,msg,data} envelope).
+#                      Real effect: rabbitTemplate.convertAndSend('shipping-task', shipment) —
+#                      BUT the controller CATCHES + SWALLOWS any broker exception ('Accepting
+#                      anyway. Do not do this for real!') and returns 201 + the echo REGARDLESS.
+#                      => the HTTP response is INSENSITIVE to whether the enqueue happened
+#                      (a built-in acked-but-lost hazard).
+#   GET /shipping, GET /shipping/{id} -> hardcoded text/plain STUBS ('GET ALL Shipping
+#                      Resource.' / 'GET Shipping Resource with id: <id>'), NOT the shipment
+#                      => NO real read-back of the created resource exists.
+#   GET /health     -> 200 OK; 'health' list of {service,status,date}: service='shipping-
+#                      rabbitmq' status='OK', service='shipping' status='OK'. The broker entry
+#                      flips status to 'err' when RabbitMQ is down (rabbitmq.setStatus('err'));
+#                      the HTTP code STAYS 200 in both cases.
+#
+# WHY ONLY THE 201 IS BOUND: on this endpoint HTTP_STATUS is the ONLY closed primitive that
+# fires SOUNDLY and discriminatingly. ENVELOPE_STATUS / MSG_CONTAINS look for envelope keys
+# (status / msg) a correct bare-object response does NOT carry -> they would FALSELY FAIL a
+# correct success. ENVELOPE_DATA expect:null would PASS but is VACUOUS (it also passes on any
+# error / empty / garbage body -> discriminates nothing). The id/name echo, the true enqueue
+# effect, and service/broker liveness are each genuinely inexpressible in the closed set and
+# are recorded NOT_CHECKABLE with precise reasons; the two a new primitive could express carry
+# a minimal proposal in blind-shipping-contract-notes.md.
+
+sut: sockshop
+frozen_set: "blind-authored from primary sources (microservices-demo/shipping@master ShippingController/Shipment/HealthCheck) + live weaveworksdemos/shipping:0.4.8; frozen pre-run 2026-07-04"
+
+endpoints:
+  - endpoint: "POST /shipping"
+    triple: shipping-enqueue
+    body_template: '{"id":"${uuid:id}","name":"${uuid:name}"}'
+    clauses:
+      - cite: "ShippingController.postShipping carries @ResponseStatus(HttpStatus.CREATED); a successful POST /shipping MUST return HTTP 201 Created. Verified live on weaveworksdemos/shipping:0.4.8 (status line 'HTTP/1.1 201')."
+        checks:
+          - primitive: HTTP_STATUS
+            expect: "201"
+      - cite: "postShipping returns @ResponseBody Shipment == the submitted shipment; a faithful success ECHOES the submitted id AND name verbatim in the response body (live: POST id='itest-abc-123' name='itest-name-xyz' returned body id='itest-abc-123' name='itest-name-xyz'). The body is a BARE JSON object, not a {status,msg,data} envelope."
+        checks:
+          - primitive: NOT_CHECKABLE
+            reason: "No closed primitive can SOUNDLY assert the bare-object field echo. The write-response primitives ENVELOPE_STATUS / ENVELOPE_DATA / MSG_CONTAINS read only the envelope keys status/msg/data, which a correct shipping response does NOT contain: ENVELOPE_STATUS yields null then FAIL and MSG_CONTAINS yields null then FAIL (both would FALSELY fail a correct success), while ENVELOPE_DATA expect:null would PASS but is vacuous (it also passes on any error, empty, or garbage body, so it discriminates nothing). STATE_GET inspects only a follow-up GET, and no GET returns the shipment (GET /shipping/{id} is a text/plain stub 'GET Shipping Resource with id: <id>', not JSON). Expressing this needs a new RESPONSE_BODY_CONTAINS primitive that matches submitted fields (id,name) against the WRITE response body — see blind-shipping-contract-notes.md."
+      - cite: "postShipping's real effect is rabbitTemplate.convertAndSend('shipping-task', shipment); the controller CATCHES and SWALLOWS any broker exception (log: 'Unable to add to queue (the queue is probably down). Accepting anyway.') and returns 201 plus the echo regardless — so the HTTP response is INSENSITIVE to whether the enqueue actually succeeded (a built-in acked-but-lost hazard)."
+        checks:
+          - primitive: NOT_CHECKABLE
+            reason: "The true success postcondition — that the shipment reached the 'shipping-task' queue — has NO black-box HTTP observable on this service: shipping persists nothing queryable (GET /shipping and GET /shipping/{id} are hardcoded text/plain stubs, not reads of the created resource), and the enqueue outcome lives in RabbitMQ / queue-master, off this service's HTTP surface. No closed primitive — indeed no single-response HTTP oracle over this service alone — can observe it. This is the core acked-but-lost gap on POST /shipping; catching it requires a cross-service, broker-state, or differential observable outside the closed set (exactly what MIST's trace / differential oracle adds)."
+      - cite: "GET /health (200 OK) reports a 'health' list with entries service='shipping-rabbitmq' status='OK'|'err' and service='shipping' status='OK'; the rabbitmq entry's status flips to 'err' when the broker is down (rabbitmq.setStatus('err')), while the HTTP code stays 200. A diligent success oracle would assert both the broker and app entries report status=='OK' (service plus message broker up). Verified live: both 'OK' with the broker healthy."
+        checks:
+          - primitive: NOT_CHECKABLE
+            reason: "STATE_GET cannot express health/broker liveness, for two independent reasons. (1) No LITERAL matching: both presence expects (contains-submitted-fields, entity-matches-submitted-fields) key ONLY on the SUBMITTED body field VALUES {id,name}, which never appear in /health, so there is no way to assert an expected literal such as service=='shipping-rabbitmq' AND status=='OK'; the 'absent' expect only tests absence of the submitted key. (2) Collection shape plus HTTP code: DataIntegrityRuntime.extractItems unwraps only a bare array, a {data:[..]} envelope, or {_embedded:..}; the /health list is nested under the custom key 'health', so extractItems returns EMPTY and any membership check sees no items. Reachability is a useless broker oracle here anyway: /health returns HTTP 200 even when the broker is down (the failure shows only as in-body status 'err', never the HTTP status), and a non-2xx decisive read would be reclassified transportFailure -> comparator-infra-failure, never a detection. Expressing this needs a literal-match STATE_GET expect over a named collection entry plus a configurable collection key — see blind-shipping-contract-notes.md."

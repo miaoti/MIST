@@ -42,6 +42,9 @@ public class ShippingEnqueueHeadToHeadTest {
         System.setProperty(DataIntegrityRuntime.TIMEOUT_MS_PROPERTY, "60");
         System.setProperty(DataIntegrityRuntime.TRACE_SETTLE_MS_PROPERTY, "0");
         System.setProperty("mst.test.parallelism", "1");
+        // Bound the comparator's presence-retry so a broker-err liveness FAIL resolves fast.
+        System.setProperty("mst.comparator.state.retry.cap.ms", "50");
+        System.setProperty("mst.comparator.state.poll.ms", "5");
     }
 
     @After
@@ -50,7 +53,16 @@ public class ShippingEnqueueHeadToHeadTest {
         System.clearProperty(DataIntegrityRuntime.POLL_MS_PROPERTY);
         System.clearProperty(DataIntegrityRuntime.TIMEOUT_MS_PROPERTY);
         System.clearProperty(DataIntegrityRuntime.TRACE_SETTLE_MS_PROPERTY);
+        System.clearProperty("mst.comparator.state.retry.cap.ms");
+        System.clearProperty("mst.comparator.state.poll.ms");
     }
+
+    private static final String HEALTHY = "{\"health\":["
+            + "{\"service\":\"shipping-rabbitmq\",\"status\":\"OK\"},"
+            + "{\"service\":\"shipping\",\"status\":\"OK\"}]}";
+    private static final String BROKER_ERR = "{\"health\":["
+            + "{\"service\":\"shipping-rabbitmq\",\"status\":\"err\"},"
+            + "{\"service\":\"shipping\",\"status\":\"OK\"}]}";
 
     // ---- fakes ------------------------------------------------------------------
 
@@ -113,6 +125,60 @@ public class ShippingEnqueueHeadToHeadTest {
         }
     }
 
+    /** Shared sever flag: the fault flips it, the /health client reads it. */
+    private static final class SeverState {
+        volatile boolean severed = false;
+    }
+
+    private static final class SeverFault implements ShippingEnqueueHeadToHead.Fault {
+        final SeverState state;
+
+        SeverFault(SeverState state) {
+            this.state = state;
+        }
+
+        @Override
+        public void inject() {
+            state.severed = true;
+        }
+
+        @Override
+        public void clear() {
+            state.severed = false;
+        }
+    }
+
+    /**
+     * Models shipping's {@code GET /health}: green until severed, then the broker entry flips to
+     * "err" (HTTP stays 200 = a genuine in-body detection). {@code transportOnFault} instead
+     * returns a non-2xx /health on the severed leg, to exercise the transport reclassification.
+     */
+    private static final class HealthClient implements ContractEvaluator.SutClient {
+        final SeverState state;
+        final boolean transportOnFault;
+
+        HealthClient(SeverState state, boolean transportOnFault) {
+            this.state = state;
+            this.transportOnFault = transportOnFault;
+        }
+
+        @Override
+        public ContractEvaluator.Response post(String path, String jsonBody) {
+            throw new AssertionError("SutClient.post must not be called");
+        }
+
+        @Override
+        public ContractEvaluator.Response get(String path) {
+            assertEquals("/health", path);
+            if (!state.severed) {
+                return new ContractEvaluator.Response(200, HEALTHY);
+            }
+            return transportOnFault
+                    ? new ContractEvaluator.Response(503, "shipping unreachable")
+                    : new ContractEvaluator.Response(200, BROKER_ERR);
+        }
+    }
+
     private static TargetTripleRegistry.Triple loadTriple() throws Exception {
         String yaml = "cluster:\n"
                 + "  context: test\n"
@@ -154,6 +220,31 @@ public class ShippingEnqueueHeadToHeadTest {
                 + "            reason: \"the shipping-task enqueue landing is invisible in the POST response\"\n";
         AssertionBindings.Bindings b = AssertionBindings.parse(
                 new ByteArrayInputStream(yaml.getBytes(StandardCharsets.UTF_8)), "test-contract");
+        return ShippingEnqueueHeadToHead.shippingEndpoint(b);
+    }
+
+    /** HTTP_STATUS 201 + a bound P2 liveness clause (the amended shipping contract's shape). */
+    private static AssertionBindings.BoundEndpoint livenessContract() throws Exception {
+        String yaml = "sut: sockshop\n"
+                + "frozen_set: \"test\"\n"
+                + "endpoints:\n"
+                + "  - endpoint: \"POST /shipping\"\n"
+                + "    triple: shipping-enqueue\n"
+                + "    body_template: '{\"id\":\"${uuid:id}\",\"name\":\"${uuid:name}\"}'\n"
+                + "    clauses:\n"
+                + "      - cite: \"201 CREATED acknowledgement\"\n"
+                + "        checks:\n"
+                + "          - primitive: HTTP_STATUS\n"
+                + "            expect: \"201\"\n"
+                + "      - cite: \"broker+app liveness\"\n"
+                + "        checks:\n"
+                + "          - primitive: STATE_GET\n"
+                + "            path: \"/health\"\n"
+                + "            expect: \"contains-literal-fields\"\n"
+                + "            collection_key: \"health\"\n"
+                + "            fields: \"service=shipping-rabbitmq,status=OK\"\n";
+        AssertionBindings.Bindings b = AssertionBindings.parse(
+                new ByteArrayInputStream(yaml.getBytes(StandardCharsets.UTF_8)), "liveness-contract");
         return ShippingEnqueueHeadToHead.shippingEndpoint(b);
     }
 
@@ -228,5 +319,44 @@ public class ShippingEnqueueHeadToHeadTest {
         }
         // The SUT must never be left faulted: clear ran after inject even on the exception.
         assertEquals(Arrays.asList("clear", "inject", "clear"), fault.events);
+    }
+
+    @Test
+    public void liveness_caughtOnFaultLeg_cleanOnControl() throws Exception {
+        // Natural stratum: /health green on control, broker-err on fault (HTTP 200 both). The bound
+        // P2 liveness clause PASSes control and FAILs fault -> comparator CAUGHT (a diagnosis-gap
+        // catch), while MIST FIREs on the specific lost enqueue.
+        DataIntegrityRuntime.installHttpOverride(new DepthHttp());
+        SeverState state = new SeverState();
+        ShippingEnqueueHeadToHead harness =
+                new ShippingEnqueueHeadToHead(new FakeStimulus(), new HealthClient(state, false));
+
+        ShippingEnqueueHeadToHead.StratumResult r =
+                harness.runStratum("natural", loadTriple(), livenessContract(), new SeverFault(state));
+
+        assertEquals(PairedFaultExecutor.PairVerdict.FIRE, r.mist.get(0).pureDifferential);
+        assertFalse("control /health green -> liveness PASSes", r.controlComparator.flagged);
+        assertTrue("fault /health broker-err -> liveness FAILs -> CAUGHT", r.faultComparator.flagged);
+        // ...and it is a GENUINE in-body detection (HTTP 200), NOT a transport reclassification.
+        assertFalse("the fault liveness FAIL must be a real detection, not transport-only",
+                ShippingEnqueueHeadToHead.onlyTransportFailures(r.faultComparator));
+    }
+
+    @Test
+    public void transportOnlyFaultFlag_isReclassified_notCaught() throws Exception {
+        // Review C-MAJOR-1: if the fault leg's /health decisive read is non-2xx, the STATE_GET FAILs
+        // as a TRANSPORT failure. The leg is flagged, but the harness must NOT score it CAUGHT
+        // (that would inflate the comparator's recall with an infra blip).
+        DataIntegrityRuntime.installHttpOverride(new DepthHttp());
+        SeverState state = new SeverState();
+        ShippingEnqueueHeadToHead harness =
+                new ShippingEnqueueHeadToHead(new FakeStimulus(), new HealthClient(state, true));
+
+        ShippingEnqueueHeadToHead.StratumResult r =
+                harness.runStratum("natural", loadTriple(), livenessContract(), new SeverFault(state));
+
+        assertTrue("a non-2xx /health FAILs the clause", r.faultComparator.flagged);
+        assertTrue("but it is transport-only -> reclassified to comparator-infra-failure, not CAUGHT",
+                ShippingEnqueueHeadToHead.onlyTransportFailures(r.faultComparator));
     }
 }

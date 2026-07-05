@@ -204,6 +204,26 @@ public final class ShippingEnqueueHeadToHead {
         }
     }
 
+    /**
+     * Review C-MAJOR-1 (mirrors {@link io.mist.cli.comparator.ComparatorRunner}): a fault-leg flag
+     * whose FAILs are ALL transport-level (a state GET non-2xx decisive read) is an infra blip, not
+     * a detection — scoring it CAUGHT would inflate the comparator's recall and misattribute the
+     * natural cell's headline. /health is served by shipping itself (not through the severed AMQP
+     * path) so the primary path stays 2xx; this guards the disclosed pod-bounce fallback + hiccups.
+     */
+    static boolean onlyTransportFailures(ContractEvaluator.EndpointOutcome outcome) {
+        boolean sawFailure = false;
+        for (ContractEvaluator.CheckOutcome co : outcome.outcomes) {
+            if ("FAIL".equals(co.result)) {
+                sawFailure = true;
+                if (!co.transportFailure) {
+                    return false;
+                }
+            }
+        }
+        return sawFailure;
+    }
+
     /** Prints one stratum's cell: MIST verdict + the comparator's control/fault flags. */
     private static void printCell(String stratum, StratumResult r) {
         String mistVerdict = r.mist.isEmpty() ? "NO_RESULT" : r.mist.get(0).pureDifferential.name();
@@ -211,12 +231,19 @@ public final class ShippingEnqueueHeadToHead {
         System.out.println("\n=== stratum: " + stratum + " ===");
         System.out.println("  MIST B2 (differential value-delta): " + mistVerdict);
         System.out.println("      " + mistReason);
+        boolean faultInfraOnly = r.faultComparator.flagged && onlyTransportFailures(r.faultComparator);
+        String comparatorOutcome;
+        if (faultInfraOnly) {
+            comparatorOutcome = "comparator-infra-failure (fault-leg state GET non-2xx — NOT a detection)";
+        } else if (r.faultComparator.flagged) {
+            comparatorOutcome = "CAUGHT (response/liveness-level, NOT write-localized — MIST additionally"
+                    + " localizes the specific lost enqueue)";
+        } else {
+            comparatorOutcome = "MISSED";
+        }
         System.out.println("  Comparator (frozen response contract): control flagged="
                 + r.controlComparator.flagged + ", fault flagged=" + r.faultComparator.flagged
-                + "  -> " + (r.faultComparator.flagged
-                        ? "CAUGHT (response/liveness-level, NOT write-localized — MIST additionally"
-                                + " localizes the specific lost enqueue)"
-                        : "MISSED")
+                + "  -> " + comparatorOutcome
                 + (r.controlComparator.flagged ? " (control also flagged — systemic, verify)" : ""));
         if (!r.mist.isEmpty()) {
             System.out.println("  claim-eligibility: joinMode=" + r.mist.get(0).joinMode
@@ -338,7 +365,8 @@ public final class ShippingEnqueueHeadToHead {
                         System.getProperty("g3.ship.namespace", "sock-shop"),
                         Paths.get(required("g3.ship.sever.manifest")),
                         baseUrl.replaceAll("/+$", "") + "/health",
-                        Long.getLong("g3.ship.converge.seconds", 60L)));
+                        Long.getLong("g3.ship.converge.seconds", 60L),
+                        System.getProperty("g3.ship.broker.workload", "deploy/rabbitmq")));
             }
             if (strata.contains("constructed")) {
                 harness.runStratum("constructed", triple, contract,

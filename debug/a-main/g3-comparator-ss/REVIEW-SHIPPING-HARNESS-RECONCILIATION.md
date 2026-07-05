@@ -98,3 +98,64 @@ localizes the lost enqueue); constructed reject-publish → `/health` green → 
 MISSES → the clean MIST win, now robust to "just add a health check". **NEXT: ≥3-cold-review P2 (new comparator
 primitive + the amendment) before any claim; then the live run (Istio sever manifest + ShippingStimulus +
 both strata + result ≥3-review).**
+
+## P2 REVIEW — fairness/methodology (reviewer B): ACCEPT-WITH-CHANGES (no BLOCKING; framing-only)
+Verified: no shipping run-result exists yet (amendment is genuinely PRE-RUN); freeze→amend is git-tracked
+(NOT_CHECKABLE at 1adf483 → bound at 41ff9ac); the clause reads ONLY liveness (catches the outage, blind to the
+loss — not over-strengthened); /health stays HTTP 200 so the natural FAIL is a real in-body detection (not
+reclassified infra-failure); the assertion is MAXIMAL (/health has exactly 2 entries, both asserted OK — not
+cherry-picked). Crucially P2 STRENGTHENS the baseline (MIST's win gets harder), the opposite of strawmanning.
+The steelman "engineered baseline" attack survives ONLY if framing slips — and its one grain of truth (a
+diligent SRE would add queue-depth/publisher-confirms) is SELF-DEFEATING: it concedes that catching this class
+requires out-of-class broker/queue-state observation = MIST's contribution. FRAMING RULES (write-up; no code):
+- **[B-MAJOR-1] Class-scope the win.** Say "the strongest fair *single-endpoint response+liveness
+  contract-checking* class (Pact/Dredd/synthetic-monitoring shape) misses it"; NEVER "no diligent engineer could
+  catch this." Bind to the standing oracle-class-scope rule. The constructed stratum is an existence proof that
+  this class's boundary is not closable by IN-class strengthening (a health check); crossing it needs an
+  out-of-class observable (broker/queue state / cross-service differential) = MIST.
+- **[B-MAJOR-2] Report BOTH comparator forms side by side** — (i) as-frozen HTTP_STATUS-only (git 1adf483; misses
+  BOTH strata, the swallow returns 201 regardless) and (ii) P2-strengthened (catches the natural outage, still
+  misses the constructed loss). **RUN IMPLICATION: evaluate the comparator with BOTH contracts and record both**
+  — proves no inconvenient frozen result was suppressed and strengthening did not manufacture the win.
+- **[B-MAJOR-3] Describe the PROTOCOL, not "independence".** The anti-gaming guarantee is freeze-before-reveal:
+  primary-sources-only, no MIST-internals access, git-frozen before reveal, P2 written into the frozen notes —
+  so the spec provably was not reverse-engineered to fit MIST. Do NOT imply an organizationally-separate human.
+- **[B-MINOR-1] Defend + disclose the constructed fault:** max-length/reject-publish is a real RabbitMQ overflow
+  hazard; disclose it was deliberately chosen to exhibit a GREEN-liveness loss; cite requireRejectWillBite()
+  (consumers==0 ∧ depth≥max-length) as evidence the loss is real, not a drained mirage.
+- **[B-MINOR-2] Natural stratum stays "diagnosis gap"** (comparator catches the outage, MIST localizes the lost
+  enqueue — not a MIST win, not a tie); the printCell A-m7 label already enforces this in code.
+- **[B-MINOR-3] State the maximality** (/health = 2 entries, both asserted OK) to pre-empt "convenient subset".
+
+## P2 REVIEW — correctness (A) + outcome (C): both ACCEPT-WITH-CHANGES + LIVE SEVER VERIFICATION
+Fix wave folded in; full mist-cli suite 183 green. A + C both flagged the transport-classification gap (converged).
+
+### Code fixes applied
+| Finding | Sev | Fix |
+|---|---|---|
+| A-MAJOR empty-constraints false-PASS (`fields:","` → zero-length split → vacuous PASS) | MAJOR | loader validates the PARSED constraint count ≥1; matcher `if(constraints.isEmpty())return false` (belt+braces) |
+| A-MINOR `" =x"` bypasses the `=` check (indexOf on the raw string) | MINOR | trim before the `=` test |
+| A-MINOR collection_key silently ignored on non-literal checks | MINOR | reject unless STATE_GET `contains-literal-fields` |
+| **C-MAJOR-1** harness `printCell` scored CAUGHT off raw `flagged` — a transport-only fault FAIL = false CAUGHT | MAJOR | mirror `ComparatorRunner.onlyTransportFailures` → `comparator-infra-failure`, not CAUGHT |
+| A-NIT / C-MINOR-6 FAIL detail said "submitted state ABSENT" for a literal check | cosmetic | message now reads "literal fields ABSENT" |
+| C-MINOR-5 no orchestration test of the liveness CAUGHT path | MINOR | +2 harness tests (CAUGHT with clean control; transport reclassified) |
+| **NEW (live)** Istio DENY alone does NOT flip /health (cached AMQP connection persists) | run-blocking | injector force-closes the cached conn (`rabbitmqctl close_all_connections`) after apply — verified live: /health err in ~1s, no bounce; +`IstioAmqpSeverInjectorTest` (6) |
+
+Deferred (safe-direction / operational, disclosed):
+- **C-MAJOR-2** (retry breaks early on one OK → false MISS on a flapping sever): the DENY+close holds /health STABLY err (DENY blocks reconnect); direction is a false MISS (never a false MIST win). Runbook: lower the retry cap + confirm no flap.
+- **C-MINOR-6 case** (injector `equalsIgnoreCase("OK")` vs oracle exact `status=OK`): inert (live value literally "OK"); self-reveals via the "control also flagged — systemic" signal.
+- A-NIT terminal-poll transport classification: /health is HTTP-200-stable, low risk.
+
+### LIVE SEVER VERIFICATION (2 self-cleaning runs, cluster restored, qm→0)
+- **Run 1 (DENY only):** /health did NOT flip in 40s (cached connection); the bounce fallback raced (/health empty, POST 000) → mechanism insufficient.
+- **Run 2 (DENY + close_all_connections, qm fully drained first):** qm down ~1s; /health flipped to err ~1s with NO bounce; fault POST=201 + queue depth stable (message LOST); control POST landed (depth moved, but the mgmt count lags). → **MECHANISM CONFIRMED** and folded into the injector.
+- **LEARNED:** (a) the natural sever = DENY **+ connection-close** (now in `IstioAmqpSeverInjector.inject`); (b) the RabbitMQ mgmt `messages` count **LAGS ~5s** → fine for MIST (poll timeout 20s ≫ lag; the oracle's baseline-stability double-read guards a stale baseline), but the runbook adds a settle between legs.
+
+### RUNBOOK (natural stratum, pre-registered)
+- queue-master scaled to 0 AND wait for 0 pods before any baseline (else transient draining reads as a false loss).
+- Injector: DENY-apply → `close_all_connections` → await /health err (converge-gated; throws rather than run a degenerate leg).
+- Comparator retry cap set LOW for the run so the fault-leg liveness FAIL resolves fast (no ~20s×N budget); the DENY holds /health stably err.
+- **Live-confirm at run time (C's A/B/C/D):** every fault-leg /health read is HTTP 200 + stably `shipping-rabbitmq=err`; control recovers green before the next leg; **CONSTRUCTED: /health STAYS GREEN under reject-publish (the health probe checks connection liveness, not a test-publish) — the make-or-break for the clean-win cell**; /health status is literally "OK".
+
+### FRAMING (B + C-MINOR-4): natural = TIE at binary granularity; MIST's edge = LOCALIZATION
+The natural stratum is NOT a comparator miss and NOT a MIST *detection* win — both flag (comparator on the coarse /health liveness clause, MIST on the specific queue-depth delta). Present it as "both detect an anomaly; the comparator sees a service-wide outage, MIST localizes the specific lost write," alongside dual-form reporting (as-frozen `blind-shipping-contract-asfrozen.yaml` misses both strata; the P2-amended contract catches the natural outage, still misses the constructed loss).

@@ -122,6 +122,62 @@ public class AssertionBindingsTest {
     }
 
     @Test
+    public void containsLiteralFields_rejectsEmptyParsedConstraints() {
+        // fieldsRaw="," is non-empty but splits to zero constraints -> must NOT load (it would
+        // vacuously PASS the first item = a silent false-PASS liveness). Review A-MAJOR.
+        String doc = HEADER
+                + "      - cite: \"c\"\n"
+                + "        checks:\n"
+                + "          - primitive: STATE_GET\n"
+                + "            path: \"/health\"\n"
+                + "            expect: \"contains-literal-fields\"\n"
+                + "            fields: \",\"\n";
+        try {
+            AssertionBindings.parse(yaml(doc), "test-doc");
+            fail("expected a comma-only fields value to be rejected");
+        } catch (IllegalArgumentException e) {
+            assertTrue(e.getMessage(), e.getMessage().contains("at least one"));
+        }
+    }
+
+    @Test
+    public void containsLiteralFields_rejectsWhitespaceOnlyName() {
+        // " =x" has indexOf('=')==1 on the raw string, but a whitespace-only NAME is meaningless
+        // (would store "=x" -> name "" -> never matches). Trim before the '=' test. Review A-MINOR.
+        String doc = HEADER
+                + "      - cite: \"c\"\n"
+                + "        checks:\n"
+                + "          - primitive: STATE_GET\n"
+                + "            path: \"/health\"\n"
+                + "            expect: \"contains-literal-fields\"\n"
+                + "            fields: \" =x\"\n";
+        try {
+            AssertionBindings.parse(yaml(doc), "test-doc");
+            fail("expected a whitespace-only field name to be rejected");
+        } catch (IllegalArgumentException e) {
+            assertTrue(e.getMessage(), e.getMessage().contains("name=value"));
+        }
+    }
+
+    @Test
+    public void collectionKey_rejectedOnNonLiteralCheck() {
+        // collection_key only means something for contains-literal-fields; on any other check it
+        // would load and be silently ignored (a fallback footgun). Review A-MINOR.
+        String doc = HEADER
+                + "      - cite: \"c\"\n"
+                + "        checks:\n"
+                + "          - primitive: HTTP_STATUS\n"
+                + "            expect: \"201\"\n"
+                + "            collection_key: \"health\"\n";
+        try {
+            AssertionBindings.parse(yaml(doc), "test-doc");
+            fail("expected collection_key on an HTTP_STATUS check to be rejected");
+        } catch (IllegalArgumentException e) {
+            assertTrue(e.getMessage(), e.getMessage().contains("collection_key"));
+        }
+    }
+
+    @Test
     public void containsLiteralFields_requiresNameEqualsValueFields() {
         String doc = HEADER
                 + "      - cite: \"c\"\n"

@@ -205,10 +205,15 @@ public final class ContractEvaluator {
                                     + " on the decisive read (" + polls + " poll(s))", true);
                 }
                 if (presenceExpect) {
+                    // Name the evidence accurately: a contains-literal-fields clause checks LITERAL
+                    // name=value constraints (e.g. liveness), not the submitted body — the FAIL
+                    // detail is the human-facing evidence for a diagnosis-gap CAUGHT.
+                    String kind = "contains-literal-fields".equals(check.expect)
+                            ? "literal fields" : "submitted state";
                     return satisfied
-                            ? new CheckOutcome(check, "PASS", "submitted state present on " + path
+                            ? new CheckOutcome(check, "PASS", kind + " present on " + path
                                     + " (" + polls + " poll(s))")
-                            : new CheckOutcome(check, "FAIL", "submitted state ABSENT from " + path
+                            : new CheckOutcome(check, "FAIL", kind + " ABSENT from " + path
                                     + " at the cap (fields " + check.fields + ", " + polls
                                     + " poll(s))");
                 }
@@ -327,6 +332,12 @@ public final class ContractEvaluator {
      */
     static boolean containsLiteralFields(String collectionBody, List<String> constraints,
                                          String collectionKey) {
+        // Defense-in-depth: an empty constraint set would match the first item VACUOUSLY (a silent
+        // false-PASS). The loader already rejects a contains-literal-fields clause with zero parsed
+        // constraints, so this is a belt-and-braces guard, not the primary check.
+        if (constraints.isEmpty()) {
+            return false;
+        }
         for (Object item : literalItems(collectionBody, collectionKey)) {
             if (!(item instanceof JSONObject)) {
                 continue;

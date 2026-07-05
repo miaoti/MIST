@@ -188,6 +188,14 @@ public final class AssertionBindings {
         String fieldsRaw = optionalString(ch, "fields");
         String reason = optionalString(ch, "reason");
         String collectionKey = optionalString(ch, "collection_key");
+        // collection_key only unwraps a custom collection for the P2 literal matcher; on any other
+        // primitive/expect it would load and be silently ignored (a fallback-to-extractItems
+        // footgun), so reject it — the loader's contract is fail-loud, never quiet mis-evaluation.
+        if (collectionKey != null
+                && !(primitive == Primitive.STATE_GET && "contains-literal-fields".equals(expect))) {
+            throw new IllegalArgumentException("AssertionBindings: 'collection_key' is only valid on a "
+                    + "STATE_GET 'contains-literal-fields' check in " + origin);
+        }
         switch (primitive) {
             case HTTP_STATUS:
                 requireExpect(expect, primitive, origin);
@@ -233,17 +241,30 @@ public final class AssertionBindings {
                 } else if ("contains-literal-fields".equals(expect)) {
                     // P2: literal name=value constraints (not submitted-body values), so a
                     // liveness clause like service=shipping-rabbitmq,status=OK is expressible.
-                    if (fieldsRaw == null || fieldsRaw.trim().isEmpty()) {
-                        throw new IllegalArgumentException("AssertionBindings: STATE_GET "
-                                + "contains-literal-fields needs 'fields' (name=value constraints) in "
-                                + origin);
-                    }
-                    for (String f : fieldsRaw.split(",")) {
-                        if (!f.trim().isEmpty() && f.indexOf('=') <= 0) {
-                            throw new IllegalArgumentException("AssertionBindings: STATE_GET "
-                                    + "contains-literal-fields field '" + f.trim()
-                                    + "' must be 'name=value' in " + origin);
+                    // Validate the PARSED constraint count, not the raw string: fieldsRaw=="," (or
+                    // " , ") is non-empty but splits to zero non-empty fields, which must NOT load
+                    // as an empty (and therefore vacuously-PASSing) constraint set. Trim before the
+                    // '=' test so a whitespace-only name like " =x" is rejected too, not stored as
+                    // a never-matching "=x".
+                    int parsed = 0;
+                    if (fieldsRaw != null) {
+                        for (String f : fieldsRaw.split(",")) {
+                            String t = f.trim();
+                            if (t.isEmpty()) {
+                                continue;
+                            }
+                            if (t.indexOf('=') <= 0) {
+                                throw new IllegalArgumentException("AssertionBindings: STATE_GET "
+                                        + "contains-literal-fields field '" + t
+                                        + "' must be 'name=value' in " + origin);
+                            }
+                            parsed++;
                         }
+                    }
+                    if (parsed == 0) {
+                        throw new IllegalArgumentException("AssertionBindings: STATE_GET "
+                                + "contains-literal-fields needs at least one 'name=value' constraint in "
+                                + origin);
                     }
                 } else if (!"absent".equals(expect)) {
                     throw new IllegalArgumentException("AssertionBindings: STATE_GET expect must be "
