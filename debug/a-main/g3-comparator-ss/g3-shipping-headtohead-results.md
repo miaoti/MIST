@@ -80,4 +80,24 @@ frz constructed : comparator control=F fault=F -> MISSED   depth control 2->3 (p
 - **CONSTRUCTED /health stays GREEN under reject-publish** (comparator control=F fault=F) — the make-or-break,
   confirmed: shipping's health probe checks connection liveness, not a test-publish.
 
-<!-- N=5 stability summary to be appended from the reps run, then ≥3-cold-review -->
+## N=5 stability (reps run bqf1d09h4, exit 0)
+The matrix is DETERMINISTIC across reps — every rep is categorically identical to the pilot, zero variance:
+
+| cell | comparator outcome | reps |
+|---|---|---|
+| P2-amended · natural | MIST FIRE + comparator **CAUGHT** (control=F, fault=T) | **5/5** |
+| P2-amended · constructed | MIST FIRE + comparator **MISSED** (F, F) | **5/5** |
+| as-frozen · natural | MIST FIRE + comparator **MISSED** (F, F) | **2/2** |
+| as-frozen · constructed | MIST FIRE + comparator **MISSED** (F, F) | **2/2** |
+
+MIST FIRE on **14/14** fault legs across all reps (every control leg X-present, every fault leg X-absent, all via
+a unique correlator join); every comparator flag/no-flag matched the pilot exactly. Depths were steady per rep
+(natural control 1→2, constructed control 2→3; fault legs never moved). The SUT-2 head-to-head is **stable and
+claim-ready pending the ≥3-cold-review**.
+
+## Bottom line
+On a SECOND SUT and a DIFFERENT integrity-hazard class (a lost message-queue enqueue), MIST's contract-independent
+value-delta oracle catches the acked-but-lost write that the strongest FAIR response+liveness contract-checker
+cannot — cleanly (constructed) and with sharper localization where the checker only sees an outage (natural). The
+dual-form reporting shows the P2 strengthening only made MIST's story harder, never manufactured it. This is the
+external-validity complement to the TrainTicket cancel→refund head-to-head.
