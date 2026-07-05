@@ -165,8 +165,14 @@ public final class DataIntegrityRuntime {
         }
     }
 
-    /** Test seam for the two HTTP shapes the runtime needs. */
-    interface Http {
+    /**
+     * Seam for the two HTTP shapes the runtime needs. PUBLIC so an out-of-package
+     * g3 head-to-head harness can install a read-back Http that points at a
+     * different host (e.g. the Sock Shop shipping enqueue lands in a RabbitMQ
+     * queue, so the durable-effect read-back is the broker mgmt API, not the SUT).
+     * Widening visibility only — the runtime's logic is unchanged.
+     */
+    public interface Http {
         /** Auth-applied GET against the SUT (path relative to RestAssured base URI). */
         HttpResponse getSut(String path);
 
@@ -174,11 +180,11 @@ public final class DataIntegrityRuntime {
         HttpResponse getAbsolute(String url);
     }
 
-    static final class HttpResponse {
-        final int status;
-        final String body;
+    public static final class HttpResponse {
+        public final int status;
+        public final String body;
 
-        HttpResponse(int status, String body) {
+        public HttpResponse(int status, String body) {
             this.status = status;
             this.body = body;
         }
@@ -244,8 +250,18 @@ public final class DataIntegrityRuntime {
 
     // Test seam: lets the pairing-executor tests drive the PUBLIC beginRun
     // (the one PairedFaultExecutor calls) against a fake SUT. Never set in
-    // production.
+    // production. Also used by a g3 head-to-head harness (via the public
+    // installer below) to route the read-back GET at a non-SUT host.
     static volatile Http defaultHttpOverride = null;
+
+    /**
+     * Installs a read-back {@link Http} for a g3 head-to-head run whose durable
+     * effect lives off the SUT (pass {@code null} to clear). The harness must
+     * clear it in a finally so the override never leaks into a later run.
+     */
+    public static void installHttpOverride(Http http) {
+        defaultHttpOverride = http;
+    }
 
     private DataIntegrityRuntime() {
         // static hooks only

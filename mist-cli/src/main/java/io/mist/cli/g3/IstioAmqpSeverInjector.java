@@ -1,0 +1,206 @@
+package io.mist.cli.g3;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URI;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+/**
+ * Natural-stratum fault: a surgical shipping&#8617;broker sever on an UNMODIFIED SUT.
+ * {@link #inject} applies a reviewed, committed Istio manifest (an L4 AuthorizationPolicy /
+ * EnvoyFilter denying shipping&rarr;rabbitmq:5672 while the mgmt read-back on 15672 stays
+ * live); {@link #clear} deletes it. The manifest is per-SUT deploy configuration, not
+ * generated here. This makes {@code ShippingController.postShipping}'s
+ * {@code convertAndSend("shipping-task",…)} throw → the swallow returns HTTP 201 + the
+ * message is lost, and (because {@code getHealth} live-probes the broker on the same
+ * connection factory) {@code /health} reads "err" — the diagnosis-gap stratum.
+ *
+ * <p><b>Convergence is probed, not assumed</b> (mirrors {@link io.mist.cli.fault} 's reviewed
+ * IstioRouteFaultInjector): mesh-policy propagation is eventually consistent, and a fault leg
+ * that starts before the sever is live silently degrades into a second control leg. The sever
+ * flips no HTTP STATUS (POST still 201, /health still 200) — the acked-but-lost nature is the
+ * whole point — so the convergence signal is the {@code /health} BODY: the
+ * {@code shipping-rabbitmq} entry reads "err" once severed, "OK" once restored. A probe I/O
+ * failure never satisfies either direction (a dead gateway must not pass for a converged
+ * clear). Whether the L4 sever reliably breaks shipping's CACHED broker connection is a
+ * live-tuned risk (fallback: bounce the shipping pod after applying) — if {@code /health}
+ * never flips within the budget, inject() throws rather than run a degenerate leg.
+ */
+public final class IstioAmqpSeverInjector implements ShippingEnqueueHeadToHead.Fault {
+
+    static final String REQUEST_TIMEOUT = "30s";
+    static final long PROCESS_GRACE_SECONDS = 60;
+
+    /** Runs a process to completion within a timeout. Test seam. */
+    interface Exec {
+        ExecResult run(List<String> argv, long timeoutSeconds) throws IOException, InterruptedException;
+    }
+
+    static final class ExecResult {
+        final int exitCode;
+        final String output;
+
+        ExecResult(int exitCode, String output) {
+            this.exitCode = exitCode;
+            this.output = output;
+        }
+    }
+
+    /** Reads the shipping-rabbitmq health: TRUE=err (severed), FALSE=OK, null=unreadable. Test seam. */
+    interface HealthProbe {
+        Boolean brokerErr(String healthUrl);
+    }
+
+    private final String kubectl;
+    private final String kubeconfig;
+    private final String namespace;
+    private final Path manifest;
+    private final String healthUrl;
+    private final long convergeTimeoutSeconds;
+    private final long probePollMs;
+    private final Exec exec;
+    private final HealthProbe probe;
+
+    public IstioAmqpSeverInjector(String kubectl, String kubeconfig, String namespace, Path manifest,
+                                  String healthUrl, long convergeTimeoutSeconds) {
+        this(kubectl, kubeconfig, namespace, manifest, healthUrl, convergeTimeoutSeconds, 500,
+                IstioAmqpSeverInjector::runProcess, IstioAmqpSeverInjector::readHealth);
+    }
+
+    IstioAmqpSeverInjector(String kubectl, String kubeconfig, String namespace, Path manifest,
+                           String healthUrl, long convergeTimeoutSeconds, long probePollMs,
+                           Exec exec, HealthProbe probe) {
+        if (namespace == null || namespace.trim().isEmpty()) {
+            throw new IllegalArgumentException("IstioAmqpSeverInjector needs a non-empty namespace");
+        }
+        if (manifest == null || !Files.isRegularFile(manifest)) {
+            throw new IllegalArgumentException("IstioAmqpSeverInjector needs an existing manifest file"
+                    + " (got: " + manifest + ")");
+        }
+        if (healthUrl == null || !healthUrl.matches("https?://.+")) {
+            throw new IllegalArgumentException("IstioAmqpSeverInjector needs an absolute http(s)"
+                    + " /health URL (got: " + healthUrl + ")");
+        }
+        if (convergeTimeoutSeconds <= 0) {
+            throw new IllegalArgumentException("convergeTimeoutSeconds must be positive");
+        }
+        this.kubectl = kubectl == null || kubectl.trim().isEmpty() ? "kubectl" : kubectl.trim();
+        this.kubeconfig = kubeconfig;
+        this.namespace = namespace.trim();
+        this.manifest = manifest;
+        this.healthUrl = healthUrl;
+        this.convergeTimeoutSeconds = convergeTimeoutSeconds;
+        this.probePollMs = probePollMs;
+        this.exec = exec;
+        this.probe = probe;
+    }
+
+    @Override
+    public void inject() throws IOException, InterruptedException {
+        kubectl("apply", "-f", manifest.toString(), "--request-timeout=" + REQUEST_TIMEOUT);
+        awaitHealth(true, "INJECT");
+    }
+
+    @Override
+    public void clear() throws IOException, InterruptedException {
+        kubectl("delete", "-f", manifest.toString(), "--ignore-not-found=true",
+                "--request-timeout=" + REQUEST_TIMEOUT);
+        awaitHealth(false, "CLEAR");
+    }
+
+    /** Polls /health until shipping-rabbitmq reads err (inject) / OK (clear); I/O never converges. */
+    private void awaitHealth(boolean expectErr, String operation) throws InterruptedException {
+        long deadline = System.nanoTime() + TimeUnit.SECONDS.toNanos(convergeTimeoutSeconds);
+        Boolean last = null;
+        while (System.nanoTime() - deadline < 0) {
+            last = probe.brokerErr(healthUrl);
+            if (last != null && last == expectErr) {
+                return;
+            }
+            Thread.sleep(probePollMs);
+        }
+        String observed = last == null ? "unreadable /health" : "shipping-rabbitmq=" + (last ? "err" : "OK");
+        throw new IllegalStateException(operation + " did not converge within " + convergeTimeoutSeconds
+                + "s: " + healthUrl + " last read " + observed + ", wanted shipping-rabbitmq="
+                + (expectErr ? "err" : "OK"));
+    }
+
+    private void kubectl(String... args) throws IOException, InterruptedException {
+        List<String> argv = new ArrayList<>();
+        argv.add(kubectl);
+        if (kubeconfig != null && !kubeconfig.trim().isEmpty()) {
+            argv.add("--kubeconfig=" + kubeconfig.trim());
+        }
+        argv.addAll(Arrays.asList(args));
+        argv.add("-n");
+        argv.add(namespace);
+        ExecResult result = exec.run(argv, convergeTimeoutSeconds + PROCESS_GRACE_SECONDS);
+        if (result.exitCode != 0) {
+            throw new IOException("kubectl exited " + result.exitCode + ": " + String.join(" ", argv)
+                    + "\n" + result.output);
+        }
+    }
+
+    /** Production process runner: merges stderr, bounds the wait, returns exit code + output. */
+    static ExecResult runProcess(List<String> argv, long timeoutSeconds)
+            throws IOException, InterruptedException {
+        Process p = new ProcessBuilder(argv).redirectErrorStream(true).start();
+        StringBuilder out = new StringBuilder();
+        try (InputStream in = p.getInputStream()) {
+            byte[] buf = new byte[4096];
+            int n;
+            while ((n = in.read(buf)) != -1) {
+                out.append(new String(buf, 0, n, StandardCharsets.UTF_8));
+            }
+        }
+        if (!p.waitFor(timeoutSeconds, TimeUnit.SECONDS)) {
+            p.destroyForcibly();
+            throw new IOException("process timed out after " + timeoutSeconds + "s: "
+                    + String.join(" ", argv));
+        }
+        return new ExecResult(p.exitValue(), out.toString());
+    }
+
+    /** Production probe: GET /health, return whether shipping-rabbitmq reads err (null = unreadable). */
+    static Boolean readHealth(String healthUrl) {
+        HttpURLConnection c = null;
+        try {
+            c = (HttpURLConnection) URI.create(healthUrl).toURL().openConnection();
+            c.setRequestMethod("GET");
+            c.setConnectTimeout(5000);
+            c.setReadTimeout(5000);
+            int status = c.getResponseCode();
+            if (status / 100 != 2) {
+                return null;
+            }
+            InputStream in = c.getInputStream();
+            String body = in == null ? "" : new String(in.readAllBytes(), StandardCharsets.UTF_8);
+            // Find the shipping-rabbitmq entry and read its status.
+            Matcher m = Pattern.compile(
+                    "\\{[^{}]*\"service\"\\s*:\\s*\"shipping-rabbitmq\"[^{}]*\\}").matcher(body);
+            if (!m.find()) {
+                return null;
+            }
+            Matcher s = Pattern.compile("\"status\"\\s*:\\s*\"([^\"]*)\"").matcher(m.group());
+            if (!s.find()) {
+                return null;
+            }
+            return !"OK".equalsIgnoreCase(s.group(1));
+        } catch (IOException e) {
+            return null;
+        } finally {
+            if (c != null) {
+                c.disconnect();
+            }
+        }
+    }
+}
