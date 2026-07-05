@@ -1,0 +1,35 @@
+# G3 natural-stratum fault manifest: sever shipping -> rabbitmq AMQP (5672) while the broker
+# management read-back stays reachable. Applied/deleted by IstioAmqpSeverInjector; convergence is
+# the /health body flipping the shipping-rabbitmq entry to "err" (getHealth live-probes the broker
+# on the same connection factory as the publish).
+#
+# WHY THIS SHAPE:
+#  - An Istio L4 AuthorizationPolicy on the rabbitmq WORKLOAD denies INBOUND to port 5672 (AMQP).
+#    Only shipping publishes to 5672 in this experiment (queue-master is scaled to 0), so a
+#    port-scoped DENY severs the enqueue without needing to isolate by source principal (all
+#    sock-shop pods share the "default" service account, so principal scoping is not available).
+#  - The mgmt read-back is a kubectl port-forward straight to the pod's 15672 (it bypasses the
+#    sidecar via the kubelet), so it is unaffected by this inbound policy regardless — the sever
+#    cannot break MIST's read-back. 15672 is also simply not in the deny.
+#  - Both pods are mesh-injected with mTLS (security.istio.io/tlsMode=istio), so the policy is
+#    enforced on the shipping->rabbitmq mTLS connection.
+#
+# RISK (live-tuned, handled by the injector): AuthorizationPolicy is enforced per-connection at the
+# sidecar; shipping's ALREADY-CACHED AMQP connection may persist. If /health does not flip to "err"
+# within the injector's converge budget, inject() throws (it never runs a degenerate leg); the
+# fallback is to bounce the shipping pod after applying so it re-establishes (and fails) the
+# connection. Verify live before the run.
+apiVersion: security.istio.io/v1
+kind: AuthorizationPolicy
+metadata:
+  name: shipping-amqp-sever
+  namespace: sock-shop
+spec:
+  selector:
+    matchLabels:
+      name: rabbitmq
+  action: DENY
+  rules:
+    - to:
+        - operation:
+            ports: ["5672"]
