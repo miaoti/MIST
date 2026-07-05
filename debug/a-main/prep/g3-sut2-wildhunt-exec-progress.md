@@ -131,6 +131,20 @@ artifacts — the value-delta triple YAML + the Istio sever manifest (config) + 
 (independent author, incl. the /health-clause decision); (c) live run both strata + comparator + record +
 result ≥3-review.**
 
+## Step 3 — live prep facts (gathered while the code review runs; read-only)
+- **Cluster UP** (kind "mist"): rabbitmq-74bd684d5d 3/3 (rabbitmq+exporter+istio-proxy, 3.8.34), shipping 2/2
+  (shipping+istio-proxy), queue-master→0 (no pods). Both mesh-injected, `security.istio.io/tlsMode=istio`.
+- **Istio sever manifest inputs**: shipping SA=`default` (shared across sock-shop pods, so can't isolate by
+  principal); AuthorizationPolicy CRD present (security.istio.io/v1). Only shipping publishes to 5672 (qm→0),
+  so the sever = **AuthorizationPolicy on rabbitmq (selector name=rabbitmq), action DENY,
+  to.operation.ports=["5672"]** — blocks the AMQP port while 15672 (mgmt read-back) stays live. RISK (as
+  flagged): AuthZ applies at the sidecar per-connection; shipping's ALREADY-CACHED AMQP connection may persist
+  → the injector's /health-flip convergence probe catches this (throws if /health never errs) and the fallback
+  is to bounce the shipping pod after applying. Author the manifest against these facts after the review.
+- **Real read-back body CONFIRMED** (reviewer-B question): `GET /api/queues/%2f` via mist:mist returns a BARE
+  JSON ARRAY; the shipping-task item has `name` + `messages` among 43 keys — extractItems (bare-array branch)
+  + extractProbeValue (name→messages) bind on the real body; the 41 extra fields are ignored. depth=1 now.
+
 ## Step 3 — BUILD BLUEPRINT for the g3-style harness (think-before-coding; ~350 LOC new, oracle unchanged)
 Verified the full CancelRefundHeadToHead pattern + the Http seam. The shipping harness mirrors it with 2
 differences: (a) the read-back is a DIFFERENT host + basic auth → override the Http seam; (b) two
