@@ -20,10 +20,14 @@ plan, is authoritative for this doc's structure). The liftable paper-evidence pa
 > disclosed amendment to the gate criterion, is the gate's capability core in its defensible form —
 > MIST **detects, end-to-end black-box, when the defect is exercised** (it discovered nothing in the
 > wild), acked-but-lost writes on two independently-built SUTs, two hazard classes, and two durable-sink
-> types, including a delta/aggregate observable class (11/80 structurally non-bindable in the frozen
-> set) that the strongest fair blind-authored response(+liveness) contract oracle structurally cannot
-> express, at measured FP 0 on both SUTs' benign paths — which clears and exceeds the README §9 Plan-B
-> evidence floor without discharging Plan A's "Gate 3 yields real bugs" trigger.
+> types, including a delta/transition/object-shaped observable class (11/80 structurally non-bindable
+> in the frozen set) that the strongest fair blind-authored response(+liveness) contract oracle
+> structurally cannot express, at measured FP 0 on both SUTs' benign paths — which clears and exceeds
+> the README §9 Plan-B evidence floor without discharging Plan A's "Gate 3 yields real bugs" trigger.
+
+(One-phrase disclosed deviation from review A's verbatim sentence: "a delta/aggregate observable
+class" → "a delta/transition/object-shaped observable class", per the D1+D2 usability review M2 — the
+census language of the accepted survey; A's "structurally cannot express" framing is unchanged.)
 
 **Position in the plan-v4 ladder.** This pack closes the Gate-3/capability leg under the G2-v2
 re-scoped comparator protocol; the committed primary A-path deliverables — the C2 open labeled
@@ -57,11 +61,11 @@ standing rule that material changes are disclosed amendments), not an inherited 
 
 | instance | real, non-injected? | status/schema oracle misses? | strongest executed comparator misses? | trace-style oracle |
 |---|---|---|---|---|
-| TT natural (drawback throws → acked `{1,"error"}`; refund lost) | defect + response REAL on the unmodified fork; the THROW is injected (Istio abort on /drawback) | NO — the envelope msg gate flags `{1,"error"}` → detection TIE (MIST adds effect-localization) | NO (CAUGHT) | not executed |
+| TT natural (drawback throws → acked `{1,"error"}`; refund lost) | defect + response REAL on the unmodified fork; the THROW is injected (runtime fault toggle: drawBack throws → HTTP 500; an EnvoyFilter/Istio abort was tried and REJECTED — pooled-connection race, P3 §Fault mechanism) | NO — the envelope msg gate flags `{1,"error"}` → detection TIE (MIST adds effect-localization) | NO (CAUGHT) | not executed |
 | TT constructed (fabricated-ack → clean `{1,"Success."}`; refund lost) | NO — disclosed fork flag; the clean-ack+lost path is DEAD CODE on the unmodified fork (drawBack's `{0}` return unreachable) | YES — analytically forced and confirmed live (envelope schema-valid, status 1) | YES (**clean miss**) | not executed |
 | SS natural (Istio DENY 5672 + connection close; enqueue lost; `/health` err) | defect REAL in the unmodified upstream image; the sever is operator-injected | as-frozen form: YES — analytically forced (bare 201) and confirmed live (2/2 + 3/3 post-reboot) | NO — the P2-strengthened form CATCHES the outage (diagnosis-gap tie; the blind author specified the liveness clause; P2 made it expressible) | not executed |
 | SS constructed (reject-publish policy; enqueue lost; `/health` green) | defect REAL in the unmodified image; the policy is injected (operational only — no source change anywhere) | YES — analytically forced + confirmed live | YES (**clean miss**, 5/5) | not executed |
-| TT agreement (body-carrying createAccount + fabricated-ack) | NO (fork flag) | — | NO (CAUGHT via bound STATE_GET) — the fairness anchor | not executed |
+| TT agreement (body-carrying createAccount + fabricated-ack) | NO (fork flag, runtime toggle) | analytically misses (schema-valid clean ack); fairness anchor, outside the gate conjunction | NO (CAUGHT via bound STATE_GET) — the fairness anchor | not executed |
 | SS benign (no fault) | — (control) | no flag (nothing to catch) | no flag | — |
 
 **Conjunction outcome (one sentence): no single real, non-injected instance was missed by both executed
@@ -82,7 +86,7 @@ discovery-in-the-wild is claimed. The trace-style leg is **not met as written** 
 
 | # | pillar | headline numbers | review record + regime |
 |---|---|---|---|
-| P1 | Gate-1 verdict (`prep/gate1-result.md`) | FIRE on ONE constructed site (adminroute), strong stratum, **1/1 evaluable** (second triple = manual G0 smoke only); sync FP **0/2127** (30 iter × 71 records, ONE triple, correlated — descriptive interval [0,0], not a CI), observation gate 100% resolved; FP-vs-timeout curve 12.98%@500 ms → 0@≥2 s; async disclaimed | mechanism 3-cold-reviewed PRE-run (`research/REVIEW-B1B2-RECONCILIATION.md`); result audited in-doc against the pre-registered §2 checklist (no post-result wave) |
+| P1 | Gate-1 verdict (`prep/gate1-result.md`) | FIRE on ONE constructed site (adminroute), strong stratum, **1/1 evaluable** (second triple = manual G0 smoke only); sync FP **0/2127** (30 iter × 71 records − 3 invalid, ONE triple, correlated — descriptive interval [0,0], not a CI), observation gate 100% resolved; FP-vs-timeout curve 12.98%@500 ms → 0@≥2 s; async disclaimed | mechanism 3-cold-reviewed PRE-run (`research/REVIEW-B1B2-RECONCILIATION.md`); result audited in-doc against the pre-registered §2 checklist (no post-result wave) |
 | P2 | Gate-2 calibration (`g2-comparator/calibration-result.md`) | both Gate-1 faults flagged via genuine STATE-clause failures; all-clean control legs; competence floor MET. Standing scope rule: "injected wins are calibration evidence only — the PC-moving comparison happens at G3 over real defects" | chain reviews in separate files (blind contract, bindings, runner); result self-adjudicated against the pre-registered §4 bar |
 | P3 | TT cancel→refund head-to-head (`g3-comparator-tt/g3-headtohead-results.md`) | 3 cells, N=5 each: natural FIRE+CAUGHT (tie), constructed FIRE+MISSED (clean win via pre-funded arithmetic balance delta), agreement FIRE+CAUGHT | 2 rounds × 3 cold reviewers, ACCEPTED (`REVIEW-HEADTOHEAD-RECONCILIATION.md`); header staleness fixed 2026-07-08 |
 | P4 | Rider-2 bindability survey (`g3-comparator-tt/rider2-bindability-survey.md`) | ANALYTICAL expressibility over the full frozen TT set: generous **69/80 = 86.25%** bind (adversarial-to-MIST convention) / strict 59/80 = 73.75%; **11 structural NC** (3 OBJECT-ABSENCE, 3 KEY-SHAPE, 2 NESTED-ITEM-SHAPE, TRANSITION, RESPONSE-KEYED, BATCH); payment/compensation surface OUTSIDE the surveyed CRUD denominator; the one deep flow examined = 0/3 state clauses checkable | dedicated record `REVIEW-SURVEY-RECONCILIATION.md` (3× ACCEPT-WITH-FIXES, all folded); two prose remnants corrected 2026-07-08 (disclosed amendment; no disposition changed). The EMPIRICAL breadth run was REJECTED (`REVIEW-BINDABILITY-RUNNER-RECONCILIATION.md`) — this fraction is analytical, by design |
