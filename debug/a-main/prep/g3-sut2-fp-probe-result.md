@@ -141,3 +141,15 @@ TrainTicket and are **not** SUT-2-specific analysis. Do not read them as claims 
 FP arc CLOSED (3-cold-reviewed, all fixes folded). Remaining SUT-2 β work: generalization + wild-hunt
 (SS-C shipping enqueue-swallow, trace-gated) — secondary. Primary next deliverable: the executable
 breadth-bindings YAML for TrainTicket (Rider-2), which needs the env swapped back (Sock Shop → 0, TT → up).
+
+## ADDENDUM (2026-07-04, result-review C-M1): shipping scope SUPERSEDED
+The "Does NOT claim any SUT-2 detection/constructed-positive result (branch β has none by design)" line
+above described the CARTS/ORDERS write path (honest 5xx on Mongo failure) and predates the SHIPPING
+promotion: the wild-hunt shipping enqueue-swallow was subsequently promoted to a full depth head-to-head
+(constructed reject-publish stratum + a blind SUT-2 comparator contract + a clean-win detection result) —
+see `debug/a-main/g3-comparator-ss/g3-shipping-headtohead-results.md`. Branch β's "no constructed
+sensitivity" finding still holds where it was measured (carts); it no longer bounds SUT-2 as a whole.
+This FP probe's own claims (benign FP 0.0 on sync CRUD) are unaffected — and note the probe does NOT
+stand in for the shipping oracle's specificity control (different endpoint/read-back/mode); that control
+is the head-to-head's own live `benign` stratum (MIST NO_FIRE on the queue-depth oracle). Shipping is
+banked as DEPTH (second independent SUT), not double-counted as breadth.

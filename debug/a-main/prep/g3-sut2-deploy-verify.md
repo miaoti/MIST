@@ -92,3 +92,11 @@ breadth claim needs; recall/detection leans on TrainTicket + the wild defects.
   TT-only) — an honest scope reduction from the pre-registration.
 
 Cluster left UP (kind `mist`) for the continuation; minikube stays stopped.
+
+## ADDENDUM (2026-07-04, result-review C-M1): the SUT-2 blind set WAS later authored — for SHIPPING
+"The SUT-2 **blind set** is **not needed under β**" above was the honest scope at the time and referred
+to the CARTS-based sensitivity branch (carts honestly 5xxes → no constructed stratum THERE). The
+shipping enqueue-swallow was subsequently PROMOTED from wild-hunt inventory to a full depth
+head-to-head, for which a blind shipping contract WAS authored (freeze-before-reveal) and a constructed
+(reject-publish) stratum WAS run — see `debug/a-main/g3-comparator-ss/g3-shipping-headtohead-results.md`.
+β's carts finding is unchanged; the scope line no longer bounds SUT-2 as a whole.

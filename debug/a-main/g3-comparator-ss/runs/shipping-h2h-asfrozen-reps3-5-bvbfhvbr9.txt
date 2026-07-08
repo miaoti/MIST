@@ -1,0 +1,40 @@
+port-forwards up (post-reboot cluster; mist user re-created; queue re-declared via warm-up)
+
+======== AS-FROZEN REP 3 (post-reboot) ========
+=== stratum: natural ===
+  MIST B2 (differential value-delta): FIRE
+  Comparator (frozen response contract): control flagged=false, fault flagged=false  -> MISSED
+      control baseline=1 -> final=2
+      fault   baseline=2 -> final=2
+=== stratum: constructed ===
+  MIST B2 (differential value-delta): FIRE
+  Comparator (frozen response contract): control flagged=false, fault flagged=false  -> MISSED
+      control baseline=2 -> final=3
+      fault   baseline=1 -> final=1
+
+======== AS-FROZEN REP 4 (post-reboot) ========
+=== stratum: natural ===
+  MIST B2 (differential value-delta): FIRE
+  Comparator (frozen response contract): control flagged=false, fault flagged=false  -> MISSED
+      control baseline=1 -> final=2
+      fault   baseline=2 -> final=2
+=== stratum: constructed ===
+  MIST B2 (differential value-delta): FIRE
+  Comparator (frozen response contract): control flagged=false, fault flagged=false  -> MISSED
+      control baseline=2 -> final=3
+      fault   baseline=1 -> final=1
+
+======== AS-FROZEN REP 5 (post-reboot) ========
+=== stratum: natural ===
+  MIST B2 (differential value-delta): FIRE
+  Comparator (frozen response contract): control flagged=false, fault flagged=false  -> MISSED
+      control baseline=1 -> final=2
+      fault   baseline=2 -> final=2
+=== stratum: constructed ===
+  MIST B2 (differential value-delta): FIRE
+  Comparator (frozen response contract): control flagged=false, fault flagged=false  -> MISSED
+      control baseline=2 -> final=3
+      fault   baseline=1 -> final=1
+
+=== AS-FROZEN N=5 COMPLETE ===
+=== cleanup ===
