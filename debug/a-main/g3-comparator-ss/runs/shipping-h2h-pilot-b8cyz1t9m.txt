@@ -1,0 +1,50 @@
+shipping=shipping-5956fbdfd9-tbccl rabbitmq=rabbitmq-74bd684d5d-bs586  qm=0
+port-forwards up; /health=['OK']
+
+############################################################
+## RUN: P2-AMENDED (liveness-bound comparator)
+############################################################
+
+=== stratum: natural ===
+  MIST B2 (differential value-delta): FIRE
+      fault run acknowledged X (http 201, body status null) but X is absent from its own read-back (41 poll(s), gate TIMEOUT_ABSENT); control's X persisted — acknowledged-but-lost write
+  Comparator (frozen response contract): control flagged=false, fault flagged=true  -> CAUGHT (response/liveness-level, NOT write-localized — MIST additionally localizes the specific lost enqueue)
+  claim-eligibility: joinMode=correlator, correlatorUnique=true
+  value-delta probe (shipping-task queue depth, evidence only):
+      control baseline=4 -> final=5
+      fault   baseline=5 -> final=5
+
+=== stratum: constructed ===
+  MIST B2 (differential value-delta): FIRE
+      fault run acknowledged X (http 201, body status null) but X is absent from its own read-back (41 poll(s), gate TIMEOUT_ABSENT); control's X persisted — acknowledged-but-lost write
+  Comparator (frozen response contract): control flagged=false, fault flagged=false  -> MISSED
+  claim-eligibility: joinMode=correlator, correlatorUnique=true
+  value-delta probe (shipping-task queue depth, evidence only):
+      control baseline=5 -> final=6
+      fault   baseline=1 -> final=1
+## (exit 0)
+
+############################################################
+## RUN: AS-FROZEN (HTTP_STATUS-only, dual-form B-MAJOR-2)
+############################################################
+
+=== stratum: natural ===
+  MIST B2 (differential value-delta): FIRE
+      fault run acknowledged X (http 201, body status null) but X is absent from its own read-back (41 poll(s), gate TIMEOUT_ABSENT); control's X persisted — acknowledged-but-lost write
+  Comparator (frozen response contract): control flagged=false, fault flagged=false  -> MISSED
+  claim-eligibility: joinMode=correlator, correlatorUnique=true
+  value-delta probe (shipping-task queue depth, evidence only):
+      control baseline=1 -> final=2
+      fault   baseline=2 -> final=2
+
+=== stratum: constructed ===
+  MIST B2 (differential value-delta): FIRE
+      fault run acknowledged X (http 201, body status null) but X is absent from its own read-back (40 poll(s), gate TIMEOUT_ABSENT); control's X persisted — acknowledged-but-lost write
+  Comparator (frozen response contract): control flagged=false, fault flagged=false  -> MISSED
+  claim-eligibility: joinMode=correlator, correlatorUnique=true
+  value-delta probe (shipping-task queue depth, evidence only):
+      control baseline=2 -> final=3
+      fault   baseline=1 -> final=1
+## (exit 0)
+=== DONE ===
+=== cleanup ===

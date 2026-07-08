@@ -71,6 +71,25 @@ public final class ShippingEnqueueHeadToHead {
         void clear() throws Exception;
     }
 
+    /**
+     * The benign / false-positive control: no fault at all. Both legs post a shipment that LANDS,
+     * so the value-delta oracle sees X present on BOTH legs → NO_FIRE, and the comparator PASSes
+     * both legs. This is the specificity control the reviewers required (result review C-M3): it
+     * shows the shipping queue-depth oracle does not cry wolf when the enqueue is not lost — the
+     * differential can only fire on a real control-present ∧ fault-absent split.
+     */
+    public static final class NoOpFault implements Fault {
+        @Override
+        public void inject() {
+            // no fault injected — the "fault" leg is a second clean leg
+        }
+
+        @Override
+        public void clear() {
+            // nothing to clear
+        }
+    }
+
     /** One posted shipment: the submitted id/name (for the comparator echo) + the response. */
     public static final class Shipment {
         public final String id;
@@ -358,6 +377,10 @@ public final class ShippingEnqueueHeadToHead {
             java.util.Set<String> strata = new java.util.HashSet<>(java.util.Arrays.asList(
                     System.getProperty("g3.ship.strata", "natural,constructed").toLowerCase().split(",")));
 
+            if (strata.contains("benign")) {
+                // The specificity control: no fault → both legs land → MIST NO_FIRE + comparator PASS.
+                harness.runStratum("benign", triple, contract, new NoOpFault());
+            }
             if (strata.contains("natural")) {
                 harness.runStratum("natural", triple, contract, new IstioAmqpSeverInjector(
                         System.getProperty("g3.ship.kubectl", "kubectl"),

@@ -159,3 +159,56 @@ Deferred (safe-direction / operational, disclosed):
 
 ### FRAMING (B + C-MINOR-4): natural = TIE at binary granularity; MIST's edge = LOCALIZATION
 The natural stratum is NOT a comparator miss and NOT a MIST *detection* win — both flag (comparator on the coarse /health liveness clause, MIST on the specific queue-depth delta). Present it as "both detect an anomaly; the comparator sees a service-wide outage, MIST localizes the specific lost write," alongside dual-form reporting (as-frozen `blind-shipping-contract-asfrozen.yaml` misses both strata; the P2-amended contract catches the natural outage, still misses the constructed loss).
+
+---
+
+# RESULT REVIEWS (3 independent cold reviewers on the LIVE RESULT, commits e143ba6+5cd535c)
+All three: **ACCEPT-WITH-CHANGES, zero BLOCKING.** A (empirical soundness) independently ruled the matrix "a
+sound measurement, not an artifact" — verified the constructed trim is upstream of the fault-leg's own baseline
+(own-baseline differential never compares across legs), the mgmt stats lag can only produce NOT_EVALUABLE/NO_FIRE
+(never a false FIRE), the CAUGHT is transport-guarded, the correlator join is 1:1 + claim-gated, and the reported
+depths are internally consistent (the max-length trim explains every rep restarting 1→2/2→3 — "strong evidence
+the numbers are real"). B (fairness) verified the as-frozen contract is byte-identical to git 41ff9ac~1, the
+"engineered comparator" attack is decisively rebutted, and found no blocking fairness flaw. C (claim/composition)
+found the result a genuine external-validity gain (second system, async-MQ hazard, queue-count durable sink,
+NATURAL swallow with no fork flag — cleaner than TT's fork-flagged constructed cell).
+
+## Disposition table (code/run items)
+| Finding | Sev | Disposition |
+|---|---|---|
+| B-MAJOR-1 no committed run artifacts (TT precedent: raw capture committed) | MAJOR | **DONE** — `runs/shipping-h2h-{pilot-b8cyz1t9m,reps-n5-bqf1d09h4,benign-corrob-bem9s6481}.txt` |
+| C-M3 no in-place benign/FP control on the ACTUAL shipping queue-depth oracle (the SS-B FP probe used a different endpoint/read-back/mode) | MAJOR | **DONE** — `NoOpFault` + `benign` stratum in the harness (+unit test) + LIVE: MIST **NO_FIRE**, comparator no-flag both legs, control 1→2 / no-op leg 2→3 (both landed). Closes "4 uniform FIREs are uninformative" |
+| A "single confound to rule out": corroborate the mgmt `messages` datum with a NON-LAGGING direct source | (A's ask) | **DONE** — `rabbitmqctl list_queues` vs mgmt, one rep each mechanism: LANDED both +1 agree; NATURAL-LOST both unchanged; CONSTRUCTED-LOST direct(truth) 1→1 (loss real) while the mgmt baseline directly EXHIBITED the ~5s lag (stale pre-trim 2 → converged 1) — the lag is now measured, not assumed |
+| A-MAJOR-2 natural cross-leg settle implicit (control's lagging +1 could bleed into the fault baseline → false NO_FIRE, conservative) | MAJOR | **DISCHARGED by measurement + disclosed**: the corroboration direct-reads + every live rep showing depth continuity (fault baseline == control final) + FIRE 14/14 (a bleed would have broken it); runbook rule added (verify depth continuity per rep; inject()'s own round-trips exceed the stats interval). No oracle change (its failure direction is conservative; a moving baseline trips the loud stability error) |
+| A-MAJOR-3 / C-m7 / B-m8 as-frozen N=2 vs P2 N=5 asymmetry | MAJOR/MINOR | as-frozen extended to N=5 (+3 reps post-reboot); ALSO framed: determinism is STRUCTURAL (mechanism re-observed), not statistical independence — reps share the self-resetting monotonic queue |
+| A-MINOR-1 control-leg timeout margin unmeasured | MINOR | Disclosed via the corroboration timing (settle 9 s ≪ 20 s cap; landings visible at first settled read) + NOT_EVALUABLE-guard argument (a lag-missed control +1 cannot mis-score as FIRE) |
+| A-MINOR-2 background enqueue traffic | MINOR | Disclosed: driven kind cluster, no order/front-end load during runs; qm→0 removes the only consumer |
+| A-MINOR-4 pin the RabbitMQ stats interval | MINOR | Runbook: default `collect_statistics_interval` 5000 ms on rabbitmq:3.8.34-management; the 20 s oracle floor stays justified on re-deploy |
+
+## Framing items (all folded into g3-shipping-headtohead-results.md)
+- **B-MAJOR-2 / C-m9** — the 2×2 is ONE existence-proof clean-win cell (constructed×P2) + ONE diagnosis-gap cell
+  (natural×P2) + TWO as-frozen CONTROL rows (analytically forced: HTTP_STATUS 201 cannot fail on a 201) — never
+  "MISSED ×3" sweep optics; the comparator-form axis does not multiply MIST's evidence (2 phenomena, not 4).
+- **B-MAJOR-3 / C-M1** — disclose the SUT-2 scope PIVOT: the shipping swallow was PROMOTED from wild-hunt
+  inventory to a depth head-to-head (superseding the earlier "SUT-2 injected stratum empty / blind set not
+  authored" β-scoping, which was about CARTS' honest-5xx write path); shipping = second independent SUT for
+  depth, NOT double-counted as breadth; addendum pointers added to the two prep docs.
+- **C-M2 (was standing rule A-m2)** — this is a COUNT-DELTA / durable-sink-binding win (the queue row always
+  exists → membership vacuous → value-delta unit increment is the only detector); do NOT re-claim TT-style
+  arithmetic-magnitude power from SS.
+- **A-M1** — SS absence is FAULT-CORROBORATED (sever/reject verified live; gate TIMEOUT_ABSENT, traceId=null so
+  the high-confidence OBSERVED_COMPLETE_ABSENT gate is unreachable here) — never borrow TT's trace-corroborated
+  language.
+- **B-MINOR-4** — natural-cell localization is a MODEST refinement under a broker-WIDE outage; MIST's decisive
+  win is the constructed cell. **B-MINOR-5 / A-MINOR-3** — the constructed loss is a broker-side silent drop
+  (no publisher confirms → `convertAndSend` does NOT throw → the "Accepting anyway" catch does NOT fire there);
+  frame constructed blindness as fire-and-forget-without-confirms; the code swallow is exercised by the NATURAL
+  stratum. **B-MINOR-6/m10** — max-length:1 is a test ACCELERANT for the reject-publish SEMANTICS (the realistic
+  class: disk alarm / quota / poison policy at any limit); disclose the on-apply trim (explains baseline drops).
+  **B-MINOR-7** — qm→0 is a disclosed observability rider (the loss is real regardless; qm=0 makes it
+  measurable). **C-m4** — add the crisp generalization axes sentence. **C-m5** — foreground that the swallow is
+  NATURAL in the unmodified upstream image (no fork flag; operational faults only — stronger than TT's
+  constructed cell on this axis). **C-m6** — consolidated threats-to-validity block. **B-m8/C-m8** — fix the
+  stale "reps in flight" line.
+- Benign-row cosmetic: `printCell` prints "MISSED" for the benign no-fault leg (nothing to catch); annotated in
+  the results doc rather than churning reviewed code.

@@ -1,0 +1,74 @@
+port-forwards up
+
+======== P2 REP 1 ========
+=== stratum: natural ===
+  MIST B2 (differential value-delta): FIRE
+  Comparator (frozen response contract): control flagged=false, fault flagged=true  -> CAUGHT (response/liveness-level, NOT write-localized — MIST additionally localizes the specific lost enqueue)
+      control baseline=1 -> final=2
+=== stratum: constructed ===
+  MIST B2 (differential value-delta): FIRE
+  Comparator (frozen response contract): control flagged=false, fault flagged=false  -> MISSED
+      control baseline=2 -> final=3
+
+======== P2 REP 2 ========
+=== stratum: natural ===
+  MIST B2 (differential value-delta): FIRE
+  Comparator (frozen response contract): control flagged=false, fault flagged=true  -> CAUGHT (response/liveness-level, NOT write-localized — MIST additionally localizes the specific lost enqueue)
+      control baseline=1 -> final=2
+=== stratum: constructed ===
+  MIST B2 (differential value-delta): FIRE
+  Comparator (frozen response contract): control flagged=false, fault flagged=false  -> MISSED
+      control baseline=2 -> final=3
+
+======== P2 REP 3 ========
+=== stratum: natural ===
+  MIST B2 (differential value-delta): FIRE
+  Comparator (frozen response contract): control flagged=false, fault flagged=true  -> CAUGHT (response/liveness-level, NOT write-localized — MIST additionally localizes the specific lost enqueue)
+      control baseline=1 -> final=2
+=== stratum: constructed ===
+  MIST B2 (differential value-delta): FIRE
+  Comparator (frozen response contract): control flagged=false, fault flagged=false  -> MISSED
+      control baseline=2 -> final=3
+
+======== P2 REP 4 ========
+=== stratum: natural ===
+  MIST B2 (differential value-delta): FIRE
+  Comparator (frozen response contract): control flagged=false, fault flagged=true  -> CAUGHT (response/liveness-level, NOT write-localized — MIST additionally localizes the specific lost enqueue)
+      control baseline=1 -> final=2
+=== stratum: constructed ===
+  MIST B2 (differential value-delta): FIRE
+  Comparator (frozen response contract): control flagged=false, fault flagged=false  -> MISSED
+      control baseline=2 -> final=3
+
+======== P2 REP 5 ========
+=== stratum: natural ===
+  MIST B2 (differential value-delta): FIRE
+  Comparator (frozen response contract): control flagged=false, fault flagged=true  -> CAUGHT (response/liveness-level, NOT write-localized — MIST additionally localizes the specific lost enqueue)
+      control baseline=1 -> final=2
+=== stratum: constructed ===
+  MIST B2 (differential value-delta): FIRE
+  Comparator (frozen response contract): control flagged=false, fault flagged=false  -> MISSED
+      control baseline=2 -> final=3
+
+======== AS-FROZEN REP 1 ========
+=== stratum: natural ===
+  MIST B2 (differential value-delta): FIRE
+  Comparator (frozen response contract): control flagged=false, fault flagged=false  -> MISSED
+      control baseline=1 -> final=2
+=== stratum: constructed ===
+  MIST B2 (differential value-delta): FIRE
+  Comparator (frozen response contract): control flagged=false, fault flagged=false  -> MISSED
+      control baseline=2 -> final=3
+
+======== AS-FROZEN REP 2 ========
+=== stratum: natural ===
+  MIST B2 (differential value-delta): FIRE
+  Comparator (frozen response contract): control flagged=false, fault flagged=false  -> MISSED
+      control baseline=1 -> final=2
+=== stratum: constructed ===
+  MIST B2 (differential value-delta): FIRE
+  Comparator (frozen response contract): control flagged=false, fault flagged=false  -> MISSED
+      control baseline=2 -> final=3
+
+=== ALL REPS DONE ===
+=== cleanup ===

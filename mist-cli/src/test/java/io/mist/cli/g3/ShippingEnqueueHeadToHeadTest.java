@@ -89,6 +89,29 @@ public class ShippingEnqueueHeadToHeadTest {
         }
     }
 
+    /**
+     * BOTH legs land: shipping-task depth increments on each leg's post-write poll (control 1→2,
+     * "fault" 2→3), so the value-delta sees X present on both → NO_FIRE. Models the benign control
+     * where nothing is lost. Coupled to value-delta's 2 baseline reads per leg (calls 1-2 baseline,
+     * 3 poll = control; 4-5 baseline, 6+ poll = second leg).
+     */
+    private static final class BenignDepthHttp implements DataIntegrityRuntime.Http {
+        final AtomicInteger calls = new AtomicInteger();
+
+        @Override
+        public DataIntegrityRuntime.HttpResponse getSut(String path) {
+            int c = calls.incrementAndGet();
+            int depth = c <= 2 ? 1 : c <= 5 ? 2 : 3;
+            return new DataIntegrityRuntime.HttpResponse(200,
+                    "[{\"name\":\"shipping-task\",\"messages\":" + depth + "}]");
+        }
+
+        @Override
+        public DataIntegrityRuntime.HttpResponse getAbsolute(String url) {
+            throw new AssertionError("getAbsolute must not be called (traceId is null)");
+        }
+    }
+
     private static final class FakeStimulus implements ShippingEnqueueHeadToHead.Stimulus {
         @Override
         public ShippingEnqueueHeadToHead.Shipment postShipping() {
@@ -340,6 +363,25 @@ public class ShippingEnqueueHeadToHeadTest {
         // ...and it is a GENUINE in-body detection (HTTP 200), NOT a transport reclassification.
         assertFalse("the fault liveness FAIL must be a real detection, not transport-only",
                 ShippingEnqueueHeadToHead.onlyTransportFailures(r.faultComparator));
+    }
+
+    @Test
+    public void benignControl_mistDoesNotFire_comparatorPasses() throws Exception {
+        // The specificity control (result review C-M3): NO fault -> both legs land (X present on
+        // both) -> MIST NO_FIRE, and the response+liveness contract holds on both legs. Proves the
+        // shipping queue-depth oracle does not cry wolf when the enqueue is not lost.
+        DataIntegrityRuntime.installHttpOverride(new BenignDepthHttp());
+        ShippingEnqueueHeadToHead harness =
+                new ShippingEnqueueHeadToHead(new FakeStimulus(), new HealthClient(new SeverState(), false));
+
+        ShippingEnqueueHeadToHead.StratumResult r = harness.runStratum(
+                "benign", loadTriple(), livenessContract(), new ShippingEnqueueHeadToHead.NoOpFault());
+
+        assertEquals("both legs land -> no acked-but-lost -> NO_FIRE",
+                PairedFaultExecutor.PairVerdict.NO_FIRE, r.mist.get(0).pureDifferential);
+        assertFalse("control leg passes the contract", r.controlComparator.flagged);
+        assertFalse("the second (no-fault) leg also passes -> comparator does not flag",
+                r.faultComparator.flagged);
     }
 
     @Test

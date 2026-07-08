@@ -1,0 +1,25 @@
+############ A's ASK: mgmt messages vs rabbitmqctl DIRECT depth (settle 9s) ############
+-- LANDED (plain POST) --
+  baseline: mgmt=1 direct=1
+  POST -> 201
+  final:    mgmt=2 direct=2  [expect BOTH +1, agree]
+-- NATURAL-LOST (sever + close_all_connections) --
+  /health=err
+  baseline: mgmt=2 direct=2
+  POST -> 201
+  final:    mgmt=2 direct=2  [expect BOTH unchanged, agree]
+-- CONSTRUCTED-LOST (reject-publish) --
+  policy applied
+  baseline: mgmt=2 direct=1
+  POST -> 201
+  final:    mgmt=1 direct=1  [expect BOTH unchanged, agree]
+  policy deleted
+
+############ BENIGN stratum (specificity control C-M3) ############
+=== stratum: benign ===
+  MIST B2 (differential value-delta): NO_FIRE
+  Comparator (frozen response contract): control flagged=false, fault flagged=false  -> MISSED
+      control baseline=1 -> final=2
+      fault   baseline=2 -> final=3
+=== DONE ===
+=== cleanup ===
