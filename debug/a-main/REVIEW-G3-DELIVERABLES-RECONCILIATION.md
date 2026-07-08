@@ -49,5 +49,27 @@ Plan-B-plus footing). Dispositions:
 | MINOR-5 | citation hygiene (bare review-record filenames unresolvable at the stated root; complementarity un-ID'd) | **FIXED** — `g3-comparator-tt/` + `research/` prefixes in D1 §5 + D2 map; complementarity = **R-TT-4** |
 | Observation | §3 column 3 could read as claiming a bare status/schema tool catches TT-natural | **ADDRESSED** — column-definition line added above the table ("as executed = the frozen contract's envelope gates; a bare tool would additionally miss `{1,"error"}` — the filling errs against MIST") |
 
-## Round 2 (forensic numbers audit) — PENDING
-Launched against 26a8c97. Its dispositions append here; G3 closes when folded.
+## Round 2 — forensic numbers audit (VERDICT: ACCEPT-WITH-CHANGES, 4 MINOR, zero BLOCKING/MAJOR)
+The auditor RE-COUNTED the raw logs itself (TT: prefunded-run2 + reps 2–5 = 5/5 FIRE+CAUGHT / 5/5
+FIRE+MISSED with 50→130 vs 50→50 log-exact; agreement 5/5; v105 re-verification logs incl.
+claim-eligibility lines. SS: 14/14 pre-reboot + 6/6 post-reboot fault-leg FIREs; pilot depths
+digit-for-digit; the corroboration log EXHIBITS the ~5 s lag). Every quote verified verbatim (Gate-3
+sentence; decisive-result pin; prereg-recon item 3; transcript-retention note; Rider-2 §2 rule;
+review A's verdict sentence word-for-word with the one disclosed relabel; "Tracetest nowhere in the
+prereg record" re-confirmed by repo grep). All rule IDs trace; all arithmetic checks. Dispositions:
+| # | Finding | Disposition |
+|---|---|---|
+| MINOR-1 | "~24 s/TT cell" re-unitized (source: ~24 s per HARNESS REP spanning BOTH cancel cells ≈12 s/cell; agreement rep ≈23 s) | **FIXED** in D1 §7 + D2 map row 3 |
+| MINOR-2 | claim-1 "dead code upstream" documented for the CANCEL cell only (agreement's createAccount fabricated-ack is fork-ADDED) | **FIXED** — "clean-ack-and-lose behavior does not exist upstream (on the cancel cell it is literally dead code)" |
+| MINOR-3 | footnote (b) "TWO fault phenomena per SUT" (TT has a third injected instance = the agreement anchor) | **FIXED** — "TWO headline fault phenomena per SUT plus anchor/control rows" |
+| MINOR-4 | D1 P2 row quoted a compressed, not verbatim, G2 scoping sentence | **FIXED** — verbatim sentence restored (incl. "the fault class is oracle-co-designed") |
+| notes (a)(b) | "[0,0] descriptive not a CI" on P1 = the C-mandated extension of P5's language (semantically correct); R-R1 per-cell printing lives in the full-verbosity logs (filtered reps captures omit the line; machine enforcement + full logs carry it) | no change needed — recorded |
+
+## WAVE CLOSED — G3 ARC CLOSED
+All three rounds ACCEPT-WITH-CHANGES; every disposition folded (rounds 1–3). Round 3's discharge
+statement ("the plan reconciliation and the round-1 fix wave are fully discharged in substance") +
+round 2's numerical faithfulness confirmation stand. **D1 `g3-result.md` is the Gate-3 RESULT OF
+RECORD; D2 `g3-evidence-pack.md` is the liftable paper-evidence pack.** The verdict: Gate 3 NOT MET
+as originally written — closed as MET-UNDER-DISCLOSED-RE-SCOPE, routing to Plan-B-plus; the
+empirical-track claim stays "credible, not yet clear" until C2/C3 exist. Next = the direction
+decision (user): paper writing on the Plan-B-plus footing vs building C2/C3 vs remaining β.

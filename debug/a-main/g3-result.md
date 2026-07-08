@@ -1,12 +1,13 @@
-# Gate-3 verdict — G3 arc consolidation (RESULT OF RECORD once its review wave closes)
+# Gate-3 verdict — G3 arc consolidation (RESULT OF RECORD)
 
 **What this is.** The Gate-3 gate verdict, mirroring `prep/gate1-result.md`'s role: the adjudication of
 the plan-v4 gate sentence against the six reviewer-accepted evidence pillars, with every disclosure the
 consolidation-plan reviews mandated. Authored per `g3-consolidation-plan.md` @ 24b7fa9 **as reconciled**
 by `REVIEW-CONSOLIDATION-PLAN-RECONCILIATION.md` (3× ACCEPT-WITH-CHANGES; the reconciliation, not the
 plan, is authoritative for this doc's structure). The liftable paper-evidence pack is the sibling
-`g3-evidence-pack.md` (D2). Status: **D1+D2 review wave — round 1 (usability) folded @ 26a8c97; rounds 2–3 (numbers audit;
-fidelity) dispositioned in `REVIEW-G3-DELIVERABLES-RECONCILIATION.md`.**
+`g3-evidence-pack.md` (D2). Status: **REVIEW WAVE CLOSED — 3 rounds (usability @ 26a8c97; fidelity + forensic numbers audit @
+98b1976+), all ACCEPT-WITH-CHANGES, every disposition folded; see
+`REVIEW-G3-DELIVERABLES-RECONCILIATION.md` §WAVE CLOSED. This doc is the Gate-3 RESULT OF RECORD.**
 
 ## 1. The verdict
 
@@ -92,7 +93,7 @@ discovery-in-the-wild is claimed. The trace-style leg is **not met as written** 
 | # | pillar | headline numbers | review record + regime |
 |---|---|---|---|
 | P1 | Gate-1 verdict (`prep/gate1-result.md`) | FIRE on ONE constructed site (adminroute), strong stratum, **1/1 evaluable** (second triple = manual G0 smoke only); sync FP **0/2127** (30 iter × 71 records − 3 invalid, ONE triple, correlated — descriptive interval [0,0], not a CI), observation gate 100% resolved; FP-vs-timeout curve 12.98%@500 ms → 0@≥2 s; async disclaimed | mechanism 3-cold-reviewed PRE-run (`research/REVIEW-B1B2-RECONCILIATION.md`); result audited in-doc against the pre-registered §2 checklist (no post-result wave) |
-| P2 | Gate-2 calibration (`g2-comparator/calibration-result.md`) | both Gate-1 faults flagged via genuine STATE-clause failures; all-clean control legs; competence floor MET. Standing scope rule: "injected wins are calibration evidence only — the PC-moving comparison happens at G3 over real defects" | chain reviews in separate files (blind contract, bindings, runner); result self-adjudicated against the pre-registered §4 bar |
+| P2 | Gate-2 calibration (`g2-comparator/calibration-result.md`) | both Gate-1 faults flagged via genuine STATE-clause failures; all-clean control legs; competence floor MET. Standing scope rule (verbatim): "these injected wins are calibration evidence only (the fault class is oracle-co-designed); the PC-moving comparison happens at G3 over real defects." | chain reviews in separate files (blind contract, bindings, runner); result self-adjudicated against the pre-registered §4 bar |
 | P3 | TT cancel→refund head-to-head (`g3-comparator-tt/g3-headtohead-results.md`) | 3 cells, N=5 each: natural FIRE+CAUGHT (tie), constructed FIRE+MISSED (clean win via pre-funded arithmetic balance delta), agreement FIRE+CAUGHT | 2 rounds × 3 cold reviewers, ACCEPTED (`REVIEW-HEADTOHEAD-RECONCILIATION.md`); header staleness fixed 2026-07-08 |
 | P4 | Rider-2 bindability survey (`g3-comparator-tt/rider2-bindability-survey.md`) | ANALYTICAL expressibility over the full frozen TT set: generous **69/80 = 86.25%** bind (adversarial-to-MIST convention) / strict 59/80 = 73.75%; **11 structural NC** (3 OBJECT-ABSENCE, 3 KEY-SHAPE, 2 NESTED-ITEM-SHAPE, TRANSITION, RESPONSE-KEYED, BATCH); payment/compensation surface OUTSIDE the surveyed CRUD denominator; the one deep flow examined = 0/3 state clauses checkable | dedicated record `REVIEW-SURVEY-RECONCILIATION.md` (3× ACCEPT-WITH-FIXES, all folded); two prose remnants corrected 2026-07-08 (disclosed amendment; no disposition changed). The EMPIRICAL breadth run was REJECTED (`REVIEW-BINDABILITY-RUNNER-RECONCILIATION.md`) — this fraction is analytical, by design |
 | P5 | SUT-2 benign FP probe (`prep/g3-sut2-fp-probe-result.md`) | **0/1200** acked benign writes (30 iter × 40 shapes, TWO endpoints, correlated; [0,0] descriptive, not a CI), gate 100% (every record first-poll-present, 9–38 ms → the quiescence gate NOT stressed here; it was stressed at P1); HAL/_embedded + cookie-auth read-back path validated; ~43 min wall-clock | `prep/REVIEW-SUT2-FP-RECONCILIATION.md` (3×, fixes folded) |
@@ -155,8 +156,8 @@ protocol, never as a measured comparator-cost number.
   one deep flow examined). Never quote the fraction as a measured breadth run (that run was rejected).
 - **Measured budgets (the honest "cost" content):** matched read-back budgets 10 s/500 ms (TT
   comparator retry cap; A3) and 20 s oracle cap (SS, 4× the measured ~5 s mgmt stats lag); ~24 s per TT
-  cell leg-pair; ~43 min for the 1200-record SUT-2 probe; Gate-1 automated run wall-clock per its
-  result doc.
+  harness rep (two cancel cells per rep, ≈12 s per cell leg-pair; the single-cell agreement rep ≈23 s);
+  ~43 min for the 1200-record SUT-2 probe; Gate-1 automated run wall-clock per its result doc.
 
 ## 8. Deferred-item ledger (nothing here is quietly dropped)
 

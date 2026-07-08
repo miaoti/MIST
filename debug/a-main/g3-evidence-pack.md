@@ -18,8 +18,9 @@ P5 = `prep/g3-sut2-fp-probe-result.md` · P6 = `g3-comparator-ss/g3-shipping-hea
 rounds 2–3 per `REVIEW-G3-DELIVERABLES-RECONCILIATION.md`); contract freezes: TT
 `38e7aa6`, SS as-frozen byte-verified against `41ff9ac~1`; raw run logs git-tracked under
 `g3-comparator-{tt,ss}/runs/` + `prep/gate1-run3-report.json` + `prep/g3-sut2-fp-probe-*`.
-Status: **D1+D2 review wave — round 1 (usability) folded @ 26a8c97; rounds 2–3 dispositioned in
-`REVIEW-G3-DELIVERABLES-RECONCILIATION.md`.**
+Status: **REVIEW WAVE CLOSED — 3 rounds, all ACCEPT-WITH-CHANGES, every disposition folded
+(`REVIEW-G3-DELIVERABLES-RECONCILIATION.md` §WAVE CLOSED). This pack is lift-ready within its scope
+fence.**
 
 ## The three claims (intro-ready, bounded)
 
@@ -30,9 +31,10 @@ assertions, observation via public REST plus standard operational surfaces — d
 acknowledged-but-lost write in the protocol (N=5 deterministic per cell) across three read-back modes
 (membership, arithmetic balance delta, queue-count delta). Provenance, fully disclosed: every defect
 ships in unmodified source or images and every trigger is injected or operational — except the two
-TrainTicket fabricated-ack cells, whose clean-ack-and-lose path is dead code upstream and runs behind
-a disclosed fork flag; no discovery-in-the-wild is claimed, and MIST's added value on the tie cells is
-per-write **effect** localization, secondary to detection.
+TrainTicket fabricated-ack cells, whose clean-ack-and-lose behavior does not exist upstream (on the
+cancel cell it is literally dead code) and runs behind a disclosed fork flag; no
+discovery-in-the-wild is claimed, and MIST's added value on the tie cells is per-write **effect**
+localization, secondary to detection.
 
 **Claim 2 — Comparator boundary (the plan README §6 comparator demand).** A blind-authored,
 calibration-verified response(+liveness) contract checker (the Pact/Dredd/synthetic-monitoring class —
@@ -83,8 +85,8 @@ repetitions, all with the same categorical outcome.
 Footnotes. (a) TT has no dual-form rows because its response carries a bindable envelope
 (`{status,msg,data}`) — the blind author could and did bind ENVELOPE_STATUS/MSG_CONTAINS; SS's bare
 `{id,name}` 201 gave the blind author only HTTP_STATUS — itself a datum on the bindability spectrum.
-(b) The comparator-form axis does not multiply MIST's evidence: there are TWO fault phenomena per SUT
-plus controls. (c) Every MIST verdict passed the machine-enforced claim-eligibility gate (R-R1:
+(b) The comparator-form axis does not multiply MIST's evidence: there are TWO headline fault
+phenomena per SUT plus anchor/control rows. (c) Every MIST verdict passed the machine-enforced claim-eligibility gate (R-R1:
 joinMode=correlator ∧ correlatorUnique, printed per cell). (d) SS as-frozen reps 3–5 ran post-reboot on
 fresh broker state — the mechanism reproduces across a full host restart; determinism is structural,
 not statistical. (e) SS depth observability rides on the disclosed qm→0 rider (queue-master scaled to
@@ -111,7 +113,7 @@ record-level-and-correlated; the per-endpoint/per-design effective N is far smal
 |---|---|---|---|---|
 | 1 Capability | Table 1: TT-natural, TT-constructed, TT-agreement, SS-natural, SS-constructed (all FIRE) + SS-benign (NO_FIRE) + P1 FIRE (1/1 evaluable constructed site, adminroute; second site manual G0 only) | `g3-comparator-tt/runs/*` · `g3-comparator-ss/runs/*` · Gate-1 report JSON | P3 2×3-review · P6 3×3-review · P1 in-doc audit + pre-run mechanism review | R-R1 claim-eligibility · R-SS-9 fault-corroborated (TIMEOUT_ABSENT; never trace-corroborated language) · provenance bound (real defects, disclosed triggers) · "no test-specific instrumentation" NOT "instrumentation-free" |
 | 2 Comparator boundary | Table 1 headline rows (TT-constructed, SS-constructed) + tie rows + agreement anchor; P4 fraction | same + survey doc | P3/P6 as above · P4 `g3-comparator-tt/REVIEW-SURVEY-RECONCILIATION.md` | R-TT-1 class-scope · R-SS-2 class-scope/concedes-the-thesis · R-SS-6 never win-ratio · R-SS-7 count-delta not arithmetic · "analytical" adjective on 86.25% (the empirical breadth run was REJECTED) · fairness chain: G2 calibration floor (R-G2), agreement anchor, SS dual-form, freeze-protocol (R-SS-3) + TT transcript-retention caveat, entity-absent honest-boundary note |
-| 3 Specificity | Table 2 (all three rows) | Gate-1 report/records · `prep/g3-sut2-fp-probe-{report.json,records.log}` · SS benign log | P1 in-doc audit · P5 3×-review · P6 3×-review | correlated-denominator + descriptive-zero caveats carried verbatim; R-R2 comparator infra-failure-rate = PRE-REGISTERED PROTOCOL, no breadth measurement executed; measured budgets as the "cost" content (10 s/500 ms + 20 s caps; ~24 s/TT cell; ~43 min probe) |
+| 3 Specificity | Table 2 (all three rows) | Gate-1 report/records · `prep/g3-sut2-fp-probe-{report.json,records.log}` · SS benign log | P1 in-doc audit · P5 3×-review · P6 3×-review | correlated-denominator + descriptive-zero caveats carried verbatim; R-R2 comparator infra-failure-rate = PRE-REGISTERED PROTOCOL, no breadth measurement executed; measured budgets as the "cost" content (10 s/500 ms + 20 s caps; ~24 s per TT harness rep = two cancel cells, ≈12 s/cell; ~43 min probe) |
 | secondary: effect localization (never a headline) | both tie cells (TT-natural, SS-natural) — MIST additionally localizes the specific lost write where the comparator flags an envelope/service-wide signal | same logs as claim 1 | P3 · P6 records as above | R-TT-3 ("effect, not fault/component"); R-SS-1 (modest under a broker-wide outage) |
 
 ## Figures list
