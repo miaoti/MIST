@@ -201,3 +201,17 @@ queue-master→0 scaffold; quiescence ≫ ~5s stats lag; rabbitmqctl ground-trut
 **Standing rule**: this is new tool code → unit test + ≥3-cold-review BEFORE any result claim; the reviewed
 oracle (DataIntegrityRuntime/PairedFaultExecutor/ContractEvaluator) stays verbatim. Then: MIST run both
 strata + blind comparator + record + result ≥3-review.
+
+---
+
+## ARC CLOSED (2026-07-08) — everything above EXECUTED + REVIEWER-ACCEPTED
+The plan above was carried to completion: harness + injectors + read-back built and 3-cold-reviewed
+(fix wave 1adf483); blind contract frozen then P2-amended per the user-chosen fork (41ff9ac, its own
+3-cold-review, fix wave 4a36bd1 incl. the live-verified DENY+close_all_connections sever); live 2×2
+run + N=5 both forms + benign specificity control + rabbitmqctl ground-truth corroboration; the RESULT
+3-cold-reviewed (zero blocking) and every item folded → **RESULT OF RECORD:
+`debug/a-main/g3-comparator-ss/g3-shipping-headtohead-results.md` (commit 4972d3b), raw logs in
+`g3-comparator-ss/runs/`**. The item-6 anticipation above resolved exactly as predicted: the blind
+author could not express /health liveness → the P2 `contains-literal-fields` primitive was built as a
+reviewed tool change. Post-reboot runbook (broker state is emptyDir): re-create the mist:mist mgmt
+user + one warm-up POST before any run. Next arc: G3 consolidation (`debug/a-main/g3-consolidation-plan.md`).
