@@ -33,5 +33,21 @@ the instrument CAN fire). Round 1 also independently verified: all cited logs/JS
 git-tracked; headline numbers reconcile with pillar sources; the prereg §2 quote verbatim; "Tracetest
 appears nowhere in the prereg" true by grep.
 
-## Rounds 2–3 (numbers audit; reconciliation fidelity) — PENDING
-Launched against the post-fix state. Their dispositions append here; G3 closes when both are folded.
+## Round 3 — reconciliation fidelity (VERDICT: ACCEPT-WITH-CHANGES, all MINOR, zero BLOCKING/MAJOR)
+**Discharge statement: "YES — the plan reconciliation and the round-1 fix wave are fully discharged in
+substance"** (every adopted disposition landed; token-level verdict-sentence compare = identical to
+review A's except the ONE disclosed relabel; prereg §2 quote verified verbatim; numbers reconcile
+across D1↔D2↔pillars incl. the raw-log git-tracking; residual-overclaim sweep CLEAN — no finds/detects
+slippage, 86.25% analytical at every occurrence, tie cells never tallied as misses, D2 inside the
+Plan-B-plus footing). Dispositions:
+| # | Finding | Disposition |
+|---|---|---|
+| MINOR-1 | secondary-localization delivered as a paragraph, not a map row | **FIXED** — 4th map row added (both tie cells; R-TT-3 + R-SS-1) |
+| MINOR-2 | gate-status not adjacent to claim 2 | **FIXED** — added to the ⚠ scope fence: "Gate 3 is NOT met as written; closed under the disclosed re-scope, routing to Plan-B-plus" |
+| MINOR-3 | provenance/status staleness (pack "authored at 10efbe1"; D1 vs D2 status lines inconsistent) | **FIXED** — both docs now: authored @ 10efbe1, round-1 fixes @ 26a8c97, rounds 2–3 per this file |
+| MINOR-4 | deviations-ledger seeds row read SS-only tally as the whole | **FIXED** — "(SS 14/14 pre- + 6/6 post-reboot fault legs; TT 5/5 × 3 cells)" |
+| MINOR-5 | citation hygiene (bare review-record filenames unresolvable at the stated root; complementarity un-ID'd) | **FIXED** — `g3-comparator-tt/` + `research/` prefixes in D1 §5 + D2 map; complementarity = **R-TT-4** |
+| Observation | §3 column 3 could read as claiming a bare status/schema tool catches TT-natural | **ADDRESSED** — column-definition line added above the table ("as executed = the frozen contract's envelope gates; a bare tool would additionally miss `{1,"error"}` — the filling errs against MIST") |
+
+## Round 2 (forensic numbers audit) — PENDING
+Launched against 26a8c97. Its dispositions append here; G3 closes when folded.

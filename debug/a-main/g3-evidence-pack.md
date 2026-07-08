@@ -7,16 +7,19 @@ deviations, threats, and deferred ledgers — not repeated here).
 
 **⚠ SCOPE FENCE: these are the claims THIS PACK supports — NOT the paper's final headline set. Per
 plan-v4 §9 the empirical-track claim stays "credible, not yet clear" until the C2 benchmark and C3
-prevalence study exist.**
+prevalence study exist. Gate status per the verdict (`g3-result.md`): Gate 3 is NOT met as written;
+it is closed under the disclosed re-scope, routing to Plan-B-plus.**
 
 **Pillar key:** P1 = `prep/gate1-result.md` · P2 = `g2-comparator/calibration-result.md` · P3 =
 `g3-comparator-tt/g3-headtohead-results.md` · P4 = `g3-comparator-tt/rider2-bindability-survey.md` ·
 P5 = `prep/g3-sut2-fp-probe-result.md` · P6 = `g3-comparator-ss/g3-shipping-headtohead-results.md`.
 **Artifact availability:** all paths relative to `debug/a-main/` in github.com/miaoti/MIST, branch
-`main_track` (evidence tracked at HEAD; this pack authored at 10efbe1); contract freezes: TT
+`main_track` (evidence tracked at HEAD; pack authored @ 10efbe1, round-1 fixes folded @ 26a8c97,
+rounds 2–3 per `REVIEW-G3-DELIVERABLES-RECONCILIATION.md`); contract freezes: TT
 `38e7aa6`, SS as-frozen byte-verified against `41ff9ac~1`; raw run logs git-tracked under
 `g3-comparator-{tt,ss}/runs/` + `prep/gate1-run3-report.json` + `prep/g3-sut2-fp-probe-*`.
-Status: **D1+D2 review wave — round 1 (usability) folded; rounds 2–3 in flight.**
+Status: **D1+D2 review wave — round 1 (usability) folded @ 26a8c97; rounds 2–3 dispositioned in
+`REVIEW-G3-DELIVERABLES-RECONCILIATION.md`.**
 
 ## The three claims (intro-ready, bounded)
 
@@ -107,8 +110,9 @@ record-level-and-correlated; the per-endpoint/per-design effective N is far smal
 | claim | cells / result | raw logs | review record | binding rules |
 |---|---|---|---|---|
 | 1 Capability | Table 1: TT-natural, TT-constructed, TT-agreement, SS-natural, SS-constructed (all FIRE) + SS-benign (NO_FIRE) + P1 FIRE (1/1 evaluable constructed site, adminroute; second site manual G0 only) | `g3-comparator-tt/runs/*` · `g3-comparator-ss/runs/*` · Gate-1 report JSON | P3 2×3-review · P6 3×3-review · P1 in-doc audit + pre-run mechanism review | R-R1 claim-eligibility · R-SS-9 fault-corroborated (TIMEOUT_ABSENT; never trace-corroborated language) · provenance bound (real defects, disclosed triggers) · "no test-specific instrumentation" NOT "instrumentation-free" |
-| 2 Comparator boundary | Table 1 headline rows (TT-constructed, SS-constructed) + tie rows + agreement anchor; P4 fraction | same + survey doc | P3/P6 as above · P4 `REVIEW-SURVEY-RECONCILIATION.md` | R-TT-1 class-scope · R-SS-2 class-scope/concedes-the-thesis · R-SS-6 never win-ratio · R-SS-7 count-delta not arithmetic · "analytical" adjective on 86.25% (the empirical breadth run was REJECTED) · fairness chain: G2 calibration floor (R-G2), agreement anchor, SS dual-form, freeze-protocol (R-SS-3) + TT transcript-retention caveat, entity-absent honest-boundary note |
-| 3 Specificity | Table 2 (all three rows) | Gate-1 report/records · `g3-sut2-fp-probe-{report.json,records.log}` · SS benign log | P1 in-doc audit · P5 3×-review · P6 3×-review | correlated-denominator + descriptive-zero caveats carried verbatim; R-R2 comparator infra-failure-rate = PRE-REGISTERED PROTOCOL, no breadth measurement executed; measured budgets as the "cost" content (10 s/500 ms + 20 s caps; ~24 s/TT cell; ~43 min probe) |
+| 2 Comparator boundary | Table 1 headline rows (TT-constructed, SS-constructed) + tie rows + agreement anchor; P4 fraction | same + survey doc | P3/P6 as above · P4 `g3-comparator-tt/REVIEW-SURVEY-RECONCILIATION.md` | R-TT-1 class-scope · R-SS-2 class-scope/concedes-the-thesis · R-SS-6 never win-ratio · R-SS-7 count-delta not arithmetic · "analytical" adjective on 86.25% (the empirical breadth run was REJECTED) · fairness chain: G2 calibration floor (R-G2), agreement anchor, SS dual-form, freeze-protocol (R-SS-3) + TT transcript-retention caveat, entity-absent honest-boundary note |
+| 3 Specificity | Table 2 (all three rows) | Gate-1 report/records · `prep/g3-sut2-fp-probe-{report.json,records.log}` · SS benign log | P1 in-doc audit · P5 3×-review · P6 3×-review | correlated-denominator + descriptive-zero caveats carried verbatim; R-R2 comparator infra-failure-rate = PRE-REGISTERED PROTOCOL, no breadth measurement executed; measured budgets as the "cost" content (10 s/500 ms + 20 s caps; ~24 s/TT cell; ~43 min probe) |
+| secondary: effect localization (never a headline) | both tie cells (TT-natural, SS-natural) — MIST additionally localizes the specific lost write where the comparator flags an envelope/service-wide signal | same logs as claim 1 | P3 · P6 records as above | R-TT-3 ("effect, not fault/component"); R-SS-1 (modest under a broker-wide outage) |
 
 ## Figures list
 1. FP-vs-timeout curve (Gate-1): 12.98%@500 ms → 0@≥2 s — the pre-registered cap justification.

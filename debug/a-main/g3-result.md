@@ -5,7 +5,8 @@ the plan-v4 gate sentence against the six reviewer-accepted evidence pillars, wi
 consolidation-plan reviews mandated. Authored per `g3-consolidation-plan.md` @ 24b7fa9 **as reconciled**
 by `REVIEW-CONSOLIDATION-PLAN-RECONCILIATION.md` (3× ACCEPT-WITH-CHANGES; the reconciliation, not the
 plan, is authoritative for this doc's structure). The liftable paper-evidence pack is the sibling
-`g3-evidence-pack.md` (D2). Status: **pending its own ≥3-cold-review** (one wave over D1+D2).
+`g3-evidence-pack.md` (D2). Status: **D1+D2 review wave — round 1 (usability) folded @ 26a8c97; rounds 2–3 (numbers audit;
+fidelity) dispositioned in `REVIEW-G3-DELIVERABLES-RECONCILIATION.md`.**
 
 ## 1. The verdict
 
@@ -59,6 +60,10 @@ standing rule that material changes are disclosed amendments), not an inherited 
 
 ## 3. Per-instance adjudication (the gate binds all conditions to ONE instance)
 
+Column definition: "status/schema oracle misses?" is answered AS EXECUTED — the frozen contract's
+envelope gates (a bare status-code/schema tool would additionally miss TT-natural's HTTP-200
+schema-valid `{1,"error"}`; the executed msg gate is a VALUE clause — the filling errs against MIST).
+
 | instance | real, non-injected? | status/schema oracle misses? | strongest executed comparator misses? | trace-style oracle |
 |---|---|---|---|---|
 | TT natural (drawback throws → acked `{1,"error"}`; refund lost) | defect + response REAL on the unmodified fork; the THROW is injected (runtime fault toggle: drawBack throws → HTTP 500; an EnvoyFilter/Istio abort was tried and REJECTED — pooled-connection race, P3 §Fault mechanism) | NO — the envelope msg gate flags `{1,"error"}` → detection TIE (MIST adds effect-localization) | NO (CAUGHT) | not executed |
@@ -95,11 +100,11 @@ discovery-in-the-wild is claimed. The trace-style leg is **not met as written** 
 
 ## 5. Standing rules collected (by ID, with source — binding for any use of this evidence)
 
-From P3 (`REVIEW-HEADTOHEAD-RECONCILIATION.md`): **R-TT-1** oracle-class scope adjacent to any clean-win
-claim; **R-TT-2** Rider-2 = the external-validity answer; **R-TT-3** "effect-localization, not
-fault/component localization"; complementarity — "not a strict superset" (MIST NO_FIREs on loud
-`status:0` failures the comparator catches).
-From Rider-1 (`REVIEW-RIDER1-RECONCILIATION.md`): **R-R1** tallies feed claims only when
+From P3 (`g3-comparator-tt/REVIEW-HEADTOHEAD-RECONCILIATION.md`): **R-TT-1** oracle-class scope
+adjacent to any clean-win claim; **R-TT-2** Rider-2 = the external-validity answer; **R-TT-3**
+"effect-localization, not fault/component localization"; **R-TT-4** complementarity — "not a strict
+superset" (MIST NO_FIREs on loud `status:0` failures the comparator catches).
+From Rider-1 (`research/REVIEW-RIDER1-RECONCILIATION.md`): **R-R1** tallies feed claims only when
 joinMode=correlator ∧ correlatorUnique (machine-enforced; printed per cell in both head-to-heads).
 From P2 (`g2-comparator/calibration-result.md`): **R-G2** injected wins = calibration evidence only.
 From P6 RESULT OF RECORD §Framing: **R-SS-1** natural = diagnosis gap, tie at binary granularity,
@@ -122,7 +127,7 @@ protocol, never as a measured comparator-cost number.
 |---|---|---|
 | symmetric miss tables adjudicated by ≥2 blind raters + Cohen's κ | author-adjudicated cells, then 3-cold-review waves per result | outcomes are deterministic and categorical (FIRE/flag booleans, N=5 zero-variance); κ protocol was designed for ambiguous wild defects — none exist in the executed set; disclosed, not repaired |
 | operating-point 2×2 tables (MIST-strict primary / MIST-all / comparator full-set) | per-cell verdicts at the pre-registered operating point only | the focused harnesses run 1–2 endpoints; the full-set operating grid belongs to the (unbuilt) C2 benchmark |
-| ≥10 seeds + MWU/Â₁₂ for generation-driven runs | N=5 deterministic reps per cell (14/14 + 6/6 fault legs; zero variance) | the head-to-heads are scripted-stimulus, not generation-driven; determinism is structural (mechanism re-observed), not statistical — stated in both RESULTs OF RECORD |
+| ≥10 seeds + MWU/Â₁₂ for generation-driven runs | N=5 deterministic reps per cell (SS 14/14 pre- + 6/6 post-reboot fault legs; TT 5/5 × 3 cells; zero variance) | the head-to-heads are scripted-stimulus, not generation-driven; determinism is structural (mechanism re-observed), not statistical — stated in both RESULTs OF RECORD |
 | decisive-result definition (wild, frozen-set no-flag, rater-adjudicated) | **UNMET** (§2) | reported as unmet; the verdict routes to Plan-B-plus instead of claiming the pin |
 
 ## 7. Threats-to-validity roll-up (pack-level; per-pillar threats live in the pillar docs)
