@@ -6,6 +6,29 @@
 > `research/01-feasibility-codebase.md`) and per-gate acceptance criteria. **Focus = Gate 1** (the first
 > ~2–3 weeks); G2/G3 are outlined at the end. Build additively — default behavior must not change.
 
+## Document map — where each gate's plan / prereg / result lives (top-level index)
+No single file contains everything; **this file is the entry point** (it sequences G1→G2→G3), and each phase
+has its own prereg / design / result docs. Paths are relative to `debug/a-main/`. ⭐ = the authoritative
+plan/prereg for that gate.
+
+- **Gate-1 — the B1/B2 mechanism (fault-injection mode + differential read-back oracle)**
+  - ⭐ Plan: `TOOL-EXECUTION-PLAN.md` (authoritative B1/B2 build spec; execution BLOCKED until the user says "yes")
+  - Result: `prep/gate1-result.md` (PASS, run #3) · infra incident `prep/gate1-infra-incident.md`
+  - Prereqs / smoke: `prep/gate1-smoke-result.md` · `prep/sut-fault-injection-capability.md` · `prep/p3-async-path-resolution.md`
+- **G2 — novelty paragraph + a competently-configured, blind-authored comparator**
+  - ⭐ Plan/prereg: `prep/g2-novelty-comparator-prereg.md` (v2 — the Cast-delta paragraph + fair-comparator protocol + execution checklist)
+  - Design: `g2-comparator/comparator-runner-design.md`
+  - Artifacts + result: `g2-comparator/` (`blind-assertions-trainticket.yaml`, `assertion-bindings-*.yaml`, `calibration-report.json`, `calibration-result.md`)
+- **G3 — the empirical bug hunt across ≥2 write-path SUTs**
+  - ⭐ Master prereg: `prep/g3-sut2-triples-prereg.md` (v2 — write-path triples on SUT-2/3 + the TrainTicket depth site + opportunity counts + R1–R4 prerequisites)
+  - TrainTicket depth line (centerpiece): `prep/g3-tt-cancel-refund-defect.md` (source-verified defect) · `prep/g3-tt-defect-survey.md` (authoritative design menu) · `prep/g3-tt-headtohead-design.md` (MIST-side engineering) · `prep/g3-headtohead-run-architecture.md` (why a focused harness) · `prep/g3-tt-deploy-progress.md` · `prep/g3-tt-mesh-fault-note.md` · **result** `g3-comparator-tt/g3-headtohead-results.md`
+  - SUT-2 Sock Shop line: ⭐ `g3-sut2-wildhunt-plan.md` (v3, the SUT-2 plan) · `prep/g3-sut2-deploy-verify.md` · `prep/g3-sut2-wildhunt-exec-progress.md` · `prep/g3-sut2-fp-probe-result.md` · **result** `g3-comparator-ss/g3-shipping-headtohead-results.md`
+  - Riders (G3 hardening): `prep/g3-rider1-correlator.md` (writer-side correlator) · `prep/g3-rider2-comparator-protocol.md` + `g3-comparator-tt/rider2-bindability-survey.md` (comparator protocol / breadth)
+- **Cross-cutting**
+  - `README.md` — the plan + honest novelty positioning (why this direction; the mechanism-novelty ceiling)
+  - `research/01..05` (feasibility) + `research/REVIEW-*.md` (every cold-review wave + reconciliation)
+  - Executable code: comparator = `mist-cli/.../comparator/` (`ContractEvaluator`, `AssertionBindings`, `ComparatorRunner`) · B1/B2 oracle = `mist-cli/.../fault/` (`DataIntegrityRuntime`, `PairedFaultExecutor`, injectors) · G3 harnesses = `mist-cli/.../g3/`
+
 ## North star
 Reach **Gate 3**: find ≥1 (ideally ≥2, on ≥2 SUTs) **real** acknowledged-but-lost-write / missing-
 compensation defect that a competently-configured assertion oracle misses *because no human authored that
