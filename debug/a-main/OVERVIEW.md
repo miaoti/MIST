@@ -1,135 +1,158 @@
-# MIST — Black-Box Detection of Acknowledged-but-Lost Writes
+# MIST — Progress Report and Presentation Notes
 
-**Project overview.** A concise, presentation-oriented synthesis of the direction, mechanism, baseline,
-evaluation, results, and honest scope. Detailed plans and results live in the docs referenced by
-`EXECUTION.md` (the top-level document map).
+**Black-box detection of acknowledged-but-lost writes in microservices.**
+
+This is a working report of where the project stands: what the idea is, what we have built and validated, what
+we are doing now, and the honest limits. Concrete examples are called out as `> Example` / `> Talking point`
+blocks so they can be expanded live. Detailed plans and results live in the docs indexed by `EXECUTION.md`.
 
 ---
 
-## 1. Problem
+## Status at a glance
 
-Microservices routinely acknowledge a request as successful (HTTP `200`) while silently failing to persist
-the underlying state change — an **acknowledged-but-lost write**. A canonical instance: an order
-cancellation returns `{status: 1, "Success"}` while the refund is never credited.
+- **Done and reviewed.** The mechanism (Gate 1 — PASS); the fair baseline comparator (Gate 2 — accepted); two
+  head-to-head studies — TrainTicket `cancel → refund` (the centerpiece) and Sock Shop shipping (a second
+  system); a breadth survey; and false-positive probes on both systems.
+- **In progress now.** Turning the breadth survey into an *executable* run on live TrainTicket, and
+  consolidating all results into the paper-evidence pack.
+- **The open bet.** A fully *wild* (zero-injection) defect would give the strongest form of the claim; the
+  current head-to-heads use a realistic injected trigger on a genuine defect, which is disclosed.
 
-Conventional test oracles — status code, schema, response-shape — **pass these by construction**: they
-inspect only the response, never the resulting state. The phenomenon is pervasive: swallowed errors account
-for roughly 29% of errors in a recent industrial study (Uber, SIGMETRICS'25).
+---
 
-## 2. Approach and positioning
+## 1. The problem — one concrete story
 
-MIST detects acknowledged-but-lost writes with a **black-box, generation-driven, label-free read-back
-oracle**. It uses only the system's public HTTP surface plus the standard OpenTelemetry it already emits —
-**no source access, no AOP instrumentation, no production traffic, and no human-authored per-endpoint
-assertions**.
+Microservices routinely answer a request with `HTTP 200 "Success"` while silently failing to persist the
+underlying change. We call this an **acknowledged-but-lost write**. Conventional test oracles — status code,
+schema, response shape — pass these *by construction*, because they only read the response, never the
+resulting state. Industry data says the phenomenon is common: ~29% of errors are swallowed (Uber,
+SIGMETRICS'25).
 
-Positioning against the closest prior work, **Cast** (ICSE-SEIP'26), which also detects masked failures:
+> **Example (the opening story).** In TrainTicket, cancelling a paid order should (a) cancel it and (b) refund
+> the money. The unmodified source does this:
+> ```java
+> // ts-cancel-service (upstream, unmodified)
+> boolean status = drawbackMoney(money, loginId, headers);   // issue the refund
+> if (status) { ...notify... }
+> else { LOGGER.error("[Draw Back Money Failed] ..."); }      // refund failed → only logs
+> return new Response<>(1, "Success.", "test not null");      // ...and returns SUCCESS anyway
+> ```
+> The order is cancelled, the money is never refunded, and the client is told `"Success."`. No status/schema
+> oracle can see this — the response is flawless.
 
-| Axis | Cast | MIST |
-|---|---|---|
-| Workload | Production-traffic replay | Generated cross-service inputs |
-| Instrumentation | Java AOP agents (language-specific) | Black-box, standard OTel (language-agnostic) |
-| Oracle | Metric thresholds + assertion points + historical baselines | Label-free read-back differential (no thresholds, no assertions, no baselines) |
-| Evaluation | Closed | Open-source SUTs + released labeled benchmark |
+## 2. What we built — the read-back oracle
 
-**Honest framing.** The contribution is *accessibility + automation + an open benchmark*, not primacy of
-detection. The read-back oracle applies to write-path services with a black-box read-back; the masking
-signal itself is not claimed as novel.
+The core idea is a **per-run metamorphic check**: *a `2xx` response that acknowledges entity X must have X
+observable on its own read-back.* The write is caught **contradicting itself** — no gold output, no
+human-authored assertion, no source access, no production traffic. The read-back is a **black-box follow-up
+GET** (never database access) at a declared `(write, dependency, read-back)` triple.
 
-## 3. Mechanism
+> **Example (membership).** MIST `POST`s a new route, gets `{status:1,"Success"}`, then issues
+> `GET /adminroute` and checks whether that exact route is in the returned list. Clean run → present.
+> Faulted run (persist skipped) → the response still says success, but the route is **absent** → MIST fires.
 
-### 3.1 The oracle (the contribution)
+Some effects are not "present vs. absent" but "a number that should have moved." For those we use a
+**value-delta** read-back.
 
-- **Core relation (per-run, metamorphic).** A `2xx`/success response that acknowledges entity `X` must have
-  `X` observable on its **own** read-back; the oracle fires when this is violated. The write contradicts
-  *itself* — no second run is required to detect it.
-- **Read-back = a black-box follow-up GET**, never database access, issued at a declared
-  `(write endpoint, persisting dependency, read-back endpoint)` triple.
-- **Two read-back modes:** *membership* (`X` appears in a collection) and *value-delta* (a numeric field
-  moved by the expected amount — e.g., a balance).
-- **Soundness protocol:** fresh-key isolation per test; quiescence (poll until the value stabilizes or the
-  trace shows the write complete, bounded timeout) to absorb benign eventual consistency; confidence
-  stratification (observed-absent vs. timeout-gated).
-- **Deployment vs. lab.** At a target site the oracle runs **standalone per-run** (generate a write → read it
-  back → check self-consistency). The control/fault pairing (below) is lab scaffolding and is not shipped.
-  Measured false-positive rate of the standalone per-run mode: **0 / 2127** (TrainTicket), **0 / 1200**
-  (Sock Shop).
+> **Talking point (why "membership" is not enough).** For the refund, pre-fund the buyer to a balance of 50.
+> A correct cancel refunds R: `50 → 130`. A lost refund: `50 → 50`. Asking "does the buyer exist on the
+> account?" passes either way — the buyer is present before *and* after. **Only the numeric delta separates a
+> real refund from a lost one.** This is the observable MIST adds.
 
-### 3.2 Fault injection — scaffolding, not the contribution
+Two engineering points worth stating: (i) the oracle waits out benign eventual consistency (poll until the
+value stabilizes or the trace shows the write complete, bounded timeout) so it does not cry wolf; (ii) at a
+deployment site the oracle runs **standalone per-run** — the control/fault pairing used in the lab is
+*scaffolding to manufacture labeled ground truth*, not something a deployed MIST needs.
 
-A control/fault pairing manufactures **labeled ground truth** to validate the oracle, and is disclosed as an
-opt-in grey-box mode — a deployed MIST detects *naturally occurring* defects, not injected ones. Injection is
-realized two ways: a SUT-side flag (source fork, disclosed) for clean labeled positives, and
-infrastructure-level faults (service-mesh and message-broker policies) for the unmodified-system path.
+## 3. Why the comparison is fair — and why the baseline misses
 
-## 4. Fair baseline (the comparator)
+Beating a strawman proves nothing, so we compare against a **competently configured, blind-authored contract
+oracle** (Filibuster-style: fault injection + hand-authored per-endpoint assertions). An independent author
+wrote success contracts for **all 79 write endpoints across 22 services**, from the upstream source only, and
+froze them in git **before** the fault set was revealed.
 
-To substantiate "MIST catches what assertion oracles miss," we build a **competently configured,
-blind-authored contract oracle** in the style of Filibuster (fault injection + hand-authored per-endpoint
-assertions).
+> **Talking point (the robot referee).** Think of the baseline as a referee that knows exactly six checks:
+> the HTTP status, three response-body checks (`status` field, `data` null-ness, `msg` text), one follow-up
+> GET ("does my write show up?"), and "can't check this." A blind author translates each contract clause into
+> these six. It flags a run if **any** check fails.
 
-- **Blind protocol.** An independent author writes success contracts for **all 79 write endpoints across 22
-  services** from the upstream source only, then freezes them in git **before** the fault/defect set is
-  revealed. This precludes reverse-engineering the baseline to lose.
-- **Execution pipeline.** Each natural-language clause is mechanically translated into **executable bindings**
-  over a **closed primitive set** — `HTTP_STATUS`, `ENVELOPE_STATUS`, `ENVELOPE_DATA`, `MSG_CONTAINS`,
-  `STATE_GET` (a follow-up GET with membership/entity matching), and `NOT_CHECKABLE`. An evaluator runs its
-  own control and fault writes and checks every clause; it **flags iff at least one evaluated check fails**.
-  `NOT_CHECKABLE` never fires; a transport failure on a follow-up GET is reclassified as infrastructure, never
-  a detection.
-- **Why it is fair (construct validity).** The closed primitive set faithfully represents the expressiveness
-  of the response/contract-assertion oracle *class* (Pact, Dredd, synthetic monitoring), which cannot express
-  cross-request arithmetic. Fairness is enforced by a pre-registered **competence floor** (the frozen set must
-  catch the injected faults) and three independent cold reviews.
-- **Grounding.** The specification/contract-driven oracle paradigm (Barr et al., *The Oracle Problem in
-  Software Testing*, TSE'15); Filibuster (SoCC'21); contract testing (Pact, Dredd).
+This makes the head-to-head decisive and, crucially, *explains* the outcome mechanically.
 
-## 5. Evaluation gates
+> **Example (why it misses cancel→refund).** The refund clause is "`balance_after == balance_before + R`."
+> That needs *arithmetic on a follow-up read* — and the six checks include no subtraction. So the clause
+> becomes `NOT_CHECKABLE`, and the response is a flawless `"Success."`, so the baseline **passes the faulted
+> run (misses the bug)**. MIST, which compares the two balances, **fires**. Extending the baseline with a
+> subtraction primitive would be re-implementing MIST — which concedes the contribution.
 
-| Gate | Question | Bar | Outcome |
+The baseline is not hand-crippled: it must pass a pre-registered **competence floor** (catch the injected
+faults) and survived three independent cold reviews. The paradigm is standard — specification/contract-driven
+test oracles (Barr et al., *The Oracle Problem in Software Testing*, TSE'15), Filibuster (SoCC'21), and
+contract testing (Pact, Dredd).
+
+## 4. What we have done — results
+
+**Gate 1 — the mechanism is sound (TrainTicket).** On a constructed lost-write, MIST **fires** in the
+high-confidence stratum, and on 30 benign iterations the false-positive rate is **0 / 2127** acknowledged
+writes, with the observation gate fully resolved.
+
+**Gate 2 — the baseline is competent and fair (TrainTicket).** Both calibration faults are flagged via
+**genuine state-clause failures** (not transport errors), while **every clean run passes every clause** —
+evidence the baseline discriminates rather than rubber-stamps.
+
+**Gate 3 (centerpiece) — TrainTicket `cancel → refund`.** Three scenarios, each run five times, fully
+deterministic:
+
+| Scenario | MIST | Baseline | Reading |
 |---|---|---|---|
-| **G1** | Is the mechanism sound on one SUT? | Fires on a constructed lost-write; low, characterized FP | **PASS** |
-| **G2** | Is the comparison against a competent, fair baseline? | Blind comparator frozen and calibration-accepted | **PASS** |
-| **G3** | Does MIST catch a real defect the comparator misses because no human wrote the assertion, across ≥2 SUTs? | Head-to-head on a natural defect | **In progress** (results below) |
+| Natural dependency fault (`{1,"error"}`) | fires | catches (msg gate) | tie — MIST additionally *localizes* the lost write |
+| Constructed fabricated clean ack (`{1,"Success."}`) | fires | **misses** | **clean MIST win** — the `50→130` vs `50→50` delta the baseline cannot express |
+| Body-carrying create (agreement anchor) | fires | catches | both catch — the baseline is demonstrably non-strawman |
 
-## 6. Results
+**Gate 3 (external validity) — Sock Shop shipping.** A second system, a different hazard (a lost
+message-queue enqueue).
 
-- **Gate-1 (TrainTicket).** FIRE on a constructed lost-write in the high-confidence (observed-absent)
-  stratum; synchronous FP = **0 / 2127** acknowledged benign records; observation gate 100% resolved.
-- **Gate-2 (TrainTicket).** Both calibration faults flagged via **genuine state-clause failures** (not
-  transport), while **every control leg passes every clause** — evidence the baseline discriminates rather
-  than rubber-stamps.
-- **G3 centerpiece — TrainTicket `cancel → refund`** (three cells, N = 5, deterministic):
-  - *Natural* (dependency fault): both oracles detect (tie); MIST additionally **localizes** the specific
-    lost write.
-  - *Constructed* (fabricated clean acknowledgement): **clean MIST win** — the refund is a numeric balance
-    delta (control `50 → 130` vs. fault `50 → 50`) the comparator's closed primitives cannot express
-    (`NOT_CHECKABLE`).
-  - *Agreement anchor* (body-carrying create): both catch — the comparator is demonstrably non-strawman.
-- **G3 external validity — Sock Shop shipping enqueue-loss** (four cells = two fault strata × two comparator
-  forms, N = 5, deterministic): MIST fires on all fault legs; the strongest *fair* comparator (extended with
-  a liveness primitive) still misses the constructed cell — closing that boundary requires out-of-class
-  broker/queue-state observation, i.e., MIST.
-- **Breadth (Rider-2).** 69 / 80 (86.25%) of frozen state clauses are bindable/evaluable on live TrainTicket;
-  the residual is exactly the object/aggregate/delta class MIST covers.
-- **False positives.** 0 / 2127 (TrainTicket), 0 / 1200 (Sock Shop).
+> **Example (self-documented bug).** Sock Shop's shipping service wraps its enqueue in a try/catch that logs
+> *"Accepting anyway. Don't do this for real!"* and returns `201` no matter what. When the broker is
+> unreachable, the shipment is acknowledged and silently dropped — present in the **unmodified** official
+> image.
 
-## 7. Scope and threats to validity
+Four cells (two fault strata × two comparator forms), five runs each, deterministic: **MIST fires on every
+fault leg**; the strongest *fair* baseline — extended with a liveness check — **still misses** the constructed
+cell, because closing that boundary needs out-of-class broker/queue-state observation (i.e., MIST).
 
-- Gate-1 establishes **synchronous-mechanism soundness on one SUT**; it carries no novelty evidence by
-  itself. Novelty rests on the G2/G3 head-to-head.
-- "Black-box" qualifies the **oracle** (judging), not fault injection (controlling), which is disclosed lab
-  scaffolding.
-- The head-to-head **defect logic is natural/upstream**, but the clean-win cell is *triggered* by a disclosed
-  constructed fault. Fully injection-free wild-hunt evidence is the higher bar and remains in progress.
-- Comparator fairness rests on **construct validity** (the closed primitive set representing the oracle
-  class); the claim is scoped to the response/liveness contract-checking class, never "no tool could."
-- Blind authorship used an LLM agent gated by the competence floor; a human cross-check is the stronger form.
-- Read-back parsing covers three collection encodings; an unknown shape degrades **loudly**
-  (`NOT_EVALUABLE` or an obvious FP storm), never a silent wrong verdict.
+**Breadth.** 69 / 80 (86.25%) of the frozen state clauses are bindable/evaluable on live TrainTicket; the
+residual 11 are exactly the object/aggregate/delta class MIST covers. **False positives:** 0 / 2127
+(TrainTicket) and 0 / 1200 (Sock Shop).
 
-## 8. Status and next steps
+## 5. What we are careful about — anticipated questions
 
-**Complete and reviewed:** Gate-1 (PASS), Gate-2 (accepted), the TrainTicket `cancel → refund` head-to-head,
-the Sock Shop external-validity head-to-head, the Rider-2 breadth survey, and the false-positive probes on
-both SUTs. **Next:** an executable Rider-2 breadth run on live TrainTicket, then consolidation for write-up.
+- **"Did you just invent the bug?"** No. The buggy logic is **genuinely upstream** — the cancel service's
+  commit history is entirely upstream authors, and the file carries none of our injection markers (verified
+  from git). What we add is the *trigger* (making the refund step fail), in a *different* service, clearly
+  labeled. So the defect is real; we inject only a realistic fault to trigger it deterministically. The one
+  *constructed* piece — a fabricated clean acknowledgement — is disclosed and is the reason the wild
+  (zero-injection) hunt is the higher bar.
+- **"Is this really black-box?"** "Black-box" qualifies the **oracle** (judging uses only HTTP + OTel, no
+  source, no DB). Fault *injection* is a separate, disclosed grey-box mode — a deployed MIST finds naturally
+  occurring defects, it does not inject.
+- **"Is the baseline fair?"** Its fairness rests on **construct validity** — the six primitives faithfully
+  represent the response/contract-assertion oracle *class* (Pact/Dredd), which cannot express cross-request
+  arithmetic. We scope the claim to that class ("the strongest fair single-endpoint response+liveness
+  checker misses it"), never "no tool could," and disclose this as a threat to validity.
+- **"You didn't compare to Cast directly?"** Cast requires production-traffic replay + Java AOP + historical
+  baselines that open-source systems lack; a nominal Cast would be a crippled comparator. We approximate its
+  *oracle model* (Filibuster-style) and argue the deltas (generation, black-box, label-free read-back, open
+  benchmark) from verified facts.
+
+## 6. What I am doing now, and next
+
+- **Now:** making the breadth number *executable* on live TrainTicket (a control-only run that turns the 69/80
+  survey into a measured result), and folding all evidence into the consolidation / paper-evidence pack.
+- **Next:** the wild-hunt for a zero-injection defect (the strongest form of the claim), then the write-up.
+
+---
+
+*One-sentence takeaway:* **MIST makes silently-lost writes testable using only the black-box HTTP surface and
+the OpenTelemetry a system already emits — no production traffic, no AOP, no human-authored assertions — and a
+competently-configured, blind, fair baseline misses exactly the defects whose observable is a state delta,
+which is precisely what MIST reads back.**
