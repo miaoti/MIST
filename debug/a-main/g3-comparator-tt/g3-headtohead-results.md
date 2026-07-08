@@ -7,8 +7,12 @@ both observing the SAME cancel→refund stimulus under two fault strata. Runner:
 `prep/g3-headtohead-run-architecture.md`. Faithfulness + ground truth:
 `g3-natural-faithfulness-source-check.md`, `g3-value-delta-ground-truth.md`.
 
-Status: **PRELIMINARY** — a first ≥3-cold-review (A/B/C) returned ACCEPT-WITH-FIXES and its fixes
-are folded in below; a re-review gates these numbers before they feed any claim.
+Status: **REVIEWER-ACCEPTED for feeding paper claims** — round 1 (3× ACCEPT-WITH-FIXES, all fixes
+folded below) + round 2 (3× verification that the fixes are sound, all landed); authoritative status
+line = `REVIEW-HEADTOHEAD-RECONCILIATION.md` ("STATUS: the 3-cell head-to-head result is
+REVIEWER-ACCEPTED for feeding paper claims"), subject to the two standing framing rules there.
+(Header updated 2026-07-08: it still read "PRELIMINARY" from before round 2 — flagged by the
+consolidation-plan reviews A/B; the numbers below are unchanged.)
 
 ## The three cells (N=5 stable each, `runs/*.log`)
 

@@ -189,7 +189,7 @@ convention: DERIVED values (consign price ×2, consignprice pricing), out-of-ban
    cancel→refund read-back shape (no flat collection-membership surface; the observable lives in
    one object/aggregate), which is why they matter beyond their count.
 3. **The payment/compensation axis is two SEPARATE, correctly-scoped facts** (not an extrapolation
-   from the 9/80): (a) coverage fact — the frozen set's own `not_covered` list places the
+   from the 11/80): (a) coverage fact — the frozen set's own `not_covered` list places the
    money-moving orchestration surface (`ts-inside-payment`, `ts-cancel`, `ts-preserve`,
    `ts-rebook`, `ts-payment`, `ts-seat`) OUTSIDE the surveyed CRUD surface; (b) depth-cell evidence
    — for the one such flow examined end-to-end (cancel→refund), ALL THREE frozen state clauses are
@@ -203,7 +203,7 @@ convention: DERIVED values (consign price ×2, consignprice pricing), out-of-ban
    payment/compensation flows sit outside the surveyed CRUD surface entirely (see point 3 for the
    two separately-scoped facts). MIST is positioned as
    COMPLEMENTARY coverage of that residue (consistent with the accepted framing rule:
-   complementary, not a superset — on the 88.75 % the comparator is fine; on loud failures it can
+   complementary, not a superset — on the 86.25 % the comparator is fine; on loud failures it can
    be better).
 
 ## Protocol notes
@@ -224,3 +224,8 @@ convention: DERIVED values (consign price ×2, consignprice pricing), out-of-ban
   OBJECT-ABSENCE rows — but that is a NEW primitive outside the pre-registered closed set, i.e. a
   disclosed evaluator amendment, not a binding choice. Recorded as the honest boundary of the
   comparator class this study models.
+- DISCLOSED AMENDMENT (2026-07-08, consolidation-plan review B M-2): two pre-recount numeric
+  remnants in the Reading section were corrected to the accepted recount ("9/80" → "11/80";
+  "88.75 %" → "86.25 %"). The S-3 "all percentages restated" fix had missed these two prose
+  occurrences; no disposition changed — the fraction table and every disposition row were already
+  at 69/80 = 86.25 % G / 59/80 = 73.75 % S / 11 NC.
