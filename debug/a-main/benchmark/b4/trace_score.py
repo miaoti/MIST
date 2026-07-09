@@ -7,6 +7,12 @@ traces). Scores TWO comparator columns on an exported Jaeger v2 trace JSON; NEVE
 
   usage: trace_score.py <case_id> <trace.json>
 
+SELECTION AMENDMENT (2026-07-10, committed BEFORE scoring any leg; disclosed): the raw Jaeger window
+query also returns 1-span INTERNAL scheduler traces (the agent instruments NacosWatch$$Lambda.run,
+observed on the canary + the first raw export). Selection is therefore implemented as: keep only traces
+containing a SERVER-kind span of the case's entry service (the mechanical meaning of "entry
+service+operation" selection), THEN require exactly one. Verdict semantics untouched.
+
 Pinned semantics (reconciliation T6/T8, B-M1):
 - tracetest_presence = EXISTENCE-ONLY assertion at cross-service HTTP-span granularity:
   a SERVER-kind span of the case's dependency service whose operation matches the frozen fragment.
@@ -55,13 +61,23 @@ def tagmap(span):
     return {t["key"]: t.get("value") for t in span.get("tags", [])}
 
 
+def has_entry_server_span(tr, entry_svc):
+    procs = {pid: p.get("serviceName", "?") for pid, p in tr.get("processes", {}).items()}
+    for s in tr.get("spans", []):
+        if procs.get(s.get("processID")) == entry_svc and tagmap(s).get("span.kind") == "server":
+            return True
+    return False
+
+
 def score(case_id, trace_path):
     sel = sel_for(case_id)
     doc = json.load(open(trace_path, encoding="utf-8"))
-    traces = doc.get("data") or []
+    raw = doc.get("data") or []
+    traces = [t for t in raw if has_entry_server_span(t, sel["entry"])]
     if len(traces) != 1:
-        raise SystemExit("ERROR: expected exactly ONE trace in %s, found %d (T8 exactly-one-match rule)"
-                         % (trace_path, len(traces)))
+        raise SystemExit("ERROR: expected exactly ONE entry-server trace in %s, found %d of %d raw "
+                         "(T8 exactly-one-match rule after the disclosed server-span selection)"
+                         % (trace_path, len(traces), len(raw)))
     tr = traces[0]
     procs = {pid: p.get("serviceName", "?") for pid, p in tr.get("processes", {}).items()}
     spans = tr.get("spans", [])
