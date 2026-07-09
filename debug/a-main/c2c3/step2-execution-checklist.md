@@ -11,7 +11,7 @@ Sources consolidated: plan v2 §5, `c2-freeze.md` rev 2, `e-sut-applicability-ma
 
 ## Step 1.9 — THE UX WAVE (gates step 2; user directive) — REV 2 per REVIEW-UX-RECONCILIATION U1–U8
 ✔ 1.9.1 UX design doc → ≥3-cold-reviewED → reconciled (4e136b2); rev-2 deltas govern.
-☐ 1.9.2 Implement (tool code, `main_track`, tests green; paired suites re-run byte-equal — U5):
+✔ 1.9.2 IMPLEMENTED (commit 1d6ed9b + summary-logging fix; suites GREEN mist-cli 199, reactor BUILD SUCCESS = U5 byte-equal proof):
         **W0 observe-session lifecycle FIRST** (arming; parallelism→1 for hooked classes; registry
         property key; record API; positive-steps-only freshening — U1) → W1 verdict check (INERT in
         paired sessions; fail at end-of-method; defect = acked ∧ error==null ∧ OBSERVED_COMPLETE_ABSENT)
@@ -20,17 +20,17 @@ Sources consolidated: plan v2 §5, `c2-freeze.md` rev 2, `e-sut-applicability-ma
         → W4 docs+demo (demo registry WITHOUT fault_flag rows) → W6 supplied-tier writer emission
         (scoped; else expert tier disclosed harness-only — U6). failOnLost DEFAULT WARN until the
         S2-FP calibration at product caps passes (U4). Jaeger prerequisite documented (U3).
-☐ 1.9.3 Demo-run DoD: **TT redeploy FIRST (namespace verified EMPTY — B)**, then a normal
-        `java -jar mist.jar <props>` run shows the data-integrity section in Allure; suites green.
-☐ 1.9.4 Authoring-cost protocol (D5): minutes-per-bound-endpoint, both MIST + arm-3 sides;
-        acceptance rate = descriptive only (U7).
-☐ 1.9.5 **MIST STUDY-COMMIT PIN at the END of this wave** (criteria: value-delta + supplied hooks +
+✔ 1.9.3 Demo-run DoD **PASSED (2026-07-09)** — see `ux-demo-dod-result.md`: TT redeployed (runbook §2.6); 2,483 tests executed exit 0; observe armed via the enhancer final-round path; rendered Allure test `test_positive_flow_S262_v219` carries "✅ durable write confirmed [adminroute-create] — 1 poll, 69 ms"; categories.json written.
+✔ 1.9.4 Authoring-cost protocol pinned (D5/U7): minutes-per-bound-endpoint both sides; acceptance rate descriptive only; recording starts at step 2.75.
+✔ 1.9.5 **MIST STUDY-COMMIT PIN = the ux-demo-dod-result.md commit** (criteria met; QuiescenceGate mapping frozen there; fork pin = a1767ab3) (criteria: value-delta + supplied hooks +
         injectors + fabricated-ack + W0–W6 in one buildable commit; QuiescenceGate→verdict mapping
         FROZEN at this pin; all case verdicts from 3a on recorded at it; promoted G1/G3 seeds
         re-recorded at it — moved from step 8, B-MAJOR).
-☐ 1.9.6 **∥ START NOW (U2 — longest lead, USER-GATED):** rater-materials ≥3-cold-review → user picks
-        the recruitment channel (`c3-rater-materials.md` §7) → IRB/exemption filing → outreach
-        (2–6 wk). Deferring this to step 5 makes the scarred author-blind fallback the default.
+☐⋯ 1.9.6 **∥ (U2 — longest lead):** CHANNEL DECIDED 2026-07-09 = in-group MIST-blind SE grad students
+        (`c3-rater-materials.md` §7) → external-outreach lead removed. STILL OPEN before labeling:
+        rater-materials ≥3-cold-review; IRB/exemption filing; §9 eligibility screen. BINDING: mandatory
+        MIST-blind screen + §5 independence + "internal-but-blind" threat disclosure + §8 fallback if
+        genuinely-blind students can't be staffed (do NOT relax blindness to fill seats).
 
 ## Step 2 — deploy wave (after 1.9; tenancy: big SUTs solo — TT, OTel-Demo; small co-reside)
 ☐ 2.1 Restore `.wslconfig` to 26 GB before any TT wave; verify `free -h` inside WSL.

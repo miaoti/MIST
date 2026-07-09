@@ -631,7 +631,12 @@ public final class MistRunner {
         }
         observeRecords.addAll(records);
         writeObserveAllureCategories();
-        io.mist.core.util.ConsoleProgressBar.printRaw(summarizeObserve(records));
+        String summary = summarizeObserve(records);
+        io.mist.core.util.ConsoleProgressBar.printRaw(summary);
+        // DoD lesson (2026-07-09): printRaw targets the raw console and never
+        // reaches the rotating log — mirror the summary through the logger so
+        // detached/redirected runs keep the evidence.
+        logger.warn("[MIST] {}", summary);
     }
 
     /** UX W2: run-level terminal summary of the observe session's records. */

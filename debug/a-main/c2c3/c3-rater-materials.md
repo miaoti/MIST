@@ -156,23 +156,37 @@ time_minutes: <int>              # for the compensation + calibration audit
 
 ---
 
-## §7 Recruitment channel — **OPEN USER DECISION**
-The materials above are channel-independent. Candidate channels, with trade-offs, for the user to
-pick (this is the surfaced decision, not something to auto-resolve):
+## §7 Recruitment channel — **DECIDED (2026-07-09): in-group SE grad students**
+**Decision (user, 2026-07-09):** raters = software-engineering grad students from our own group. This
+resolves the channel and removes the 2–6 wk external-outreach lead. It is chosen for skill-fit + zero
+recruitment lead — but it is the "medium independence-risk" row below, so it is admissible ONLY under
+the following BINDING conditions (they protect §0, the load-bearing soundness invariant):
+- **MIST-blind is mandatory, not aspirational.** An eligible student must NOT be on the MIST project
+  and must never have seen the tool, its hypothesis, this repo, or the head-to-head results. A student
+  who knows MIST is INELIGIBLE as a rater (they may help elsewhere, e.g. logistics — never as a
+  labeler). This is screened before assignment and recorded.
+- **In-group ⇒ not off-team ⇒ a disclosed threat to validity.** Because same-group raters carry
+  relationship bias, the paper discloses "internal but MIST-blind raters, independence enforced by
+  protocol (§5)" in threats-to-validity, and the §5 mechanics are enforced strictly (separate delivery
+  + return, no discussion channel until close).
+- **Third adjudicator = most senior + most arm's-length available** (ideally not the students' direct
+  advisor on this work).
+- **If genuinely-blind in-group students cannot be staffed, the §8 two-author-blind fallback register
+  applies** (claim demoted one register, all labels released, author-pair κ) — do NOT quietly relax
+  blindness to fill seats.
+
+The channel comparison stays on record for the priority defense (chosen row = **SE grad students**):
 | channel | skill fit | lead time | cost | independence risk |
 |---|---|---|---|---|
 | Contract SWEs (Upwork/Toptal, microservice-screened) | good if screened | 1–3 wk | market hourly ×2 raters ×~30 h | low (strangers, no shared channel) |
-| SE grad students (another group / another institution) | good | 2–4 wk | stipend/gift | medium (may know the project — must be MIST-blind + off-team) |
+| **SE grad students (our group) — CHOSEN** | good | ~0 (in-house) | stipend/credit | medium (in-group — mitigated by mandatory MIST-blind screen + §5 + disclosure) |
 | Industry SRE/backend contacts | very good | 1–4 wk | favor/honorarium | medium (relationship bias — keep blind + independent) |
 | Prolific/MTurk | poor (needs source-reading) | days | low | low but skill floor likely fails eligibility |
-Recommendation to surface: **screened contract SWEs or off-team SE grad students** (skill floor met +
-genuinely MIST-blind). The **third adjudicator** should be the most senior of the three and likewise
-off-team.
 
-**IRB / ethics determination — a PRECONDITION before any rater is contacted (B-M8).** This is a paid
-study recruiting external humans, so it needs an IRB/ethics-board determination (approval OR a
-documented exemption) at the recruiting institution BEFORE outreach — surfaced to the user alongside
-the channel decision because it can add weeks onto the longest-lead item. **Expected exemption
+**IRB / ethics determination — a PRECONDITION before any rater LABELS (B-M8), channel notwithstanding.**
+Even with in-group student raters, a study with paid/credited human labelers still needs an IRB/ethics
+determination (approval OR a documented exemption) at the institution BEFORE labeling begins — the
+in-group choice removes the outreach lead but NOT this precondition. **Expected exemption
 rationale** (to file): the task is expert code/spec review of PUBLIC open-source systems, collects NO
 personal or sensitive data, records only anonymized labels + rationales, and releases them as an open
 research artifact — typically exempt (e.g. US 45 CFR 46.104(d)(2) benign-behavioral / existing-public).
