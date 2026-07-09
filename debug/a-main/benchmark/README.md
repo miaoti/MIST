@@ -1,5 +1,15 @@
 # MIST labeled fault benchmark (C2) — structure + schema
 
+> **⚠ SUPERSEDED BY THE STEP-1 RE-FREEZE (2026-07-08).** The AUTHORITATIVE C2 pre-registration is now
+> `debug/a-main/c2c3/c2-freeze.md` (rev 2). This directory's `schema/fault-case.schema.json` has been
+> **updated to rev 2** (in lockstep with the freeze); `schema/rubric.md` (v0.1.0) is superseded by
+> `c2-freeze.md` §3 + `c2c3/c3-rater-materials.md` §3 (the observation-vs-verdict admissibility split).
+> The **6 seed cases in `cases/` are still in v0.1.0 format and FAIL the rev-2 schema** — they are
+> migrated at step-2 population per the migration map in §9 below. This README's §8 scale plan
+> ("3 SUTs × ~7 endpoints") is **refuted by the §8.5-3 depth survey** (TeaStore = 1 durable write,
+> Boutique = 0) and superseded by the honest two-denominator recount in `c2-freeze.md` §5. Read this
+> README for the design rationale; read the freeze for the frozen truth.
+
 > **PREP deliverable (main-track). NO MIST tool code.** This defines the structure, schema, and
 > labeling rubric for contribution **C2 — the first open-source labeled benchmark of masked-downstream /
 > data-integrity faults** in OSS microservice systems. The cases here are the *seed* (designed, label
@@ -133,3 +143,25 @@ capture control+fault traces + read-back, populate `provenance.*`, flip `capture
 
 **This scale run IS the G3 corpus build** (EXECUTION G3) — gated behind B1/B2 (BLOCKED until "yes"). The
 seed 4 exist now to prove the schema + rubric + one live positive; the 120–160 are the release deliverable.
+
+## 9. Migration map — schema v0.1.0 → rev 2 (2026-07-08 re-freeze; step-2 mechanical port)
+The rev-2 schema (in lockstep with `c2c3/c2-freeze.md` §2) is a superset with three structural changes;
+the 6 seed cases are ported field-by-field at step-2 population. Field deltas:
+
+| v0.1.0 | rev 2 | port rule |
+|---|---|---|
+| `schema_version: "0.1.0"` | `"2.0.0"` | bump |
+| `injection.mechanism` (method enum) | **split** → `fault.mechanism` (diversity class) + `fault.injection_method` (method) | `sut_injector`→{mechanism per case: flag/code-level, method sut_injector}; `toxiproxy`→{mesh-sever, toxiproxy}; `vendor_flag`→{flag, vendor_flag}; `natural`→{mechanism per the natural path, natural}; `none`→{none, none}. Add `dependency-down` where a DB/backing-store kill is used. |
+| `target.readback_endpoint` (optional endpoint) | `target.readback` (typed: modality/locator/expect_*/mist_bindable) | a GET read-back → `modality: api-get`. **The SS swallowed-enqueue case has NO durable read-back → `modality: none-durable` → `mist_readback_oracle: not_applicable`** (matches its existing `mist_dataintegrity_oracle: not_applicable`). The OTel async case → `modality: sql-probe`, `mist_bindable: <TBD at capture>`. |
+| — (absent) | `oracle_eval.ack_content_visibility` **(new, required)** | author per case. TeaStore order-confirm = `success-shaped-clean` (A-verified: `-1` cleared from blob → clean 200). A `{1,"error"}`/sentinel body = `sentinel-in-body`/`status-field-tells`. |
+| — (absent) | `oracle_eval.trace_visibility` **(new, required, 4-value)** | `error-span-visible` \| `span-presence-visible` \| `trace-invisible-by-construction` \| `trace-uninstrumented` (Kieker/un-instrumented ≠ by-construction). |
+| — (absent) | `oracle_eval.write_shape` **(new, required)** | `whole` \| `partial-aggregate` (e.g. TeaStore order present, items lost) \| `transition`. |
+| `oracle_expectation.mist_dataintegrity_oracle` | `oracle_expectation.mist_readback_oracle` | rename; add `tracetest_presence_oracle` (baseline). `body_marker_oracle` now flags iff `ack_content_visibility != success-shaped-clean`. |
+| `ground_truth.label: positive\|negative` | `positive\|negative\|underspecified` | unchanged for S1/S2 (positive≡genuine, negative≡benign); `underspecified` is S3-only. Add optional `version` + `doc_citation`. |
+| `adjudication.cohen_kappa` | `adjudication.kappa` | rename; S3-only κ is the PRIMARY statistic (R7). |
+| `sut` | + optional `image_digest`, `replay_script`, `health_precondition` | label bound to `image_digest`. |
+
+Unchanged: `case_id`, `stratum` (int 1/2/3), `capture_status`, `fault_class`, `target.entry_endpoint`,
+`target.dependency` (+ `broker` kind added), `provenance`. Validation snippet (README §6) unchanged; run
+it after the port to confirm all cases PASS rev 2. Migration is a step-2 task ("promote the ~10 reviewed
+existing assets" — plan §2.4-2); the seed cases FAIL rev 2 until then, by design.

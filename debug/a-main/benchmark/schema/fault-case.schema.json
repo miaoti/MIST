@@ -1,110 +1,173 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://github.com/miaoti/MIST/debug/a-main/benchmark/schema/fault-case.schema.json",
-  "title": "MIST labeled fault-case (C2 benchmark)",
-  "description": "One labeled case in the MIST open-source benchmark of masked-downstream / data-integrity faults. A case records the target (write endpoint, dependency, read-back GET), how the fault was produced, the ground-truth label, and each oracle's EXPECTED VERDICT. Verdict semantics: 'flag' = the oracle reports a fault on this case; 'no_flag' = the oracle reports clean; 'not_applicable' = the oracle does not run on this case. An oracle is CORRECT on a case iff (verdict == flag) == (ground_truth.label == positive). Precision/recall/FP for any oracle are therefore computable directly from the corpus.",
+  "title": "MIST labeled fault-case (C2 benchmark) — rev 2",
+  "description": "One labeled case in the MIST open-source benchmark of masked-downstream / acked-but-lost data-integrity faults. REV 2: brought into lockstep with debug/a-main/c2c3/c2-freeze.md (step-1 re-freeze, R1-R8). A case records the target write, the typed durable read-back, the fault + its clean twin, the ground-truth label, per-oracle EXPECTED verdicts (baseline columns deterministic; mist_* columns are TARGETS measured at eval, never ground truth), and the visibility axes (trace + ack-content). An oracle is CORRECT on a case iff its actual verdict matches its oracle_expectation entry, which for baseline columns equals (verdict==flag)==(label==positive). Supersedes schema v0.1.0 (see README migration map).",
   "type": "object",
   "additionalProperties": false,
   "required": [
     "case_id",
     "schema_version",
     "stratum",
-    "fault_class",
     "capture_status",
+    "fault_class",
     "sut",
     "target",
-    "injection",
+    "fault",
+    "stimulus",
+    "oracle_eval",
     "ground_truth",
     "oracle_expectation",
     "provenance"
   ],
   "properties": {
-    "case_id": {
-      "type": "string",
-      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$",
-      "description": "Stable unique id, e.g. TT-adminroute-lostwrite-001."
-    },
-    "schema_version": {
-      "type": "string",
-      "pattern": "^\\d+\\.\\d+\\.\\d+$",
-      "description": "Version of THIS schema the case was authored against (semver)."
-    },
+    "case_id": { "type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$" },
+    "schema_version": { "type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+$", "description": "2.0.0 for this re-freeze." },
     "stratum": {
       "type": "integer",
       "enum": [1, 2, 3],
-      "description": "1 = positive ground truth (injected/replicated/vendor, known label). 2 = benign trap (designed degradation / eventual consistency, label=negative). 3 = adjudicated wild traffic (label set by human raters)."
-    },
-    "fault_class": {
-      "type": "string",
-      "enum": [
-        "acknowledged_lost_write",
-        "missing_compensation",
-        "swallowed_downstream_error",
-        "none"
-      ],
-      "description": "Surface phenomenon under test (NOT the genuine/benign verdict). 'none' = clean control run."
+      "description": "1 = positive by construction (injected/replicated/vendor/natural). 2 = benign trap (label=negative, by-docs). 3 = adjudicated wild (label by raters; may be underspecified)."
     },
     "capture_status": {
       "type": "string",
       "enum": ["specified", "captured"],
-      "description": "'specified' = designed, label known by construction, traces/read-back NOT yet recorded. 'captured' = control/fault traces + read-back recorded on a live deploy (provenance paths populated)."
+      "description": "specified = designed, label known, traces/read-back not yet recorded. captured = control/fault traces + read-back recorded on a live deploy."
+    },
+    "fault_class": {
+      "type": "string",
+      "enum": ["acknowledged_lost_write", "missing_compensation", "swallowed_downstream_error", "none"],
+      "description": "Surface phenomenon (NOT the verdict). none = clean control / benign."
     },
     "sut": {
       "type": "object",
       "additionalProperties": false,
       "required": ["name"],
       "properties": {
-        "name": { "type": "string" },
+        "name": { "type": "string", "enum": ["trainticket", "sockshop", "teastore", "oteldemo", "boutique", "bookinfo"] },
         "repo": { "type": "string" },
         "branch": { "type": "string" },
         "commit": { "type": "string" },
-        "deploy": { "type": "string", "description": "How it is deployed (e.g. k8s/minikube make deploy)." }
+        "image_digest": { "type": "string", "description": "sha256:...; the label is bound to this digest (label.version_validity)." },
+        "deploy": { "type": "string" },
+        "replay_script": { "type": "string" },
+        "health_precondition": { "type": ["string", "null"], "description": "Pre-flight checklist path (pods Ready, endpoints 200, mesh/broker state)." }
       }
     },
     "target": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["entry_endpoint", "dependency"],
+      "required": ["entry_endpoint", "dependency", "readback"],
       "properties": {
-        "entry_endpoint": {
-          "$ref": "#/$defs/endpoint",
-          "description": "The externally-reachable endpoint MIST drives. A write (POST/PUT) for data-integrity cases; may be a read (GET) for swallowed-downstream cases."
-        },
+        "entry_endpoint": { "$ref": "#/$defs/endpoint" },
         "dependency": {
           "type": "object",
           "additionalProperties": false,
           "required": ["service", "kind"],
           "properties": {
             "service": { "type": "string" },
-            "kind": {
-              "type": "string",
-              "enum": ["persistence", "downstream_service", "external"],
-              "description": "What the write depends on and where the fault sits."
-            }
+            "kind": { "type": "string", "enum": ["persistence", "downstream_service", "broker", "external"] }
           }
         },
-        "readback_endpoint": {
-          "$ref": "#/$defs/endpoint",
-          "description": "The black-box GET used to verify the write landed. Required for data-integrity classes."
+        "readback": {
+          "type": "object",
+          "additionalProperties": false,
+          "description": "R4/B-B4: TYPED, oracle-agnostic durable observable. Replaces the old prose observable + optional readback_endpoint.",
+          "required": ["modality", "expect_without_fault", "expect_with_fault", "mist_bindable"],
+          "properties": {
+            "modality": { "type": "string", "enum": ["api-get", "sql-probe", "broker-count", "trace-span-presence", "none-durable"] },
+            "locator": { "type": ["string", "null"], "description": "endpoint path | SQL | queue name | span selector | null." },
+            "expect_without_fault": { "type": "string", "enum": ["present", "landed", "count-delta-positive", "span-present"] },
+            "expect_with_fault": { "type": "string", "enum": ["absent", "not-landed", "count-delta-zero", "span-absent"] },
+            "mist_bindable": { "type": "boolean", "description": "Can MIST's oracle bind this modality? sql-probe / none-durable may be false." }
+          }
         }
       }
     },
-    "injection": {
+    "fault": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["mechanism"],
+      "required": ["mechanism", "injection_method", "provenance_class"],
       "properties": {
         "mechanism": {
           "type": "string",
-          "enum": ["sut_injector", "toxiproxy", "replicated_fault", "vendor_flag", "natural", "none"],
-          "description": "How the surface phenomenon is produced. 'none' = clean control. 'natural' = designed-degradation path that exists in the unmodified SUT (no injection)."
+          "enum": ["flag", "mesh-sever", "broker-policy", "dependency-down", "code-level", "none"],
+          "description": "R1: the fault-MECHANISM diversity class (what the >=4-per-write-path-SUT floor counts). flag = app/runtime/vendor feature toggle; dependency-down = DB/backing-store kill; none = clean/benign. An input-driven variant is a STIMULUS (stimulus.workload_variant), NOT a mechanism, and does NOT count toward diversity."
         },
-        "config": {
+        "injection_method": {
+          "type": "string",
+          "enum": ["natural", "vendor_flag", "sut_injector", "toxiproxy", "mesh_abort", "broker_policy", "dependency_scale_zero", "replicated_fault", "none"],
+          "description": "HOW the mechanism is produced (was injection.mechanism in v0.1.0). natural = an unmodified designed-degradation path (no injection)."
+        },
+        "config": { "type": "object", "description": "Reproducible knobs. Free-form." },
+        "injected_by": { "type": "string" },
+        "target_service": { "type": "string" },
+        "provenance_class": { "type": "string", "enum": ["by-injection", "by-docs", "by-adjudication"] }
+      }
+    },
+    "negative_control": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["present"],
+      "properties": {
+        "present": { "type": "boolean", "description": "Every S1 case MUST have one. The oracle's negative test: not-firing => TN, firing => FP." },
+        "replay_script": { "type": ["string", "null"] }
+      }
+    },
+    "stimulus": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["write_path"],
+      "properties": {
+        "script": { "type": "string" },
+        "write_path": { "type": "boolean" },
+        "workload_class": { "type": "string", "enum": ["authored-scenario", "builtin-loadgen", "scripted-browse", "none"] },
+        "workload_variant": { "type": ["string", "null"], "description": "R1: input-driven variants live here (e.g. bogus-user-id), not as a mechanism." }
+      }
+    },
+    "oracle_eval": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["ack_content_visibility", "trace_visibility", "write_shape"],
+      "properties": {
+        "ack_content_visibility": {
+          "type": "string",
+          "enum": ["success-shaped-clean", "sentinel-in-body", "status-field-tells"],
+          "description": "R8/C-A2: does the 2xx ack itself carry a machine-readable tell? Non-clean => tell-bearing => segregated from the primary discriminating positive denominator."
+        },
+        "trace_visibility": {
+          "type": "string",
+          "enum": ["error-span-visible", "span-presence-visible", "trace-invisible-by-construction", "trace-uninstrumented"],
+          "description": "B-M5: by-construction invisibility (fabricated-ack/normal span) is kept separate from tooling-contingent (un-instrumented, e.g. TeaStore-Kieker-exclude)."
+        },
+        "write_shape": { "type": "string", "enum": ["whole", "partial-aggregate", "transition"], "description": "B-M7: parent-landed/child-lost etc." },
+        "config_provenance": {
           "type": "object",
-          "description": "Reproducible knobs (env flags, toxiproxy rule, vendor feature flag). Free-form."
+          "additionalProperties": false,
+          "properties": {
+            "mist_properties": { "type": "string" },
+            "triples": { "type": ["string", "null"] },
+            "timeout_caps": { "type": "string" },
+            "mist_commit": { "type": "string", "description": "ONE frozen study-wide commit; IDENTICAL across every case." }
+          }
         },
-        "injected_by": { "type": "string", "description": "Provenance, e.g. branch@commit that adds the injector." },
-        "trigger_input": { "type": "string", "description": "The input that drives the case (e.g. 'valid route, >=2 existing stations')." }
+        "comparator_configs": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["arm"],
+            "properties": {
+              "arm": { "type": "string", "enum": ["naive", "tracetest-error", "tracetest-presence", "traceanomaly", "contract-invariant"] },
+              "config": { "type": "string" },
+              "authoring_cost": {
+                "type": "object",
+                "additionalProperties": false,
+                "description": "B-M4: the arm-3 automation-gap datum.",
+                "properties": { "minutes": { "type": "integer" }, "endpoints_covered": { "type": "integer" }, "notes": { "type": "string" } }
+              }
+            }
+          }
+        }
       }
     },
     "ground_truth": {
@@ -114,38 +177,28 @@
       "properties": {
         "label": {
           "type": "string",
-          "enum": ["positive", "negative"],
-          "description": "positive = genuine data-integrity / masked defect. negative = benign (clean, designed degradation, or eventually-consistent-then-correct)."
+          "enum": ["positive", "negative", "underspecified"],
+          "description": "positive == rubric 'genuine'; negative == 'benign'; underspecified is STRATUM-3 ONLY (norm not derivable from docs/spec/source) and is excluded from the primary precision denominator."
         },
-        "rationale": {
-          "type": "string",
-          "description": "Why this label holds. For negatives, state the benign mechanism (e.g. designed fallback, optional dependency, eventual consistency) per the rubric."
-        },
-        "source": {
-          "type": "string",
-          "enum": ["by_construction", "replicated", "vendor", "adjudicated", "natural"],
-          "description": "How the label is grounded: by_construction (we injected it), replicated (TrainTicket F-corpus), vendor (OTel-Demo fault flag), adjudicated (human-rated, stratum 3), natural (documented designed-degradation path)."
-        }
+        "rationale": { "type": "string", "description": "Observation (from the case's presented state, admissible) + the NORM (from docs/spec/source only) per rubric.md. Traces/tool-output are NOT the source of the norm." },
+        "source": { "type": "string", "enum": ["by_construction", "replicated", "vendor", "adjudicated", "natural"] },
+        "version": { "type": "integer", "description": "label-version; bound to sut.image_digest." },
+        "doc_citation": { "type": ["string", "null"], "description": "by-docs labels cite the doc version." }
       }
     },
     "oracle_expectation": {
       "type": "object",
       "additionalProperties": false,
-      "required": [
-        "status_code_oracle",
-        "schema_oracle",
-        "body_marker_oracle",
-        "naive_span_error_oracle",
-        "mist_trace_shape_oracle",
-        "mist_dataintegrity_oracle"
-      ],
+      "description": "Per-oracle EXPECTED verdict. Baseline columns are deterministic by construction; mist_* columns are TARGETS measured at eval (never ground truth). body_marker_oracle flags iff oracle_eval.ack_content_visibility != success-shaped-clean.",
+      "required": ["status_code_oracle", "schema_oracle", "body_marker_oracle", "naive_span_error_oracle", "tracetest_presence_oracle", "mist_readback_oracle", "mist_trace_shape_oracle"],
       "properties": {
         "status_code_oracle": { "$ref": "#/$defs/verdict" },
         "schema_oracle": { "$ref": "#/$defs/verdict" },
         "body_marker_oracle": { "$ref": "#/$defs/verdict" },
         "naive_span_error_oracle": { "$ref": "#/$defs/verdict" },
-        "mist_trace_shape_oracle": { "$ref": "#/$defs/verdict" },
-        "mist_dataintegrity_oracle": { "$ref": "#/$defs/verdict" }
+        "tracetest_presence_oracle": { "$ref": "#/$defs/verdict" },
+        "mist_readback_oracle": { "$ref": "#/$defs/verdict" },
+        "mist_trace_shape_oracle": { "$ref": "#/$defs/verdict" }
       }
     },
     "provenance": {
@@ -153,42 +206,51 @@
       "additionalProperties": false,
       "required": ["notes"],
       "properties": {
-        "control_trace": { "type": ["string", "null"], "description": "Path to the control-run trace (fault OFF). null until captured." },
-        "fault_trace": { "type": ["string", "null"], "description": "Path to the fault-run trace (fault ON). null until captured." },
-        "readback_response": { "type": ["string", "null"], "description": "Path to the recorded read-back GET response. null until captured." },
+        "control_trace": { "type": ["string", "null"] },
+        "fault_trace": { "type": ["string", "null"] },
+        "readback_response": { "type": ["string", "null"] },
         "notes": { "type": "string" }
+      }
+    },
+    "license": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "case_code": { "type": "string" },
+        "case_data": { "type": "string" },
+        "upstream_sut": { "type": "string" },
+        "sources": { "type": "array", "items": { "type": "string" } }
       }
     },
     "adjudication": {
       "type": ["object", "null"],
       "additionalProperties": false,
-      "description": "Stratum-3 only: human-rater metadata. null for strata 1-2.",
-      "required": ["raters", "cohen_kappa", "rubric_version"],
+      "description": "Stratum-3 only. null for strata 1-2.",
+      "required": ["raters", "kappa", "rubric_version"],
       "properties": {
         "raters": { "type": "integer", "minimum": 2 },
-        "cohen_kappa": { "type": "number", "minimum": -1, "maximum": 1 },
-        "adjudicator": { "type": "string", "description": "Third rater who resolved disagreement, if any." },
+        "kappa": { "type": "number", "minimum": -1, "maximum": 1, "description": "S3-only kappa is the PRIMARY reliability statistic (R7)." },
+        "adjudicator": { "type": "string" },
         "rubric_version": { "type": "string" }
       }
     }
   },
   "allOf": [
     {
-      "if": {
-        "properties": { "fault_class": { "enum": ["acknowledged_lost_write", "missing_compensation"] } }
-      },
-      "then": {
-        "properties": { "target": { "required": ["entry_endpoint", "dependency", "readback_endpoint"] } }
-      }
+      "if": { "properties": { "fault_class": { "enum": ["acknowledged_lost_write", "missing_compensation"] } } },
+      "then": { "properties": { "target": { "properties": { "readback": { "properties": { "modality": { "not": { "const": "none-durable" } } } } } } } }
     },
     {
-      "if": {
-        "properties": { "stratum": { "const": 3 } }
-      },
-      "then": {
-        "required": ["adjudication"],
-        "properties": { "adjudication": { "type": "object" } }
-      }
+      "if": { "properties": { "target": { "properties": { "readback": { "properties": { "modality": { "const": "none-durable" } } } } } } },
+      "then": { "properties": { "oracle_expectation": { "properties": { "mist_readback_oracle": { "const": "not_applicable" } } } } }
+    },
+    {
+      "if": { "properties": { "ground_truth": { "properties": { "label": { "const": "underspecified" } } } } },
+      "then": { "properties": { "stratum": { "const": 3 } } }
+    },
+    {
+      "if": { "properties": { "stratum": { "const": 3 } } },
+      "then": { "required": ["adjudication"], "properties": { "adjudication": { "type": "object" } } }
     }
   ],
   "$defs": {
@@ -204,8 +266,7 @@
     },
     "verdict": {
       "type": "string",
-      "enum": ["flag", "no_flag", "not_applicable"],
-      "description": "Expected oracle output on this case. flag = reports a fault; no_flag = reports clean; not_applicable = oracle does not run here."
+      "enum": ["flag", "no_flag", "not_applicable"]
     }
   }
 }
