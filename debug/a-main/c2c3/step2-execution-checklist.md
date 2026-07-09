@@ -63,8 +63,11 @@ Sources consolidated: plan v2 §5, `c2-freeze.md` rev 2, `e-sut-applicability-ma
         edits; README rewrite; validator re-green). Deploy pins = codewisdom 1.0.0 + fork inside-payment
         digest 81186b71 (branch MIST-trainticket). **REPORT: the corpus is 6 pos / 5 neg, a defensible
         PILOT; the FP/TP pair + breadth + S3 are the pre-registered scale plan (README §8, need live deploys).**
-        REMAINDER: elig pair (tt-elig-genuine/benign) → the SCREENING instrument (§11), authored OUTSIDE the
-        measurement corpus (schema pattern now review-cleared).
+        ELIG SCREEN cases DONE (2026-07-09): `benchmark/eligibility/tt-elig-{genuine,benign}.json` (rev-2,
+        captured, OUTSIDE the measurement corpus, disjoint-by-id) — schema-valid + B4-render verified
+        end-to-end (no leak; 5 B4 self-tests green; probe labels neutralized). §9 eligibility instrument =
+        renderable. NEXT (no decision): the pre-registered SCALE-PLAN captures (FP/TP pair + consume-span,
+        breadth fork-builds, idempotent-no-op control, S3) — need live deploys; and step-2 SUT deploys.
 ☑ 1.95.3 rater-materials 3-cold-review **DONE** (rev 3, `REVIEW-RATER-RECONCILIATION.md`, commit
         3aae75a). IRB/exemption filing + compensation (U1/U2) = USER (arranging). RATERS START only at
         the step-5 corpus gate — by construction, matching the recruitment lead.

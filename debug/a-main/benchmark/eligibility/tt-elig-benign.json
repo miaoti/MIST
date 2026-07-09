@@ -1,0 +1,82 @@
+{
+  "case_id": "tt-elig-benign",
+  "schema_version": "2.0.0",
+  "stratum": 2,
+  "capture_status": "captured",
+  "fault_class": "acknowledged_lost_write",
+  "sut": {
+    "name": "trainticket",
+    "repo": "github.com/miaoti/train-ticket-injection",
+    "branch": "MIST-trainticket",
+    "commit": "a1767ab3",
+    "image_digest": "sha256:ac8cf32a0053d453c4a02b6a5293473d483d6aa0c62a7d7c4b90258999ed529f",
+    "deploy": "kind cluster 'mist', ns trainticket; ts-contacts-service = base codewisdom/ts-contacts-service:1.0.0. No fault; the trigger is a duplicate create.",
+    "replay_script": "debug/a-main/benchmark/b4/capture-specs/tt-benign-contacts-dedupe.yaml (elig instance)",
+    "health_precondition": null
+  },
+  "target": {
+    "entry_endpoint": { "method": "POST", "path": "/api/v1/contactservice/contacts", "service": "ts-contacts-service" },
+    "dependency": { "service": "ts-contacts-service", "kind": "persistence" },
+    "readback": {
+      "modality": "api-get",
+      "locator": "GET /api/v1/contactservice/contacts/account/{accountId} [membership by business key accountId+documentNumber]",
+      "expect_without_fault": "count-delta-positive",
+      "expect_with_fault": "count-delta-zero",
+      "mist_bindable": true
+    }
+  },
+  "fault": {
+    "mechanism": "none",
+    "injection_method": "natural",
+    "config": { "note": "No fault. Trigger = a DUPLICATE create (same accountId+documentNumber); the unmodified SUT's dedupe path soft-rejects the second create with status:0." },
+    "injected_by": "",
+    "target_service": "ts-contacts-service",
+    "provenance_class": "by-docs"
+  },
+  "stimulus": {
+    "script": "debug/a-main/benchmark/b4/capture-specs/tt-benign-contacts-dedupe.yaml",
+    "write_path": true,
+    "workload_class": "authored-scenario",
+    "workload_variant": "duplicate-create (identical accountId+documentNumber; second call is the case)"
+  },
+  "oracle_eval": {
+    "ack_content_visibility": "status-field-tells",
+    "trace_visibility": "trace-uninstrumented",
+    "write_shape": "whole",
+    "oracle_mode": "paired",
+    "config_provenance": {
+      "mist_commit": "7d69de9",
+      "mist_authoring": { "tier": "hand-written", "minutes": 0 }
+    },
+    "comparator_configs": []
+  },
+  "ground_truth": {
+    "label": "negative",
+    "rationale": "CLEAR BENIGN (unambiguous eligibility-screen case, c3-rater-materials §9). The FIRST create of a contact succeeds (201 {status:1,msg:\"Create contacts success\"}). A SECOND, identical create (same accountId+documentNumber) returns HTTP 201 with body {status:0,msg:\"Contacts already exists\"} and by design persists nothing new; the read-back shows exactly ONE contact (no duplicate). The write was correctly REJECTED (the body says status:0), not silently lost -- intended duplicate-rejection business behaviour. A microservice-literate rater applying the rubric must label this benign (the body explicitly signals non-acceptance).",
+    "source": "natural",
+    "version": 1,
+    "doc_citation": "prep/sut-fault-injection-capability.md section 9 (ACCEPT_THEN_DROP_DISCLOSURE)"
+  },
+  "oracle_expectation": {
+    "status_code_oracle": "no_flag",
+    "schema_oracle": "no_flag",
+    "body_marker_oracle": "flag",
+    "naive_span_error_oracle": "not_applicable",
+    "tracetest_presence_oracle": "not_applicable",
+    "mist_readback_oracle": "no_flag",
+    "mist_trace_shape_oracle": "not_applicable"
+  },
+  "provenance": {
+    "control_trace": null,
+    "fault_trace": null,
+    "readback_response": "debug/a-main/benchmark/b4/captures/tt-elig-benign/sidecar.json",
+    "notes": "ELIGIBILITY SCREEN case (c3-rater-materials §9) -- the CLEAR-BENIGN half. NOT a measurement-corpus case: outside benchmark/cases/, administered ONCE at assignment, DISJOINT-by-id from the §6 calibration cases and all S3/M-yield cases (cannot bias kappa or the measurement). Live-captured: 1st create 201 {1,\"Create contacts success\"}; 2nd identical create 201 {0,\"Contacts already exists\"}; read-back = exactly one durable contact. Same dedupe FAMILY as the measurement case TT-contacts-dedupe-benign-001 but a DISTINCT instance (disjoint id). B4 strips label/oracle_expectation for the rater view; these fields are the grading key. Pass = the rater labels this benign. The body_marker_oracle would FLAG the status:0 (a WRONG verdict on this benign rejection), which is exactly the discrimination the rubric asks the rater to make correctly. B4-render verified end-to-end (no leak). Sidecar hygiene: the observation `probe` LABEL was neutralized ('dedupe read-back - exactly one contact expected' -> 'read-back') to remove an outcome hint; only the annotation changed, never the observed status/body/timings."
+  },
+  "license": {
+    "case_code": "Apache-2.0",
+    "case_data": "CC-BY-4.0",
+    "upstream_sut": "Apache-2.0",
+    "sources": ["ts-contacts-service ContactsServiceImpl.create (dedupe branch)"]
+  },
+  "adjudication": null
+}

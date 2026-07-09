@@ -1,0 +1,83 @@
+{
+  "case_id": "tt-elig-genuine",
+  "schema_version": "2.0.0",
+  "stratum": 1,
+  "capture_status": "captured",
+  "fault_class": "acknowledged_lost_write",
+  "sut": {
+    "name": "trainticket",
+    "repo": "github.com/miaoti/train-ticket-injection",
+    "branch": "MIST-trainticket",
+    "commit": "a1767ab3",
+    "image_digest": "sha256:81186b71c1e4a3be56a3f6f8670d45ccfc04f68956e864cced27920ac1bf50d4",
+    "deploy": "kind cluster 'mist', ns trainticket; codewisdom/*:1.0.0 + fork ts-inside-payment-service:1.0.5 (drawbackFaultMode=fabricatedack)",
+    "replay_script": "debug/a-main/benchmark/b4/capture-specs/tt-cancel-refund.yaml (elig instance)",
+    "health_precondition": null
+  },
+  "target": {
+    "entry_endpoint": { "method": "GET", "path": "/api/v1/cancelservice/cancel/{orderId}/{loginId}", "service": "ts-cancel-service" },
+    "dependency": { "service": "ts-inside-payment-service", "kind": "downstream_service" },
+    "readback": {
+      "modality": "api-get",
+      "locator": "GET /api/v1/inside_pay_service/inside_payment/account [row userId==buyer; value=balance]",
+      "expect_without_fault": "count-delta-positive",
+      "expect_with_fault": "count-delta-zero",
+      "mist_bindable": true
+    }
+  },
+  "fault": {
+    "mechanism": "flag",
+    "injection_method": "sut_injector",
+    "config": { "drawbackFaultMode": "fabricatedack" },
+    "injected_by": "runtime toggle (admin bearer)",
+    "target_service": "ts-inside-payment-service",
+    "provenance_class": "by-injection"
+  },
+  "negative_control": { "present": false, "replay_script": null },
+  "stimulus": {
+    "script": "debug/a-main/benchmark/b4/capture-specs/tt-cancel-refund.yaml",
+    "write_path": true,
+    "workload_class": "authored-scenario",
+    "workload_variant": null
+  },
+  "oracle_eval": {
+    "ack_content_visibility": "success-shaped-clean",
+    "trace_visibility": "trace-uninstrumented",
+    "write_shape": "whole",
+    "oracle_mode": "paired",
+    "config_provenance": {
+      "mist_commit": "7d69de9",
+      "mist_authoring": { "tier": "hand-written", "minutes": 0 }
+    },
+    "comparator_configs": []
+  },
+  "ground_truth": {
+    "label": "positive",
+    "rationale": "CLEAR GENUINE (unambiguous eligibility-screen case, c3-rater-materials §9). A paid order is cancelled: GET cancel returns HTTP 200 {status:1,msg:\"Success.\"} (a clean success ack, no failure marker). Per the SUT contract a cancel of a paid advance order must refund the buyer (drawback raises the inside-payment balance). The durable read-back (GET /inside_payment/account) shows the buyer's balance UNCHANGED at 50.00 -- the refund never landed. Acked success, durable effect absent: a textbook acknowledged-but-lost write. A microservice-literate rater applying the rubric to source/docs must label this genuine.",
+    "source": "by_construction",
+    "version": 1,
+    "doc_citation": null
+  },
+  "oracle_expectation": {
+    "status_code_oracle": "no_flag",
+    "schema_oracle": "no_flag",
+    "body_marker_oracle": "no_flag",
+    "naive_span_error_oracle": "not_applicable",
+    "tracetest_presence_oracle": "not_applicable",
+    "mist_readback_oracle": "flag",
+    "mist_trace_shape_oracle": "not_applicable"
+  },
+  "provenance": {
+    "control_trace": null,
+    "fault_trace": null,
+    "readback_response": "debug/a-main/benchmark/b4/captures/tt-elig-genuine/sidecar.json",
+    "notes": "ELIGIBILITY SCREEN case (c3-rater-materials §9) -- the CLEAR-GENUINE half. NOT a measurement-corpus case: it lives outside benchmark/cases/, is administered ONCE at assignment (after the §11 blindness screen), and is DISJOINT-by-id from the §6 calibration cases and all S3/M-yield cases, so it cannot bias S3-only kappa or the measurement. Live-captured: cancel HTTP 200 {1,\"Success.\"}, buyer /account balance 50.00 (refund lost). Same fabricated-ack fault FAMILY as the measurement case TT-cancel-refund-fabricatedack-001 but a DISTINCT instance (different order/user, disjoint id); raters never rate the measurement corpus (labels are by-construction), so there is no measurement contamination. B4 strips label/fault/oracle_expectation for the rater view; those fields here are the screen's grading key. Pass = the rater labels this genuine. B4-render verified end-to-end (no label/fault/tool leak). Sidecar hygiene: the observation `probe` LABEL was neutralized ('refund read-back' -> 'read-back') to remove a scenario hint; only the annotation changed, never the observed status/body/timings."
+  },
+  "license": {
+    "case_code": "Apache-2.0",
+    "case_data": "CC-BY-4.0",
+    "upstream_sut": "Apache-2.0",
+    "sources": ["ts-cancel-service CancelServiceImpl.cancelOrder", "ts-inside-payment-service InsidePaymentServiceImpl.drawBack (fabricatedack branch)"]
+  },
+  "adjudication": null
+}
