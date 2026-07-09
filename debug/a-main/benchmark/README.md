@@ -163,5 +163,7 @@ the 6 seed cases are ported field-by-field at step-2 population. Field deltas:
 
 Unchanged: `case_id`, `stratum` (int 1/2/3), `capture_status`, `fault_class`, `target.entry_endpoint`,
 `target.dependency` (+ `broker` kind added), `provenance`. Validation snippet (README §6) unchanged; run
-it after the port to confirm all cases PASS rev 2. Migration is a step-2 task ("promote the ~10 reviewed
-existing assets" — plan §2.4-2); the seed cases FAIL rev 2 until then, by design.
+it after the port to confirm all cases PASS rev 2. Migration is single-homed at checklist §1.95 (the corpus-factory NOW track — c3-case-corpus-plan.md
+REV 2/M2 restored the governing plan's promote-before-deploy ordering); the seed cases FAIL rev 2
+until migrated + short-capture-run at the pinned MIST commit (capture_status specified → captured),
+by design.
