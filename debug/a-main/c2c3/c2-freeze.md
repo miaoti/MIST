@@ -88,11 +88,15 @@ oracle_eval:
   ack_content_visibility: success-shaped-clean | sentinel-in-body | status-field-tells   # R8/C-A2: does the 2xx ack itself carry a machine-readable tell?
   trace_visibility: error-span-visible | span-presence-visible | trace-invisible-by-construction | trace-uninstrumented   # B-M5: split by-construction vs tooling-contingent
   write_shape: whole | partial-aggregate | transition          # B-M7: parent-landed/child-lost etc.
+  oracle_mode: observe | paired          # U7 amendment: which MIST mode produced this case's verdict (observe = product single-leg; paired = eval harness)
   config_provenance:                     # +field 3
     mist_properties: <path>
     triples: <path|null>
     timeout_caps: <values>
-    mist_commit: <sha>                   # +field 3b: ONE frozen study-wide MIST commit (pin criteria in §6 note)
+    mist_commit: <sha>                   # +field 3b: ONE frozen study-wide MIST commit — PINNED at the END of the 1.9 UX wave (criteria incl. W0–W6; QuiescenceGate→verdict mapping frozen at this pin; promoted G1/G3 seeds re-recorded at it)
+    mist_authoring:                      # U7 amendment: OUR side of the authoring-cost symmetry (unit = minutes per bound endpoint, same as comparator authoring_cost)
+      tier: proposed-accepted | hand-written | expert
+      minutes: <int>
   oracle_expectation:                    # +adopted from scaffold (R2): per-oracle EXPECTED verdict → precision/recall computable directly
     status_code_oracle:    flag | no_flag | not_applicable    # baseline columns = deterministic by construction
     schema_oracle:         flag | no_flag | not_applicable
@@ -252,3 +256,4 @@ FROZEN ON COMMIT. Every post-freeze change = a dated row.
 | 2026-07-08 | R8: added `ack_content_visibility` + sentinel rule + tell-bearing segregation + tell-free floor | C-A2 — no ack-content axis; trivial body oracle credited | — (new axis) |
 | 2026-07-08 | R3: honest S1/S2 recount on two denominators (distinct-site + case-run); disclosed shortfall branch | A-M7/B-B2 — ≥45 didn't close; survey refuted the "3×7" lineage | old §5 "≥80+wild" single-denominator floor |
 | 2026-07-08 | folded: S3 scoring branch (A-M1/B-M6); included-precision def (A-M2); split `trace_visibility` (B-M5); `write_shape` (B-M7); `authoring_cost` (B-M4); S3-only-κ primary (R7); rubric observation-vs-verdict (R5); m1/m2 invariant fixes | step-1 review MAJ/MIN | rev 1 §2/§3/§4 |
+| 2026-07-08 | **UX-wave amendment (U7, REVIEW-UX-RECONCILIATION):** +`oracle_eval.oracle_mode` (observe\|paired); +`config_provenance.mist_authoring {tier, minutes}` (minutes-per-bound-endpoint = the common symmetry unit with comparator `authoring_cost`); mist_commit pin timing = END of the 1.9 UX wave, criteria include W0–W6, QuiescenceGate→verdict mapping frozen at the pin; promoted G1/G3 seeds re-recorded at the pin; **defect-tier prerequisite disclosed: OBSERVED_COMPLETE_ABSENT requires a trace backend (`jaeger.base.url`) — claim wording "once bound and trace-instrumented"** | UX 3-cold-review (U3/U7/C-A4) | JSON schema updated in lockstep |

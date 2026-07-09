@@ -1,5 +1,52 @@
 # MIST UX design — how the main contribution reaches a normal user (pre-step-2 gate)
 
+## REV 2 (2026-07-08, post 3-cold-review) — AUTHORITATIVE DELTAS
+Reviews: `REVIEW-UX-{A-design,B-completeness,C-adversarial}.md` + `REVIEW-UX-RECONCILIATION.md`
+(U1–U8). Where this section conflicts with the original text below, THIS section governs.
+1. **W0 (new, FIRST): observe-mode session lifecycle** — today `beginRun`/`endRun` are harness-only;
+   in a normal run every hook is a NO-OP (U1). W0 = MistRunner arms a session when
+   `mst.oracle.dataintegrity.enabled=true` (mode `observe`); **parallelism forced to 1 for hooked
+   classes** (beginRun refuses >1; normal default is auto→8) or per-class sessions; a record-access
+   API for the generated check; freshening applies ONLY to positive/happy-path steps (never
+   negative-variant fault params); new property `mst.oracle.dataintegrity.registry` (default = the
+   existing `<conf dir>/target-triples.yaml` convention — today NO key exists).
+2. **Jaeger prerequisite DISCLOSED (U3):** the defect tier (OBSERVED_COMPLETE_ABSENT) requires
+   `jaeger.base.url` — `traceComplete()` returns false without it and absence stays TIMEOUT_ABSENT,
+   so **failOnLost can never fire on an un-traced SUT**. §1's user-input table gains: *trace backend
+   (Jaeger/OTLP) — required for the defect tier; without it MIST reports unconfirmed-persistence
+   only.* Claim wording everywhere: "state-level verdicts **once bound and trace-instrumented**".
+3. **failOnLost ships DEFAULT WARN (U4):** the sentence "the product inherits a calibrated precision
+   story" is DELETED (it contradicted plan §3.2's NOT-inherited rule). Pre-registered policy: the
+   default flips to fail only after the S2-FP calibration at product-default caps passes.
+4. **W1 is INERT in paired sessions (U5):** the emitted end-of-write check runs ONLY when the session
+   kind is observe; paired/eval sessions are byte-equal to today (pinned suites re-run to prove it).
+   Verdict names corrected: `OBSERVED_PRESENT` (not PRESENT); record-level `NOT_APPLICABLE`/error
+   (pair-level NOT_EVALUABLE does not exist at record scope). Defect predicate = acked ∧ error==null ∧
+   OBSERVED_COMPLETE_ABSENT. Fail at end-of-method with the ACKED-BUT-LOST marker; boolean knob only.
+5. **W3 scope narrowed (U8):** propose ONLY collection-shaped read-backs (`extractItems` is
+   collection-only; per-entity `GET /res/{id}` would be a perpetual false LOST). Every accepted
+   proposal is validated by ONE control write at first run (quarantine until it lands). Acceptance
+   rate is reported as descriptive data, never as an evaluated claim (the DoD-circularity fix).
+6. **Expert tier is harness-only TODAY (U6):** the writer never emits `beforeWriteSupplied` (bodyless
+   matched steps are skipped — pinned by DataIntegrityEmissionTest:138-143). Disclosed here; **W6**
+   (writer emission for supplied-isolation triples in observe mode) is the scoped follow-up; the
+   paper prices the tier split via the per-case config-tier field.
+7. **Allure mechanics corrected (A):** MistRunner writes allure-results and does NOT generate the
+   HTML report → categories.json is written into allure-results; categories cannot capture PASSING
+   tests → the TIMEOUT_ABSENT warning tier surfaces via the tag-label + the terminal/
+   FaultDetectionTracker run summary instead; run-level totals go to the terminal summary + JSON.
+8. **Schema mechanization (U7, freeze §6 amendment):** per-case `oracle_mode: observe|paired` +
+   `config_provenance.mist_authoring {tier: proposed-accepted|hand-written|expert, minutes}`; the
+   symmetry unit is minutes-per-bound-endpoint on both MIST and arm-3 sides; G1/G3 promoted seed
+   cases get their verdicts RE-RECORDED at the pinned study commit (historical results stay in the
+   result docs as provenance).
+9. **Demo DoD dependency (B):** the `trainticket` namespace is currently EMPTY — the 1.9.3 demo run
+   requires the TT redeploy scheduled in the checklist FIRST; the demo registry must NOT carry
+   `fault_flag` rows (product demo ≠ eval registry).
+10. **QuiescenceGate→verdict mapping is FROZEN at the 1.9 study-commit pin** (no post-hoc tuning
+    surface under the headline numbers); the MIST study-commit pin moves to the END of the 1.9 wave
+    (criteria include W0–W6).
+
 **Why (user directive 2026-07-08):** everything we benchmark is part of the MIST tool; a normal user
 runs MIST and reads an **Allure report**. Before step 2 we must (a) pin what the user provides vs what
 is automatic, (b) design how the main contribution (acked-but-lost detection) SURFACES, and (c) fix

@@ -140,6 +140,7 @@
           "description": "B-M5: by-construction invisibility (fabricated-ack/normal span) is kept separate from tooling-contingent (un-instrumented, e.g. TeaStore-Kieker-exclude)."
         },
         "write_shape": { "type": "string", "enum": ["whole", "partial-aggregate", "transition"], "description": "B-M7: parent-landed/child-lost etc." },
+        "oracle_mode": { "type": "string", "enum": ["observe", "paired"], "description": "U7: which MIST mode produced this case's verdict. observe = product single-leg; paired = eval harness." },
         "config_provenance": {
           "type": "object",
           "additionalProperties": false,
@@ -147,7 +148,16 @@
             "mist_properties": { "type": "string" },
             "triples": { "type": ["string", "null"] },
             "timeout_caps": { "type": "string" },
-            "mist_commit": { "type": "string", "description": "ONE frozen study-wide commit; IDENTICAL across every case." }
+            "mist_commit": { "type": "string", "description": "ONE frozen study-wide commit; IDENTICAL across every case. Pinned at the END of the 1.9 UX wave (criteria incl. W0-W6; QuiescenceGate->verdict mapping frozen at the pin)." },
+            "mist_authoring": {
+              "type": "object",
+              "additionalProperties": false,
+              "description": "U7: MIST's side of the authoring-cost symmetry. Unit = minutes per bound endpoint (same unit as comparator authoring_cost).",
+              "properties": {
+                "tier": { "type": "string", "enum": ["proposed-accepted", "hand-written", "expert"] },
+                "minutes": { "type": "integer" }
+              }
+            }
           }
         },
         "comparator_configs": {
