@@ -9,7 +9,7 @@
 
 > **Read this first — what the pilot IS and is NOT (REVIEW-CORPUS-RECONCILIATION.md, 3-cold-review):**
 > The populated corpus is a **seed/pilot + a pre-registered scale plan**, NOT a completed benchmark. It is
-> **6 positives / 6 negatives** (report it that way — never a bare "S1 count"). Of the 6 positives,
+> **6 positives / 7 negatives** (report it that way — never a bare "S1 count"). Of the 6 positives,
 > **4 are captured *discriminating* positives** across 3 write-path services: 2 fabricated-ack fork flags
 > (`TT-cancel-refund-fabricatedack`, `TT-createaccount-agreement`, on `ts-inside-payment-service`) + 2
 > skipped-cross-service-persist flags captured 2026-07-10 (`TT-adminroute-lostwrite`,
@@ -38,7 +38,7 @@ benchmark/
     fault-case.schema.json          JSON Schema (draft 2020-12) for ONE labeled case — rev 2
     validate_cases.py               validator: cases/*.json vs the schema (exit 0 iff all pass)
     rubric.md                       v0.1.0 rubric (SUPERSEDED by c2-freeze §3 + c3-rater-materials §3)
-  cases/                            12 cases, all rev-2-valid (6 positive / 6 negative)
+  cases/                            13 cases, all rev-2-valid (6 positive / 7 negative)
   eligibility/                      2 rater-screen cases (§9 instrument; OUTSIDE the measurement corpus)
   b4/                               blind-label harness + capture specs + captured sidecars
 ```
@@ -55,6 +55,7 @@ benchmark/
 | `TT-adminbasic-contacts-lostwrite` | 1 | positive | **captured** | breadth on a 2nd service (collection read-back); pod-log corroborated (`LOST_WRITE_FAULT` line matches the submitted id) |
 | `TT-adminbasic-contacts-control` | 1 | negative | captured | **same-binary twin** of the adminbasic positive (identical fork digest, env flag off → persists); isolates the flag as the only variable |
 | `TT-contacts-dedupe-benign` | 2 | negative | captured | benign trap for the **ack rule**: 2xx + `status:0` soft-reject; `body_marker` wrongly flags |
+| `TT-contacts-noop-modify-benign` | 2 | negative | captured | benign trap for the **read-back oracle itself**: idempotent no-op PUT acks `{1,"Modify success"}` success-shaped-CLEAN (no tell) + zero durable delta by design; FPs any "acked write ⇒ durable delta" rule (closes R6) |
 | `bookinfo-ratings-benign` | 2 | negative | specified | benign trap for the **trace oracles** (FP half of the precision pair) |
 | `sockshop-shipping-swallowed-enqueue` | 1 | positive | specified | natural masked failure (TP half of the precision pair) |
 
@@ -117,14 +118,15 @@ Verdict values: `flag`, `no_flag`, `not_applicable`.
 3. `python3 debug/a-main/benchmark/schema/validate_cases.py` (Python `jsonschema` ≥ 4, draft 2020-12).
 
 ## 7. Honest caveats
-- **Construct bias (R6).** The captured discriminating positives are all **synthetic fabricated-ack fork
-  flags** — faults *shaped* to be invisible to everything but a read-back. They **bound** the read-back
-  oracle's value; they are not evidence of prevalence. The realistic positives (sockshop natural swallow;
-  cancel-natural) are respectively `specified`/unrun and tell-bearing/segregated. **Missing:** a benign case
-  that stresses the read-back oracle — a success-shaped-clean 2xx that *legitimately* does not persist
-  (idempotent / no-op / conditional). TrainTicket has no such representative (its only by-design drop signals
-  `status:0`); the scale plan borrows one from another SUT. Precision must be reported per-oracle **including
-  MIST's read-back**, not only against the baselines.
+- **Construct bias (R6).** The captured discriminating positives are all **synthetic fork flags** (2
+  fabricated-ack + 2 skipped-cross-service-persist) — faults *shaped* to be visible primarily to a read-back.
+  They **bound** the read-back oracle's value; they are not evidence of prevalence. The realistic positives
+  (sockshop natural swallow; cancel-natural) are respectively `specified`/unrun and tell-bearing/segregated.
+  The formerly-missing benign case that stresses the read-back oracle itself is **CLOSED 2026-07-10**:
+  `TT-contacts-noop-modify-benign-001` — an idempotent no-op modify acks success-shaped-CLEAN with
+  legitimately-zero durable delta, found ON TrainTicket (no borrowed SUT; the earlier "TT has no such
+  representative" claim applied to *creates* — dedupe signals `status:0` — not to idempotent *modifies*).
+  Precision must be reported per-oracle **including MIST's read-back**, not only against the baselines.
 - Strata 1–2 labels are by construction / documented design — legitimate ground truth (RCAEval, Nezha do the
   same), but **not** wild developer-confirmed bugs. The "real bug assertion-tools miss" claim requires the
   S3 wild stratum + Gate 3; it is not made by this pilot alone.
@@ -146,7 +148,8 @@ captures (need live deploys; none is a blocker to the honest pilot):**
   (breadth wave: fork images e5af2936/1c9913ea from the clean a1767ab3 tree; captures triple-corroborated;
   deployments restored to base 1.0.0; runbook rule added: probe-first after any rollout — nacos/ribbon
   routes to terminating pods for tens of seconds).
-- An **idempotent-no-op benign read-back control** (borrowed SUT) → test the read-back oracle's one FP mode.
+- ~~An **idempotent-no-op benign read-back control**~~ — **DONE 2026-07-10** on TT itself
+  (`TT-contacts-noop-modify-benign-001`; no borrowed SUT needed).
 - The **S3 wild-adjudicated stratum** (the C3 rater study).
 
 ## 9. Migration map — schema v0.1.0 → rev 2 — **DONE (2026-07-09)**

@@ -72,9 +72,12 @@ Sources consolidated: plan v2 §5, `c2-freeze.md` rev 2, `e-sut-applicability-ma
         R9). Corpus = 12 cases, 6 pos / 6 neg, captured discriminating positives 2→4 (2 fabricated-ack +
         2 skipped-persist across 3 services). Pod-log triple corroboration on adminbasic. RUNBOOK RULE:
         probe-first after any rollout (nacos/ribbon serves terminating pods; first adminbasic attempt
-        discarded + re-captured fresh).** NEXT (no decision): traced-capture wave design (N-vs-0 row +
-        FP/TP pair + consume-span — needs OTel instrumentation plan); idempotent-no-op control (borrowed
-        SUT); step-2 SUT deploys (TeaStore/OTel-Demo; tenancy window = ASK USER before TT-down).
+        discarded + re-captured fresh).** **NOOP-MODIFY BENIGN CAPTURED (2026-07-10): R6's missing
+        read-back-stress control closed ON TT (idempotent no-op PUT, success-shaped-clean, zero delta;
+        base image, no rollout). Corpus = 13 cases, 6 pos / 7 neg (3 S2 traps).** NEXT (no decision):
+        traced-capture wave design (N-vs-0 row + FP/TP pair + consume-span — needs OTel instrumentation
+        plan → its own plan + review); step-2 SUT deploys (TeaStore/OTel-Demo; tenancy window = ASK USER
+        before TT-down).
 ☑ 1.95.3 rater-materials 3-cold-review **DONE** (rev 3, `REVIEW-RATER-RECONCILIATION.md`, commit
         3aae75a). IRB/exemption filing + compensation (U1/U2) = USER (arranging). RATERS START only at
         the step-5 corpus gate — by construction, matching the recruitment lead.

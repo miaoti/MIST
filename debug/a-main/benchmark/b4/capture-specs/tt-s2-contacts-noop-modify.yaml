@@ -1,0 +1,32 @@
+# S2 benign — idempotent NO-OP modify (NATURAL, upstream base; no fork, no rollout). PUT an existing
+# contact with IDENTICAL values: ContactsServiceImpl.modify finds it, overwrites same-with-same
+# (contactsRepository.save) and acks {1,"Modify success",<contact>} — a 2xx success-shaped write whose
+# durable state is LEGITIMATELY unchanged. The benign trap for delta-expecting read-back oracles
+# (surface-matches acked-but-lost: acked write + zero durable delta). Closes REVIEW-CORPUS R6's
+# missing idempotent-no-op read-back control WITHOUT borrowing a second SUT.
+case_id: tt-s2-contacts-noop-modify
+sut: {name: trainticket, version_ref: "codewisdom 1.0.0"}
+base_url: http://localhost:32677
+gen_user: true
+steps:
+  - method: POST
+    path: /api/v1/userservice/users/register
+    redact: true
+    payload: '{"userName":"{user}","password":"{pw}","gender":1,"documentType":1,"documentNum":"{docnum}","email":"{user}@corpus.test"}'
+  - method: POST
+    path: /api/v1/users/login
+    redact: true
+    payload: '{"username":"{user}","password":"{pw}"}'
+    capture: {token: data.token, userId: data.userId}
+    set_session: token
+  - method: POST
+    path: /api/v1/contactservice/contacts
+    payload: '{"accountId":"{userId}","name":"NoOp Contact","documentType":1,"documentNumber":"NM20260710","phoneNumber":"13900000000"}'
+    capture: {cid: data.id}
+  - method: PUT
+    path: /api/v1/contactservice/contacts
+    payload: '{"id":"{cid}","accountId":"{userId}","name":"NoOp Contact","documentType":1,"documentNumber":"NM20260710","phoneNumber":"13900000000"}'
+observations:
+  - probe: "GET the acting user's contacts (durable read-back)"
+    path: '/api/v1/contactservice/contacts/account/{userId}'
+    delay_ms: 1500

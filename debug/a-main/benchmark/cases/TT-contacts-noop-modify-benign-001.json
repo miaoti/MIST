@@ -1,0 +1,82 @@
+{
+  "case_id": "TT-contacts-noop-modify-benign-001",
+  "schema_version": "2.0.0",
+  "stratum": 2,
+  "capture_status": "captured",
+  "fault_class": "acknowledged_lost_write",
+  "sut": {
+    "name": "trainticket",
+    "repo": "github.com/miaoti/train-ticket-injection",
+    "branch": "MIST-trainticket",
+    "commit": "a1767ab3",
+    "image_digest": "sha256:ac8cf32a0053d453c4a02b6a5293473d483d6aa0c62a7d7c4b90258999ed529f",
+    "deploy": "kind cluster 'mist', ns trainticket; ts-contacts-service = UPSTREAM base codewisdom/ts-contacts-service:1.0.0 (no fork, no rollout, no fault flag anywhere).",
+    "replay_script": "debug/a-main/benchmark/b4/capture-specs/tt-s2-contacts-noop-modify.yaml",
+    "health_precondition": null
+  },
+  "target": {
+    "entry_endpoint": { "method": "PUT", "path": "/api/v1/contactservice/contacts", "service": "ts-contacts-service" },
+    "dependency": { "service": "ts-contacts-service", "kind": "persistence" },
+    "readback": {
+      "modality": "api-get",
+      "locator": "GET /api/v1/contactservice/contacts/account/{accountId} [the acting user's contact row: present, values unchanged]",
+      "expect_without_fault": "present",
+      "expect_with_fault": "absent",
+      "mist_bindable": true
+    }
+  },
+  "fault": {
+    "mechanism": "none",
+    "injection_method": "natural",
+    "config": { "note": "No fault. The trigger is an IDEMPOTENT NO-OP MODIFY: PUT an existing contact with values IDENTICAL to its current state. ContactsServiceImpl.modify finds the row, overwrites same-with-same (contactsRepository.save) and acks {1,\"Modify success\",<contact>}." },
+    "injected_by": "",
+    "target_service": "ts-contacts-service",
+    "provenance_class": "by-docs"
+  },
+  "stimulus": {
+    "script": "debug/a-main/benchmark/b4/capture-specs/tt-s2-contacts-noop-modify.yaml",
+    "write_path": true,
+    "workload_class": "authored-scenario",
+    "workload_variant": "idempotent no-op modify (PUT identical values on an existing row; the PUT is the case)"
+  },
+  "oracle_eval": {
+    "ack_content_visibility": "success-shaped-clean",
+    "trace_visibility": "trace-uninstrumented",
+    "write_shape": "whole",
+    "oracle_mode": "paired",
+    "config_provenance": {
+      "mist_commit": "7d69de9",
+      "mist_authoring": { "tier": "hand-written", "minutes": 0 }
+    },
+    "comparator_configs": []
+  },
+  "ground_truth": {
+    "label": "negative",
+    "rationale": "Designed idempotent no-op, not a lost write: the PUT acks HTTP 200 {status:1,msg:\"Modify success\"} with NO failure marker, and the durable state is LEGITIMATELY unchanged because the submitted values equal the current values (ContactsServiceImpl.modify overwrites same-with-same). The surface phenomenon matches acked-but-lost for any DELTA-expecting oracle (2xx-acked write + zero durable delta), but nothing was lost - there was nothing to change. The norm (source: modify saves the submitted fields over the found row and acks success regardless of whether values differ) makes the unchanged state correct-by-design.",
+    "source": "natural",
+    "version": 1,
+    "doc_citation": "ts-contacts-service ContactsServiceImpl.modify (lines 89-105: findContactsById -> set* -> contactsRepository.save -> {1,\"Modify success\"})"
+  },
+  "oracle_expectation": {
+    "status_code_oracle": "no_flag",
+    "schema_oracle": "no_flag",
+    "body_marker_oracle": "no_flag",
+    "naive_span_error_oracle": "not_applicable",
+    "tracetest_presence_oracle": "not_applicable",
+    "mist_readback_oracle": "no_flag",
+    "mist_trace_shape_oracle": "not_applicable"
+  },
+  "provenance": {
+    "control_trace": null,
+    "fault_trace": null,
+    "readback_response": "debug/a-main/benchmark/b4/captures/tt-s2-contacts-noop-modify/sidecar.json",
+    "notes": "LIVE-CAPTURED 2026-07-10 on the UNTOUCHED base deploy (no fork, no rollout): create 201 -> PUT identical values 200 {1,\"Modify success\",<contact>} -> read-back shows the one row, values unchanged. CLOSES REVIEW-CORPUS R6's missing control: the benign case that stresses the READ-BACK oracle itself - a success-shaped-clean 2xx write that legitimately does not change durable state. Unlike contacts-dedupe (status:0 tell -> the ack rule excludes it), this ack carries NO tell at all (success-shaped-clean, body_marker=no_flag) -> the trap discriminates on WRITE-EFFECT SEMANTICS, not ack content: an oracle that treats 'acked write + zero durable delta' as LOST must FP here; an oracle keyed on membership/agreement with the submitted state (MIST's read-back: the submitted row IS present with the submitted values) correctly stays quiet -> mist_readback=no_flag. Sub-oracle nuance (disclosed): MIST's value-delta MODE (value differs from the leg's own baseline) also stays quiet (no movement expected or observed); the FP vector is any naive differential 'state must CHANGE after an acked write' rule - which is why the corpus needs this case. AS-DEPLOYED (rev-2.1 R2): trace-uninstrumented + single-service in-process persistence -> trace oracles not_applicable. S2-by-docs: the doc_citation is the SUT's own modify source; no injected anything."
+  },
+  "license": {
+    "case_code": "Apache-2.0",
+    "case_data": "CC-BY-4.0",
+    "upstream_sut": "Apache-2.0",
+    "sources": ["ts-contacts-service ContactsServiceImpl.modify"]
+  },
+  "adjudication": null
+}
