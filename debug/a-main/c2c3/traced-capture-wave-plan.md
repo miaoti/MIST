@@ -1,8 +1,20 @@
-# Traced-capture wave — plan (pre-registered; PENDING ≥3-cold-review before execution)
+# Traced-capture wave — plan REV 2 (3-cold-reviewed: ALL GO-WITH-CHANGES → amended; EXECUTION GO)
 
-Date 2026-07-10. Owner: main_track. Status: **PLAN ONLY — no cluster change until the review wave
-reconciles.** Prereq context: `benchmark/README.md` (13-case pilot), `REVIEW-CORPUS-RECONCILIATION.md`
-(R2/R3/R4), `c2-freeze.md` rev-2.1 (§4 capture_status-keyed evaluability).
+Date 2026-07-10. Owner: main_track. Status: **REV 2 — review wave reconciled
+(`../REVIEW-TRACED-WAVE-RECONCILIATION.md`, reviewers A feasibility / B evidential / C scope-value);
+the §3.5 BINDING PINS below are normative and override any older §3/§4 phrasing they touch.**
+Prereq context: `benchmark/README.md` (13-case pilot), `REVIEW-CORPUS-RECONCILIATION.md` (R2/R3/R4),
+`c2-freeze.md` rev-2.1 (§4 capture_status-keyed evaluability).
+**Relationship to the checklist (T10, pinned): this wave partially discharges 2.5.1 (TT write-path
+javaagents) as a de-risking PILOT; instrumentation is TORN DOWN afterwards (preserves the DoD-passed
+baseline); deliverables consumed by 2.5.1/2.5.2 = the runbook + pinned agent version + committed scoring
+script + the TT row of 2.5.4's trace-coverage table (produced from this wave's actual traces). The
+2.15(b) lean-traced convergence stays a separate later decision. Budget (T4): 2–3 days; stop rule: if
+batch 1 + scoring exceed 2 days, or a canary-class failure recurs on a second service, SHIP BATCH 1
+ALONE (batch 2 folds into 2.5.1 + a freeze-amendment disclosure that the comparator-favoring breadth
+cells remain pre-registered). G1 precedent (T5): JTO+OTel javaagent ran full paired runs on this exact
+TT stack (`gate1-result.md:168`, `gate1-smoke-result.md:39`) — boot risk is verify-not-fear; pin the
+1.x line (1.33.z) + sha256 + the 1.x semconv names (`http.target`/`http.method`/`http.status_code`).**
 
 ## 1. Goal (what this wave EARNS, in freeze terms)
 1. **The N-vs-0 recall row** (freeze §4, flagship): on a *traced* deploy the two fabricated-ack positives
@@ -27,7 +39,7 @@ reconciles.** Prereq context: `benchmark/README.md` (13-case pilot), `REVIEW-COR
 | 3 | TT-createaccount-agreement-001 | fault | same image, createAccountFaultMode=fabricatedack |
 | 4 | TT-createaccount-clean-001 | control | same image, createfaultmode=none |
 | 5 | TT-adminroute-lostwrite-001 | fault | fork admin-route 1.0.5 + env flag=true |
-| 6 | TT-adminroute-control-001 | control | base 1.0.0 (flag path identical) — OPTIONAL re-capture; see D3 |
+| 6 | TT-adminroute-control-001 | control | base 1.0.0 (flag path identical; digest binding preserved) — **REQUIRED** (T1: the traced control is the presence-assertion's baseline — absence on the fault leg is unfalsifiable without a same-deploy leg that PRODUCES the span) |
 | 7 | TT-adminbasic-contacts-lostwrite-001 | fault | fork admin-basic 1.0.5 + env flag=true |
 | 8 | TT-adminbasic-contacts-control-001 | control | same fork image, env flag=false |
 
@@ -53,10 +65,15 @@ ts-contacts-service. Total 7 Java services.
   the JVM and CMD flags win; overriding heap needs `_JAVA_OPTIONS` or leaving heap alone. DECISION: do
   NOT fight the heap; the agent runs fine at 200m heap since agent memory is mostly native/metaspace —
   but WATCH pod restarts; fallback = rebuild the two fork images with the agent baked in + bigger -Xmx).
-- **Trace export per capture**: query the Jaeger HTTP API
-  (`/api/traces?service=<entry-svc>&start=<t0>&end=<t1>&limit=...`) for the capture's time window; store
-  the full trace JSON at `b4/captures/<case>/trace-<leg>.json`; link via `provenance.fault_trace` /
-  `provenance.control_trace` (the schema fields exist and are null today).
+- **Trace export per capture** (CORRECTED, A-F2/F3: the backend is **Jaeger v2.14** with
+  `base_path: /jaeger`, badger storage on an **emptyDir**): query
+  `/jaeger/api/traces?service=<entry-svc>&start=<t0µs>&end=<t1µs>&limit=200` (epoch **microseconds**,
+  explicit limit); **export + verify non-empty IMMEDIATELY after each leg's capture, before touching the
+  cluster again** (an eviction wipes badger); t0/t1 taken with the WSL clock (same VM as the JVMs; skew≈0);
+  trace selection = entry service+operation+window, **exactly-one-match else ERROR**, URL-borne ids as a
+  cross-check where they exist (cancel pair only — admin ids ride in POST bodies). Store
+  `b4/captures/<case>/trace-<leg>.json`; link `provenance.fault_trace`/`control_trace` (positive case
+  gets both, pointing at the twin's export for control_trace; control case gets control_trace).
 - **Oracle scoring on the exported traces** (small script, committed): `naive_span_error` = any
   error-tagged span under a 2xx entry; `tracetest_presence` = the named downstream span
   (per-case selector, e.g. `ts-inside-payment-service POST /drawback` | `ts-route-service persist` |
@@ -67,6 +84,62 @@ ts-contacts-service. Total 7 Java services.
   path for the expected leg behavior before the real capture.
 - **Restore**: remove JAVA_TOOL_OPTIONS/OTEL_* env + volume mounts, restore base images, verify pods
   healthy + key-path 200s. The cluster ends in today's state.
+
+## 3.5 REV-2 BINDING PINS (from the reconciliation; normative)
+- **T6 presence semantics + granularity**: `tracetest_presence` = **existence-only** assertion at
+  **cross-service HTTP-span granularity** (selector = the `target.dependency` service's SERVER span, what
+  a Tracetest user names from the service map); error/status belongs exclusively to `naive_span_error`.
+  Agent runs with **DEFAULT instrumentation — NO `OTEL_INSTRUMENTATION_*_ENABLED=false` suppression**
+  (attestation recorded in each sidecar). **Mandatory measured disclosure** per fabricated-ack case + in
+  the N-vs-0 row: whether the lost write's absence IS visible at DB-span granularity (the agent
+  instruments JDBC/Mongo by default — control leg has the write span, fault leg lacks it) and that a
+  statement-level presence assertion authored at that granularity WOULD catch it. Disclosed, this
+  strengthens the read-back story (black-box equivalent of statement-level assertions).
+- **T7 createaccount presence pinned NOW**: `not_applicable` on BOTH createaccount legs (in-process
+  persistence, no cross-service span at the pinned granularity). Row-N wording (B-m6): "2 fabricated-ack
+  positives, 2 defect sites, 1 service; presence run-and-missed evidence N=1 (cancel)".
+- **T8 scoring script pre-commit**: the script + frozen per-case selector table are COMMITTED BEFORE the
+  first real capture (canary/throwaway traces only for debugging). Selectors: cancel →
+  ts-inside-payment-service server span for POST /drawback; adminroute → ts-route-service server span
+  (persist POST); adminbasic → ts-contacts-service server span (contacts create); createaccount →
+  not_applicable. Error-span def = exported ERROR status, mechanical, scoped to the 7 instrumented
+  services, NO exclusions ever. Record selector authoring minutes (freeze authoring_cost datum).
+  Disclosure: the presence column is scored by this committed script implementing presence SEMANTICS on
+  exported traces — the Tracetest PRODUCT does not run in this wave.
+- **T9 mist_trace_shape**: Branch A attempted first PER LEG with existing vehicles only (no tool-code
+  changes): a bounded mist-cli run at pinned commit 7d69de9 with `jaeger.base.url` bound, where the demo
+  corpus covers the path (adminroute: covered). Legs with no existing vehicle → Branch B: disclosed
+  freeze §6 amendment scoping the N-vs-0 row's "trace oracles" to the comparator columns; the cell keeps
+  a prose note "traced-but-not-run; deferred to <named wave>" (distinct from R2's no-input
+  not_applicable). Symmetry pre-empt: `mist_readback` is fillable without running MIST because the typed
+  readback contract (R4) is construction-deterministic; `mist_trace_shape` has no typed contract — which
+  is exactly why hand-derivation is banned.
+- **T2 capture-of-record**: each traced re-capture = a complete NEW sidecar; ALL 7 oracle columns
+  re-recorded from that single run; old sidecars kept as superseded history; any divergence on a
+  non-trace cell → the NEW measurement stands + disclosed.
+- **T3 RAM discipline (581 MB free, swap active — the present state, not a contingency)**: sub-batching
+  DEFAULT; one deployment at a time; **scale-0 → single `kubectl patch` (volume+mount+env in one change)
+  → scale-1** (no surge); de-instrument batch 1 before batch 2; canary (contacts) de-instrumented after
+  the canary, re-instrumented in batch 2; scale ts-consign-price-service to 0 for the wave (restore
+  after); `free` + pod-restart + `OutOfMemoryError`/export-failure log grep between steps; proceed
+  threshold ≥400 MB free after consign-price scale-0, else STOP.
+- **B-M1 noise rules**: canary gate — each path's probe trace must be error-span-free before real
+  captures (remediation only for deploy-health causes, disclosed); a real capture showing a background
+  error span is recorded AS MEASURED + diagnosed; quiescent cluster (no concurrent traffic), disclosed.
+  If RestTemplate context propagation is broken: window correlation supports span-PRESENT verdicts only —
+  **absence-based `flag` cells are NOT claimable**; they stay unfilled + disclosed.
+- **B-M3 controls' trace_visibility pinned**: a control carries its positive twin's
+  instrumented-condition value + the fixed note "describes the PAIR's visibility regime; the control leg
+  has no fault to be visible".
+- **C-M4 health gates**: pre-wave `kubectl get deploy -o yaml` snapshot of the 7 deployments; pre-wave
+  RAM/pod-health check (threshold above); post-restore = demo-DoD key-path smoke (login + adminroute GET
+  + cancel-path probe), not just 200s.
+- **Minors**: `docker exec mist-control-plane mkdir -p /otel` before `docker cp`; `hostPath.type: File`;
+  fallback bake-in rebuild ⇒ new digest ⇒ label re-version + disclosure; record the FULL OTEL_*/JTO env
+  set per deployment in each sidecar; mesh precondition: no residual EnvoyFilter/VS fault config on
+  inside-payment; re-verify the ack-text tells on the new sidecars; optional BOUNDED 30–60 min
+  normal-corpus rider (skip ⇒ note the config-drift caveat); fork 1.0.5 images verified already
+  kind-loaded (no builds).
 
 ## 4. Case/file updates on success (per leg, only from MEASURED artifacts)
 - `trace_visibility`: fabricated-ack pair → `trace-invisible-by-construction`; breadth pair →
@@ -96,17 +169,26 @@ ts-contacts-service. Total 7 Java services.
 | tenancy/RAM pressure (7 more agent-bearing JVMs) | instrument ONLY the 7 involved services; if node pressure → run the wave in two sub-batches (cancel-path first, admin-path second), de-instrumenting between |
 | clock skew between driver host and Jaeger | select traces by service+operation+id-bearing attributes (route id / documentNumber / userId in URL paths), not by time alone |
 
-## 6. Execution order
-0. (this plan) ≥3-cold-review → reconcile → GO/NO-GO.
-1. Pin agent version+sha; docker cp into node; canary = ts-contacts-service (leaf, low risk): mount+env,
-   verify boot/banner/Jaeger service appears; throwaway request → span visible in Jaeger API.
-2. Cancel-path batch: instrument order/cancel/inside-payment; captures #1-#4 (faultmode toggles per leg;
-   probe-first; export traces).
-3. Admin-path batch: instrument admin-route/route/admin-basic (+contacts already canaried); rollouts to
-   fork images + env flags as in §2; captures #5-#8; export.
-4. Score traces (committed script) → case/file updates (§4) → validate corpus → restore cluster →
-   freeze amendment + README + FILE_INDEX + checklist → commit.
-5. The wave's own result note (what was earned vs deferred) → fold into the next consolidation.
+## 6. Execution order (rev 2)
+0. ✓ ≥3-cold-review → reconciliation (`REVIEW-TRACED-WAVE-RECONCILIATION.md`) → GO.
+1. Pre-wave gates (C-M4/T3): deploy-spec snapshot of the 7 deployments; scale consign-price to 0;
+   RAM check (≥400 MB free else STOP); pin agent 1.33.z + sha + semconv names; mkdir + docker cp into
+   the node.
+1.5. **Commit the scoring script + frozen selector table (T8) BEFORE any real capture.**
+2. Canary = ts-contacts-service (base 1.0.0, OpenJDK 8u111 = worst case): scale-0 → single patch →
+   scale-1; verify JTO "Picked up" banner + no OOME + nacos registration + key-path 200; throwaway
+   request → span visible via `/jaeger/api/traces`; error-span-free probe gate. De-instrument after.
+3. Cancel-path batch: instrument order/cancel/inside-payment (one at a time, scale-0→patch→scale-1);
+   captures #1–#4 (faultmode toggles per leg; probe-first; EXPORT + verify non-empty per leg,
+   immediately). T9 Branch-A attempt where a vehicle exists. De-instrument batch 1.
+4. STOP-RULE CHECK (T4). Admin-path batch: instrument admin-route/route/admin-basic/contacts;
+   fork-image + env-flag rollouts as §2; captures #5–#8 (all four controls REQUIRED); per-leg export;
+   T9 Branch-A for adminroute via the bounded mist-cli demo-corpus run. De-instrument.
+5. Score (committed script) → case/file updates (§4 under the §3.5 pins) → validate corpus → restore
+   cluster (images/env/consign-price) → post-restore demo-DoD key-path smoke → freeze §6 amendment +
+   README + FILE_INDEX + checklist (2.5.1 pointer + 2.5.4 TT coverage row) → commit.
+6. The wave's own result note (earned vs deferred, incl. the T6 DB-granularity disclosure and the T9
+   per-leg run status) → fold into the next consolidation.
 
 ## 7. Out of scope
 FP/TP pair (bookinfo/sockshop — needs tenancy window + Node/queue-master instrumentation), S3, TeaStore/
