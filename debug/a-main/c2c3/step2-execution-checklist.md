@@ -1,0 +1,123 @@
+# Step-2+ execution checklist (the forward manifest) — single-box, UX-gated
+
+**Why this exists (user directive 2026-07-08):** before any step-2 work, (a) the full forward
+checklist must be written down so nothing is forgotten while the UX wave runs, and (b) the MIST
+user-experience of the main contribution must be DESIGNED AND RESOLVED first (see
+`mist-ux-design.md`). **Cloud second node: NOT assumed — single-box is the default** (user decision;
+the 10–13 wk single-box timeline of plan v2 §5 governs; the de-scope ladder §5.4 stands).
+Sources consolidated: plan v2 §5, `c2-freeze.md` rev 2, `e-sut-applicability-matrix.md` rev 2,
+`c2-depth-survey.md` verify-at-deploy riders, `benchmark/README.md` §9 migration map,
+`REVIEW-STEP1-FREEZE-RECONCILIATION.md`. Status legend: ☐ open · ☐⋯ partially prepared · ✔ done.
+
+## Step 1.9 — THE UX WAVE (gates step 2; user directive)
+☐ 1.9.1 UX design doc (`mist-ux-design.md`) — current journey (code-cited), target journey, design
+        decisions D1–D5, work items. → ≥3-cold-review → reconcile.
+☐ 1.9.2 Implement (tool code, branch `main_track`, tests green):
+        D1 verdict→Allure bridge + failure semantics (OBSERVED_COMPLETE_ABSENT fails the test;
+        titled attachment; categories.json; run-level summary)
+        D2 triples auto-proposal (`proposed-triples.yaml` from the OpenAPI spec + confidence tiers;
+        strict registry unchanged; expert modes stay manual-by-design)
+        D3 observe/wild mode as the default product mode (paired = eval-harness-only, flag-gated as
+        today); D4 docs section (what to provide / what's automatic / how to read the report)
+☐ 1.9.3 Demo-run DoD: TrainTicket demo properties with B2 enabled end-to-end → Allure report shows
+        the data-integrity section on a normal `java -jar mist.jar <props>` run; suites green.
+☐ 1.9.4 Record OUR authoring-cost datum protocol (per-SUT triples minutes + proposal acceptance
+        rate) — measured from step 2 on (E2 symmetry, D5).
+
+## Step 2 — deploy wave (after 1.9; tenancy: big SUTs solo — TT, OTel-Demo; small co-reside)
+☐ 2.1 Restore `.wslconfig` to 26 GB before any TT wave; verify `free -h` inside WSL.
+☐ 2.2 TeaStore deploy (kind; pin release tag + image digests at deploy → freeze label validity).
+      Verify-at-deploy riders (survey): live-confirm 200-ORDERCONFIRMED under maintenance / DB-down
+      / mesh-503; recommender cold-start semantics; capture the exact digests into case YAMLs.
+☐ 2.3 OTel-Demo deploy (compose.full profile or k8s equivalent — Kafka + accounting + fraud REQUIRED).
+      Riders: accounting-Postgres wiring + psql read-back probe; PlaceOrder ack latency under
+      broker-down (confirm the ack path stays fast); frontend graceful-ad rendering; re-freeze the
+      flagd list against the pinned tag (docs/json skew).
+☐ 2.4 Boutique deploy (light). Rider: gRPC method-scoped Istio abort on `/hipstershop.CartService/EmptyCart`
+      (HTTP/2 path match) live check.
+☐ 2.5 Bookinfo: already live-proven in-repo — nothing to deploy beyond the existing cluster state.
+☐ 2.6 Post-reboot runbook items stay in force: re-create mist:mist RabbitMQ user + warm-up POST
+      before any SS run; repo .sh files are CRLF → run CRLF-stripped copies; minikube stays stopped.
+☐ 2.7 Wipe scripts / state-reset per SUT (DB-wipe preferred, rollout-restart fallback).
+☐ 2.8 Wave-runner (unattended: timeout, logs, reset, dispatch; 2–4 d budget) — REQUIRED for E1/M-yield
+      on a single box (R6 host-wedge protection: exclusive runs, off-peak builds, disk prune per wave).
+
+## Step 2.5 — instrumentation wave (gates ALL E2 trace arms)
+☐ 2.5.1 TT: OTel javaagents on the target write paths (G3 two-part mitigation precedent).
+☐ 2.5.2 SS: OTel Node auto-instr (front-end) + javaagents (orders/shipping).
+☐ 2.5.3 TeaStore: Kieker→OTel converter spike OR pre-registered exclude branch → cases become
+        `trace-uninstrumented` (NEVER conflated with by-construction — B-M5).
+☐ 2.5.4 Measured trace-coverage table per SUT (= the §8.5-2 disclosure).
+☐ 2.5.5 Tracetest Agent + OTLP collector on the kind cluster; smoke arm 2+3 vs Bookinfo
+        (`selected_spans.count = 0` absence assertion end-to-end).
+☐ 2.5.6 TraceAnomaly Docker on captured S1 masked-write traces → turns the PROVISIONAL
+        construction-blindness verdict into an empirical row (C-A3).
+☐ 2.5.7 TraceAnomaly normal-corpus capture per SUT (only if 2.5.6 clears in ≤2 days).
+☐ 2.5.8 Contract-invariant arm spike (Pact/Dredd/AGORA+-style; the 5th, non-trace-family arm — C-A3):
+        operability on ≥1 SUT; config recorded per case.
+
+## Step 2.75 — per-SUT MIST enablement package (1–3 d/SUT; DoD = the NEW 1.9 user flow)
+☐ TeaStore: author OpenAPI (pre-registered as authored-by-us) + auth glue + triples (propose→confirm)
+  + one end-to-end observe-mode run whose Allure shows the data-integrity section. Record authoring cost.
+☐ OTel-Demo: registry + auth smoke + triples (Kafka case = `readback.modality: sql-probe` →
+  `mist_bindable` decided HERE) + same DoD. Record authoring cost.
+☐ Boutique (light) + Bookinfo (oracle-smoke only). Record authoring cost.
+☐ Seed-case migration (benchmark/README §9): port the 6 v0.1.0 seed cases to rev 2 → validator PASS.
+
+## Step 3a — S1/S2 population (∥ nights; quotas = survey + freeze rev 2 §5)
+☐ S1: TeaStore 4–5 (flag/dependency-down/mesh ×2 sites) · OTel-Demo 4–5 (broker/mesh/flag; build the
+  code-level spare or lean on cross-SUT floor) · Boutique 1 (disclosed S1-minor) · TT (F-corpus ≥6
+  target 10, EACH in-class-verified masked-2xx before counting — B-m6; + G1/G3 promoted cases) · SS
+  (shipping + carts promoted cases). **Report BOTH denominators (distinct-site vs case-run); if
+  distinct sites < 20 → disclosed finding, stop-and-replan per plan §2.3.**
+☐ S2: survey's 16 (4 new SUTs) + 2 packaged corpora (≤2 cases each) + TT/SS designed-degradation
+  paths ENUMERATED (not hand-waved — B-B2); target ≥35 or disclosed shortfall.
+☐ Every case: negative control (S1), health-precondition checklist, replay script, typed readback,
+  `ack_content_visibility` + `trace_visibility` + `write_shape` authored, license fields, digests.
+☐ Tell-free floor tally (R8): count natural × success-shaped-clean × trace-invisible-by-construction.
+☐ Fork image builds where needed (TT fabricated-ack inside-payment 1.0.5 etc.) — off-peak, never
+  while a graph is deployed.
+
+## Step 3b — E1 two-tier baseline grid (~160 h driven; wave-runner mandatory)
+☐ FULL tier: TT / TeaStore / SS — 5 tools × 10 seeds × 1 h. THIN: Bookinfo / Boutique / OTel-Demo —
+  3 × 30 min (saturation disclosed). Evaluability smoke gate per cell ("tool reaches ≥1 authed
+  endpoint" else non-evaluable, not zero). Substitution: Morest/AutoRestTest fail → RestTestGen;
+  floor ≥4 runnable tools. AutoRestTest LLM key + model pinned. ONE pinned TT topology (lean-traced
+  G1). Machine spec + exclusivity per "No Time to Rest Yet".
+
+## Step 4 — M-yield (1 h × 10 seeds spec-rich tier; 1 h × 3 thin; LLM-off disclosed)
+☐ Event→case clustering (endpoint × fault-signature × SUT); 1 representative + 10% audit sample →
+  feeds the rater M-yield audit set (B-M3). Upstream filings for genuine finds DURING execution.
+
+## Step 5 — M-prevalence + S3 (rater-gated ∥)
+☐ Wild detectors: (i) trace-shape masking oracle on instrumented SUTs; (ii) single-leg read-back
+  absence — BOTH S2-FP-calibrated BEFORE S3 sampling. Workloads pinned (12 h/SUT or 500-write stop);
+  write-path fraction reported. S3 sample = min(all, 40) stratified; <20 wild flags ⇒ scarcity IS the
+  finding (benign-dominance branch pre-registered).
+☐ **USER-GATED (open):** rater channel + IRB determination (`c3-rater-materials.md` §7 + B-M8) —
+  outreach lead 2–6 wk; author-blind fallback carries pre-committed scars.
+☐ Adjudication: blindness invariants (clean-run stripped; M-yield cases interleaved); S3-only κ
+  primary; calibration ~30 sized so pooled ≥50 free.
+
+## Step 6 — E2 comparator frontier (5 arms; +1 wk if TraceAnomaly cleared)
+☐ Arms: naive span-error · Tracetest span-error · Tracetest span-PRESENCE (per-endpoint
+  authoring-cost recorded — the automation-gap datum, symmetric with OUR triples cost) ·
+  TraceAnomaly (as cleared: competitor or construction-blindness demo) · contract-invariant.
+  Matched recall on the trace-visible subset; recall per visibility class;
+  trace-invisible-by-construction = its own N-vs-0 row; NOT_EVALUABLE its own bucket.
+
+## Step 7 — E5 ablations (TT ×5 seeds; 3–4 d). Step 8 — E6 packaging + review
+☐ E6: standalone benchmark repo (Apache-2.0 + CC-BY-4.0 + component map; MIST by reference LGPL);
+  index.generated + MANIFEST.sha256; large artifacts → Zenodo/OSF by hash; scoring-harness home +
+  license decided (B-m4); MIST study commit PINNED (criteria: value-delta + supplied hooks +
+  injectors + fabricated-ack in one buildable commit — B-m3).
+☐ Benchmark ≥3-cold-review in sampled-reproduction form (k=5 re-runs + m=15 audits each).
+☐ E3 trigger rate mined from E1/M-yield logs (free).
+
+## Standing constraints (never forget)
+- Single box; 26 GB WSL for TT; tenancy schedule; never build while a graph is deployed; docker-exec
+  recovery runbook; disk prune per wave; kind cluster "mist" (sockshop currently up), minikube stopped.
+- All MIST-repo changes on `main_track`; no Co-Authored-By; no file deletion; FILE_INDEX + memory sync.
+- Frozen docs change only via disclosed amendments (`c2-freeze.md` §6).
+- Paper honesty riders: lead with the study; two-denominator S1; tell-free floor; MIST vs arm-3
+  authoring-cost symmetry; Gate-4 wording "3 frontier trace comparators + contract-invariant arm".
