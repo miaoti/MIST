@@ -135,6 +135,61 @@ public class MultiServiceRESTAssuredWriter {
                 return triple;
             }
         }
+        // UX W6: a triple whose write_endpoint carries {placeholders} (the
+        // supplied-isolation, bodyless class) matches a step by template —
+        // literal segments equal, {..} segments wildcard. Registries without
+        // placeholders never reach this pass (behavior unchanged).
+        for (io.mist.cli.fault.TargetTripleRegistry.Triple triple : dataIntegrityTriples) {
+            if (triple.writeEndpoint.indexOf('{') >= 0
+                    && templateMatches(triple.writeEndpoint, stepKey)) {
+                return triple;
+            }
+        }
+        return null;
+    }
+
+    /** "METHOD /a/{x}/b" vs "METHOD /a/v/b": literal segments equal, {..} wildcard. */
+    static boolean templateMatches(String templateEndpoint, String concreteEndpoint) {
+        String[] t = templateEndpoint.split("/");
+        String[] c = concreteEndpoint.split("/");
+        if (t.length != c.length) {
+            return false;
+        }
+        for (int i = 0; i < t.length; i++) {
+            boolean placeholder = t[i].startsWith("{") && t[i].endsWith("}");
+            if (!placeholder && !t[i].equals(c[i])) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * UX W6: the concrete value of {@code {keyField}} — template segments
+     * matched against the concrete path. Null when the template is absent,
+     * shapes mismatch, the field isn't a template segment, or the "value" is
+     * itself an unresolved placeholder (runtime-substituted → not
+     * generation-time-resolvable, the step stays un-hooked).
+     */
+    static String suppliedKeyFromPath(String templatePath, String concretePath, String keyField) {
+        if (templatePath == null || concretePath == null || keyField == null) {
+            return null;
+        }
+        String[] t = templatePath.split("/");
+        String[] c = concretePath.split("/");
+        if (t.length != c.length) {
+            return null;
+        }
+        String wanted = "{" + keyField + "}";
+        for (int i = 0; i < t.length; i++) {
+            if (wanted.equals(t[i])) {
+                String v = c[i];
+                if (v.isEmpty() || v.contains("{") || v.contains("$")) {
+                    return null;
+                }
+                return v;
+            }
+        }
         return null;
     }
 
@@ -1974,13 +2029,39 @@ public class MultiServiceRESTAssuredWriter {
                             // 🔥 FIX: Always set Content-Type to application/json for requests with bodies
                             String requestBody = step.getBody() != null ? step.getBody() : "";
                             if (__diTriple != null && requestBody.isEmpty()) {
-                                // The freshening hook rewrites body fields; a body-less write
-                                // can't carry an isolation key, so the step is left un-hooked.
-                                logger.warn("DataIntegrity: step {} matches triple '{}' but has no request body; "
-                                        + "skipping hook emission for method {}", __diStepKey, __diTriple.name,
-                                        testMethodName);
-                                __diTriple = null;
-                                __diStepKey = null;
+                                // UX W6 (REVIEW-UX-RECONCILIATION U6): a bodyless write CAN be
+                                // hooked when the triple declares the supplied-isolation strategy
+                                // and its single key field resolves to a concrete path segment at
+                                // generation time (template {field} ↔ concrete segment). Emit
+                                // beforeWriteSupplied so afterWrite + the observe check bind.
+                                String __suppliedValue = null;
+                                if (__diTriple.isolationStrategy
+                                        == io.mist.cli.fault.TargetTripleRegistry.IsolationStrategy.SUPPLIED
+                                        && __diTriple.isolationKey.size() == 1) {
+                                    __suppliedValue = suppliedKeyFromPath(
+                                            step.getMethod() != null ? step.getMethod().getTestPath() : null,
+                                            step.getPath(), __diTriple.isolationKey.get(0));
+                                }
+                                if (__suppliedValue != null) {
+                                    pw.println("                        // UX W6: supplied-isolation hook for a bodyless write — the");
+                                    pw.println("                        // key is the concrete path segment matched at generation time.");
+                                    pw.println("                        io.mist.cli.fault.DataIntegrityRuntime.beforeWriteSupplied(\""
+                                            + escape(__diStepKey) + "\", \"" + escape(className) + "." + escape(testMethodName) + "#" + stepIdx
+                                            + "\", \"\", \"" + escape(__diTriple.isolationKey.get(0)) + "\", \"" + escape(__suppliedValue) + "\");");
+                                } else {
+                                    // The freshening hook rewrites body fields; a body-less write
+                                    // without a generation-time-resolvable supplied key can't carry
+                                    // an isolation key, so the step is left un-hooked (expert tier:
+                                    // drive it via the harness, or supply the key another way).
+                                    logger.warn("DataIntegrity: step {} matches triple '{}' but has no request body"
+                                            + "{}; skipping hook emission for method {}", __diStepKey, __diTriple.name,
+                                            __diTriple.isolationStrategy
+                                                    == io.mist.cli.fault.TargetTripleRegistry.IsolationStrategy.SUPPLIED
+                                                    ? " and the supplied key is not a generation-time path segment" : "",
+                                            testMethodName);
+                                    __diTriple = null;
+                                    __diStepKey = null;
+                                }
                             }
                             if (!requestBody.isEmpty()) {
                                 pw.println("                        // 🔥 FIX: Set Content-Type to application/json for requests with bodies");
@@ -2210,6 +2291,15 @@ public class MultiServiceRESTAssuredWriter {
                                 // The step's own traceparent id lets an absent verdict be
                                 // upgraded from timeout- to observation-gated.
                                 pw.println("                        io.mist.cli.fault.DataIntegrityRuntime.afterWrite(\"" + escape(__diStepKey) + "\", \"" + escape(className) + "." + escape(testMethodName) + "#" + stepIdx + "\", actualStatusCode" + stepIdx + ", stepResponse" + stepIdx + ".getBody().asString(), __mstTraceId" + stepIdx + ");");
+                                if (!isNegativeTest) {
+                                    // UX W1 (REVIEW-UX-RECONCILIATION U1/U5): product observe-mode
+                                    // verdict check, right after the synchronous afterWrite so the
+                                    // evidence lands beside the step. Structurally inert in paired
+                                    // eval sessions (observeRecordFor returns null there); skipped
+                                    // on negative variants (a designed-invalid write carries no
+                                    // durable-write claim, and freshening semantics stay theirs).
+                                    pw.println("                        io.mist.cli.fault.DataIntegrityObserveCheck.afterStep(\"" + escape(className) + "." + escape(testMethodName) + "#" + stepIdx + "\");");
+                                }
                                 dataIntegrityMethods.add(testMethodName);
                             }
 

@@ -322,11 +322,34 @@ public final class MistRunner {
         // off). The registry lives beside the SUT conf; with the flag off
         // nothing is loaded and the writer emits byte-identical output.
         if (io.mist.core.config.MstConfig.instance().oracle().dataIntegrityOracleEnabled()) {
-            java.nio.file.Path registryPath = java.nio.file.Paths.get(inputs.confPath)
-                    .toAbsolutePath().getParent().resolve("target-triples.yaml");
+            // UX W0 (REVIEW-UX-RECONCILIATION U1 / review-A correction): the
+            // registry is addressable via mst.oracle.dataintegrity.registry;
+            // the historical <conf dir>/target-triples.yaml convention stays
+            // the default so existing setups are untouched.
+            String registryProp = System.getProperty("mst.oracle.dataintegrity.registry");
+            java.nio.file.Path registryPath;
+            if (registryProp != null && !registryProp.trim().isEmpty()) {
+                java.nio.file.Path given = java.nio.file.Paths.get(registryProp.trim());
+                if (!given.isAbsolute()) {
+                    // Relative paths resolve beside the SUT conf first (the same
+                    // place the default convention looks), falling back to the
+                    // working directory — so a properties file can say
+                    // mst.oracle.dataintegrity.registry=target-triples-demo.yaml.
+                    java.nio.file.Path besideConf = java.nio.file.Paths.get(inputs.confPath)
+                            .toAbsolutePath().getParent().resolve(given);
+                    registryPath = java.nio.file.Files.isRegularFile(besideConf)
+                            ? besideConf : given.toAbsolutePath();
+                } else {
+                    registryPath = given;
+                }
+            } else {
+                registryPath = java.nio.file.Paths.get(inputs.confPath)
+                        .toAbsolutePath().getParent().resolve("target-triples.yaml");
+            }
             if (!java.nio.file.Files.isRegularFile(registryPath)) {
                 throw new IllegalStateException("mst.oracle.dataintegrity.enabled=true but no registry at "
-                        + registryPath + " (expected target-triples.yaml beside the SUT conf)");
+                        + registryPath + " (default: target-triples.yaml beside the SUT conf; override "
+                        + "with mst.oracle.dataintegrity.registry)");
             }
             dataIntegrityRegistry = io.mist.cli.fault.TargetTripleRegistry.load(registryPath);
             if (writer instanceof MultiServiceRESTAssuredWriter) {
@@ -549,10 +572,113 @@ public final class MistRunner {
             } else if (pairingRequested) {
                 executePairedDataIntegrity(actualPackageName, className, id, skip5xx);
             } else {
-                executeGeneratedTestsWithJUnit(actualPackageName, className);
+                // UX W0: product OBSERVE mode — single-leg, no injection. The
+                // session makes the emitted hooks record + unlocks the
+                // generated verdict check; without it they are no-ops.
+                maybeBeginObserve("observe-" + id);
+                try {
+                    executeGeneratedTestsWithJUnit(actualPackageName, className);
+                } finally {
+                    maybeEndObserve();
+                }
             }
         }
         return testCases;
+    }
+
+    // ── UX W0 (REVIEW-UX-RECONCILIATION U1): product observe-mode session ──
+    // Armed only when the B2 registry is loaded AND neither the pairing
+    // executor (injection) nor the comparator owns the run. Parallelism is
+    // forced to 1 for the armed stretch (the runtime's ThreadLocal pending
+    // handoff assumes one JUnit thread; beginRun refuses >1), then restored.
+
+    private boolean observeArmed;
+    private String observeSavedParallelism;
+    private final java.util.List<io.mist.cli.fault.DataIntegrityRuntime.RunRecord> observeRecords =
+            new java.util.ArrayList<>();
+
+    private boolean observeEligible() {
+        return dataIntegrityRegistry != null
+                && !io.mist.cli.fault.FaultInjector.enabled()
+                && !Boolean.getBoolean("mst.comparator.enabled");
+    }
+
+    private void maybeBeginObserve(String label) {
+        if (!observeEligible() || observeArmed) {
+            return;
+        }
+        observeSavedParallelism = System.getProperty("mst.test.parallelism");
+        System.setProperty("mst.test.parallelism", "1");
+        logger.warn("[MIST] data-integrity OBSERVE mode: session '{}' armed for {} triple(s); "
+                + "test parallelism forced to 1 for the hooked stretch", label,
+                dataIntegrityRegistry.triples.size());
+        io.mist.cli.fault.DataIntegrityRuntime.beginObserveRun(dataIntegrityRegistry.triples, label);
+        observeArmed = true;
+    }
+
+    private void maybeEndObserve() {
+        if (!observeArmed) {
+            return;
+        }
+        observeArmed = false;
+        java.util.List<io.mist.cli.fault.DataIntegrityRuntime.RunRecord> records =
+                io.mist.cli.fault.DataIntegrityRuntime.endRun();
+        if (observeSavedParallelism == null) {
+            System.clearProperty("mst.test.parallelism");
+        } else {
+            System.setProperty("mst.test.parallelism", observeSavedParallelism);
+            observeSavedParallelism = null;
+        }
+        observeRecords.addAll(records);
+        writeObserveAllureCategories();
+        io.mist.core.util.ConsoleProgressBar.printRaw(summarizeObserve(records));
+    }
+
+    /** UX W2: run-level terminal summary of the observe session's records. */
+    static String summarizeObserve(java.util.List<io.mist.cli.fault.DataIntegrityRuntime.RunRecord> records) {
+        int confirmed = 0, lost = 0, unconfirmed = 0, notAcked = 0, errors = 0;
+        for (io.mist.cli.fault.DataIntegrityRuntime.RunRecord r : records) {
+            if (r.error != null) { errors++; continue; }
+            if (!r.acked) { notAcked++; continue; }
+            switch (r.gate) {
+                case OBSERVED_PRESENT: confirmed++; break;
+                case OBSERVED_COMPLETE_ABSENT: lost++; break;
+                case TIMEOUT_ABSENT: unconfirmed++; break;
+                default: break;
+            }
+        }
+        StringBuilder sb = new StringBuilder("\n  Data-integrity OBSERVE summary (single-leg, no injection):\n");
+        sb.append("    hooked writes checked : ").append(records.size()).append('\n');
+        sb.append("    ✅ durable-write confirmed : ").append(confirmed).append('\n');
+        sb.append("    💧 acked-but-lost (observation-gated) : ").append(lost)
+                .append(lost > 0 ? "   ← see the 💧 attachments in the Allure report" : "").append('\n');
+        sb.append("    ⏳ persistence unconfirmed (timeout-gated, not a defect) : ").append(unconfirmed).append('\n');
+        sb.append("    ℹ️ not acked / internal errors : ").append(notAcked).append('/').append(errors).append('\n');
+        if (System.getProperty("jaeger.base.url") == null) {
+            sb.append("    NOTE: jaeger.base.url unset — the observation-gated defect tier is unavailable; "
+                    + "absences stay timeout-gated (unconfirmed).\n");
+        }
+        return sb.toString();
+    }
+
+    /** UX W2: Allure Categories definitions so the report groups the findings. */
+    private void writeObserveAllureCategories() {
+        try {
+            java.nio.file.Path dir = java.nio.file.Paths.get("target", "allure-results");
+            java.nio.file.Files.createDirectories(dir);
+            String json = "[\n"
+                    + "  {\"name\": \"\\uD83D\\uDCA7 Data integrity — acked-but-lost write\","
+                    + " \"matchedStatuses\": [\"failed\", \"broken\"],"
+                    + " \"messageRegex\": \".*ACKED-BUT-LOST.*\"},\n"
+                    + "  {\"name\": \"Hidden downstream failure (trace)\","
+                    + " \"matchedStatuses\": [\"failed\", \"broken\"],"
+                    + " \"messageRegex\": \".*HIDDEN DOWNSTREAM.*\"}\n"
+                    + "]\n";
+            java.nio.file.Files.write(dir.resolve("categories.json"),
+                    json.getBytes(java.nio.charset.StandardCharsets.UTF_8));
+        } catch (java.io.IOException e) {
+            logger.warn("[MIST] could not write Allure categories.json: {}", e.toString());
+        }
     }
 
     /**
@@ -1617,8 +1743,22 @@ public final class MistRunner {
                 // Create collector for this round
                 FailedTestCollector collector = new FailedTestCollector(round, skip5xx, enhancerOutputDir);
 
-                // Execute tests with collector
-                Result result = executeTestsWithCollector(fullPackageName, className, collector, isFinalRound);
+                // Execute tests with collector. UX W0: in observe mode only
+                // the FINAL enhancer round is recorded (earlier exploration
+                // rounds re-run the same writes and would pollute the verdict
+                // stream with pre-repair duplicates); hooks are no-ops in the
+                // un-armed rounds.
+                Result result;
+                if (isFinalRound) {
+                    maybeBeginObserve("observe-final-round");
+                    try {
+                        result = executeTestsWithCollector(fullPackageName, className, collector, isFinalRound);
+                    } finally {
+                        maybeEndObserve();
+                    }
+                } else {
+                    result = executeTestsWithCollector(fullPackageName, className, collector, isFinalRound);
+                }
 
                 if (result == null) {
                     logger.error("Test execution failed in round {}", round);

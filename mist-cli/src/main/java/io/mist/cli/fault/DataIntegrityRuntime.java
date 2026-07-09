@@ -222,9 +222,20 @@ public final class DataIntegrityRuntime {
         // must never freshen onto the same (start,end) pair, or one thread's
         // persisted row satisfies the other's membership check (review F2).
         final Set<String> claimedPairs = java.util.concurrent.ConcurrentHashMap.newKeySet();
+        // UX W0 (REVIEW-UX-RECONCILIATION U1/U5): true only for product
+        // observe-mode sessions armed by MistRunner. The observe* accessors
+        // below return nothing for paired sessions, so the generated
+        // end-of-write check is structurally inert in every eval-harness run.
+        final boolean observe;
 
         Session(List<TargetTripleRegistry.Triple> triples, String runLabel, Http http,
                 long pollMs, long timeoutMs, long traceSettleMs) {
+            this(triples, runLabel, http, pollMs, timeoutMs, traceSettleMs, false);
+        }
+
+        Session(List<TargetTripleRegistry.Triple> triples, String runLabel, Http http,
+                long pollMs, long timeoutMs, long traceSettleMs, boolean observe) {
+            this.observe = observe;
             Map<String, TargetTripleRegistry.Triple> keyed = new HashMap<>();
             for (TargetTripleRegistry.Triple t : triples) {
                 if (keyed.put(t.writeEndpoint, t) != null) {
@@ -276,8 +287,79 @@ public final class DataIntegrityRuntime {
                 Long.getLong(TRACE_SETTLE_MS_PROPERTY, DEFAULT_TRACE_SETTLE_MS));
     }
 
+    /**
+     * UX W0 (REVIEW-UX-RECONCILIATION U1): activates recording for a product
+     * OBSERVE run — the single-leg, no-injection mode MistRunner arms around
+     * normal test execution. Identical machinery to a paired leg except the
+     * session is marked observe, which is what unlocks the
+     * {@link #observeRecordFor}/{@link #observeTripleHasObservedPresent}
+     * accessors consumed by the generated end-of-write check. Paired legs
+     * (PairedFaultExecutor / g3 harnesses) never set the flag, so the check
+     * is inert there by construction (U5).
+     */
+    public static void beginObserveRun(List<TargetTripleRegistry.Triple> triples, String runLabel) {
+        Http http = defaultHttpOverride != null ? defaultHttpOverride : new RestAssuredHttp();
+        beginRun(triples, runLabel, http,
+                Long.getLong(POLL_MS_PROPERTY, DEFAULT_POLL_MS),
+                Long.getLong(TIMEOUT_MS_PROPERTY, DEFAULT_TIMEOUT_MS),
+                Long.getLong(TRACE_SETTLE_MS_PROPERTY, DEFAULT_TRACE_SETTLE_MS),
+                /*observe=*/true);
+    }
+
+    /**
+     * The record a completed hooked write produced in the CURRENT observe
+     * session, or {@code null} when there is no session, the session is a
+     * paired leg (U5 inertness), or no record carries the id. afterWrite is
+     * synchronous, so by the time the generated check runs the record exists.
+     */
+    public static RunRecord observeRecordFor(String correlationId) {
+        Session s = session;
+        if (s == null || !s.observe || correlationId == null) {
+            return null;
+        }
+        synchronized (s.records) {
+            for (int i = s.records.size() - 1; i >= 0; i--) {
+                RunRecord r = s.records.get(i);
+                if (correlationId.equals(r.correlationId)) {
+                    return r;
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * UX W3 quarantine rule (REVIEW-UX-RECONCILIATION U8): a defect verdict is
+     * trusted only for triples whose read-back has demonstrably worked — at
+     * least one OBSERVED_PRESENT in the SAME observe session. A mis-bound
+     * read-back (wrong endpoint / wrong shape) yields absence for every write;
+     * this gate turns that failure mode into a quarantined warning instead of
+     * a stream of false ACKED-BUT-LOST failures. Conservative by design
+     * (precision-first): a session whose only write to a triple is genuinely
+     * lost reports quarantined, not failed — disclosed limitation.
+     */
+    public static boolean observeTripleHasObservedPresent(String tripleName) {
+        Session s = session;
+        if (s == null || !s.observe || tripleName == null) {
+            return false;
+        }
+        synchronized (s.records) {
+            for (RunRecord r : s.records) {
+                if (tripleName.equals(r.tripleName) && r.gate == QuiescenceGate.OBSERVED_PRESENT) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     static void beginRun(List<TargetTripleRegistry.Triple> triples, String runLabel, Http http,
                          long pollMs, long timeoutMs, long traceSettleMs) {
+        beginRun(triples, runLabel, http, pollMs, timeoutMs, traceSettleMs, /*observe=*/false);
+    }
+
+    static void beginRun(List<TargetTripleRegistry.Triple> triples, String runLabel, Http http,
+                         long pollMs, long timeoutMs, long traceSettleMs, boolean observe) {
         if (session != null) {
             throw new IllegalStateException("DataIntegrityRuntime: a run is already active");
         }
@@ -298,9 +380,9 @@ public final class DataIntegrityRuntime {
                 // unparseable value: leave it to the runner's own resolution
             }
         }
-        session = new Session(triples, runLabel, http, pollMs, timeoutMs, traceSettleMs);
-        logger.info("DataIntegrity: run '{}' active for {} triple(s), poll={}ms timeout={}ms settle={}ms",
-                runLabel, triples.size(), pollMs, timeoutMs, traceSettleMs);
+        session = new Session(triples, runLabel, http, pollMs, timeoutMs, traceSettleMs, observe);
+        logger.info("DataIntegrity: {}run '{}' active for {} triple(s), poll={}ms timeout={}ms settle={}ms",
+                observe ? "OBSERVE " : "", runLabel, triples.size(), pollMs, timeoutMs, traceSettleMs);
     }
 
     /** Deactivates the session and returns its records (B1.3 calls this). */

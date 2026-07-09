@@ -393,6 +393,42 @@ Endpoints matching `auth.skip.path.patterns` (CSV of regex, e.g. `^/actuator,^/a
 
 ---
 
+## Data-integrity oracle (acked-but-lost writes) — observe mode
+
+MIST can check, during a normal run, whether each **acknowledged write actually persisted**: the
+class of fault where the API answers 2xx but the durable effect silently never lands
+(acked-but-lost). No faults are injected — MIST follows every registered write with a
+quiescence-gated read-back poll and reports one of three verdicts in the **Allure report**:
+
+| Verdict | Meaning | Report surface |
+|---|---|---|
+| ✅ durable write confirmed | the read-back showed the write | green step on the test |
+| 💧 **ACKED-BUT-LOST WRITE** | acked, and the absence is *observation-gated* (the step's own trace is complete — the write is lost, not late) | titled attachment with the evidence (ack vs read-back, poll timeline, isolation key) + a warning step; **fails the test** only when `mst.oracle.dataintegrity.failonlost=true` (default: warn) |
+| ⏳ persistence unconfirmed | absent at the timeout with **no trace confirmation** | warning step + attachment; never counted as a defect |
+
+**What you provide.**
+1. `mst.oracle.dataintegrity.enabled=true` in your properties file.
+2. A **target-triples registry** — the write → read-back bindings
+   (`mst.oracle.dataintegrity.registry=<path>`, default `target-triples.yaml` beside your SUT conf).
+   To generate a starting point from your OpenAPI spec:
+   `java -cp mist.jar io.mist.cli.fault.TriplesProposer <spec.yaml>` → writes
+   `proposed-triples.yaml` (body-carrying POSTs with a same-path collection read-back; **review it,
+   fill each `TODO(dependency)`, confirm each read-back is the system of record** before using it as
+   the registry). Bodyless writes, value-delta probes and supplied-isolation bindings are the expert
+   tier — authored by hand, not proposed.
+3. **A trace backend for the defect tier**: `jaeger.base.url` must point at your Jaeger API.
+   Without it, an absent write can never be *observation-gated* — it stays ⏳ unconfirmed and the 💧
+   tier (and `failonlost`) can never fire. This is deliberate, precision-first gating: absence is
+   only a defect when the write's own trace is complete.
+
+**Guard rails.** A triple whose read-back never shows *any* write landing in the run is
+**quarantined** (⚠️ warning, not failure) — the guard against a mis-bound read-back producing false
+LOST verdicts. Negative/faulty test variants are never checked (a designed-invalid write carries no
+durable-write claim). Test parallelism is forced to 1 for the hooked stretch. The bundled demo has
+all of this wired: `trainticket-demo.properties` + `trainticket/target-triples-demo.yaml`.
+
+---
+
 ## Outputs
 
 | Path (relative to JVM CWD) | Content |

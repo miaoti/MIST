@@ -1,0 +1,28 @@
+# PRODUCT-DEMO target-triple registry (UX W4, mist-ux-design.md rev 2 §D4).
+#
+# Same two TrainTicket write/read-back triples as the eval registry
+# (target-triples.yaml) but WITHOUT the eval-only scaffolding: no fault_flag
+# (the product observe mode never injects faults) and no cluster block (no
+# kubectl coordinates are needed to observe). Wired by
+# trainticket-demo.properties via mst.oracle.dataintegrity.registry.
+#
+# In OBSERVE mode MIST runs its generated tests as usual and, for each write
+# below, polls the read-back after the acknowledged request:
+#   ✅ write appears           -> confirmed (green step in the Allure report)
+#   💧 acked but observation-gated absent -> ACKED-BUT-LOST finding
+#      (warning by default; set mst.oracle.dataintegrity.failonlost=true to fail)
+#   ⏳ absent at timeout, no trace confirmation -> unconfirmed (never a defect)
+# The defect tier needs jaeger.base.url (already set in the demo properties).
+triples:
+  - name: adminroute-create
+    write_endpoint: "POST /api/v1/adminrouteservice/adminroute"
+    dependency: ts-route-service
+    readback_endpoint: "GET /api/v1/adminrouteservice/adminroute"
+    isolation_key: [startStation, endStation]
+    isolation_strategy: station-pair
+  - name: adminbasic-contacts-create
+    write_endpoint: "POST /api/v1/adminbasicservice/adminbasic/contacts"
+    dependency: ts-contacts-service
+    readback_endpoint: "GET /api/v1/adminbasicservice/adminbasic/contacts"
+    isolation_key: [accountId, documentNumber]
+    isolation_strategy: fresh-strings

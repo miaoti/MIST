@@ -106,6 +106,69 @@ public class DataIntegrityEmissionTest {
                         + "stepResponse\\1\\.getBody\\(\\)\\.asString\\(\\), __mstTraceId\\1\\);.*"));
         assertEquals("the hooked method must be recorded for the pairing filter",
                 1, writer.getDataIntegrityMethods().size());
+
+        // UX W1 (REVIEW-UX-RECONCILIATION U1/U5): a positive hooked step also
+        // carries the observe-mode verdict check, emitted AFTER afterWrite so
+        // the record exists when it runs. Inert at runtime in paired legs.
+        assertTrue("positive hooked step must emit the observe check with the correlator shape",
+                src.matches("(?s).*io\\.mist\\.cli\\.fault\\.DataIntegrityObserveCheck"
+                        + "\\.afterStep\\(\"[^\"]*\\.[^\"]*#\\d+\"\\);.*"));
+        assertTrue("the check must run after afterWrite",
+                src.indexOf("DataIntegrityRuntime.afterWrite") < src.indexOf("DataIntegrityObserveCheck.afterStep"));
+    }
+
+    @Test
+    public void matchingStep_faultyVariant_getsHooksButNoObserveCheck() throws IOException {
+        // Negative variants keep their hooks (paired record stream unchanged)
+        // but never run the observe check — a designed-invalid write carries
+        // no durable-write claim (UX W1, review-A negative-variant finding).
+        MultiServiceTestCase tc = routePostCase("{\"startStation\":\"a\",\"endStation\":\"b\"}");
+        tc.setFaulty(true);
+        Written written = writeCase(shippedTriples(), tc);
+        assertTrue("hooks stay on the faulty variant",
+                written.src.contains("DataIntegrityRuntime.afterWrite"));
+        assertFalse("no observe check on a faulty variant",
+                written.src.contains("DataIntegrityObserveCheck"));
+    }
+
+    @Test
+    public void bodylessSuppliedStep_withGenerationTimePathKey_getsSuppliedHookAndCheck() throws IOException {
+        // UX W6 (REVIEW-UX-RECONCILIATION U6): a bodyless write matching a
+        // supplied-isolation triple whose single key resolves to a concrete
+        // path segment at generation time IS hooked — beforeWriteSupplied +
+        // afterWrite + the observe check.
+        String yaml = "triples:\n"
+                + "  - name: cancel-order\n"
+                + "    write_endpoint: \"POST /api/v1/cancelservice/cancel/{orderId}\"\n"
+                + "    dependency: ts-inside-payment-service\n"
+                + "    readback_endpoint: \"GET /api/v1/orderservice/order\"\n"
+                + "    isolation_key: [orderId]\n"
+                + "    isolation_strategy: supplied\n";
+        List<TargetTripleRegistry.Triple> triples = TargetTripleRegistry.parse(
+                new java.io.ByteArrayInputStream(yaml.getBytes(java.nio.charset.StandardCharsets.UTF_8)),
+                "inline").triples;
+
+        MultiServiceTestCase tc = new MultiServiceTestCase("CancelDemo");
+        tc.setScenarioName("CancelScenario");
+        tc.setFaulty(false);
+        Operation op = new Operation();
+        op.setMethod("post");
+        op.setTestPath("/api/v1/cancelservice/cancel/{orderId}");
+        MultiServiceTestCase.StepCall step = new MultiServiceTestCase.StepCall(
+                "ts-cancel-service", op, "/api/v1/cancelservice/cancel/ord-123",
+                null, null, null, null, 200, null);
+        step.setTopLevelRoot(true);
+        tc.addStepCall(step);
+
+        Written written = writeCase(triples, tc);
+        assertTrue("bodyless supplied step must emit beforeWriteSupplied with the concrete key",
+                written.src.contains("DataIntegrityRuntime.beforeWriteSupplied(\"POST /api/v1/cancelservice/cancel/ord-123\"")
+                        && written.src.contains("\"orderId\", \"ord-123\""));
+        assertTrue("afterWrite must bind on the supplied step",
+                written.src.contains("DataIntegrityRuntime.afterWrite(\"POST /api/v1/cancelservice/cancel/ord-123\""));
+        assertTrue("the observe check must bind on the supplied step",
+                written.src.contains("DataIntegrityObserveCheck.afterStep("));
+        assertEquals(1, written.writer.getDataIntegrityMethods().size());
     }
 
     @Test
