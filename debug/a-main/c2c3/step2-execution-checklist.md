@@ -134,7 +134,17 @@ Sources consolidated: plan v2 §5, `c2-freeze.md` rev 2, `e-sut-applicability-ma
         branch means TeaStore MIST verdicts live in the TIMEOUT_ABSENT stratum (reported separately,
         G1 R3#1 discipline) or NOT_EVALUABLE-by-instrumentation; any new non-trace absence gate would
         need its OWN S2-FP calibration before use.**
-☐ 2.5.4 Measured trace-coverage table per SUT (= the §8.5-2 disclosure).
+◐ 2.5.4 Measured trace-coverage table per SUT (= the §8.5-2 disclosure). **TT ROW MEASURED (traced-capture
+        wave 2026-07-10, agent 1.33.6 on 7 write-path services; from the committed trace exports):**
+        cancel path = ts-cancel-service (server+client) → ts-order-service (server, JPA/JDBC spans) →
+        ts-inside-payment-service (server /drawback + JDBC on persist legs); createaccount = inside-payment
+        server + JDBC (in-process, no cross-service hop); adminroute = admin-route server/client →
+        ts-route-service server + 6 JDBC (persist); adminbasic = admin-basic server/client →
+        ts-contacts-service server + 3 JDBC. Context propagation across @LoadBalanced RestTemplate WORKS
+        (single 24/31/15/13-span traces). NOT covered: ui-dashboard (nginx, uninstrumented entry),
+        gateway (uninstrumented, header-transparent), user/auth services (not in wave scope), async/broker
+        legs (TT has none on these paths). Agent noise: NacosWatch scheduler emits 1-span internal traces
+        (excluded by the scorer's entry-server filter, disclosed). Remaining SUT rows at their deploys.
 ☐ 2.5.5 Tracetest Agent + OTLP collector on the kind cluster; smoke arm 2+3 vs Bookinfo
         (`selected_spans.count = 0` absence assertion end-to-end).
 ☐ 2.5.6 TraceAnomaly normal-corpus capture per SUT FIRST (training data — C-M3 ordering fix).
