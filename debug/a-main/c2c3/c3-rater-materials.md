@@ -21,12 +21,20 @@ underspecified, using only each system's docs, spec, and source.
 
 Concretely, blindness requires:
 - The case set shown to each rater is a **normalized mix**: S3 wild-flagged cases + ~20 calibration
-  cases with pre-known labels, in ONE common format (B4 harness output). A rater cannot tell a
-  flagged case from a calibration case, nor which detector (if any) surfaced it.
-- Each rater-facing case carries ONLY: the SUT identity + version, the request sequence performed,
-  the observed durable state (and the observed state on the paired clean run where one exists), and
-  pointers to that SUT's docs/spec/source. It carries NO tool verdict, NO trace, NO hypothesis label,
-  NO "expected observable" annotation authored by us.
+  cases (pre-known labels) + **the M-yield cluster-audit sample** (generation-driven finds, plan §3.1
+  — B-M3), all in ONE common format (B4 harness output). A rater cannot tell which stratum a case is
+  in, nor which detector (if any) surfaced it. The M-yield audit cases are format-normalized and
+  interleaved exactly like S3 cases; their size is stated to the rater only as part of the total.
+- **Clean-run normalization (R6 — closes a blindness leak).** Every S1 calibration case has a paired
+  clean-run twin, but wild S3 / M-yield cases usually do NOT — so presence-vs-absence of a "no-fault
+  run" column would deterministically separate calibration from measurement. Invariant: **the paired
+  clean-run observation is either (a) stripped from ALL rater-facing cases, or (b) synthesized/withheld
+  uniformly**, so the field carries ZERO signal about stratum. Default: strip it — the rater judges the
+  single observed run against docs/spec/source. Also audit for other distributional tells (SUT /
+  endpoint / response-shape mix must not correlate with stratum).
+- Each rater-facing case carries ONLY: the SUT identity + version, the request sequence performed, the
+  observed durable state, and pointers to that SUT's docs/spec/source. It carries NO tool verdict, NO
+  trace, NO hypothesis label, NO "expected observable" annotation, and NO clean-run column.
 - Independence mechanics (§5) prevent raters from reconstructing the tool lens by comparing notes.
 This §0 is the reason the materials read the way they do; it is removed from the rater packet.
 
@@ -34,18 +42,17 @@ This §0 is the reason the materials read the way they do; it is removed from th
 
 ## §1 Rater-facing recruitment brief
 **What this is.** A paid, short-term labeling study on open-source microservice benchmarks. You will
-review a set of ~60–100 recorded system behaviors and judge, for each, whether the behavior is a
-genuine correctness defect, an intentional/by-design behavior, or not decidable from the available
-documentation.
+review a **capped set of up to 60 recorded system behaviors** (S3 wild + calibration + M-yield audit,
+interleaved) and judge, for each, whether the behavior is a genuine correctness defect, an
+intentional/by-design behavior, or not decidable from the available documentation.
 
 **Who we're looking for.** Software engineers with microservice literacy: comfortable reading
 OpenAPI/REST specs, understanding synchronous REST + asynchronous messaging + eventual consistency,
 and reading application source (Java and Go). A short screening task (§ eligibility) confirms fit.
 
 **The task, per case.** You are given (a) the system and its exact version, (b) the sequence of API
-requests performed, (c) the system's response(s), and (d) the resulting observed durable state —
-including, where available, the state after an otherwise-identical run with no fault. Using ONLY the
-system's documentation, OpenAPI/spec, and source code, you assign one label:
+requests performed, (c) the system's response(s), and (d) the resulting observed durable state. Using
+ONLY the system's documentation, OpenAPI/spec, and source code, you assign one label:
 - **genuine defect** — the system reported success (or otherwise acknowledged the operation) but the
   durable effect the operation promises did not occur, AND the intended behavior is derivable from
   the docs/spec/source (i.e., "it should have persisted/propagated" is contract-grounded).
@@ -56,9 +63,10 @@ system's documentation, OpenAPI/spec, and source code, you assign one label:
 You record the specific doc/spec/source citation that grounds your label, a confidence, and a brief
 rationale (§4 ballot).
 
-**Time + pay.** ~15–45 minutes per case × the case set ≈ **15–45 hours (~2–3 working days)**. You are
-paid [RATE — §7] for the estimated hours **regardless of the labels you produce**; there is no
-"right answer" we are steering toward.
+**Time + pay (m2 — reconciled).** ~15–45 minutes per case × **≤60 cases ≈ 15–45 hours (~2–3 working
+days)**; if a larger set is unavoidable the estimate/compensation scales with it (the pay basis is
+per-hour, not per-case). You are paid [RATE — §7] for the estimated hours **regardless of the labels
+you produce**; there is no "right answer" we are steering toward.
 
 **What you will NOT be shown** (and why it matters): any automated tool's opinion on these cases, any
 execution traces, and any of our own hypotheses about which cases are defects. We are measuring your
@@ -76,19 +84,28 @@ independent judgment; seeing those would defeat the study. Please do not seek th
 
 ---
 
-## §3 The rubric packet (frozen — identical to c2-freeze.md §3 / the §8.5-1 rule)
+## §3 The rubric packet (frozen — VERBATIM-identical to c2-freeze.md §3 / the §8.5-1 rule; R5)
 **Three-way label {genuine, benign, underspecified}.**
-- **genuine** — a real acked-but-lost data-integrity fault: the system acknowledged the client
-  operation (2xx or a success-shaped body) while the durable write the operation promises did not
-  land (or a downstream write in its causal closure did not), AND the intended behavior IS derivable
-  from docs / spec / source.
+- **genuine** — a real acked-but-lost data-integrity fault: the system acknowledged the operation (HTTP
+  2xx **with a success-shaped body — see the sentinel rule**) while the durable write it promises did
+  not land (or a downstream write in its causal closure did not), AND the intended behavior IS
+  derivable from docs / spec / source.
 - **benign** — the observed degradation is by-design / lived-with per docs / spec / source.
-- **underspecified** — the intended behavior is NOT derivable from docs / spec / source.
-  Underspecified cases are excluded from the primary precision denominator and reported separately; a
-  disagreement about WHETHER a case is underspecified goes to the third adjudicator like any other.
+- **underspecified** — the intended behavior is NOT derivable from docs / spec / source. Excluded from
+  the primary precision denominator; fraction reported; a disagreement about WHETHER a case is
+  underspecified goes to the third adjudicator like any other.
+- **Sentinel / "success-shaped body" rule (R8):** a body carrying a failure sentinel or error
+  status-field (`-1`, `{1,"error"}`, a negative id) is **NOT success-shaped** — such a case is
+  tell-bearing and is tracked separately (it is trivially catchable by a body check), not in the
+  primary discriminating denominator. A discriminating genuine positive needs 2xx AND (empty body OR a
+  success-shaped body with no failure sentinel).
 
-**Admissible evidence:** docs, OpenAPI / spec, source code.
-**Inadmissible evidence:** runtime behavior beyond what the case shows, traces, any tool output.
+**Admissibility (the observation-vs-verdict split — R5):**
+- **Admissible AS the OBSERVATION to be judged:** the case's own presented material — the request
+  sequence, the response(s), and the observed durable state.
+- **The sole source of the NORM (what SHOULD have happened):** docs, OpenAPI/spec, source code.
+- **Inadmissible:** distributed traces, any tool/oracle output (incl. MIST), and any runtime behavior
+  BEYOND what the case itself presents.
 
 **Worked examples (calibration-only; to be authored on real calibration cases, kept out of S3):**
 - *genuine pattern* — POST returns 201 with an order id; GET on that id 404s and no row exists in the
@@ -120,13 +137,19 @@ time_minutes: <int>              # for the compensation + calibration audit
   study closes (separate delivery, separate return).
 - **Third adjudicator** resolves every disagreement, including disagreements about whether a case is
   underspecified. The adjudicator sees both ballots and the same admissible evidence only.
-- **Agreement statistics (plan §3.1):** κ over pooled calibration+S3 (n≥50), reported with CI + raw
-  agreement + a prevalence-adjusted coefficient (PABAK / Gwet's AC1). Per-SUT n<10 → Clopper–Pearson
-  counts only. CI units = distinct defect/fault-sites, not flagged events.
+- **Agreement statistics (R7 — S3-only κ is PRIMARY):** report **S3-only κ as the headline reliability
+  number** (Clopper–Pearson counts when n<10 — the pre-registered S3-scarce branch). Pooled
+  calibration+S3 κ is a SECONDARY small-n-stability figure carrying the **calibration-inflation caveat**
+  (calibration cases are the easy, rubric-tuned cases → pooled κ is upward-biased). Both reported with
+  CI + raw agreement + a prevalence-adjusted coefficient (PABAK / Gwet's AC1). CI units = distinct
+  defect/fault-sites, not flagged events.
 
 ## §6 The κ-calibration round (runs first)
-- ~20 calibration cases (known labels, drawn from S1 positives + S2 benign, format-normalized) are
-  labeled first; κ is computed.
+- **Calibration set sizing (M1 fix):** draw the calibration set (known labels, from S1 positives + S2
+  benign, format-normalized) large enough that **pooled calibration+S3 ≥ 50 is guaranteed given the
+  expected S3** — with S1+S2 ≥ 80 this is free (e.g. ~30 calibration + expected S3 ≥ 20). This makes the
+  secondary pooled figure computable without letting S3 scarcity block it.
+- Calibration is labeled first; κ is computed.
 - **κ-gate (frozen):** if κ < 0.6, at most TWO rubric-iteration rounds, each using CALIBRATION CASES
   ONLY (no S3 peeking). After any iteration, ALL previously-labeled cases are relabeled under the
   final rubric (fresh raters if available). Calibration cases are NOT reused as S3 measurement cases.
@@ -146,6 +169,15 @@ Recommendation to surface: **screened contract SWEs or off-team SE grad students
 genuinely MIST-blind). The **third adjudicator** should be the most senior of the three and likewise
 off-team.
 
+**IRB / ethics determination — a PRECONDITION before any rater is contacted (B-M8).** This is a paid
+study recruiting external humans, so it needs an IRB/ethics-board determination (approval OR a
+documented exemption) at the recruiting institution BEFORE outreach — surfaced to the user alongside
+the channel decision because it can add weeks onto the longest-lead item. **Expected exemption
+rationale** (to file): the task is expert code/spec review of PUBLIC open-source systems, collects NO
+personal or sensitive data, records only anonymized labels + rationales, and releases them as an open
+research artifact — typically exempt (e.g. US 45 CFR 46.104(d)(2) benign-behavioral / existing-public).
+The paper's ethics statement cites the determination.
+
 ## §8 Fallback (two-author-blind — pre-committed scars, plan §3.1)
 Triggers ONLY if recruitment fails by the step-5 gate. Then, as pre-committed: (i) the C3 precision
 claim is demoted one register in the ABSTRACT; (ii) all label evidence is released for community
@@ -156,4 +188,6 @@ fix of the review. This is a fallback, not a plan — the §7 recruitment starts
 Two calibration-style cases with unambiguous ground truth (one clear genuine, one clear benign) + a
 2-question spec-reading check (given an OpenAPI snippet, identify the system-of-record service for a
 field; given a source method, state whether it persists). Pass = both cases correct + both check
-questions correct. This gates the skill floor without revealing the study's purpose.
+questions correct. This gates the skill floor without revealing the study's purpose. **These two
+eligibility cases are DISJOINT from the ~30 §6 calibration cases and from all S3/M-yield cases (m7)** —
+a rater never sees them again, so they cannot bias κ or the measurement.
