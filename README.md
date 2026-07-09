@@ -58,6 +58,7 @@ the same result.
 | **MST test configuration** (one YAML file per SUT, copy + edit the bundled one) | `conf.path` | `trainticket/real-system-conf.yaml` |
 | **Jaeger / OpenTelemetry traces** (single file *or* directory of `.json` / `.jsonl`) | `trace.file.path` | `trainticket/test-trace` |
 | **Target system base URL** | `base.url` | `http://<your-sut-host>:32677` |
+| *(optional)* **Target-triples registry** — write → read-back bindings for the [data-integrity oracle](#data-integrity-oracle-acked-but-lost-writes--observe-mode); draft one with `TriplesProposer` | `mst.oracle.dataintegrity.registry` | `trainticket/target-triples-demo.yaml` (demo ships it ON) |
 
 Two more keys sit in the MST section of the same file:
 
@@ -124,6 +125,14 @@ In IntelliJ, the pre-shipped run configuration **"MIST: Demo
 (bundled TrainTicket)"** does the same thing with one click —
 working directory is fixed to `$PROJECT_DIR$` so the play-button
 behaves like the CLI.
+
+> **What to look for in the report:** besides the usual pass/fail suites, the
+> demo ships the **data-integrity oracle enabled** — tests that exercise a
+> registered write carry a `✅ durable write confirmed …` step (and a lost
+> write would surface as a `💧 ACKED-BUT-LOST WRITE` finding with evidence
+> attached). How it works, what to configure for your own system, and how to
+> draft the write→read-back registry with `TriplesProposer`:
+> [*Data-integrity oracle*](#data-integrity-oracle-acked-but-lost-writes--observe-mode).
 
 ## Quick Start B — bundled demo, hosted LLM API (DeepSeek shown)
 
@@ -240,7 +249,12 @@ For each microservice scenario reconstructed from a Jaeger trace, MIST emits one
    evidence. (The Phase 2 response envelope invariant subsumes the
    legacy `SoftErrorRuleCache` and is persisted at
    `.mist/trace-shape-invariants.json`.)
-5. **explores untriggered status codes** (401/403/404/409/…) via auth-manipulation and LLM-suggested input mutations.
+5. **explores untriggered status codes** (401/403/404/409/…) via auth-manipulation and LLM-suggested input mutations,
+6. **verifies each registered write actually persisted** (the *data-integrity
+   oracle*, observe mode): after an acknowledged write, MIST polls the
+   registered read-back and renders ✅ confirmed / 💧 **ACKED-BUT-LOST** /
+   ⏳ unconfirmed verdicts directly in the Allure report — see
+   [*Data-integrity oracle*](#data-integrity-oracle-acked-but-lost-writes--observe-mode).
 
 Full pipeline (Phase 1 cross-trace merging → Phase 2 session merging → Phase 2.5 dedup → Phase 3 component shattering → Phase 4 baseline decomposition → variant generation) is documented in the in-code Javadoc on `io.mist.core.generation.MistGenerator`.
 
@@ -415,7 +429,10 @@ quiescence-gated read-back poll and reports one of three verdicts in the **Allur
    `proposed-triples.yaml` (body-carrying POSTs with a same-path collection read-back; **review it,
    fill each `TODO(dependency)`, confirm each read-back is the system of record** before using it as
    the registry). Bodyless writes, value-delta probes and supplied-isolation bindings are the expert
-   tier — authored by hand, not proposed.
+   tier — authored by hand, not proposed. **Proposal recall depends on spec DECLARATION quality:**
+   the proposer trusts the spec, never runtime behavior — e.g. the bundled TrainTicket spec declares
+   every GET response as an opaque `HttpEntity{body: object}`, so it yields 0 proposals there and the
+   demo registry is hand-verified instead (exactly the honest fallback the tool expects of you).
 3. **A trace backend for the defect tier**: `jaeger.base.url` must point at your Jaeger API.
    Without it, an absent write can never be *observation-gated* — it stays ⏳ unconfirmed and the 💧
    tier (and `failonlost`) can never fire. This is deliberate, precision-first gating: absence is

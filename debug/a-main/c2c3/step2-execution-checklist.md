@@ -32,6 +32,18 @@ Sources consolidated: plan v2 §5, `c2-freeze.md` rev 2, `e-sut-applicability-ma
         MIST-blind screen + §5 independence + "internal-but-blind" threat disclosure + §8 fallback if
         genuinely-blind students can't be staffed (do NOT relax blindness to fill seats).
 
+## Step 1.95 — THE CORPUS FACTORY (parallel track, starts NOW; c3-case-corpus-plan.md)
+☐ 1.95.1 **B4 blind-label harness** (the corpus factory — moved UP from step 5, zero deploy deps):
+        rev-2 case + raw artifacts → rater-facing case.md + ballot.yaml + SEALED manifest.json;
+        invariants tested (no tool strings; no clean-run column; opaque non-stratum ids;
+        deterministic bytes); fixtures = the seed subset below.
+☐ 1.95.2 Seed migration (benchmark/README §9: the 6 v0.1.0 cases → rev 2, validator PASS) +
+        promote the G1/G3/SS reviewed assets → **seed calibration subset (~8–12) + the 2 §9
+        eligibility cases** through the harness end-to-end.
+☐ 1.95.3 (with 1.9.6) rater-materials ≥3-cold-review → IRB/exemption filing → eligibility screen
+        ready. RATERS START only at the step-5 corpus gate — by construction, matching the
+        recruitment lead.
+
 ## Step 2 — deploy wave (after 1.9; tenancy: big SUTs solo — TT, OTel-Demo; small co-reside)
 ☐ 2.1 Restore `.wslconfig` to 26 GB before any TT wave; verify `free -h` inside WSL.
 ☐ 2.2 TeaStore deploy (kind; pin release tag + image digests at deploy → freeze label validity).
@@ -125,6 +137,10 @@ Sources consolidated: plan v2 §5, `c2-freeze.md` rev 2, `e-sut-applicability-ma
 ☐ **B4 blind-label harness BUILD item (B-MAJOR):** the case-normalization/delivery harness that
   produces the rater-facing mix (clean-run stripped, M-yield interleaved, opaque ids) — built +
   smoke-tested BEFORE calibration.
+☐ **CORPUS-ASSEMBLY ENTRY GATE (before ANY rater sees a case — c3-case-corpus-plan §4/§6):** all
+  three strata (calibration ~30 balanced across SUTs · S3 min(all,40) · M-yield audit) produced by
+  the SAME B4 harness version; §0 distributional-tell audit run on the final mix; manifest SEALED +
+  corpus hash frozen.
 ☐ Adjudication: blindness invariants; S3-only κ primary; calibration ~30 sized so pooled ≥50 free.
 ☐ M-prevalence reporting obligations VERBATIM (B-MAJOR): detector-conditioned LOWER-BOUND estimand
   stated; detector recall on S1 as the qualifier; two denominators (per-request, per-endpoint);
