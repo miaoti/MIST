@@ -60,3 +60,18 @@ positioning.
 
 **Standing rules honored:** frozen-doc changes are disclosed amendments (c2-freeze §6); no file deletion;
 branch `main_track`; no Co-Authored-By; artifacts English.
+
+## RE-FREEZE CLOSED (2026-07-08) — all R1–R8 + single findings folded
+| commit | scope |
+|---|---|
+| `ce672d2` | **c2-freeze.md rev 2** (R1 enum+floor, R4 typed readback, R8 ack-content axis + sentinel rule + tell-free floor, A-M1 S3 scoring, A-M2 included precision, A-M8 disclosure, B-M4 authoring_cost, B-M5 trace split, B-M7 write_shape, m1/m2, §6 amendments) + **JSON schema rev 2** (R2: adopts oracle_expectation/anti-circularity/fault_class/capture_status; meta-schema valid; 6 seed cases FAIL-by-design pending step-2 migration) + **benchmark/README** supersession banner + §9 migration map |
+| `ba308d1` | **c3-rater-materials.md rev 2** (R5 verbatim rubric + observation-vs-verdict, R6 clean-run blindness normalization, R7 S3-only-κ primary + calibration sizing, B-M3 M-yield cases in the mix, B-M8 IRB precondition, m2 hours, m7 eligibility disjoint) |
+| `75dd666` | **matrix** honest two-denominator recount + TeaStore 3-mechanism (broker-less min) + ack-content tell-free axis + trace-visibility split; **survey** m4/A/R1 annotations; **sweep** C-A1 Filibuster/Cast/lead-with-study + m1 single-string; **spike** C-A3 5th contract-invariant arm + TraceAnomaly provisional-until-run |
+
+**Verification:** JSON schema meta-valid (draft-2020-12); 6 seed cases FAIL rev 2 by design (migration is
+a disclosed step-2 task, README §9). **Every convergent BLOCKING (R1–R8) and every single MAJOR/MINOR is
+folded.** Net effect on the two verdicts that said REJECT: B's B1–B4 (scaffold collision, floors, enum,
+observable) all resolved at the freeze; C's Attack-2 converted into a measured `ack_content_visibility`
+axis (A's source check made TeaStore a tell-free exhibit rather than a liability). **Step-1 freeze is
+now re-frozen and load-bearing; step 2 may proceed.** The re-freeze itself is a step-1 deliverable; if a
+further ≥3-cold-review of the re-frozen set is wanted before step 2, it runs against HEAD `75dd666`.
