@@ -66,8 +66,15 @@ Sources consolidated: plan v2 §5, `c2-freeze.md` rev 2, `e-sut-applicability-ma
         ELIG SCREEN cases DONE (2026-07-09): `benchmark/eligibility/tt-elig-{genuine,benign}.json` (rev-2,
         captured, OUTSIDE the measurement corpus, disjoint-by-id) — schema-valid + B4-render verified
         end-to-end (no leak; 5 B4 self-tests green; probe labels neutralized). §9 eligibility instrument =
-        renderable. NEXT (no decision): the pre-registered SCALE-PLAN captures (FP/TP pair + consume-span,
-        breadth fork-builds, idempotent-no-op control, S3) — need live deploys; and step-2 SUT deploys.
+        renderable. **BREADTH WAVE DONE (2026-07-10, user-approved autonomous order): adminroute +
+        adminbasic lost-writes LIVE-CAPTURED on fork-built images (e5af2936/1c9913ea, clean a1767ab3 tree;
+        kubectl set image+env; RESTORED to base 1.0.0 after) + NEW same-binary adminbasic control (closes
+        R9). Corpus = 12 cases, 6 pos / 6 neg, captured discriminating positives 2→4 (2 fabricated-ack +
+        2 skipped-persist across 3 services). Pod-log triple corroboration on adminbasic. RUNBOOK RULE:
+        probe-first after any rollout (nacos/ribbon serves terminating pods; first adminbasic attempt
+        discarded + re-captured fresh).** NEXT (no decision): traced-capture wave design (N-vs-0 row +
+        FP/TP pair + consume-span — needs OTel instrumentation plan); idempotent-no-op control (borrowed
+        SUT); step-2 SUT deploys (TeaStore/OTel-Demo; tenancy window = ASK USER before TT-down).
 ☑ 1.95.3 rater-materials 3-cold-review **DONE** (rev 3, `REVIEW-RATER-RECONCILIATION.md`, commit
         3aae75a). IRB/exemption filing + compensation (U1/U2) = USER (arranging). RATERS START only at
         the step-5 corpus gate — by construction, matching the recruitment lead.

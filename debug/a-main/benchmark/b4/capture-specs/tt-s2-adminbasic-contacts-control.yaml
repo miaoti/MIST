@@ -1,0 +1,14 @@
+# Breadth control leg: adminbasic contact create lands (fork ts-admin-basic-info-service:1.0.5,
+# env MIST_FAULT_LOSTWRITE_ENABLED absent/false -> unmodified persist path via ts-contacts-service).
+# Same fork digest as the fault leg = same-binary twin differing ONLY in the env flag (closes R9).
+# Membership key = accountId+documentNumber (adminbasic has NO per-entity GET).
+case_id: tt-s2-adminbasic-contacts-control
+sut: {name: trainticket, version_ref: quickstart-codewisdom-1.0.0 + fork ts-admin-basic-info-service:1.0.5 flag-off}
+base_url: http://localhost:32677
+login: {path: /api/v1/users/login, username: admin, password: "222222"}
+steps:
+  - method: POST
+    path: /api/v1/adminbasicservice/adminbasic/contacts
+    payload: '{"id":"8b3f5e0d-7a29-4d16-b8c4-2e9f1a0d6c75","accountId":"9a8b7c6d-5e4f-4a3b-9c2d-1e0f9a8b7c6d","name":"MIST Breadth Ctl","documentType":1,"documentNumber":"BR-CTL-R2-20260710","phoneNumber":"13800000001"}'
+observations:
+  - {path: /api/v1/adminbasicservice/adminbasic/contacts, delay_ms: 3000}

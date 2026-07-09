@@ -1,0 +1,82 @@
+{
+  "case_id": "TT-adminbasic-contacts-control-001",
+  "schema_version": "2.0.0",
+  "stratum": 1,
+  "capture_status": "captured",
+  "fault_class": "none",
+  "sut": {
+    "name": "trainticket",
+    "repo": "github.com/miaoti/train-ticket-injection",
+    "branch": "MIST-trainticket",
+    "commit": "a1767ab3",
+    "image_digest": "sha256:1c9913eaf0e153d4665f5c6cebec07c4d1c26b09a975baced568d58fdcc6eb6d",
+    "deploy": "kind cluster 'mist', ns trainticket; SAME fork ts-admin-basic-info-service:1.0.5 image as the lost-write twin, env MIST_FAULT_LOSTWRITE_ENABLED=false -> the unmodified persist path (forwards to ts-contacts-service). Same-binary twin: only the env flag differs. Restored to base 1.0.0 after capture.",
+    "replay_script": "debug/a-main/benchmark/b4/capture-specs/tt-s2-adminbasic-contacts-control.yaml",
+    "health_precondition": null
+  },
+  "target": {
+    "entry_endpoint": { "method": "POST", "path": "/api/v1/adminbasicservice/adminbasic/contacts", "service": "ts-admin-basic-info-service" },
+    "dependency": { "service": "ts-contacts-service", "kind": "downstream_service" },
+    "readback": {
+      "modality": "api-get",
+      "locator": "GET /api/v1/adminbasicservice/adminbasic/contacts [membership by business key accountId+documentNumber]",
+      "expect_without_fault": "present",
+      "expect_with_fault": "absent",
+      "mist_bindable": true
+    }
+  },
+  "fault": {
+    "mechanism": "none",
+    "injection_method": "none",
+    "config": { "env": { "MIST_FAULT_LOSTWRITE_ENABLED": "false" }, "note": "clean control: same fork binary as TT-adminbasic-contacts-lostwrite-001 with the flag OFF; addContact forwards the create to ts-contacts-service which persists it." },
+    "injected_by": "",
+    "target_service": "ts-admin-basic-info-service",
+    "provenance_class": "by-docs"
+  },
+  "stimulus": {
+    "script": "debug/a-main/benchmark/b4/capture-specs/tt-s2-adminbasic-contacts-control.yaml",
+    "write_path": true,
+    "workload_class": "authored-scenario",
+    "workload_variant": null
+  },
+  "oracle_eval": {
+    "ack_content_visibility": "success-shaped-clean",
+    "trace_visibility": "trace-uninstrumented",
+    "write_shape": "whole",
+    "oracle_mode": "paired",
+    "config_provenance": {
+      "mist_commit": "7d69de9",
+      "mist_authoring": { "tier": "hand-written", "minutes": 0 }
+    },
+    "comparator_configs": []
+  },
+  "ground_truth": {
+    "label": "negative",
+    "rationale": "The clean twin of TT-adminbasic-contacts-lostwrite-001 (same stimulus shape, same fork binary, flag off). addContact forwards to ts-contacts-service (createNewContactsAdmin) which persists the contact; the read-back lists the submitted accountId+documentNumber. The write LANDED; no defect. Every oracle must NOT fire here (else FP). Per-case specificity check paired 1:1 with the positive.",
+    "source": "by_construction",
+    "version": 1,
+    "doc_citation": null
+  },
+  "oracle_expectation": {
+    "status_code_oracle": "no_flag",
+    "schema_oracle": "no_flag",
+    "body_marker_oracle": "no_flag",
+    "naive_span_error_oracle": "not_applicable",
+    "tracetest_presence_oracle": "not_applicable",
+    "mist_readback_oracle": "no_flag",
+    "mist_trace_shape_oracle": "not_applicable"
+  },
+  "provenance": {
+    "control_trace": null,
+    "fault_trace": null,
+    "readback_response": "debug/a-main/benchmark/b4/captures/tt-s2-adminbasic-contacts-control/sidecar.json",
+    "notes": "LIVE-CAPTURED 2026-07-10 (breadth wave): POST {id 8b3f5e0d..., documentNumber BR-CTL-R2-20260710} acked 200 {1,\"Create Success\",null} (the downstream ts-contacts-service createNewContactsAdmin envelope, forwarded); read-back PRESENT (write landed); the pod logged [addContacts] with NO LOST_WRITE line. Captured AFTER routing convergence with the probe-first discipline (a throwaway persistence probe verified the flag-off path via the public entry before the real capture; the first pre-convergence attempt was discarded and re-run with fresh ids). SAME-BINARY TWIN: identical image digest as the lost-write positive, differing only in the env flag -> the pair isolates the flag as the only variable (stronger than a base-vs-fork twin). mist_readback=no_flag is a real as-deployed true-negative. AS-DEPLOYED (rev-2.1 R2): trace-uninstrumented -> trace oracles not_applicable. ACK-TEXT NOTE: this clean leg's msg (\"Create Success\") differs from the fault leg's fabricated msg (\"create contacts success\") - disclosed cross-leg textual tell."
+  },
+  "license": {
+    "case_code": "Apache-2.0",
+    "case_data": "CC-BY-4.0",
+    "upstream_sut": "Apache-2.0",
+    "sources": ["ts-admin-basic-info-service AdminBasicInfoServiceImpl.addContact (flag-off forward path)", "ts-contacts-service ContactsController.createNewContactsAdmin"]
+  },
+  "adjudication": null
+}

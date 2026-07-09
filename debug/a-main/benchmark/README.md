@@ -1,19 +1,22 @@
 # MIST labeled fault benchmark (C2) — structure + schema
 
-> **STATUS (2026-07-09): SEED / PILOT corpus, rev-2 schema, 3-cold-reviewed.** The AUTHORITATIVE C2
-> pre-registration is `debug/a-main/c2c3/c2-freeze.md` (rev 2 + the 2026-07-09 rev-2.1 amendments).
-> All **11 cases in `cases/` are migrated to rev-2 and validate** (`schema/validate_cases.py`, exit 0).
+> **STATUS (2026-07-10): SEED / PILOT corpus, rev-2 schema, 3-cold-reviewed + breadth wave captured.**
+> The AUTHORITATIVE C2 pre-registration is `debug/a-main/c2c3/c2-freeze.md` (rev 2 + rev-2.1 amendments).
+> All **12 cases in `cases/` validate** (`schema/validate_cases.py`, exit 0); the two `eligibility/` cases
+> (rater screen, outside the measurement corpus) also validate.
 > This README describes the design + the *current populated pilot*; read the freeze for the frozen truth.
 > `schema/rubric.md` (v0.1.0) is superseded by `c2-freeze.md` §3 + `c2c3/c3-rater-materials.md` §3.
 
 > **Read this first — what the pilot IS and is NOT (REVIEW-CORPUS-RECONCILIATION.md, 3-cold-review):**
 > The populated corpus is a **seed/pilot + a pre-registered scale plan**, NOT a completed benchmark. It is
-> **6 positives / 5 negatives** (report it that way — never a bare "S1 count"). Of the 6 positives only
-> **2 are captured *discriminating* positives** (`TT-cancel-refund-fabricatedack`, `TT-createaccount-agreement`
-> — both fabricated-ack fork flags on `ts-inside-payment-service`); the FP/TP precision pair (bookinfo +
-> sockshop), the breadth positives (adminroute/adminbasic), and the entire S3 wild stratum are `specified`
-> (designed, label known) and **unrun** — they are the scale plan (§8), and a `specified` case's
-> `oracle_expectation` is a design TARGET, never a measured result.
+> **6 positives / 6 negatives** (report it that way — never a bare "S1 count"). Of the 6 positives,
+> **4 are captured *discriminating* positives** across 3 write-path services: 2 fabricated-ack fork flags
+> (`TT-cancel-refund-fabricatedack`, `TT-createaccount-agreement`, on `ts-inside-payment-service`) + 2
+> skipped-cross-service-persist flags captured 2026-07-10 (`TT-adminroute-lostwrite`,
+> `TT-adminbasic-contacts-lostwrite` — as-deployed only `mist_readback` catches them; pre-registered as
+> comparator-catchable under trace instrumentation, i.e. NOT MIST-unique once traced). The FP/TP precision
+> pair (bookinfo + sockshop) and the entire S3 wild stratum remain `specified`/unrun — they are the scale
+> plan (§8), and a `specified` case's `oracle_expectation` is a design TARGET, never a measured result.
 
 > **PREP deliverable (main-track). NO MIST tool code.** Contribution **C2 — an open-source labeled
 > benchmark of masked-downstream / acked-but-lost data-integrity faults** in OSS microservice systems.
@@ -35,7 +38,8 @@ benchmark/
     fault-case.schema.json          JSON Schema (draft 2020-12) for ONE labeled case — rev 2
     validate_cases.py               validator: cases/*.json vs the schema (exit 0 iff all pass)
     rubric.md                       v0.1.0 rubric (SUPERSEDED by c2-freeze §3 + c3-rater-materials §3)
-  cases/                            11 cases, all rev-2-valid (6 positive / 5 negative)
+  cases/                            12 cases, all rev-2-valid (6 positive / 6 negative)
+  eligibility/                      2 rater-screen cases (§9 instrument; OUTSIDE the measurement corpus)
   b4/                               blind-label harness + capture specs + captured sidecars
 ```
 
@@ -47,8 +51,9 @@ benchmark/
 | `TT-cancel-refund-clean` | 1 | negative | captured | clean control (drawback=none; refund lands) |
 | `TT-createaccount-clean` | 1 | negative | captured | clean control (createAccount=none; row persists) |
 | `TT-adminroute-control` | 1 | negative | captured | clean control (base image; route persists) |
-| `TT-adminroute-lostwrite` | 1 | positive | specified | breadth: skipped cross-service persist → `span-presence-visible` (a presence-assertion *also* catches) |
-| `TT-adminbasic-contacts-lostwrite` | 1 | positive | specified | breadth on a 2nd service (collection read-back) |
+| `TT-adminroute-lostwrite` | 1 | positive | **captured** | breadth: skipped cross-service persist, clean fabricated ack, client-supplied id absent from read-back. Pre-registered: presence-assertion *also* catches under instrumentation |
+| `TT-adminbasic-contacts-lostwrite` | 1 | positive | **captured** | breadth on a 2nd service (collection read-back); pod-log corroborated (`LOST_WRITE_FAULT` line matches the submitted id) |
+| `TT-adminbasic-contacts-control` | 1 | negative | captured | **same-binary twin** of the adminbasic positive (identical fork digest, env flag off → persists); isolates the flag as the only variable |
 | `TT-contacts-dedupe-benign` | 2 | negative | captured | benign trap for the **ack rule**: 2xx + `status:0` soft-reject; `body_marker` wrongly flags |
 | `bookinfo-ratings-benign` | 2 | negative | specified | benign trap for the **trace oracles** (FP half of the precision pair) |
 | `sockshop-shipping-swallowed-enqueue` | 1 | positive | specified | natural masked failure (TP half of the precision pair) |
@@ -133,10 +138,14 @@ classes × strata) and honest denominators live in `c2-freeze.md` §5 (the earli
 100–140" arithmetic here was **refuted** by the §8.5-3 depth survey — TeaStore = 1 durable write, Boutique =
 0 — and is superseded by the freeze's two-denominator recount; do not cite the old count). **Deferred
 captures (need live deploys; none is a blocker to the honest pilot):**
-- Traced captures of the two fabricated-ack cases → earn the `trace-invisible-by-construction` N-vs-0 recall row.
+- Traced captures of the two fabricated-ack cases → earn the `trace-invisible-by-construction` N-vs-0 recall row
+  (same traced deploy also upgrades the adminroute/adminbasic pre-registered presence-assertion expectation).
 - The FP/TP pair live (bookinfo redeploy + sockshop tenancy window) with **queue-master consume-span**
   instrumentation → validate the `mist_trace_shape` precision advantage.
-- Fork-built breadth positives (adminroute / adminbasic) + the adminbasic clean control.
+- ~~Fork-built breadth positives (adminroute / adminbasic) + the adminbasic clean control~~ — **DONE 2026-07-10**
+  (breadth wave: fork images e5af2936/1c9913ea from the clean a1767ab3 tree; captures triple-corroborated;
+  deployments restored to base 1.0.0; runbook rule added: probe-first after any rollout — nacos/ribbon
+  routes to terminating pods for tens of seconds).
 - An **idempotent-no-op benign read-back control** (borrowed SUT) → test the read-back oracle's one FP mode.
 - The **S3 wild-adjudicated stratum** (the C3 rater study).
 
