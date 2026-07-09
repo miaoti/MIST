@@ -1,53 +1,82 @@
 {
   "case_id": "sockshop-shipping-swallowed-enqueue-001",
-  "schema_version": "0.1.0",
+  "schema_version": "2.0.0",
   "stratum": 1,
-  "fault_class": "swallowed_downstream_error",
   "capture_status": "specified",
+  "fault_class": "swallowed_downstream_error",
   "sut": {
-    "name": "Sock Shop (microservices-demo)",
+    "name": "sockshop",
     "repo": "github.com/microservices-demo/shipping",
     "branch": "master",
     "commit": "",
-    "deploy": "k8s complete-demo.yaml into the kind+Istio+Jaeger cluster (evaluation/suts/sockshop/deploy/deploy.sh); repos archived Dec 2023, images pinned"
+    "deploy": "SPECIFIED: k8s complete-demo.yaml into the kind+Istio+Jaeger cluster (evaluation/suts/sockshop/deploy/deploy.sh); repos archived Dec 2023, images pinned. Not currently deployed (sockshop scaled to 0 for the TrainTicket tenancy window).",
+    "replay_script": "valid session order flow (register -> login -> add cart item -> POST /orders) while RabbitMQ is unavailable",
+    "health_precondition": null
   },
   "target": {
-    "entry_endpoint": {
-      "method": "POST",
-      "path": "/orders",
-      "service": "orders"
-    },
-    "dependency": {
-      "service": "shipping",
-      "kind": "downstream_service"
+    "entry_endpoint": { "method": "POST", "path": "/orders", "service": "orders" },
+    "dependency": { "service": "shipping", "kind": "broker" },
+    "readback": {
+      "modality": "none-durable",
+      "locator": "queue-master shipment record - NOT black-box observable: order.shipment is written at order creation regardless of enqueue success, and no read-back API reflects broker consumption. Discriminator is the AMQP-send trace span.",
+      "expect_without_fault": "landed",
+      "expect_with_fault": "not-landed",
+      "mist_bindable": false
     }
   },
-  "injection": {
-    "mechanism": "natural",
-    "config": {
-      "note": "RabbitMQ made unavailable (scale rabbitmq to 0, or toxiproxy on the AMQP leg) while POST /orders executes. The fault-swallowing code path itself is UNMODIFIED SUT source: shipping's controller catches the enqueue failure and still returns success — source comment: 'Unable to add to queue... Accepting anyway. Don't do this for real!' (ShippingController). queue-master then never receives the shipping task."
-    },
+  "fault": {
+    "mechanism": "dependency-down",
+    "injection_method": "dependency_scale_zero",
+    "config": { "note": "RabbitMQ made unavailable (scale rabbitmq to 0, or toxiproxy on the AMQP leg) while POST /orders executes. The fault-swallowing code path is UNMODIFIED SUT source: shipping's controller catches the enqueue failure and still returns success - source comment: 'Unable to add to queue... Accepting anyway. Don't do this for real!' (ShippingController). queue-master then never receives the shipping task." },
     "injected_by": "",
-    "trigger_input": "valid session order flow (register -> login -> add cart item -> POST /orders) while RabbitMQ is unavailable"
+    "target_service": "rabbitmq (AMQP leg of shipping->queue-master)",
+    "provenance_class": "by-docs"
+  },
+  "negative_control": { "present": true, "replay_script": "same order flow with RabbitMQ available (task enqueues + queue-master consumes)" },
+  "stimulus": {
+    "script": "register -> login -> add cart item -> POST /orders (RabbitMQ down)",
+    "write_path": true,
+    "workload_class": "authored-scenario",
+    "workload_variant": null
+  },
+  "oracle_eval": {
+    "ack_content_visibility": "success-shaped-clean",
+    "trace_visibility": "error-span-visible",
+    "write_shape": "partial-aggregate",
+    "oracle_mode": "paired",
+    "config_provenance": {
+      "mist_commit": "7d69de9",
+      "mist_authoring": { "tier": "hand-written", "minutes": 0 }
+    },
+    "comparator_configs": []
   },
   "ground_truth": {
     "label": "positive",
-    "rationale": "Genuine masked failure, grounded in the unmodified SUT's source: the shipping service acknowledges the shipment request although the enqueue to RabbitMQ failed, and the source comment itself marks the swallow as an anti-pattern ('Don't do this for real!'). The order is 2xx-acked with a shipment object set at creation, while the shipping task is silently lost (queue-master persists nothing and never processes it). Unlike Bookinfo's ratings fallback there is no intended degraded UX communicated to the caller - the caller is told the shipment is accepted. Contestability note: a rater could argue 'demo code, author aware'; the code comment cuts the other way (the author flags it as wrong practice). Live adjudication may revisit the label when the case is captured.",
-    "source": "natural"
+    "rationale": "Genuine masked failure, grounded in the unmodified SUT's source: the shipping service acknowledges the shipment request although the enqueue to RabbitMQ failed, and the source comment itself marks the swallow as an anti-pattern ('Don't do this for real!'). The order is 2xx-acked with a shipment object set at creation, while the shipping task is silently lost (queue-master persists nothing and never processes it). Unlike Bookinfo's ratings fallback there is no intended degraded UX communicated to the caller - the caller is told the shipment is accepted. Contestability note: a rater could argue 'demo code, author aware'; the code comment cuts the other way (the author flags it as wrong practice). Live adjudication may graduate this to stratum-3 if the label is contested.",
+    "source": "natural",
+    "version": 1,
+    "doc_citation": "microservices-demo/shipping ShippingController source comment ('Unable to add to queue... Accepting anyway. Don't do this for real!')"
   },
   "oracle_expectation": {
     "status_code_oracle": "no_flag",
     "schema_oracle": "no_flag",
     "body_marker_oracle": "no_flag",
     "naive_span_error_oracle": "flag",
-    "mist_trace_shape_oracle": "flag",
-    "mist_dataintegrity_oracle": "not_applicable"
+    "tracetest_presence_oracle": "flag",
+    "mist_readback_oracle": "not_applicable",
+    "mist_trace_shape_oracle": "flag"
   },
   "provenance": {
     "control_trace": null,
     "fault_trace": null,
     "readback_response": null,
-    "notes": "Found by source inspection during the G3 prereg cold-review wave (research/REVIEW-PREREG-B-tech.md INFO-1); pre-registered in prep/g3-sut2-triples-prereg.md SS-C as a masking-oracle/benchmark candidate. PRECONDITION for the trace-based expectations: the two-part tracing mitigation from the G3 prereg (OTel Node auto-instrumentation on front-end + javaagents on orders/shipping) must be active, otherwise the AMQP-send failure span is invisible and naive_span_error/mist_trace_shape cannot run (not_applicable as-deployed). mist_dataintegrity is not_applicable BY DESIGN and that is the honest point of this case: no black-box read-back reflects broker consumption (order.shipment is written at creation regardless of enqueue success), so the case documents the read-back oracle's applicability boundary - only the trace-shape/masking oracle can see this class. Stratum note: this is a NATURAL positive grounded in source inspection (stratum-1 'known label' via the committed code path, mechanism=natural); on live capture it either stays stratum 1 (trigger reproduced deterministically) or graduates to stratum-3 adjudication if the label is contested."
+    "notes": "Found by source inspection during the G3 prereg cold-review wave (research/REVIEW-PREREG-B-tech.md INFO-1); pre-registered in prep/g3-sut2-triples-prereg.md SS-C. This is the TRUE-POSITIVE twin of bookinfo-ratings-benign for the trace oracles: here naive_span_error correctly FLAGS a genuine masked failure (vs the FP on bookinfo). PRECONDITION for the trace expectations: the two-part tracing mitigation from the G3 prereg (OTel Node auto-instrumentation on front-end + javaagents on orders/shipping) must be active, else the AMQP-send failure span is invisible and naive_span_error/tracetest_presence/mist_trace_shape all become not_applicable as-deployed. mist_readback=not_applicable BY DESIGN and that is the honest point: no black-box read-back reflects broker consumption (order.shipment written at creation regardless), so this case documents the read-back oracle's applicability boundary - only the trace-shape/masking oracle sees this class. write_shape=partial-aggregate (order/parent lands, shipping task/child lost). rev-2 migration (2026-07-09): readback modality none-durable; mist_dataintegrity_oracle -> mist_readback_oracle=not_applicable; ADDED tracetest_presence_oracle=flag (missing enqueue/consume span). Status: SPECIFIED (natural positive by source inspection; stratum 1, may graduate to 3 on contested live capture)."
+  },
+  "license": {
+    "case_code": "Apache-2.0",
+    "case_data": "CC-BY-4.0",
+    "upstream_sut": "Apache-2.0",
+    "sources": ["microservices-demo/shipping ShippingController (enqueue-failure swallow)"]
   },
   "adjudication": null
 }

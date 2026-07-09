@@ -1,56 +1,82 @@
 {
   "case_id": "TT-adminbasic-contacts-lostwrite-001",
-  "schema_version": "0.1.0",
+  "schema_version": "2.0.0",
   "stratum": 1,
-  "fault_class": "acknowledged_lost_write",
   "capture_status": "specified",
+  "fault_class": "acknowledged_lost_write",
   "sut": {
-    "name": "TrainTicket",
-    "repo": "local fork of AsifShaafi/train-ticket-injection (branch MIST-trainticket kept local, not pushed; resolve to a public URL at artifact release)",
+    "name": "trainticket",
+    "repo": "github.com/miaoti/train-ticket-injection",
     "branch": "MIST-trainticket",
     "commit": "bbf3d6ae",
-    "deploy": "k8s/minikube via make deploy (with OTel->Jaeger tracing)"
+    "deploy": "SPECIFIED (not yet captured on the a1767ab3 deploy): requires a FORK build of ts-admin-basic-info-service with MIST_FAULT_LOSTWRITE_ENABLED=true; the current kind 'mist' cluster runs the UPSTREAM base ts-admin-basic-info-service:1.0.0 (no fault flag). Original Gate-1 deploy: k8s via make deploy + OTel->Jaeger.",
+    "replay_script": "valid Contacts with a fresh unique UUID id (accountId, name, document fields)",
+    "health_precondition": null
   },
   "target": {
-    "entry_endpoint": {
-      "method": "POST",
-      "path": "/api/v1/adminbasicservice/adminbasic/contacts",
-      "service": "ts-admin-basic-info-service"
-    },
-    "dependency": {
-      "service": "ts-contacts-service",
-      "kind": "persistence"
-    },
-    "readback_endpoint": {
-      "method": "GET",
-      "path": "/api/v1/adminbasicservice/adminbasic/contacts",
-      "service": "ts-admin-basic-info-service"
+    "entry_endpoint": { "method": "POST", "path": "/api/v1/adminbasicservice/adminbasic/contacts", "service": "ts-admin-basic-info-service" },
+    "dependency": { "service": "ts-contacts-service", "kind": "downstream_service" },
+    "readback": {
+      "modality": "api-get",
+      "locator": "GET /api/v1/adminbasicservice/adminbasic/contacts [membership by business key accountId+documentNumber; NO per-entity GET on adminbasic -> collection-membership read-back]",
+      "expect_without_fault": "present",
+      "expect_with_fault": "absent",
+      "mist_bindable": true
     }
   },
-  "injection": {
-    "mechanism": "sut_injector",
-    "config": { "env": { "MIST_FAULT_LOSTWRITE_ENABLED": "true" } },
+  "fault": {
+    "mechanism": "flag",
+    "injection_method": "sut_injector",
+    "config": { "env": { "MIST_FAULT_LOSTWRITE_ENABLED": "true" }, "site": "AdminBasicInfoServiceImpl.addContact (skips the persist POST to ts-contacts-service)" },
     "injected_by": "MIST-trainticket@bbf3d6ae (AdminBasicInfoServiceImpl.addContact)",
-    "trigger_input": "valid Contacts with a fresh unique UUID id (and accountId, name, document fields)"
+    "target_service": "ts-admin-basic-info-service",
+    "provenance_class": "by-injection"
+  },
+  "negative_control": { "present": true, "replay_script": null },
+  "stimulus": {
+    "script": "valid Contacts with a fresh unique UUID id (accountId, name, document fields)",
+    "write_path": true,
+    "workload_class": "authored-scenario",
+    "workload_variant": null
+  },
+  "oracle_eval": {
+    "ack_content_visibility": "success-shaped-clean",
+    "trace_visibility": "span-presence-visible",
+    "write_shape": "whole",
+    "oracle_mode": "paired",
+    "config_provenance": {
+      "mist_commit": "7d69de9",
+      "mist_authoring": { "tier": "hand-written", "minutes": 0 }
+    },
+    "comparator_configs": []
   },
   "ground_truth": {
     "label": "positive",
-    "rationale": "With the flag on, addContact returns status:1 'create contacts success' but skips the persist POST to ts-contacts-service, so the contact is never saved. Verified by read-back: GET getAllContacts does not list the new contact id.",
-    "source": "by_construction"
+    "rationale": "With the flag on, addContact returns status:1 'create contacts success' but SKIPS the persist POST to ts-contacts-service, so the contact is never saved. Clean ack, lost write. Norm from the SUT contract; the absent durable row is presented via read-back: GET getAllContacts does not list the new contact's business key.",
+    "source": "by_construction",
+    "version": 1,
+    "doc_citation": null
   },
   "oracle_expectation": {
     "status_code_oracle": "no_flag",
     "schema_oracle": "no_flag",
     "body_marker_oracle": "no_flag",
     "naive_span_error_oracle": "no_flag",
-    "mist_trace_shape_oracle": "no_flag",
-    "mist_dataintegrity_oracle": "flag"
+    "tracetest_presence_oracle": "flag",
+    "mist_readback_oracle": "flag",
+    "mist_trace_shape_oracle": "no_flag"
   },
   "provenance": {
     "control_trace": null,
     "fault_trace": null,
     "readback_response": null,
-    "notes": "Second lost-write positive on a different write-path service (target triple B; shows the oracle is not adminroute-specific). Read-back is COLLECTION membership by business key (accountId+documentNumber) -- adminbasic has NO per-entity GET, so no per-entity isolation advantage over adminroute (cold-review A). Status: build-verified only; read-back capture + traces pending Gate-1 (G0 smoke)."
+    "notes": "Second lost-write positive on a DIFFERENT write-path service (target triple B; shows the oracle is not adminroute-specific). Same skipped-cross-service-persist shape as TT-adminroute-lostwrite-001: no error span (naive_span_error/mist_trace_shape clean), but the expected ts-contacts-service persist span is ABSENT -> a Tracetest presence-assertion catches it (tracetest_presence=flag) alongside MIST's read-back. Read-back is COLLECTION membership by business key (adminbasic has NO per-entity GET), so no per-entity isolation advantage over adminroute (cold-review A). rev-2 migration (2026-07-09): schema-only + ADDED tracetest_presence_oracle=flag; trace_visibility=span-presence-visible. Status: SPECIFIED (Gate-1-era fork commit bbf3d6ae; fork admin-basic image not deployed on the current a1767ab3 cluster)."
+  },
+  "license": {
+    "case_code": "Apache-2.0",
+    "case_data": "CC-BY-4.0",
+    "upstream_sut": "Apache-2.0",
+    "sources": ["ts-admin-basic-info-service AdminBasicInfoServiceImpl.addContact (MIST_FAULT_LOSTWRITE_ENABLED branch)"]
   },
   "adjudication": null
 }

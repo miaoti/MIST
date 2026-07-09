@@ -1,51 +1,81 @@
 {
   "case_id": "bookinfo-ratings-benign-001",
-  "schema_version": "0.1.0",
+  "schema_version": "2.0.0",
   "stratum": 2,
-  "fault_class": "swallowed_downstream_error",
   "capture_status": "specified",
+  "fault_class": "swallowed_downstream_error",
   "sut": {
-    "name": "Istio Bookinfo",
+    "name": "bookinfo",
     "repo": "github.com/istio/istio (samples/bookinfo)",
     "branch": "",
     "commit": "",
-    "deploy": "k8s with Istio sidecars + Jaeger"
+    "deploy": "SPECIFIED: k8s with Istio sidecars + Jaeger; the productpage flow with ratings scaled to zero. Not currently deployed (bookinfo scaled to 0 for the TrainTicket tenancy window).",
+    "replay_script": "GET /productpage while ratings is unavailable",
+    "health_precondition": null
   },
   "target": {
-    "entry_endpoint": {
-      "method": "GET",
-      "path": "/productpage",
-      "service": "productpage"
-    },
-    "dependency": {
-      "service": "ratings",
-      "kind": "downstream_service"
+    "entry_endpoint": { "method": "GET", "path": "/productpage", "service": "productpage" },
+    "dependency": { "service": "ratings", "kind": "downstream_service" },
+    "readback": {
+      "modality": "none-durable",
+      "locator": "no durable read-back (nominal: this is a read-path degradation, no write is intended); the discriminator is the trace, not durable state.",
+      "expect_without_fault": "landed",
+      "expect_with_fault": "not-landed",
+      "mist_bindable": false
     }
   },
-  "injection": {
-    "mechanism": "natural",
+  "fault": {
+    "mechanism": "dependency-down",
+    "injection_method": "dependency_scale_zero",
     "config": { "note": "ratings made unavailable (scale-to-zero or toxiproxy). The reviews service catches the failed ratings call and degrades by design." },
     "injected_by": "",
-    "trigger_input": "GET /productpage while ratings is unavailable"
+    "target_service": "ratings",
+    "provenance_class": "by-docs"
+  },
+  "stimulus": {
+    "script": "GET /productpage while ratings is unavailable",
+    "write_path": false,
+    "workload_class": "scripted-browse",
+    "workload_variant": null
+  },
+  "oracle_eval": {
+    "ack_content_visibility": "success-shaped-clean",
+    "trace_visibility": "error-span-visible",
+    "write_shape": "whole",
+    "oracle_mode": "paired",
+    "config_provenance": {
+      "mist_commit": "7d69de9",
+      "mist_authoring": { "tier": "hand-written", "minutes": 0 }
+    },
+    "comparator_configs": []
   },
   "ground_truth": {
     "label": "negative",
-    "rationale": "Designed graceful degradation: the reviews service catches a failed ratings call and productpage still returns HTTP 200 with 'Ratings service is currently unavailable' (developer-intended, istio/istio PR #15489). The downstream error span is real, but the entry behaviour is correct-by-design, so this is benign — the canonical false-positive trap for any naive 'error span under a 2xx' oracle.",
-    "source": "natural"
+    "rationale": "Designed graceful degradation: the reviews service catches a failed ratings call and productpage still returns HTTP 200 with 'Ratings service is currently unavailable' (developer-intended, istio/istio PR #15489). The downstream error span is real, but the entry behaviour is correct-by-design, so this is benign - the canonical false-positive trap for any naive 'error span under a 2xx' oracle.",
+    "source": "natural",
+    "version": 1,
+    "doc_citation": "istio/istio PR #15489 (reviews graceful-degradation of ratings)"
   },
   "oracle_expectation": {
     "status_code_oracle": "no_flag",
     "schema_oracle": "no_flag",
     "body_marker_oracle": "no_flag",
     "naive_span_error_oracle": "flag",
-    "mist_trace_shape_oracle": "no_flag",
-    "mist_dataintegrity_oracle": "not_applicable"
+    "tracetest_presence_oracle": "no_flag",
+    "mist_readback_oracle": "not_applicable",
+    "mist_trace_shape_oracle": "no_flag"
   },
   "provenance": {
     "control_trace": null,
     "fault_trace": null,
     "readback_response": null,
-    "notes": "Stratum-2 benign trap. naive_span_error_oracle FLAGS this (false positive) because a ratings error span sits under a 2xx entry; the TARGET for MIST's trace-shape oracle is no_flag (discriminate the designed degradation). The gap between these two columns at matched recall is exactly the A1 ablation (precision/FP) the eval reports."
+    "notes": "Stratum-2 benign trap. naive_span_error_oracle FLAGS this (false positive) because a ratings error span sits under a 2xx entry; the TARGET for MIST's trace-shape oracle is no_flag (discriminate the designed degradation). tracetest_presence=no_flag: the ratings span IS present (the call is made and errors), so a presence-assertion passes -> unlike the error-span oracle, it does NOT false-positive here. mist_readback=not_applicable (none-durable: no data write to read back). The gap between naive_span_error (flag) and mist_trace_shape (no_flag) at matched recall is exactly the A1 ablation (precision/FP) the eval reports; the contrast with sockshop-shipping (where naive_span_error correctly flags a genuine masked failure) is the paired FP/TP datum. rev-2 migration (2026-07-09): readback modality none-durable + expect pair nominal; mist_dataintegrity_oracle -> mist_readback_oracle; ADDED tracetest_presence_oracle=no_flag. Status: SPECIFIED (not deployed)."
+  },
+  "license": {
+    "case_code": "Apache-2.0",
+    "case_data": "CC-BY-4.0",
+    "upstream_sut": "Apache-2.0",
+    "sources": ["istio/istio samples/bookinfo reviews service (ratings fallback)"]
   },
   "adjudication": null
 }

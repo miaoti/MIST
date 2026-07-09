@@ -1,58 +1,82 @@
 {
   "case_id": "TT-contacts-dedupe-benign-001",
-  "schema_version": "0.1.0",
+  "schema_version": "2.0.0",
   "stratum": 2,
+  "capture_status": "captured",
   "fault_class": "acknowledged_lost_write",
-  "capture_status": "specified",
   "sut": {
-    "name": "TrainTicket (train-ticket-injection fork)",
-    "repo": "github.com/FudanSELab/train-ticket (fork: train-ticket-injection)",
+    "name": "trainticket",
+    "repo": "github.com/miaoti/train-ticket-injection",
     "branch": "MIST-trainticket",
-    "commit": "",
-    "deploy": "k8s/minikube via make deploy (evaluation/suts/trainticket/deploy/deploy.sh)"
+    "commit": "a1767ab3",
+    "image_digest": "sha256:ac8cf32a0053d453c4a02b6a5293473d483d6aa0c62a7d7c4b90258999ed529f",
+    "deploy": "kind cluster 'mist', ns trainticket; ts-contacts-service is UPSTREAM base codewisdom/ts-contacts-service:1.0.0 (image_digest pins the deployed base). No fault injected; the trigger is a duplicate create.",
+    "replay_script": "debug/a-main/benchmark/b4/capture-specs/tt-benign-contacts-dedupe.yaml",
+    "health_precondition": null
   },
   "target": {
-    "entry_endpoint": {
-      "method": "POST",
-      "path": "/api/v1/contactservice/contacts",
-      "service": "ts-contacts-service"
-    },
-    "dependency": {
-      "service": "ts-contacts-service",
-      "kind": "persistence"
-    },
-    "readback_endpoint": {
-      "method": "GET",
-      "path": "/api/v1/contactservice/contacts",
-      "service": "ts-contacts-service"
+    "entry_endpoint": { "method": "POST", "path": "/api/v1/contactservice/contacts", "service": "ts-contacts-service" },
+    "dependency": { "service": "ts-contacts-service", "kind": "persistence" },
+    "readback": {
+      "modality": "api-get",
+      "locator": "GET /api/v1/contactservice/contacts/account/{accountId} [membership by business key accountId+documentNumber]",
+      "expect_without_fault": "count-delta-positive",
+      "expect_with_fault": "count-delta-zero",
+      "mist_bindable": true
     }
   },
-  "injection": {
-    "mechanism": "natural",
-    "config": {
-      "note": "No fault injected. The trigger is a DUPLICATE create: POST the same contact (same accountId + documentNumber business key) twice. The unmodified SUT's dedupe path soft-rejects the second create."
-    },
+  "fault": {
+    "mechanism": "none",
+    "injection_method": "natural",
+    "config": { "note": "No fault injected. The trigger is a DUPLICATE create: POST the same contact (same accountId + documentNumber business key) twice; the unmodified SUT's dedupe path soft-rejects the second create with status:0." },
     "injected_by": "",
-    "trigger_input": "POST an identical contact twice in a row (second call is the case)"
+    "target_service": "ts-contacts-service",
+    "provenance_class": "by-docs"
+  },
+  "stimulus": {
+    "script": "debug/a-main/benchmark/b4/capture-specs/tt-benign-contacts-dedupe.yaml",
+    "write_path": true,
+    "workload_class": "authored-scenario",
+    "workload_variant": "duplicate-create (identical accountId+documentNumber; second call is the case)"
+  },
+  "oracle_eval": {
+    "ack_content_visibility": "status-field-tells",
+    "trace_visibility": "trace-uninstrumented",
+    "write_shape": "whole",
+    "oracle_mode": "paired",
+    "config_provenance": {
+      "mist_commit": "7d69de9",
+      "mist_authoring": { "tier": "hand-written", "minutes": 0 }
+    },
+    "comparator_configs": []
   },
   "ground_truth": {
     "label": "negative",
-    "rationale": "Designed duplicate-rejection, not a lost write: the second create returns HTTP 2xx with a TrainTicket envelope carrying status:0 ('already exists' semantics) and by design persists nothing. The surface phenomenon matches accept-then-drop (2xx + absent from read-back), which is why this is the canonical benign trap for the acknowledged-lost-write class on this SUT - but the response body explicitly signals non-acceptance (status:0), so a correct ack rule must exclude it. Grounded in the Gate-1 G0 evidence (prep/sut-fault-injection-capability.md section 9; the ACCEPT_THEN_DROP_DISCLOSURE in PairedFaultExecutor documents that TrainTicket's only by-design drop soft-rejects with status:0).",
-    "source": "natural"
+    "rationale": "Designed duplicate-rejection, not a lost write: the second create returns HTTP 2xx with a TrainTicket envelope carrying status:0 ('Contacts already exists') and by design persists nothing new. The surface phenomenon matches accept-then-drop (2xx + no count delta on read-back), which is why this is the canonical benign trap for the acknowledged-lost-write class on this SUT - but the response body explicitly signals non-acceptance (status:0), so a correct acknowledgement rule must exclude it. Grounded in the Gate-1 G0 evidence (prep/sut-fault-injection-capability.md section 9; PairedFaultExecutor ACCEPT_THEN_DROP_DISCLOSURE: TrainTicket's only by-design drop soft-rejects with status:0).",
+    "source": "natural",
+    "version": 1,
+    "doc_citation": "prep/sut-fault-injection-capability.md section 9 (ACCEPT_THEN_DROP_DISCLOSURE)"
   },
   "oracle_expectation": {
     "status_code_oracle": "no_flag",
     "schema_oracle": "no_flag",
     "body_marker_oracle": "flag",
     "naive_span_error_oracle": "no_flag",
-    "mist_trace_shape_oracle": "no_flag",
-    "mist_dataintegrity_oracle": "no_flag"
+    "tracetest_presence_oracle": "not_applicable",
+    "mist_readback_oracle": "no_flag",
+    "mist_trace_shape_oracle": "no_flag"
   },
   "provenance": {
     "control_trace": null,
     "fault_trace": null,
-    "readback_response": null,
-    "notes": "Stratum-2 benign trap for the ack rule specifically: mist_dataintegrity must NOT fire because its acknowledgement predicate (2xx AND body status in {null,1}) excludes the status:0 soft-reject - the write is not acknowledged, so the base relation is vacuous (a true negative, NOT a false positive avoided by luck). body_marker_oracle FLAGS the status:0 marker and is therefore WRONG on this case (the rejection is intended business behavior, not a fault) - that gap is the discriminating value of the case. The case also documents the disclosed limitation that TrainTicket has NO representative of the 2xx-accepted-but-never-persists trap class whose body claims success (the only by-design drop signals status:0), per the ACCEPT_THEN_DROP_DISCLOSURE shipped in the pairing report."
+    "readback_response": "debug/a-main/benchmark/b4/captures/tt-benign-contacts-dedupe/sidecar.json",
+    "notes": "Live-captured: second identical POST returns 2xx {0,\"Contacts already exists\"}; no new membership row (count delta zero). Stratum-2 benign trap for the ACK rule specifically: mist_readback must NOT fire because MIST's acknowledgement predicate (2xx AND body status in {null,1}) EXCLUDES the status:0 soft-reject, so the base relation is vacuous (a true negative, not a lucky miss). body_marker_oracle FLAGS the status:0 marker and is therefore WRONG on this benign case (intended business behavior) - that gap is the discriminating value. rev-2 migration (2026-07-09): fault_class stays acknowledged_lost_write (benign-trap convention = tag the class the trap is FOR, matching bookinfo-ratings-benign=swallowed_downstream_error; 'none' is reserved for clean controls); ack_content_visibility=status-field-tells (drives body_marker=flag); tracetest_presence_oracle=not_applicable (single-service in-process persistence; no cross-service dependency span to assert). Documents the disclosed limitation that TrainTicket has NO 2xx-success-body-but-never-persists representative (its only by-design drop signals status:0)."
+  },
+  "license": {
+    "case_code": "Apache-2.0",
+    "case_data": "CC-BY-4.0",
+    "upstream_sut": "Apache-2.0",
+    "sources": ["ts-contacts-service ContactsServiceImpl.create (dedupe branch)"]
   },
   "adjudication": null
 }

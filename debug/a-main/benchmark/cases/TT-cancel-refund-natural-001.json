@@ -1,0 +1,83 @@
+{
+  "case_id": "TT-cancel-refund-natural-001",
+  "schema_version": "2.0.0",
+  "stratum": 1,
+  "capture_status": "captured",
+  "fault_class": "acknowledged_lost_write",
+  "sut": {
+    "name": "trainticket",
+    "repo": "github.com/miaoti/train-ticket-injection",
+    "branch": "MIST-trainticket",
+    "commit": "a1767ab3",
+    "image_digest": "sha256:81186b71c1e4a3be56a3f6f8670d45ccfc04f68956e864cced27920ac1bf50d4",
+    "deploy": "kind cluster 'mist', ns trainticket; hack/deploy quick_start = codewisdom/*:1.0.0 + fork ts-inside-payment-service:1.0.5 (runtime drawback faultmode toggle)",
+    "replay_script": "debug/a-main/benchmark/b4/capture-specs/tt-cancel-refund.yaml",
+    "health_precondition": null
+  },
+  "target": {
+    "entry_endpoint": { "method": "GET", "path": "/api/v1/cancelservice/cancel/{orderId}/{loginId}", "service": "ts-cancel-service" },
+    "dependency": { "service": "ts-inside-payment-service", "kind": "downstream_service" },
+    "readback": {
+      "modality": "api-get",
+      "locator": "GET /api/v1/inside_pay_service/inside_payment/account [row userId==buyer; value=balance]",
+      "expect_without_fault": "count-delta-positive",
+      "expect_with_fault": "count-delta-zero",
+      "mist_bindable": true
+    }
+  },
+  "fault": {
+    "mechanism": "flag",
+    "injection_method": "sut_injector",
+    "config": { "drawbackFaultMode": "fail", "toggle": "GET /api/v1/inside_pay_service/inside_payment/test/faultmode/fail" },
+    "injected_by": "runtime toggle (admin bearer)",
+    "target_service": "ts-inside-payment-service",
+    "provenance_class": "by-injection"
+  },
+  "negative_control": { "present": true, "replay_script": "tt-cancel-refund.yaml @ drawbackFaultMode=none (TT-cancel-refund-clean-001)" },
+  "stimulus": {
+    "script": "debug/a-main/benchmark/b4/capture-specs/tt-cancel-refund.yaml",
+    "write_path": true,
+    "workload_class": "authored-scenario",
+    "workload_variant": null
+  },
+  "oracle_eval": {
+    "ack_content_visibility": "sentinel-in-body",
+    "trace_visibility": "trace-uninstrumented",
+    "write_shape": "whole",
+    "oracle_mode": "paired",
+    "config_provenance": {
+      "mist_commit": "7d69de9",
+      "mist_authoring": { "tier": "hand-written", "minutes": 15 }
+    },
+    "comparator_configs": []
+  },
+  "ground_truth": {
+    "label": "positive",
+    "rationale": "cancel returns HTTP 200 with body {status:1,msg:\"error\"} (acknowledged). Source: CancelServiceImpl.cancelOrder issues drawback(price) as the cancellation compensation; InsidePaymentServiceImpl.drawBack persists a type-D Money row so the buyer's /account balance rises by the refund. Under drawbackFaultMode=fail drawBack throws, cancelOrder catches and STILL acks {1,\"error\"}, and the refund Money row never lands (balance unchanged). Acked-but-lost. Norm is derivable from source; the observed unchanged durable balance is presented in the case.",
+    "source": "by_construction",
+    "version": 1,
+    "doc_citation": null
+  },
+  "oracle_expectation": {
+    "status_code_oracle": "no_flag",
+    "schema_oracle": "no_flag",
+    "body_marker_oracle": "flag",
+    "naive_span_error_oracle": "not_applicable",
+    "tracetest_presence_oracle": "not_applicable",
+    "mist_readback_oracle": "flag",
+    "mist_trace_shape_oracle": "not_applicable"
+  },
+  "provenance": {
+    "control_trace": null,
+    "fault_trace": null,
+    "readback_response": "debug/a-main/benchmark/b4/captures/tt-s1-cancel-natural/sidecar.json",
+    "notes": "Live-verified 2026-07-09: cancel HTTP 200 {1,\"error\"}, buyer /account balance 50.00 unchanged (refund lost). Tell-bearing (sentinel-in-body) => segregated from the primary DISCRIMINATING positive denominator per c2-freeze R8, still a real positive for recall in its own bucket. Detection TIE (a body-marker oracle catches the {1,\"error\"} sentinel; MIST's value-delta read-back also catches) per g3-result.md; MIST's edge here is localization, not detection. Traces not instrumented on this path (the drawback throw WOULD surface an error span if traced -> trace-uninstrumented, not by-construction-invisible)."
+  },
+  "license": {
+    "case_code": "Apache-2.0",
+    "case_data": "CC-BY-4.0",
+    "upstream_sut": "Apache-2.0",
+    "sources": ["ts-cancel-service CancelServiceImpl.cancelOrder", "ts-inside-payment-service InsidePaymentServiceImpl.drawBack"]
+  },
+  "adjudication": null
+}
