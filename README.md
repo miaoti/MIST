@@ -8,7 +8,10 @@
 > per-fault attribution, over an Adaptive Fault Taxonomy that mines
 > SUT-specific categories on top of 9 built-in ones), and the *Trace
 > Shape Oracle* (a learner + oracle that promotes a Jaeger trace into a
-> checkable assertion across four invariant families). Submitted to
+> checkable assertion across four invariant families). At runtime a fourth
+> check — the [*data-integrity oracle*](#data-integrity-oracle-acked-but-lost-writes--observe-mode)
+> (observe mode) — verifies each acknowledged write actually persisted,
+> surfacing 💧 acked-but-lost writes directly in the report. Submitted to
 > **ISSTA 2026 Tool Demonstrations**.
 
 ---
@@ -58,7 +61,7 @@ the same result.
 | **MST test configuration** (one YAML file per SUT, copy + edit the bundled one) | `conf.path` | `trainticket/real-system-conf.yaml` |
 | **Jaeger / OpenTelemetry traces** (single file *or* directory of `.json` / `.jsonl`) | `trace.file.path` | `trainticket/test-trace` |
 | **Target system base URL** | `base.url` | `http://<your-sut-host>:32677` |
-| *(optional)* **Target-triples registry** — write → read-back bindings for the [data-integrity oracle](#data-integrity-oracle-acked-but-lost-writes--observe-mode); draft one with `TriplesProposer` | `mst.oracle.dataintegrity.registry` | `trainticket/target-triples-demo.yaml` (demo ships it ON) |
+| *(optional)* **Target-triples registry** — write → read-back bindings for the [data-integrity oracle](#data-integrity-oracle-acked-but-lost-writes--observe-mode); draft one with `TriplesProposer` | `mst.oracle.dataintegrity.registry` | `target-triples-demo.yaml` *(exception to this column: a relative value resolves **beside the SUT conf**, CWD as fallback — demo ships it ON)* |
 
 Two more keys sit in the MST section of the same file:
 
@@ -281,7 +284,10 @@ Every INPUT-path key in the file
 (`oas.path`, `conf.path`, `trace.file.path`,
 `fault.detection.injected.faults.path`, the various registry paths) are
 resolved **relative to the .properties file's own directory** by
-`io.mist.cli.MistPathResolver` at startup. This is why the bundled
+`io.mist.cli.MistPathResolver` at startup. (One exception:
+`mst.oracle.dataintegrity.registry` resolves **beside the SUT conf** with the
+working directory as fallback — see the
+[data-integrity oracle](#data-integrity-oracle-acked-but-lost-writes--observe-mode) section.) This is why the bundled
 values look like `trainticket/merged_openapi_spec 1.yaml` rather than
 absolute paths — the path no longer depends on where the user launches
 MIST from.
@@ -423,9 +429,10 @@ quiescence-gated read-back poll and reports one of three verdicts in the **Allur
 **What you provide.**
 1. `mst.oracle.dataintegrity.enabled=true` in your properties file.
 2. A **target-triples registry** — the write → read-back bindings
-   (`mst.oracle.dataintegrity.registry=<path>`, default `target-triples.yaml` beside your SUT conf).
+   (`mst.oracle.dataintegrity.registry=<path>`, default `target-triples.yaml` beside your SUT conf;
+   a relative override ALSO resolves beside the conf, with the working directory as fallback).
    To generate a starting point from your OpenAPI spec:
-   `java -cp mist.jar io.mist.cli.fault.TriplesProposer <spec.yaml>` → writes
+   `java -cp mist-cli/target/mist.jar io.mist.cli.fault.TriplesProposer <spec.yaml> [out.yaml]` → writes
    `proposed-triples.yaml` (body-carrying POSTs with a same-path collection read-back; **review it,
    fill each `TODO(dependency)`, confirm each read-back is the system of record** before using it as
    the registry). Bodyless writes, value-delta probes and supplied-isolation bindings are the expert
@@ -433,16 +440,41 @@ quiescence-gated read-back poll and reports one of three verdicts in the **Allur
    the proposer trusts the spec, never runtime behavior — e.g. the bundled TrainTicket spec declares
    every GET response as an opaque `HttpEntity{body: object}`, so it yields 0 proposals there and the
    demo registry is hand-verified instead (exactly the honest fallback the tool expects of you).
-3. **A trace backend for the defect tier**: `jaeger.base.url` must point at your Jaeger API.
+   **Hand-authoring a registry** (the normal path on declaration-poor specs): copy
+   `mist-cli/src/main/resources/My-Example/trainticket/target-triples-demo.yaml` as your template.
+   One entry, annotated:
+
+   ```yaml
+   triples:
+     - name: adminroute-create                                   # unique label
+       write_endpoint: "POST /api/v1/adminrouteservice/adminroute"  # the write under test
+       dependency: ts-route-service                              # trace name of the PERSISTING service
+       readback_endpoint: "GET /api/v1/adminrouteservice/adminroute" # a COLLECTION GET (must start "GET ")
+       isolation_key: [startStation, endStation]                 # request-body fields MIST freshens per test,
+                                                                 #   then looks up in the read-back collection —
+                                                                 #   pick fields the read-back actually ECHOES,
+                                                                 #   never server-generated ids
+       isolation_strategy: fresh-strings   # fresh-strings | station-pair | supplied (expert)
+   ```
+
+   The loader is strict and loud — unknown keys, missing fields, or a non-GET read-back fail at
+   startup with the allowed keys named.
+3. **A trace backend for the defect tier**: `jaeger.base.url` must point at your Jaeger **API base
+   ending in `/api`** (e.g. `http://localhost:30005/jaeger/ui/api` — MIST appends `/traces/<id>`).
    Without it, an absent write can never be *observation-gated* — it stays ⏳ unconfirmed and the 💧
    tier (and `failonlost`) can never fire. This is deliberate, precision-first gating: absence is
-   only a defect when the write's own trace is complete.
+   only a defect when the write's own trace is complete. A slow-persisting SUT can raise the poll
+   budget: `mst.oracle.dataintegrity.poll.ms` (500), `.timeout.ms` (10000), `.trace.settle.ms`.
 
-**Guard rails.** A triple whose read-back never shows *any* write landing in the run is
-**quarantined** (⚠️ warning, not failure) — the guard against a mis-bound read-back producing false
-LOST verdicts. Negative/faulty test variants are never checked (a designed-invalid write carries no
-durable-write claim). Test parallelism is forced to 1 for the hooked stretch. The bundled demo has
-all of this wired: `trainticket-demo.properties` + `trainticket/target-triples-demo.yaml`.
+**Guard rails.** A triple whose read-back has not shown *any* write landing **so far in the run**
+is **quarantined** (⚠️ warning, not failure) — the guard against a mis-bound read-back producing
+false LOST verdicts. Negative/faulty test variants are never checked (a designed-invalid write
+carries no durable-write claim); non-acknowledged writes and internal errors surface as ℹ️ info
+steps, never as evidence. Test parallelism is forced to 1 for the hooked stretch, and a per-run
+totals summary (checked / confirmed / lost / unconfirmed) prints at the end of the run. The oracle
+rides the default MST generator path (`MultiServiceRESTAssuredWriter`); classic single-service
+generators (RT/CBT) do not carry the hooks. The bundled demo has all of this wired:
+`trainticket-demo.properties` + `trainticket/target-triples-demo.yaml`.
 
 ---
 
@@ -540,6 +572,10 @@ mist-parent (root pom.xml, packaging=pom)
         ├── TraceErrorAnalysisMain      Diagnostic tool
         ├── TraceMain                   Diagnostic tool
         ├── auth/                       MstAuthHandler, MstAuthRefreshFilter
+        ├── fault/                      Data-integrity oracle: observe runtime
+        │                               (DataIntegrityRuntime), verdict check
+        │                               (DataIntegrityObserveCheck), registry
+        │                               (TargetTripleRegistry), TriplesProposer
         ├── writer/                     MultiServiceRESTAssuredWriter
         └── spi/                        DefaultMistSpec, DefaultMistSpecLoader,
                                         RestAssuredMistTestWriter,
