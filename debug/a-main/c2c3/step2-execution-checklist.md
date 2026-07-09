@@ -46,6 +46,13 @@ Sources consolidated: plan v2 §5, `c2-freeze.md` rev 2, `e-sut-applicability-ma
 ☐ 2.5 Bookinfo: already live-proven in-repo — nothing to deploy beyond the existing cluster state.
 ☐ 2.6 Post-reboot runbook items stay in force: re-create mist:mist RabbitMQ user + warm-up POST
       before any SS run; repo .sh files are CRLF → run CRLF-stripped copies; minikube stays stopped.
+      **TT redeploy lessons (2026-07-09, live-verified):** (a) `quickstart-k8s/yamls/deploy.yaml` is
+      GENERATED + gitignored — regeneration resets images to `:1.0.2` which is ABSENT on Docker Hub →
+      `sed s/:1.0.2/:1.0.0/` (the cached, previously-run tag) then re-apply; (b) an "empty" trainticket
+      ns may be SCALED-TO-0 infra, not deleted — helm releases persist → `helm install` fails
+      "cannot re-use a name"; recovery = `kubectl scale sts nacosdb-mysql tsdb-mysql --replicas=2`,
+      `sts nacos --replicas=1`, `deploy rabbitmq --replicas=1` (PVCs preserve July mysql data);
+      (c) WSL can go unresponsive for ~1 min during 40+-pod startup (R6) — wait, never `wsl --shutdown`.
 ☐ 2.7 Wipe scripts / state-reset per SUT (DB-wipe preferred, rollout-restart fallback).
 ☐ 2.8 Wave-runner (unattended: timeout, logs, reset, dispatch; 2–4 d budget) — REQUIRED for E1/M-yield
       on a single box (R6 host-wedge protection: exclusive runs, off-peak builds, disk prune per wave).
