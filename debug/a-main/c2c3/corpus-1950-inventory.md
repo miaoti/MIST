@@ -33,3 +33,41 @@ that branch's build). Pre-pin July artifacts: reference-only (provenance notes),
 issues the scripted requests + read-backs and writes the sidecar directly; MIST is NOT in the loop
 for seed captures (keeps the pin untouched; the oracle's verdicts for these calibration cases are
 already known by construction/design — the sidecar records BEHAVIOR, not verdicts).
+
+---
+
+## LIVE DRY-RUN CHECKPOINT (2026-07-09, cancel trio) — SUT up, facts verified
+
+Deployed state: `ts-inside-payment-service:1.0.5` (fork) freshly rolled, 0 restarts; TT gateway
+nodePort **32677**; all ts-* pods Running.
+
+**Toggle routes (verified live — require an ADMIN Bearer; 403 without one):**
+- `GET /api/v1/inside_pay_service/inside_payment/test/faultmode/{none|fail|fabricatedack}` → `faultmode set: X`
+- `GET .../inside_payment/test/createfaultmode/{none|fabricatedack}` → `createfaultmode set: X`
+- `drawbackFaultMode`/`createAccountFaultMode` are **process-global static volatiles** → set-then-cancel
+  must be SEQUENTIAL (one buyer at a time), not parallel across modes.
+
+**Fault semantics (source-confirmed, `InsidePaymentServiceImpl.java:278-307` in the fork):**
+- `fail` → `throw RuntimeException` → caller (cancel-service) sees non-2xx → its catch acks
+  `{1,"error"}` = natural acked-but-lost, **body-visible sentinel**.
+- `fabricatedack` → returns `Response(1,"Draw Back Money Success",null)` **without persisting** the
+  type-D Money row → cancel acks `{1,"Success."}` = clean acked-but-lost, **no marker, state-only**.
+- `none` → persists type-D Money row → refund lands (benign control).
+
+**Read-backs:** `GET /inside_payment/account` (queryAccount) returns **ALL users** `{userId,balance}`
+(74 rows / ~5 KB now — noisy but the buyer's row is Ctrl-F-able by the userId that appears in the
+transcript); `/inside_payment/money` returns `data:null` even on success (**broken — unusable**).
+`GET /inside_payment/{userId}/{money}` (addMoney prefund) returns `{status:1,"Add Money Success",data:null}`
+— baseline NOT echoed → a rater-legible baseline needs either an observe-before or reliance on
+"prefund set it to 50, nothing else touched balance".
+
+**OPEN BLOCKER — buyer create returns 403.** `POST /api/v1/orderservice/order` with a fresh
+**buyer (ROLE_USER)** token → **403 Forbidden** via the gateway, even though order-service
+`SecurityConfig:75` allows `hasAnyRole(ADMIN,"USER")` on exactly that path; the same buyer token is
+accepted by inside-payment (prefund 200). Admin token → 200. Cause not yet isolated (gateway
+role-routing vs a per-service JWTFilter role-extraction difference); the head-to-head stimulus
+(`TrainTicketStimulus`) creates as the buyer, so it likely hit a **direct service URL** or a different
+gateway config. **RESOLVE (test order-service via a direct port-forward, or adopt admin-create +
+disclose) before finalizing the cancel-trio captures.** Note: cancel-trio labeling ALSO waits on the
+rater-materials rev-3 fixes (genuine-def, async rule, pinned-bundle rule) — see the rater
+reconciliation — so the corpus is not the current critical path.

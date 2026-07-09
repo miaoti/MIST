@@ -134,16 +134,27 @@ each reviewer re-runs k=5 random cases end-to-end + schema/label-audits m=15 mor
   at most TWO rubric-iteration rounds, each using CALIBRATION CASES ONLY (no S3 peeking); after any
   iteration, ALL previously-labeled cases are relabeled under the final rubric (fresh raters if
   available).
-- **Raters, quantified (reviews B M7 / C m4):** ≥2 MIST-blind raters with microservice literacy +
-  a third adjudicator. Workload ≈ S3 (≤40) + calibration (~20) + the M-yield cluster audit sample,
+- **Raters, quantified (reviews B M7 / C m4; 2026-07-09 F20):** 2 MIST-blind labelers with microservice
+  literacy + **1 reserve** (the fresh relabeler) + a third case-blind reader. Workload ≈ S3 (≤40) +
+  calibration (~30, = max(30, 50−|S3|)) + the M-yield cluster audit sample,
   at 15–45 min/case ≈ **15–45 hours per rater ≈ 2–3 paid working days** — compensation sized to
   that, consent + compensation sentence in the study materials, independence mechanics (no
   discussion channel before submission). **Fallback (two-author-blind), with scars pre-committed:**
   triggers only if recruitment fails by the step-5 gate; then (i) the C3 precision claim is demoted
   one register IN THE ABSTRACT, (ii) all label evidence is released for community re-adjudication,
   (iii) author-pair κ reported; acknowledged as partially undoing the §6 central fix.
-- **Statistics (reviews B M2 / A m3):** κ computed over pooled calibration+S3 (n ≥ 50), reported
-  with its CI, raw agreement, and a prevalence-adjusted coefficient (PABAK or Gwet's AC1). Per-SUT
+  **Channel resolved (disclosed amendment 2026-07-09):** raters = in-group MIST-blind SE grad students
+  (`c2c3/c3-rater-materials.md` §7). This removes the external-outreach lead but keeps every
+  blindness/independence condition; because in-group raters are not off-team, the paper discloses
+  "internal but MIST-blind raters (independence by protocol §5)" as a threat to validity, and this §3.1
+  two-author-blind fallback still triggers if genuinely-blind students cannot be staffed.
+- **Statistics (reviews B M2 / A m3; amended 2026-07-09 → R7 S3-only-primary, rater review F9):**
+  **PRIMARY = S3-only κ** (measurement κ = S3 + M-yield-audit); pooled calibration+S3 κ (n ≥ 50) is a
+  SECONDARY small-n-stability figure (calibration-inflation caveat). Estimator = Cohen's unweighted (2
+  labelers)/Fleiss' (3), 3-category nominal; reported with CI (bootstrap BCa; withhold κ at n<10), raw
+  agreement, and a prevalence-adjusted coefficient (PABAK/Gwet's AC1 — headline when any label's
+  prevalence > 0.70). Reliability decision ladder + conservative-tie-break-primary scoring per
+  `c2c3/c3-rater-materials.md` §5 and `c2-freeze.md` §3. Per-SUT
   intervals: n ≥ 10 → Wilson; n < 10 → counts + exact Clopper–Pearson only, no per-SUT CI-based
   claims (pooled-with-stratification secondary). **CI units are distinct defect/fault-sites, not
   flagged events** (the correlated-denominator lesson carried from the G3 pack). The companion's

@@ -1,0 +1,58 @@
+{
+ "sidecar_version": 1,
+ "case_id": "tt-benign-contacts-dedupe",
+ "producer": "seed-capture-driver",
+ "mist_commit": "7d69de9",
+ "sut": {
+  "name": "trainticket",
+  "version_ref": "quickstart-codewisdom-1.0.0"
+ },
+ "records": [
+  {
+   "t_rel_ms": 0,
+   "kind": "request",
+   "method": "POST",
+   "path": "/api/v1/users/login",
+   "payload": "{\"username\":\"<redacted>\",\"password\":\"<redacted>\"}"
+  },
+  {
+   "t_rel_ms": 141,
+   "kind": "response",
+   "status": 200,
+   "body": "<login response \u2014 token redacted>"
+  },
+  {
+   "t_rel_ms": 141,
+   "kind": "request",
+   "method": "POST",
+   "path": "/api/v1/adminbasicservice/adminbasic/contacts",
+   "payload": "{\"name\":\"cap-dedupe-user\",\"accountId\":\"cap-acct-77\",\"documentType\":1,\"documentNumber\":\"cap-doc-77\",\"phoneNumber\":\"1380000077\"}"
+  },
+  {
+   "t_rel_ms": 562,
+   "kind": "response",
+   "status": 400,
+   "body": "{\"timestamp\":\"2026-07-09T09:56:49.171+00:00\",\"status\":400,\"error\":\"Bad Request\",\"message\":\"\",\"path\":\"/api/v1/adminbasicservice/adminbasic/contacts\"}"
+  },
+  {
+   "t_rel_ms": 562,
+   "kind": "request",
+   "method": "POST",
+   "path": "/api/v1/adminbasicservice/adminbasic/contacts",
+   "payload": "{\"name\":\"cap-dedupe-user\",\"accountId\":\"cap-acct-77\",\"documentType\":1,\"documentNumber\":\"cap-doc-77\",\"phoneNumber\":\"1380000077\"}"
+  },
+  {
+   "t_rel_ms": 609,
+   "kind": "response",
+   "status": 400,
+   "body": "{\"timestamp\":\"2026-07-09T09:56:49.237+00:00\",\"status\":400,\"error\":\"Bad Request\",\"message\":\"\",\"path\":\"/api/v1/adminbasicservice/adminbasic/contacts\"}"
+  },
+  {
+   "t_rel_ms": 3609,
+   "kind": "observation",
+   "probe": "GET /api/v1/adminbasicservice/adminbasic/contacts",
+   "status": 200,
+   "body": "{\"status\":1,\"msg\":\"Success\",\"data\":[{\"id\":\"acd0356e-9be0-4a74-9f1c-158fa0e76f9f\",\"accountId\":\"4d2a46c7-71cb-4cf1-b5bb-b68406d9da6f\",\"name\":\"Contacts_One\",\"documentType\":1,\"documentNumber\":\"DocumentNumber_One\",\"phoneNumber\":\"ContactsPhoneNum_One\"},{\"id\":\"60fa62d3-3128-4e0c-9c8f-a39e4dc7325a\",\"accountId\":\"4d2a46c7-71cb-4cf1-b5bb-b68406d9da6f\",\"name\":\"Contacts_Two\",\"documentType\":1,\"documentNumber\":\"DocumentNumber_Two\",\"phoneNumber\":\"ContactsPhoneNum_Two\"}]}"
+  }
+ ]
+}

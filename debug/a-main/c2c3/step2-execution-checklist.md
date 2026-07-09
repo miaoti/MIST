@@ -27,10 +27,14 @@ Sources consolidated: plan v2 §5, `c2-freeze.md` rev 2, `e-sut-applicability-ma
         FROZEN at this pin; all case verdicts from 3a on recorded at it; promoted G1/G3 seeds
         re-recorded at it — moved from step 8, B-MAJOR).
 ☐⋯ 1.9.6 **∥ (U2 — longest lead):** CHANNEL DECIDED 2026-07-09 = in-group MIST-blind SE grad students
-        (`c3-rater-materials.md` §7) → external-outreach lead removed. STILL OPEN before labeling:
-        rater-materials ≥3-cold-review; IRB/exemption filing; §9 eligibility screen. BINDING: mandatory
-        MIST-blind screen + §5 independence + "internal-but-blind" threat disclosure + §8 fallback if
-        genuinely-blind students can't be staffed (do NOT relax blindness to fill seats).
+        (`c3-rater-materials.md` §7 rev 3) → external-outreach lead removed. **Rater-materials 3-cold-review
+        DONE (2026-07-09, `REVIEW-RATER-RECONCILIATION.md`) → packet hardened to rev 3.** STILL OPEN
+        BEFORE FIRST CONTACT (F22 — recruitment/screening are themselves IRB-covered): IRB/exemption
+        filing; compensation decision (stipend vs credit + rate/hours, U1); the §11 blindness-screen
+        instrument + §9 eligibility screen administered. BINDING: mandatory MIST-blind screen (§11) + §5
+        independence + team quiet-period + §10 debrief manipulation check + "internal-but-blind" threat
+        disclosure + §8 fallback if genuinely-blind students can't be staffed (do NOT relax blindness to
+        fill seats).
 
 ## Step 1.95 — THE CORPUS FACTORY (parallel track, starts NOW; c3-case-corpus-plan.md)
 ☐ 1.95.0 **Raw-artifact INVENTORY (C-M5/B-B1): list what each seed asset actually has** (all 6 v0.1.0 cases are `capture_status: specified` = NO artifacts; TT h2h transcripts not committed) → sizes the capture-run list BEFORE building fixtures.
@@ -153,9 +157,12 @@ Sources consolidated: plan v2 §5, `c2-freeze.md` rev 2, `e-sut-applicability-ma
   same-B4-harness-version across strata · tell-audit (incl. timestamps + cross-strata shape
   uniformity) · manifest SEALED incl. RUBRIC VERSION · corpus hash frozen · machine disjointness
   (calibration ∩ S3 ∩ M-yield-audit ∩ eligibility = ∅ by true id) · every rated case
-  `capture_status == captured` · IRB determination RECEIVED · wild-flag capture bundle present for
-  every S3 case (B-M1).
-☐ Adjudication: blindness invariants; S3-only κ primary; calibration ~30 sized so pooled ≥50 free.
+  `capture_status == captured` · IRB determination RECEIVED (before FIRST CONTACT, not just labeling — F22) ·
+  wild-flag capture bundle present for every S3 case (B-M1) · **(9th check, rater review F2/F3/F11)
+  blindness-screen (§11) + §10 debrief records on file for every rater; the §3 worked examples AUTHORED
+  on real calibration cases + rater packet rev ≥3 final**.
+☐ Adjudication: blindness invariants; **conservative-tie-break primary (adjudicated secondary; F6)**;
+  S3-only κ primary; calibration = max(30, 50−|S3|), benign-skewed ≥2:1, sized so pooled ≥50 free.
 ☐ M-prevalence reporting obligations VERBATIM (B-MAJOR): detector-conditioned LOWER-BOUND estimand
   stated; detector recall on S1 as the qualifier; two denominators (per-request, per-endpoint);
   workload scripts versioned in the benchmark; write-path fraction reported.

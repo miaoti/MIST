@@ -12,7 +12,7 @@ updated to THIS model and the seed cases carry a migration map — see §6 and
 ## §1 The frozen claim + obligations
 **Claim string (final, for-the-record):** *"the first open-source labeled benchmark built for ORACLE
 EVALUATION on masked-downstream / acknowledged-but-lost data-integrity faults — pairing positive
-strata with a benign-trap false-positive stratum and a blind-adjudicated wild stratum, under a
+strata with a benign-trap false-positive stratum and a blind-labeled wild stratum, under a
 per-case label-provenance taxonomy."*
 - **The paper LEADS with the STUDY, not "first" (C-A1 / plan §1 writing rule).** The claim string is
   recorded here for priority-defense; the title/abstract/contribution order lead with C2+C3 as a
@@ -149,7 +149,7 @@ artifacts:                                        # @eval
 - `oracle_eval.config_provenance.mist_commit` IDENTICAL across every case.
 - Zero labels derived from MIST's own predicate (the `mist_*` oracle_expectation columns are TARGETS).
 
-## §3 The adjudication rubric (frozen; identical copy in `c3-rater-materials.md` §3 — R5)
+## §3 The adjudication rubric (frozen; the `c3-rater-materials.md` §3 rater copy is identical MODULO the disclosed R6 clean-run strip + the 2026-07-09 rater-rubric-delta amendment — R5)
 **Three-way label {genuine, benign, underspecified}** (genuine≡positive, benign≡negative for S1/S2).
 - **genuine** — a real acked-but-lost data-integrity fault: the SUT acknowledged the operation (HTTP
   2xx **with a success-shaped body — see the sentinel rule below**) while the durable write it promises
@@ -159,6 +159,11 @@ artifacts:                                        # @eval
 - **underspecified** — the intended behavior is NOT derivable from docs / spec / source. Excluded from
   the primary precision denominator; fraction reported; disagreement about underspecified-ness → the
   third adjudicator.
+- **Async tie-break (re-landed from the superseded `benchmark/schema/rubric.md:45-50`; applies in the
+  rater copy too — 2026-07-09 amendment):** if the write path is asynchronous, judge observed absence
+  against any documented completion bound — absence past a documented bound → genuine; no derivable
+  bound → underspecified (not genuine).
+- **Partial writes:** source-stated-atomic but partly landed → genuine; atomicity unstated → underspecified.
 - **Sentinel/"success-shaped body" rule (R8/C-A2):** a response body carrying a failure sentinel or
   error status-field (`-1`, `{1,"error"}`, a negative id) is **NOT success-shaped** — the ack is
   tell-bearing (`ack_content_visibility = sentinel-in-body | status-field-tells`), a trivial body
@@ -168,8 +173,13 @@ artifacts:                                        # @eval
   is CLEARED from the blob before the 200 → the client sees a clean 200 → TeaStore natural is
   `success-shaped-clean`, a tell-FREE exhibit; TT-natural `{1,"error"}` is tell-bearing and is graded a
   detection TIE in `g3-result.md` — both are recorded honestly by this field.)
+  **Rater-copy divergence (2026-07-09 amendment, R-review F4):** this "success-shaped" precondition is
+  ANALYST-side — it defines the *discriminating denominator* (§4), not the label. The rater-facing
+  genuine definition DROPS it; a rater labels a 2xx `{1,"error"}` acked-but-lost as *genuine* and records
+  the marker mechanically in a ballot field `ack_carries_failure_sentinel`, and the tell-bearing
+  segregation is applied at scoring. (Fixes the impasse where such a case had no valid rater label.)
 
-**Admissibility (R5 — the observation-vs-verdict split, verbatim in both files):**
+**Admissibility (R5 — the observation-vs-verdict split; in the rater copy modulo the disclosed R6 clean-run strip):**
 - **Admissible AS the OBSERVATION to be judged:** the case's own presented material — the request
   sequence, the response(s), and the observed durable state (including the paired clean-run state).
 - **The sole source of the NORM (what SHOULD have happened):** docs, OpenAPI/spec, source code.
@@ -177,13 +187,21 @@ artifacts:                                        # @eval
   BEYOND what the case itself presents. (The earlier flat "runtime behavior inadmissible" was wrong —
   it forbade the very datum every case is built around.)
 
-**κ-gate:** if κ < 0.6 after calibration, at most TWO rubric-iteration rounds, CALIBRATION CASES ONLY
-(no S3 peeking); after any iteration, relabel ALL prior cases under the final rubric (fresh raters if
-available). **Statistics (R7):** report **S3-only κ as PRIMARY** (Clopper–Pearson counts when n<10);
-pooled calibration+S3 κ is a SECONDARY small-n-stability figure carrying the calibration-inflation
-caveat (calibration cases are the easy, rubric-tuned cases). Size calibration so pooled ≥50 is free
-given S1+S2 ≥ 80. Prevalence-adjusted coefficient (PABAK/Gwet's AC1) alongside. CI units = distinct
-defect/fault-sites, not flagged events.
+**κ-gate:** if the *calibration-gate* κ < 0.6, at most TWO rubric-iteration rounds, CALIBRATION CASES
+ONLY (no S3 peeking); after any iteration, relabel ALL prior cases under the final rubric (the reserve
+rater is the fresh relabeler). **Statistics (R7 + 2026-07-09 amendment, R-review F5/F14/F21):**
+estimator = **Cohen's unweighted κ** (2 labelers) / **Fleiss'** (3), **nominal, over the full 3-category**
+space {genuine, benign, underspecified} (the underspecified→precision exclusion NEVER applies to κ);
+report **S3-only κ as PRIMARY** (measurement κ = S3 + M-yield-audit; **withhold κ at n<10**, report raw
+agreement + Clopper–Pearson on the agreement proportion); pooled calibration+S3 κ is a SECONDARY
+small-n-stability figure carrying the calibration-inflation caveat; κ CI by **bootstrap BCa**. Report
+**PABAK/Gwet's AC1** always; **AC1 is the headline when any single label's prevalence > 0.70**, κ
+otherwise (neither substituted post-hoc). **Pre-registered reliability ladder on the primary S3-only κ:**
+≥0.6 full register; 0.4–0.6 demoted register (all ballots released, conservative-tie-break primary,
+adjudicated secondary, AC1 non-substituting); <0.4 no reliability claim (§8 fallback). Calibration size =
+**max(30, 50−|S3|)**, benign-skewed **≥2:1**; per-rater confusion-matrix bias audit vs known calibration
+labels feeds a sensitivity band on S3 precision. CI units = distinct defect/fault-sites, not flagged
+events. Full rater protocol: `c3-rater-materials.md` §5–§6/§10–§11.
 
 ## §4 Machine index format + the scoring contract
 **Layout:** `cases/<id>.yaml` (or `.json` per the machine schema) · `index.generated.*` (built, not
@@ -197,7 +215,9 @@ by hash).
   fault leg should FIRE (else FN); any control leg + any benign fault leg should NOT fire (else FP).
 - **S3 (observed-flag path — A-M1/B-M6):** wild cases have NO `fault.injection` and usually NO twin.
   The oracle's verdict is the ALREADY-EMITTED flag on the captured transcript; score TP/FP/excluded
-  vs the adjudicated `label.value`; no fault/control legs. **S3 reproduction = captured-artifact +
+  vs the S3 label — **conservative-tie-break resolution is PRIMARY** (any inter-rater disagreement
+  involving `genuine` resolves to NOT-genuine; 2026-07-09 amendment, R-review F6), the case-blind
+  adjudicated resolution is reported SECONDARY (upper bound); no fault/control legs. **S3 reproduction = captured-artifact +
   best-effort replay, non-determinism documented** (never silently re-manufactured as a deterministic
   injection — that would destroy its wild provenance).
 - **Underspecified + tell-bearing buckets:** excluded from the primary discriminating denominator.
@@ -258,3 +278,4 @@ FROZEN ON COMMIT. Every post-freeze change = a dated row.
 | 2026-07-08 | folded: S3 scoring branch (A-M1/B-M6); included-precision def (A-M2); split `trace_visibility` (B-M5); `write_shape` (B-M7); `authoring_cost` (B-M4); S3-only-κ primary (R7); rubric observation-vs-verdict (R5); m1/m2 invariant fixes | step-1 review MAJ/MIN | rev 1 §2/§3/§4 |
 | 2026-07-09 | **Corpus-wave amendment (REVIEW-CORPUS-B B1/M1):** `artifacts.raw_logs` entries point at the RATER-ARTIFACT SIDECAR format (ordered request records method/path/payload · response records status+full body · durable-state observations · RELATIVE times · producer + mist_commit stamp) — the single format every producer (seed capture runs, M-yield, step-5 wild-flag capture bundles) emits; B4 consumes only case+sidecar. No frozen-key change (raw_logs stays `[<paths>]`) — this row documents the adopted format for hygiene | corpus plan rev 2 (`c3-case-corpus-plan.md` §5) | — |
 | 2026-07-08 | **UX-wave amendment (U7, REVIEW-UX-RECONCILIATION):** +`oracle_eval.oracle_mode` (observe\|paired); +`config_provenance.mist_authoring {tier, minutes}` (minutes-per-bound-endpoint = the common symmetry unit with comparator `authoring_cost`); mist_commit pin timing = END of the 1.9 UX wave, criteria include W0–W6, QuiescenceGate→verdict mapping frozen at the pin; promoted G1/G3 seeds re-recorded at the pin; **defect-tier prerequisite disclosed: OBSERVED_COMPLETE_ABSENT requires a trace backend (`jaeger.base.url`) — claim wording "once bound and trace-instrumented"** | UX 3-cold-review (U3/U7/C-A4) | JSON schema updated in lockstep |
+| 2026-07-09 | **Rater-rubric-delta + reliability amendment (3-cold rater review, `REVIEW-RATER-RECONCILIATION.md`).** (a) The `c3-rater-materials.md §3` rater copy is NOT byte-verbatim: it drops the analyst "success-shaped body" precondition (moved to the ballot field `ack_carries_failure_sentinel`), so a 2xx `{1,"error"}` acked-but-lost is rater-labelable *genuine* (F4); the "verbatim/identical" claims (§3 header, admissibility) are corrected to "identical modulo the disclosed R6 clean-run strip + this delta" (F7). (b) Re-landed three specs the rev-2 re-freeze silently dropped from `benchmark/schema/rubric.md`: the async-vs-lost-write tie-break (`:45-50` → §3), the **Cohen's-κ** estimator pin (`:55` → §3 statistics), and per-ballot **rater_id + rubric_version** recording (`:56` → rater ballot §4). (c) Pre-registered: 3 enumerated κ's + reliability decision ladder on the primary S3-only κ; PABAK/AC1 headline at prevalence>0.70; **conservative-tie-break primary** for S3 scoring (adjudicated secondary; §4); adaptive calibration size max(30,50−\|S3\|), benign-skewed ≥2:1 + known-label bias audit; underspecified>30%-of-S3 promotion bound. (d) Claim string "blind-adjudicated"→"blind-labeled wild stratum" (§1). Full protocol lives in `c3-rater-materials.md` (rev 3). | 3-cold rater review gated human-subject contact | rev-2 freeze §3 statistics + "verbatim" claims; rater packet rev 2 |

@@ -1,0 +1,11 @@
+# NOW-capturable seed: clean adminroute create + collection read-back (control/calibration).
+case_id: tt-ctl-adminroute-create
+sut: {name: trainticket, version_ref: quickstart-codewisdom-1.0.0}
+base_url: http://localhost:32677
+login: {path: /api/v1/users/login, username: admin, password: "222222"}
+steps:
+  - method: POST
+    path: /api/v1/adminrouteservice/adminroute
+    payload: '{"startStation":"zhenjiang","endStation":"xuzhou","stationList":"zhenjiang,xuzhou","distanceList":"0,290"}'
+observations:
+  - {path: /api/v1/adminrouteservice/adminroute, delay_ms: 3000}

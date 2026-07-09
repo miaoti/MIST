@@ -1,0 +1,14 @@
+# NOW-capturable seed: same contact added twice -> dedupe (benign-by-design).
+case_id: tt-benign-contacts-dedupe
+sut: {name: trainticket, version_ref: quickstart-codewisdom-1.0.0}
+base_url: http://localhost:32677
+login: {path: /api/v1/users/login, username: admin, password: "222222"}
+steps:
+  - method: POST
+    path: /api/v1/adminbasicservice/adminbasic/contacts
+    payload: '{"name":"cap-dedupe-user","accountId":"cap-acct-77","documentType":1,"documentNumber":"cap-doc-77","phoneNumber":"1380000077"}'
+  - method: POST
+    path: /api/v1/adminbasicservice/adminbasic/contacts
+    payload: '{"name":"cap-dedupe-user","accountId":"cap-acct-77","documentType":1,"documentNumber":"cap-doc-77","phoneNumber":"1380000077"}'
+observations:
+  - {path: /api/v1/adminbasicservice/adminbasic/contacts, delay_ms: 3000}
