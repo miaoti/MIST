@@ -26,6 +26,21 @@ freeze before any label ships.
 
 ---
 
+**Rev-2 review annotations (2026-07-08, step-1 3-cold-review):**
+- **m4 (A) — exact call path:** the TeaStore swallow chain is
+  `AuthUserActionsRest.placeOrder → LoadBalancedCRUDOperations.sendEntityForCreation → (ServiceLoadBalancer)
+  → NonBalancedCRUDOperations.sendEntityForCreation`; the `LoadBalanced` wrapper propagates the `-1`
+  unchanged (`Optional.ofNullable(...).orElse(-1L)`). A WebFetch-verified the whole chain verbatim.
+- **A source check — the `-1` is TELL-FREE at the client:** `placeOrder` CLEARS the SessionBlob before
+  returning 200, so the `-1` is never echoed → `ack_content_visibility: success-shaped-clean` (a tell-free
+  natural exhibit). The one place `-1` IS visible is the internal-CRUD 201/`-1` tier (survey-capped) →
+  `sentinel-in-body`, segregated from the primary discriminating denominator.
+- **R1 — mechanism taxonomy → the rev-2 enum:** "DB-down" = `dependency-down`; "maintenance-toggle" =
+  `flag`; "mesh-sever ×2 legs" = ONE `mesh-sever` mechanism on TWO sites; "input-driven"/bogus-user-id =
+  a `stimulus.workload_variant`, NOT a mechanism (does not count toward diversity). Net TeaStore distinct
+  mechanisms = **3** {flag, dependency-down, mesh-sever} → broker-less min-3 floor met (see
+  `e-sut-applicability-matrix.md` + `c2-freeze.md` §5).
+
 ## 1. TeaStore (DescartesResearch/TeaStore, master) — natural in-tree masked-write chain
 
 **Architecture:** 5 services + registry (WebUI, Auth, Persistence, Recommender, Image), sync REST with

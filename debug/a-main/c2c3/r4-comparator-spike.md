@@ -20,6 +20,19 @@ The go/no-go verdicts below are decidable NOW from each tool's own artifacts.
 step-2.5 instrumentation of target write paths. This matches the plan's sequencing (spike in step 1,
 runs in step 6 after step 2.5). Not a new risk — a confirmed dependency.
 
+**Rev-2 review annotations (2026-07-08, step-1 review C-A3):**
+- **A 5th, NON-trace-family arm is added: `contract-invariant`** (Pact/Dredd contract-verification or an
+  AGORA+-style invariant oracle — the class `g3-result.md` R-SS-2 names as the real comparator family).
+  The four trace arms (naive, tracetest-error, tracetest-presence, traceanomaly) are all trace-span-shaped,
+  which is precisely the family blind-by-construction to MIST's read-back differentiator — choosing ONLY
+  those would be the anti-tautology failure the plan guards against. The contract-invariant arm is a
+  read-back-adjacent baseline that can, in principle, catch a lost write, so it is the fair strong
+  comparator. Added to the frozen `comparator_configs.arm` enum (`c2-freeze.md` §2 / the JSON schema).
+- **The TraceAnomaly re-scope is PROVISIONAL-until-run.** The construction-blindness verdict is an
+  artifact-level (docs) argument; it is CONFIRMED by an actual step-2.5/step-6 run on captured S1
+  masked-write traces before it is stated as a result. Until then it is a hypothesis, disclosed as such
+  (this answers "you excluded your only learned baseline by armchair verdict").
+
 ## Evidence
 
 ### Tracetest (arms 2 + 3) — OPERABLE, span presence/absence CONFIRMED

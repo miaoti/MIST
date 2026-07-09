@@ -35,6 +35,21 @@ taxonomies"/"multi-expert label pipelines"; without the definition a reviewer ma
 "upon acceptance" — re-check their released form before submission (neither, as described, adds a
 benign-trap/wild stratum or oracle-eval labels).
 
+**Rev-2 review annotations (2026-07-08, step-1 review C-A1 + m1):**
+- **Single frozen claim string:** the authoritative hardened string ("per-case **label-provenance**
+  taxonomy") + the Filibuster and Cast differentiation live in `c2-freeze.md` §1 — cite THAT to avoid
+  the multi-copy drift (this doc + the plan + benchmark/README carried slightly different wordings, m1).
+- **Filibuster (SoCC'21) — first-class differentiation (C-A1):** a resilience-TESTING framework with a
+  fault-tolerance-bug application corpus; developer-assertion/bug-report labels, NO benign-trap FP
+  stratum, NO adjudication rubric, not masked-2xx-labeled for oracle eval. It is the most dangerous
+  SE-venue competitor and now has an explicit defense row (freeze §1), not just a plan mention.
+- **Cast framing strengthened (C-A1):** do NOT rest the differentiation on openness alone. Cast
+  (closed) validates the class is industrially real (motivation); our scientific delta = the paired
+  benign-trap FP stratum + per-case oracle-evaluation labels + the blind-adjudicated wild stratum,
+  none of which Cast provides.
+- **The paper LEADS with the study, never "first" (plan §1 writing rule):** the claim string is
+  recorded for priority-defense only.
+
 ## 2. Defense-table rows to ADD
 (Existing rows — Filibuster corpus, train-ticket-fault-replicate, Nezha, RCAEval — re-verified
 accurate; update RCAEval's venue tag to "ASE'24/WWW'25 companion/FSE'26, 735 cases / 9 datasets".)
