@@ -1,0 +1,34 @@
+# createAccount body-carrying acked-but-lost capture (§1.95.2; the AGREEMENT anchor).
+# inside-payment `createAccountFaultMode` is set OUT OF BAND (admin toggle) BEFORE each run — a
+# deployment/injection precondition, absent from the transcript. Run 2x (case_id via --case-id):
+#   createfaultmode fabricatedack -> tt-s1-createaccount-agreement (200 {1,"Create Account Success"},
+#                                    but the acting user never appears on /account -> acked-but-lost)
+#   createfaultmode none          -> tt-s2-createaccount-clean     (200, /account shows the user @60.00)
+# A FRESH un-prefunded buyer (no prior Money row) POSTs its own account; buyer token is accepted on
+# POST /inside_payment/account. Read-back /account via admin (queryAccount returns ALL users; identity
+# is not recorded in the transcript). The rater derives from InsidePaymentServiceImpl.createAccount
+# (persists a type-A Money row) that the user SHOULD appear; observed absent -> lost.
+case_id: tt-createaccount
+sut: {name: trainticket, version_ref: "codewisdom 1.0.0 + ts-inside-payment-service:1.0.5"}
+base_url: http://localhost:32677
+admin_login: {username: admin, password: "222222"}
+gen_user: true
+steps:
+  - method: POST
+    path: /api/v1/userservice/users/register
+    redact: true
+    payload: '{"userName":"{user}","password":"{pw}","gender":1,"documentType":1,"documentNum":"{docnum}","email":"{user}@corpus.test"}'
+  - method: POST
+    path: /api/v1/users/login
+    redact: true
+    payload: '{"username":"{user}","password":"{pw}"}'
+    capture: {token: data.token, userId: data.userId}
+    set_session: token
+  - method: POST
+    path: /api/v1/inside_pay_service/inside_payment/account
+    payload: '{"userId":"{userId}","money":"60.00"}'
+observations:
+  - probe: 'GET account balances (durable account-create read-back; locate the acting user by id)'
+    path: /api/v1/inside_pay_service/inside_payment/account
+    auth: admin
+    delay_ms: 2000

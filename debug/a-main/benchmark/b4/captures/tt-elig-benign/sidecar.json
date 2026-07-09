@@ -1,6 +1,6 @@
 {
  "sidecar_version": 1,
- "case_id": "tt-s2-contacts-dedupe",
+ "case_id": "tt-elig-benign",
  "producer": "seed-capture-driver",
  "mist_commit": "7d69de9",
  "sut": {
@@ -16,56 +16,56 @@
    "payload": "<credentials redacted>"
   },
   {
-   "t_rel_ms": 253,
+   "t_rel_ms": 176,
    "kind": "response",
    "status": 201,
    "body": "<response redacted (carries a session token)>"
   },
   {
-   "t_rel_ms": 253,
+   "t_rel_ms": 176,
    "kind": "request",
    "method": "POST",
    "path": "/api/v1/users/login",
    "payload": "<credentials redacted>"
   },
   {
-   "t_rel_ms": 345,
+   "t_rel_ms": 258,
    "kind": "response",
    "status": 200,
    "body": "<response redacted (carries a session token)>"
   },
   {
-   "t_rel_ms": 345,
+   "t_rel_ms": 258,
    "kind": "request",
    "method": "POST",
    "path": "/api/v1/contactservice/contacts",
-   "payload": "{\"accountId\":\"887401ce-c39f-48b5-b84f-a016856b7807\",\"name\":\"CB Contact\",\"documentType\":1,\"documentNumber\":\"D12345678\",\"phoneNumber\":\"13800000000\"}"
+   "payload": "{\"accountId\":\"361b82e1-45ce-43e2-bdbc-5a75a9b4096f\",\"name\":\"CB Contact\",\"documentType\":1,\"documentNumber\":\"D12345678\",\"phoneNumber\":\"13800000000\"}"
   },
   {
-   "t_rel_ms": 436,
+   "t_rel_ms": 289,
    "kind": "response",
    "status": 201,
-   "body": "{\"status\":1,\"msg\":\"Create contacts success\",\"data\":{\"id\":\"86ca8bf6-c1b4-4641-a8f0-41baf3fc1689\",\"accountId\":\"887401ce-c39f-48b5-b84f-a016856b7807\",\"name\":\"CB Contact\",\"documentType\":1,\"documentNumber\":\"D12345678\",\"phoneNumber\":\"13800000000\"}}"
+   "body": "{\"status\":1,\"msg\":\"Create contacts success\",\"data\":{\"id\":\"5bffdb85-30c3-4c04-b3f8-e4e30376f459\",\"accountId\":\"361b82e1-45ce-43e2-bdbc-5a75a9b4096f\",\"name\":\"CB Contact\",\"documentType\":1,\"documentNumber\":\"D12345678\",\"phoneNumber\":\"13800000000\"}}"
   },
   {
-   "t_rel_ms": 436,
+   "t_rel_ms": 289,
    "kind": "request",
    "method": "POST",
    "path": "/api/v1/contactservice/contacts",
-   "payload": "{\"accountId\":\"887401ce-c39f-48b5-b84f-a016856b7807\",\"name\":\"CB Contact\",\"documentType\":1,\"documentNumber\":\"D12345678\",\"phoneNumber\":\"13800000000\"}"
+   "payload": "{\"accountId\":\"361b82e1-45ce-43e2-bdbc-5a75a9b4096f\",\"name\":\"CB Contact\",\"documentType\":1,\"documentNumber\":\"D12345678\",\"phoneNumber\":\"13800000000\"}"
   },
   {
-   "t_rel_ms": 534,
+   "t_rel_ms": 345,
    "kind": "response",
    "status": 201,
    "body": "{\"status\":0,\"msg\":\"Contacts already exists\",\"data\":null}"
   },
   {
-   "t_rel_ms": 2034,
+   "t_rel_ms": 1869,
    "kind": "observation",
    "probe": "GET the acting user contacts (durable dedupe read-back \u2014 exactly one contact expected)",
    "status": 200,
-   "body": "{\"status\":1,\"msg\":\"Success\",\"data\":[{\"id\":\"86ca8bf6-c1b4-4641-a8f0-41baf3fc1689\",\"accountId\":\"887401ce-c39f-48b5-b84f-a016856b7807\",\"name\":\"CB Contact\",\"documentType\":1,\"documentNumber\":\"D12345678\",\"phoneNumber\":\"13800000000\"}]}"
+   "body": "{\"status\":1,\"msg\":\"Success\",\"data\":[{\"id\":\"5bffdb85-30c3-4c04-b3f8-e4e30376f459\",\"accountId\":\"361b82e1-45ce-43e2-bdbc-5a75a9b4096f\",\"name\":\"CB Contact\",\"documentType\":1,\"documentNumber\":\"D12345678\",\"phoneNumber\":\"13800000000\"}]}"
   }
  ]
 }
