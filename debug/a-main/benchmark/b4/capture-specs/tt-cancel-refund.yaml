@@ -1,0 +1,44 @@
+# Cancel -> refund acked-but-lost capture (checklist §1.95.2; corpus-1950-inventory cancel trio).
+# The inside-payment `drawbackFaultMode` is set OUT OF BAND (admin toggle) BEFORE each run — it is a
+# deployment/injection precondition, NOT part of the user-facing scenario, so it never appears in the
+# transcript. Run this spec 3x (case_id via --case-id), each after setting the mode:
+#   faultmode fail          -> tt-s1-cancel-natural        (200 {1,"error"}, refund lost; tell-bearing)
+#   faultmode fabricatedack -> tt-s1-cancel-fabricatedack  (200 {1,"Success."}, refund lost; no marker)
+#   faultmode none          -> tt-s2-cancel-clean          (200 {1,"Success."}, refund +80 landed; control)
+# Auth: buyer(ROLE_USER) is 403 on POST /orderservice/order (order-service JWTFilter quirk) so the order
+# is admin-created (accountId = the fresh buyer); the buyer cancels. No auth headers are recorded, so the
+# transcript is a clean single-user scenario. Real persisted order id via /order/query (permitAll).
+case_id: tt-cancel-refund
+sut: {name: trainticket, version_ref: "codewisdom 1.0.0 + ts-inside-payment-service:1.0.5"}
+base_url: http://localhost:32677
+admin_login: {username: admin, password: "222222"}
+gen_user: true
+steps:
+  - method: POST
+    path: /api/v1/userservice/users/register
+    redact: true
+    payload: '{"userName":"{user}","password":"{pw}","gender":1,"documentType":1,"documentNum":"{docnum}","email":"{user}@corpus.test"}'
+  - method: POST
+    path: /api/v1/users/login
+    redact: true
+    payload: '{"username":"{user}","password":"{pw}"}'
+    capture: {token: data.token, userId: data.userId}
+    set_session: token
+  - method: GET
+    path: '/api/v1/inside_pay_service/inside_payment/{userId}/50.00'
+  - method: POST
+    path: /api/v1/orderservice/order
+    auth: admin
+    payload: '{"accountId":"{userId}","status":1,"price":"100.0","boughtDate":"2026-01-01 10:00:00","travelDate":"2027-12-01","travelTime":"2027-12-01 10:00:00","from":"Shang Hai","to":"Su Zhou","trainNumber":"G1234","coachNumber":5,"seatClass":2,"seatNumber":"5A","contactsName":"CB Buyer","documentType":1,"contactsDocumentNumber":"{docnum}"}'
+  - method: POST
+    path: /api/v1/orderservice/order/query
+    auth: none
+    payload: '{"loginId":"{userId}","enableStateQuery":false,"enableTravelDateQuery":false,"enableBoughtDateQuery":false}'
+    capture: {orderId: 'data[0].id'}
+  - method: GET
+    path: '/api/v1/cancelservice/cancel/{orderId}/{userId}'
+observations:
+  - probe: 'GET account balances (durable refund read-back; locate the acting user by id)'
+    path: /api/v1/inside_pay_service/inside_payment/account
+    auth: admin
+    delay_ms: 2000

@@ -61,13 +61,23 @@ transcript); `/inside_payment/money` returns `data:null` even on success (**brok
 — baseline NOT echoed → a rater-legible baseline needs either an observe-before or reliance on
 "prefund set it to 50, nothing else touched balance".
 
-**OPEN BLOCKER — buyer create returns 403.** `POST /api/v1/orderservice/order` with a fresh
-**buyer (ROLE_USER)** token → **403 Forbidden** via the gateway, even though order-service
-`SecurityConfig:75` allows `hasAnyRole(ADMIN,"USER")` on exactly that path; the same buyer token is
-accepted by inside-payment (prefund 200). Admin token → 200. Cause not yet isolated (gateway
-role-routing vs a per-service JWTFilter role-extraction difference); the head-to-head stimulus
-(`TrainTicketStimulus`) creates as the buyer, so it likely hit a **direct service URL** or a different
-gateway config. **RESOLVE (test order-service via a direct port-forward, or adopt admin-create +
-disclose) before finalizing the cancel-trio captures.** Note: cancel-trio labeling ALSO waits on the
-rater-materials rev-3 fixes (genuine-def, async rule, pinned-bundle rule) — see the rater
-reconciliation — so the corpus is not the current critical path.
+**BUYER-403 — RESOLVED (pragmatic, capture-invisible).** `POST /api/v1/orderservice/order` with a fresh
+**buyer (ROLE_USER)** token → **403** even though order-service `SecurityConfig:75` allows USER — an
+order-service JWTFilter role-extraction quirk (the same buyer token is accepted by inside-payment AND
+cancel-service, so it is order-service-specific). Fix: **admin-token creates the order** (`accountId` =
+the fresh buyer's userId, 200), **buyer-token cancels** (`/cancelservice/**` accepts USER, 200). The
+admin identity is **invisible in the sidecar** (the driver records no auth headers; creds redacted), so
+the rater-facing transcript is a clean single-user scenario and the create-mechanism is immaterial to
+the cancel→drawback defect. Real persisted order id via `POST /order/query` (permitAll; the create
+RESPONSE id is unreliable — known SUT quirk).
+
+**CANCEL-TRIO BEHAVIOR — LIVE-VERIFIED (2026-07-09, prefund 50, price 100, far-future travel):**
+| case | faultmode | cancel HTTP + body | /account balance | label |
+|---|---|---|---|---|
+| tt-s1-cancel-natural | `fail` | 200 `{"status":1,"msg":"error"}` | 50 → **50** (refund lost) | genuine, tell-bearing (`ack_carries_failure_sentinel=yes`) |
+| tt-s1-cancel-fabricatedack | `fabricatedack` | 200 `{"status":1,"msg":"Success.","data":"test not null"}` | 50 → **50** (refund lost) | genuine, clean/no-marker (state-only) |
+| tt-s2-cancel-clean | `none` | 200 `{"status":1,"msg":"Success.",...}` | 50 → **130** (refund +80 landed) | benign control (refund persists) |
+
+Refund = calculateRefund(price) ≈ 80% of 100 for advance cancel (control +80 → 130); fault legs +0.
+The rater derives "refund due on cancel" from `CancelServiceImpl`→`drawback`; observed no-delta ⇒ lost.
+Note: cancel labeling under the rev-3 rubric is now UNBLOCKED (rubric done 2026-07-09).
