@@ -39,18 +39,29 @@ Sources consolidated: plan v2 §5, `c2-freeze.md` rev 2, `e-sut-applicability-ma
 ## Step 1.95 — THE CORPUS FACTORY (parallel track, starts NOW; c3-case-corpus-plan.md)
 ☐ 1.95.0 **Raw-artifact INVENTORY (C-M5/B-B1): list what each seed asset actually has** (all 6 v0.1.0 cases are `capture_status: specified` = NO artifacts; TT h2h transcripts not committed) → sizes the capture-run list BEFORE building fixtures.
 ☐ 1.95.05 **Rater-artifact SIDECAR FORMAT (deliverable 0 — B-B1):** ordered request records (method/path/payload) + response records (status+full body) + durable-state observations, RELATIVE times, producer+mist_commit stamp; every producer emits THIS.
-☐ 1.95.1 **B4 blind-label harness** (the corpus factory — moved UP from step 5, zero deploy deps; consumes case+sidecar; STRIP-LIST + no-own-clock + uniformity invariants per corpus plan §5 rev 2):
-        rev-2 case + raw artifacts → rater-facing case.md + ballot.yaml + SEALED manifest.json;
-        invariants tested (no tool strings; no clean-run column; opaque non-stratum ids;
-        deterministic bytes); fixtures = the seed subset below.
-☐ 1.95.2 Seed migration (6 v0.1.0 cases → rev 2, validator PASS) + **SHORT CAPTURE RUNS at the pin
-        (7d69de9) against the STILL-DEPLOYED TT** (harness-level transcript capture → sidecar;
-        specified→captured; SS captures need a TT-down window or disclosed co-residence) →
-        **seed calibration subset (~8–12) + the 2 §9 eligibility cases** through the harness
-        end-to-end. (SINGLE-HOMED here; 2.75/step-5 carry verify-pointers.)
-☐ 1.95.3 (with 1.9.6) rater-materials ≥3-cold-review → IRB/exemption filing → eligibility screen
-        ready. RATERS START only at the step-5 corpus gate — by construction, matching the
-        recruitment lead.
+☑ 1.95.1 **B4 blind-label harness — DONE** (`b4_harness.py` + 5 invariant tests green; STRIP-LIST +
+        no-own-clock + opaque-id + deterministic-bytes; consumes case+sidecar).
+☑ 1.95.2a **SEED CAPTURES — DONE: 9 seeds, live-verified + B4-validated (commits d6d799c / 779a487).**
+        `capture_driver.py` extended (multi-auth session|admin|none + variable-flow capture/set_session/
+        redact + `{var}` subst) + specs, against the deployed fork (ts-inside-payment-service:1.0.5).
+        Genuine(3): cancel-natural `{1,"error"}` bal50-lost, cancel-fabricatedack `{1,"Success."}`
+        bal50-lost, createaccount-agreement 200-but-/account-ABSENT. Benign(4): adminroute-control,
+        cancel-clean (+80→130), createaccount-clean (60), contacts-dedupe (`{0,"already exists"}`,
+        1 durable contact — FIXED, was 400 wrong-endpoint). Eligibility(2): elig-genuine, elig-benign
+        (disjoint-by-id). **SS pair still needs a TT-down window (2.15 tenancy).**
+☐ 1.95.2b **CORPUS-ASSEMBLY WAVE (NEXT; unblocked, no cluster; inputs READY = 9 sidecars + labels
+        known-by-construction + the rev-2 schema in `c2-freeze` §2).** Scope: (1) migrate the 6 legacy
+        v0.1.0 JSON cases (`benchmark/cases/*.json`) → rev-2; (2) author 7 NEW rev-2 case files (cancel
+        trio, createaccount pair, elig pair — adminroute-control + contacts-dedupe already have legacy
+        files → migrate + LINK the fresh sidecar + flip `capture_status` specified→captured);
+        (3) update the machine schema `benchmark/schema/fault-case.schema.json` v0.1.0 → rev-2;
+        (4) validate all against it (invariants: S1⇒genuine+by-injection+negative_control;
+        S2⇒benign+by-docs+doc_citation; `ack_content_visibility` per case); (5) ≥3-cold-review
+        (schema-critical). Deploy pins = codewisdom 1.0.0 + ts-inside-payment-service:1.0.5 (fork
+        branch MIST-trainticket).
+☑ 1.95.3 rater-materials 3-cold-review **DONE** (rev 3, `REVIEW-RATER-RECONCILIATION.md`, commit
+        3aae75a). IRB/exemption filing + compensation (U1/U2) = USER (arranging). RATERS START only at
+        the step-5 corpus gate — by construction, matching the recruitment lead.
 
 ## Step 2 — deploy wave (after 1.9; tenancy: big SUTs solo — TT, OTel-Demo; small co-reside)
 ✔ 2.1 .wslconfig ALREADY 26 GB (live-verified 25Gi in WSL — C-B2). **Do NOT edit .wslconfig again: applying it needs `wsl --shutdown`, which kills the running TT/kind cluster.**
