@@ -15,8 +15,15 @@
     "health_precondition": null
   },
   "target": {
-    "entry_endpoint": { "method": "POST", "path": "/api/v1/adminbasicservice/adminbasic/contacts", "service": "ts-admin-basic-info-service" },
-    "dependency": { "service": "ts-contacts-service", "kind": "downstream_service" },
+    "entry_endpoint": {
+      "method": "POST",
+      "path": "/api/v1/adminbasicservice/adminbasic/contacts",
+      "service": "ts-admin-basic-info-service"
+    },
+    "dependency": {
+      "service": "ts-contacts-service",
+      "kind": "downstream_service"
+    },
     "readback": {
       "modality": "api-get",
       "locator": "GET /api/v1/adminbasicservice/adminbasic/contacts [membership by business key accountId+documentNumber]",
@@ -28,7 +35,12 @@
   "fault": {
     "mechanism": "none",
     "injection_method": "none",
-    "config": { "env": { "MIST_FAULT_LOSTWRITE_ENABLED": "false" }, "note": "clean control: same fork binary as TT-adminbasic-contacts-lostwrite-001 with the flag OFF; addContact forwards the create to ts-contacts-service which persists it." },
+    "config": {
+      "env": {
+        "MIST_FAULT_LOSTWRITE_ENABLED": "false"
+      },
+      "note": "clean control: same fork binary as TT-adminbasic-contacts-lostwrite-001 with the flag OFF; addContact forwards the create to ts-contacts-service which persists it."
+    },
     "injected_by": "",
     "target_service": "ts-admin-basic-info-service",
     "provenance_class": "by-docs"
@@ -41,12 +53,15 @@
   },
   "oracle_eval": {
     "ack_content_visibility": "success-shaped-clean",
-    "trace_visibility": "trace-uninstrumented",
+    "trace_visibility": "span-presence-visible",
     "write_shape": "whole",
     "oracle_mode": "paired",
     "config_provenance": {
       "mist_commit": "7d69de9",
-      "mist_authoring": { "tier": "hand-written", "minutes": 0 }
+      "mist_authoring": {
+        "tier": "hand-written",
+        "minutes": 0
+      }
     },
     "comparator_configs": []
   },
@@ -61,22 +76,25 @@
     "status_code_oracle": "no_flag",
     "schema_oracle": "no_flag",
     "body_marker_oracle": "no_flag",
-    "naive_span_error_oracle": "not_applicable",
-    "tracetest_presence_oracle": "not_applicable",
+    "naive_span_error_oracle": "no_flag",
+    "tracetest_presence_oracle": "no_flag",
     "mist_readback_oracle": "no_flag",
     "mist_trace_shape_oracle": "not_applicable"
   },
   "provenance": {
-    "control_trace": null,
+    "control_trace": "debug/a-main/benchmark/b4/captures/tt-s2-adminbasic-contacts-control-traced/trace-control.json",
     "fault_trace": null,
-    "readback_response": "debug/a-main/benchmark/b4/captures/tt-s2-adminbasic-contacts-control/sidecar.json",
-    "notes": "LIVE-CAPTURED 2026-07-10 (breadth wave): POST {id 8b3f5e0d..., documentNumber BR-CTL-R2-20260710} acked 200 {1,\"Create Success\",null} (the downstream ts-contacts-service createNewContactsAdmin envelope, forwarded); read-back PRESENT (write landed); the pod logged [addContacts] with NO LOST_WRITE line. Captured AFTER routing convergence with the probe-first discipline (a throwaway persistence probe verified the flag-off path via the public entry before the real capture; the first pre-convergence attempt was discarded and re-run with fresh ids). SAME-BINARY TWIN: identical image digest as the lost-write positive, differing only in the env flag -> the pair isolates the flag as the only variable (stronger than a base-vs-fork twin). mist_readback=no_flag is a real as-deployed true-negative. AS-DEPLOYED (rev-2.1 R2): trace-uninstrumented -> trace oracles not_applicable. ACK-TEXT NOTE: this clean leg's msg (\"Create Success\") differs from the fault leg's fabricated msg (\"create contacts success\") - disclosed cross-leg textual tell."
+    "readback_response": "debug/a-main/benchmark/b4/captures/tt-s2-adminbasic-contacts-control-traced/sidecar.json",
+    "notes": "LIVE-CAPTURED 2026-07-10 (breadth wave): POST {id 8b3f5e0d..., documentNumber BR-CTL-R2-20260710} acked 200 {1,\"Create Success\",null} (the downstream ts-contacts-service createNewContactsAdmin envelope, forwarded); read-back PRESENT (write landed); the pod logged [addContacts] with NO LOST_WRITE line. Captured AFTER routing convergence with the probe-first discipline (a throwaway persistence probe verified the flag-off path via the public entry before the real capture; the first pre-convergence attempt was discarded and re-run with fresh ids). SAME-BINARY TWIN: identical image digest as the lost-write positive, differing only in the env flag -> the pair isolates the flag as the only variable (stronger than a base-vs-fork twin). mist_readback=no_flag is a real as-deployed true-negative. AS-DEPLOYED (rev-2.1 R2): trace-uninstrumented -> trace oracles not_applicable. ACK-TEXT NOTE: this clean leg's msg (\"Create Success\") differs from the fault leg's fabricated msg (\"create contacts success\") - disclosed cross-leg textual tell. || TRACED-WAVE CAPTURE-OF-RECORD (2026-07-10, plan rev-2): re-captured on the OTel-instrumented deploy (opentelemetry-javaagent 1.33.6 sha256 055c4fe4c67b0eed944d09e4e130d79255ad226929d11cdc71286d6ba67e4fdb; JAVA_TOOL_OPTIONS hostPath mount; OTEL_EXPORTER_OTLP_ENDPOINT=http://jaeger-collector.istio-system:4318 http/protobuf, always_on sampler, metrics/logs off; DEFAULT instrumentation - NO suppression flags, T6 attestation). All 7 oracle columns re-recorded from this single traced run; the earlier untraced sidecar is retained as superseded history. Traces exported immediately per leg from Jaeger v2 (/jaeger/api/traces) and scored by the pre-committed b4/trace_score.py (frozen selectors; presence = existence-only at cross-service HTTP-span granularity). mist_trace_shape: Branch-B per T9 - deploy traced but MIST's trace-shape oracle NOT RUN this wave (demo corpus lacks this path or observe-mode quarantine semantics make the fault-leg run ill-defined without tool changes); cell stays not_applicable with this traced-but-not-run note, deferred to the step-2.5/E2 wave. || MEASURED (this wave): traced control (same fork digest, flag=false) - 13-span trace CONTAINS the ts-contacts-service span (presence no_flag TN baseline) + 3 DB spans (the insert); naive no_flag. Ack {1,\"Create Success\"}, BR-CTL-R3-TRACED present in read-back. DISCLOSED: the first traced attempt reused the morning capture's ids and exercised the DEDUPE path ({0,\"Already Exists\"}) - abandoned, re-run with fresh R3 ids (T2 fresh-ids rule now explicit for hardcoded-id specs). trace_visibility = the pair's regime value (B-M3 note)."
   },
   "license": {
     "case_code": "Apache-2.0",
     "case_data": "CC-BY-4.0",
     "upstream_sut": "Apache-2.0",
-    "sources": ["ts-admin-basic-info-service AdminBasicInfoServiceImpl.addContact (flag-off forward path)", "ts-contacts-service ContactsController.createNewContactsAdmin"]
+    "sources": [
+      "ts-admin-basic-info-service AdminBasicInfoServiceImpl.addContact (flag-off forward path)",
+      "ts-contacts-service ContactsController.createNewContactsAdmin"
+    ]
   },
   "adjudication": null
 }

@@ -1,0 +1,58 @@
+{
+ "sidecar_version": 1,
+ "case_id": "tt-s2-createaccount-clean-traced",
+ "producer": "seed-capture-driver",
+ "mist_commit": "7d69de9",
+ "sut": {
+  "name": "trainticket",
+  "version_ref": "codewisdom 1.0.0 + ts-inside-payment-service:1.0.5"
+ },
+ "records": [
+  {
+   "t_rel_ms": 0,
+   "kind": "request",
+   "method": "POST",
+   "path": "/api/v1/userservice/users/register",
+   "payload": "<credentials redacted>"
+  },
+  {
+   "t_rel_ms": 208,
+   "kind": "response",
+   "status": 201,
+   "body": "<response redacted (carries a session token)>"
+  },
+  {
+   "t_rel_ms": 208,
+   "kind": "request",
+   "method": "POST",
+   "path": "/api/v1/users/login",
+   "payload": "<credentials redacted>"
+  },
+  {
+   "t_rel_ms": 314,
+   "kind": "response",
+   "status": 200,
+   "body": "<response redacted (carries a session token)>"
+  },
+  {
+   "t_rel_ms": 314,
+   "kind": "request",
+   "method": "POST",
+   "path": "/api/v1/inside_pay_service/inside_payment/account",
+   "payload": "{\"userId\":\"ee1de585-7dba-4268-ba1d-5097788b0d3c\",\"money\":\"60.00\"}"
+  },
+  {
+   "t_rel_ms": 333,
+   "kind": "response",
+   "status": 200,
+   "body": "{\"status\":1,\"msg\":\"Create Account Success\",\"data\":null}"
+  },
+  {
+   "t_rel_ms": 2334,
+   "kind": "observation",
+   "probe": "GET account balances (durable account-create read-back; locate the acting user by id)",
+   "status": 200,
+   "body": "{\"status\":1,\"msg\":\"Success\",\"data\":[{\"userId\":\"a30e7df5-00dd-4c2b-908b-0bfa9899cb0d\",\"balance\":\"50.00\"},{\"userId\":\"470ae43b-a8db-4d1a-b926-4cf76b814eea\",\"balance\":\"80.00\"},{\"userId\":\"921fad85-1983-4fb4-b89c-5cd2d1a5eeea\",\"balance\":\"50.00\"},{\"userId\":\"de793953-636e-4df8-b21e-3162cccdbcff\",\"balance\":\"80.00\"},{\"userId\":\"b8355284-af5b-4351-97c4-5f9e73514e52\",\"balance\":\"80.00\"},{\"userId\":\"3a9d1c93-5704-45d4-886f-125c86f28fc2\",\"balance\":\"50\"},{\"userId\":\"ee1de585-7dba-4268-ba1d-5097788b0d3c\",\"balance\":\"60.00\"},{\"userId\":\"9e323946-4919-4913-a3d4-0e853470a9ed\",\"balance\":\"80.00\"},{\"userId\":\"60c3db5a-63d2-4aed-820d-74a29a9113aa\",\"balance\":\"130.00\"},{\"userId\":\"508ca78b-8f8e-49c9-b89e-e09a3d461c6e\",\"balance\":\"80.00\"},{\"userId\":\"9a959c27-c39e-49d3-a126-719ce53c36b3\",\"balance\":\"80.00\"},{\"userId\":\"5c1233f0-fb45-48ae-b327-98262e798b4d\",\"balance\":\"50.00\"},{\"userId\":\"9e2d1f83-8b6c-4952-95b3-32aa1c763387\",\"balance\":\"50.00\"},{\"userId\":\"60939aee-87cd-447d-8918-f00c988cc1ea\",\"balance\":\"50\"},{\"userId\":\"73d713b3-a4c9-4b59-975b-37ece70747e6\",\"balance\":\"130.00\"},{\"userId\":\"b5febb5f-db6d-4ef2-a4ec-8194b14c03c1\",\"balance\":\"60.00\"},{\"userId\":\"1e42548f-4969-48d9-8b58-966918161b8e\",\"balance\":\"50.00\"},{\"userId\":\"89030942-3685-43a6-89b5-29a8631c0d79\",\"balance\":\"80.00\"},{\"userId\":\"fe3cc940-07ae-4bc6-aad9-baea5b0e00dc\",\"balance\":\"130.00\"},{\"userId\":\"fdb77266-dc60-48a9-af97-a123dc06e409\",\"balance\":\"80.00\"},{\"userId\":\"d5530c0f-ecaf-4f44-babf-3a2dc70f8cde\",\"balance\":\"80.00\"},{\"userId\":\"71cf8fe2-a176-473b-bd8b-59fe606c227f\",\"balance\":\"80.00\"},{\"userId\":\"bded0ce4-8fd1-4483-b59c-999ae8f0753b\",\"balance\":\"50\"},{\"userId\":\"0af6424f-e14b-4111-9686-526a2413dce1\",\"balance\":\"50.00\"},{\"userId\":\"4dd19d7a-8a8b-4b17-b4ca-c3a2916aae35\",\"balance\":\"50\"},{\"userId\":\"4d2a46c7-71cb-4cf1-b5bb-b68406d9da6f\",\"balance\":\"10000\"},{\"userId\":\"ce1549ae-d04a-40aa-89de-3e6ceea049e4\",\"balance\":\"80.00\"},{\"userId\":\"6e7f5dfb-d1c4-4356-8a59-babc5b5ad9d2\",\"balance\":\"130.00\"},{\"userId\":\"41a87a4d-3022-45dd-a48e-0022d153f583\",\"balance\":\"50.00\"},{\"userId\":\"a669c9ca-92ce-47fe-a2d7-3c41fda4fc34\",\"balance\":\"50\"},{\"userId\":\"f53bf1ad-f20d-4ec3-8d14-590965766071\",\"balance\":\"60.00\"},{\"userId\":\"c1d9644b-177f-4db8-8a02-5f4277817287\",\"balance\":\"60.00\"},{\"userId\":\"0ffe6cbd-c512-4a40-97a7-68992433da56\",\"balance\":\"50.00\"},{\"userId\":\"12a75b15-f649-4d90-a47f-488959a0cc24\",\"balance\":\"50\"},{\"userId\":\"f8143484-3044-4208-abc1-b335d459c036\",\"balance\":\"130.00\"},{\"userId\":\"e9bb152b-2e2d-4dde-83e4-e1844930c40d\",\"balance\":\"50.00\"},{\"userId\":\"c125529d-51e1-45d0-a48f-3be3e33047a8\",\"balance\":\"80.00\"},{\"userId\":\"818a7f84-9726-4a79-b10e-6f12436614e6\",\"balance\":\"130.00\"},{\"userId\":\"80c0c27f-5d0b-499b-9bc6-4b239bd047ed\",\"balance\":\"50.00\"},{\"userId\":\"3d2880b7-545e-4333-99c8-613d242a9382\",\"balance\":\"50\"},{\"userId\":\"17a3dc94-db49-4af7-8d9e-a0ee61bb893d\",\"balance\":\"50.00\"},{\"userId\":\"13eabbfc-89a6-4142-836d-d8315318dc53\",\"balance\":\"50.00\"},{\"userId\":\"4092f62c-24a3-4dea-8426-e6bd6cc0a761\",\"balance\":\"50.00\"},{\"userId\":\"30be8377-e96d-4b58-b36c-d5db10fbcda4\",\"balance\":\"80.00\"},{\"userId\":\"886d35d8-73fa-4da6-ad64-0bed201a73e8\",\"balance\":\"50\"},{\"userId\":\"46e96e30-5dbb-4664-ae31-ead133a082c3\",\"balance\":\"130.00\"},{\"userId\":\"343d0191-273d-4cf7-b4d4-6b6772752066\",\"balance\":\"80.00\"},{\"userId\":\"f6aefb35-2b10-49aa-bb3c-addc9f8508b3\",\"balance\":\"80.00\"},{\"userId\":\"a8e49331-ca1a-42fc-9a73-350044784052\",\"balance\":\"80.00\"},{\"userId\":\"d40c177f-a7d6-4aa6-9013-be277719eea0\",\"balance\":\"80.00\"},{\"userId\":\"a6388076-beb4-4740-8e09-d91765830a4e\",\"balance\":\"80.00\"},{\"userId\":\"1150ab55-6845-4590-a8ef-b3cfaa48252c\",\"balance\":\"50.00\"},{\"userId\":\"f91dc7c0-3d83-4ca2-a678-7bbc2f2d20e3\",\"balance\":\"50.00\"},{\"userId\":\"79fbe06f-9a25-40a1-9766-f96ff2bac331\",\"balance\":\"130.00\"},{\"userId\":\"4f16fd89-bdb3-481c-b5e3-eba24f47fa6e\",\"balance\":\"50.00\"},{\"userId\":\"f1915358-4d27-4bd4-82a0-86ea2759042d\",\"balance\":\"130.00\"},{\"userId\":\"fb02c337-63a8-404b-9e7c-154f5e09af56\",\"balance\":\"130.00\"},{\"userId\":\"21c8a3ad-3e55-4452-bf05-33636be582d8\",\"balance\":\"80.00\"},{\"userId\":\"ec3a52d4-e11d-4744-86c4-12fdc7989ce3\",\"balance\":\"130.00\"},{\"userId\":\"3e13ee68-b804-417d-a0bf-dedcab8e2f7e\",\"balance\":\"130.00\"},{\"userId\":\"0ff56821-d607-407c-bc7f-1c95a7ad0547\",\"balance\":\"130.00\"},{\"userId\":\"00d4b315-4de1-4656-8cc4-453c0c8ba103\",\"balance\":\"130.00\"},{\"userId\":\"9f0d953f-4795-4718-8260-79d51902aad6\",\"balance\":\"50\"},{\"userId\":\"d2b46ea8-919c-46e6-aa84-a77a42a5e17a\",\"balance\":\"130.00\"},{\"userId\":\"e3c80f60-e1b0-4a4b-9bff-db714d4d6d14\",\"balance\":\"80.00\"},{\"userId\":\"44176ce4-ef6e-41c8-a6bd-2e85710660de\",\"balance\":\"80.00\"},{\"userId\":\"2e094f83-7c92-463c-a3cd-07b387a30b90\",\"balance\":\"50.00\"},{\"userId\":\"01ad1102-4924-4ce0-8695-f85fc08cfa3f\",\"balance\":\"50.00\"},{\"userId\":\"51d12940-5e21-48ed-9404-8b12eb00dbad\",\"balance\":\"50.00\"},{\"userId\":\"16b69ff1-9560-43e1-af5e-702c95184aae\",\"balance\":\"50.00\"},{\"userId\":\"5243979a-0be4-4693-a3bc-013ce0eac1c3\",\"balance\":\"80.00\"},{\"userId\":\"e04c039f-3bef-494d-a7e0-08558162e8f9\",\"balance\":\"80.00\"},{\"userId\":\"6e581ff9-ab35-4d10-8816-e57ca4e99188\",\"balance\":\"130.00\"},{\"userId\":\"1bc1fe55-09da-4b59-b26c-89a7af9a957e\",\"balance\":\"80.00\"},{\"userId\":\"493d3b61-5c14-442a-87cc-eced5d84d2cf\",\"balance\":\"50.00\"},{\"userId\":\"6cd9c5e2-6b77-4ef7-a00a-c2cfebe1fb1d\",\"balance\":\"130.00\"},{\"userId\":\"5068db00-54aa-492e-89f9-af73d24b45c4\",\"balance\":\"50.00\"},{\"userId\":\"3f200239-4195-4c39-bf8f-ee808239e702\",\"balance\":\"130.00\"},{\"userId\":\"9fc84f45-2316-4516-939b-a3a78749cfb6\",\"balance\":\"50.00\"},{\"userId\":\"43aa55e1-a18e-4a0d-ac61-870b6dbcbce2\",\"balance\":\"80.00\"},{\"userId\":\"a6641049-07d8-47ed-be24-8e5cba7ff34d\",\"balance\":\"50.00\"},{\"userId\":\"70c633ff-5e72-441d-a496-59df5eb1e1f7\",\"balance\":\"50.00\"},{\"userId\":\"c9ff14aa-51ee-4e54-b8c2-8aec5e7a8f78\",\"balance\":\"130.00\"},{\"userId\":\"330e9b16-8a9a-4f82-87c0-733bf7b81b53\",\"balance\":\"130.00\"},{\"userId\":\"987d3dc2-ca70-4670-b258-adedffa531b7\",\"balance\":\"130.00\"},{\"userId\":\"4605bf88-170a-4f84-89ca-657e5bac3de7\",\"balance\":\"80.00\"},{\"userId\":\"1001\",\"balance\":\"150.00\"},{\"userId\":\"b2bbd18d-2d65-4a6c-bb47-0708732d32fd\",\"balance\":\"50.00\"},{\"userId\":\"a0c59c78-2b8e-4756-8ae5-aa796aa17519\",\"balance\":\"80.00\"},{\"userId\":\"d6b29ed4-1944-40a6-869d-a86dbd645ca0\",\"balance\":\"50.00\"},{\"userId\":\"e1d74332-df64-40bb-8dfb-b445eb80bf46\",\"balance\":\"50.00\"},{\"userId\":\"03036351-7a62-4a78-8536-3819d5f95b56\",\"balance\":\"50.00\"},{\"userId\":\"d4340918-f670-4d99-bff2-0e590b9d99fc\",\"balance\":\"80.00\"}]}"
+  }
+ ]
+}

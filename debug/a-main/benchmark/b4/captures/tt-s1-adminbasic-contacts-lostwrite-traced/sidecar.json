@@ -1,0 +1,45 @@
+{
+ "sidecar_version": 1,
+ "case_id": "tt-s1-adminbasic-contacts-lostwrite-traced",
+ "producer": "seed-capture-driver",
+ "mist_commit": "7d69de9",
+ "sut": {
+  "name": "trainticket",
+  "version_ref": "quickstart-codewisdom-1.0.0 + fork ts-admin-basic-info-service:1.0.5 flag-on"
+ },
+ "records": [
+  {
+   "t_rel_ms": 0,
+   "kind": "request",
+   "method": "POST",
+   "path": "/api/v1/users/login",
+   "payload": "{\"username\":\"<redacted>\",\"password\":\"<redacted>\"}"
+  },
+  {
+   "t_rel_ms": 73,
+   "kind": "response",
+   "status": 200,
+   "body": "<login response \u2014 token redacted>"
+  },
+  {
+   "t_rel_ms": 73,
+   "kind": "request",
+   "method": "POST",
+   "path": "/api/v1/adminbasicservice/adminbasic/contacts",
+   "payload": "{\"id\":\"2f8d0a7c-6e13-4b58-9c04-5a3e7f1d2b90\",\"accountId\":\"9a8b7c6d-5e4f-4a3b-9c2d-1e0f9a8b7c6d\",\"name\":\"MIST Breadth Flt\",\"documentType\":1,\"documentNumber\":\"BR-FLT-R4-TRACED\",\"phoneNumber\":\"13800000002\"}"
+  },
+  {
+   "t_rel_ms": 91,
+   "kind": "response",
+   "status": 200,
+   "body": "{\"status\":1,\"msg\":\"create contacts success\",\"data\":null}"
+  },
+  {
+   "t_rel_ms": 3091,
+   "kind": "observation",
+   "probe": "GET /api/v1/adminbasicservice/adminbasic/contacts",
+   "status": 200,
+   "body": "{\"status\":1,\"msg\":\"Success\",\"data\":[{\"id\":\"acd0356e-9be0-4a74-9f1c-158fa0e76f9f\",\"accountId\":\"4d2a46c7-71cb-4cf1-b5bb-b68406d9da6f\",\"name\":\"Contacts_One\",\"documentType\":1,\"documentNumber\":\"DocumentNumber_One\",\"phoneNumber\":\"ContactsPhoneNum_One\"},{\"id\":\"60fa62d3-3128-4e0c-9c8f-a39e4dc7325a\",\"accountId\":\"4d2a46c7-71cb-4cf1-b5bb-b68406d9da6f\",\"name\":\"Contacts_Two\",\"documentType\":1,\"documentNumber\":\"DocumentNumber_Two\",\"phoneNumber\":\"ContactsPhoneNum_Two\"},{\"id\":\"63cb05ee-f49c-4857-9c7d-90933b5a09eb\",\"accountId\":\"e26cc533-f1e9-451a-8094-8a3248b81417\",\"name\":\"CB Contact\",\"documentType\":1,\"documentNumber\":\"D12345678\",\"phoneNumber\":\"13800000000\"},{\"id\":\"86ca8bf6-c1b4-4641-a8f0-41baf3fc1689\",\"accountId\":\"887401ce-c39f-48b5-b84f-a016856b7807\",\"name\":\"CB Contact\",\"documentType\":1,\"documentNumber\":\"D12345678\",\"phoneNumber\":\"13800000000\"},{\"id\":\"5bffdb85-30c3-4c04-b3f8-e4e30376f459\",\"accountId\":\"361b82e1-45ce-43e2-bdbc-5a75a9b4096f\",\"name\":\"CB Contact\",\"documentType\":1,\"documentNumber\":\"D12345678\",\"phoneNumber\":\"13800000000\"},{\"id\":\"8bb9c4dc-b07d-4f53-9752-1a21b13f8572\",\"accountId\":\"9a8b7c6d-5e4f-4a3b-9c2d-1e0f9a8b7c6d\",\"name\":\"MIST Breadth Ctl\",\"documentType\":1,\"documentNumber\":\"BR-CTL-20260709\",\"phoneNumber\":\"13800000001\"},{\"id\":\"1664eead-45c4-48b9-bdcb-a8bf18f9192f\",\"accountId\":\"9a8b7c6d-5e4f-4a3b-9c2d-1e0f9a8b7c6d\",\"name\":\"MIST Breadth Flt\",\"documentType\":1,\"documentNumber\":\"BR-FLT-20260709\",\"phoneNumber\":\"13800000002\"},{\"id\":\"2ad828fe-678d-4477-a81e-a1052d41d4a5\",\"accountId\":\"9a8b7c6d-5e4f-4a3b-9c2d-1e0f9a8b7c6d\",\"name\":\"ProbeCtl\",\"documentType\":1,\"documentNumber\":\"BR-PROBE-CTL2\",\"phoneNumber\":\"13800000005\"},{\"id\":\"076ec7a4-8925-4417-ad70-35282b214ff6\",\"accountId\":\"9a8b7c6d-5e4f-4a3b-9c2d-1e0f9a8b7c6d\",\"name\":\"MIST Breadth Ctl\",\"documentType\":1,\"documentNumber\":\"BR-CTL-R2-20260710\",\"phoneNumber\":\"13800000001\"},{\"id\":\"20627a10-bdab-4d8c-9627-a5ef11986442\",\"accountId\":\"460fb741-d516-407a-8a96-6cf6c7e825c0\",\"name\":\"NoOp Contact\",\"documentType\":1,\"documentNumber\":\"NM20260710\",\"phoneNumber\":\"13900000000\"},{\"id\":\"93750dab-f191-4466-a71a-c8e627292c5c\",\"accountId\":\"9a8b7c6d-5e4f-4a3b-9c2d-1e0f9a8b7c6d\",\"name\":\"MIST Breadth Ctl\",\"documentType\":1,\"documentNumber\":\"BR-CTL-R3-TRACED\",\"phoneNumber\":\"13800000001\"},{\"id\":\"9b9cf5f4-ec57-4752-b957-2149c0ad48f2\",\"accountId\":\"9a8b7c6d-5e4f-4a3b-9c2d-1e0f9a8b7c6d\",\"name\":\"ProbeB2F\",\"documentType\":1,\"documentNumber\":\"BR-PROBE-B2FLT\",\"phoneNumber\":\"13800000007\"},{\"id\":\"bf046488-a84d-40af-a094-a620dcbbb064\",\"accountId\":\"9a8b7c6d-5e4f-4a3b-9c2d-1e0f9a8b7c6d\",\"name\":\"MIST Breadth Flt\",\"documentType\":1,\"documentNumber\":\"BR-FLT-R3-TRACED\",\"phoneNumber\":\"13800000002\"}]}"
+  }
+ ]
+}

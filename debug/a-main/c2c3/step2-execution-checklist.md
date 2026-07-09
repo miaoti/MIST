@@ -74,10 +74,18 @@ Sources consolidated: plan v2 §5, `c2-freeze.md` rev 2, `e-sut-applicability-ma
         probe-first after any rollout (nacos/ribbon serves terminating pods; first adminbasic attempt
         discarded + re-captured fresh).** **NOOP-MODIFY BENIGN CAPTURED (2026-07-10): R6's missing
         read-back-stress control closed ON TT (idempotent no-op PUT, success-shaped-clean, zero delta;
-        base image, no rollout). Corpus = 13 cases, 6 pos / 7 neg (3 S2 traps).** NEXT (no decision):
-        traced-capture wave design (N-vs-0 row + FP/TP pair + consume-span — needs OTel instrumentation
-        plan → its own plan + review); step-2 SUT deploys (TeaStore/OTel-Demo; tenancy window = ASK USER
-        before TT-down).
+        base image, no rollout). Corpus = 13 cases, 6 pos / 7 neg (3 S2 traps).** **TRACED-CAPTURE WAVE EXECUTED (2026-07-10b; plan rev-2 3-cold-reviewed → GO; freeze §6 amendment):
+        8 legs re-captured as capture-of-record on the OTel-instrumented deploy (agent 1.33.6 pinned+sha,
+        hostPath+JTO, per-leg Jaeger v2 exports, frozen pre-committed scorer trace_score.py). N-vs-0
+        comparator cells MEASURED (fabricated-ack: naive+presence ran-and-missed, N=2/N=1) + breadth
+        presence-catches MEASURED (flag, traced-control baselines) + DB-granularity disclosure MEASURED
+        (fault 0 vs control 2/6/3 DB spans). mist_trace_shape = Branch-B traced-but-not-run → 2.5/E2.
+        Runbook hardened: N≥4 consecutive probes (ribbon round-robin); fresh-ids for hardcoded-id specs.
+        THIS partially discharges 2.5.1 (TT write-path javaagent mechanics de-risked; runbook+agent-pin+
+        scorer = the 2.5.1/2.5.2 deliverables); instrumentation torn down (pilot framing, T10).**
+        NEXT (no decision): step-2 SUT deploys (TeaStore/OTel-Demo; tenancy window = ASK USER before
+        TT-down); FP/TP pair capture (bookinfo redeploy + SS window + queue-master consume spans);
+        mist_trace_shape run at 2.5/E2.
 ☑ 1.95.3 rater-materials 3-cold-review **DONE** (rev 3, `REVIEW-RATER-RECONCILIATION.md`, commit
         3aae75a). IRB/exemption filing + compensation (U1/U2) = USER (arranging). RATERS START only at
         the step-5 corpus gate — by construction, matching the recruitment lead.

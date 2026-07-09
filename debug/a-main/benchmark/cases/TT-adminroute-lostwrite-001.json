@@ -15,8 +15,15 @@
     "health_precondition": null
   },
   "target": {
-    "entry_endpoint": { "method": "POST", "path": "/api/v1/adminrouteservice/adminroute", "service": "ts-admin-route-service" },
-    "dependency": { "service": "ts-route-service", "kind": "downstream_service" },
+    "entry_endpoint": {
+      "method": "POST",
+      "path": "/api/v1/adminrouteservice/adminroute",
+      "service": "ts-admin-route-service"
+    },
+    "dependency": {
+      "service": "ts-route-service",
+      "kind": "downstream_service"
+    },
     "readback": {
       "modality": "api-get",
       "locator": "GET /api/v1/adminrouteservice/adminroute [route with the CLIENT-SUPPLIED id present in the returned list; the fork honors client route ids (G2 live proof)]",
@@ -28,12 +35,21 @@
   "fault": {
     "mechanism": "flag",
     "injection_method": "sut_injector",
-    "config": { "env": { "MIST_FAULT_LOSTWRITE_ENABLED": "true" }, "site": "AdminRouteServiceImpl.createAndModifyRoute (@Value mist.fault.lostwrite.enabled, Spring relaxed binding; skips the persist POST to ts-route-service)", "applied_via": "kubectl set env on the deployment (process-level, no code path in the request)" },
+    "config": {
+      "env": {
+        "MIST_FAULT_LOSTWRITE_ENABLED": "true"
+      },
+      "site": "AdminRouteServiceImpl.createAndModifyRoute (@Value mist.fault.lostwrite.enabled, Spring relaxed binding; skips the persist POST to ts-route-service)",
+      "applied_via": "kubectl set env on the deployment (process-level, no code path in the request)"
+    },
     "injected_by": "MIST-trainticket@a1767ab3 (AdminRouteServiceImpl.createAndModifyRoute; injection point introduced @5c471dd8)",
     "target_service": "ts-admin-route-service",
     "provenance_class": "by-injection"
   },
-  "negative_control": { "present": true, "replay_script": "TT-adminroute-control-001 (same stimulus shape, flag off; captured on base 1.0.0 whose persist path is code-identical to the fork with the flag unset - the flag defaults false)" },
+  "negative_control": {
+    "present": true,
+    "replay_script": "TT-adminroute-control-001 (same stimulus shape, flag off; captured on base 1.0.0 whose persist path is code-identical to the fork with the flag unset - the flag defaults false)"
+  },
   "stimulus": {
     "script": "debug/a-main/benchmark/b4/capture-specs/tt-s1-adminroute-lostwrite.yaml",
     "write_path": true,
@@ -42,12 +58,15 @@
   },
   "oracle_eval": {
     "ack_content_visibility": "success-shaped-clean",
-    "trace_visibility": "trace-uninstrumented",
+    "trace_visibility": "span-presence-visible",
     "write_shape": "whole",
     "oracle_mode": "paired",
     "config_provenance": {
       "mist_commit": "7d69de9",
-      "mist_authoring": { "tier": "hand-written", "minutes": 0 }
+      "mist_authoring": {
+        "tier": "hand-written",
+        "minutes": 0
+      }
     },
     "comparator_configs": []
   },
@@ -62,22 +81,24 @@
     "status_code_oracle": "no_flag",
     "schema_oracle": "no_flag",
     "body_marker_oracle": "no_flag",
-    "naive_span_error_oracle": "not_applicable",
-    "tracetest_presence_oracle": "not_applicable",
+    "naive_span_error_oracle": "no_flag",
+    "tracetest_presence_oracle": "flag",
     "mist_readback_oracle": "flag",
     "mist_trace_shape_oracle": "not_applicable"
   },
   "provenance": {
-    "control_trace": null,
-    "fault_trace": null,
-    "readback_response": "debug/a-main/benchmark/b4/captures/tt-s1-adminroute-lostwrite/sidecar.json",
-    "notes": "LIVE-CAPTURED 2026-07-10 (breadth wave): POST with client-supplied id 7c9d4f7e... acked 200 {1,\"create and modify success\",null} (the fork's flag-on envelope; data null because nothing was persisted); read-back listed 217 routes, the submitted id ABSENT -> acked-but-lost on a SKIPPED CROSS-SERVICE persist. The ack came from the fork flag-on branch by construction (base/flag-off returns the persisted route object). Breadth role: second write-path service beyond inside-payment; shows the read-back oracle is not cancel/createaccount-specific. AS-DEPLOYED (rev-2.1 R2): the deploy is trace-uninstrumented -> naive_span_error/tracetest_presence/mist_trace_shape = not_applicable. PRE-REGISTERED DESIGN EXPECTATION (not a result; needs a traced capture): under write-path span instrumentation this case is span-presence-VISIBLE - no error span (naive/trace-shape would run and pass clean) but the expected ts-route-service persist span would be ABSENT -> a Tracetest presence-assertion would flag it (a comparator ALSO catches skipped-call lost writes; NOT a clean MIST-unique win, unlike fabricated-ack). ACK-TEXT NOTE: the flag-on ack msg (\"create and modify success\") is not byte-identical to the flag-off/base persist ack - a cross-leg textual differential tell (disclosed); within-leg the ack is success-shaped-clean (no failure marker). rev-2 migration history: v0.1.0 injection -> fault{}; readback_endpoint -> typed readback."
+    "control_trace": "debug/a-main/benchmark/b4/captures/tt-ctl-adminroute-create-traced/trace-control.json",
+    "fault_trace": "debug/a-main/benchmark/b4/captures/tt-s1-adminroute-lostwrite-traced/trace-fault.json",
+    "readback_response": "debug/a-main/benchmark/b4/captures/tt-s1-adminroute-lostwrite-traced/sidecar.json",
+    "notes": "LIVE-CAPTURED 2026-07-10 (breadth wave): POST with client-supplied id 7c9d4f7e... acked 200 {1,\"create and modify success\",null} (the fork's flag-on envelope; data null because nothing was persisted); read-back listed 217 routes, the submitted id ABSENT -> acked-but-lost on a SKIPPED CROSS-SERVICE persist. The ack came from the fork flag-on branch by construction (base/flag-off returns the persisted route object). Breadth role: second write-path service beyond inside-payment; shows the read-back oracle is not cancel/createaccount-specific. AS-DEPLOYED (rev-2.1 R2): the deploy is trace-uninstrumented -> naive_span_error/tracetest_presence/mist_trace_shape = not_applicable. PRE-REGISTERED DESIGN EXPECTATION (not a result; needs a traced capture): under write-path span instrumentation this case is span-presence-VISIBLE - no error span (naive/trace-shape would run and pass clean) but the expected ts-route-service persist span would be ABSENT -> a Tracetest presence-assertion would flag it (a comparator ALSO catches skipped-call lost writes; NOT a clean MIST-unique win, unlike fabricated-ack). ACK-TEXT NOTE: the flag-on ack msg (\"create and modify success\") is not byte-identical to the flag-off/base persist ack - a cross-leg textual differential tell (disclosed); within-leg the ack is success-shaped-clean (no failure marker). rev-2 migration history: v0.1.0 injection -> fault{}; readback_endpoint -> typed readback. || TRACED-WAVE CAPTURE-OF-RECORD (2026-07-10, plan rev-2): re-captured on the OTel-instrumented deploy (opentelemetry-javaagent 1.33.6 sha256 055c4fe4c67b0eed944d09e4e130d79255ad226929d11cdc71286d6ba67e4fdb; JAVA_TOOL_OPTIONS hostPath mount; OTEL_EXPORTER_OTLP_ENDPOINT=http://jaeger-collector.istio-system:4318 http/protobuf, always_on sampler, metrics/logs off; DEFAULT instrumentation - NO suppression flags, T6 attestation). All 7 oracle columns re-recorded from this single traced run; the earlier untraced sidecar is retained as superseded history. Traces exported immediately per leg from Jaeger v2 (/jaeger/api/traces) and scored by the pre-committed b4/trace_score.py (frozen selectors; presence = existence-only at cross-service HTTP-span granularity). mist_trace_shape: Branch-B per T9 - deploy traced but MIST's trace-shape oracle NOT RUN this wave (demo corpus lacks this path or observe-mode quarantine semantics make the fault-leg run ill-defined without tool changes); cell stays not_applicable with this traced-but-not-run note, deferred to the step-2.5/E2 wave. || MEASURED (this wave): the pre-registered expectation is now a RESULT - tracetest_presence FLAG (the ts-route-service persist span is ABSENT from the 3-span fault trace; the traced control's 15-span trace CONTAINS it, validating the selector - B-B4 baseline), naive no_flag (no error span). Probe-first confirmed the fabricated ack ({1,\"create and modify success\",null}) before capture. A presence assertion CATCHES this skipped-call lost write -> NOT MIST-unique once traced, measured (the fairness cell C-M5 wanted). Ack-text tell re-verified: base persist ack = \"Save and Modify success\" vs fork flag-on \"create and modify success\"."
   },
   "license": {
     "case_code": "Apache-2.0",
     "case_data": "CC-BY-4.0",
     "upstream_sut": "Apache-2.0",
-    "sources": ["ts-admin-route-service AdminRouteServiceImpl.createAndModifyRoute (MIST_FAULT_LOSTWRITE_ENABLED branch)"]
+    "sources": [
+      "ts-admin-route-service AdminRouteServiceImpl.createAndModifyRoute (MIST_FAULT_LOSTWRITE_ENABLED branch)"
+    ]
   },
   "adjudication": null
 }

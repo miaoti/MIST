@@ -9,6 +9,6 @@ login: {path: /api/v1/users/login, username: admin, password: "222222"}
 steps:
   - method: POST
     path: /api/v1/adminbasicservice/adminbasic/contacts
-    payload: '{"id":"6d1c9a4b-2e8f-4c07-9a5d-3f6e0b7c8d91","accountId":"9a8b7c6d-5e4f-4a3b-9c2d-1e0f9a8b7c6d","name":"MIST Breadth Flt","documentType":1,"documentNumber":"BR-FLT-R2-20260710","phoneNumber":"13800000002"}'
+    payload: '{"id":"2f8d0a7c-6e13-4b58-9c04-5a3e7f1d2b90","accountId":"9a8b7c6d-5e4f-4a3b-9c2d-1e0f9a8b7c6d","name":"MIST Breadth Flt","documentType":1,"documentNumber":"BR-FLT-R4-TRACED","phoneNumber":"13800000002"}'
 observations:
   - {path: /api/v1/adminbasicservice/adminbasic/contacts, delay_ms: 3000}

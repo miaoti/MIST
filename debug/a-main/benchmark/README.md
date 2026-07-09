@@ -1,6 +1,15 @@
 # MIST labeled fault benchmark (C2) — structure + schema
 
-> **STATUS (2026-07-10): SEED / PILOT corpus, rev-2 schema, 3-cold-reviewed + breadth wave captured.**
+> **STATUS (2026-07-10b): SEED / PILOT corpus, rev-2 schema, 3-cold-reviewed + breadth wave + TRACED-CAPTURE WAVE executed.**
+> The 8 flagship/breadth legs are now **capture-of-record on an OTel-instrumented deploy** (agent 1.33.6
+> pinned, per-leg Jaeger exports, frozen pre-committed scorer): the **N-vs-0 comparator cells are MEASURED**
+> — on the fabricated-ack pair `naive_span_error` and `tracetest_presence` **ran and missed** (the /drawback
+> span is present with a fake-normal status; naive N=2, presence N=1 — createaccount presence pinned n/a);
+> on the breadth pair the presence assertion **ran and caught** (skipped-call span absent; traced controls
+> validate the selectors). `mist_trace_shape` = traced-but-not-run (Branch-B, deferred to 2.5/E2 —
+> disclosed in the freeze §6). **DB-granularity disclosure (measured):** fault legs carry ZERO DB-client
+> spans vs controls' 2/6/3 — the lost write IS visible at DB-span granularity; the presence column is
+> pinned at cross-service HTTP-span granularity (service-map authoring), where invisibility holds.
 > The AUTHORITATIVE C2 pre-registration is `debug/a-main/c2c3/c2-freeze.md` (rev 2 + rev-2.1 amendments).
 > All **12 cases in `cases/` validate** (`schema/validate_cases.py`, exit 0); the two `eligibility/` cases
 > (rater screen, outside the measurement corpus) also validate.
@@ -140,8 +149,10 @@ classes × strata) and honest denominators live in `c2-freeze.md` §5 (the earli
 100–140" arithmetic here was **refuted** by the §8.5-3 depth survey — TeaStore = 1 durable write, Boutique =
 0 — and is superseded by the freeze's two-denominator recount; do not cite the old count). **Deferred
 captures (need live deploys; none is a blocker to the honest pilot):**
-- Traced captures of the two fabricated-ack cases → earn the `trace-invisible-by-construction` N-vs-0 recall row
-  (same traced deploy also upgrades the adminroute/adminbasic pre-registered presence-assertion expectation).
+- ~~Traced captures of the two fabricated-ack cases~~ — **DONE 2026-07-10 (traced-capture wave, plan rev-2
+  3-cold-reviewed)**: comparator N-vs-0 cells measured (ran-and-missed); breadth presence-catches measured
+  symmetrically; DB-granularity disclosure measured. REMAINING from that wave: `mist_trace_shape` =
+  traced-but-not-run (Branch-B) → runs at step 2.5/E2 with MIST bound to Jaeger.
 - The FP/TP pair live (bookinfo redeploy + sockshop tenancy window) with **queue-master consume-span**
   instrumentation → validate the `mist_trace_shape` precision advantage.
 - ~~Fork-built breadth positives (adminroute / adminbasic) + the adminbasic clean control~~ — **DONE 2026-07-10**

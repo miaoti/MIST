@@ -15,8 +15,15 @@
     "health_precondition": null
   },
   "target": {
-    "entry_endpoint": { "method": "POST", "path": "/api/v1/adminrouteservice/adminroute", "service": "ts-admin-route-service" },
-    "dependency": { "service": "ts-route-service", "kind": "downstream_service" },
+    "entry_endpoint": {
+      "method": "POST",
+      "path": "/api/v1/adminrouteservice/adminroute",
+      "service": "ts-admin-route-service"
+    },
+    "dependency": {
+      "service": "ts-route-service",
+      "kind": "downstream_service"
+    },
     "readback": {
       "modality": "api-get",
       "locator": "GET /api/v1/adminrouteservice/adminroute [route with the submitted id present in the returned list]",
@@ -28,7 +35,9 @@
   "fault": {
     "mechanism": "none",
     "injection_method": "none",
-    "config": { "note": "clean control: no fault flag; the same valid route as TT-adminroute-lostwrite-001 is created and persists normally." },
+    "config": {
+      "note": "clean control: no fault flag; the same valid route as TT-adminroute-lostwrite-001 is created and persists normally."
+    },
     "injected_by": "",
     "target_service": "ts-admin-route-service",
     "provenance_class": "by-docs"
@@ -41,12 +50,15 @@
   },
   "oracle_eval": {
     "ack_content_visibility": "success-shaped-clean",
-    "trace_visibility": "trace-uninstrumented",
+    "trace_visibility": "span-presence-visible",
     "write_shape": "whole",
     "oracle_mode": "paired",
     "config_provenance": {
       "mist_commit": "7d69de9",
-      "mist_authoring": { "tier": "hand-written", "minutes": 0 }
+      "mist_authoring": {
+        "tier": "hand-written",
+        "minutes": 0
+      }
     },
     "comparator_configs": []
   },
@@ -61,22 +73,24 @@
     "status_code_oracle": "no_flag",
     "schema_oracle": "no_flag",
     "body_marker_oracle": "no_flag",
-    "naive_span_error_oracle": "not_applicable",
-    "tracetest_presence_oracle": "not_applicable",
+    "naive_span_error_oracle": "no_flag",
+    "tracetest_presence_oracle": "no_flag",
     "mist_readback_oracle": "no_flag",
     "mist_trace_shape_oracle": "not_applicable"
   },
   "provenance": {
-    "control_trace": null,
+    "control_trace": "debug/a-main/benchmark/b4/captures/tt-ctl-adminroute-create-traced/trace-control.json",
     "fault_trace": null,
-    "readback_response": "debug/a-main/benchmark/b4/captures/tt-ctl-adminroute-create/sidecar.json",
-    "notes": "Live-captured on the current kind 'mist' deploy: POST adminroute acks success and the route id appears on the read-back GET (write landed). Negative control paired 1:1 with the positive lost-write. rev-2 migration (2026-07-09): v0.1.0 injection{MIST_FAULT_LOSTWRITE_ENABLED=false} -> fault{mechanism=none}; readback_endpoint -> typed readback (api-get, present/absent). REVIEW-CORPUS R2 (as-deployed evaluability): this deploy is trace-uninstrumented at the write-path layer, so naive_span_error/tracetest_presence/mist_trace_shape have no input and are not_applicable (NOT no_flag). Design note only (not an as-deployed verdict): on a properly instrumented deploy the ts-route-service persist span would be present on the clean write, so a presence-assertion would pass (no_flag). mist_readback=no_flag is a real as-deployed true-negative (the read-back ran; the route is present). The case's discriminator is the read-back, not the trace. R8: dependency.kind harmonized to downstream_service (cross-service persist), matching the lost-write twin."
+    "readback_response": "debug/a-main/benchmark/b4/captures/tt-ctl-adminroute-create-traced/sidecar.json",
+    "notes": "Live-captured on the current kind 'mist' deploy: POST adminroute acks success and the route id appears on the read-back GET (write landed). Negative control paired 1:1 with the positive lost-write. rev-2 migration (2026-07-09): v0.1.0 injection{MIST_FAULT_LOSTWRITE_ENABLED=false} -> fault{mechanism=none}; readback_endpoint -> typed readback (api-get, present/absent). REVIEW-CORPUS R2 (as-deployed evaluability): this deploy is trace-uninstrumented at the write-path layer, so naive_span_error/tracetest_presence/mist_trace_shape have no input and are not_applicable (NOT no_flag). Design note only (not an as-deployed verdict): on a properly instrumented deploy the ts-route-service persist span would be present on the clean write, so a presence-assertion would pass (no_flag). mist_readback=no_flag is a real as-deployed true-negative (the read-back ran; the route is present). The case's discriminator is the read-back, not the trace. R8: dependency.kind harmonized to downstream_service (cross-service persist), matching the lost-write twin. || TRACED-WAVE CAPTURE-OF-RECORD (2026-07-10, plan rev-2): re-captured on the OTel-instrumented deploy (opentelemetry-javaagent 1.33.6 sha256 055c4fe4c67b0eed944d09e4e130d79255ad226929d11cdc71286d6ba67e4fdb; JAVA_TOOL_OPTIONS hostPath mount; OTEL_EXPORTER_OTLP_ENDPOINT=http://jaeger-collector.istio-system:4318 http/protobuf, always_on sampler, metrics/logs off; DEFAULT instrumentation - NO suppression flags, T6 attestation). All 7 oracle columns re-recorded from this single traced run; the earlier untraced sidecar is retained as superseded history. Traces exported immediately per leg from Jaeger v2 (/jaeger/api/traces) and scored by the pre-committed b4/trace_score.py (frozen selectors; presence = existence-only at cross-service HTTP-span granularity). mist_trace_shape: Branch-B per T9 - deploy traced but MIST's trace-shape oracle NOT RUN this wave (demo corpus lacks this path or observe-mode quarantine semantics make the fault-leg run ill-defined without tool changes); cell stays not_applicable with this traced-but-not-run note, deferred to the step-2.5/E2 wave. || MEASURED (this wave): traced control on base 1.0.0 + agent (digest binding unchanged) - 15-span trace CONTAINS the ts-route-service persist span (presence no_flag TN; the selector's positive baseline) + 6 route-service DB spans (the persist); naive no_flag. Persist ack \"Save and Modify success\" with the route echoed. trace_visibility = the pair's regime value (B-M3 note)."
   },
   "license": {
     "case_code": "Apache-2.0",
     "case_data": "CC-BY-4.0",
     "upstream_sut": "Apache-2.0",
-    "sources": ["ts-admin-route-service AdminRouteServiceImpl.createAndModifyRoute"]
+    "sources": [
+      "ts-admin-route-service AdminRouteServiceImpl.createAndModifyRoute"
+    ]
   },
   "adjudication": null
 }

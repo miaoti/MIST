@@ -15,8 +15,15 @@
     "health_precondition": null
   },
   "target": {
-    "entry_endpoint": { "method": "POST", "path": "/api/v1/inside_pay_service/inside_payment/account", "service": "ts-inside-payment-service" },
-    "dependency": { "service": "ts-inside-payment-service", "kind": "persistence" },
+    "entry_endpoint": {
+      "method": "POST",
+      "path": "/api/v1/inside_pay_service/inside_payment/account",
+      "service": "ts-inside-payment-service"
+    },
+    "dependency": {
+      "service": "ts-inside-payment-service",
+      "kind": "persistence"
+    },
     "readback": {
       "modality": "api-get",
       "locator": "GET /api/v1/inside_pay_service/inside_payment/account [row userId==buyer present?]",
@@ -28,7 +35,9 @@
   "fault": {
     "mechanism": "none",
     "injection_method": "none",
-    "config": { "createAccountFaultMode": "none" },
+    "config": {
+      "createAccountFaultMode": "none"
+    },
     "injected_by": "",
     "target_service": "ts-inside-payment-service",
     "provenance_class": "by-docs"
@@ -41,12 +50,15 @@
   },
   "oracle_eval": {
     "ack_content_visibility": "success-shaped-clean",
-    "trace_visibility": "trace-uninstrumented",
+    "trace_visibility": "trace-invisible-by-construction",
     "write_shape": "whole",
     "oracle_mode": "paired",
     "config_provenance": {
       "mist_commit": "7d69de9",
-      "mist_authoring": { "tier": "hand-written", "minutes": 0 }
+      "mist_authoring": {
+        "tier": "hand-written",
+        "minutes": 0
+      }
     },
     "comparator_configs": []
   },
@@ -61,22 +73,24 @@
     "status_code_oracle": "no_flag",
     "schema_oracle": "no_flag",
     "body_marker_oracle": "no_flag",
-    "naive_span_error_oracle": "not_applicable",
+    "naive_span_error_oracle": "no_flag",
     "tracetest_presence_oracle": "not_applicable",
     "mist_readback_oracle": "no_flag",
     "mist_trace_shape_oracle": "not_applicable"
   },
   "provenance": {
-    "control_trace": null,
+    "control_trace": "debug/a-main/benchmark/b4/captures/tt-s2-createaccount-clean-traced/trace-control.json",
     "fault_trace": null,
-    "readback_response": "debug/a-main/benchmark/b4/captures/tt-s2-createaccount-clean/sidecar.json",
-    "notes": "Live-verified 2026-07-09: POST 200 {1,\"Create Account Success\"}, /account row for the acting user present @ 60.00 (create landed). Negative control paired with the createaccount agreement positive."
+    "readback_response": "debug/a-main/benchmark/b4/captures/tt-s2-createaccount-clean-traced/sidecar.json",
+    "notes": "Live-verified 2026-07-09: POST 200 {1,\"Create Account Success\"}, /account row for the acting user present @ 60.00 (create landed). Negative control paired with the createaccount agreement positive. || TRACED-WAVE CAPTURE-OF-RECORD (2026-07-10, plan rev-2): re-captured on the OTel-instrumented deploy (opentelemetry-javaagent 1.33.6 sha256 055c4fe4c67b0eed944d09e4e130d79255ad226929d11cdc71286d6ba67e4fdb; JAVA_TOOL_OPTIONS hostPath mount; OTEL_EXPORTER_OTLP_ENDPOINT=http://jaeger-collector.istio-system:4318 http/protobuf, always_on sampler, metrics/logs off; DEFAULT instrumentation - NO suppression flags, T6 attestation). All 7 oracle columns re-recorded from this single traced run; the earlier untraced sidecar is retained as superseded history. Traces exported immediately per leg from Jaeger v2 (/jaeger/api/traces) and scored by the pre-committed b4/trace_score.py (frozen selectors; presence = existence-only at cross-service HTTP-span granularity). mist_trace_shape: Branch-B per T9 - deploy traced but MIST's trace-shape oracle NOT RUN this wave (demo corpus lacks this path or observe-mode quarantine semantics make the fault-leg run ill-defined without tool changes); cell stays not_applicable with this traced-but-not-run note, deferred to the step-2.5/E2 wave. || MEASURED (this wave): clean control on the traced deploy - naive no_flag (9 spans, zero error spans); presence not_applicable (T7 pin, in-process). Ack {1,\"Create Account Success\"}, user present @60. Control DB spans: inside-payment 2 (the insert) vs fault 0 (T6 control half). trace_visibility = the pair's regime value (B-M3 note)."
   },
   "license": {
     "case_code": "Apache-2.0",
     "case_data": "CC-BY-4.0",
     "upstream_sut": "Apache-2.0",
-    "sources": ["ts-inside-payment-service InsidePaymentServiceImpl.createAccount"]
+    "sources": [
+      "ts-inside-payment-service InsidePaymentServiceImpl.createAccount"
+    ]
   },
   "adjudication": null
 }

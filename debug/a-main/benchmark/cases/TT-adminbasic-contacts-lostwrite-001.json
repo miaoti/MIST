@@ -15,8 +15,15 @@
     "health_precondition": null
   },
   "target": {
-    "entry_endpoint": { "method": "POST", "path": "/api/v1/adminbasicservice/adminbasic/contacts", "service": "ts-admin-basic-info-service" },
-    "dependency": { "service": "ts-contacts-service", "kind": "downstream_service" },
+    "entry_endpoint": {
+      "method": "POST",
+      "path": "/api/v1/adminbasicservice/adminbasic/contacts",
+      "service": "ts-admin-basic-info-service"
+    },
+    "dependency": {
+      "service": "ts-contacts-service",
+      "kind": "downstream_service"
+    },
     "readback": {
       "modality": "api-get",
       "locator": "GET /api/v1/adminbasicservice/adminbasic/contacts [membership by business key accountId+documentNumber; NO per-entity GET on adminbasic -> collection-membership read-back]",
@@ -28,12 +35,21 @@
   "fault": {
     "mechanism": "flag",
     "injection_method": "sut_injector",
-    "config": { "env": { "MIST_FAULT_LOSTWRITE_ENABLED": "true" }, "site": "AdminBasicInfoServiceImpl.addContact (@Value mist.fault.lostwrite.enabled, Spring relaxed binding; skips the persist POST to ts-contacts-service)", "applied_via": "kubectl set env on the deployment" },
+    "config": {
+      "env": {
+        "MIST_FAULT_LOSTWRITE_ENABLED": "true"
+      },
+      "site": "AdminBasicInfoServiceImpl.addContact (@Value mist.fault.lostwrite.enabled, Spring relaxed binding; skips the persist POST to ts-contacts-service)",
+      "applied_via": "kubectl set env on the deployment"
+    },
     "injected_by": "MIST-trainticket@a1767ab3 (AdminBasicInfoServiceImpl.addContact; injection point introduced @bbf3d6ae)",
     "target_service": "ts-admin-basic-info-service",
     "provenance_class": "by-injection"
   },
-  "negative_control": { "present": true, "replay_script": "TT-adminbasic-contacts-control-001 (SAME fork image digest, env flag false -> same-binary twin differing ONLY in the flag; closes R9)" },
+  "negative_control": {
+    "present": true,
+    "replay_script": "TT-adminbasic-contacts-control-001 (SAME fork image digest, env flag false -> same-binary twin differing ONLY in the flag; closes R9)"
+  },
   "stimulus": {
     "script": "debug/a-main/benchmark/b4/capture-specs/tt-s1-adminbasic-contacts-lostwrite.yaml",
     "write_path": true,
@@ -42,12 +58,15 @@
   },
   "oracle_eval": {
     "ack_content_visibility": "success-shaped-clean",
-    "trace_visibility": "trace-uninstrumented",
+    "trace_visibility": "span-presence-visible",
     "write_shape": "whole",
     "oracle_mode": "paired",
     "config_provenance": {
       "mist_commit": "7d69de9",
-      "mist_authoring": { "tier": "hand-written", "minutes": 0 }
+      "mist_authoring": {
+        "tier": "hand-written",
+        "minutes": 0
+      }
     },
     "comparator_configs": []
   },
@@ -62,22 +81,24 @@
     "status_code_oracle": "no_flag",
     "schema_oracle": "no_flag",
     "body_marker_oracle": "no_flag",
-    "naive_span_error_oracle": "not_applicable",
-    "tracetest_presence_oracle": "not_applicable",
+    "naive_span_error_oracle": "no_flag",
+    "tracetest_presence_oracle": "flag",
     "mist_readback_oracle": "flag",
     "mist_trace_shape_oracle": "not_applicable"
   },
   "provenance": {
-    "control_trace": null,
-    "fault_trace": null,
-    "readback_response": "debug/a-main/benchmark/b4/captures/tt-s1-adminbasic-contacts-lostwrite/sidecar.json",
-    "notes": "LIVE-CAPTURED 2026-07-10 (breadth wave): POST {id 6d1c9a4b..., documentNumber BR-FLT-R2-20260710} acked 200 {1,\"create contacts success\",null}; read-back ABSENT; TRIPLE corroboration incl. the pod's own log line '[addContact][INJECTED FAULT][LOST_WRITE_FAULT] acknowledging success WITHOUT persisting contact id: 6d1c9a4b...'. Second lost-write positive on a DIFFERENT write-path service (triple B; not adminroute-specific); collection-membership read-back (adminbasic has NO per-entity GET). CAPTURE-HYGIENE INCIDENT (disclosed): the first capture attempt ran during the deployment rollout and was served by the STILL-NACOS-REGISTERED terminating base pod (ack \"Create Success\", row persisted -> INVALID as a fault capture); the run was re-executed with FRESH ids after routing convergence (probe-first discipline: a throwaway POST verified the fabricated-ack path via the public entry before the real capture). RUNBOOK RULE: after any rollout, probe the entry path for the expected leg behavior BEFORE capturing (nacos/ribbon caches route to terminating pods for tens of seconds). ACK-TEXT NOTE: the flag-on fabricated msg (\"create contacts success\") differs from the flag-off/downstream persist msg (\"Create Success\") - a cross-leg textual differential tell (disclosed); within-leg success-shaped-clean. AS-DEPLOYED (rev-2.1 R2): trace-uninstrumented -> trace oracles not_applicable. PRE-REGISTERED DESIGN EXPECTATION (needs a traced capture): span-presence-visible under instrumentation -> tracetest_presence would flag the absent ts-contacts-service persist span (comparator also catches; not MIST-unique). G1-era 400 mystery RESOLVED: the old 400 came from the base image's routing/entity mismatch when requests were served by the base pod; the fork's addContact (edu.fudan.common.entity.Contacts, UUID ids) accepts the documented shape."
+    "control_trace": "debug/a-main/benchmark/b4/captures/tt-s2-adminbasic-contacts-control-traced/trace-control.json",
+    "fault_trace": "debug/a-main/benchmark/b4/captures/tt-s1-adminbasic-contacts-lostwrite-traced/trace-fault.json",
+    "readback_response": "debug/a-main/benchmark/b4/captures/tt-s1-adminbasic-contacts-lostwrite-traced/sidecar.json",
+    "notes": "LIVE-CAPTURED 2026-07-10 (breadth wave): POST {id 6d1c9a4b..., documentNumber BR-FLT-R2-20260710} acked 200 {1,\"create contacts success\",null}; read-back ABSENT; TRIPLE corroboration incl. the pod's own log line '[addContact][INJECTED FAULT][LOST_WRITE_FAULT] acknowledging success WITHOUT persisting contact id: 6d1c9a4b...'. Second lost-write positive on a DIFFERENT write-path service (triple B; not adminroute-specific); collection-membership read-back (adminbasic has NO per-entity GET). CAPTURE-HYGIENE INCIDENT (disclosed): the first capture attempt ran during the deployment rollout and was served by the STILL-NACOS-REGISTERED terminating base pod (ack \"Create Success\", row persisted -> INVALID as a fault capture); the run was re-executed with FRESH ids after routing convergence (probe-first discipline: a throwaway POST verified the fabricated-ack path via the public entry before the real capture). RUNBOOK RULE: after any rollout, probe the entry path for the expected leg behavior BEFORE capturing (nacos/ribbon caches route to terminating pods for tens of seconds). ACK-TEXT NOTE: the flag-on fabricated msg (\"create contacts success\") differs from the flag-off/downstream persist msg (\"Create Success\") - a cross-leg textual differential tell (disclosed); within-leg success-shaped-clean. AS-DEPLOYED (rev-2.1 R2): trace-uninstrumented -> trace oracles not_applicable. PRE-REGISTERED DESIGN EXPECTATION (needs a traced capture): span-presence-visible under instrumentation -> tracetest_presence would flag the absent ts-contacts-service persist span (comparator also catches; not MIST-unique). G1-era 400 mystery RESOLVED: the old 400 came from the base image's routing/entity mismatch when requests were served by the base pod; the fork's addContact (edu.fudan.common.entity.Contacts, UUID ids) accepts the documented shape. || TRACED-WAVE CAPTURE-OF-RECORD (2026-07-10, plan rev-2): re-captured on the OTel-instrumented deploy (opentelemetry-javaagent 1.33.6 sha256 055c4fe4c67b0eed944d09e4e130d79255ad226929d11cdc71286d6ba67e4fdb; JAVA_TOOL_OPTIONS hostPath mount; OTEL_EXPORTER_OTLP_ENDPOINT=http://jaeger-collector.istio-system:4318 http/protobuf, always_on sampler, metrics/logs off; DEFAULT instrumentation - NO suppression flags, T6 attestation). All 7 oracle columns re-recorded from this single traced run; the earlier untraced sidecar is retained as superseded history. Traces exported immediately per leg from Jaeger v2 (/jaeger/api/traces) and scored by the pre-committed b4/trace_score.py (frozen selectors; presence = existence-only at cross-service HTTP-span granularity). mist_trace_shape: Branch-B per T9 - deploy traced but MIST's trace-shape oracle NOT RUN this wave (demo corpus lacks this path or observe-mode quarantine semantics make the fault-leg run ill-defined without tool changes); cell stays not_applicable with this traced-but-not-run note, deferred to the step-2.5/E2 wave. || MEASURED (this wave): tracetest_presence FLAG (2-span fault trace, NO ts-contacts-service span; the traced control's 13-span trace contains it + 3 DB spans), naive no_flag. Sidecar: fabricated ack {1,\"create contacts success\",null}, BR-FLT-R4-TRACED ABSENT from read-back. CAPTURE-HYGIENE (2nd incident, disclosed): the first traced attempt was served by the STALE flag-off pod still in the ribbon rotation (a single successful probe is NOT convergence - round-robin alternates instances); its R3 documentNumber persisted and was abandoned. RUNBOOK RULE HARDENED: require N>=4 CONSECUTIVE expected-behavior probes before any post-rollout capture. Re-run with fresh R4 ids after 4 consecutive fabricated acks; pod-log corroboration retained from the untraced capture-of-record's twin run."
   },
   "license": {
     "case_code": "Apache-2.0",
     "case_data": "CC-BY-4.0",
     "upstream_sut": "Apache-2.0",
-    "sources": ["ts-admin-basic-info-service AdminBasicInfoServiceImpl.addContact (MIST_FAULT_LOSTWRITE_ENABLED branch)"]
+    "sources": [
+      "ts-admin-basic-info-service AdminBasicInfoServiceImpl.addContact (MIST_FAULT_LOSTWRITE_ENABLED branch)"
+    ]
   },
   "adjudication": null
 }
