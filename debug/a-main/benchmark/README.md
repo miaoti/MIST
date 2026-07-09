@@ -1,169 +1,153 @@
 # MIST labeled fault benchmark (C2) — structure + schema
 
-> **⚠ SUPERSEDED BY THE STEP-1 RE-FREEZE (2026-07-08).** The AUTHORITATIVE C2 pre-registration is now
-> `debug/a-main/c2c3/c2-freeze.md` (rev 2). This directory's `schema/fault-case.schema.json` has been
-> **updated to rev 2** (in lockstep with the freeze); `schema/rubric.md` (v0.1.0) is superseded by
-> `c2-freeze.md` §3 + `c2c3/c3-rater-materials.md` §3 (the observation-vs-verdict admissibility split).
-> The **6 seed cases in `cases/` are still in v0.1.0 format and FAIL the rev-2 schema** — they are
-> migrated at step-2 population per the migration map in §9 below. This README's §8 scale plan
-> ("3 SUTs × ~7 endpoints") is **refuted by the §8.5-3 depth survey** (TeaStore = 1 durable write,
-> Boutique = 0) and superseded by the honest two-denominator recount in `c2-freeze.md` §5. Read this
-> README for the design rationale; read the freeze for the frozen truth.
+> **STATUS (2026-07-09): SEED / PILOT corpus, rev-2 schema, 3-cold-reviewed.** The AUTHORITATIVE C2
+> pre-registration is `debug/a-main/c2c3/c2-freeze.md` (rev 2 + the 2026-07-09 rev-2.1 amendments).
+> All **11 cases in `cases/` are migrated to rev-2 and validate** (`schema/validate_cases.py`, exit 0).
+> This README describes the design + the *current populated pilot*; read the freeze for the frozen truth.
+> `schema/rubric.md` (v0.1.0) is superseded by `c2-freeze.md` §3 + `c2c3/c3-rater-materials.md` §3.
 
-> **PREP deliverable (main-track). NO MIST tool code.** This defines the structure, schema, and
-> labeling rubric for contribution **C2 — the first open-source labeled benchmark of masked-downstream /
-> data-integrity faults** in OSS microservice systems. The cases here are the *seed* (designed, label
-> known by construction); traces + read-backs are recorded later at Gate 1. Date 2026-06-30.
-> Plan context: `../README.md` §C2/§4, `../research/05-evaluation-and-benchmarks.md` §4, `../EXECUTION.md`.
+> **Read this first — what the pilot IS and is NOT (REVIEW-CORPUS-RECONCILIATION.md, 3-cold-review):**
+> The populated corpus is a **seed/pilot + a pre-registered scale plan**, NOT a completed benchmark. It is
+> **6 positives / 5 negatives** (report it that way — never a bare "S1 count"). Of the 6 positives only
+> **2 are captured *discriminating* positives** (`TT-cancel-refund-fabricatedack`, `TT-createaccount-agreement`
+> — both fabricated-ack fork flags on `ts-inside-payment-service`); the FP/TP precision pair (bookinfo +
+> sockshop), the breadth positives (adminroute/adminbasic), and the entire S3 wild stratum are `specified`
+> (designed, label known) and **unrun** — they are the scale plan (§8), and a `specified` case's
+> `oracle_expectation` is a design TARGET, never a measured result.
+
+> **PREP deliverable (main-track). NO MIST tool code.** Contribution **C2 — an open-source labeled
+> benchmark of masked-downstream / acked-but-lost data-integrity faults** in OSS microservice systems.
 
 ## 1. Why this exists (scope of the claim)
 The contribution is **accessibility + automation + an open benchmark**, not "first to detect masked
 faults" (Cast, ICSE-SEIP'26 arXiv:2602.00972, already detects masked-2xx + silent dual-write
-inconsistency on a *closed* 48-bug Huawei benchmark). The defensible, scoped claim is therefore the
-**first OPEN-SOURCE labeled benchmark** of these faults across OSS SUTs, with a pre-registered
-genuine-vs-benign rubric. State it exactly that way in the paper; do not over-claim novelty of the
-phenomenon.
+inconsistency on a *closed* 48-bug Huawei benchmark). The defensible, scoped claim is the **first
+OPEN-SOURCE labeled benchmark** of these faults across OSS SUTs, with a pre-registered genuine-vs-benign
+rubric + a blind-labeled wild stratum. State it exactly that way; do not over-claim novelty of the
+phenomenon, and — per the review — **do not call the current pilot "the benchmark"**: it is the schema +
+rubric + pilot seed + scale plan.
 
-## 2. Layout
+## 2. Layout + the current 11 cases
 ```
 benchmark/
   README.md                         this file
   schema/
-    fault-case.schema.json          JSON Schema (draft 2020-12) for ONE labeled case
-    rubric.md                       pre-registered genuine-vs-benign labeling rubric (the adjudication guide)
-  cases/
-    TT-adminroute-lostwrite-001.json         stratum 1, POSITIVE  (acknowledged-but-lost write; only our oracle catches it)
-    TT-adminroute-control-001.json           stratum 1, NEGATIVE  (clean control, same input, fault off)
-    TT-adminbasic-contacts-lostwrite-001.json stratum 1, POSITIVE  (lost write on a 2nd service; COLLECTION read-back — adminbasic has NO per-entity GET, cold-review A)
-    bookinfo-ratings-benign-001.json         stratum 2, NEGATIVE  (designed degradation; the naive-oracle FP trap)
+    fault-case.schema.json          JSON Schema (draft 2020-12) for ONE labeled case — rev 2
+    validate_cases.py               validator: cases/*.json vs the schema (exit 0 iff all pass)
+    rubric.md                       v0.1.0 rubric (SUPERSEDED by c2-freeze §3 + c3-rater-materials §3)
+  cases/                            11 cases, all rev-2-valid (6 positive / 5 negative)
+  b4/                               blind-label harness + capture specs + captured sidecars
 ```
-The seed cases double as schema-validation fixtures (covering each stratum/role) and as the first real
-seeds; the two lost-write positives sit on different write-path services (adminroute, adminbasic/contacts)
-to show the oracle is not endpoint-specific. **Status (cold-review):** adminroute is
-live-smoke-demonstrated; adminbasic is build-verified with its read-back capture pending G0 (see
-`../prep/sut-fault-injection-capability.md` §9). Both read-backs are **collection membership by business
-key** — adminbasic has no per-entity GET.
 
-## 3. The three strata (from the evaluation design, §4 of doc 05)
-- **Stratum 1 — positive ground truth.** Injected / replicated / vendor faults with a label known *by
-  construction*: our SUT-side `LOST_WRITE_FAULT` (see `../prep/sut-fault-injection-capability.md`),
-  TrainTicket's F-corpus, OTel-Demo vendor fault flags, RCAEval/Nezha-style controlled injection.
-- **Stratum 2 — benign traps (false-positive stratum).** Designed-degradation / eventual-consistency
-  paths labeled `negative` by documented design (e.g. Bookinfo `reviews→ratings`). These are what a
-  naive "any error span under a 2xx" oracle mislabels; beating them on precision/FP is the headline test.
-- **Stratum 3 — adjudicated wild traffic.** Labels set by ≥2 human raters per `rubric.md` §E (Cohen's κ,
-  third-rater adjudication). The `adjudication` block is required for stratum-3 cases.
+| case_id | stratum | label | capture | role |
+|---|---|---|---|---|
+| `TT-cancel-refund-natural` | 1 | positive | captured | genuine error-swallow ack `{1,"error"}`; **tell-bearing** (segregated) → detection TIE, MIST edge = localization |
+| `TT-cancel-refund-fabricatedack` | 1 | positive | **captured** | **clean MIST win** (synthetic worst-case): success-shaped-clean, only `mist_readback` catches |
+| `TT-createaccount-agreement` | 1 | positive | **captured** | body-carrying-CRUD read-back positive (breadth). *Agreement/fairness role → g3 head-to-head, not scored here (R5)* |
+| `TT-cancel-refund-clean` | 1 | negative | captured | clean control (drawback=none; refund lands) |
+| `TT-createaccount-clean` | 1 | negative | captured | clean control (createAccount=none; row persists) |
+| `TT-adminroute-control` | 1 | negative | captured | clean control (base image; route persists) |
+| `TT-adminroute-lostwrite` | 1 | positive | specified | breadth: skipped cross-service persist → `span-presence-visible` (a presence-assertion *also* catches) |
+| `TT-adminbasic-contacts-lostwrite` | 1 | positive | specified | breadth on a 2nd service (collection read-back) |
+| `TT-contacts-dedupe-benign` | 2 | negative | captured | benign trap for the **ack rule**: 2xx + `status:0` soft-reject; `body_marker` wrongly flags |
+| `bookinfo-ratings-benign` | 2 | negative | specified | benign trap for the **trace oracles** (FP half of the precision pair) |
+| `sockshop-shipping-swallowed-enqueue` | 1 | positive | specified | natural masked failure (TP half of the precision pair) |
 
-## 4. What a case records — and the anti-circularity rule
-Each case fixes the **target triple** (`entry_endpoint`, `dependency`, optional `readback_endpoint`), how
-the fault was produced (`injection`), the `ground_truth` label + rationale + source, and the **expected
-verdict of each oracle** in `oracle_expectation`. From those, precision / recall / FP for any oracle are
-computable directly:
+## 3. The three strata (rev-2.1 R1)
+- **Stratum 1 — label known by construction (not rater-dependent).** Either (a) a **positive** with
+  `provenance ∈ {by-injection, natural, replicated, vendor}` (`natural` = a genuine defect grounded in the
+  SUT's own source/docs, e.g. sockshop's swallowed enqueue), or (b) a **paired clean control** (`fault.mechanism=none`,
+  the no-fault twin of a positive). `negative_control.present` is required on S1 **positives**.
+- **Stratum 2 — benign traps (false-positive stratum).** Designed-degradation / soft-reject paths labeled
+  `negative` **by documented design** (`doc_citation` required): bookinfo `reviews→ratings` (istio PR #15489);
+  the contacts dedupe soft-reject (`status:0`). These are what a naive oracle mislabels; beating them on
+  precision/FP is the headline test.
+- **Stratum 3 — adjudicated wild traffic.** Labels by ≥2 blind MIST-blind raters per the rubric; S3-only κ is
+  the PRIMARY reliability statistic. **None populated yet** (the C3 rater study output; scale plan).
 
-> An oracle is **correct** on a case iff `(verdict == flag) == (ground_truth.label == positive)`.
+## 4. What a case records — the anti-circularity rule + evaluability
+Each case fixes the **target** (`entry_endpoint`, `dependency`, typed `readback`), the `fault` + its clean
+twin, the `ground_truth` label + rationale + source, and the **expected verdict of each oracle** in
+`oracle_expectation` (7 columns). An oracle is **correct** on a case iff its verdict matches its
+`oracle_expectation` entry; for baseline columns that equals `(verdict==flag)==(label==positive)`.
 
-Two oracle-column classes, kept distinct on purpose (this is what defuses the "circular ground truth"
-objection):
-- **Baseline columns** (`status_code_oracle`, `schema_oracle`, `body_marker_oracle`,
-  `naive_span_error_oracle`) — **deterministic by construction**. Their logic is fixed and simple, so the
-  expected verdict is known without running MIST. (E.g. `naive_span_error_oracle` flags iff an error span
-  sits under a 2xx entry — which is why it false-positives on `bookinfo-ratings-benign-001`.)
-- **MIST columns** (`mist_trace_shape_oracle`, `mist_dataintegrity_oracle`) — the **target** (the correct
-  verdict). MIST's *actual* output is measured against this at Gate 1; a mismatch is precisely an FP or
-  FN. These are **not** assumed correct — the ground truth never reuses MIST's own signal.
+Two oracle-column classes, kept distinct on purpose (this defuses the "circular ground truth" objection):
+- **Baseline / comparator columns** (`status_code`, `schema`, `body_marker`, `naive_span_error`,
+  `tracetest_presence`) — **deterministic by construction**. `body_marker` flags iff
+  `ack_content_visibility != success-shaped-clean`.
+- **MIST columns** (`mist_readback`, `mist_trace_shape`) — the **target** (measured at eval, **never** ground
+  truth). A mismatch is precisely an FP or FN.
 
-Verdict values: `flag` (reports a fault), `no_flag` (reports clean), `not_applicable` (oracle doesn't run
-on this class — e.g. the data-integrity oracle on a pure swallowed-downstream case).
+**Evaluability is keyed to `capture_status` (rev-2.1 R2/R3):** a **`captured`** case records **as-deployed**
+verdicts — a trace oracle on a `trace-uninstrumented` deploy has no input and is `not_applicable` (NOT
+`no_flag`, which would credit an unearned true-negative). A **`specified`** case records the **design
+expectation** (intended-instrumented, precondition-gated) and is a pre-registered TARGET, **never tallied as
+a measured result**. Consequence: the `trace-invisible-by-construction` "N-genuine-vs-0-caught" recall row is
+earned only by a *traced* capture (trace oracles ran and missed); the two fabricated-ack cases are
+`trace-uninstrumented` today, so that row is a pre-registered claim.
 
-`capture_status`: `specified` = designed, label known, traces/read-back not yet recorded (all three seed
-cases today); `captured` = control/fault traces + read-back recorded on a live deploy and the
-`provenance.*` paths populated.
+Verdict values: `flag`, `no_flag`, `not_applicable`.
 
-## 5. How each case maps to the eval
-- **E2 (oracle effectiveness):** strata 1–2 give known labels → precision/recall/FP frontier vs the
-  baseline + trace-aware comparators.
-- **E5 / A1 ablation:** the gap between `naive_span_error_oracle` (flags benign traps) and the MIST target
-  on stratum 2 isolates the label-free discrimination — the precision/FP win at matched recall.
-- **Gate 1:** capture the control/fault traces + read-back for the stratum-1 pair; confirm
-  `mist_dataintegrity_oracle` fires on the positive and not on the control; measure read-back FP on stratum 2.
+## 5. Two design points the review sharpened
+- **The FP/TP precision pair (R4).** bookinfo (benign) and sockshop (genuine) are structurally identical
+  (an error/absence under a 2xx). `naive_span_error` **and** `tracetest_presence` FP on bookinfo and TP on
+  sockshop — **neither separates benign from genuine.** The ONLY separating column is `mist_trace_shape`
+  (`no_flag` bookinfo / `flag` sockshop), and only via a **semantic** discriminator: ratings is a
+  contractually-OPTIONAL read with no required durable effect (and the entry response even communicates the
+  degradation), whereas sockshop's lost shipping task is a REQUIRED durable effect masked behind an
+  identical-to-success ack. This advantage is a **pre-registered claim validated on live capture**, not a
+  pilot result (both cases are `specified`).
+- **The "agreement" anchor lives in the head-to-head, not here (R5).** `TT-createaccount-agreement` is scored
+  in C2 only as a body-carrying-CRUD read-back positive (`mist_readback=flag`). The claim that a state-clause
+  contract comparator ALSO binds its postcondition is a **measured** quantity (authoring/bindability
+  dependent) → it belongs to the g3 head-to-head (`debug/a-main/g3-comparator-tt/`, Rider-2 bindability).
+  The C2 table has **no** contract-invariant column, so this row is indistinguishable from a MIST-only win;
+  do not read it as an agreement from the table alone.
 
 ## 6. Add a case, then validate
-1. Copy a case in `cases/`, give it a unique `case_id`, fill every required field (the schema rejects
-   unknown keys and bad enums).
-2. Set the baseline columns by construction; set the MIST columns to the correct target verdict.
-3. Validate (Python `jsonschema` ≥ 4, draft 2020-12):
-   ```
-   python - <<'PY'
-   import json, glob, pathlib
-   from jsonschema import Draft202012Validator
-   base = pathlib.Path("debug/a-main/benchmark")
-   v = Draft202012Validator(json.loads((base/"schema/fault-case.schema.json").read_text(encoding="utf-8")))
-   for f in glob.glob(str(base/"cases/*.json")):
-       errs = list(v.iter_errors(json.loads(pathlib.Path(f).read_text(encoding="utf-8"))))
-       print(("PASS " if not errs else "FAIL ") + pathlib.Path(f).name)
-       for e in errs: print("   ", list(e.path), e.message)
-   PY
-   ```
+1. Copy a case in `cases/`, unique `case_id`, fill every required field (the schema rejects unknown keys +
+   bad enums; `additionalProperties:false` throughout).
+2. Set baseline columns by construction; set MIST columns to the correct target verdict; honor the
+   `capture_status` evaluability rule (§4).
+3. `python3 debug/a-main/benchmark/schema/validate_cases.py` (Python `jsonschema` ≥ 4, draft 2020-12).
 
 ## 7. Honest caveats
-- Strata 1–2 labels are by construction / documented design — legitimate ground truth (RCAEval, Nezha do
-  the same), but **not** wild developer-confirmed bugs. The headline "real bug assertion-tools miss" claim
-  still requires **Gate 3** (see `../EXECUTION.md`); it is not made by this benchmark alone.
-- This is the **PREP location** (`debug/a-main/benchmark/`). At release, promote to a repo-root
-  `benchmark/` or a standalone artifact repo with a DOI. Building B1/B2 and capturing traces is BLOCKED
-  until the user says "yes"; the schema, rubric, and seed cases are prep and need no tool code.
+- **Construct bias (R6).** The captured discriminating positives are all **synthetic fabricated-ack fork
+  flags** — faults *shaped* to be invisible to everything but a read-back. They **bound** the read-back
+  oracle's value; they are not evidence of prevalence. The realistic positives (sockshop natural swallow;
+  cancel-natural) are respectively `specified`/unrun and tell-bearing/segregated. **Missing:** a benign case
+  that stresses the read-back oracle — a success-shaped-clean 2xx that *legitimately* does not persist
+  (idempotent / no-op / conditional). TrainTicket has no such representative (its only by-design drop signals
+  `status:0`); the scale plan borrows one from another SUT. Precision must be reported per-oracle **including
+  MIST's read-back**, not only against the baselines.
+- Strata 1–2 labels are by construction / documented design — legitimate ground truth (RCAEval, Nezha do the
+  same), but **not** wild developer-confirmed bugs. The "real bug assertion-tools miss" claim requires the
+  S3 wild stratum + Gate 3; it is not made by this pilot alone.
+- This is the **PREP location**. At release, promote to a repo-root `benchmark/` or a standalone artifact
+  repo with a DOI.
 
-## 8. Scale plan (seed 4 → release N; the C2 floor-raiser — cold-review MAJOR)
-The 4 seed cases are validation fixtures + first seeds, **not** the deliverable. C2 is a *citable*
-floor-raiser only at release scale; until captured at scale it is a **credible** floor, not yet a **clear**
-one — do not label it "clear" in the paper before the corpus is released. Pre-registered target + budget:
+## 8. Scale plan (pilot → release; the pre-registered targets)
+The 11 pilot cases prove the schema + rubric + a live clean-MIST-win. They are **not** the deliverable. The
+release deliverable is the captured, scaled corpus. Pre-registered targets (SUTs × write endpoints × fault
+classes × strata) and honest denominators live in `c2-freeze.md` §5 (the earlier "3 SUTs × ~7 endpoints ≈
+100–140" arithmetic here was **refuted** by the §8.5-3 depth survey — TeaStore = 1 durable write, Boutique =
+0 — and is superseded by the freeze's two-denominator recount; do not cite the old count). **Deferred
+captures (need live deploys; none is a blocker to the honest pilot):**
+- Traced captures of the two fabricated-ack cases → earn the `trace-invisible-by-construction` N-vs-0 recall row.
+- The FP/TP pair live (bookinfo redeploy + sockshop tenancy window) with **queue-master consume-span**
+  instrumentation → validate the `mist_trace_shape` precision advantage.
+- Fork-built breadth positives (adminroute / adminbasic) + the adminbasic clean control.
+- An **idempotent-no-op benign read-back control** (borrowed SUT) → test the read-back oracle's one FP mode.
+- The **S3 wild-adjudicated stratum** (the C3 rater study).
 
-**Target: N ≈ 100–140 labeled cases** at first release (the sum of the strata below). (RCAEval's 735 is a
-broad multi-fault RCA corpus, not the right yardstick; a *scoped* masked-fault / data-integrity oracle
-benchmark is A-grade in the low hundreds.)
-
-**Costed decomposition (SUTs × write endpoints × fault classes × strata):**
-- **SUTs (3 write-path):** TrainTicket, TeaStore, Sock Shop (README §4 item 6 — all have a black-box
-  read-back + achievable isolation).
-- **Write endpoints:** ~6–10 CRUD write paths per SUT (TrainTicket alone exposes 74 POST / 27 PUT / 26
-  DELETE — `../prep/target-triples.md`).
-- **Fault classes:** stratum-1 positives = {LOST_WRITE (S2), SWALLOW_DOWNSTREAM (S1), MISSING_COMPENSATION
-  (saga)} via the injection recipe below; stratum-2 benign traps = {eventual-consistency, retry-then-succeed,
-  optional-dependency, **and the accept-then-drop / idempotent-no-op sub-class**} incl. ≥1 broker-async path
-  per SUT (the make-or-break FP stratum — TOOL-PLAN P3/B2.4).
-- **Rough count:** 3 SUTs × ~7 endpoints × ~2 applicable positive classes ≈ 40–60 stratum-1; ~10 benign
-  traps/SUT ≈ 30 stratum-2; a **bounded, size-pre-registered** stratum-3 wild-adjudicated sample (see the C3
-  caveat in README §6 — this is the only genuinely population-*prevalence* element) ≈ 30–50. Total ≈ 100–140
-  (40–60 + 30 + 30–50).
-
-**Injection recipe (reproducible case production):** S2 = SUT-flag `LOST_WRITE` (source-injected — the only
-way to get skip-persist, §0 fact 6); S1 = Toxiproxy TCP cut on D's socket (errored-D) OR SUT-flag
-`SWALLOW_DOWNSTREAM`; compensation = drive the named saga site, then fault a mid-saga dependency. Each case:
-capture control+fault traces + read-back, populate `provenance.*`, flip `capture_status` specified→captured.
-
-**This scale run IS the G3 corpus build** (EXECUTION G3) — gated behind B1/B2 (BLOCKED until "yes"). The
-seed 4 exist now to prove the schema + rubric + one live positive; the 120–160 are the release deliverable.
-
-## 9. Migration map — schema v0.1.0 → rev 2 (2026-07-08 re-freeze; step-2 mechanical port)
-The rev-2 schema (in lockstep with `c2c3/c2-freeze.md` §2) is a superset with three structural changes;
-the 6 seed cases are ported field-by-field at step-2 population. Field deltas:
-
-| v0.1.0 | rev 2 | port rule |
-|---|---|---|
-| `schema_version: "0.1.0"` | `"2.0.0"` | bump |
-| `injection.mechanism` (method enum) | **split** → `fault.mechanism` (diversity class) + `fault.injection_method` (method) | `sut_injector`→{mechanism per case: flag/code-level, method sut_injector}; `toxiproxy`→{mesh-sever, toxiproxy}; `vendor_flag`→{flag, vendor_flag}; `natural`→{mechanism per the natural path, natural}; `none`→{none, none}. Add `dependency-down` where a DB/backing-store kill is used. |
-| `target.readback_endpoint` (optional endpoint) | `target.readback` (typed: modality/locator/expect_*/mist_bindable) | a GET read-back → `modality: api-get`. **The SS swallowed-enqueue case has NO durable read-back → `modality: none-durable` → `mist_readback_oracle: not_applicable`** (matches its existing `mist_dataintegrity_oracle: not_applicable`). The OTel async case → `modality: sql-probe`, `mist_bindable: <TBD at capture>`. |
-| — (absent) | `oracle_eval.ack_content_visibility` **(new, required)** | author per case. TeaStore order-confirm = `success-shaped-clean` (A-verified: `-1` cleared from blob → clean 200). A `{1,"error"}`/sentinel body = `sentinel-in-body`/`status-field-tells`. |
-| — (absent) | `oracle_eval.trace_visibility` **(new, required, 4-value)** | `error-span-visible` \| `span-presence-visible` \| `trace-invisible-by-construction` \| `trace-uninstrumented` (Kieker/un-instrumented ≠ by-construction). |
-| — (absent) | `oracle_eval.write_shape` **(new, required)** | `whole` \| `partial-aggregate` (e.g. TeaStore order present, items lost) \| `transition`. |
-| `oracle_expectation.mist_dataintegrity_oracle` | `oracle_expectation.mist_readback_oracle` | rename; add `tracetest_presence_oracle` (baseline). `body_marker_oracle` now flags iff `ack_content_visibility != success-shaped-clean`. |
-| `ground_truth.label: positive\|negative` | `positive\|negative\|underspecified` | unchanged for S1/S2 (positive≡genuine, negative≡benign); `underspecified` is S3-only. Add optional `version` + `doc_citation`. |
-| `adjudication.cohen_kappa` | `adjudication.kappa` | rename; S3-only κ is the PRIMARY statistic (R7). |
-| `sut` | + optional `image_digest`, `replay_script`, `health_precondition` | label bound to `image_digest`. |
-
-Unchanged: `case_id`, `stratum` (int 1/2/3), `capture_status`, `fault_class`, `target.entry_endpoint`,
-`target.dependency` (+ `broker` kind added), `provenance`. Validation snippet (README §6) unchanged; run
-it after the port to confirm all cases PASS rev 2. Migration is single-homed at checklist §1.95 (the corpus-factory NOW track — c3-case-corpus-plan.md
-REV 2/M2 restored the governing plan's promote-before-deploy ordering); the seed cases FAIL rev 2
-until migrated + short-capture-run at the pinned MIST commit (capture_status specified → captured),
-by design.
+## 9. Migration map — schema v0.1.0 → rev 2 — **DONE (2026-07-09)**
+All 6 legacy v0.1.0 cases were migrated field-by-field to rev-2 and validate; the 5 flagship cancel/createaccount
+cases were authored rev-2. Field deltas applied: `schema_version 0.1.0→2.0.0`; `injection.mechanism` **split**
+→ `fault.mechanism` (diversity) + `fault.injection_method` (method); `target.readback_endpoint` → typed
+`target.readback{modality,locator,expect_*,mist_bindable}` (the SS swallowed-enqueue + bookinfo →
+`modality:none-durable` → `mist_readback_oracle:not_applicable`); added `oracle_eval.{ack_content_visibility,
+trace_visibility,write_shape}`; `mist_dataintegrity_oracle` → `mist_readback_oracle`; **added**
+`tracetest_presence_oracle`; `ground_truth` + optional `version`/`doc_citation`; `sut` + optional
+`image_digest`/`replay_script`/`health_precondition`. See `REVIEW-CORPUS-RECONCILIATION.md` for the review
+that hardened the result and `../REVIEW-CORPUS-RECONCILIATION.md`-driven per-case notes (each migrated case's
+`provenance.notes` records its own deltas).

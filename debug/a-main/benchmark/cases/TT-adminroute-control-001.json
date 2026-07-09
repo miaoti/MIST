@@ -16,7 +16,7 @@
   },
   "target": {
     "entry_endpoint": { "method": "POST", "path": "/api/v1/adminrouteservice/adminroute", "service": "ts-admin-route-service" },
-    "dependency": { "service": "ts-route-service", "kind": "persistence" },
+    "dependency": { "service": "ts-route-service", "kind": "downstream_service" },
     "readback": {
       "modality": "api-get",
       "locator": "GET /api/v1/adminrouteservice/adminroute [route with the submitted id present in the returned list]",
@@ -33,7 +33,6 @@
     "target_service": "ts-admin-route-service",
     "provenance_class": "by-docs"
   },
-  "negative_control": { "present": true, "replay_script": "self (this IS the clean twin of TT-adminroute-lostwrite-001)" },
   "stimulus": {
     "script": "debug/a-main/benchmark/b4/capture-specs/tt-control-adminroute.yaml",
     "write_path": true,
@@ -62,16 +61,16 @@
     "status_code_oracle": "no_flag",
     "schema_oracle": "no_flag",
     "body_marker_oracle": "no_flag",
-    "naive_span_error_oracle": "no_flag",
-    "tracetest_presence_oracle": "no_flag",
+    "naive_span_error_oracle": "not_applicable",
+    "tracetest_presence_oracle": "not_applicable",
     "mist_readback_oracle": "no_flag",
-    "mist_trace_shape_oracle": "no_flag"
+    "mist_trace_shape_oracle": "not_applicable"
   },
   "provenance": {
     "control_trace": null,
     "fault_trace": null,
     "readback_response": "debug/a-main/benchmark/b4/captures/tt-ctl-adminroute-create/sidecar.json",
-    "notes": "Live-captured on the current kind 'mist' deploy: POST adminroute acks success and the route id appears on the read-back GET (write landed). Negative control paired 1:1 with the positive lost-write. rev-2 migration (2026-07-09): v0.1.0 injection{MIST_FAULT_LOSTWRITE_ENABLED=false} -> fault{mechanism=none}; readback_endpoint -> typed readback (api-get, present/absent); tracetest_presence_oracle=no_flag (the ts-route-service persist span IS present on the clean write, so a presence-assertion passes). trace_visibility=trace-uninstrumented (app-layer write-path spans not recorded on this deploy; the case's discriminator is the read-back, not the trace)."
+    "notes": "Live-captured on the current kind 'mist' deploy: POST adminroute acks success and the route id appears on the read-back GET (write landed). Negative control paired 1:1 with the positive lost-write. rev-2 migration (2026-07-09): v0.1.0 injection{MIST_FAULT_LOSTWRITE_ENABLED=false} -> fault{mechanism=none}; readback_endpoint -> typed readback (api-get, present/absent). REVIEW-CORPUS R2 (as-deployed evaluability): this deploy is trace-uninstrumented at the write-path layer, so naive_span_error/tracetest_presence/mist_trace_shape have no input and are not_applicable (NOT no_flag). Design note only (not an as-deployed verdict): on a properly instrumented deploy the ts-route-service persist span would be present on the clean write, so a presence-assertion would pass (no_flag). mist_readback=no_flag is a real as-deployed true-negative (the read-back ran; the route is present). The case's discriminator is the read-back, not the trace. R8: dependency.kind harmonized to downstream_service (cross-service persist), matching the lost-write twin."
   },
   "license": {
     "case_code": "Apache-2.0",

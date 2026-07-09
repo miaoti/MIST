@@ -49,16 +49,22 @@ Sources consolidated: plan v2 §5, `c2-freeze.md` rev 2, `e-sut-applicability-ma
         cancel-clean (+80→130), createaccount-clean (60), contacts-dedupe (`{0,"already exists"}`,
         1 durable contact — FIXED, was 400 wrong-endpoint). Eligibility(2): elig-genuine, elig-benign
         (disjoint-by-id). **SS pair still needs a TT-down window (2.15 tenancy).**
-☐ 1.95.2b **CORPUS-ASSEMBLY WAVE (NEXT; unblocked, no cluster; inputs READY = 9 sidecars + labels
-        known-by-construction + the rev-2 schema in `c2-freeze` §2).** Scope: (1) migrate the 6 legacy
-        v0.1.0 JSON cases (`benchmark/cases/*.json`) → rev-2; (2) author 7 NEW rev-2 case files (cancel
-        trio, createaccount pair, elig pair — adminroute-control + contacts-dedupe already have legacy
-        files → migrate + LINK the fresh sidecar + flip `capture_status` specified→captured);
-        (3) update the machine schema `benchmark/schema/fault-case.schema.json` v0.1.0 → rev-2;
-        (4) validate all against it (invariants: S1⇒genuine+by-injection+negative_control;
-        S2⇒benign+by-docs+doc_citation; `ack_content_visibility` per case); (5) ≥3-cold-review
-        (schema-critical). Deploy pins = codewisdom 1.0.0 + ts-inside-payment-service:1.0.5 (fork
-        branch MIST-trainticket).
+☑ 1.95.2b **CORPUS-ASSEMBLY WAVE — DONE + 3-COLD-REVIEWED + FOLDED (commits d062e52 → rev-2.1 fix wave, 2026-07-09).**
+        (1) ✓ migrated the 6 legacy v0.1.0 cases → rev-2 (`fault{}`, typed `readback{}`, `oracle_eval{}`,
+        `mist_dataintegrity_oracle`→`mist_readback_oracle`, ADDED `tracetest_presence_oracle`);
+        (2) ✓ authored 5 NEW rev-2 measurement cases (cancel trio + createaccount pair); adminroute-control
+        + contacts-dedupe flipped specified→captured with base-image digests + live sidecars linked;
+        (3) ✓ schema was already rev-2 (`c2-freeze` §2 / 2026-07-08) — no change needed;
+        (4) ✓ ALL 11 `benchmark/cases/*.json` validate rev-2 via `schema/validate_cases.py` (added);
+        (5) ✓ ≥3-cold-review DONE + FOLDED (`REVIEW-CORPUS-RECONCILIATION.md`): A oracle-soundness /
+        B migration-faithfulness (nothing dishonest) / C benchmark-design (ACCEPT-as-SEED). Through-line =
+        reposition as SEED/pilot + scale plan, enforce honesty in-file. Fix wave EXECUTED (freeze rev-2.1
+        §2/§4/§6 = S1↔schema reconciliation + capture_status-keyed evaluability + SEED disclosure; 10 case
+        edits; README rewrite; validator re-green). Deploy pins = codewisdom 1.0.0 + fork inside-payment
+        digest 81186b71 (branch MIST-trainticket). **REPORT: the corpus is 6 pos / 5 neg, a defensible
+        PILOT; the FP/TP pair + breadth + S3 are the pre-registered scale plan (README §8, need live deploys).**
+        REMAINDER: elig pair (tt-elig-genuine/benign) → the SCREENING instrument (§11), authored OUTSIDE the
+        measurement corpus (schema pattern now review-cleared).
 ☑ 1.95.3 rater-materials 3-cold-review **DONE** (rev 3, `REVIEW-RATER-RECONCILIATION.md`, commit
         3aae75a). IRB/exemption filing + compensation (U1/U2) = USER (arranging). RATERS START only at
         the step-5 corpus gate — by construction, matching the recruitment lead.

@@ -61,7 +61,7 @@
     "schema_oracle": "no_flag",
     "body_marker_oracle": "no_flag",
     "naive_span_error_oracle": "flag",
-    "tracetest_presence_oracle": "no_flag",
+    "tracetest_presence_oracle": "flag",
     "mist_readback_oracle": "not_applicable",
     "mist_trace_shape_oracle": "no_flag"
   },
@@ -69,7 +69,7 @@
     "control_trace": null,
     "fault_trace": null,
     "readback_response": null,
-    "notes": "Stratum-2 benign trap. naive_span_error_oracle FLAGS this (false positive) because a ratings error span sits under a 2xx entry; the TARGET for MIST's trace-shape oracle is no_flag (discriminate the designed degradation). tracetest_presence=no_flag: the ratings span IS present (the call is made and errors), so a presence-assertion passes -> unlike the error-span oracle, it does NOT false-positive here. mist_readback=not_applicable (none-durable: no data write to read back). The gap between naive_span_error (flag) and mist_trace_shape (no_flag) at matched recall is exactly the A1 ablation (precision/FP) the eval reports; the contrast with sockshop-shipping (where naive_span_error correctly flags a genuine masked failure) is the paired FP/TP datum. rev-2 migration (2026-07-09): readback modality none-durable + expect pair nominal; mist_dataintegrity_oracle -> mist_readback_oracle; ADDED tracetest_presence_oracle=no_flag. Status: SPECIFIED (not deployed)."
+    "notes": "Stratum-2 benign trap. SPECIFIED design-target (bookinfo scaled to 0 -> not captured; these oracle_expectation values are the intended-instrumented expectation per freeze R2, NOT a measured result). REVIEW-CORPUS R4 (A-M3/C-F3) corrections: (1) FACTUAL FIX -- with ratings scaled to zero the ratings SERVER span is ABSENT (only the erroring reviews->ratings client span exists); the prior note 'the ratings span IS present' was wrong. (2) HONEST tracetest_presence=flag: a presence-assertion on the expected downstream-effect span FALSE-POSITIVES here just like naive_span_error (both are purely structural: an error/absence under a 2xx). So on this pair naive AND tracetest_presence BOTH FP -- neither separates benign from genuine. (3) The ONLY discriminating column is mist_trace_shape (design-target no_flag): MIST must encode the SEMANTIC discriminator that ratings is a CONTRACTUALLY-OPTIONAL read with NO required durable downstream effect (istio PR #15489; the entry response even communicates the degradation, 'Ratings service is currently unavailable'), whereas sockshop's lost shipping task IS a required durable effect. (4) mist_readback=not_applicable (none-durable). This precision advantage is a PRE-REGISTERED claim validated on live capture of the bookinfo/sockshop pair, not a pilot result. rev-2 migration: readback modality none-durable + expect pair NOMINAL (R11: no durable write on this read-path degradation; the enum has no no-write value); mist_dataintegrity_oracle -> mist_readback_oracle. R12: ack_content_visibility=success-shaped-clean is w.r.t. the MACHINE tell (no status field / sentinel -> body_marker=no_flag); the 'Ratings unavailable' string is human-readable HTML prose, available to a semantic oracle (that is discriminator (3)) but not a machine sentinel a substring body oracle keys on."
   },
   "license": {
     "case_code": "Apache-2.0",

@@ -42,7 +42,7 @@
   },
   "oracle_eval": {
     "ack_content_visibility": "success-shaped-clean",
-    "trace_visibility": "trace-invisible-by-construction",
+    "trace_visibility": "trace-uninstrumented",
     "write_shape": "whole",
     "oracle_mode": "paired",
     "config_provenance": {
@@ -71,7 +71,7 @@
     "control_trace": null,
     "fault_trace": null,
     "readback_response": "debug/a-main/benchmark/b4/captures/tt-s1-cancel-fabricatedack/sidecar.json",
-    "notes": "Live-verified 2026-07-09: cancel HTTP 200 {1,\"Success.\"}, buyer /account balance 50.00 unchanged (refund lost). success-shaped-clean + trace-invisible-by-construction (fabricated ack -> no error span even if traced): the response and trace carry NO tell -> the constructed clean MIST win. Only a durable value-delta read-back catches it (body-marker/status/schema oracles all no_flag). This is the case that JUSTIFIES a read-back oracle."
+    "notes": "Live-verified 2026-07-09: cancel HTTP 200 {1,\"Success.\"}, buyer /account balance 50.00 unchanged (refund lost). success-shaped-clean: the response carries NO tell (body-marker/status/schema all no_flag), so only a durable value-delta read-back catches it -> the constructed clean MIST win; the case that JUSTIFIES a read-back oracle. CONSTRUCT CAVEAT (REVIEW-CORPUS R6): this is a SYNTHETIC WORST-CASE exemplar -- a fork flag (drawbackFaultMode=fabricatedack) that returns the exact success envelope while deliberately skipping the persist, i.e. a fault SHAPED to be invisible to everything but a read-back. It bounds the read-back oracle's value; it is not evidence of prevalence. The naturally-occurring analogue (drawback abort -> {1,\"error\"}) is the tell-bearing cancel-natural case (segregated). AS-DEPLOYED (REVIEW-CORPUS R2/R3): captured on a trace-uninstrumented deploy, so the trace oracles are not_applicable, NOT no_flag. PRE-REGISTERED CLAIM (not yet a result): under trace instrumentation the fabricated ack yields a normal span (trace-invisible-by-construction) so the trace oracles would run and MISS (no_flag) -> earns the freeze's N-genuine-vs-0-caught recall row; that row requires a future traced capture."
   },
   "license": {
     "case_code": "Apache-2.0",

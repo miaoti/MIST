@@ -32,7 +32,7 @@
     "target_service": "ts-admin-basic-info-service",
     "provenance_class": "by-injection"
   },
-  "negative_control": { "present": true, "replay_script": null },
+  "negative_control": { "present": false, "replay_script": null },
   "stimulus": {
     "script": "valid Contacts with a fresh unique UUID id (accountId, name, document fields)",
     "write_path": true,
@@ -70,7 +70,7 @@
     "control_trace": null,
     "fault_trace": null,
     "readback_response": null,
-    "notes": "Second lost-write positive on a DIFFERENT write-path service (target triple B; shows the oracle is not adminroute-specific). Same skipped-cross-service-persist shape as TT-adminroute-lostwrite-001: no error span (naive_span_error/mist_trace_shape clean), but the expected ts-contacts-service persist span is ABSENT -> a Tracetest presence-assertion catches it (tracetest_presence=flag) alongside MIST's read-back. Read-back is COLLECTION membership by business key (adminbasic has NO per-entity GET), so no per-entity isolation advantage over adminroute (cold-review A). rev-2 migration (2026-07-09): schema-only + ADDED tracetest_presence_oracle=flag; trace_visibility=span-presence-visible. Status: SPECIFIED (Gate-1-era fork commit bbf3d6ae; fork admin-basic image not deployed on the current a1767ab3 cluster)."
+    "notes": "Second lost-write positive on a DIFFERENT write-path service (target triple B; shows the oracle is not adminroute-specific). Same skipped-cross-service-persist shape as TT-adminroute-lostwrite-001: no error span (naive_span_error/mist_trace_shape clean), but the expected ts-contacts-service persist span is ABSENT -> a Tracetest presence-assertion catches it (tracetest_presence=flag) alongside MIST's read-back. Read-back is COLLECTION membership by business key (adminbasic has NO per-entity GET), so no per-entity isolation advantage over adminroute (cold-review A). rev-2 migration (2026-07-09): schema-only + ADDED tracetest_presence_oracle=flag; trace_visibility=span-presence-visible. Status: SPECIFIED (Gate-1-era fork commit bbf3d6ae; fork admin-basic image not deployed on the current a1767ab3 cluster). REVIEW-CORPUS R9: negative_control.present=false (the clean twin is not yet authored/captured; honestly DEFERRED to the scale plan rather than claiming a control twin that does not exist, unlike adminroute which has TT-adminroute-control-001). REVIEW-CORPUS R2/B-f3: SPECIFIED design-target -- the trace columns (naive_span_error=no_flag, tracetest_presence=flag, mist_trace_shape=no_flag) are the intended-instrumented expectation (require write-path span instrumentation); on an uninstrumented deploy they are not_applicable, never tallied as a result until captured."
   },
   "license": {
     "case_code": "Apache-2.0",

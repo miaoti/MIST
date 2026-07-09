@@ -42,7 +42,7 @@
   },
   "oracle_eval": {
     "ack_content_visibility": "success-shaped-clean",
-    "trace_visibility": "trace-invisible-by-construction",
+    "trace_visibility": "trace-uninstrumented",
     "write_shape": "whole",
     "oracle_mode": "paired",
     "config_provenance": {
@@ -71,7 +71,7 @@
     "control_trace": null,
     "fault_trace": null,
     "readback_response": "debug/a-main/benchmark/b4/captures/tt-s1-createaccount-agreement/sidecar.json",
-    "notes": "Live-verified 2026-07-09: POST 200 {1,\"Create Account Success\"}, /account row for the acting user ABSENT (create lost). The AGREEMENT anchor: a body-carrying CRUD create whose state postcondition a contract/response-assertion comparator CAN bind (unlike the bodyless cancel GET) -> both MIST's read-back AND a state-clause comparator catch it (fairness/agreement cell). success-shaped-clean + trace-invisible-by-construction."
+    "notes": "Live-verified 2026-07-09: POST 200 {1,\"Create Account Success\"}, /account row for the acting user ABSENT (create lost). IN C2 this is scored as a BODY-CARRYING-CRUD read-back positive (breadth: the read-back oracle catches a POST-create lost write, not only the bodyless cancel GET) -> mist_readback=flag, all baseline/naive columns no_flag/not_applicable. AGREEMENT/FAIRNESS ROLE RELOCATED (REVIEW-CORPUS R5, C-F2/A-m5): the claim that a state-clause/contract comparator ALSO binds this body-carrying postcondition (unlike the bodyless cancel GET) is a MEASURED head-to-head result, not a C2 baseline -- a contract comparator's verdict depends on authoring/bindability, so it is scored in the g3 head-to-head (debug/a-main/g3-comparator-tt/, Rider-2 bindability), NOT here. DISCLOSURE: the C2 oracle_expectation table has no contract-invariant column, so this row is INDISTINGUISHABLE from a MIST-only win; do not read it as an agreement from the table alone. CONSTRUCT CAVEAT (R6): synthetic worst-case (createAccountFaultMode=fabricatedack fork flag). READ-BACK DISCLOSURE (R15): the read-back is a global GET /inside_payment/account (admin/collection read returning all users) -> the case assumes MIST has such a collection/admin read-back endpoint; membership is by the acting userId. AS-DEPLOYED (R2/R3): trace-uninstrumented -> trace oracles not_applicable; the trace-invisible-by-construction property is a pre-registered claim needing a traced capture. success-shaped-clean."
   },
   "license": {
     "case_code": "Apache-2.0",

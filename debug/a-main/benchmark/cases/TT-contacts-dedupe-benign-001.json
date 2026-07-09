@@ -61,16 +61,16 @@
     "status_code_oracle": "no_flag",
     "schema_oracle": "no_flag",
     "body_marker_oracle": "flag",
-    "naive_span_error_oracle": "no_flag",
+    "naive_span_error_oracle": "not_applicable",
     "tracetest_presence_oracle": "not_applicable",
     "mist_readback_oracle": "no_flag",
-    "mist_trace_shape_oracle": "no_flag"
+    "mist_trace_shape_oracle": "not_applicable"
   },
   "provenance": {
     "control_trace": null,
     "fault_trace": null,
     "readback_response": "debug/a-main/benchmark/b4/captures/tt-benign-contacts-dedupe/sidecar.json",
-    "notes": "Live-captured: second identical POST returns 2xx {0,\"Contacts already exists\"}; no new membership row (count delta zero). Stratum-2 benign trap for the ACK rule specifically: mist_readback must NOT fire because MIST's acknowledgement predicate (2xx AND body status in {null,1}) EXCLUDES the status:0 soft-reject, so the base relation is vacuous (a true negative, not a lucky miss). body_marker_oracle FLAGS the status:0 marker and is therefore WRONG on this benign case (intended business behavior) - that gap is the discriminating value. rev-2 migration (2026-07-09): fault_class stays acknowledged_lost_write (benign-trap convention = tag the class the trap is FOR, matching bookinfo-ratings-benign=swallowed_downstream_error; 'none' is reserved for clean controls); ack_content_visibility=status-field-tells (drives body_marker=flag); tracetest_presence_oracle=not_applicable (single-service in-process persistence; no cross-service dependency span to assert). Documents the disclosed limitation that TrainTicket has NO 2xx-success-body-but-never-persists representative (its only by-design drop signals status:0)."
+    "notes": "Live-captured: second identical POST returns 2xx {0,\"Contacts already exists\"}; no new membership row (count delta zero). Stratum-2 benign trap for the ACK rule specifically: mist_readback must NOT fire because MIST's acknowledgement predicate (2xx AND body status in {null,1}) EXCLUDES the status:0 soft-reject, so the base relation is vacuous (a true negative, not a lucky miss). body_marker_oracle FLAGS the status:0 marker and is therefore WRONG on this benign case (intended business behavior) - that gap is the discriminating value. rev-2 migration (2026-07-09): fault_class stays acknowledged_lost_write (benign-trap convention = tag the class the trap is FOR, matching bookinfo-ratings-benign=swallowed_downstream_error; 'none' is reserved for clean controls); ack_content_visibility=status-field-tells (drives body_marker=flag). REVIEW-CORPUS R2 (as-deployed evaluability): trace-uninstrumented deploy → naive_span_error/tracetest_presence/mist_trace_shape = not_applicable (tracetest_presence also n/a for a second reason: single-service in-process persistence, no cross-service dependency span). mist_readback=no_flag is a real as-deployed true-negative (the read-back ran; MIST's ack predicate excludes status:0). Documents the disclosed limitation that TrainTicket has NO 2xx-success-body-but-never-persists representative (its only by-design drop signals status:0). R16: the linked sidecar's internal case_id is 'tt-s2-contacts-dedupe' (alias of this case; file-path link is correct; the captured artifact is not rewritten post-hoc)."
   },
   "license": {
     "case_code": "Apache-2.0",
