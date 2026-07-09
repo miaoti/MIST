@@ -11,7 +11,7 @@ Sources consolidated: plan v2 §5, `c2-freeze.md` rev 2, `e-sut-applicability-ma
 
 ## Step 1.9 — THE UX WAVE (gates step 2; user directive) — REV 2 per REVIEW-UX-RECONCILIATION U1–U8
 ✔ 1.9.1 UX design doc → ≥3-cold-reviewED → reconciled (4e136b2); rev-2 deltas govern.
-✔ 1.9.2 IMPLEMENTED (commit 1d6ed9b + summary-logging fix; suites GREEN mist-cli 199, reactor BUILD SUCCESS = U5 byte-equal proof):
+✔ 1.9.2 IMPLEMENTED W0–W4+W6 (commit 1829a9e + summary-logging fix in 7d69de9; suites GREEN mist-cli 199, reactor BUILD SUCCESS = U5 byte-equal proof; W5 authoring-cost capture = a step-2.75 recording protocol, not code — lives at 1.9.4):
         **W0 observe-session lifecycle FIRST** (arming; parallelism→1 for hooked classes; registry
         property key; record API; positive-steps-only freshening — U1) → W1 verdict check (INERT in
         paired sessions; fail at end-of-method; defect = acked ∧ error==null ∧ OBSERVED_COMPLETE_ABSENT)
@@ -33,29 +33,42 @@ Sources consolidated: plan v2 §5, `c2-freeze.md` rev 2, `e-sut-applicability-ma
         genuinely-blind students can't be staffed (do NOT relax blindness to fill seats).
 
 ## Step 1.95 — THE CORPUS FACTORY (parallel track, starts NOW; c3-case-corpus-plan.md)
-☐ 1.95.1 **B4 blind-label harness** (the corpus factory — moved UP from step 5, zero deploy deps):
+☐ 1.95.0 **Raw-artifact INVENTORY (C-M5/B-B1): list what each seed asset actually has** (all 6 v0.1.0 cases are `capture_status: specified` = NO artifacts; TT h2h transcripts not committed) → sizes the capture-run list BEFORE building fixtures.
+☐ 1.95.05 **Rater-artifact SIDECAR FORMAT (deliverable 0 — B-B1):** ordered request records (method/path/payload) + response records (status+full body) + durable-state observations, RELATIVE times, producer+mist_commit stamp; every producer emits THIS.
+☐ 1.95.1 **B4 blind-label harness** (the corpus factory — moved UP from step 5, zero deploy deps; consumes case+sidecar; STRIP-LIST + no-own-clock + uniformity invariants per corpus plan §5 rev 2):
         rev-2 case + raw artifacts → rater-facing case.md + ballot.yaml + SEALED manifest.json;
         invariants tested (no tool strings; no clean-run column; opaque non-stratum ids;
         deterministic bytes); fixtures = the seed subset below.
-☐ 1.95.2 Seed migration (benchmark/README §9: the 6 v0.1.0 cases → rev 2, validator PASS) +
-        promote the G1/G3/SS reviewed assets → **seed calibration subset (~8–12) + the 2 §9
-        eligibility cases** through the harness end-to-end.
+☐ 1.95.2 Seed migration (6 v0.1.0 cases → rev 2, validator PASS) + **SHORT CAPTURE RUNS at the pin
+        (7d69de9) against the STILL-DEPLOYED TT** (harness-level transcript capture → sidecar;
+        specified→captured; SS captures need a TT-down window or disclosed co-residence) →
+        **seed calibration subset (~8–12) + the 2 §9 eligibility cases** through the harness
+        end-to-end. (SINGLE-HOMED here; 2.75/step-5 carry verify-pointers.)
 ☐ 1.95.3 (with 1.9.6) rater-materials ≥3-cold-review → IRB/exemption filing → eligibility screen
         ready. RATERS START only at the step-5 corpus gate — by construction, matching the
         recruitment lead.
 
 ## Step 2 — deploy wave (after 1.9; tenancy: big SUTs solo — TT, OTel-Demo; small co-reside)
-☐ 2.1 Restore `.wslconfig` to 26 GB before any TT wave; verify `free -h` inside WSL.
+✔ 2.1 .wslconfig ALREADY 26 GB (live-verified 25Gi in WSL — C-B2). **Do NOT edit .wslconfig again: applying it needs `wsl --shutdown`, which kills the running TT/kind cluster.**
+☐ 2.15 **TENANCY SWAP SCHEDULE (C-B2 — TT currently holds the box: 53 pods, ~560Mi free):**
+      (a) FIRST finish the §1.95 TT-live seed capture runs (TT must be UP);
+      (b) then converge TT to the pinned lean-traced G1 topology (the E1/M-yield pin) or scale TT to
+      0 (helm infra stays, PVCs persist — the §2.6 runbook recovers it);
+      (c) only then 2.2/2.3. TT and OTel-Demo are BOTH big-solo tenants — never co-resident.
 ☐ 2.2 TeaStore deploy (kind; pin release tag + image digests at deploy → freeze label validity).
       Verify-at-deploy riders (survey): live-confirm 200-ORDERCONFIRMED under maintenance / DB-down
       / mesh-503; recommender cold-start semantics; capture the exact digests into case YAMLs.
-☐ 2.3 OTel-Demo deploy (compose.full profile or k8s equivalent — Kafka + accounting + fraud REQUIRED).
+      **+RIDER (C-M4): live-verify the Istio mesh-sever actually intercepts TeaStore's CLIENT-SIDE
+      load-balanced calls (registry hands out pod IPs — the TT pod-IP/EnvoyFilter precedent); the
+      broker-less min-3 mechanism floor hangs on this. If plain VS host-match misses, fall back to
+      the inbound-EnvoyFilter pattern.**
+☐ 2.3 OTel-Demo deploy — **PINNED PATH (C-B1): the official `opentelemetry-helm-charts` demo chart on the kind cluster** (compose is OFF-mesh → would forfeit the mesh-sever case-runs + 2.5.5 Tracetest wiring). VERIFY-RIDER: the pinned chart version's k8s rendering includes Kafka + accounting + fraud-detection (they were compose.full-only upstream once) — check BEFORE deploy; else values-enable or fallback to rendered-manifests.
       Riders: accounting-Postgres wiring + psql read-back probe; PlaceOrder ack latency under
       broker-down (confirm the ack path stays fast); frontend graceful-ad rendering; re-freeze the
       flagd list against the pinned tag (docs/json skew).
 ☐ 2.4 Boutique deploy (light). Rider: gRPC method-scoped Istio abort on `/hipstershop.CartService/EmptyCart`
       (HTTP/2 path match) live check.
-☐ 2.5 Bookinfo: already live-proven in-repo — nothing to deploy beyond the existing cluster state.
+☐ 2.5 Bookinfo: REDEPLOY needed (live-verified 0 pods — C-B2; the July assets are in-repo but the cluster state is gone); small: istio samples apply + smoke.
 ☐ 2.6 Post-reboot runbook items stay in force: re-create mist:mist RabbitMQ user + warm-up POST
       before any SS run; repo .sh files are CRLF → run CRLF-stripped copies; minikube stays stopped.
       **TT redeploy lessons (2026-07-09, live-verified):** (a) `quickstart-k8s/yamls/deploy.yaml` is
@@ -82,9 +95,10 @@ Sources consolidated: plan v2 §5, `c2-freeze.md` rev 2, `e-sut-applicability-ma
 ☐ 2.5.4 Measured trace-coverage table per SUT (= the §8.5-2 disclosure).
 ☐ 2.5.5 Tracetest Agent + OTLP collector on the kind cluster; smoke arm 2+3 vs Bookinfo
         (`selected_spans.count = 0` absence assertion end-to-end).
-☐ 2.5.6 TraceAnomaly Docker on captured S1 masked-write traces → turns the PROVISIONAL
+☐ 2.5.6 TraceAnomaly normal-corpus capture per SUT FIRST (training data — C-M3 ordering fix).
+☐ 2.5.7 TraceAnomaly Docker: train on 2.5.6's corpus, then evaluate on captured S1 masked-write
+        traces (**exist only after 3a** — this item is 3a-gated) → turns the PROVISIONAL
         construction-blindness verdict into an empirical row (C-A3).
-☐ 2.5.7 TraceAnomaly normal-corpus capture per SUT (only if 2.5.6 clears in ≤2 days).
 ☐ 2.5.8 Contract-invariant arm spike (Pact/Dredd/AGORA+-style; the 5th, non-trace-family arm — C-A3):
         operability on ≥1 SUT; config recorded per case.
 
@@ -95,7 +109,7 @@ Sources consolidated: plan v2 §5, `c2-freeze.md` rev 2, `e-sut-applicability-ma
   + triples (Kafka case = `readback.modality: sql-probe` → `mist_bindable` decided HERE) + same DoD.
   Record authoring cost.
 ☐ Boutique (light) + Bookinfo (oracle-smoke only). Record authoring cost.
-☐ Seed-case migration (benchmark/README §9): port the 6 v0.1.0 seed cases to rev 2 → validator PASS.
+☐ Seed-case migration: **moved to §1.95.2 (single-homed — B-M2/C-M2); here only VERIFY it is done at the same harness/pin version.**
 
 ## Step 3a — S1/S2 population (∥ nights; quotas = survey + freeze rev 2 §5)
 ☐ S1: TeaStore 4–5 (flag/dependency-down/mesh ×2 sites) · OTel-Demo 4–5 (broker/mesh/flag; build the
@@ -117,7 +131,7 @@ Sources consolidated: plan v2 §5, `c2-freeze.md` rev 2, `e-sut-applicability-ma
   while a graph is deployed.
 
 ## Step 3b — E1 two-tier baseline grid (~160 h driven; wave-runner mandatory)
-☐ FULL tier: TT / TeaStore / SS — 5 tools × 10 seeds × 1 h. THIN: Bookinfo / Boutique / OTel-Demo —
+☐ FULL tier: TT / TeaStore / SS — 5 tools × 10 seeds × 1 h (driven total 138–172 h, not "~160" flat — C-minor). THIN: Bookinfo / Boutique / OTel-Demo —
   3 × 30 min (saturation disclosed). Evaluability smoke gate per cell ("tool reaches ≥1 authed
   endpoint" else non-evaluable, not zero). Substitution: Morest/AutoRestTest fail → RestTestGen;
   floor ≥4 runnable tools. AutoRestTest LLM key + model pinned. ONE pinned TT topology (lean-traced
@@ -134,13 +148,13 @@ Sources consolidated: plan v2 §5, `c2-freeze.md` rev 2, `e-sut-applicability-ma
   finding (benign-dominance branch pre-registered).
 ☐ Rater channel + IRB: **already started at 1.9.6 (U2)** — this step only CONSUMES the recruited
   raters; author-blind fallback (with scars) triggers here only if 1.9.6 failed.
-☐ **B4 blind-label harness BUILD item (B-MAJOR):** the case-normalization/delivery harness that
-  produces the rater-facing mix (clean-run stripped, M-yield interleaved, opaque ids) — built +
-  smoke-tested BEFORE calibration.
-☐ **CORPUS-ASSEMBLY ENTRY GATE (before ANY rater sees a case — c3-case-corpus-plan §4/§6):** all
-  three strata (calibration ~30 balanced across SUTs · S3 min(all,40) · M-yield audit) produced by
-  the SAME B4 harness version; §0 distributional-tell audit run on the final mix; manifest SEALED +
-  corpus hash frozen.
+☐ B4 harness: **built at §1.95.1 (single-homed — B-M2/C-M2); here only VERIFY same harness version across all strata (part of the entry gate).**
+☐ **CORPUS-ASSEMBLY ENTRY GATE (8 checks — corpus plan §6 rev 2; before ANY rater sees a case):**
+  same-B4-harness-version across strata · tell-audit (incl. timestamps + cross-strata shape
+  uniformity) · manifest SEALED incl. RUBRIC VERSION · corpus hash frozen · machine disjointness
+  (calibration ∩ S3 ∩ M-yield-audit ∩ eligibility = ∅ by true id) · every rated case
+  `capture_status == captured` · IRB determination RECEIVED · wild-flag capture bundle present for
+  every S3 case (B-M1).
 ☐ Adjudication: blindness invariants; S3-only κ primary; calibration ~30 sized so pooled ≥50 free.
 ☐ M-prevalence reporting obligations VERBATIM (B-MAJOR): detector-conditioned LOWER-BOUND estimand
   stated; detector recall on S1 as the qualifier; two denominators (per-request, per-endpoint);
@@ -165,7 +179,7 @@ Sources consolidated: plan v2 §5, `c2-freeze.md` rev 2, `e-sut-applicability-ma
 
 ## Standing constraints (never forget)
 - Single box; 26 GB WSL for TT; tenancy schedule; never build while a graph is deployed; docker-exec
-  recovery runbook; disk prune per wave; kind cluster "mist" (sockshop currently up), minikube stopped.
+  recovery runbook; disk prune per wave; kind cluster "mist": TT up (53 pods), sockshop + bookinfo scaled to 0/absent (C-B2 live-verified), minikube stopped.
 - All MIST-repo changes on `main_track`; no Co-Authored-By; no file deletion; FILE_INDEX + memory sync.
 - Frozen docs change only via disclosed amendments (`c2-freeze.md` §6).
 - Paper honesty riders: lead with the study; two-denominator S1; tell-free floor; MIST vs arm-3
