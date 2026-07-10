@@ -11,25 +11,30 @@
 > spans vs controls' 2/6/3 — the lost write IS visible at DB-span granularity; the presence column is
 > pinned at cross-service HTTP-span granularity (service-map authoring), where invisibility holds.
 > The AUTHORITATIVE C2 pre-registration is `debug/a-main/c2c3/c2-freeze.md` (rev 2 + rev-2.1 amendments).
-> All **14 cases in `cases/` validate** (`schema/validate_cases.py`, exit 0); the two `eligibility/` cases
+> All **18 cases in `cases/` validate** (`schema/validate_cases.py`, exit 0); the two `eligibility/` cases
 > (rater screen, outside the measurement corpus) also validate.
 > This README describes the design + the *current populated pilot*; read the freeze for the frozen truth.
 > `schema/rubric.md` (v0.1.0) is superseded by `c2-freeze.md` §3 + `c2c3/c3-rater-materials.md` §3.
 
 > **Read this first — what the pilot IS and is NOT (REVIEW-CORPUS-RECONCILIATION.md, 3-cold-review):**
 > The populated corpus is a **seed/pilot + a pre-registered scale plan**, NOT a completed benchmark. It is
-> **6 positives / 8 negatives** (report it that way — never a bare "S1 count"). Of the 6 positives,
-> **4 are captured *discriminating* positives** across 3 write-path services: 2 fabricated-ack fork flags
-> (`TT-cancel-refund-fabricatedack`, `TT-createaccount-agreement`, on `ts-inside-payment-service`) + 2
-> skipped-cross-service-persist flags captured 2026-07-10 (`TT-adminroute-lostwrite`,
-> `TT-adminbasic-contacts-lostwrite` — as-deployed only `mist_readback` catches them; pre-registered as
-> comparator-catchable under trace instrumentation, i.e. NOT MIST-unique once traced). **PHASE B (2026-07-10c, unanimous-accept plan): the FP/TP pair's COMPARATOR columns are now
-> MEASURED** — bookinfo benign: naive=FLAG + presence=FLAG (both structural columns false-positive);
-> sockshop genuine: presence=FLAG TP, naive pre-registration REFUTED by capture (no producer span →
-> no_flag FN, disclosed); sockshop clean control: naive=FLAG (docker-socket consume-side error —
-> naive FPs even on clean operation). `mist_trace_shape` stays Branch-B on all pair legs — **the
-> MIST-side pair-separation claim remains PRE-REGISTERED** (freeze §6 scoping row). The S3 wild
-> stratum remains the scale plan (§8); a `specified` case's `oracle_expectation` is a design TARGET.
+> **8 positives / 10 negatives** across **4 write-path SUTs** (report it that way — never a bare "S1
+> count"). Of the 8 positives, **4 are captured *discriminating* positives on TT** (2 fabricated-ack fork
+> flags + 2 skipped-cross-service-persist flags — as-deployed only `mist_readback` catches them;
+> pre-registered as comparator-catchable under trace instrumentation) **+ 2 NATURAL captured positives on
+> un-forked SUTs** (sockshop swallowed-enqueue; TeaStore maintenance masked-write) **+ the NATURAL async
+> flagship** (OTel-Demo checkout→Kafka→accounting, PERMANENT loss measured). **PHASE B (2026-07-10c): the
+> FP/TP pair's COMPARATOR columns MEASURED** — bookinfo benign: naive=FLAG + presence=FLAG (both structural
+> columns false-positive); sockshop genuine: presence=FLAG TP, naive pre-registration REFUTED by capture
+> (no producer span → no_flag FN, disclosed); sockshop clean control: naive=FLAG (docker-socket error —
+> naive FPs even on clean operation). **PHASES C+D (2026-07-10): TeaStore's masked write has NO flagging
+> deployed column (all three ack columns ran-and-missed; trace-uninstrumented) and its HTML read-back +
+> OTel-Demo's psql read-back pin the T9 applicability-boundary convention (freeze §6); the OTel fault leg
+> measured naive=no_flag ran-and-missed with a PRESENT+CLEAN producer span on both legs (sharper than
+> sockshop) vs presence=FLAG ran-and-caught via the linked consumer trace.** `mist_trace_shape` stays
+> Branch-B on all pair legs — **the MIST-side pair-separation claim remains PRE-REGISTERED** (freeze §6
+> scoping row). The S3 wild stratum remains the scale plan (§8); a `specified` case's
+> `oracle_expectation` is a design TARGET.
 
 > **PREP deliverable (main-track). NO MIST tool code.** Contribution **C2 — an open-source labeled
 > benchmark of masked-downstream / acked-but-lost data-integrity faults** in OSS microservice systems.
@@ -43,7 +48,7 @@ rubric + a blind-labeled wild stratum. State it exactly that way; do not over-cl
 phenomenon, and — per the review — **do not call the current pilot "the benchmark"**: it is the schema +
 rubric + pilot seed + scale plan.
 
-## 2. Layout + the current 14 cases
+## 2. Layout + the current 18 cases
 ```
 benchmark/
   README.md                         this file
@@ -51,7 +56,7 @@ benchmark/
     fault-case.schema.json          JSON Schema (draft 2020-12) for ONE labeled case — rev 2
     validate_cases.py               validator: cases/*.json vs the schema (exit 0 iff all pass)
     rubric.md                       v0.1.0 rubric (SUPERSEDED by c2-freeze §3 + c3-rater-materials §3)
-  cases/                            14 cases, all rev-2-valid (6 positive / 8 negative)
+  cases/                            18 cases, all rev-2-valid (8 positive / 10 negative)
   eligibility/                      2 rater-screen cases (§9 instrument; OUTSIDE the measurement corpus)
   b4/                               blind-label harness + capture specs + captured sidecars
 ```
@@ -72,6 +77,10 @@ benchmark/
 | `bookinfo-ratings-benign` | 2 | negative | **captured** | FP half of the precision pair, MEASURED: naive=FLAG + presence=FLAG on the benign leg (both structural columns fail the trap); mist_trace_shape Branch-B |
 | `sockshop-shipping-swallowed-enqueue` | 1 | positive | **captured** | TP half, MEASURED: presence=FLAG TP (consume span absent, validated baseline); naive pre-registration REFUTED (no_flag FN, disclosed T2) |
 | `sockshop-shipping-control` | 1 | negative | captured | clean twin (rabbit up; consume span present). MEASURED surprise: naive=FLAG on the clean control (queue-master docker-socket error every consume, diagnosed) |
+| `teastore-order-maintenance-masked` | 1 | positive | **captured** | NATURAL un-forked masked write: the SUT's own maintenance flag makes the persistence CREATE fabricate 201/`-1` while the confirmed page renders; marker absent in-window + post-restore, DB intact. **All three ack columns ran-and-missed; trace cells n/a (Kieker)**; HTML read-back → T9 boundary (`mist_bindable=false`); notes carry the mesh-503 rider (verified-masked, 3a candidate) + T15 plain-VS interception datum |
+| `teastore-order-control` | 1 | negative | captured | clean twin (maintenance off; marker present in flow + fresh-session read-back + REST corroboration) |
+| `oteldemo-checkout-lost` | 1 | positive | **captured** | **the ASYNC FLAGSHIP**: broker-down → 200 ack at ~0.02 s, accounting row PERMANENTLY absent (post-restore + post-verified-heal). MEASURED: naive=no_flag ran-and-missed (zero error spans; producer span PRESENT+CLEAN both legs); presence=FLAG ran-and-caught (linked consumer trace, `presence_scope=file`); psql read-back → T9 boundary. Notes: recovery-window datum (replaced kafka pod wedges both rdkafka clients) |
+| `oteldemo-checkout-control` | 1 | negative | captured | clean twin (kafka up; psql row lands; consumer span present = validated family; accounting INSERT client span in the T6 db report) |
 
 ## 3. The three strata (rev-2.1 R1)
 - **Stratum 1 — label known by construction (not rater-dependent).** Either (a) a **positive** with

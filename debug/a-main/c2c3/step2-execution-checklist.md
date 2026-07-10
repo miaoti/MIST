@@ -97,22 +97,36 @@ Sources consolidated: plan v2 §5, `c2-freeze.md` rev 2, `e-sut-applicability-ma
 
 ## Step 2 — deploy wave (after 1.9; tenancy: big SUTs solo — TT, OTel-Demo; small co-reside)
 ✔ 2.1 .wslconfig ALREADY 26 GB (live-verified 25Gi in WSL — C-B2). **Do NOT edit .wslconfig again: applying it needs `wsl --shutdown`, which kills the running TT/kind cluster.**
-☐ 2.15 **TENANCY SWAP SCHEDULE (C-B2 — TT currently holds the box: 53 pods, ~560Mi free):**
-      (a) FIRST finish the §1.95 TT-live seed capture runs (TT must be UP);
-      (b) then converge TT to the pinned lean-traced G1 topology (the E1/M-yield pin) or scale TT to
-      0 (helm infra stays, PVCs persist — the §2.6 runbook recovers it);
-      (c) only then 2.2/2.3. TT and OTel-Demo are BOTH big-solo tenants — never co-resident.
-☐ 2.2 TeaStore deploy (kind; pin release tag + image digests at deploy → freeze label validity).
-      Verify-at-deploy riders (survey): live-confirm 200-ORDERCONFIRMED under maintenance / DB-down
-      / mesh-503; recommender cold-start semantics; capture the exact digests into case YAMLs.
-      **+RIDER (C-M4): live-verify the Istio mesh-sever actually intercepts TeaStore's CLIENT-SIDE
-      load-balanced calls (registry hands out pod IPs — the TT pod-IP/EnvoyFilter precedent); the
-      broker-less min-3 mechanism floor hangs on this. If plain VS host-match misses, fall back to
-      the inbound-EnvoyFilter pattern.**
-☐ 2.3 OTel-Demo deploy — **PINNED PATH (C-B1): the official `opentelemetry-helm-charts` demo chart on the kind cluster** (compose is OFF-mesh → would forfeit the mesh-sever case-runs + 2.5.5 Tracetest wiring). VERIFY-RIDER: the pinned chart version's k8s rendering includes Kafka + accounting + fraud-detection (they were compose.full-only upstream once) — check BEFORE deploy; else values-enable or fallback to rendered-manifests.
-      Riders: accounting-Postgres wiring + psql read-back probe; PlaceOrder ack latency under
-      broker-down (confirm the ack path stays fast); frontend graceful-ad rendering; re-freeze the
-      flagd list against the pinned tag (docs/json skew).
+☑ 2.15 **TENANCY SWAP EXECUTED (tenancy-window plan rev-2, 2026-07-10):** (a) TT-live captures done
+      (breadth + traced waves); (b) TT scaled to 0 (snapshot `/home/miaot/gate1-logs/tenancy-window/
+      tt-replica-snapshot.txt`; helm infra + PVCs persist; §2.6 runbook + nacos doubleWrite rule =
+      the revival path); (c) 2.2 (Phase C) + 2.3 (Phase D) executed in the freed window. END-STATE
+      (recorded): OTel-Demo UP (plan §1 default), TeaStore UP (RAM allowed; both fit in 25Gi with
+      TT at 0). The 2.15(b) lean-traced TT convergence remains a separate later decision.
+☑ 2.2 TeaStore deploy: **DISCHARGED (tenancy Phase C, 2026-07-10, commit e9c8773)** — v1.4.2 pinned
+      (images :1.4.2, digests in the case JSONs; manifest at gate1-logs/tenancy-window/teastore/).
+      Riders adjudicated: **maintenance = VERIFIED-MASKED + CAPTURED** (201/`-1` fabrication measured;
+      real toggle = POST `/rest/generatedb/maintenance` JSON body — survey path corrected; bare GET
+      `/rest/generatedb` REGENERATES the DB, never probe); **DB-down = UNSOUND-for-capture** (no PVC,
+      the wipe destroys the absence evidence — disclosed finding); **mesh-503 = VERIFIED-MASKED live**
+      (rider leg; 3a case candidate); **recommender cold-start = REFUTED as user-visible** (isReady
+      gating + registry-LB bridge the ~3 s window → no S2 case). **C-M4 RIDER ANSWERED: plain VS
+      host-match INTERCEPTS on this deploy** (kind manifest sets HOST_NAME=svc DNS; registry holds
+      `teastore-persistence:8080`) — the expected pod-IP miss REFUTED as measured; no EnvoyFilter
+      needed; the broker-less min-3 floor stands on {flag, dependency-down, mesh-sever}.
+☑ 2.3 OTel-Demo deploy: **DISCHARGED (tenancy Phase D, 2026-07-10, commit 3c8d581)** — chart 0.40.9 /
+      app 2.2.0 pinned (values at gate1-logs/tenancy-window/otel/; digests in the case JSONs).
+      Pre-deploy rider: Kafka + accounting + fraud-detection + accounting-POSTGRES ALL render with
+      DEFAULT values (no values-enable needed); trimmed: load-gen/llm/product-reviews off (capture
+      hygiene + not on the checkout path), grafana/prom/opensearch off, collector logs+metrics →
+      debug-only (traces→jaeger untouched). Riders adjudicated: **psql read-back VERIFIED** (schema
+      `accounting`, NOT public — bare `\dt` misleads; krb5 stderr = harmless Npgsql GSS probe;
+      a GSS-disable override was tried + REVERTED, detour disclosed); **ack latency under broker-down
+      VERIFIED FAST** (200 at ~0.02 s, produce fully async); **graceful-ad = REFUTED as an S2 case**
+      (ads are browser-XHR; `/api/data` 500s honestly under ad-down while the SSR page stays 200;
+      ~30 s gRPC reconnect-backoff datum); **flagd list RE-FROZEN vs deployed 2.2.0** (15 flags,
+      13 3a-eligible; survey block governs the 3a vendor-flag quota). Recovery runbook (measured):
+      a replaced kafka pod wedges both rdkafka clients → rollout-restart checkout+accounting+fraud.
 ☐ 2.4 Boutique deploy (light). Rider: gRPC method-scoped Istio abort on `/hipstershop.CartService/EmptyCart`
       (HTTP/2 path match) live check.
 ☑ 2.5 Bookinfo: **DISCHARGED (tenancy Phase B, 2026-07-10c)** — the 0/0 state was SCALED not gone; scaled up + reviews→v3 VS ASSERTED (never re-applied; samples re-apply would have destroyed the pin), FP/TP captures done, scaled back to 0.
@@ -145,13 +159,16 @@ Sources consolidated: plan v2 §5, `c2-freeze.md` rev 2, `e-sut-applicability-ma
 ## Step 2.5 — instrumentation wave (gates ALL E2 trace arms)
 ☐ 2.5.1 TT: OTel javaagents on the target write paths (G3 two-part mitigation precedent).
 ◐ 2.5.2 SS: **PARTIAL (tenancy Phase B)** — javaagents on orders/shipping/queue-master executed for the pair captures (768Mi same-patch bump; torn down after per pilot framing); front-end Node auto-instr DESCOPED for the pair (entry = orders server span; T12 case amendment) — full 2.5.2 enablement (if E2 needs front-end spans) remains.
-☐ 2.5.3 TeaStore: Kieker→OTel converter spike OR pre-registered exclude branch → cases become
+◐ 2.5.3 TeaStore: Kieker→OTel converter spike OR pre-registered exclude branch → cases become
         `trace-uninstrumented` (NEVER conflated with by-construction — B-M5). **U3 DISPOSITION
         (pre-registered): the converter is on MIST's OWN critical path, not just E2's — without
         Jaeger the decisive OBSERVED_COMPLETE_ABSENT can never fire on TeaStore, so the exclude
         branch means TeaStore MIST verdicts live in the TIMEOUT_ABSENT stratum (reported separately,
         G1 R3#1 discipline) or NOT_EVALUABLE-by-instrumentation; any new non-trace absence gate would
-        need its OWN S2-FP calibration before use.**
+        need its OWN S2-FP calibration before use.** **EXCLUDE BRANCH TAKEN for the Phase-C captures
+        (2026-07-10): both TeaStore cases carry `trace_visibility=trace-uninstrumented` + trace cells
+        `not_applicable` (captured⇒as-deployed); the converter spike itself (for MIST's own path)
+        remains open — this row stays ◐ until the converter decision at 2.5/E2.**
 ◐ 2.5.4 Measured trace-coverage table per SUT (= the §8.5-2 disclosure). **TT ROW MEASURED (traced-capture
         wave 2026-07-10, agent 1.33.6 on 7 write-path services; from the committed trace exports):**
         cancel path = ts-cancel-service (server+client) → ts-order-service (server, JPA/JDBC spans) →
@@ -162,7 +179,26 @@ Sources consolidated: plan v2 §5, `c2-freeze.md` rev 2, `e-sut-applicability-ma
         (single 24/31/15/13-span traces). NOT covered: ui-dashboard (nginx, uninstrumented entry),
         gateway (uninstrumented, header-transparent), user/auth services (not in wave scope), async/broker
         legs (TT has none on these paths). Agent noise: NacosWatch scheduler emits 1-span internal traces
-        (excluded by the scorer's entry-server filter, disclosed). Remaining SUT rows at their deploys.
+        (excluded by the scorer's entry-server filter, disclosed).
+        **SS ROW MEASURED (tenancy Phase B, 2026-07-10c; from the committed pair exports):** order path =
+        orders (server, javaagent) → shipping (server+AMQP producer on control) → queue-master (AMQP
+        `shipping-task process` CONSUMER span — the pair's discriminator; present 30-span control /
+        absent 26-span fault) + queue-master's docker-socket POST error span on EVERY consume
+        (env-conditioned k8s behavior, measured). front-end NOT instrumented (descoped, T12).
+        **BOOKINFO ROW MEASURED (same wave):** Envoy sidecar spans mesh-wide (Telemetry 100%);
+        productpage→reviews→ratings client/server pairs; ratings server span present on the 9-span
+        control / ABSENT with the erroring reviews→ratings client span (≥500) on the benign leg.
+        **TEASTORE ROW (Phase C): trace-uninstrumented as-deployed** (Kieker-only; the 2.5.3 exclude
+        branch — no trace table; cases carry `not_applicable` trace cells).
+        **OTEL-DEMO ROW MEASURED (Phase D; from the committed pair exports):** natively traced —
+        checkout trace = frontend-proxy (server) → frontend (server ×2 + api-route internal) →
+        checkout (server) → cart/product-catalog/currency/shipping/payment/email (server each; cart→
+        valkey + product-catalog→postgres client spans) + checkout `publish orders` PRODUCER span
+        (present AND CLEAN on BOTH legs — async local-enqueue); Kafka CONSUMERS continue in LINKED
+        traces (accounting `receive orders` consumer + `order-consumed` internal + postgres INSERT
+        client with `db.system.name`; fraud-detection `receive/process orders` consumers) → the
+        scorer's `presence_scope=file` + merged per-leg exports. jaeger v2.17 query = `/jaeger/ui/api/*`;
+        JVM SDK batch-export lag ~5-8 s (sleep before per-leg export).
 ☐ 2.5.5 Tracetest Agent + OTLP collector on the kind cluster; smoke arm 2+3 vs Bookinfo
         (`selected_spans.count = 0` absence assertion end-to-end).
 ☐ 2.5.6 TraceAnomaly normal-corpus capture per SUT FIRST (training data — C-M3 ordering fix).
