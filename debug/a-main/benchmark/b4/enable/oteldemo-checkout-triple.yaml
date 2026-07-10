@@ -1,0 +1,27 @@
+# Wave 2.75-A MIST enablement triple — OTel-Demo async acked-but-lost write.
+#
+# SUPPLIED + MEMBERSHIP: the harness (OtelCheckoutHeadToHead) POSTs /api/cart then /api/checkout
+# with a UNIQUE request-derived marker in the shipping streetAddress, and supplies that marker to
+# DataIntegrityRuntime.beforeWriteSupplied. The read-back is routed via installHttpOverride ->
+# SqlDurableReadback, which runs `kubectl exec ... psql` filtered SERVER-SIDE on
+# accounting.shipping.street_address = <marker> and synthesizes the collection the reviewed
+# MEMBERSHIP oracle parses: present on control, absent on the kafka-down fault leg -> FIRE.
+#
+# Why key on shipping.street_address, not order.order_id: accounting."order" carries ONLY the
+# server-assigned order_id, which the oracle forbids as a correlation key ("X is request-derived,
+# never read from the response"). The shipping row is written in the SAME accounting SaveChanges()
+# transaction as the order row, so a street_address-keyed absence is equivalence-preserving vs an
+# order_id-keyed one (review A-F2/B-F2/C-B3/C-R2).
+#
+# readback_endpoint is a synthetic label (SqlDurableReadback ignores the path and runs the query);
+# it must start with "GET " per the registry loader. No fault_flag / cluster block: the fault is a
+# harness-owned kafka scale-0 injector (control-first, single-toggle, >=20s async floor), not a SUT
+# -D flag.
+triples:
+  - name: oteldemo-checkout-order
+    write_endpoint: "POST /api/checkout"
+    dependency: accounting
+    readback_endpoint: "GET /accounting-shipping-by-marker"
+    isolation_key: [street_address]
+    isolation_strategy: supplied
+    readback_mode: membership

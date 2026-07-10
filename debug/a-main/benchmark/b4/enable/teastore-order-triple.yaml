@@ -1,0 +1,21 @@
+# Wave 2.75-A MIST enablement triple — TeaStore masked order write.
+#
+# SUPPLIED + MEMBERSHIP: the harness (TeaStoreOrderHeadToHead) logs in a per-leg user, adds product
+# 42, and confirms the order with a UNIQUE request-derived marker in the address line; it supplies
+# that marker to DataIntegrityRuntime.beforeWriteSupplied. The read-back is routed via
+# installHttpOverride -> JsonDurableReadback at the persistence /rest/orders JSON (the durable
+# system-of-record; NOT the /profile HTML, whose firstname also renders in the greeting -> false
+# negative, review A-F3/A-F13), optionally scoped ?userid=<leg user> to bound the collection (B-R1).
+# The reviewed MEMBERSHIP oracle then checks {address1: <marker>} membership: present on control,
+# absent on the maintenance-masked fault leg -> FIRE.
+#
+# No fault_flag / cluster block: the fault is the persistence maintenance toggle, owned by the
+# harness (POST /rest/generatedb/maintenance true|false), not a SUT -D flag / SutFlagFaultInjector.
+triples:
+  - name: teastore-order-confirm
+    write_endpoint: "POST /tools.descartes.teastore.webui/cartAction"
+    dependency: teastore-persistence
+    readback_endpoint: "GET /rest/orders"
+    isolation_key: [address1]
+    isolation_strategy: supplied
+    readback_mode: membership
