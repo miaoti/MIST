@@ -1,0 +1,101 @@
+{
+  "case_id": "teastore-order-maintenance-masked-001",
+  "schema_version": "2.0.0",
+  "stratum": 1,
+  "capture_status": "captured",
+  "fault_class": "acknowledged_lost_write",
+  "sut": {
+    "name": "teastore",
+    "repo": "github.com/DescartesResearch/TeaStore",
+    "branch": "",
+    "commit": "v1.4.2 (release tag; images pinned :1.4.2)",
+    "image_digest": "sha256:ac6b0fe9aeca04ee31fea20caed0b49af2ddf709c28a2cf1f4b9b041af05279b",
+    "deploy": "kind cluster 'mist', ns teastore; TeaStore v1.4.2, 7 deployments (webui/auth/persistence/recommender/image/registry/db), images pinned :1.4.2 (persistence digest above; webui sha256:d0e490bd025167fefaf84d43f978c3c6d14fad9bf3cba9bc49ef902a0d106078); manifest /home/miaot/gate1-logs/tenancy-window/teastore/teastore-clusterip.yaml; webui PF localhost:8082, persistence PF localhost:8083. Kieker-only build - NO OTel/Jaeger wiring (trace-uninstrumented as-deployed). Leg = persistence MAINTENANCE flag (control off / fault on).",
+    "replay_script": "debug/a-main/benchmark/b4/capture-specs/teastore-order-flow.yaml",
+    "health_precondition": null
+  },
+  "target": {
+    "entry_endpoint": {
+      "method": "POST",
+      "path": "/tools.descartes.teastore.webui/cartAction?confirm=Confirm",
+      "service": "webui"
+    },
+    "dependency": {
+      "service": "persistence (order create; call chain webui -> auth /placeorder -> persistence /rest/orders — the create is issued by the auth service on the webui's behalf)",
+      "kind": "persistence"
+    },
+    "readback": {
+      "modality": "api-get",
+      "locator": "GET /tools.descartes.teastore.webui/profile - the acting user's Orders table (HTML page; the marker firstname identifies the leg's row). Corroborating internal probe (runner-level, not the black-box surface): GET persistence /rest/orders/user/{id} JSON.",
+      "expect_without_fault": "present",
+      "expect_with_fault": "absent",
+      "mist_bindable": false
+    }
+  },
+  "fault": {
+    "mechanism": "flag",
+    "injection_method": "vendor_flag",
+    "config": {
+      "note": "SUT-shipped runtime maintenance switch on the persistence service: POST /tools.descartes.teastore.persistence/rest/generatedb/maintenance with JSON body true|false (Content-Type: application/json). The GET form of the same path only READS the flag (a query param on the GET does NOT set it). SHARP EDGE: GET /rest/generatedb (no sub-path) REGENERATES the whole database - wipes all orders - and must never be used as a probe. Fault leg: flag ON for the confirm step; restored to OFF before the read-back of record."
+    },
+    "injected_by": "runner (curl POST to the persistence PF), out of band of the capture driver",
+    "target_service": "persistence",
+    "provenance_class": "by-docs"
+  },
+  "negative_control": {
+    "present": true,
+    "replay_script": "teastore-order-flow.yaml @ maintenance off (teastore-order-control-001)"
+  },
+  "stimulus": {
+    "script": "login (pre-generated user, fresh per leg) -> add product 42 to cart -> POST cartAction confirm with a per-leg firstname marker (maintenance ON) -> post-restore profile read-back",
+    "write_path": true,
+    "workload_class": "authored-scenario",
+    "workload_variant": null
+  },
+  "oracle_eval": {
+    "ack_content_visibility": "success-shaped-clean",
+    "trace_visibility": "trace-uninstrumented",
+    "write_shape": "whole",
+    "oracle_mode": "paired",
+    "config_provenance": {
+      "mist_commit": "7d69de9",
+      "mist_authoring": {
+        "tier": "hand-written",
+        "minutes": 0
+      }
+    },
+    "comparator_configs": []
+  },
+  "ground_truth": {
+    "label": "positive",
+    "rationale": "Acked-but-lost order on the unmodified SUT: with the persistence service's own maintenance flag ON, the webui order-confirmation flow acknowledges the purchase exactly as on success (302 -> 200 page containing the order-confirmed content; no error, no degradation notice), while the order is never durably recorded - the user's own order history (the SUT's read-back surface for exactly this data) lacks the row afterwards. NORM (docs/source, not tool output): TeaStore's webui ships an order-history profile page as the durable record of placed orders, and the vendor's own javadoc on the maintenance feature says persistence in maintenance 'return[s] 503 on almost anything' (DatabaseGenerationEndpoint) - i.e. the documented degraded mode is REFUSAL, not silent acceptance; an order flow that still renders the confirmation page while the create is dropped fabricates success the documentation does not license. Contestability note: 'maintenance is operator-opted' cuts against blaming the operator, not against the masking - the END USER placing an order during the window is told success and loses the purchase silently; nothing in the ack communicates the window.",
+    "source": "natural",
+    "version": 1,
+    "doc_citation": "DescartesResearch/TeaStore v1.4.2: persistence DatabaseGenerationEndpoint (maintenance toggle + javadoc '503 on almost anything'); webui order-confirmation flow + profile order history (the read-back surface). Survey row: debug/a-main/c2c3/c2-depth-survey.md (TeaStore masked write)."
+  },
+  "oracle_expectation": {
+    "status_code_oracle": "no_flag",
+    "schema_oracle": "no_flag",
+    "body_marker_oracle": "no_flag",
+    "naive_span_error_oracle": "not_applicable",
+    "tracetest_presence_oracle": "not_applicable",
+    "mist_readback_oracle": "not_applicable",
+    "mist_trace_shape_oracle": "not_applicable"
+  },
+  "provenance": {
+    "control_trace": null,
+    "fault_trace": null,
+    "readback_response": "debug/a-main/benchmark/b4/captures/teastore-order-masked/sidecar-postrestore.json",
+    "notes": "TENANCY-WINDOW CAPTURE-OF-RECORD (2026-07-10, plan rev-2 unanimous-accept, Phase C). MEASURED: fault leg (fresh never-used user12, marker TSMWF1) ran the full flow with maintenance ON - login and add-to-cart WORK under maintenance (reads pass; measured), satisfying the B-m3 identity-precedes-fault intent trivially (users pre-generated at DB creation); the confirm POST returned the success-shaped 302 -> 200 order-confirmed page (recorded in captures/teastore-order-masked/sidecar.json), and the marker is ABSENT from the profile Orders table both in-window AND in the post-restore read-back of record (sidecar-postrestore.json, fresh session after the flag was verified back to false) - plus absent from the runner-level persistence REST corroboration (user12 carries only its 2 generated orders). Control leg (fresh user13, marker TSMWC1, maintenance off): identical flow, marker PRESENT in the flow observation, the post-restore read-back, and the REST corroboration. N>=4 RULE: four consecutive probe confirms under maintenance (user15, markers PRB1-PRB4) all returned the confirmed-shaped ack and ALL FOUR are absent post-restore (exact-token verified) = four additional masked-write data points; healthy-behavior probes (DRYRUN1, CPRB1) landed. MECHANISM MATRIX (measured 2026-07-10, direct REST at persistence): maintenance OFF + well-formed-but-rejected body -> honest 500; maintenance OFF + bogus userId -> honest 500; maintenance ON + valid userId -> 201 with body -1, nothing persisted - the 201/-1 fabrication is maintenance-specific, not input-driven. SURVEY CORRECTIONS (disclosed, dated 2026-07-10): (1) the survey's toggle cite 'POST /generatedb/maintenance' 404s as written - the live path is /rest/generatedb/maintenance with a JSON body, and the GET form only reads; (2) the survey's bonus 'input-driven variant: bogus user id -> 201 body -1' is UNADJUDICATED by this wave's matrix - BOTH uid cells 500ed with maintenance off (valid AND bogus uid), i.e. the probe body itself (likely the time format) fails before any user-id logic, confounding the variable; the claim stays source-only, neither confirmed nor refuted; (3) the intermediate shape differs from the survey's '503 + webui swallow' description - as-deployed the persistence CREATE itself returns the fabricated 201/-1 under maintenance (whether the webui/auth chain internally sees a 503 or the -1 is not black-box distinguishable and immaterial to the end-to-end case); (4) the create CALL CHAIN is webui -> auth /placeorder -> persistence /rest/orders (established live via the T15 mesh probe: a plain-VS abort on the persistence orders prefix intercepted NOTHING until the auth service carried a sidecar - the webui never posts /rest/orders itself). DB-DOWN PRODUCER RULED UNSOUND (disclosed FINDING, same date): TeaStore's db has NO PVC - any db scale-cycle WIPES AND REGENERATES the data (observed live: product 42 became 404 after a cycle), destroying the absence evidence the case turns on; the maintenance producer keeps the DB intact throughout (verified: categories/products 200 and prior orders survive the whole window), so C3 executes on the maintenance mechanism from the C2 rider's enumerated set {maintenance / DB-down / mesh-503}. CAPTURE-HYGIENE DISCLOSURE: during endpoint discovery (before any capture leg) a bare GET /rest/generatedb was issued once and regenerated the database; all capture-leg users/markers postdate that regeneration. DRIVER EXTENSIONS (pre-capture, disclosed): cookie_session now uses a CookieJar (TeaStore sets JSESSIONID on intermediate 302 hops the old manual collection missed); redact steps also blank the query string (TeaStore carries credentials in the query, not the payload); --var CLI substitutions (pre-generated identities + per-leg markers come from the runner). TRACE CELLS: not_applicable all three - trace-uninstrumented as-deployed (captured=>as-deployed, B-m2; the pre-registered 2.5.3 Kieker branch: TeaStore ships Kieker, no OTel wiring; NO converter spike this window). Verbatim disposition: TeaStore MIST verdicts live in the TIMEOUT_ABSENT stratum discipline. MIST READ-BACK APPLICABILITY BOUNDARY (T9-style convention, freeze 6 row at close-out): the durable read-back EXISTS (api-get, the profile page) but is an HTML/JSP surface - MIST's read-back oracle cannot bind an HTML modality at the pinned commit (no JSON field to probe), so mist_readback_oracle = not_applicable, DISTINCT from none-durable. PRESERVED DESIGN TARGET (T1 convention): both MIST columns' pre-registered discriminator values are FLAG - (a) read-back: the marker row measurably vanishes from the user's order list (list-membership ABSENT under a clean 2xx ack), bindable the moment a JSON order-list surface is treated as in-scope (the persistence /rest/orders/user/{id} JSON exists and was used as runner corroboration - a 2.75 enablement decision, NOT a this-wave cell); (b) trace-shape: a required durable downstream effect (the order write) is absent. Both stay pre-registered until MIST runs (Branch-B). AS-DEPLOYED COMPARATOR ROW: all three ack-side columns RAN AND MISSED (status 302/200 clean, schema unchanged, body success-shaped with no sentinel - the -1 never reaches the client), and both trace columns are not_applicable-uninstrumented - a genuine masked write that NO deployed column flags; the case's value is the ran-and-missed row plus the read-back boundary documentation. MESH-503 RIDER (C2 leg 3, live-verified 2026-07-10, NOT a case this wave - plan-pinned 2 TeaStore cases): with sidecars TEMPORARILY on webui+auth and a plain VirtualService aborting 503 on the persistence /rest/orders prefix, the SAME end-to-end masking reproduced - login/cart fine, confirm 302 -> 200 confirmed page with zero error marks, marker VSPRB2 ABSENT after VS teardown - a real 503 at the auth->persistence client swallowed into a success ack, EXACTLY as the survey's source chain predicts (NonBalancedCRUDOperations throws only on 404/408; any other failure status silently returns -1L; placeOrder never checks it). T15 DATUM (refutes the pre-registered miss expectation, recorded as measured): plain VS host-match INTERCEPTS on this deploy shape because the kind manifest sets HOST_NAME to the kube service DNS (registry holds ['teastore-persistence:8080']), so client-side LB dials resolve through the service and the client sidecar matches - no EnvoyFilter needed (contrast TrainTicket's ribbon pod-IP dials); candidate mesh-sever S1 for the 3a window. Sidecars and the VS were removed before this case's state was re-verified (pristine sidecarless shape = the deploy the case describes)."
+  },
+  "license": {
+    "case_code": "Apache-2.0",
+    "case_data": "CC-BY-4.0",
+    "upstream_sut": "Apache-2.0",
+    "sources": [
+      "DescartesResearch/TeaStore persistence DatabaseGenerationEndpoint (maintenance mode)",
+      "DescartesResearch/TeaStore webui order-confirmation flow + profile order history"
+    ]
+  },
+  "adjudication": null
+}

@@ -1,0 +1,18 @@
+# TeaStore recommender cold-start benign rider (tenancy-window plan rev-2 C3b, T13). Read-path
+# browse: the product page's "Are you interested in?" advertisment block is recommender-fed
+# (ProductServlet -> LoadBalancedRecommenderOperations.getRecommendations; an untrained instance
+# throws UnsupportedOperationException -> REST 500 -> the degradation, if any, lives in the
+# registryclient layer — the LIVE capture decides the page-level behavior). Cold leg = the window
+# where the recommender pod is Tomcat-up but /rest/train/isready is 500/false (model not trained);
+# control leg = isready 200/true. No login, no write. Product 42 verified live.
+case_id: teastore-product-browse
+sut: {name: teastore, version_ref: "TeaStore v1.4.2 @ kind 'mist' ns teastore (images pinned :1.4.2); Kieker-only, trace-uninstrumented"}
+base_url: http://localhost:8082
+cookie_session: true
+steps:
+  - method: GET
+    path: /tools.descartes.teastore.webui/product?id=42
+observations:
+  - probe: "GET the same product page again (recommendation block stability within the leg)"
+    path: /tools.descartes.teastore.webui/product?id=42
+    delay_ms: 1500

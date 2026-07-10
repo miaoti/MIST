@@ -1,0 +1,17 @@
+# TeaStore post-restore read-back of record (tenancy-window plan rev-2 C3): run AFTER the
+# maintenance flag is toggled back off, with a FRESH session for the SAME acting user as the
+# flow run (--var user/pw match the leg's flow invocation). The marker row PRESENT (control) /
+# ABSENT (fault) in the profile orders table is the durable black-box read-back — taken after
+# restore so no in-window degradation can be blamed for the absence.
+case_id: teastore-profile-readback
+sut: {name: teastore, version_ref: "TeaStore v1.4.2 @ kind 'mist' ns teastore (images pinned :1.4.2); Kieker-only, trace-uninstrumented"}
+base_url: http://localhost:8082
+cookie_session: true
+steps:
+  - method: POST
+    path: /tools.descartes.teastore.webui/loginAction?username={user}&password={pw}
+    redact: true
+observations:
+  - probe: "GET the acting user's profile (orders table; post-restore durable read-back)"
+    path: /tools.descartes.teastore.webui/profile
+    delay_ms: 1000

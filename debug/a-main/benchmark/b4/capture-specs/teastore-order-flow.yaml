@@ -1,0 +1,27 @@
+# TeaStore masked-write pair leg (tenancy-window plan rev-2 C3). Same spec for both legs; the leg
+# is the persistence service's MAINTENANCE flag (control = off -> order persists; fault leg = on ->
+# the order create short-circuits to 201/body -1, the webui still renders the confirmed page, and
+# nothing lands durably). Toggle is runner-side, out of band:
+#   POST http://localhost:8083/tools.descartes.teastore.persistence/rest/generatedb/maintenance
+#   with JSON body true|false. (The GET form only READS the flag. GET /rest/generatedb REGENERATES
+#   the whole database — wipes orders — and must NEVER be called by capture tooling.)
+# Users are pre-generated at DB creation (shared demo password, redacted); the runner passes a
+# fresh never-used userN plus a distinct firstname marker per leg via --var. Reads pass under
+# maintenance (login and cart work; the CREATE is what silently no-ops) — measured 2026-07-10.
+# Product 42 verified live ("Assam with Ginger (20 bags), v2", 14.5 category tea).
+case_id: teastore-order-flow
+sut: {name: teastore, version_ref: "TeaStore v1.4.2 @ kind 'mist' ns teastore (images pinned :1.4.2); Kieker-only, trace-uninstrumented"}
+base_url: http://localhost:8082
+cookie_session: true
+steps:
+  - method: POST
+    path: /tools.descartes.teastore.webui/loginAction?username={user}&password={pw}
+    redact: true
+  - method: POST
+    path: /tools.descartes.teastore.webui/cartAction?addToCart=&productid=42
+  - method: POST
+    path: /tools.descartes.teastore.webui/cartAction?firstname={marker}&lastname=Corpus&address1=Street1&address2=City1&cardtype=visa&cardnumber=314159265359&expirydate=12%2F2029&confirm=Confirm
+observations:
+  - probe: "GET the acting user's profile (orders table; in-window read — reads pass under maintenance)"
+    path: /tools.descartes.teastore.webui/profile
+    delay_ms: 2000

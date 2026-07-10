@@ -15,7 +15,11 @@ Two spec shapes are supported:
       `{var}` substitution in path/payload; observations may carry `auth`.
 
 usage: capture_driver.py <spec.yaml> <out-sidecar.json> [--mist-commit=SHA] [--case-id=ID]
+                         [--var=NAME=VALUE ...]   (pre-seeds {NAME} substitutions — SUTs with
+                         pre-generated identities (TeaStore) take the acting user + leg marker
+                         from the runner instead of gen_user)
 """
+import http.cookiejar
 import json
 import re
 import sys
@@ -30,10 +34,13 @@ _VAR = re.compile(r"\{(\w+)\}")
 
 
 # Cookie-session support (tenancy-window B4: Sock Shop authenticates via a logged_in cookie, not a
-# bearer). When a spec sets `cookie_session: true`, every step sends the jar and Set-Cookie response
-# headers are collected into it. The sidecar records neither cookies nor Set-Cookie (same rule as
-# auth headers: identity material never lands in rater-facing artifacts).
-_COOKIES = {}
+# bearer). When a spec sets `cookie_session: true`, requests go through a CookieJar opener so
+# Set-Cookie headers are honored INCLUDING on intermediate redirect hops (TeaStore's 302-heavy
+# webui sets JSESSIONID on the 302 itself; extended pre-TeaStore-capture, Phase C). The sidecar
+# records neither cookies nor Set-Cookie (same rule as auth headers: identity material never
+# lands in rater-facing artifacts).
+_JAR = http.cookiejar.CookieJar()
+_COOKIE_OPENER = urllib.request.build_opener(urllib.request.HTTPCookieProcessor(_JAR))
 
 
 def _http(method, url, payload=None, token=None, timeout=25, cookies=False):
@@ -42,17 +49,9 @@ def _http(method, url, payload=None, token=None, timeout=25, cookies=False):
     req.add_header("Content-Type", "application/json")
     if token:
         req.add_header("Authorization", "Bearer " + token)
-    if cookies and _COOKIES:
-        req.add_header("Cookie", "; ".join("%s=%s" % kv for kv in _COOKIES.items()))
+    opener = _COOKIE_OPENER.open if cookies else urllib.request.urlopen
     try:
-        with urllib.request.urlopen(req, timeout=timeout) as r:
-            if cookies:
-                for h, v in r.getheaders():
-                    if h.lower() == "set-cookie":
-                        kv = v.split(";", 1)[0]
-                        if "=" in kv:
-                            k, val = kv.split("=", 1)
-                            _COOKIES[k.strip()] = val.strip()
+        with opener(req, timeout=timeout) as r:
             return r.status, r.read().decode("utf-8", "replace")
     except urllib.error.HTTPError as e:
         return e.code, e.read().decode("utf-8", "replace")
@@ -81,11 +80,11 @@ def _login_token(base, login):
         raise SystemExit("login failed for %s: HTTP %s %s" % (login["username"], status, resp[:200]))
 
 
-def run(spec_path, out_path, mist_commit, case_id_override=None):
+def run(spec_path, out_path, mist_commit, case_id_override=None, extra_vars=None):
     spec = yaml.safe_load(Path(spec_path).read_text(encoding="utf-8"))
     base = spec["base_url"].rstrip("/")
     records = []
-    variables = {}
+    variables = dict(extra_vars or {})
     if spec.get("gen_user"):
         tag = str(int(time.time())) + str(int(time.monotonic() * 1000) % 1000)
         variables["user"] = "cb" + tag          # <=20 chars, within the SUT's login bounds
@@ -142,7 +141,9 @@ def run(spec_path, out_path, mist_commit, case_id_override=None):
         if step.get("set_session"):
             session_token = variables[step["set_session"]]
         redact = step.get("redact")
-        rec = {"t_rel_ms": t, "kind": "request", "method": step["method"], "path": path}
+        # form-style SUTs (TeaStore) carry credentials in the query string, not the payload
+        rec_path = (path.split("?")[0] + "?<credentials redacted>") if (redact and "?" in path) else path
+        rec = {"t_rel_ms": t, "kind": "request", "method": step["method"], "path": rec_path}
         if payload is not None:
             rec["payload"] = "<credentials redacted>" if redact else payload
         records.append(rec)
@@ -174,12 +175,16 @@ if __name__ == "__main__":
     pos = [a for a in sys.argv[1:] if not a.startswith("--")]
     commit = "7d69de9"
     case_id = None
+    cli_vars = {}
     for a in sys.argv[1:]:
         if a.startswith("--mist-commit="):
             commit = a.split("=", 1)[1]
         elif a.startswith("--case-id="):
             case_id = a.split("=", 1)[1]
+        elif a.startswith("--var="):
+            k, v = a[len("--var="):].split("=", 1)
+            cli_vars[k] = v
     if len(pos) < 2:
         print(__doc__)
         sys.exit(2)
-    run(pos[0], pos[1], commit, case_id)
+    run(pos[0], pos[1], commit, case_id, cli_vars)

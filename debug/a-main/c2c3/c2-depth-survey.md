@@ -41,7 +41,39 @@ freeze before any label ships.
   mechanisms = **3** {flag, dependency-down, mesh-sever} → broker-less min-3 floor met (see
   `e-sut-applicability-matrix.md` + `c2-freeze.md` §5).
 
-## 1. TeaStore (DescartesResearch/TeaStore, master) — natural in-tree masked-write chain
+**LIVE-VERIFICATION CORRECTIONS (2026-07-10, tenancy-window Phase C, kind deploy of v1.4.2 — measured;
+no post-capture re-scoping):**
+- **Toggle path as written 404s.** The maintenance toggle is `POST /tools.descartes.teastore.persistence/`
+  **`rest/generatedb/maintenance`** with a JSON body `true|false` (Content-Type json); the GET form of the
+  same path only READS the flag (a `?maintenance=` query param on GET does NOT set it). **SHARP EDGE:**
+  bare `GET /rest/generatedb` REGENERATES the whole database (wipes orders) — never probe it.
+- **Maintenance producer: VERIFIED-MASKED end-to-end and CAPTURED as the S1 case**
+  (`teastore-order-maintenance-masked-001` + control). Intermediate-shape refinement: under maintenance
+  the persistence CREATE itself returns **201 with body `-1`** (measured: the same direct-POST body that
+  500s healthy returns 201/`-1` under the flag) — the §1 swallow chain then applies to the `-1` exactly
+  as written; reads (categories/products/users/orders GETs) stay 200 under maintenance as-deployed, so
+  the javadoc's "503 on almost anything" did not manifest for reads either.
+- **DB-down producer: UNSOUND FOR CAPTURE on this deploy (disclosed finding).** `teastore-db` has NO PVC —
+  any db pod cycle WIPES AND REGENERATES the data (observed live: product 42 → 404 after a cycle),
+  destroying exactly the absence evidence the masked-write case turns on. The mechanism stays
+  source-true; the capturable-pair count for this deploy drops it (order-row × DB-down: specified-only).
+- **Mesh-abort producer: VERIFIED-MASKED live** (C2 rider leg 3): plain VirtualService abort 503 on the
+  persistence `/rest/orders` prefix with sidecars temporarily on webui+auth → login/cart fine, confirm
+  302→200 confirmed page, marker ABSENT after teardown — precisely the §1 source prediction
+  (non-404/408 → silent `-1L`). **T15 datum (REFUTES the pre-registered miss expectation):** plain VS
+  host-match INTERCEPTS on this deploy because the kind manifest sets `HOST_NAME` to the kube service
+  DNS (the registry holds `["teastore-persistence:8080"]`), so client-LB dials resolve through the
+  service and the CLIENT sidecar matches — no EnvoyFilter needed (contrast TT's ribbon pod-IP dials).
+  Rider datum only this wave (plan-pinned 2 TeaStore cases); candidate mesh-sever S1 for 3a.
+- **Bonus input-driven 201/`-1` (bogus user id): UNADJUDICATED.** The disentangling matrix confounded it:
+  BOTH uid cells (valid and bogus, maintenance off) 500ed with the probe's body shape (the body fails
+  before user-id logic). Stays source-only; neither confirmed nor refuted.
+- **Recommender cold-start S2: REFUTED as user-visible (no case authored).** Pod-delete timeline at
+  ~1.4 s sampling: the sole instance reports `isready 500|false` for only ~3 s and the product page
+  NEVER degraded (200 + 3 recommendation links in the same iteration the instance reported untrained) —
+  `TrainingSynchronizer` gates `isReady` until "Finished training" BY DESIGN and the registry LB bridges
+  the window (old instance serves through graceful shutdown). Strengthens the §1 anti-finding: the S2
+  quota this wave moves entirely to the OTel-Demo graceful-ad rider (D3b).
 
 **Architecture:** 5 services + registry (WebUI, Auth, Persistence, Recommender, Image), sync REST with
 client-side load balancing; **no MQ, no async writes**. Cart lives in a client-held `SessionBlob`
