@@ -83,6 +83,18 @@ SELECTORS = {
                                 "presence": ("accounting", "receive orders", "consumer"),
                                 "scope": {"frontend-proxy", "frontend", "checkout", "accounting"},
                                 "presence_scope": "file"},
+    # WAVE-3A ITEM-1 (plan rev 2.1, unanimous-accept b0b5a54; committed BEFORE the item's first
+    # capture; names bound from the Phase-D canary — cart EmptyCart SERVER span
+    # "POST /oteldemo.CartService/EmptyCart" lives IN the checkout entry trace (sync gRPC), so the
+    # default entry-trace presence scope applies; re-verified on a fresh canary pre-capture).
+    # Presence stays existence-only: a present-but-erroring EmptyCart span = no_flag (the plan's
+    # pre-pinned branch-alpha MISS); the error axis belongs to naive_span_error.
+    "oteldemo-emptycart-swallowed": {"entry": "frontend-proxy", "entry_op": "POST",
+                                "presence": ("cart", "emptycart", "server"),
+                                "scope": {"frontend-proxy", "frontend", "checkout", "cart"}},
+    "oteldemo-emptycart-control":  {"entry": "frontend-proxy", "entry_op": "POST",
+                                "presence": ("cart", "emptycart", "server"),
+                                "scope": {"frontend-proxy", "frontend", "checkout", "cart"}},
 }
 
 # postgresql added with the Phase-D extension (OTel-Demo accounting writes via Npgsql; canary-bound)

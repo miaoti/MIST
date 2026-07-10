@@ -1,0 +1,31 @@
+# OTel-Demo cartFailure (EmptyCart-swallow) pair leg — wave-3a item 1 (plan rev 2.1, unanimous).
+# Same spec for both legs; the leg is the flagd `cartFailure` defaultVariant (control = off ->
+# checkout's EmptyCart succeeds, the post-checkout cart is []; fault = on -> the flag routes
+# EmptyCart to a throwing _badCartStore, checkout DISCARDS the error (unmodified source:
+# `_ = cs.emptyUserCart(...)`) and still acks 200 — the added item REMAINS in the cart).
+# Toggle is runner-side, out of band: b4/runners/3a/flagd-toggle.sh cartFailure on|off (pin 1-P0:
+# CM patch -> OFREP poll-until-flip; restore verifies equality vs the wave-start frozen JSON).
+# READ-BACK (effect-directed per review A-1): the CART-EMPTIED effect on the observation below —
+# control: items == [] (the emptied state PRESENT); fault: the added productId still listed (the
+# emptied state ABSENT). The ORDER itself lands on BOTH legs (kafka healthy) — the runner records
+# per-leg psql order-landed corroboration as the isolation artifact (A-6).
+# SHARP EDGES (inherited): never exec JVM tools in the kafka pod; per-leg exports query
+# service=checkout ONLY (a service=cart query pulls the cart-add trace and breaks exactly-one);
+# probes -> >=12 s quiet gap -> record -> exactly-one pre-check.
+case_id: oteldemo-emptycart-flow
+sut: {name: oteldemo, version_ref: "opentelemetry-demo app 2.2.0 / chart 0.40.9 @ kind 'mist' ns otel-demo; natively OTel-instrumented, bundled Jaeger"}
+base_url: http://localhost:8085
+steps:
+  - method: POST
+    path: /api/cart?currencyCode=USD
+    payload: '{"item":{"productId":"0PUK6V6EV0","quantity":1},"userId":"{session}"}'
+  - method: POST
+    path: /api/checkout?currencyCode=USD
+    payload: '{"userId":"{session}","userCurrency":"USD","email":"{marker}@corpus.test","address":{"streetAddress":"1 Corpus Way","state":"CA","country":"United States","city":"Mountain View","zipCode":"94043"},"creditCard":{"creditCardCvv":672,"creditCardExpirationMonth":1,"creditCardExpirationYear":2030,"creditCardNumber":"4432-8015-6152-0454"}}'
+observations:
+  - probe: "GET the session's cart AFTER the acked checkout — THE read-back of record (control: [] = emptied-state present; fault: the item persists = emptied-state absent)"
+    path: /api/cart?sessionId={session}&currencyCode=USD
+    delay_ms: 3000
+  - probe: "second cart read (stability of the residual state within the leg)"
+    path: /api/cart?sessionId={session}&currencyCode=USD
+    delay_ms: 5000
