@@ -92,6 +92,15 @@ SELECTORS = {
     # OUTCOME (2026-07-11): the CASE WAS NOT AUTHORED — the C-M5 refutation branch fired (deployed
     # 2.2.0 cartFailure = LOUD 504, no masked ack; survey corrected). These rows are retained as
     # the refutation evidence's scoring record (captures kept under oteldemo-emptycart-*).
+    # WAVE-3A ITEM-3 (probe-gated S2, plan rev 2.1 §3; committed BEFORE any item-3 capture per
+    # B-F6): same selector family as the flagship pair (consumer spans live in LINKED traces ->
+    # presence_scope=file; T2 family baseline = the flagship oteldemo-checkout-control capture +
+    # a fresh pre-flag canary on the day). The AUTHOR/NOT-AUTHORED/STOP decision is made by the
+    # probe round; this row is inert unless the case is authored.
+    "oteldemo-kafkaqueue-pending-benign": {"entry": "frontend-proxy", "entry_op": "POST",
+                                "presence": ("accounting", "receive orders", "consumer"),
+                                "scope": {"frontend-proxy", "frontend", "checkout", "accounting"},
+                                "presence_scope": "file"},
     "oteldemo-emptycart-swallowed": {"entry": "frontend-proxy", "entry_op": "POST",
                                 "presence": ("cart", "emptycart", "server"),
                                 "scope": {"frontend-proxy", "frontend", "checkout", "cart"}},
