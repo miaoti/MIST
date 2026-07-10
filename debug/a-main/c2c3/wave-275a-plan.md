@@ -1,10 +1,36 @@
-# Wave 2.75-A — MIST enablement: read-back modality bindings + new-SUT paired runs (rev 2)
+# Wave 2.75-A — MIST enablement: read-back modality bindings + new-SUT paired runs (rev 2.1)
 
-**Status:** rev 2 — folds every BLOCKING + MAJOR from the 3-cold-review (all ACCEPT-WITH-FIXES;
-`REVIEW-275A-{A-oracle,B-engineering,C-pc}.md` → `REVIEW-275A-RECONCILIATION.md`). Goes back to the
-three reviewers for a confirmation pass; **executes only on unanimous CONFIRM-ACCEPT.** Gate opened
+**Status:** rev 2.1 — **GATE PASSED: UNANIMOUS CONFIRM-ACCEPT** (A/B/C all confirmed rev 2 with only
+pre-committed textual residuals; this rev 2.1 folds them in §0.5 with NO design change). **CLEARED FOR
+EXECUTION.** The body folds every BLOCKING + MAJOR from the 3-cold-review (all ACCEPT-WITH-FIXES;
+`REVIEW-275A-{A-oracle,B-engineering,C-pc}.md` → `REVIEW-275A-RECONCILIATION.md`). Gate opened
 by the user 2026-07-10 ("MIST 启用+跑测"; scoped in `main-track-workflow-rules`). First MIST-tool-code
 wave since the prep phase.
+
+## 0.5 rev-2.1 residual folds (pre-committed by A/B/C at the confirmation pass; non-gating, no design change)
+- **A-F11 (→ §8 DoD):** pre-run, verify the OTel `/api/checkout` ack body carries NO top-level
+  `status` field that would trip `bodyStatus()` into a false `!acked` (fail-safe — a false `!acked`
+  yields NOT_EVALUABLE, never a fabricated FLAG).
+- **B-R1 (→ §2.1):** `SqlDurableReadback` filters by the unique marker SERVER-SIDE
+  (`… WHERE street_address='<marker>'`) and returns a 0-or-1-row collection; the oracle's
+  containsKey/membership then runs UNCHANGED on it, so the decision loop is untouched AND the
+  `readback_bound` growing-`shipping`-table concern does not arise (result is ≤1 row by the marker).
+- **B-R2 (→ §3/§6):** the kubectl binary is a CONFIGURABLE knob (the `-Dg3.ship.kubectl` analog)
+  because `mist.jar` runs on Windows while kubectl/the cluster live in WSL2 — pin it as a runbook const.
+- **B-R3 (→ §3):** the TeaStore FAULT-leg read-back runs with maintenance restored to OFF (the case's
+  "OFF before the read-back of record") so `/rest/orders` serves; else it 503s and the leg logs an
+  error, not the intended absence (the mask is at write time; read-back is after restore).
+- **C-R1 (→ §4):** record the fault-leg QuiescenceGate stratum (`TIMEOUT_ABSENT`) in the result and
+  note the paired verdict is gate-AGNOSTIC (FIREs on the control-present/fault-absent differential).
+- **C-R2 (→ §3):** the `street_address` deviation is EQUIVALENCE-PRESERVING vs the capture's
+  `order.order_id` because accounting persists Order+Shipping+OrderItem in ONE `SaveChanges()`
+  transaction (survey-verified) — the shipping row is absent iff the order row is.
+- **C-R3 (→ §4):** the independence wording covers TeaStore too — MIST's `/rest/orders` probe overlaps
+  the capture's corroboration surface, so the same "live re-run + own self-concordant bucket + recall
+  with/without" discipline applies there, not only OTel's different-column independence.
+- **C-R4 (→ §4/§5 result record):** PIN the allowed generality claim-string ("extensible oracle core +
+  per-SUT authored binding at cost X; NOT a general/out-of-the-box tool") into the RESULT record to
+  prevent paper-time drift.
 
 ## 0. State (corrected against the actual code — rev-1 had two factual errors)
 - **The read-back transport seam ALREADY EXISTS.** `DataIntegrityRuntime` exposes

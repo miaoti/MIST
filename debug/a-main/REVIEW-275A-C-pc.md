@@ -192,7 +192,72 @@ B2), so the paper cannot present a guaranteed FLAG as a clean win.
 
 ---
 
-## Bottom line for the PC
+## CONFIRMATION PASS (rev 2 + REVIEW-275A-RECONCILIATION.md) — Reviewer C disposition
+
+**CONFIRM-ACCEPT.** All three BLOCKING and all five MAJOR findings are substantively resolved. Four
+MINOR textual residuals remain; each is a disclosure-strengthening I pre-commit to accept once folded —
+they do NOT gate execution.
+
+Finding-by-finding:
+- **B1 (discrimination overclaim) — RESOLVED.** Rev 2 §0/§1/§4 drop the "trace-only arms miss" framing;
+  OTel is reported as presence-CONCORDANCE (beside `presence=flag`, never "beat the trace arm"),
+  TeaStore as SOLE-oracle under the explicit "no tracing deployed" caveat; the MIST-only discrimination
+  win stays the TT fabricated-ack case, NOT claimed for these two SUTs.
+- **B2 (measurement circularity) — RESOLVED.** Independence standard (request-derived unique marker,
+  LIVE re-run not artifact replay; label is by-construction from the injection, not from the read) +
+  self-concordant reporting bucket + recall stated with/without. The denominator no longer grows by
+  guaranteed passes without disclosure.
+- **B3 (key-from-ack, isolation-unsound) — RESOLVED.** Live schema confirms `accounting.shipping`
+  carries a CLIENT-SUPPLIED `street_address`; the stimulus plants a unique marker there and the SQL
+  read-back keys on it — request-derived, never read from the ack, unique per run. Verified sound: the
+  survey confirms accounting persists Order/OrderItem/Shipping in ONE `dbContext.SaveChanges()`, so the
+  shipping-keyed absence is equivalence-preserving vs the capture's order_id key.
+- **M1 (denominator move) — RESOLVED.** The false→true flip is a dated §6 amendment atomic with the
+  measured run, explicitly disclaimed as NOT pre-registration.
+- **M2 (verdict stratum) — RESOLVED in substance.** Paired `evaluate()` fires on the
+  control-present/fault-absent differential and is gate-agnostic, so the TIMEOUT_ABSENT vs
+  OBSERVED_COMPLETE_ABSENT stratum no longer gates the verdict — and the new cells now share the SAME
+  paired basis as the reviewed TT/SS cells rather than being a weaker single-leg stratum. (Residual R1.)
+- **M3 (construct validity / surface principle) — RESOLVED.** One consistent principle: MIST probes the
+  durable system-of-record (psql for OTel, `/rest/orders` JSON for TeaStore), disclosed as an INTERNAL
+  durable-store probe (stronger threat model) for BOTH SUTs. Bonus: the reconciliation independently
+  found the HTML `firstname` also renders in the profile greeting → text match reads PRESENT on both
+  legs → HTML binding would be UNSOUND, corroborating the push off HTML.
+- **M4 (generality) — RESOLVED in substance.** Rev 2 corrects a rev-1 factual error my review inherited:
+  triples load from YAML and the override seam exists, so the reusable surface (verbatim decision core +
+  YAML triples) is LARGER than "code-per-SUT"; only stimulus + transport are code, with per-SUT
+  authoring cost recorded. (Residual R4 = pin the claim-string to prevent paper-time drift.)
+- **M5 (scientific anti-findings) — RESOLVED.** The three standing caveats (OTel concordance, TeaStore
+  vacuity, circularity) are baked into the reporting framing, and the failure-mode anti-findings
+  (can't-isolate / non-independent / HTML-ambiguous → cell stays not_applicable with dated disclosure)
+  are pre-registered as valid outcomes.
+- **Minors m1–m4 — all folded** (HTML dropped for JSON so `containsKey` reuse is verbatim; paired mode
+  pinned; keyed membership + transport-failure→ERROR-not-ABSENT; A-M8 construction-bar cite).
+
+Residuals (MINOR, textual, pre-committed accept — fold into the plan/result record, no re-review needed):
+- **R1** — Commit to RECORDING the fault-leg QuiescenceGate stratum (TIMEOUT_ABSENT) in the result and
+  noting the paired verdict is gate-agnostic, so a reader sees the absence is differential-based, not a
+  high-confidence single-leg absence.
+- **R2** — State the co-persistence justification explicitly: accounting writes Order+Shipping+OrderItem
+  in ONE transaction (`SaveChanges()`), which is WHY keying `shipping.street_address` is
+  equivalence-preserving vs the capture's `order.order_id`. Without it the table-deviation looks
+  unjustified to a hostile reader.
+- **R3** — Generalize the §4(i) independence wording: it is currently phrased OTel-specifically
+  ("different column than the capture's server order_id"). State the general standard (live re-run +
+  by-construction label + request-derived unique marker) so it explicitly covers TeaStore, where MIST's
+  probe surface (`/rest/orders`) OVERLAPS the capture's corroboration surface (independence there rests
+  on live-re-run + by-construction label, not on a different surface).
+- **R4** — Pre-commit the allowed generality claim-string to the result record ("extensible oracle core
+  reused verbatim + per-SUT authored {stimulus, triple, transport} at recorded cost; NOT a
+  general/automatic tool") to prevent drift into an overclaim at paper time.
+
+No new BLOCKING or MAJOR issues introduced by rev 2. The re-sequence (TeaStore primary / OTel follow),
+the kafka single-toggle control-first ordering (avoids the producer-wedge), and the async-landing floor
+are all sound.
+
+---
+
+## Bottom line for the PC (rev 1, retained for the record)
 The wave is worth executing as **enablement** (bind SQL/HTML, prove the seam, record authoring cost) and
 as a **concordance** datum. It is NOT, as written, an extension of the paper's discrimination thesis, and
 its two headline cells are circular guaranteed-TPs at MIST's lower-confidence stratum, one of them

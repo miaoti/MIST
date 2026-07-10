@@ -97,6 +97,20 @@ injector + the async floor, and yields the presence-CONCORDANCE datum. If TeaSto
 turns out not to support a keyed GET at execution, it falls back to a DOM-scoped Orders-table HTML
 locator (A-F3) or stays a disclosed refutation — no silent re-scope.
 
-## Confirmation pass
-Rev 2 goes back to all three reviewers for confirmation (wave-3a precedent). Execution starts only on
-unanimous CONFIRM-ACCEPT.
+## Confirmation pass — OUTCOME: UNANIMOUS CONFIRM-ACCEPT (2026-07-10)
+All three reviewers re-derived their findings against the rev-2 text and **CONFIRM-ACCEPT**:
+- **A (oracle):** all BLOCKING/MAJOR resolved; verified the OTel differential (kafka-down ⇒ shipping
+  row never lands; fresh-unique marker ⇒ baseline guaranteed-absent). One pre-committed residual —
+  **F11** (pre-run check that the checkout ack has no top-level `status` field).
+- **B (engineering):** all resolved; noted the HTML asymmetry is dissolved by binding `/rest/orders`
+  JSON. Three pre-committed textual residuals — **R1** (SQL server-side marker filter → 0/1-row
+  collection), **R2** (configurable WSL/Windows kubectl knob), **R3** (fault-leg read-back with
+  maintenance restored OFF).
+- **C (hostile-PC):** all 3 BLOCKING + 5 MAJOR resolved; verified the `street_address` deviation is
+  equivalence-preserving (Order+Shipping+OrderItem in one `SaveChanges()`). Four pre-committed
+  textual residuals — **R1** (record `TIMEOUT_ABSENT` stratum + gate-agnostic verdict), **R2**
+  (co-persistence justification), **R3** (generalize independence wording to TeaStore), **R4** (pin
+  the generality claim-string to the result record).
+
+All eight residuals are non-gating and were folded as **rev 2.1 §0.5** (no design change). **GATE
+PASSED — cleared for execution.**

@@ -244,3 +244,53 @@ isolation-key rabbit hole. At minimum, resolve F2 before committing to OTel-firs
 Resolve **F1 and F2 in a rev-2 and re-clear them** (they gate all coding). Fold F3–F8 into the design
 before implementation. F9–F11 are cleanups. With those, the wave is a sound, genuinely small addition
 that reuses the reviewed core rather than re-opening it.
+
+---
+
+## CONFIRMATION PASS (rev-2 + REVIEW-275A-RECONCILIATION.md) — 2026-07-10
+
+**RESULT: CONFIRM-ACCEPT** (pre-committed to accept once 3 textual residuals are folded).
+
+Re-verified every finding against the rev-2 text, not the summary:
+- **F1 (BLOCKING) RESOLVED** — mode is unambiguously paired for both SUTs (§0/§4/§6.5); DoD re-scoped to
+  the paired data-integrity section; the self-contradictory "observe on BOTH legs" is gone.
+- **F2 (BLOCKING) RESOLVED** — live schema confirmed `accounting."order"` = server `order_id` only;
+  read-back re-keyed to the client-supplied `accounting.shipping.street_address` marker (request-derived,
+  unique/run); deviation disclosed. (One textual sub-detail — R1.)
+- **F3 (MAJOR) RESOLVED, better than proposed** — `ReadbackProbe` dropped; transports go through the
+  existing `installHttpOverride` and synthesize the JSON collection; the HTML-extraction asymmetry is
+  *dissolved* by binding TeaStore's durable `/rest/orders` JSON instead of scraping HTML.
+- **F4 (MAJOR) RESOLVED** — §0 corrects the factual error; triples authored in YAML via the loader.
+- **F5 (MAJOR) RESOLVED** — hand-written Java `Stimulus` scoped as the real cost; OpenAPI stated
+  non-executing on the paired path; cost metric includes the stimulus.
+- **F6 (MAJOR) RESOLVED in substance** — kubectl-exec psql pinned (argv + `otel`/`accounting` constants,
+  key whitelist, failure→non-2xx). (Textual — R2: name the WSL/Windows kubectl knob in the plan body.)
+- **F7 (MAJOR) RESOLVED** — TeaStore DB-wipe/no-PVC, kafka producer-wedge (control-first single-toggle),
+  ≥20 s async floor all folded. (Textual — R3: maintenance-OFF-before-fault-readback.)
+- **F8 (MAJOR) RESOLVED** — exec-failure→non-2xx, key quoting, per-leg isolation, end-to-end FIRE/NO_FIRE
+  tests listed; HTML-fail-closed correctly moot.
+- **F9/F10/F11 (MINOR) RESOLVED** — flip atomic-with-run; transport not double-owned (Triple field is
+  validated metadata, harness owns runtime); DoD wording fixed.
+- **Sequencing advisory ACCEPTED** — re-sequenced to TeaStore-primary.
+
+**Textual residuals (pre-committed to accept once folded — none is a soundness hole; each already has a
+safety net):**
+- **R1 [MINOR]** — §2.1 ("rows→`[{street_address}]` or `[]`") reads as *server-side WHERE-marker*
+  filtering, which requires the per-leg marker to be injected into the transport; but the
+  "decision-loop-untouched / oracle filters by key" model wants `SqlDurableReadback` to return the
+  candidate **row set** and let `containsKey` filter. State which. If row-set, disclose the
+  `readback_bound` behavior on a `shipping` table that grows across N≥4 runs + prior data (the bound
+  guard yields error-not-absence — safe, but it caps the run). Safety net: the `readback_bound` guard +
+  error-latching already prevent a false FLAG.
+- **R2 [MINOR]** — carry the configurable **WSL/Windows kubectl-binary knob** (g3's `-Dg3.ship.kubectl`
+  analog) in the plan body/runbook, not only the reconciliation MINOR list — it is an execution-blocker
+  if mist.jar runs on Windows while kubectl/cluster live in WSL2. Reconciliation already folded it; just
+  land it in the runbook.
+- **R3 [MINOR]** — state that the TeaStore **fault-leg** read-back runs with maintenance restored to OFF
+  (the case's "OFF before the read-back of record"); a maintenance-ON `/rest/orders` GET 503s and the
+  fault leg records an *error*, not the intended absence. Safety net: error-vs-absence latching catches
+  the 503 (no false FLAG); this is a run-success detail, not a soundness gap.
+
+No residual gates coding. The rev-2 approach is sound and genuinely minimal (zero decision-loop edits),
+and the discrimination-overclaim reframe (OTel = presence-concordance, TeaStore = sole-oracle) makes the
+wave more honest than rev 1.
