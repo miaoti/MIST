@@ -112,7 +112,8 @@ B4. Captures (fresh ids; probe-first **N≥4 consecutive**; per-leg IMMEDIATE tr
     3. sockshop control (rabbit up): register→login→cart→POST /orders → ack + queue-master consume span
        PRESENT in trace; readback nominal (none-durable) → score.
     4. sockshop TP leg (scale rabbitmq to 0; probe = orders still acks — the "Accepting anyway" swallow):
-       same flow → ack 2xx + consume span ABSENT + shipping error span (naive TP) → score. Restore rabbit.
+       same flow → ack 2xx + consume span ABSENT → score (naive per the B3 likely-refuted framing +
+       T2 divergence rule — whatever measures, records). Restore rabbit.
     Case updates per the §4 rules of the traced-wave plan (measured cells only from these artifacts;
     `mist_readback` stays not_applicable (none-durable); mist_trace_shape cells stay not_applicable with
     the Branch-B note). Sidecars carry the full agent/env attestation.
