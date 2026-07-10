@@ -150,7 +150,10 @@ def score(case_id, trace_path):
                 presence_hit = True
         if svc in scope and is_error_span(tags):
             error_spans.append("%s::%s" % (svc, op))
-        if str(tags.get("db.system", "")).lower() in DB_SYSTEMS:
+        # db.system.name = the STABLE database semconv key (.NET auto-instr 1.13, canary-bound
+        # Phase-D); REPORT-only field, verdict columns untouched.
+        db_sys = str(tags.get("db.system", tags.get("db.system.name", ""))).lower()
+        if db_sys in DB_SYSTEMS:
             db_report[svc] = db_report.get(svc, 0) + 1
 
     if not entry_seen:

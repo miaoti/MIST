@@ -1,0 +1,5 @@
+# oteldemo-checkout-control-001 read-back of record (2026-07-10T05:40:11Z)
+# probe: SELECT count(*) FROM accounting."order" WHERE order_id=<the acked orderId>
+order_id=64fe18eb-7c21-11f1-96f7-7a7df9c38b25
+row_count=1
+orderitem_rows=64fe18eb-7c21-11f1-96f7-7a7df9c38b25|0PUK6V6EV0|1

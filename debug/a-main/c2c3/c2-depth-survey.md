@@ -152,6 +152,32 @@ adFailure/adManualGc/adHighCpu (ad panel best-effort — verify graceful render)
 recommendationCacheFailure; (6) intlShippingSlowdown; (7) failedReadinessProbe; (8)
 loadGeneratorFloodHomepage. All flag descriptions are vendor docs → clean by-docs S2 provenance.
 
+**FLAGD LIST RE-FREEZE (2026-07-10, tenancy-window D3c — the T7 rider; deployed chart 0.40.9 /
+app 2.2.0, read from the live `flagd-config` ConfigMap `demo.flagd.json`; this list GOVERNS the 3a
+vendor-flag S1 quota, superseding the main-branch survey list above):** 15 flags, all
+`state=ENABLED, defaultVariant=off`: productCatalogFailure, recommendationCacheFailure, adManualGc,
+adHighCpu, adFailure, **kafkaQueueProblems** (on/off), **cartFailure**, **paymentFailure**
+(variants 100%/90%/75%/50%/25%/10%/off — percentage-graded, was binary in the main survey),
+paymentUnreachable, loadGeneratorFloodHomepage, imageSlowLoad (10sec/5sec/off),
+failedReadinessProbe, emailMemoryLeak (off/1x/10x/100x/1000x/10000x), plus NEW-in-2.2.0
+**llmInaccurateResponse** and **llmRateLimitError** (llm component DISABLED in this deploy — those
+two are quota-ineligible as-deployed, disclosed). **intlShippingSlowdown from the main-branch list
+does NOT exist in the pinned 2.2.0 config** (version-skew correction, as the survey's skew
+disclaimer anticipated). Net 3a-eligible vendor-flag set as-deployed: 13.
+
+**D3b GRACEFUL-AD RIDER: REFUTED AS AN S2 CASE (2026-07-10, measured — no case authored).** The §S2
+item-(4) premise ("ad panel best-effort — verify graceful render") verifies at the PAGE level only:
+ads are fetched CLIENT-side (browser XHR to the frontend's `GET /api/data`; a server-rendered page
+GET never touches the ad service — canary-verified, zero ad traces). With ad scaled to 0 the XHR
+surface answers an HONEST `500 Internal Server Error` (4/4 probes, ~5 ms) while the SSR page stays
+200 — the graceful absorption lives in the React ad component (browser-side), invisible to a
+server-side benchmark case: there is no success-shaped entry whose trace carries the benign
+error/absence, so the bookinfo-analog trap does NOT exist on this SUT as-deployed. The S2
+structural-FP pair anchor stays bookinfo/sockshop. RIDER DATUM: after ad scale-up the frontend's
+gRPC channel keeps 500ing for ~30 s (reconnect backoff), then self-heals WITHOUT a restart — a
+softer cousin of the kafka-client wedge (see the D3 case notes: the checkout producer and accounting
+consumer do NOT self-heal from a replaced broker and need restarts).
+
 ---
 
 ## 3. Online Boutique (GoogleCloudPlatform/microservices-demo, main) — very shallow: one genuine site

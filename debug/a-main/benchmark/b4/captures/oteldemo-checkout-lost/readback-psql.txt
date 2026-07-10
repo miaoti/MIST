@@ -1,0 +1,13 @@
+# oteldemo-checkout-lost-001 read-back of record (2026-07-10T05:55:59Z) — attempt 2 (capture-of-record)
+# probe: SELECT count(*) FROM accounting."order" WHERE order_id=<the acked orderId>
+order_id=bd49653d-7c23-11f1-b52a-1a0e5138d942
+row_count_in_window=0
+row_count_post_restore=0
+row_count_after_verified_heal=0   # PERMANENT: absent even after a later canary lands
+verified_heal_canary=f30c519e-7c23-11f1-9555-feeb0cdff4fe
+probe_orders_absent=4/4 (otlprb5-8)
+attempt1 (disclosed): record otlf1 d3d81da2 ack 200/0.021s, rows 0 in-window AND post-restore;
+  probes otlprb1-4 200-acked ~0.02s, 0/4 landed; the attempt-1 export window caught the probe
+  traces (5 entry traces) -> frozen exactly-one rule unsatisfiable -> full re-capture, no rule change.
+recovery-window datum: a canary placed ~25s after kafka rollout-ready was ALSO lost (producer
+  reconnect backoff extends the loss window past broker restore).

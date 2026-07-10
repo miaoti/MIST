@@ -1,0 +1,7 @@
+# oteldemo-checkout-lost-001 read-back of record (2026-07-10T05:41:26Z)
+# probe: SELECT count(*) FROM accounting."order" WHERE order_id=<the acked orderId>
+order_id=d3d81da2-7c21-11f1-96f7-7a7df9c38b25
+row_count_in_window=0
+row_count_post_restore=0   # PERMANENT loss: the produce never happened, nothing buffered
+heal_canary_order=f0d4df58-7c21-11f1-96f7-7a7df9c38b25 row_count=0   # pipeline healed after restore
+probe_orders_absent_post_restore=4/4

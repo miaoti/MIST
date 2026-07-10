@@ -1,0 +1,97 @@
+{
+  "case_id": "oteldemo-checkout-control-001",
+  "schema_version": "2.0.0",
+  "stratum": 1,
+  "capture_status": "captured",
+  "fault_class": "none",
+  "sut": {
+    "name": "oteldemo",
+    "repo": "github.com/open-telemetry/opentelemetry-demo",
+    "branch": "",
+    "commit": "app 2.2.0 / helm chart 0.40.9 (pinned at install)",
+    "image_digest": "sha256:6d0183a38947840837321f7c90d4e01eb70a4dc4e74c150749e62302a15b3eb0",
+    "deploy": "kind cluster 'mist', ns otel-demo; chart open-telemetry/opentelemetry-demo 0.40.9 (app 2.2.0), 21 workloads; pinned values /home/miaot/gate1-logs/tenancy-window/otel/otel-values.yaml (load-generator/llm/product-reviews disabled; grafana/prometheus/opensearch off; collector traces -> bundled jaeger untouched). Digest above = checkout; accounting sha256:1c5ec157..., kafka sha256:5bd713c7.... Natively OTel-instrumented; jaeger query API /jaeger/ui/api/*. frontend-proxy PF localhost:8085. Leg = kafka scale (this control = up).",
+    "replay_script": "debug/a-main/benchmark/b4/capture-specs/oteldemo-checkout-flow.yaml",
+    "health_precondition": null
+  },
+  "target": {
+    "entry_endpoint": {
+      "method": "POST",
+      "path": "/api/checkout",
+      "service": "frontend (via frontend-proxy ingress)"
+    },
+    "dependency": {
+      "service": "kafka ('orders' topic; checkout producer -> accounting consumer -> Postgres)",
+      "kind": "broker"
+    },
+    "readback": {
+      "modality": "sql-probe",
+      "locator": "SELECT count(*) FROM accounting.\"order\" WHERE order_id='<the acked orderId>' on the postgresql pod (db otel; tables in schema accounting - a bare \\dt shows only public and misleads).",
+      "expect_without_fault": "landed",
+      "expect_with_fault": "not-landed",
+      "mist_bindable": false
+    }
+  },
+  "fault": {
+    "mechanism": "none",
+    "injection_method": "none",
+    "config": {
+      "note": "Clean control: kafka up (verified); the same JSON-API cart+checkout flow as the fault twin, distinct fresh session uuid + email marker."
+    },
+    "injected_by": "",
+    "target_service": "kafka",
+    "provenance_class": "by-docs"
+  },
+  "stimulus": {
+    "script": "POST /api/cart (product 0PUK6V6EV0, session uuid) -> POST /api/checkout (kafka up) -> GET /api/cart observation; runner-level psql read-back",
+    "write_path": true,
+    "workload_class": "authored-scenario",
+    "workload_variant": null
+  },
+  "oracle_eval": {
+    "ack_content_visibility": "success-shaped-clean",
+    "trace_visibility": "span-presence-visible",
+    "write_shape": "whole",
+    "oracle_mode": "paired",
+    "config_provenance": {
+      "mist_commit": "7d69de9",
+      "mist_authoring": {
+        "tier": "hand-written",
+        "minutes": 0
+      }
+    },
+    "comparator_configs": []
+  },
+  "ground_truth": {
+    "label": "negative",
+    "rationale": "The clean twin of oteldemo-checkout-lost-001 (same stimulus, kafka up). The checkout acks 200 AND the order durably lands: the accounting Postgres row is present (row_count=1 with the acked orderId, plus the orderitem row), the accounting consumer span and its postgres INSERT client span appear in the linked trace, and the checkout producer span is clean. Oracles must NOT fire (else FP).",
+    "source": "by_construction",
+    "version": 1,
+    "doc_citation": null
+  },
+  "oracle_expectation": {
+    "status_code_oracle": "no_flag",
+    "schema_oracle": "no_flag",
+    "body_marker_oracle": "no_flag",
+    "naive_span_error_oracle": "no_flag",
+    "tracetest_presence_oracle": "no_flag",
+    "mist_readback_oracle": "not_applicable",
+    "mist_trace_shape_oracle": "not_applicable"
+  },
+  "provenance": {
+    "control_trace": "debug/a-main/benchmark/b4/captures/oteldemo-checkout-control/trace-control.json",
+    "fault_trace": null,
+    "readback_response": "debug/a-main/benchmark/b4/captures/oteldemo-checkout-control/readback-psql.txt",
+    "notes": "TENANCY-WINDOW CAPTURE-OF-RECORD (2026-07-10, plan rev-2 unanimous-accept, Phase D). MEASURED (marker otlc1, order 64fe18eb): cart 200 -> checkout 200 (clean JSON ack with orderId + shipping tracking id) -> psql row_count=1 for the acked orderId + the orderitem corroboration row (readback-psql.txt). SCORED (frozen scorer, Phase-D extension 8bb0424 pre-committed): naive_span_error = no_flag (zero error spans across the merged 50-span export); tracetest_presence = no_flag TN - the accounting 'receive orders' CONSUMER span is PRESENT in the linked accounting trace (presence_scope=file; merged export = service=checkout + service=accounting windowed queries), which VALIDATES the consumer span family for the pair (T2: the fault twin's ABSENT verdict is attributable to the broker fault, not to instrumentation); T6 db report {product-catalog: 2, accounting: 1} - the accounting postgres INSERT client span (db.system.name=postgresql, INSERT INTO accounting.\"order\"/orderitem/shipping) is the control-side write evidence the fault leg lacks. The checkout 'publish orders' producer span is present AND CLEAN on this leg - and, notably, ALSO on the fault leg (async local-enqueue instrumentation), so the producer side never discriminates; only the consumer-side absence does. T9: mist_readback_oracle = not_applicable (sql-probe unbindable at the pinned commit; applicability boundary, distinct from none-durable); mist_trace_shape not_applicable (Branch-B, deferred 2.5/E2); on a bindable surface the paired read-back oracle's control-leg expectation is the clean no_flag TN (design note, not a cell)."
+  },
+  "license": {
+    "case_code": "Apache-2.0",
+    "case_data": "CC-BY-4.0",
+    "upstream_sut": "Apache-2.0",
+    "sources": [
+      "open-telemetry/opentelemetry-demo src/checkout/main.go",
+      "open-telemetry/opentelemetry-demo src/accounting/Consumer.cs"
+    ]
+  },
+  "adjudication": null
+}

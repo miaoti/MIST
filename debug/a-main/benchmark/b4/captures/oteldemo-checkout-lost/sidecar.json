@@ -1,0 +1,45 @@
+{
+ "sidecar_version": 1,
+ "case_id": "oteldemo-checkout-lost-001",
+ "producer": "seed-capture-driver",
+ "mist_commit": "7d69de9",
+ "sut": {
+  "name": "oteldemo",
+  "version_ref": "opentelemetry-demo app 2.2.0 / chart 0.40.9 @ kind 'mist' ns otel-demo; natively OTel-instrumented, bundled Jaeger (memory storage)"
+ },
+ "records": [
+  {
+   "t_rel_ms": 0,
+   "kind": "request",
+   "method": "POST",
+   "path": "/api/cart?currencyCode=USD",
+   "payload": "{\"item\":{\"productId\":\"0PUK6V6EV0\",\"quantity\":1},\"userId\":\"5f9556c4-a5fb-4fd6-a8a6-3e84424d8849\"}"
+  },
+  {
+   "t_rel_ms": 18,
+   "kind": "response",
+   "status": 200,
+   "body": "{\"userId\":\"5f9556c4-a5fb-4fd6-a8a6-3e84424d8849\",\"items\":[{\"productId\":\"0PUK6V6EV0\",\"quantity\":1}]}"
+  },
+  {
+   "t_rel_ms": 18,
+   "kind": "request",
+   "method": "POST",
+   "path": "/api/checkout?currencyCode=USD",
+   "payload": "{\"userId\":\"5f9556c4-a5fb-4fd6-a8a6-3e84424d8849\",\"userCurrency\":\"USD\",\"email\":\"otlf2@corpus.test\",\"address\":{\"streetAddress\":\"1 Corpus Way\",\"state\":\"CA\",\"country\":\"United States\",\"city\":\"Mountain View\",\"zipCode\":\"94043\"},\"creditCard\":{\"creditCardCvv\":672,\"creditCardExpirationMonth\":1,\"creditCardExpirationYear\":2030,\"creditCardNumber\":\"4432-8015-6152-0454\"}}"
+  },
+  {
+   "t_rel_ms": 37,
+   "kind": "response",
+   "status": 200,
+   "body": "{\"orderId\":\"bd49653d-7c23-11f1-b52a-1a0e5138d942\",\"shippingTrackingId\":\"630c9d4f-6a0d-42d9-9d7b-b7011bd09249\",\"shippingCost\":{\"currencyCode\":\"USD\",\"units\":8,\"nanos\":990000000},\"shippingAddress\":{\"streetAddress\":\"1 Corpus Way\",\"city\":\"Mountain View\",\"state\":\"CA\",\"country\":\"United States\",\"zipCode\":\"94043\"},\"items\":[{\"cost\":{\"currencyCode\":\"USD\",\"units\":175,\"nanos\":0},\"item\":{\"productId\":\"0PUK6V6EV0\",\"quantity\":1,\"product\":{\"id\":\"0PUK6V6EV0\",\"name\":\"Solar System Color Imager\",\"description\":\"You have your new telescope and have observed Saturn and Jupiter. Now you're ready to take the next step and start imaging them. But where do you begin? The NexImage 10 Solar System Imager is the perfect solution.\",\"picture\":\"SolarSystemColorImager.jpg\",\"priceUsd\":{\"currencyCode\":\"USD\",\"units\":175,\"nanos\":0},\"categories\":[\"accessories\",\"telescopes\"]}}}]}"
+  },
+  {
+   "t_rel_ms": 2038,
+   "kind": "observation",
+   "probe": "GET the session's cart (entry surface healthy; cart emptied by the acked checkout)",
+   "status": 200,
+   "body": "{\"userId\":\"\",\"items\":[]}"
+  }
+ ]
+}
