@@ -1,0 +1,95 @@
+{
+  "case_id": "sockshop-shipping-control-001",
+  "schema_version": "2.0.0",
+  "stratum": 1,
+  "capture_status": "captured",
+  "fault_class": "none",
+  "sut": {
+    "name": "sockshop",
+    "repo": "github.com/microservices-demo/shipping",
+    "branch": "master",
+    "commit": "",
+    "deploy": "kind cluster 'mist', ns sock-shop (July topology, istio-injected Java legs); javaagent 1.33.6 on orders/shipping/queue-master (768Mi limits). Leg = rabbitmq scale (control up / TP leg 0).",
+    "replay_script": "debug/a-main/benchmark/b4/capture-specs/sockshop-order-flow.yaml",
+    "health_precondition": null
+  },
+  "target": {
+    "entry_endpoint": {
+      "method": "POST",
+      "path": "/orders",
+      "service": "orders"
+    },
+    "dependency": {
+      "service": "rabbitmq (shipping->queue-master AMQP enqueue leg)",
+      "kind": "broker"
+    },
+    "readback": {
+      "modality": "none-durable",
+      "locator": "queue-master shipment record - NOT black-box observable: order.shipment is written at order creation regardless of enqueue success, and no read-back API reflects broker consumption. Discriminator is the AMQP-send trace span.",
+      "expect_without_fault": "landed",
+      "expect_with_fault": "not-landed",
+      "mist_bindable": false
+    }
+  },
+  "fault": {
+    "mechanism": "none",
+    "injection_method": "none",
+    "config": {
+      "note": "clean control: rabbitmq up; the same cookie-session order flow; queue-master consumes the shipping task."
+    },
+    "injected_by": "",
+    "target_service": "rabbitmq (shipping->queue-master AMQP enqueue leg)",
+    "provenance_class": "by-docs"
+  },
+  "stimulus": {
+    "script": "register -> login -> add cart item -> POST /orders (RabbitMQ down)",
+    "write_path": true,
+    "workload_class": "authored-scenario",
+    "workload_variant": null
+  },
+  "oracle_eval": {
+    "ack_content_visibility": "success-shaped-clean",
+    "trace_visibility": "error-span-visible",
+    "write_shape": "partial-aggregate",
+    "oracle_mode": "paired",
+    "config_provenance": {
+      "mist_commit": "7d69de9",
+      "mist_authoring": {
+        "tier": "hand-written",
+        "minutes": 0
+      }
+    },
+    "comparator_configs": []
+  },
+  "ground_truth": {
+    "label": "negative",
+    "rationale": "The clean twin of sockshop-shipping-swallowed-enqueue-001 (same stimulus, rabbitmq up). The order acks 201 and the queue-master CONSUMES the shipping task (the consumer span is present in the trace); nothing is lost. Oracles must NOT fire (else FP).",
+    "source": "by_construction",
+    "version": 1,
+    "doc_citation": null
+  },
+  "oracle_expectation": {
+    "status_code_oracle": "no_flag",
+    "schema_oracle": "no_flag",
+    "body_marker_oracle": "no_flag",
+    "naive_span_error_oracle": "flag",
+    "tracetest_presence_oracle": "no_flag",
+    "mist_readback_oracle": "not_applicable",
+    "mist_trace_shape_oracle": "not_applicable"
+  },
+  "provenance": {
+    "control_trace": "debug/a-main/benchmark/b4/captures/sockshop-shipping-control-traced/trace-control.json",
+    "fault_trace": null,
+    "readback_response": "debug/a-main/benchmark/b4/captures/sockshop-shipping-control-traced/sidecar.json",
+    "notes": "TENANCY-WINDOW CAPTURE-OF-RECORD (2026-07-10, plan rev-2 unanimous-accept): captured on the live kind deploy — bookinfo via Envoy sidecar spans (mesh Telemetry 100% sampling, extensionProvider jaeger->collector:4317; reviews VS ASSERTED pinned to v3 pre-capture); sockshop via opentelemetry-javaagent 1.33.6 (sha 055c4fe4...) on orders/shipping/queue-master (hostPath+JTO, memory limit raised 500Mi->768Mi in the same patch — CLI -Xmx overrides JTO so heap untouched; DEFAULT instrumentation, no suppression). Frozen scorer defd9c9 extended PRE-CAPTURE with the pinned semantics (presence kind SERVER/CONSUMER; Envoy error rule http.status_code>=500; per-case naive scopes; entry-op fragments); names bound from control/canary traces only. Per-leg immediate Jaeger v2 exports; probe-first N>=4; fresh users per leg; complete new sidecars = capture-of-record. || MEASURED (this wave): order 201 with shipment set; the 30-span control trace CONTAINS the queue-master 'shipping-task process' CONSUMER span (presence no_flag TN = the TP case's validated baseline) AND one orders DB-client span. MEASURED SURPRISE (recorded as measured per T2, diagnosed): naive_span_error=FLAG on this CLEAN control — queue-master, after consuming, attempts POST unix://localhost:80/containers/create (the SUT's original design spawns Docker worker containers; no docker socket exists in k8s) -> a REAL error span on every consumed task. The mechanical error rule keeps it: naive FALSE-POSITIVES even on clean sockshop operation — an environment-conditioned SUT behavior, and a measured datum in the naive column's indictment (FP on bookinfo-benign, FN on the genuine swallow, FP on this clean control). trace_visibility carries the PAIR's regime value (B-M3): the control leg has no fault to be visible. mist_readback=not_applicable (none-durable, same as the twin). mist_trace_shape=not_applicable (traced-but-not-run, Branch-B)."
+  },
+  "license": {
+    "case_code": "Apache-2.0",
+    "case_data": "CC-BY-4.0",
+    "upstream_sut": "Apache-2.0",
+    "sources": [
+      "microservices-demo/shipping ShippingController (enqueue-failure swallow)"
+    ]
+  },
+  "adjudication": null
+}

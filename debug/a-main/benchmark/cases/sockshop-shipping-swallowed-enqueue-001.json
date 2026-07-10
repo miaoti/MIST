@@ -2,20 +2,27 @@
   "case_id": "sockshop-shipping-swallowed-enqueue-001",
   "schema_version": "2.0.0",
   "stratum": 1,
-  "capture_status": "specified",
+  "capture_status": "captured",
   "fault_class": "swallowed_downstream_error",
   "sut": {
     "name": "sockshop",
     "repo": "github.com/microservices-demo/shipping",
     "branch": "master",
     "commit": "",
-    "deploy": "SPECIFIED: k8s complete-demo.yaml into the kind+Istio+Jaeger cluster (evaluation/suts/sockshop/deploy/deploy.sh); repos archived Dec 2023, images pinned. Not currently deployed (sockshop scaled to 0 for the TrainTicket tenancy window).",
-    "replay_script": "valid session order flow (register -> login -> add cart item -> POST /orders) while RabbitMQ is unavailable",
+    "deploy": "kind cluster 'mist', ns sock-shop (July topology, istio-injected Java legs); javaagent 1.33.6 on orders/shipping/queue-master (768Mi limits). Leg = rabbitmq scale (control up / TP leg 0).",
+    "replay_script": "debug/a-main/benchmark/b4/capture-specs/sockshop-order-flow.yaml",
     "health_precondition": null
   },
   "target": {
-    "entry_endpoint": { "method": "POST", "path": "/orders", "service": "orders" },
-    "dependency": { "service": "rabbitmq (shipping->queue-master AMQP enqueue leg)", "kind": "broker" },
+    "entry_endpoint": {
+      "method": "POST",
+      "path": "/orders",
+      "service": "orders"
+    },
+    "dependency": {
+      "service": "rabbitmq (shipping->queue-master AMQP enqueue leg)",
+      "kind": "broker"
+    },
     "readback": {
       "modality": "none-durable",
       "locator": "queue-master shipment record - NOT black-box observable: order.shipment is written at order creation regardless of enqueue success, and no read-back API reflects broker consumption. Discriminator is the AMQP-send trace span.",
@@ -27,12 +34,17 @@
   "fault": {
     "mechanism": "dependency-down",
     "injection_method": "dependency_scale_zero",
-    "config": { "note": "RabbitMQ made unavailable (scale rabbitmq to 0, or toxiproxy on the AMQP leg) while POST /orders executes. The fault-swallowing code path is UNMODIFIED SUT source: shipping's controller catches the enqueue failure and still returns success - source comment: 'Unable to add to queue... Accepting anyway. Don't do this for real!' (ShippingController). queue-master then never receives the shipping task." },
+    "config": {
+      "note": "RabbitMQ made unavailable (scale rabbitmq to 0, or toxiproxy on the AMQP leg) while POST /orders executes. The fault-swallowing code path is UNMODIFIED SUT source: shipping's controller catches the enqueue failure and still returns success - source comment: 'Unable to add to queue... Accepting anyway. Don't do this for real!' (ShippingController). queue-master then never receives the shipping task."
+    },
     "injected_by": "",
     "target_service": "rabbitmq (AMQP leg of shipping->queue-master)",
     "provenance_class": "by-docs"
   },
-  "negative_control": { "present": true, "replay_script": "same order flow with RabbitMQ available (task enqueues + queue-master consumes)" },
+  "negative_control": {
+    "present": true,
+    "replay_script": "sockshop-order-flow.yaml @ rabbitmq up (sockshop-shipping-control-001)"
+  },
   "stimulus": {
     "script": "register -> login -> add cart item -> POST /orders (RabbitMQ down)",
     "write_path": true,
@@ -46,7 +58,10 @@
     "oracle_mode": "paired",
     "config_provenance": {
       "mist_commit": "7d69de9",
-      "mist_authoring": { "tier": "hand-written", "minutes": 0 }
+      "mist_authoring": {
+        "tier": "hand-written",
+        "minutes": 0
+      }
     },
     "comparator_configs": []
   },
@@ -61,22 +76,24 @@
     "status_code_oracle": "no_flag",
     "schema_oracle": "no_flag",
     "body_marker_oracle": "no_flag",
-    "naive_span_error_oracle": "flag",
+    "naive_span_error_oracle": "no_flag",
     "tracetest_presence_oracle": "flag",
     "mist_readback_oracle": "not_applicable",
-    "mist_trace_shape_oracle": "flag"
+    "mist_trace_shape_oracle": "not_applicable"
   },
   "provenance": {
-    "control_trace": null,
-    "fault_trace": null,
-    "readback_response": null,
-    "notes": "Found by source inspection during the G3 prereg cold-review wave (research/REVIEW-PREREG-B-tech.md INFO-1); pre-registered in prep/g3-sut2-triples-prereg.md SS-C. This is the TRUE-POSITIVE twin of bookinfo-ratings-benign. REVIEW-CORPUS R4 (A-M3/C-F3) — the NAMED discriminator for the pair: sockshop is TRULY MASKED (the entry 2xx + shipment object is IDENTICAL to success; nothing communicates the loss) and the lost shipping task IS a REQUIRED durable downstream effect, whereas bookinfo's ratings is a contractually-OPTIONAL read whose degradation the entry response DOES communicate. naive_span_error and tracetest_presence flag BOTH cases (structural: error/absence under 2xx) = here TP, on bookinfo FP; the ONLY column that separates the pair is mist_trace_shape (flag here / no_flag on bookinfo) via that required-vs-optional-durable-effect semantics. PRECONDITION for the trace expectations: the two-part tracing mitigation from the G3 prereg (OTel Node auto-instrumentation on front-end + javaagents on orders/shipping) must be active AND the queue-master CONSUME span must be instrumented (so tracetest_presence can assert the absent consume span, and mist_trace_shape can see the missing required effect); else naive_span_error/tracetest_presence/mist_trace_shape are not_applicable as-deployed. mist_readback=not_applicable BY DESIGN and that is the honest point: no black-box read-back reflects broker consumption (order.shipment written at creation regardless), so this case documents the read-back oracle's applicability boundary - only the trace-shape/masking oracle sees this class. write_shape=partial-aggregate (order/parent lands, shipping task/child lost). rev-2 migration (2026-07-09): readback modality none-durable, expect pair (landed/not-landed) NOMINAL (R11: the shipping task is a real downstream effect but NOT black-box observable; the enum has no no-write value); mist_dataintegrity_oracle -> mist_readback_oracle=not_applicable; ADDED tracetest_presence_oracle=flag (missing enqueue/consume span). Status: SPECIFIED design-target (sockshop scaled to 0 -> not captured; these trace-column values are the intended-instrumented expectation per freeze R2, NOT a measured result). Natural positive by source inspection; stratum 1, may graduate to 3 on contested live capture."
+    "control_trace": "debug/a-main/benchmark/b4/captures/sockshop-shipping-control-traced/trace-control.json",
+    "fault_trace": "debug/a-main/benchmark/b4/captures/sockshop-shipping-swallowed-traced/trace-fault.json",
+    "readback_response": "debug/a-main/benchmark/b4/captures/sockshop-shipping-swallowed-traced/sidecar.json",
+    "notes": "Found by source inspection during the G3 prereg cold-review wave (research/REVIEW-PREREG-B-tech.md INFO-1); pre-registered in prep/g3-sut2-triples-prereg.md SS-C. This is the TRUE-POSITIVE twin of bookinfo-ratings-benign. REVIEW-CORPUS R4 (A-M3/C-F3) — the NAMED discriminator for the pair: sockshop is TRULY MASKED (the entry 2xx + shipment object is IDENTICAL to success; nothing communicates the loss) and the lost shipping task IS a REQUIRED durable downstream effect, whereas bookinfo's ratings is a contractually-OPTIONAL read whose degradation the entry response DOES communicate. naive_span_error and tracetest_presence flag BOTH cases (structural: error/absence under 2xx) = here TP, on bookinfo FP; the ONLY column that separates the pair is mist_trace_shape (flag here / no_flag on bookinfo) via that required-vs-optional-durable-effect semantics. PRECONDITION for the trace expectations: the two-part tracing mitigation from the G3 prereg (OTel Node auto-instrumentation on front-end + javaagents on orders/shipping) must be active AND the queue-master CONSUME span must be instrumented (so tracetest_presence can assert the absent consume span, and mist_trace_shape can see the missing required effect); else naive_span_error/tracetest_presence/mist_trace_shape are not_applicable as-deployed. mist_readback=not_applicable BY DESIGN and that is the honest point: no black-box read-back reflects broker consumption (order.shipment written at creation regardless), so this case documents the read-back oracle's applicability boundary - only the trace-shape/masking oracle sees this class. write_shape=partial-aggregate (order/parent lands, shipping task/child lost). rev-2 migration (2026-07-09): readback modality none-durable, expect pair (landed/not-landed) NOMINAL (R11: the shipping task is a real downstream effect but NOT black-box observable; the enum has no no-write value); mist_dataintegrity_oracle -> mist_readback_oracle=not_applicable; ADDED tracetest_presence_oracle=flag (missing enqueue/consume span). Status: SPECIFIED design-target (sockshop scaled to 0 -> not captured; these trace-column values are the intended-instrumented expectation per freeze R2, NOT a measured result). Natural positive by source inspection; stratum 1, may graduate to 3 on contested live capture. || TENANCY-WINDOW CAPTURE-OF-RECORD (2026-07-10, plan rev-2 unanimous-accept): captured on the live kind deploy — bookinfo via Envoy sidecar spans (mesh Telemetry 100% sampling, extensionProvider jaeger->collector:4317; reviews VS ASSERTED pinned to v3 pre-capture); sockshop via opentelemetry-javaagent 1.33.6 (sha 055c4fe4...) on orders/shipping/queue-master (hostPath+JTO, memory limit raised 500Mi->768Mi in the same patch — CLI -Xmx overrides JTO so heap untouched; DEFAULT instrumentation, no suppression). Frozen scorer defd9c9 extended PRE-CAPTURE with the pinned semantics (presence kind SERVER/CONSUMER; Envoy error rule http.status_code>=500; per-case naive scopes; entry-op fragments); names bound from control/canary traces only. Per-leg immediate Jaeger v2 exports; probe-first N>=4; fresh users per leg; complete new sidecars = capture-of-record. || MEASURED (this wave): rabbit scaled to 0; N>=4 consecutive 201-ack probes confirmed the 'Accepting anyway' swallow; the capture-of-record order acked 201 with the shipment object set and the order row PRESENT in the read-back list (the ORDER lands; the shipping task is what's lost — no API reflects broker consumption: the none-durable point stands). tracetest_presence=FLAG MEASURED (the queue-master 'shipping-task process' CONSUMER span is ABSENT from the 26-span fault trace; the 30-span control trace CONTAINS it = validated baseline, T1/B-B4). T2 DIVERGENCE (disclosed, dated 2026-07-10): the pre-registered naive_span_error=flag ('the AMQP-send failure span') was REFUTED by capture — with rabbitmq scaled to 0 the connection fails before Channel.basicPublish, no producer span is created, the swallow returns 2xx, and the fault trace carries ZERO error spans -> naive MEASURED no_flag = a FALSE NEGATIVE on the genuine leg. Combined with the control leg's queue-master docker-socket error span (see the control case), naive fails BOTH directions on this pair AND false-positives on clean operation — a stronger, fully measured indictment than the pre-registration. Recorded as measured; no selector/scope/rule was changed post-capture. T12 PRECONDITION AMENDMENT (dated 2026-07-10, per plan rev-2): the earlier precondition text ('OTel Node auto-instrumentation on front-end + javaagents...') is REVISED to {orders, shipping, queue-master javaagents; entry = the orders server span} — front-end Node instrumentation DESCOPED (the scored trace's entry is the orders server span; Node auto-instr adds nothing the pair needs). T1 PRESERVED DESIGN TARGET: mist_trace_shape's pre-registered discriminator value is FLAG (required durable downstream effect absent); recorded not_applicable (traced-but-not-run, Branch-B, deferred to 2.5/E2) — the pair separation claim stays pre-registered until MIST's oracle runs."
   },
   "license": {
     "case_code": "Apache-2.0",
     "case_data": "CC-BY-4.0",
     "upstream_sut": "Apache-2.0",
-    "sources": ["microservices-demo/shipping ShippingController (enqueue-failure swallow)"]
+    "sources": [
+      "microservices-demo/shipping ShippingController (enqueue-failure swallow)"
+    ]
   },
   "adjudication": null
 }

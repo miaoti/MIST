@@ -2,20 +2,27 @@
   "case_id": "bookinfo-ratings-benign-001",
   "schema_version": "2.0.0",
   "stratum": 2,
-  "capture_status": "specified",
+  "capture_status": "captured",
   "fault_class": "swallowed_downstream_error",
   "sut": {
     "name": "bookinfo",
     "repo": "github.com/istio/istio (samples/bookinfo)",
     "branch": "",
     "commit": "",
-    "deploy": "SPECIFIED: k8s with Istio sidecars + Jaeger; the productpage flow with ratings scaled to zero. Not currently deployed (bookinfo scaled to 0 for the TrainTicket tenancy window).",
-    "replay_script": "GET /productpage while ratings is unavailable",
+    "deploy": "kind cluster 'mist', ns default; istio-1.30 bookinfo samples, all sidecar-injected; reviews VS pinned to subset v3 (v3 always calls ratings; asserted read-only pre-capture); entry via istio ingressgateway. Leg = ratings-v1 scale (control up / benign leg 0).",
+    "replay_script": "debug/a-main/benchmark/b4/capture-specs/bookinfo-productpage.yaml",
     "health_precondition": null
   },
   "target": {
-    "entry_endpoint": { "method": "GET", "path": "/productpage", "service": "productpage" },
-    "dependency": { "service": "ratings", "kind": "downstream_service" },
+    "entry_endpoint": {
+      "method": "GET",
+      "path": "/productpage",
+      "service": "productpage"
+    },
+    "dependency": {
+      "service": "ratings",
+      "kind": "downstream_service"
+    },
     "readback": {
       "modality": "none-durable",
       "locator": "no durable read-back (nominal: this is a read-path degradation, no write is intended); the discriminator is the trace, not durable state.",
@@ -27,7 +34,9 @@
   "fault": {
     "mechanism": "dependency-down",
     "injection_method": "dependency_scale_zero",
-    "config": { "note": "ratings made unavailable (scale-to-zero or toxiproxy). The reviews service catches the failed ratings call and degrades by design." },
+    "config": {
+      "note": "ratings made unavailable (scale-to-zero or toxiproxy). The reviews service catches the failed ratings call and degrades by design."
+    },
     "injected_by": "",
     "target_service": "ratings",
     "provenance_class": "by-docs"
@@ -45,7 +54,10 @@
     "oracle_mode": "paired",
     "config_provenance": {
       "mist_commit": "7d69de9",
-      "mist_authoring": { "tier": "hand-written", "minutes": 0 }
+      "mist_authoring": {
+        "tier": "hand-written",
+        "minutes": 0
+      }
     },
     "comparator_configs": []
   },
@@ -63,19 +75,21 @@
     "naive_span_error_oracle": "flag",
     "tracetest_presence_oracle": "flag",
     "mist_readback_oracle": "not_applicable",
-    "mist_trace_shape_oracle": "no_flag"
+    "mist_trace_shape_oracle": "not_applicable"
   },
   "provenance": {
-    "control_trace": null,
-    "fault_trace": null,
-    "readback_response": null,
-    "notes": "Stratum-2 benign trap. SPECIFIED design-target (bookinfo scaled to 0 -> not captured; these oracle_expectation values are the intended-instrumented expectation per freeze R2, NOT a measured result). REVIEW-CORPUS R4 (A-M3/C-F3) corrections: (1) FACTUAL FIX -- with ratings scaled to zero the ratings SERVER span is ABSENT (only the erroring reviews->ratings client span exists); the prior note 'the ratings span IS present' was wrong. (2) HONEST tracetest_presence=flag: a presence-assertion on the expected downstream-effect span FALSE-POSITIVES here just like naive_span_error (both are purely structural: an error/absence under a 2xx). So on this pair naive AND tracetest_presence BOTH FP -- neither separates benign from genuine. (3) The ONLY discriminating column is mist_trace_shape (design-target no_flag): MIST must encode the SEMANTIC discriminator that ratings is a CONTRACTUALLY-OPTIONAL read with NO required durable downstream effect (istio PR #15489; the entry response even communicates the degradation, 'Ratings service is currently unavailable'), whereas sockshop's lost shipping task IS a required durable effect. (4) mist_readback=not_applicable (none-durable). This precision advantage is a PRE-REGISTERED claim validated on live capture of the bookinfo/sockshop pair, not a pilot result. rev-2 migration: readback modality none-durable + expect pair NOMINAL (R11: no durable write on this read-path degradation; the enum has no no-write value); mist_dataintegrity_oracle -> mist_readback_oracle. R12: ack_content_visibility=success-shaped-clean is w.r.t. the MACHINE tell (no status field / sentinel -> body_marker=no_flag); the 'Ratings unavailable' string is human-readable HTML prose, available to a semantic oracle (that is discriminator (3)) but not a machine sentinel a substring body oracle keys on."
+    "control_trace": "debug/a-main/benchmark/b4/captures/bookinfo-ratings-control-traced/trace-control.json",
+    "fault_trace": "debug/a-main/benchmark/b4/captures/bookinfo-ratings-benign-traced/trace-fault.json",
+    "readback_response": "debug/a-main/benchmark/b4/captures/bookinfo-ratings-benign-traced/sidecar.json",
+    "notes": "Stratum-2 benign trap. SPECIFIED design-target (bookinfo scaled to 0 -> not captured; these oracle_expectation values are the intended-instrumented expectation per freeze R2, NOT a measured result). REVIEW-CORPUS R4 (A-M3/C-F3) corrections: (1) FACTUAL FIX -- with ratings scaled to zero the ratings SERVER span is ABSENT (only the erroring reviews->ratings client span exists); the prior note 'the ratings span IS present' was wrong. (2) HONEST tracetest_presence=flag: a presence-assertion on the expected downstream-effect span FALSE-POSITIVES here just like naive_span_error (both are purely structural: an error/absence under a 2xx). So on this pair naive AND tracetest_presence BOTH FP -- neither separates benign from genuine. (3) The ONLY discriminating column is mist_trace_shape (design-target no_flag): MIST must encode the SEMANTIC discriminator that ratings is a CONTRACTUALLY-OPTIONAL read with NO required durable downstream effect (istio PR #15489; the entry response even communicates the degradation, 'Ratings service is currently unavailable'), whereas sockshop's lost shipping task IS a required durable effect. (4) mist_readback=not_applicable (none-durable). This precision advantage is a PRE-REGISTERED claim validated on live capture of the bookinfo/sockshop pair, not a pilot result. rev-2 migration: readback modality none-durable + expect pair NOMINAL (R11: no durable write on this read-path degradation; the enum has no no-write value); mist_dataintegrity_oracle -> mist_readback_oracle. R12: ack_content_visibility=success-shaped-clean is w.r.t. the MACHINE tell (no status field / sentinel -> body_marker=no_flag); the 'Ratings unavailable' string is human-readable HTML prose, available to a semantic oracle (that is discriminator (3)) but not a machine sentinel a substring body oracle keys on. || TENANCY-WINDOW CAPTURE-OF-RECORD (2026-07-10, plan rev-2 unanimous-accept): captured on the live kind deploy — bookinfo via Envoy sidecar spans (mesh Telemetry 100% sampling, extensionProvider jaeger->collector:4317; reviews VS ASSERTED pinned to v3 pre-capture); sockshop via opentelemetry-javaagent 1.33.6 (sha 055c4fe4...) on orders/shipping/queue-master (hostPath+JTO, memory limit raised 500Mi->768Mi in the same patch — CLI -Xmx overrides JTO so heap untouched; DEFAULT instrumentation, no suppression). Frozen scorer defd9c9 extended PRE-CAPTURE with the pinned semantics (presence kind SERVER/CONSUMER; Envoy error rule http.status_code>=500; per-case naive scopes; entry-op fragments); names bound from control/canary traces only. Per-leg immediate Jaeger v2 exports; probe-first N>=4; fresh users per leg; complete new sidecars = capture-of-record. || MEASURED (this wave): the benign leg (ratings scaled to 0; N>=4 consecutive degraded-page probes; the sidecar body carries 'Ratings service is currently unavailable' — the semantic-discriminator evidence) scored naive_span_error=FLAG (the reviews->ratings Envoy client span errors >=500) AND tracetest_presence=FLAG (the ratings server span is ABSENT) — BOTH structural comparator columns MEASURABLY FALSE-POSITIVE on this designed degradation, exactly the pre-registered R4 trap. The control leg (9 spans, all clean, ratings server span PRESENT) validates both span families (T2) and the selector baseline. T1 PRESERVED DESIGN TARGET: mist_trace_shape's pre-registered discriminator value for this case is NO_FLAG (the semantic no-required-durable-effect judgment); the cell is recorded not_applicable (traced-but-not-run, Branch-B, deferred to the 2.5/E2 wave) — the pair separation claim stays PRE-REGISTERED until MIST's oracle runs."
   },
   "license": {
     "case_code": "Apache-2.0",
     "case_data": "CC-BY-4.0",
     "upstream_sut": "Apache-2.0",
-    "sources": ["istio/istio samples/bookinfo reviews service (ratings fallback)"]
+    "sources": [
+      "istio/istio samples/bookinfo reviews service (ratings fallback)"
+    ]
   },
   "adjudication": null
 }

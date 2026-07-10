@@ -1,0 +1,32 @@
+# Sock Shop TP-pair leg (tenancy-window plan rev-2 B4). Same spec for both legs; the leg is the
+# rabbitmq deployment's scale (control = up -> queue-master consumes; TP leg = 0 -> shipping's
+# "Accepting anyway" swallow, task lost). Cookie session (logged_in); javaagents on
+# orders/shipping/queue-master. Cheap item (14.00) keeps the total under payment's 100.00 limit.
+# Runbook facts: order REQUIRES a registered address + card first; readback = the acting user's
+# orders list (the ORDER row lands in both legs — the lost thing is the broker consumption, which
+# no API reflects: none-durable, the case's honest point).
+case_id: sockshop-order-flow
+sut: {name: sockshop, version_ref: "microservices-demo @ kind 'mist' (July topology); agents 1.33.6 on orders/shipping/queue-master"}
+base_url: http://localhost:8080
+cookie_session: true
+gen_user: true
+steps:
+  - method: POST
+    path: /register
+    redact: true
+    payload: '{"username":"{user}","password":"{pw}","email":"{user}@corpus.test","firstName":"cb","lastName":"cb"}'
+  - method: POST
+    path: /addresses
+    payload: '{"street":"my road","number":"3","country":"UK","city":"London","postcode":"E2 8RS"}'
+  - method: POST
+    path: /cards
+    payload: '{"longNum":"5544154011345918","expires":"08/29","ccv":"958"}'
+  - method: POST
+    path: /cart
+    payload: '{"id":"819e1fbf-8b7e-4f6d-811f-693534916a8b"}'
+  - method: POST
+    path: /orders
+observations:
+  - probe: "GET the acting user's orders (durable read-back)"
+    path: /orders
+    delay_ms: 3000

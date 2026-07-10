@@ -1,0 +1,11 @@
+# Bookinfo FP-pair leg (tenancy-window plan rev-2 B4). Same spec for both legs; the leg is the
+# ratings deployment's scale (control = up, benign/FP leg = 0). Reviews VS pinned to v3 (asserted
+# read-only pre-capture; v3 always calls ratings). Entry via the istio ingress (localhost:8080 PF).
+# none-durable read path: the transcript's page body IS the observable (the degradation message).
+case_id: bookinfo-productpage
+sut: {name: bookinfo, version_ref: "istio-1.30 samples @ kind 'mist'; reviews VS pinned v3"}
+base_url: http://localhost:8080
+steps:
+  - method: GET
+    path: /productpage
+    auth: none
