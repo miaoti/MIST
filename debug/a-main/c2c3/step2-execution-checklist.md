@@ -115,7 +115,7 @@ Sources consolidated: plan v2 §5, `c2-freeze.md` rev 2, `e-sut-applicability-ma
       flagd list against the pinned tag (docs/json skew).
 ☐ 2.4 Boutique deploy (light). Rider: gRPC method-scoped Istio abort on `/hipstershop.CartService/EmptyCart`
       (HTTP/2 path match) live check.
-☐ 2.5 Bookinfo: REDEPLOY needed (live-verified 0 pods — C-B2; the July assets are in-repo but the cluster state is gone); small: istio samples apply + smoke.
+☑ 2.5 Bookinfo: **DISCHARGED (tenancy Phase B, 2026-07-10c)** — the 0/0 state was SCALED not gone; scaled up + reviews→v3 VS ASSERTED (never re-applied; samples re-apply would have destroyed the pin), FP/TP captures done, scaled back to 0.
 ☐ 2.6 Post-reboot runbook items stay in force: re-create mist:mist RabbitMQ user + warm-up POST
       before any SS run; repo .sh files are CRLF → run CRLF-stripped copies; minikube stays stopped.
       **NACOS RESTART RULE (2026-07-10 incident, live-verified twice):** ANY nacos pod restart boots the
@@ -144,7 +144,7 @@ Sources consolidated: plan v2 §5, `c2-freeze.md` rev 2, `e-sut-applicability-ma
 
 ## Step 2.5 — instrumentation wave (gates ALL E2 trace arms)
 ☐ 2.5.1 TT: OTel javaagents on the target write paths (G3 two-part mitigation precedent).
-☐ 2.5.2 SS: OTel Node auto-instr (front-end) + javaagents (orders/shipping).
+◐ 2.5.2 SS: **PARTIAL (tenancy Phase B)** — javaagents on orders/shipping/queue-master executed for the pair captures (768Mi same-patch bump; torn down after per pilot framing); front-end Node auto-instr DESCOPED for the pair (entry = orders server span; T12 case amendment) — full 2.5.2 enablement (if E2 needs front-end spans) remains.
 ☐ 2.5.3 TeaStore: Kieker→OTel converter spike OR pre-registered exclude branch → cases become
         `trace-uninstrumented` (NEVER conflated with by-construction — B-M5). **U3 DISPOSITION
         (pre-registered): the converter is on MIST's OWN critical path, not just E2's — without
