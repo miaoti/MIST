@@ -11,14 +11,14 @@
 > spans vs controls' 2/6/3 — the lost write IS visible at DB-span granularity; the presence column is
 > pinned at cross-service HTTP-span granularity (service-map authoring), where invisibility holds.
 > The AUTHORITATIVE C2 pre-registration is `debug/a-main/c2c3/c2-freeze.md` (rev 2 + rev-2.1 amendments).
-> All **12 cases in `cases/` validate** (`schema/validate_cases.py`, exit 0); the two `eligibility/` cases
+> All **14 cases in `cases/` validate** (`schema/validate_cases.py`, exit 0); the two `eligibility/` cases
 > (rater screen, outside the measurement corpus) also validate.
 > This README describes the design + the *current populated pilot*; read the freeze for the frozen truth.
 > `schema/rubric.md` (v0.1.0) is superseded by `c2-freeze.md` §3 + `c2c3/c3-rater-materials.md` §3.
 
 > **Read this first — what the pilot IS and is NOT (REVIEW-CORPUS-RECONCILIATION.md, 3-cold-review):**
 > The populated corpus is a **seed/pilot + a pre-registered scale plan**, NOT a completed benchmark. It is
-> **6 positives / 7 negatives** (report it that way — never a bare "S1 count"). Of the 6 positives,
+> **6 positives / 8 negatives** (report it that way — never a bare "S1 count"). Of the 6 positives,
 > **4 are captured *discriminating* positives** across 3 write-path services: 2 fabricated-ack fork flags
 > (`TT-cancel-refund-fabricatedack`, `TT-createaccount-agreement`, on `ts-inside-payment-service`) + 2
 > skipped-cross-service-persist flags captured 2026-07-10 (`TT-adminroute-lostwrite`,
@@ -47,7 +47,7 @@ benchmark/
     fault-case.schema.json          JSON Schema (draft 2020-12) for ONE labeled case — rev 2
     validate_cases.py               validator: cases/*.json vs the schema (exit 0 iff all pass)
     rubric.md                       v0.1.0 rubric (SUPERSEDED by c2-freeze §3 + c3-rater-materials §3)
-  cases/                            13 cases, all rev-2-valid (6 positive / 7 negative)
+  cases/                            14 cases, all rev-2-valid (6 positive / 8 negative)
   eligibility/                      2 rater-screen cases (§9 instrument; OUTSIDE the measurement corpus)
   b4/                               blind-label harness + capture specs + captured sidecars
 ```
