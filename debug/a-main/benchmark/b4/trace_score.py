@@ -64,9 +64,29 @@ SELECTORS = {
     "sockshop-shipping-control": {"entry": "orders", "entry_op": "POST /orders",
                                 "presence": ("queue-master", "shipping-task", "consumer"),
                                 "scope": {"orders", "shipping", "queue-master"}},
+    # PHASE-D EXTENSION (tenancy plan rev-2 D3, committed BEFORE the first OTel-Demo capture; names
+    # bound from D2 canary traces only): OTel-Demo Kafka CONSUMERS continue the flow in their OWN
+    # traces (span links, canary-verified: accounting "receive orders" consumer + "order-consumed" +
+    # the postgres client span live in a separate trace from the checkout entry trace). The
+    # required-effect span therefore can NEVER appear in the entry trace, so these cases carry
+    # presence_scope="file": the per-leg export FILE = entry-trace query (service=checkout) MERGED
+    # with the consumer-service query (service=accounting) over the leg window, and BOTH the
+    # presence assertion and the naive error scan run over every span in the file (still bounded by
+    # the per-case service scope). Entry selection + the exactly-one rule are UNCHANGED (only the
+    # checkout trace carries a frontend-proxy server span). fraud-detection deliberately OUT of
+    # scope (its flagd EventStream client spans error routinely; not part of the asserted effect).
+    "oteldemo-checkout-lost":    {"entry": "frontend-proxy", "entry_op": "POST",
+                                "presence": ("accounting", "receive orders", "consumer"),
+                                "scope": {"frontend-proxy", "frontend", "checkout", "accounting"},
+                                "presence_scope": "file"},
+    "oteldemo-checkout-control": {"entry": "frontend-proxy", "entry_op": "POST",
+                                "presence": ("accounting", "receive orders", "consumer"),
+                                "scope": {"frontend-proxy", "frontend", "checkout", "accounting"},
+                                "presence_scope": "file"},
 }
 
-DB_SYSTEMS = ("jdbc", "mysql", "mongodb", "mongo")
+# postgresql added with the Phase-D extension (OTel-Demo accounting writes via Npgsql; canary-bound)
+DB_SYSTEMS = ("jdbc", "mysql", "mongodb", "mongo", "postgresql", "postgres")
 
 
 def sel_for(case_id):
@@ -109,11 +129,14 @@ def score(case_id, trace_path):
                          "(T8 exactly-one-match rule after the disclosed server-span selection)"
                          % (trace_path, len(traces), len(raw)))
     tr = traces[0]
-    procs = {pid: p.get("serviceName", "?") for pid, p in tr.get("processes", {}).items()}
-    spans = tr.get("spans", [])
+    # presence_scope="file" (Phase-D): scan every exported trace (consumer spans live in linked
+    # traces); default remains the selected entry trace only.
+    scan = raw if sel.get("presence_scope") == "file" else [tr]
+    spans = [(t, s) for t in scan for s in t.get("spans", [])]
 
     entry_seen, presence_hit, error_spans, db_report = False, False, [], {}
-    for s in spans:
+    for t, s in spans:
+        procs = {pid: p.get("serviceName", "?") for pid, p in t.get("processes", {}).items()}
         svc = procs.get(s.get("processID"), "?")
         tags = tagmap(s)
         kind = tags.get("span.kind")

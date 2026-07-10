@@ -1,0 +1,25 @@
+# OTel-Demo async acked-but-lost pair leg (tenancy-window plan rev-2 D3). Same spec for both legs;
+# the leg is the KAFKA deployment's scale (control = up -> checkout's "publish orders" is consumed
+# by accounting which persists to Postgres schema "accounting"; fault leg = 0 -> the produce is
+# swallowed, PlaceOrder still acks 200, the message never exists -> the row NEVER lands, a PERMANENT
+# loss, unlike accounting-down which merely delays consumption). Session identity = a client-side
+# uuid passed by the runner via --var session; per-leg marker rides the checkout email local-part.
+# Read-back of record is the runner-level psql probe (T9: modality sql-probe, mist_bindable=false):
+#   SELECT count(*) FROM accounting."order" WHERE order_id='<orderId from the checkout ack>';
+# The GET /api/cart observation only documents the entry surface staying healthy.
+# Product 0PUK6V6EV0 verified live (D2 smoke). Frontend JSON API via frontend-proxy PF localhost:8085.
+case_id: oteldemo-checkout-flow
+sut: {name: oteldemo, version_ref: "opentelemetry-demo app 2.2.0 / chart 0.40.9 @ kind 'mist' ns otel-demo; natively OTel-instrumented, bundled Jaeger (memory storage)"}
+base_url: http://localhost:8085
+steps:
+  - method: POST
+    path: /api/cart?currencyCode=USD
+    payload: '{"item":{"productId":"0PUK6V6EV0","quantity":1},"userId":"{session}"}'
+  - method: POST
+    path: /api/checkout?currencyCode=USD
+    payload: '{"userId":"{session}","userCurrency":"USD","email":"{marker}@corpus.test","address":{"streetAddress":"1 Corpus Way","state":"CA","country":"United States","city":"Mountain View","zipCode":"94043"},"creditCard":{"creditCardCvv":672,"creditCardExpirationMonth":1,"creditCardExpirationYear":2030,"creditCardNumber":"4432-8015-6152-0454"}}'
+observations:
+  - probe: "GET the session's cart (entry surface healthy; cart emptied by the acked checkout)"
+    path: /api/cart?sessionId={session}&currencyCode=USD
+    delay_ms: 2000
+    auth: none
