@@ -23,9 +23,13 @@
 > (`TT-cancel-refund-fabricatedack`, `TT-createaccount-agreement`, on `ts-inside-payment-service`) + 2
 > skipped-cross-service-persist flags captured 2026-07-10 (`TT-adminroute-lostwrite`,
 > `TT-adminbasic-contacts-lostwrite` — as-deployed only `mist_readback` catches them; pre-registered as
-> comparator-catchable under trace instrumentation, i.e. NOT MIST-unique once traced). The FP/TP precision
-> pair (bookinfo + sockshop) and the entire S3 wild stratum remain `specified`/unrun — they are the scale
-> plan (§8), and a `specified` case's `oracle_expectation` is a design TARGET, never a measured result.
+> comparator-catchable under trace instrumentation, i.e. NOT MIST-unique once traced). **PHASE B (2026-07-10c, unanimous-accept plan): the FP/TP pair's COMPARATOR columns are now
+> MEASURED** — bookinfo benign: naive=FLAG + presence=FLAG (both structural columns false-positive);
+> sockshop genuine: presence=FLAG TP, naive pre-registration REFUTED by capture (no producer span →
+> no_flag FN, disclosed); sockshop clean control: naive=FLAG (docker-socket consume-side error —
+> naive FPs even on clean operation). `mist_trace_shape` stays Branch-B on all pair legs — **the
+> MIST-side pair-separation claim remains PRE-REGISTERED** (freeze §6 scoping row). The S3 wild
+> stratum remains the scale plan (§8); a `specified` case's `oracle_expectation` is a design TARGET.
 
 > **PREP deliverable (main-track). NO MIST tool code.** Contribution **C2 — an open-source labeled
 > benchmark of masked-downstream / acked-but-lost data-integrity faults** in OSS microservice systems.
@@ -39,7 +43,7 @@ rubric + a blind-labeled wild stratum. State it exactly that way; do not over-cl
 phenomenon, and — per the review — **do not call the current pilot "the benchmark"**: it is the schema +
 rubric + pilot seed + scale plan.
 
-## 2. Layout + the current 11 cases
+## 2. Layout + the current 14 cases
 ```
 benchmark/
   README.md                         this file
@@ -65,8 +69,9 @@ benchmark/
 | `TT-adminbasic-contacts-control` | 1 | negative | captured | **same-binary twin** of the adminbasic positive (identical fork digest, env flag off → persists); isolates the flag as the only variable |
 | `TT-contacts-dedupe-benign` | 2 | negative | captured | benign trap for the **ack rule**: 2xx + `status:0` soft-reject; `body_marker` wrongly flags |
 | `TT-contacts-noop-modify-benign` | 2 | negative | captured | benign trap for the **read-back oracle itself**: idempotent no-op PUT acks `{1,"Modify success"}` success-shaped-CLEAN (no tell) + zero durable delta by design; FPs any "acked write ⇒ durable delta" rule (closes R6) |
-| `bookinfo-ratings-benign` | 2 | negative | specified | benign trap for the **trace oracles** (FP half of the precision pair) |
-| `sockshop-shipping-swallowed-enqueue` | 1 | positive | specified | natural masked failure (TP half of the precision pair) |
+| `bookinfo-ratings-benign` | 2 | negative | **captured** | FP half of the precision pair, MEASURED: naive=FLAG + presence=FLAG on the benign leg (both structural columns fail the trap); mist_trace_shape Branch-B |
+| `sockshop-shipping-swallowed-enqueue` | 1 | positive | **captured** | TP half, MEASURED: presence=FLAG TP (consume span absent, validated baseline); naive pre-registration REFUTED (no_flag FN, disclosed T2) |
+| `sockshop-shipping-control` | 1 | negative | captured | clean twin (rabbit up; consume span present). MEASURED surprise: naive=FLAG on the clean control (queue-master docker-socket error every consume, diagnosed) |
 
 ## 3. The three strata (rev-2.1 R1)
 - **Stratum 1 — label known by construction (not rater-dependent).** Either (a) a **positive** with
