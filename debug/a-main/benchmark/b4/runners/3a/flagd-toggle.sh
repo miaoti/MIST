@@ -62,9 +62,12 @@ case "$ACTION" in
   status)
     pf_start; echo "$FLAG value: $(ofrep_value)"; pf_stop ;;
   on|off)
-    TARGETVAL=$([ "$ACTION" = "on" ] && echo true || echo false)
     TARGETVAR=$([ "$ACTION" = "on" ] && echo on || echo off)
     pf_start
+    # target VALUE comes from the flag's own variants map (flags are NOT all boolean:
+    # kafkaQueueProblems' variants are integers off:0/on:N — measured 2026-07-11, first probe run)
+    ui_read > /tmp/flagd-ui-pre.json
+    TARGETVAL=$(python3 -c "import json;print(str(json.load(open('/tmp/flagd-ui-pre.json'))['flags']['$FLAG']['variants']['$TARGETVAR']).lower())")
     BEFORE=$(ofrep_value)
     echo "$FLAG before: $BEFORE (target $TARGETVAL)"
     T0=$(date +%s)
