@@ -113,6 +113,19 @@ Sources consolidated: plan v2 §5, `c2-freeze.md` rev 2, `e-sut-applicability-ma
 ☐ 2.5 Bookinfo: REDEPLOY needed (live-verified 0 pods — C-B2; the July assets are in-repo but the cluster state is gone); small: istio samples apply + smoke.
 ☐ 2.6 Post-reboot runbook items stay in force: re-create mist:mist RabbitMQ user + warm-up POST
       before any SS run; repo .sh files are CRLF → run CRLF-stripped copies; minikube stays stopped.
+      **NACOS RESTART RULE (2026-07-10 incident, live-verified twice):** ANY nacos pod restart boots the
+      member back into 1.X/double-write mode from the July PVC → the cluster REFUSES new gRPC service
+      registrations ("Nacos cluster is running with 1.X mode") while already-registered pods keep serving
+      → every NEW/restarted service pod crash-loops at registration (stuck rollouts, old+new pods
+      coexist). FIX (in order): (1) if "Distro protocol is not initialized" → delete BOTH nacos pods
+      together (sts recreates ordered; 2 members must re-form the cluster jointly); (2) wait
+      /nacos/v1/console/health/readiness = OK (port-forward 18848); (3) `PUT /nacos/v1/ns/operator/
+      switches?entry=doubleWriteEnabled&value=false` + verify switches show False; (4) delete any
+      crash-looping service pods to reset backoff (RS recreates; they register immediately).
+      **WSL flap cycle (same incident):** every BATCH of TT pod restarts triggers a ~5–15 min WSL
+      unresponsive window (0x8007274c) while JVM boots spike memory; it self-recovers — do NOT
+      `wsl --shutdown`, do NOT hammer probes (each connection attempt adds load); restart pods in
+      SMALL batches and expect the window.
       **TT redeploy lessons (2026-07-09, live-verified):** (a) `quickstart-k8s/yamls/deploy.yaml` is
       GENERATED + gitignored — regeneration resets images to `:1.0.2` which is ABSENT on Docker Hub →
       `sed s/:1.0.2/:1.0.0/` (the cached, previously-run tag) then re-apply; (b) an "empty" trainticket
