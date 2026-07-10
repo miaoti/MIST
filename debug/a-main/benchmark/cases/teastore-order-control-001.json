@@ -26,10 +26,10 @@
     },
     "readback": {
       "modality": "api-get",
-      "locator": "GET /tools.descartes.teastore.webui/profile - the acting user's Orders table (HTML page; the marker firstname identifies the leg's row). Corroborating internal probe (runner-level, not the black-box surface): GET persistence /rest/orders/user/{id} JSON.",
+      "locator": "[2.75-A BOUND] GET /tools.descartes.teastore.persistence/rest/orders - the durable order collection (JSON); the leg's row is identified by MEMBERSHIP of a globally-unique per-probe marker in address1. USER-FACING EQUIVALENT: the webui /profile Orders table (HTML page; the Phase-C capture marked its row by firstname). Modality enum stays api-get; the T9 boundary was the HTML locator, resolved by the 2.75 enablement decision to the JSON order-list surface.",
       "expect_without_fault": "present",
       "expect_with_fault": "absent",
-      "mist_bindable": false
+      "mist_bindable": true
     }
   },
   "fault": {
@@ -75,14 +75,14 @@
     "body_marker_oracle": "no_flag",
     "naive_span_error_oracle": "not_applicable",
     "tracetest_presence_oracle": "not_applicable",
-    "mist_readback_oracle": "not_applicable",
+    "mist_readback_oracle": "no_flag",
     "mist_trace_shape_oracle": "not_applicable"
   },
   "provenance": {
     "control_trace": null,
     "fault_trace": null,
     "readback_response": "debug/a-main/benchmark/b4/captures/teastore-order-control/sidecar-postrestore.json",
-    "notes": "TENANCY-WINDOW CAPTURE-OF-RECORD (2026-07-10, plan rev-2 unanimous-accept, Phase C). MEASURED: control leg (fresh never-used user13, marker TSMWC1, maintenance verified false) - login -> add product 42 -> confirm returned the 302 -> 200 order-confirmed page (captures/teastore-order-control/sidecar.json); the marker row is PRESENT in the in-flow profile observation, PRESENT in the fresh-session read-back (sidecar-postrestore.json - named for symmetry with the fault twin; no fault window existed on this leg), and PRESENT in the runner-level persistence REST corroboration (user13: 4 generated orders + the TSMWC1 row). Healthy-behavior probes before the leg (DRYRUN1 via the dry-run, CPRB1 via user15) also landed. This control validates the flow, the read-back surface, and the marker discipline for the pair: the fault twin's ABSENT verdict is attributable to the maintenance flag, not to the flow or the read-back. TRACE CELLS: not_applicable all three - trace-uninstrumented as-deployed (B-m2; the pre-registered 2.5.3 Kieker branch). MIST READ-BACK: same T9-style applicability boundary as the twin (api-get HTML modality, mist_bindable=false at the pinned commit) => not_applicable; on a bindable JSON order-list surface the paired read-back oracle's control-leg expectation is the clean no_flag TN (design note, not a cell). DRIVER EXTENSIONS disclosed on the twin apply to this capture too (CookieJar cookie_session, query-string redaction, --var identities/markers)."
+    "notes": "TENANCY-WINDOW CAPTURE-OF-RECORD (2026-07-10, plan rev-2 unanimous-accept, Phase C). MEASURED: control leg (fresh never-used user13, marker TSMWC1, maintenance verified false) - login -> add product 42 -> confirm returned the 302 -> 200 order-confirmed page (captures/teastore-order-control/sidecar.json); the marker row is PRESENT in the in-flow profile observation, PRESENT in the fresh-session read-back (sidecar-postrestore.json - named for symmetry with the fault twin; no fault window existed on this leg), and PRESENT in the runner-level persistence REST corroboration (user13: 4 generated orders + the TSMWC1 row). Healthy-behavior probes before the leg (DRYRUN1 via the dry-run, CPRB1 via user15) also landed. This control validates the flow, the read-back surface, and the marker discipline for the pair: the fault twin's ABSENT verdict is attributable to the maintenance flag, not to the flow or the read-back. TRACE CELLS: not_applicable all three - trace-uninstrumented as-deployed (B-m2; the pre-registered 2.5.3 Kieker branch). MIST READ-BACK: same T9-style applicability boundary as the twin (api-get HTML modality, mist_bindable=false at the pinned commit) => not_applicable; on a bindable JSON order-list surface the paired read-back oracle's control-leg expectation is the clean no_flag TN (design note, not a cell). DRIVER EXTENSIONS disclosed on the twin apply to this capture too (CookieJar cookie_session, query-string redaction, --var identities/markers). || [2.75-A ENABLEMENT RUN - MIST READ-BACK BOUND, CLEAN NO_FLAG, 2026-07-10, plan wave-275a-plan.md rev 2.1]: same enablement as the fault twin (freeze §6 2026-07-10 WAVE 2.75-A row) - MIST's MEMBERSHIP read-back binds the durable JSON /rest/orders collection (mist_bindable false->true). MEASURED LIVE as the CONTROL leg of the paired run (TeaStoreOrderHeadToHead, maintenance OFF): all 5 control-leg probes ACKED HTTP 200 and their address1 markers PERSISTED on the read-back (control.readbackContainedX=true in b4/enable/teastore-order-run.report.json) => MIST correctly does NOT fire on the clean control (mist_readback_oracle not_applicable->no_flag, the clean-control TN of the paired oracle). INDEPENDENT GROUND TRUTH: 5/5 control markers persisted on the direct /rest/orders read. This is the TN that makes the fault twin's FIRE attributable to the maintenance flag, not to the flow/read-back. Evidence + code as on the twin."
   },
   "license": {
     "case_code": "Apache-2.0",
