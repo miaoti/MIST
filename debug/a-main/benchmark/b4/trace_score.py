@@ -40,11 +40,30 @@ INSTRUMENTED = {
     "ts-contacts-service",
 }
 
+# TENANCY-WINDOW EXTENSION (plan rev-2 T4, committed BEFORE the first real capture; name strings
+# bound from control/canary traces only — semantics pinned in the plan):
+# - presence selectors carry a span KIND: "server" for HTTP dependencies, "consumer" for AMQP
+#   (sockshop queue-master consume = the required-durable-effect span).
+# - error rule extended for Envoy-emitted spans: error=true OR otel.status_code=ERROR OR
+#   http.status_code >= 500 (mechanical; applies uniformly).
+# - naive scope becomes PER-CASE ("scope"); TT cases keep the module INSTRUMENTED set.
+# - optional per-case entry operation fragment ("entry_op") narrows the entry-server match
+#   (sockshop: POST /orders). Canary-bound names: Envoy = <svc>.<ns> (productpage.default,
+#   ratings.default...); javaagent = plain OTEL_SERVICE_NAME (orders, shipping, queue-master).
 SELECTORS = {
     "TT-cancel-refund":        {"entry": "ts-cancel-service",           "presence": ("ts-inside-payment-service", "drawback")},
     "TT-createaccount":        {"entry": "ts-inside-payment-service",   "presence": None},
     "TT-adminroute":           {"entry": "ts-admin-route-service",      "presence": ("ts-route-service", "routeservice")},
     "TT-adminbasic-contacts":  {"entry": "ts-admin-basic-info-service", "presence": ("ts-contacts-service", "contact")},
+    "bookinfo-ratings-benign": {"entry": "productpage.default", "entry_op": None,
+                                "presence": ("ratings.default", "ratings", "server"),
+                                "scope": {"productpage.default", "reviews.default", "ratings.default"}},
+    "sockshop-shipping-swallowed-enqueue": {"entry": "orders", "entry_op": "POST /orders",
+                                "presence": ("queue-master", "shipping-task", "consumer"),
+                                "scope": {"orders", "shipping", "queue-master"}},
+    "sockshop-shipping-control": {"entry": "orders", "entry_op": "POST /orders",
+                                "presence": ("queue-master", "shipping-task", "consumer"),
+                                "scope": {"orders", "shipping", "queue-master"}},
 }
 
 DB_SYSTEMS = ("jdbc", "mysql", "mongodb", "mongo")
@@ -61,19 +80,30 @@ def tagmap(span):
     return {t["key"]: t.get("value") for t in span.get("tags", [])}
 
 
-def has_entry_server_span(tr, entry_svc):
+def has_entry_server_span(tr, entry_svc, entry_op=None):
     procs = {pid: p.get("serviceName", "?") for pid, p in tr.get("processes", {}).items()}
     for s in tr.get("spans", []):
         if procs.get(s.get("processID")) == entry_svc and tagmap(s).get("span.kind") == "server":
-            return True
+            if entry_op is None or entry_op.lower() in s.get("operationName", "").lower():
+                return True
     return False
+
+
+def is_error_span(tags):
+    if str(tags.get("error")).lower() == "true" or str(tags.get("otel.status_code")).upper() == "ERROR":
+        return True
+    try:
+        return int(str(tags.get("http.status_code", 0))) >= 500
+    except (TypeError, ValueError):
+        return False
 
 
 def score(case_id, trace_path):
     sel = sel_for(case_id)
+    scope = sel.get("scope", INSTRUMENTED)
     doc = json.load(open(trace_path, encoding="utf-8"))
     raw = doc.get("data") or []
-    traces = [t for t in raw if has_entry_server_span(t, sel["entry"])]
+    traces = [t for t in raw if has_entry_server_span(t, sel["entry"], sel.get("entry_op"))]
     if len(traces) != 1:
         raise SystemExit("ERROR: expected exactly ONE entry-server trace in %s, found %d of %d raw "
                          "(T8 exactly-one-match rule after the disclosed server-span selection)"
@@ -91,11 +121,11 @@ def score(case_id, trace_path):
         if svc == sel["entry"] and kind == "server":
             entry_seen = True
         if sel["presence"]:
-            psvc, frag = sel["presence"]
-            if svc == psvc and kind == "server" and frag in op.lower():
+            p = sel["presence"]
+            psvc, frag, pkind = (p[0], p[1], p[2]) if len(p) == 3 else (p[0], p[1], "server")
+            if svc == psvc and kind == pkind and frag in op.lower():
                 presence_hit = True
-        if svc in INSTRUMENTED and (str(tags.get("error")).lower() == "true"
-                                    or str(tags.get("otel.status_code")).upper() == "ERROR"):
+        if svc in scope and is_error_span(tags):
             error_spans.append("%s::%s" % (svc, op))
         if str(tags.get("db.system", "")).lower() in DB_SYSTEMS:
             db_report[svc] = db_report.get(svc, 0) + 1
