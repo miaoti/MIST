@@ -7,9 +7,10 @@ hand-edit `ship/` — change the frozen source (as a disclosed amendment) and re
 script's leak gate re-scans every ship/ file for internal/tooling vocabulary on each run.
 
 ## Administration order (per the frozen protocol)
-1. **Fill the compensation blanks** in `ship/02-consent.md` (the `[USER DECISION U1]` markers:
-   stipend-vs-credit, rate, expected hours) BEFORE anything is signed. (IRB/exemption status per your
-   filing — the protocol requires it before first participant contact.)
+1. **Fill the compensation blanks** in `ship/01-brief.md` AND `ship/02-consent.md` (the
+   `[USER DECISION U1]` markers: stipend-vs-credit, rate, expected hours) BEFORE anything is shown or
+   signed. (IRB/exemption status per your filing — the protocol requires it before first participant
+   contact.)
 2. **Blindness screen** each candidate FIRST — `admin/screen-instrument.md` (§11). Objective checks +
    indirect self-report; any hit ⇒ ineligible (tell them "logistics"). Record outcomes. Screen ≥2
    extra passing candidates as the reserve pool.
@@ -38,7 +39,8 @@ script's leak gate re-scans every ship/ file for internal/tooling vocabulary on 
 - §2 consent: internal section refs "(screening, §9/§11)" → "(the screening)"; the reviewed
   known-labels disclosure reworded "check calibration" → "quality checking" (meaning-preserving;
   keeps stratum vocabulary out of rater-facing text per §0).
-- §3 rubric: the admin TODO line about worked examples removed from the rendering (worked examples
-  are rating-phase material, authored at corpus assembly on real cases and reviewed then).
+- §3 rubric: the worked-examples heading's admin TODO clause (the authoring plan for real worked
+  examples — rating-phase material, authored at corpus assembly and reviewed then) is replaced by a
+  plain caveat heading; the caveat and the abstract example patterns render unchanged.
 - §9: replaced in ship/ by purpose-written rater-facing instructions (the frozen §9 is an
   administrator protocol description; it is preserved at `admin/eligibility-protocol-sec9.md`).

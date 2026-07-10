@@ -5,7 +5,7 @@ Deterministic extraction by '## ' heading boundaries — the packet is REGENERAT
 so it cannot drift from the frozen protocol text. Layout (per the hand-over manifest):
 
   rater-packet/
-    README-ADMIN.md            administrator guide (this script writes it)
+    README-ADMIN.md            administrator guide (hand-maintained; NOT written by this script)
     ship/                      EVERYTHING a rater may see
       01-brief.md              §1   02-consent.md §2   03-rubric.md §3   04-ballot.md §4
       eligibility/instructions.md   §9 + the 2-question spec-reading check
@@ -96,11 +96,18 @@ def main():
     # - consent: internal section refs "(screening, §9/§11)" -> "(the screening)"; the reviewed
     #   known-labels disclosure keeps its meaning with neutral wording ("quality checking" instead of
     #   the internal term), so the stratum vocabulary never reaches a rater.
-    # - rubric: drop the admin TODO line about authoring worked examples (rating-phase material,
-    #   authored at corpus assembly; not part of the screening packet).
+    # - rubric: the worked-examples heading spans two source lines; its admin TODO clause (authoring
+    #   plan, internal vocabulary) is replaced by a plain caveat heading — the caveat text and the
+    #   abstract example patterns are kept verbatim.
     consent = find(secs, "§2").replace("(screening, §9/§11)", "(the screening)")
     consent = consent.replace("used only to check calibration", "used only for quality checking")
-    rubric = re.sub(r"^\*\*Worked examples \(calibration-only[^\n]*\n", "", find(secs, "§3"), flags=re.M)
+    rubric, n = re.subn(
+        r"^\*\*Worked examples \(calibration-only[^\n]*\n[^\n]*\):\*\*\n",
+        "**Worked examples (the abstract patterns below do not by themselves cover the hard"
+        " async/partial shapes):**\n",
+        find(secs, "§3"), flags=re.M)
+    if n != 1:
+        raise SystemExit("rubric worked-examples heading transform did not apply (matched %d)" % n)
     ship_files = {
         "01-brief.md": find(secs, "§1"), "02-consent.md": consent,
         "03-rubric.md": rubric, "04-ballot.md": find(secs, "§4"),

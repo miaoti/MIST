@@ -34,7 +34,7 @@ genuine.
 - **Inadmissible:** distributed traces, any tool/oracle output, the live/upstream repository or any
  other version, and any runtime behavior beyond what the case presents.
 
-labeling — the abstract patterns below do not by themselves cover the hard async/partial shapes):**
+**Worked examples (the abstract patterns below do not by themselves cover the hard async/partial shapes):**
 - *genuine* — POST returns 201 with an order id; GET on that id 404s and no row exists in the service
  whose OpenAPI schema lists it as the system of record. (Contract-grounded "should persist".)
 - *genuine, error-marked ack* — cancel returns HTTP 200 with body `{1,"error"}`; the source shows the
