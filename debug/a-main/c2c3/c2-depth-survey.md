@@ -165,6 +165,23 @@ two are quota-ineligible as-deployed, disclosed). **intlShippingSlowdown from th
 does NOT exist in the pinned 2.2.0 config** (version-skew correction, as the survey's skew
 disclaimer anticipated). Net 3a-eligible vendor-flag set as-deployed: 13.
 
+**WAVE-3A ITEM-1 `cartFailure`: REFUTED AS A MASKED-WRITE PRODUCER ON DEPLOYED 2.2.0 (2026-07-11,
+measured N=5 — the case is NOT AUTHORED; the plan's pre-registered C-M5 refutation branch).** The
+§2 "genuine pair: emptycart × vendor-flag" rested on the main-branch reading (checkout discards
+`emptyUserCart`'s error). As-deployed: turning `cartFailure` on makes the cart service's
+ValkeyCartStore throw `FailedPrecondition` ("Wasn't able to connect to redis" — the flag simulates
+a down cart store), and **PlaceOrder fails LOUDLY: 504 after ~15 s (frontend-proxy timeout), NO
+orderId, order row absent (psql 0), cart intact** — 4 probes + the record leg identical; the
+post-restore heal canary was instant 200 with the cart emptied (clean causality; toggle latency
+<2 s each way via the flagd-ui API, the 1-P0 mechanism of record). naive=flag caught the REAL 504
+error spans and presence=flag (the EmptyCart span never happens) — but there is no masked ack to
+label, so no case. Captured artifacts retained as refutation evidence
+(`b4/captures/oteldemo-emptycart-{control,swallowed}/`). CROSS-SUT BOUNDARY DATUM: this is the
+THIRD SUT where cart-store failure is honest-loud (SS carts 5xx under Mongo failure — the G3
+β branch; Boutique's RedisCartStore throws FailedPrecondition by design) — cart stores are where
+masks consistently do NOT occur; the corpus's first non-TT bindable-read-back positive must come
+from elsewhere. The item-1 selector rows + spec stay committed as the refutation's scoring record.
+
 **D3b GRACEFUL-AD RIDER: REFUTED AS AN S2 CASE (2026-07-10, measured — no case authored).** The §S2
 item-(4) premise ("ad panel best-effort — verify graceful render") verifies at the PAGE level only:
 ads are fetched CLIENT-side (browser XHR to the frontend's `GET /api/data`; a server-rendered page

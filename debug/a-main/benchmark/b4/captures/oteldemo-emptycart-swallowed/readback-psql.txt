@@ -1,0 +1,4 @@
+# oteldemo-emptycart-swallowed-001 psql corroboration (2026-07-10T18:36:15Z) — A-6 isolation artifact
+# the ORDER lands on BOTH legs (kafka healthy); what is LOST under the flag is the cart-empty effect
+order_id=
+order_row_count=0

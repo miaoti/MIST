@@ -1,0 +1,4 @@
+# oteldemo-emptycart-control-001 psql corroboration (2026-07-10T18:34:18Z) — A-6 isolation artifact
+# the ORDER lands on BOTH legs (kafka healthy); the pair's variable is the cart-empty effect
+order_id=e895feba-7c8d-11f1-9555-feeb0cdff4fe
+order_row_count=1

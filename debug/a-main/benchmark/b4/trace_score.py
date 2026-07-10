@@ -89,6 +89,9 @@ SELECTORS = {
     # default entry-trace presence scope applies; re-verified on a fresh canary pre-capture).
     # Presence stays existence-only: a present-but-erroring EmptyCart span = no_flag (the plan's
     # pre-pinned branch-alpha MISS); the error axis belongs to naive_span_error.
+    # OUTCOME (2026-07-11): the CASE WAS NOT AUTHORED — the C-M5 refutation branch fired (deployed
+    # 2.2.0 cartFailure = LOUD 504, no masked ack; survey corrected). These rows are retained as
+    # the refutation evidence's scoring record (captures kept under oteldemo-emptycart-*).
     "oteldemo-emptycart-swallowed": {"entry": "frontend-proxy", "entry_op": "POST",
                                 "presence": ("cart", "emptycart", "server"),
                                 "scope": {"frontend-proxy", "frontend", "checkout", "cart"}},
