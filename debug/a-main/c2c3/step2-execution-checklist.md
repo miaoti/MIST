@@ -28,13 +28,18 @@ Sources consolidated: plan v2 §5, `c2-freeze.md` rev 2, `e-sut-applicability-ma
         re-recorded at it — moved from step 8, B-MAJOR).
 ☐⋯ 1.9.6 **∥ (U2 — longest lead):** CHANNEL DECIDED 2026-07-09 = in-group MIST-blind SE grad students
         (`c3-rater-materials.md` §7 rev 3) → external-outreach lead removed. **Rater-materials 3-cold-review
-        DONE (2026-07-09, `REVIEW-RATER-RECONCILIATION.md`) → packet hardened to rev 3.** STILL OPEN
-        BEFORE FIRST CONTACT (F22 — recruitment/screening are themselves IRB-covered): IRB/exemption
-        filing; compensation decision (stipend vs credit + rate/hours, U1); the §11 blindness-screen
-        instrument + §9 eligibility screen administered. BINDING: mandatory MIST-blind screen (§11) + §5
-        independence + team quiet-period + §10 debrief manipulation check + "internal-but-blind" threat
-        disclosure + §8 fallback if genuinely-blind students can't be staffed (do NOT relax blindness to
-        fill seats).
+        DONE (2026-07-09, `REVIEW-RATER-RECONCILIATION.md`) → packet hardened to rev 3.**
+        **RATERS FOUND (USER, 2026-07-10) + HAND-OVER PACKET ASSEMBLED (`benchmark/rater-packet/`):
+        ship/ (brief/consent/rubric/ballot + eligibility incl. 2-question spec-check + rendered
+        SCREEN-G1/B1 + the PINNED UPSTREAM docs bundle tt-bundle-1 — pure FudanSELab 5526e505, NOT the
+        injection-fork source, leak-scanned) + admin/ (§11 screen, §10 debrief, answer key). Regenerable
+        via assemble_packet.py (leak gate caught 4 real leaks at assembly). Screening/consent/eligibility
+        can run NOW; the RATING corpus (normalized calibration+S3 mix, sized at assembly per §6) arrives
+        from the corpus track (step 2→5).** STILL ON USER BEFORE FIRST CONTACT (F22): IRB/exemption
+        status; U1 compensation blanks in ship/02-consent.md. BINDING: mandatory MIST-blind screen (§11)
+        + §5 independence + team quiet-period + §10 debrief manipulation check + "internal-but-blind"
+        threat disclosure + §8 fallback if genuinely-blind students can't be staffed (do NOT relax
+        blindness to fill seats).
 
 ## Step 1.95 — THE CORPUS FACTORY (parallel track, starts NOW; c3-case-corpus-plan.md)
 ☐ 1.95.0 **Raw-artifact INVENTORY (C-M5/B-B1): list what each seed asset actually has** (all 6 v0.1.0 cases are `capture_status: specified` = NO artifacts; TT h2h transcripts not committed) → sizes the capture-run list BEFORE building fixtures.
