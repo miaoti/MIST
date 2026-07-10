@@ -1,0 +1,31 @@
+== margin pin: ack->export-close lag ~= 12 s (driver obs 3s+5s + T1 +2s + overhead) -> AUTHOR threshold = 24 s minimum delay ==
+kafka restarts at start: 0
+== 0) pre-flag canary (T2/B-F9 baseline; flag verified off) ==
+kafkaQueueProblems value: 0
+baseline order: 200 0.045516 674ffb71-7c90-11f1-9555-feeb0cdff4fe
+baseline landing: 0 rows=1
+== 1) flag ON ==
+kafkaQueueProblems before: 0 (target 100)
+edited kafkaQueueProblems -> defaultVariant=on
+kafkaQueueProblems flipped to 100; write->effect latency 1s
+== 2) 4 probe orders, per-order delay ==
+probe 1: ack=200 0.033408 68d30bc7-7c90-11f1-9555-feeb0cdff4fe landing=TIMEOUT rows=0
+probe 2: ack=200 0.033504 243d0229-7c91-11f1-9555-feeb0cdff4fe landing=TIMEOUT rows=0
+probe 3: ack=200 0.037627 dfb71a2d-7c91-11f1-9555-feeb0cdff4fe landing=TIMEOUT rows=0
+probe 4: ack=200 0.037486 9b2415a8-7c92-11f1-9555-feeb0cdff4fe landing=TIMEOUT rows=0
+delay distribution (s): TIMEOUT TIMEOUT TIMEOUT TIMEOUT  lost=4/4
+== 3) dedupe / duplicate-volume evidence (accounting + checkout logs) ==
+accounting dup-skip log lines: 0
+checkout flood log lines: 0
+row multiplicity check (any order_id with >1 row): 0
+== 4) kafka stability (B-F7) ==
+kafka restarts now: 0 (leg INVALID if changed)
+fraud-detection lag note: 3
+== 5) flag OFF (restore verify) ==
+kafkaQueueProblems before: 100 (target 0)
+edited kafkaQueueProblems -> defaultVariant=off
+kafkaQueueProblems flipped to 0; write->effect latency 0s
+restore verified: runtime flags == frozen reference flags (semantic equality)
+== 6) DECISION INPUTS ==
+margin=24s; delays: TIMEOUT TIMEOUT TIMEOUT TIMEOUT; lost=4/4; kafka-restart-delta: 0 -> 0
+DECISION RULE: lost>0 => STOP; min(delay)>=24 => AUTHOR; else NOT-AUTHORED

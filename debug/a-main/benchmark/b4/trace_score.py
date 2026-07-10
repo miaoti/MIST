@@ -97,6 +97,14 @@ SELECTORS = {
     # presence_scope=file; T2 family baseline = the flagship oteldemo-checkout-control capture +
     # a fresh pre-flag canary on the day). The AUTHOR/NOT-AUTHORED/STOP decision is made by the
     # probe round; this row is inert unless the case is authored.
+    # OUTCOME (2026-07-10): STOP branch fired (plan rev 2.1 §3, C-m8). Probe N=4 + confirmatory N=2
+    # measured kafkaQueueProblems=100 on 2.2.0 as a STOCHASTIC MIX dominated by PERMANENT PRODUCTION
+    # LOSS -- 7 of 8 in-window acked orders never landed (still absent after an accounting+checkout
+    # rollout-restart; a later canary drained past the lost ones => dropped at production, not
+    # buffered), 1 fast success under-flag, 0 pending. "delayed-not-lost" REFUTED; NO case authored
+    # (neither S2 nor S1) -- S1-positive candidate deferred to its own discipline. This row stays
+    # inert, retained as the STOP decision's scoring record (see c2-depth-survey.md OTel item-3 block
+    # and b4/runners/3a/item3-*).
     "oteldemo-kafkaqueue-pending-benign": {"entry": "frontend-proxy", "entry_op": "POST",
                                 "presence": ("accounting", "receive orders", "consumer"),
                                 "scope": {"frontend-proxy", "frontend", "checkout", "accounting"},

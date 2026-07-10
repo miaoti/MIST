@@ -1,0 +1,16 @@
+== settled recheck (well after both runs; before recovery restart) ==
+-- confirmatory pass --
+32030159-7c94-11f1-9555-feeb0cdff4fe -> rows=1
+320f390b-7c94-11f1-9555-feeb0cdff4fe -> rows=0
+69589ef0-7c94-11f1-9555-feeb0cdff4fe -> rows=0
+-- probe round (expect 4 lost + canary landed) --
+68d30bc7-7c90-11f1-9555-feeb0cdff4fe -> rows=0
+243d0229-7c91-11f1-9555-feeb0cdff4fe -> rows=0
+dfb71a2d-7c91-11f1-9555-feeb0cdff4fe -> rows=0
+9b2415a8-7c92-11f1-9555-feeb0cdff4fe -> rows=0
+791c41c3-7c93-11f1-9555-feeb0cdff4fe -> rows=1
+-- fresh clean canary now (pipeline health, flag verified OFF) --
+fresh canary ack: 200 0.034822 a1a4ce9a-7c94-11f1-9555-feeb0cdff4fe
+fresh canary STILL rows=0 at 60s   <-- flag OFF yet lost => wedge persists past toggle-off
+total accounting.order = 26
+flag re-verify: kafkaQueueProblems value: 0

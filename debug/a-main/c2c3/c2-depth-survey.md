@@ -146,7 +146,10 @@ psql read-back probe; verify PlaceOrder latency when the broker is down (produce
 synchronous-with-logging — confirm the ack path stays fast).
 
 **S2 designed-degradation paths (doc-labeled):** (1) **kafkaQueueProblems = the canonical
-pending-vs-missing trap** (orders DELAYED not lost; naive absence checks false-positive); (2)
+pending-vs-missing trap** (orders DELAYED not lost; naive absence checks false-positive) —
+**REFUTED as-deployed on 2.2.0, see the wave-3a item-3 correction below: the flag STOCHASTICALLY
+and PERMANENTLY LOSES acked orders (0 pending component), so it is an S1-positive candidate, not a
+benign S2**; (2)
 duplicate-delivery dedupe (accounting skips unique-violation duplicates); (3) imageSlowLoad; (4)
 adFailure/adManualGc/adHighCpu (ad panel best-effort — verify graceful render); (5)
 recommendationCacheFailure; (6) intlShippingSlowdown; (7) failedReadinessProbe; (8)
@@ -194,6 +197,52 @@ structural-FP pair anchor stays bookinfo/sockshop. RIDER DATUM: after ad scale-u
 gRPC channel keeps 500ing for ~30 s (reconnect backoff), then self-heals WITHOUT a restart — a
 softer cousin of the kafka-client wedge (see the D3 case notes: the checkout producer and accounting
 consumer do NOT self-heal from a replaced broker and need restarts).
+
+**WAVE-3A ITEM-3 `kafkaQueueProblems`: the "canonical pending-vs-missing trap" (§2 S2 path 1) is
+REFUTED ON DEPLOYED 2.2.0 — the flag STOCHASTICALLY and PERMANENTLY LOSES acked orders; NO S2 and
+NO S1 case authored this wave (2026-07-10, measured; the plan's pre-registered STOP / C-m8 branch
+fired).** The §2 S2 path-(1) label ("orders DELAYED not lost; naive absence checks false-positive")
+rested on the main-branch reading (checkout spawns 100 duplicate goroutine sends; fraud-detection
+`Thread.sleep(1000)`/msg → consumer LAG, not loss). Measured as-deployed across two independent runs
+(all orders 200-acked in ~0.03 s; flag = integer variant `100`, toggled via the 1-P0 flagd-ui API,
+latency <2 s; kafka pod **0 restarts** throughout — NOT the Phase-D broker-replacement wedge), the
+behavior is not a clean delay but a STOCHASTIC MIX dominated by PERMANENT LOSS:
+- **Probe round (N=4): 4/4 acked orders PERMANENTLY LOST at production.** None landed at the 300 s
+  per-order poll; all four still `rows=0` after flag-off AND after a subsequent `accounting`
+  rollout-restart. Provably LOSS not backlog: the post-flag heal canary `791c41c3` landed `rows=1`
+  while all four stayed absent — the consumer processed a LATER order while the four earlier acked
+  orders never appeared ⇒ their messages were dropped at production (the swallowed
+  `sendToPostProcessor` Kafka publish under overload), never enqueued; a restart cannot recover what
+  was never produced.
+- **Confirmatory round (N=2): 1 stochastic fast success, 1 lost.** Order `32030159` landed `rows=1`
+  within 30 s WHILE THE FLAG WAS ON (the flag does not lose everything — at least one of the 100
+  duplicate sends wins under load); order `320f390b` never landed (0 at 30 s, after flag-off, and
+  after the restart).
+- **The wedge PERSISTS PAST flag-off and is a LOSS window, not a buffer.** Two canaries placed with
+  the flag verified OFF (`69589ef0`, `a1a4ce9a`) were also permanently lost — the flag leaves the
+  rdkafka clients degraded (the Phase-D producer-wedge class: acked orders silently dropped past the
+  restore) until a rollout-restart. The recovery restart (accounting+checkout+fraud) restored LIVE
+  traffic — a post-recovery health canary `2efce5ac` landed `rows=1` at ~10 s — but recovered ZERO
+  of the 7 lost orders ⇒ **NO pending/buffered component existed**; everything not immediately
+  landed was gone. (Contrast Phase-D's broker-REPLACEMENT wedge, where the accounting consumer's
+  backlog DID buffer durably and drained on restart — that live pending-vs-missing datum stands;
+  THIS flag, by contrast, drops at production.)
+
+Net measured (chart 0.40.9 / app 2.2.0): `kafkaQueueProblems=100` → **7 of 8 in-window acked orders
+PERMANENTLY LOST, 1 stochastic fast success, 0 pending.** The survey's "delayed-not-lost / naive
+absence = false-positive" label does NOT hold as-deployed — naive absence checks would be CORRECT
+here (real loss), so the flag is not a benign S2 trap. **Disposition (plan §3 STOP / C-m8, verbatim):
+"rows actually LOST ⇒ dated survey correction + a decision point — that is an S1-positive candidate
+(vendor-flag provenance), authored only under its own discipline in a later item/wave, never
+silently subsumed."** No S2 (the delayed-not-lost premise is refuted); no S1 this wave (the loss is
+stochastic and the pipeline-poisoning-past-toggle is itself a finding — a sound S1 needs its own
+many-trial loss-rate characterization, control leg, and provenance disclosure). Recorded as the
+item-3 S1-positive candidate; the `oteldemo-kafkaqueue-pending-benign` selector row in
+`trace_score.py` stays inert (STOP-annotated). CROSS-SUT note: this is the corpus's first vendor
+flag observed to span BOTH modes the benchmark distinguishes (async permanent loss AND — in the
+broker-replacement cousin — recoverable backlog), which is exactly why it is a research artifact in
+its own right rather than a drop-in S2. Probe/confirmatory/recovery logs pinned under
+`b4/runners/3a/` (B-F8).
 
 ---
 

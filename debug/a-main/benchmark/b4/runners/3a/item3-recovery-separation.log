@@ -1,0 +1,25 @@
+== restart kafka clients (accounting + checkout + fraud-detection) ==
+deployment.apps/accounting restarted
+deployment.apps/checkout restarted
+deployment.apps/fraud-detection restarted
+Waiting for deployment "accounting" rollout to finish: 1 old replicas are pending termination...
+Waiting for deployment "accounting" rollout to finish: 1 old replicas are pending termination...
+deployment "accounting" successfully rolled out
+Waiting for deployment "checkout" rollout to finish: 1 old replicas are pending termination...
+Waiting for deployment "checkout" rollout to finish: 1 old replicas are pending termination...
+deployment "checkout" successfully rolled out
+== wait 90s for consumer reconnect + backlog drain ==
+== DECISIVE recheck ==
+-- confirmatory (order2 + its canary + the flag-off fresh canary): drain => pending, absent => lost --
+320f390b-7c94-11f1-9555-feeb0cdff4fe -> rows=0
+69589ef0-7c94-11f1-9555-feeb0cdff4fe -> rows=0
+a1a4ce9a-7c94-11f1-9555-feeb0cdff4fe -> rows=0
+-- probe round 4 (expect STILL 0 = lost at production; 791c41c3 already landed) --
+68d30bc7-7c90-11f1-9555-feeb0cdff4fe -> rows=0
+243d0229-7c91-11f1-9555-feeb0cdff4fe -> rows=0
+dfb71a2d-7c91-11f1-9555-feeb0cdff4fe -> rows=0
+9b2415a8-7c92-11f1-9555-feeb0cdff4fe -> rows=0
+== post-recovery health canary (flag off) ==
+health canary ack: 200 0.150741 2efce5ac-7c95-11f1-9085-e2b9e59b6384
+health canary landed rows=1 at ~10s
+total accounting.order = 27

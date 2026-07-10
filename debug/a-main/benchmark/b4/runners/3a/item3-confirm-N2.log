@@ -1,0 +1,21 @@
+READY
+kafka restarts start: 0
+kafkaQueueProblems before: 0 (target 100)
+edited kafkaQueueProblems -> defaultVariant=on
+kafkaQueueProblems flipped to 100; write->effect latency 0s
+cf order1: 200 0.040188 32030159-7c94-11f1-9555-feeb0cdff4fe
+cf order2: 200 0.028799 320f390b-7c94-11f1-9555-feeb0cdff4fe
+under-flag @30s: o1=1 o2=0
+kafkaQueueProblems before: 100 (target 0)
+edited kafkaQueueProblems -> defaultVariant=off
+kafkaQueueProblems flipped to 0; write->effect latency 0s
+restore verified: runtime flags == frozen reference flags (semantic equality)
+flag off; waiting 60s for drain...
+post-restore canary: 200 0.044060 69589ef0-7c94-11f1-9555-feeb0cdff4fe
+== CONFIRM RESULT ==
+kafka restarts: 0 -> 0
+under-flag order1 32030159-7c94-11f1-9555-feeb0cdff4fe -> rows=1
+under-flag order2 320f390b-7c94-11f1-9555-feeb0cdff4fe -> rows=0
+post-restore canary 69589ef0-7c94-11f1-9555-feeb0cdff4fe -> rows=0
+restore equality re-verify:
+kafkaQueueProblems value: 0
