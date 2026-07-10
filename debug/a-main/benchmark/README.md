@@ -11,15 +11,15 @@
 > spans vs controls' 2/6/3 — the lost write IS visible at DB-span granularity; the presence column is
 > pinned at cross-service HTTP-span granularity (service-map authoring), where invisibility holds.
 > The AUTHORITATIVE C2 pre-registration is `debug/a-main/c2c3/c2-freeze.md` (rev 2 + rev-2.1 amendments).
-> All **18 cases in `cases/` validate** (`schema/validate_cases.py`, exit 0); the two `eligibility/` cases
+> All **21 cases in `cases/` validate** (`schema/validate_cases.py`, exit 0); the two `eligibility/` cases
 > (rater screen, outside the measurement corpus) also validate.
 > This README describes the design + the *current populated pilot*; read the freeze for the frozen truth.
 > `schema/rubric.md` (v0.1.0) is superseded by `c2-freeze.md` §3 + `c2c3/c3-rater-materials.md` §3.
 
 > **Read this first — what the pilot IS and is NOT (REVIEW-CORPUS-RECONCILIATION.md, 3-cold-review):**
 > The populated corpus is a **seed/pilot + a pre-registered scale plan**, NOT a completed benchmark. It is
-> **8 positives / 10 negatives** across **4 write-path SUTs** (report it that way — never a bare "S1
-> count"). Of the 8 positives, **4 are captured *discriminating* positives on TT** (2 fabricated-ack fork
+> **9 positives / 11 negatives CAPTURED + 1 specified** across **4 write-path SUTs** (report it that way —
+> never a bare "S1 count"). Of the 8 positives, **4 are captured *discriminating* positives on TT** (2 fabricated-ack fork
 > flags + 2 skipped-cross-service-persist flags — as-deployed only `mist_readback` catches them;
 > pre-registered as comparator-catchable under trace instrumentation) **+ 2 NATURAL captured positives on
 > un-forked SUTs** (sockshop swallowed-enqueue; TeaStore maintenance masked-write) **+ the NATURAL async
@@ -33,8 +33,12 @@
 > measured naive=no_flag ran-and-missed with a PRESENT+CLEAN producer span on both legs (sharper than
 > sockshop) vs presence=FLAG ran-and-caught via the linked consumer trace.** `mist_trace_shape` stays
 > Branch-B on all pair legs — **the MIST-side pair-separation claim remains PRE-REGISTERED** (freeze §6
-> scoping row). The S3 wild stratum remains the scale plan (§8); a `specified` case's
-> `oracle_expectation` is a design TARGET.
+> scoping row). **WAVE-3A (2026-07-11, unanimous-accept plan): TeaStore mesh-sever pair CAPTURED (the
+> corpus's FIRST mesh-sever case; sidecars-parity; the min-3 floor now points at 3 TeaStore corpus rows
+> incl. the specified dependency-down row) — while `cartFailure` was REFUTED as a masked-write producer
+> on 2.2.0 (LOUD 504, measured N=5; the pre-registered refutation branch; 3rd SUT with honest-loud
+> cart-store failure — survey corrected).** The S3 wild stratum remains the scale plan (§8); a
+> `specified` case's `oracle_expectation` is a design TARGET.
 
 > **PREP deliverable (main-track). NO MIST tool code.** Contribution **C2 — an open-source labeled
 > benchmark of masked-downstream / acked-but-lost data-integrity faults** in OSS microservice systems.
@@ -48,7 +52,7 @@ rubric + a blind-labeled wild stratum. State it exactly that way; do not over-cl
 phenomenon, and — per the review — **do not call the current pilot "the benchmark"**: it is the schema +
 rubric + pilot seed + scale plan.
 
-## 2. Layout + the current 18 cases
+## 2. Layout + the current 21 cases
 ```
 benchmark/
   README.md                         this file
@@ -56,9 +60,9 @@ benchmark/
     fault-case.schema.json          JSON Schema (draft 2020-12) for ONE labeled case — rev 2
     validate_cases.py               validator: cases/*.json vs the schema (exit 0 iff all pass)
     rubric.md                       v0.1.0 rubric (SUPERSEDED by c2-freeze §3 + c3-rater-materials §3)
-  cases/                            18 cases, all rev-2-valid (8 positive / 10 negative)
+  cases/                            21 cases, all rev-2-valid (9 pos / 11 neg captured + 1 specified)
   eligibility/                      2 rater-screen cases (§9 instrument; OUTSIDE the measurement corpus)
-  b4/                               blind-label harness + capture specs + captured sidecars
+  b4/                               blind-label harness + capture specs + captured sidecars + runners/
 ```
 
 | case_id | stratum | label | capture | role |
@@ -81,6 +85,9 @@ benchmark/
 | `teastore-order-control` | 1 | negative | captured | clean twin (maintenance off; marker present in flow + fresh-session read-back + REST corroboration) |
 | `oteldemo-checkout-lost` | 1 | positive | **captured** | **the ASYNC FLAGSHIP**: broker-down → 200 ack at ~0.02 s, accounting row PERMANENTLY absent (post-restore + post-verified-heal). MEASURED: naive=no_flag ran-and-missed (zero error spans; producer span PRESENT+CLEAN both legs); presence=FLAG ran-and-caught (linked consumer trace, `presence_scope=file`); psql read-back → T9 boundary. Notes: recovery-window datum (replaced kafka pod wedges both rdkafka clients) |
 | `oteldemo-checkout-control` | 1 | negative | captured | clean twin (kafka up; psql row lands; consumer span present = validated family; accounting INSERT client span in the T6 db report) |
+| `teastore-order-meshsever-masked` | 1 | positive | **captured** | **the corpus's FIRST mesh-sever case** (wave-3a item 2): plain-VS 503 on the persistence orders prefix, TEMPORARY sidecars on webui+auth (parity both legs) → confirmed page + marker ABSENT post-teardown; N≥4 fault probes 0/4 landed; A-9 zero orderitem orphans; trace columns pre-registered EXCLUDED (injector-artifact + T2-unvalidatable + A-7-measured zero sidecar export); T9 HTML boundary |
+| `teastore-order-meshsever-control` | 1 | negative | captured | sidecars-on clean twin (no VS): marker present in flow + post-teardown read-back + REST; with the 4/4-landed healthy probes it isolates the VS as the pair's only variable |
+| `teastore-order-depdown-specified` | 1 | positive | **specified** | the min-3 floor's third row (wave-3a 2b): dependency-down on the same masked site, SPECIFIED with the in-file capturability disclosure (no-PVC db wipe destroys the absence evidence — measured; sound on a PVC-backed shape); design-target cells only, never tallied (R2/R3) |
 
 ## 3. The three strata (rev-2.1 R1)
 - **Stratum 1 — label known by construction (not rater-dependent).** Either (a) a **positive** with

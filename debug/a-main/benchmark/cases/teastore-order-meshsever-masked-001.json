@@ -1,0 +1,102 @@
+{
+  "case_id": "teastore-order-meshsever-masked-001",
+  "schema_version": "2.0.0",
+  "stratum": 1,
+  "capture_status": "captured",
+  "fault_class": "acknowledged_lost_write",
+  "sut": {
+    "name": "teastore",
+    "repo": "github.com/DescartesResearch/TeaStore",
+    "branch": "",
+    "commit": "v1.4.2 (release tag; images pinned :1.4.2)",
+    "image_digest": "sha256:ac6b0fe9aeca04ee31fea20caed0b49af2ddf709c28a2cf1f4b9b041af05279b",
+    "deploy": "kind cluster 'mist', ns teastore; TeaStore v1.4.2 (persistence digest above; webui sha256:d0e490bd...); DEPLOY-SHAPE PARITY DISCLOSURE: BOTH legs of this pair ran with Istio sidecars TEMPORARILY on webui+auth (per-deployment pod-template labels; injected before the pair, verified 2/2, removed + verified 1/1 after — the only variable between legs is the VirtualService). App remains trace-uninstrumented (Kieker-only); the temporary sidecars measurably exported NOTHING (A-7 probe: zero traces in the istio-system jaeger for either service). webui PF localhost:8082, persistence PF localhost:8083. Leg = the VS (control absent / fault applied).",
+    "replay_script": "debug/a-main/benchmark/b4/capture-specs/teastore-order-meshsever-flow.yaml",
+    "health_precondition": null
+  },
+  "target": {
+    "entry_endpoint": {
+      "method": "POST",
+      "path": "/tools.descartes.teastore.webui/cartAction?confirm=Confirm",
+      "service": "webui"
+    },
+    "dependency": {
+      "service": "persistence (order create; call chain webui -> auth /placeorder -> persistence /rest/orders — the auth-side client sidecar is where the VS abort lands)",
+      "kind": "persistence"
+    },
+    "readback": {
+      "modality": "api-get",
+      "locator": "GET /tools.descartes.teastore.webui/profile - the acting user's Orders table (HTML page; per-leg firstname marker), read AFTER the VirtualService was deleted and verified gone (no in-window severing can be blamed). Corroborating internal probe: GET persistence /rest/orders/user/{id} JSON.",
+      "expect_without_fault": "present",
+      "expect_with_fault": "absent",
+      "mist_bindable": false
+    }
+  },
+  "fault": {
+    "mechanism": "mesh-sever",
+    "injection_method": "mesh_abort",
+    "config": {
+      "note": "Plain host-match VirtualService (committed manifest b4/runners/3a/teastore-meshsever-vs.yaml): abort 503 at 100% on the persistence /tools.descartes.teastore.persistence/rest/orders prefix; unmatched prefixes route normally (verified: /rest/categories 200 while /rest/orders 503, exec-curl through the auth sidecar). Interception works on THIS deploy because the kind manifest sets HOST_NAME to the kube service DNS, so the registry hands out 'teastore-persistence:8080' and the CLIENT sidecar host-matches (the T15 datum; no EnvoyFilter needed — contrast TrainTicket's ribbon pod-IP dials). The masking itself is UNMODIFIED SUT source: NonBalancedCRUDOperations swallows any non-404/408 failure status to -1L, placeOrder never checks it, the webui renders the order-confirmed page.",
+      "manifest": "debug/a-main/benchmark/b4/runners/3a/teastore-meshsever-vs.yaml"
+    },
+    "injected_by": "runner (kubectl apply/delete of the committed VS manifest), out of band of the capture driver",
+    "target_service": "persistence (inbound leg severed at the auth-side client sidecar)",
+    "provenance_class": "by-injection"
+  },
+  "negative_control": {
+    "present": true,
+    "replay_script": "teastore-order-meshsever-flow.yaml @ no VS, sidecars on (teastore-order-meshsever-control-001)"
+  },
+  "stimulus": {
+    "script": "login (pre-generated user19, fresh per the identity ledger) -> add product 42 -> POST cartAction confirm with marker M2X1 (VS applied) -> post-teardown profile read-back",
+    "write_path": true,
+    "workload_class": "authored-scenario",
+    "workload_variant": null
+  },
+  "oracle_eval": {
+    "ack_content_visibility": "success-shaped-clean",
+    "trace_visibility": "trace-uninstrumented",
+    "write_shape": "whole",
+    "oracle_mode": "paired",
+    "config_provenance": {
+      "mist_commit": "7d69de9",
+      "mist_authoring": {
+        "tier": "hand-written",
+        "minutes": 0
+      }
+    },
+    "comparator_configs": []
+  },
+  "ground_truth": {
+    "label": "positive",
+    "rationale": "The SAME natural masked-write site as teastore-order-maintenance-masked-001 under a SECOND producer: a mesh-injected 503 on the persistence orders prefix. The end-to-end behavior is identical and was captured: the confirm POST returns the success-shaped 302 -> 200 order-confirmed page while the order never lands (the auth-side client receives the 503; the unmodified registryclient chain swallows it to -1L; placeOrder never checks). The user is told success and the durable record does not exist - marker ABSENT from the profile Orders table after the VS was torn down, and from the persistence REST corroboration. NORM: same as the captured twin (the webui's order-history profile is the durable record; the documented degraded mode is refusal, not silent acceptance).",
+    "source": "natural",
+    "version": 1,
+    "doc_citation": "DescartesResearch/TeaStore v1.4.2: registryclient NonBalancedCRUDOperations (non-404/408 -> silent -1L), auth placeOrder (unchecked), webui order-confirmation flow + profile order history. Survey: debug/a-main/c2c3/c2-depth-survey.md §1 + the 2026-07-10 live-verification corrections block (mesh-abort VERIFIED-MASKED)."
+  },
+  "oracle_expectation": {
+    "status_code_oracle": "no_flag",
+    "schema_oracle": "no_flag",
+    "body_marker_oracle": "no_flag",
+    "naive_span_error_oracle": "not_applicable",
+    "tracetest_presence_oracle": "not_applicable",
+    "mist_readback_oracle": "not_applicable",
+    "mist_trace_shape_oracle": "not_applicable"
+  },
+  "provenance": {
+    "control_trace": null,
+    "fault_trace": null,
+    "readback_response": "debug/a-main/benchmark/b4/captures/teastore-order-meshsever-masked/sidecar-postteardown.json",
+    "notes": "WAVE-3A ITEM 2 CAPTURE-OF-RECORD (2026-07-11, plan rev 2.1 unanimous-accept b0b5a54; runner b4/runners/3a/item2-meshsever.sh, control-first). THE CORPUS'S FIRST MESH-SEVER CASE of any status. MEASURED: fault leg (user19, marker M2X1, VS applied + interception verified 503-matched/200-unmatched through the auth sidecar) — confirm returned the success-shaped confirmed page (flow sidecar); marker ABSENT from the post-teardown read-back of record (sidecar-postteardown.json, fresh session AFTER the VS was deleted and `kubectl get vs` verified empty) AND from the persistence REST corroboration (user19 carries only its 1 generated order). N>=4 RULE: four consecutive fault probes (user20, markers M2F1-M2F4) all returned confirmed-shaped acks and landed 0/4; four healthy probes at sidecar-injection time (M2H1-M2H4, BEFORE the VS) landed 4/4 = the sidecars-on baseline that isolates the VS as the only variable (B-F2 step 3). A-9 ORPHAN CHECK MEASURED: zero orderitem rows with orderId<=0 before AND after the fault probes — the whole order write dies atomically at the /rest/orders abort; no partial-write residue. IDENTITY LEDGER (B-F5): user18=control / user19=fault / user20=probes, per-identity pre-leg baselines recorded in the runner log (user19 baseline = 1 generated row, no markers). TRACE CELLS — PRE-REGISTERED EXCLUSION (plan §2, A-7/B-F10 reconciled BEFORE capture): no trace column is scored on this pair — (a) a presence target cannot exist even on control (2 sidecars, no persistence-side span, app uninstrumented: the T2 family can never validate); (b) the only error span available would be the VS abort itself, the INJECTOR'S OWN ARTIFACT, not SUT telemetry; AND (c) the A-7 probe MEASURED that the temporary sidecars exported nothing anyway (zero traces for either service in the istio-system jaeger, 1h lookback — the teastore ns has no Telemetry/tracing wiring). trace_visibility stays trace-uninstrumented (app-level). MIST READ-BACK: T9 boundary as the maintenance twin (api-get HTML modality, mist_bindable=false at the pinned commit) => not_applicable, with the T1-preserved FLAG design target (marker row absent under a clean ack; bindable the moment a JSON order-list surface is in scope — 2.75). TEARDOWN VERIFIED (B-F2): VS deleted+verified, labels removed, both deployments back 1/1, :8082 PF re-created after each webui cycle, final health page 200 + maintenance false; the HARD GUARD held (no persistence/db restarts at any point — the no-PVC wipe hazard). MECHANISM-FLOOR ROLE: TeaStore's captured mechanisms are now {flag, mesh-sever} + dependency-down specified-with-disclosed-capturability (teastore-order-depdown-specified-001) = the min-3 floor's three corpus rows (live evidence for 2 of 3 legs)."
+  },
+  "license": {
+    "case_code": "Apache-2.0",
+    "case_data": "CC-BY-4.0",
+    "upstream_sut": "Apache-2.0",
+    "sources": [
+      "DescartesResearch/TeaStore registryclient NonBalancedCRUDOperations (-1L swallow)",
+      "DescartesResearch/TeaStore auth placeOrder + webui order-confirmation flow"
+    ]
+  },
+  "adjudication": null
+}

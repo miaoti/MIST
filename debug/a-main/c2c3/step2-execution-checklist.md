@@ -113,7 +113,12 @@ Sources consolidated: plan v2 §5, `c2-freeze.md` rev 2, `e-sut-applicability-ma
       gating + registry-LB bridge the ~3 s window → no S2 case). **C-M4 RIDER ANSWERED: plain VS
       host-match INTERCEPTS on this deploy** (kind manifest sets HOST_NAME=svc DNS; registry holds
       `teastore-persistence:8080`) — the expected pod-IP miss REFUTED as measured; no EnvoyFilter
-      needed; the broker-less min-3 floor stands on {flag, dependency-down, mesh-sever}.
+      needed. **Floor wording (wave-3a 2b, C-M4 fix): the broker-less min-3 floor points at THREE
+      corpus rows — flag CAPTURED (`teastore-order-maintenance-masked-001`) + mesh-sever CAPTURED
+      (`teastore-order-meshsever-masked-001`, wave-3a item 2 — the corpus's first mesh-sever case;
+      sidecars-parity pair, teardown verified) + dependency-down SPECIFIED-with-disclosed-
+      capturability (`teastore-order-depdown-specified-001`: sound only on a PVC-backed db —
+      deploy-shape precondition in-file; never tallied per R2/R3). Live evidence for 2 of 3 legs.**
 ☑ 2.3 OTel-Demo deploy: **DISCHARGED (tenancy Phase D, 2026-07-10, commit 3c8d581)** — chart 0.40.9 /
       app 2.2.0 pinned (values at gate1-logs/tenancy-window/otel/; digests in the case JSONs).
       Pre-deploy rider: Kafka + accounting + fraud-detection + accounting-POSTGRES ALL render with

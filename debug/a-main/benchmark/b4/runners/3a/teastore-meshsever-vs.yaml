@@ -1,0 +1,32 @@
+# wave-3a item 2: the mesh-sever fault — plain host-match VirtualService, abort 503 on the
+# persistence orders prefix (T15-verified interception: this deploy's registry entries are
+# service-DNS, so the CLIENT sidecar (auth) matches; the create chain is webui->auth /placeorder->
+# persistence /rest/orders). Applied/deleted by item2-meshsever.sh; NEVER left behind (B-F2 step 4).
+apiVersion: networking.istio.io/v1
+kind: VirtualService
+metadata:
+  name: wave3a-meshsever-orders
+  namespace: teastore
+spec:
+  hosts:
+  - teastore-persistence
+  - teastore-persistence.teastore.svc.cluster.local
+  http:
+  - match:
+    - uri:
+        prefix: /tools.descartes.teastore.persistence/rest/orders
+    fault:
+      abort:
+        httpStatus: 503
+        percentage:
+          value: 100
+    route:
+    - destination:
+        host: teastore-persistence.teastore.svc.cluster.local
+        port:
+          number: 8080
+  - route:
+    - destination:
+        host: teastore-persistence.teastore.svc.cluster.local
+        port:
+          number: 8080

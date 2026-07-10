@@ -1,0 +1,101 @@
+{
+  "case_id": "teastore-order-depdown-specified-001",
+  "schema_version": "2.0.0",
+  "stratum": 1,
+  "capture_status": "specified",
+  "fault_class": "acknowledged_lost_write",
+  "sut": {
+    "name": "teastore",
+    "repo": "github.com/DescartesResearch/TeaStore",
+    "branch": "",
+    "commit": "v1.4.2 (release tag; images pinned :1.4.2)",
+    "image_digest": "sha256:ac6b0fe9aeca04ee31fea20caed0b49af2ddf709c28a2cf1f4b9b041af05279b",
+    "deploy": "SPECIFIED against the same pinned deploy as the captured TeaStore pair (kind 'mist', ns teastore, v1.4.2, persistence digest above) — with ONE deploy-shape PRECONDITION for capture soundness stated in the notes (PVC-backed database).",
+    "replay_script": "debug/a-main/benchmark/b4/capture-specs/teastore-order-flow.yaml",
+    "health_precondition": "PVC-backed teastore-db (see notes: capture is UNSOUND on the as-deployed no-PVC shape)"
+  },
+  "target": {
+    "entry_endpoint": {
+      "method": "POST",
+      "path": "/tools.descartes.teastore.webui/cartAction?confirm=Confirm",
+      "service": "webui"
+    },
+    "dependency": {
+      "service": "persistence's backing database (teastore-db; order create fails 500 at OrderRepository.createEntity when the DB is down; call chain webui -> auth /placeorder -> persistence /rest/orders)",
+      "kind": "persistence"
+    },
+    "readback": {
+      "modality": "api-get",
+      "locator": "GET /tools.descartes.teastore.webui/profile - the acting user's Orders table (HTML page; per-leg firstname marker), read AFTER the database is restored. Corroborating internal probe: GET persistence /rest/orders/user/{id} JSON.",
+      "expect_without_fault": "present",
+      "expect_with_fault": "absent",
+      "mist_bindable": false
+    }
+  },
+  "fault": {
+    "mechanism": "dependency-down",
+    "injection_method": "dependency_scale_zero",
+    "config": {
+      "note": "teastore-db scaled to 0 while the order confirm executes. DESIGN: persistence's OrderRepository.createEntity has no catch - the create fails 500 at the REST layer; the registryclient chain (NonBalancedCRUDOperations: non-404/408 -> silent -1L; placeOrder never checks) then masks it into the order-confirmed page, exactly as MEASURED for the maintenance (201/-1) and mesh-sever (503) producers on the same site. CAPTURE PRECONDITION (why this case is specified, not captured): on the as-deployed shape teastore-db has NO PVC - any db scale-cycle WIPES AND REGENERATES the data (measured live 2026-07-10), destroying the absence evidence the read-back turns on AND the control users' rows; capture becomes sound the moment the db is PVC-backed (a deploy-shape change, not a SUT change)."
+    },
+    "injected_by": "",
+    "target_service": "teastore-db",
+    "provenance_class": "by-docs"
+  },
+  "negative_control": {
+    "present": true,
+    "replay_script": "teastore-order-flow.yaml @ db up (a paired clean control accompanies capture; the captured teastore-order-control-001 validates the identical flow and read-back surface on this deploy)"
+  },
+  "stimulus": {
+    "script": "login (pre-generated user, fresh per leg) -> add product 42 to cart -> POST cartAction confirm with a per-leg firstname marker (db scaled to 0) -> post-restore profile read-back",
+    "write_path": true,
+    "workload_class": "authored-scenario",
+    "workload_variant": null
+  },
+  "oracle_eval": {
+    "ack_content_visibility": "success-shaped-clean",
+    "trace_visibility": "trace-uninstrumented",
+    "write_shape": "whole",
+    "oracle_mode": "paired",
+    "config_provenance": {
+      "mist_commit": "7d69de9",
+      "mist_authoring": {
+        "tier": "hand-written",
+        "minutes": 0
+      }
+    },
+    "comparator_configs": []
+  },
+  "ground_truth": {
+    "label": "positive",
+    "rationale": "The third producer of the SAME natural masked-write site (TeaStore order confirm): with the backing database down, the persistence create fails (OrderRepository.createEntity, no catch -> 500), the registryclient swallows the non-404/408 status to -1L, placeOrder never checks it, and the webui renders the order-confirmed page - the user is told success while nothing durable exists. The mask is the measured, source-grounded -1L chain (captured live for the maintenance and mesh-sever producers on this exact site); only the PRODUCER differs. NORM: same as the captured twin (the webui ships an order-history profile as the durable record; the documented degraded mode is refusal, not silent acceptance).",
+    "source": "natural",
+    "version": 1,
+    "doc_citation": "DescartesResearch/TeaStore v1.4.2: persistence OrderRepository.createEntity (no catch; DB-down -> 500); registryclient NonBalancedCRUDOperations (non-404/408 -> -1L); auth placeOrder (unchecked). Survey: debug/a-main/c2c3/c2-depth-survey.md (TeaStore §1 + the 2026-07-10 live-verification corrections block)."
+  },
+  "oracle_expectation": {
+    "status_code_oracle": "no_flag",
+    "schema_oracle": "no_flag",
+    "body_marker_oracle": "no_flag",
+    "naive_span_error_oracle": "not_applicable",
+    "tracetest_presence_oracle": "not_applicable",
+    "mist_readback_oracle": "not_applicable",
+    "mist_trace_shape_oracle": "not_applicable"
+  },
+  "provenance": {
+    "control_trace": null,
+    "fault_trace": null,
+    "readback_response": null,
+    "notes": "WAVE-3A ITEM 2b (plan rev 2.1, unanimous-accept b0b5a54; the C-M4 min-3-floor fix): a SPECIFIED case - designed, label known by construction, NOT captured, and per the freeze rev-2.1 R2/R3 discipline its oracle_expectation is a DESIGN TARGET never tallied as a result. WHY SPECIFIED (the in-file capturability disclosure): the DB-down producer is source-true and was live-ATTEMPTED during Phase C discovery (2026-07-10) - the db scale-cycle measurably WIPED AND REGENERATED the store (product 42 -> 404; the no-PVC emptyDir-equivalent shape), which destroys exactly the absence evidence this case's read-back turns on, so capturing it on THIS deploy shape would be unsound (the survey's live-verification corrections block records the finding). CAPTURE PRECONDITION: a PVC-backed teastore-db (deploy-shape change only; no SUT modification) - under it the standard pair discipline applies (fresh user logged in pre-fault per B-m3, since login reads REQUIRE the db, unlike the maintenance producer where reads pass; db scale 0 -> confirm -> restore -> post-restore read-back). DESIGN-TARGET CELLS: ack columns no_flag (the -1L chain's confirmed page, as MEASURED on the same site for maintenance 201/-1 and mesh-sever 503); trace cells not_applicable (the SUT ships Kieker only - the 2.5.3 exclude branch, same as the captured twins); mist_readback not_applicable (T9 boundary: api-get HTML modality, mist_bindable=false at the pinned commit) with the T1-preserved FLAG design target (marker row absent under a clean ack). ROLE: TeaStore's min-3 mechanism floor points at THREE corpus rows - flag (CAPTURED, teastore-order-maintenance-masked-001), mesh-sever (CAPTURED, teastore-order-meshsever-masked-001), dependency-down (THIS row: specified-with-disclosed-capturability). This case contributes NO site (same order-confirm site) and NO capture-count: reported per the R1 rule as '+1 specified', never inside the captured pos/neg counts."
+  },
+  "license": {
+    "case_code": "Apache-2.0",
+    "case_data": "CC-BY-4.0",
+    "upstream_sut": "Apache-2.0",
+    "sources": [
+      "DescartesResearch/TeaStore persistence OrderRepository (createEntity, no catch)",
+      "DescartesResearch/TeaStore registryclient NonBalancedCRUDOperations (-1L swallow)"
+    ]
+  },
+  "adjudication": null
+}

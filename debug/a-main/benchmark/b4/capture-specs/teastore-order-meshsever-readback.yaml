@@ -1,0 +1,18 @@
+# TeaStore mesh-sever pair — POST-TEARDOWN read-back of record (wave-3a item 2; B-F11 own-header
+# twin of teastore-profile-readback.yaml): run AFTER the VirtualService is deleted AND verified
+# gone, with a FRESH session for the SAME acting user as the flow run (--var user/pw match). Taken
+# after teardown so no in-window severing can be blamed for the read: the marker row PRESENT
+# (control) / ABSENT (fault) in the profile Orders table is the durable black-box read-back.
+# Sidecars may still be on (deploy-shape parity holds until the item's final teardown step).
+case_id: teastore-order-meshsever-readback
+sut: {name: teastore, version_ref: "TeaStore v1.4.2 @ kind 'mist' ns teastore (images pinned :1.4.2); app trace-uninstrumented; TEMPORARY Envoy sidecars on webui+auth for this pair"}
+base_url: http://localhost:8082
+cookie_session: true
+steps:
+  - method: POST
+    path: /tools.descartes.teastore.webui/loginAction?username={user}&password={pw}
+    redact: true
+observations:
+  - probe: "GET the acting user's profile (orders table; post-VS-teardown durable read-back of record)"
+    path: /tools.descartes.teastore.webui/profile
+    delay_ms: 1000

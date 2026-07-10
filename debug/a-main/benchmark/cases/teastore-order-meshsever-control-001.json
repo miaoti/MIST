@@ -1,0 +1,96 @@
+{
+  "case_id": "teastore-order-meshsever-control-001",
+  "schema_version": "2.0.0",
+  "stratum": 1,
+  "capture_status": "captured",
+  "fault_class": "none",
+  "sut": {
+    "name": "teastore",
+    "repo": "github.com/DescartesResearch/TeaStore",
+    "branch": "",
+    "commit": "v1.4.2 (release tag; images pinned :1.4.2)",
+    "image_digest": "sha256:ac6b0fe9aeca04ee31fea20caed0b49af2ddf709c28a2cf1f4b9b041af05279b",
+    "deploy": "kind cluster 'mist', ns teastore; TeaStore v1.4.2. DEPLOY-SHAPE PARITY: this control ran with the SAME temporary Istio sidecars on webui+auth as its fault twin (2/2 verified; removed after the pair) and NO VirtualService — the pair's only variable is the VS. App trace-uninstrumented; the temporary sidecars exported nothing (A-7 probe measured). webui PF localhost:8082.",
+    "replay_script": "debug/a-main/benchmark/b4/capture-specs/teastore-order-meshsever-flow.yaml",
+    "health_precondition": null
+  },
+  "target": {
+    "entry_endpoint": {
+      "method": "POST",
+      "path": "/tools.descartes.teastore.webui/cartAction?confirm=Confirm",
+      "service": "webui"
+    },
+    "dependency": {
+      "service": "persistence (order create; call chain webui -> auth /placeorder -> persistence /rest/orders; no VS on this leg)",
+      "kind": "persistence"
+    },
+    "readback": {
+      "modality": "api-get",
+      "locator": "GET /tools.descartes.teastore.webui/profile - the acting user's Orders table (HTML page; per-leg firstname marker), read after the pair's VS teardown. Corroborating internal probe: GET persistence /rest/orders/user/{id} JSON.",
+      "expect_without_fault": "present",
+      "expect_with_fault": "absent",
+      "mist_bindable": false
+    }
+  },
+  "fault": {
+    "mechanism": "none",
+    "injection_method": "none",
+    "config": {
+      "note": "Clean control: sidecars on (parity with the fault twin), NO VirtualService; the same cookie-session order flow, distinct fresh user + marker."
+    },
+    "injected_by": "",
+    "target_service": "persistence",
+    "provenance_class": "by-injection"
+  },
+  "stimulus": {
+    "script": "login (pre-generated user18, fresh per the identity ledger) -> add product 42 -> POST cartAction confirm with marker M2C1 (no VS) -> post-teardown profile read-back",
+    "write_path": true,
+    "workload_class": "authored-scenario",
+    "workload_variant": null
+  },
+  "oracle_eval": {
+    "ack_content_visibility": "success-shaped-clean",
+    "trace_visibility": "trace-uninstrumented",
+    "write_shape": "whole",
+    "oracle_mode": "paired",
+    "config_provenance": {
+      "mist_commit": "7d69de9",
+      "mist_authoring": {
+        "tier": "hand-written",
+        "minutes": 0
+      }
+    },
+    "comparator_configs": []
+  },
+  "ground_truth": {
+    "label": "negative",
+    "rationale": "The clean twin of teastore-order-meshsever-masked-001 (same stimulus, same sidecars-on deploy shape, no VS). The confirm POST returns the same success-shaped confirmed page AND the order durably lands: marker M2C1 present in the in-flow profile observation, the post-teardown fresh-session read-back, and the persistence REST corroboration. With the four sidecars-on healthy probes (M2H1-4, 4/4 landed) this leg attributes the fault twin's ABSENT verdict to the VirtualService alone — not to the temporary sidecars, the flow, or the read-back surface. Oracles must NOT fire (else FP).",
+    "source": "by_construction",
+    "version": 1,
+    "doc_citation": null
+  },
+  "oracle_expectation": {
+    "status_code_oracle": "no_flag",
+    "schema_oracle": "no_flag",
+    "body_marker_oracle": "no_flag",
+    "naive_span_error_oracle": "not_applicable",
+    "tracetest_presence_oracle": "not_applicable",
+    "mist_readback_oracle": "not_applicable",
+    "mist_trace_shape_oracle": "not_applicable"
+  },
+  "provenance": {
+    "control_trace": null,
+    "fault_trace": null,
+    "readback_response": "debug/a-main/benchmark/b4/captures/teastore-order-meshsever-control/sidecar-postteardown.json",
+    "notes": "WAVE-3A ITEM 2 CAPTURE-OF-RECORD (2026-07-11, plan rev 2.1 unanimous-accept b0b5a54; runner b4/runners/3a/item2-meshsever.sh, control-first). MEASURED: control leg (user18, marker M2C1, sidecars 2/2 on webui+auth, NO VS) — confirm returned the confirmed page; marker PRESENT in the flow sidecar (x2: confirm request + in-window profile), PRESENT in the post-teardown fresh-session read-back (sidecar-postteardown.json), PRESENT in the persistence REST corroboration (user18: 2 generated rows + the M2C1 row). Sidecars-on baseline additionally validated by the four healthy probes (user20, M2H1-M2H4, 4/4 landed) run at sidecar-injection time BEFORE any VS existed (B-F2 step 3). Identity ledger (B-F5): user18 pre-leg baseline = 2 generated rows, no markers. TRACE CELLS: the pair's pre-registered exclusion applies (see the fault twin's notes; A-7 measured zero sidecar export anyway); trace_visibility=trace-uninstrumented (app-level). MIST READ-BACK: T9 boundary (api-get HTML, mist_bindable=false) => not_applicable; on a bindable JSON surface the paired read-back oracle's control-leg expectation is the clean no_flag TN (design note, not a cell). Teardown per the enumerated checklist verified (VS deleted, labels removed, 1/1 both, page 200, maintenance false throughout)."
+  },
+  "license": {
+    "case_code": "Apache-2.0",
+    "case_data": "CC-BY-4.0",
+    "upstream_sut": "Apache-2.0",
+    "sources": [
+      "DescartesResearch/TeaStore webui order-confirmation flow + profile order history"
+    ]
+  },
+  "adjudication": null
+}
