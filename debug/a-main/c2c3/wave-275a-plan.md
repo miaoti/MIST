@@ -1,146 +1,150 @@
-# Wave 2.75-A — MIST enablement: read-back modality bindings + new-SUT observe-mode runs (DRAFT rev 1)
+# Wave 2.75-A — MIST enablement: read-back modality bindings + new-SUT paired runs (rev 2)
 
-**Status:** DRAFT for 3-cold-review. **Gate:** the user opened the MIST-tool-code gate on 2026-07-10
-(scoped to "MIST 启用+跑测" = enablement + runs; see `main-track-workflow-rules` amendment). Per the
-standing goal, this plan executes ONLY after unanimous 3-cold-reviewer ACCEPT. This is the FIRST wave
-that writes MIST tool code since the prep phase began.
+**Status:** rev 2 — folds every BLOCKING + MAJOR from the 3-cold-review (all ACCEPT-WITH-FIXES;
+`REVIEW-275A-{A-oracle,B-engineering,C-pc}.md` → `REVIEW-275A-RECONCILIATION.md`). Goes back to the
+three reviewers for a confirmation pass; **executes only on unanimous CONFIRM-ACCEPT.** Gate opened
+by the user 2026-07-10 ("MIST 启用+跑测"; scoped in `main-track-workflow-rules`). First MIST-tool-code
+wave since the prep phase.
 
-## 0. Where we are (grounded facts, verified this session)
-- **The centerpiece MIST result is already done:** the TT cancel→refund head-to-head (3 cells N=5,
-  reviewer-accepted, `g3-headtohead-result.md`) + SS shipping head-to-head. MIST's value-delta and
-  membership read-back oracles are BUILT and reviewed (`DataIntegrityRuntime`, `PairedFaultExecutor`,
-  `ContractEvaluator`, `MstAuthHandler`).
-- **The new-SUT captured positives are NOT yet run by MIST.** `oteldemo-checkout-lost-001`
-  (async broker loss; `readback.modality: sql-probe`, `mist_bindable: false`) and
-  `teastore-order-maintenance-masked-001` (masked write; `readback.modality: api-get` over an HTML
-  profile page, `mist_bindable: false`) both carry a T9 applicability-boundary today: the read-back
-  EXISTS and is decisive, but the oracle cannot BIND the modality at the pinned commit.
-- **Why unbindable (root cause, code-verified):** the read-back oracle reads durable state ONLY over
-  HTTP — `DataIntegrityRuntime` calls `s.http.getSut(readbackPath(triple))` (the decisive-read loop at
-  ~L627–L700; baselines at L434/L499) and parses the body as JSON (`probeVerdict`/`extractProbeValue`).
-  `TargetTripleRegistry.Triple` has `readbackEndpoint` (an HTTP path) + `readbackMode`
-  {MEMBERSHIP, VALUE_DELTA}. There is NO SQL transport and NO HTML body extractor. So:
-  - OTel `sql-probe` (psql count on `accounting."order"`; the SUT has NO order-query HTTP API) →
-    unbindable because the transport is HTTP-only.
-  - TeaStore `api-get`-over-HTML (the `/profile` Orders table) → the transport is HTTP (fine) but the
-    body is HTML, and the extractor is JSON-only.
-- **Enablement is currently code-per-SUT:** the g3 harnesses (`CancelRefundHeadToHead`,
-  `ShippingEnqueueHeadToHead`) construct their `Triple`s in Java and call the shared oracle; there is
-  no config-driven triple loader today.
+## 0. State (corrected against the actual code — rev-1 had two factual errors)
+- **The read-back transport seam ALREADY EXISTS.** `DataIntegrityRuntime` exposes
+  `installHttpOverride(Http)`; `g3/ShippingReadbackHttp` already routes a read-back through a
+  non-SUT transport with the decision loop untouched. Rev 1's proposed new `ReadbackProbe` interface
+  is redundant and is DROPPED (A-F1/B-F3).
+- **Triples load from YAML, not Java.** `TargetTripleRegistry.load` is the production loader
+  (`g3.triples.natural`/`g3.ship.triple` are file paths; used by `MistRunner`). Rev 1's "enablement
+  is code-per-SUT" premise was wrong. New triples are authored in YAML (A-F7/B-F4).
+- **The reviewed oracle is PAIRED.** `PairedFaultExecutor.evaluate` FIREs on the
+  control-present/fault-absent differential and is gate-agnostic; the observe tier
+  (`DataIntegrityObserveCheck`) needs `traceComplete()` (Jaeger) to reach `OBSERVED_COMPLETE_ABSENT`.
+- **Honest oracle status of the two target cases (this reframes the whole wave — C-B1):**
+  - `oteldemo-checkout-lost-001`: `tracetest_presence_oracle = flag` — a TRACE comparator ALREADY
+    catches the async loss. MIST's read-back here is **CONCORDANT with presence, NOT discriminating.**
+  - `teastore-order-maintenance-masked-001`: trace columns `not_applicable` (SUT trace-uninstrumented,
+    Kieker-only). No trace comparator runs, so MIST's read-back is the **SOLE oracle**, and
+    "beats trace-only" is VACUOUS here.
+  - The MIST-only DISCRIMINATION win stays the TT fabricated-ack case (naive+presence both miss,
+    read-back catches). It is NOT claimed for these two SUTs.
+- **Live DB schema (gathered at reconciliation):** `accounting."order"` = `order_id` only
+  (server-assigned); `accounting.shipping` carries CLIENT-SUPPLIED `street_address/city/state/zip`
+  + `order_id`. ⇒ a request-derived unique key is available for OTel via a marker in `street_address`.
 
-## 1. Objective (what this wave converts from pre-registered → measured)
-Turn the two new-SUT T9-boundary cells into **measured MIST results** by binding their read-back
-modalities, then running MIST observe-mode on the captured pairs:
-- **OTel-Demo (PRIMARY, derisking pilot):** bind `sql-probe`; run MIST on
-  `oteldemo-checkout-lost-001` (fault) + `-control-001` → expect **FLAG on fault / no_flag on control**
-  (the accounting row is absent under broker-down, present on control). This is the flagship async
-  acked-but-lost, and the psql read-back is clean and deterministic — the right case to prove the seam.
-- **TeaStore (FAST-FOLLOW, same wave iff the seam makes it cheap):** bind HTML `api-get`; run MIST on
-  `teastore-order-maintenance-masked-001` (fault) + `-control-001` → expect **FLAG / no_flag** (the
-  order marker absent from the `/profile` HTML under maintenance, present on control).
+## 1. Objective (what this wave HONESTLY delivers)
+BIND two new read-back modalities to MIST's durable-store oracle and produce MEASURED paired verdicts
+on the captured pairs — reported for what they are, not as discrimination wins:
+- **Principle (one, consistent — C-M3):** MIST's read-back probes the SUT's **durable
+  system-of-record** (the honest "did the write survive to persistence" check, which IS the
+  acked-but-lost fault class): TeaStore → the persistence `/rest/orders` JSON; OTel → the accounting
+  Postgres. Disclosed as an INTERNAL durable-store probe (a stronger threat model than an end-user
+  query), stated for BOTH SUTs.
+- **TeaStore (PRIMARY / seam-proving pilot):** durable JSON read-back with the NATIVE request-supplied
+  order marker; SYNCHRONOUS; MIST's isolation model fits directly. Result = **SOLE-oracle** datum
+  (no tracing deployed) — FLAG on the masked-write fault leg, no_flag on control.
+- **OTel-Demo (async follow):** SQL durable read-back keyed on a request-derived `street_address`
+  marker; kafka-scale-0 fault; async. Result = **presence-CONCORDANCE** datum (MIST agrees with the
+  already-flagging presence oracle) — FLAG on fault, no_flag on control.
+- **Non-goals:** the E2 5-arm frontier (step 6), TT 2.5 trace instrumentation, any discrimination-win
+  claim on these SUTs. MIST-side read-back only.
 
-Both are the SAME discriminating signature as the reviewed TT/SS results (typed read-back FLAGs a
-success-shaped-clean masked/lost write that the trace-only comparator arms miss), now extended across
-the async + HTML-durable modalities. **Non-goal this wave:** the full E2 5-arm frontier (step 6), TT
-2.5 trace instrumentation, and the comparator arms — those are later waves. This wave is MIST-side
-read-back only.
+## 2. Engineering — reuse the existing override seam (minimum change)
+Karpathy §2/§3: touch ZERO decision-loop code (that IS the regression guard); add only transports +
+YAML.
+- **2.1 Transports via `installHttpOverride`.** Each transport SYNTHESIZES the JSON collection the
+  oracle already parses (so `probeVerdict`/membership is unchanged):
+  - `SqlDurableReadback` — runs the case's SQL locator (kubectl-exec psql, argv + `otel`/`accounting`
+    pinned as runbook constants, interpolated key WHITELISTED) and returns rows→`[{street_address}]`
+    or `[]`. **Transport failure (non-2xx exec, parse error) → an ERROR/non-2xx record, NEVER a
+    zero-count ABSENT** (A-F5/B-F6 — the "probe row vanished" analog; a broken probe must not
+    false-FLAG).
+  - `JsonDurableReadback` — HTTP GET the persistence `/rest/orders` (or a keyed variant), pass the
+    JSON through; same error-vs-absence latching.
+- **2.2 Registry.** Add a `readback.transport` field (http-json | sql | json-durable) to the triple
+  schema + validation (mirror the existing VALUE_DELTA guards). New triples authored in YAML and
+  loaded via `TargetTripleRegistry.load`. Transport is owned in ONE place (the registry/harness
+  override, not duplicated on the Triple — B-F10).
+- **2.3 No decision-loop edits.** MEMBERSHIP verdict, poll/gate/quiescence, error latching, N≥4,
+  isolation — all reused verbatim. Regression proof = the existing mist-cli suites (incl. the TT/SS
+  oracle tests) stay GREEN; new tests cover the transports only.
 
-## 2. Engineering — the read-back transport seam (the tool code)
-**Design principle (karpathy §2/§3):** minimum change, reuse the reviewed polling/gate/verdict logic
-verbatim; touch only the transport + extraction seam. Do NOT refactor the oracle's decision logic.
+## 3. Per-SUT enablement (the real cost is the stimulus — B-F5)
+Authored OpenAPI documents the write path (pre-registered authored-by-us) but does NOT execute on the
+paired path; the multi-step stateful STIMULUS is a hand-written Java `Stimulus` impl (the g3 pattern).
+Authoring cost = minutes for {OpenAPI + YAML triple + stimulus + transport}, recorded per SUT.
+- **TeaStore (primary):** stimulus = login→add product 42→confirm with a UNIQUE request marker;
+  read-back = `/rest/orders` JSON keyed on that marker; **harness-owned per-leg session** (A-F4 —
+  bypass `MstAuthHandler`'s single cached cookie); maintenance-flag ON=fault/OFF=control via
+  `POST /rest/generatedb/maintenance` (NEVER bare `GET /rest/generatedb` — DB wipe; NEVER scale the
+  db — no PVC). If `/rest/orders` lacks a keyed GET, fall back to a DOM-scoped Orders-table HTML
+  locator (A-F3) or a disclosed refutation — no silent re-scope.
+- **OTel-Demo (follow):** stimulus = `POST /api/cart`→`POST /api/checkout` with a UNIQUE marker in
+  `streetAddress`; read-back = `SELECT count(*) FROM accounting.shipping WHERE street_address='<marker>'`;
+  fault = a bespoke kafka **scale-0** injector (the registry flag model doesn't cover scale — A-F8);
+  **control-FIRST, single-toggle ordering** (all control up → all fault down → restore once at end)
+  because of the producer-wedge; **async-landing floor ≥20 s** before the control leg reads absence
+  (ShippingEnqueue precedent). Disclose the locator deviation from the capture's server-order_id key.
+- Unique correlator per probe for N≥4 (A-F10). DoD (re-scoped, B-F11) = a PAIRED run whose Allure
+  data-integrity section shows control-present/fault-absent on both SUTs.
 
-**2.1 Introduce a `ReadbackProbe` seam.** Today the oracle hardcodes `s.http.getSut(readbackPath)`.
-Extract a tiny interface — "given the triple + the leg's isolation key, return a probe observation
-(a status + a value/collection surface + a raw record for disclosure)". Provide implementations:
-- `HttpJsonReadbackProbe` — the EXISTING behavior, refactored behind the seam (no semantic change;
-  proven by the TT/SS suites staying green — this is the regression guard).
-- `SqlReadbackProbe` — runs the case's SQL locator and returns a count/row surface. Two candidate
-  transports (decide in review): (a) JDBC over a port-forward to postgres (principled; needs the
-  driver dep + PG port exposed), or (b) `kubectl exec … psql` shell-out (matches what the capture
-  runner used; no new dep). **Lean (b)** for parity with capture + zero driver surface, unless a
-  reviewer prefers JDBC. The membership verdict = `count > 0 ⇒ PRESENT`, `count == 0 ⇒ ABSENT`.
-- `HtmlFieldReadbackProbe` — HTTP GET (reuse the http client + auth) then extract the marker via a
-  pinned, brittle-by-disclosure locator (CSS/text match on the `/profile` Orders table). Membership
-  verdict = marker present/absent.
+## 4. Runs — paired, and what is measured (pre-registered NOW)
+- **Mode = paired `evaluate()`**, N≥4 consecutive per leg, control-first. Pre-registered cells:
+  `mist_readback = FLAG` (fault) / `no_flag` (control); `mist_bindable = true`.
+- **The `mist_bindable` false→true flip is a DATED freeze §6 AMENDMENT, atomic with the measured run**
+  (A-F9/B-F9/C-M1) — NOT pre-registration (the conventions pre-registered the flip only for
+  `bindable-pending-eval`, not `false→true` T9 cells). The bool flips in the SAME commit as the
+  verdict cell, preserving "verdict-valued mist cells appear only where MIST ran."
+- **Circularity firewall (C-B2):** (i) independence — MIST keys on a request-derived marker in a
+  DIFFERENT column (OTel: shipping.street_address) than the capture's server order_id, and it is a
+  LIVE re-run of the stimulus, not a replay of the capture artifact; (ii) these self-concordant cells
+  are their OWN reporting bucket and any recall figure is stated WITH and WITHOUT them; (iii) explicit
+  "live re-run, not artifact replay" disclosure in the run record.
+- **Reporting (C-B1):** OTel = read-back CONCORDANT-with-presence (report beside `presence=flag`,
+  never "read-back beat the trace arm"); TeaStore = SOLE-oracle under the explicit "no tracing
+  deployed" caveat. No discrimination claim.
+- **Pre-registered SCIENTIFIC anti-findings as REPORTED outcomes (C-M5), not just engineering
+  failure:** if a binding can't isolate soundly (e.g. OTel has no request-derived key — REFUTED by
+  the schema, a key exists), or the read-back proves non-independent, or TeaStore's only surface is
+  the ambiguous HTML → the cell STAYS `not_applicable`/T9 with a dated disclosure; that is a valid
+  wave outcome (the wave-3a refutation discipline).
 
-**2.2 Registry + schema wiring.** Add a `readback.transport` discriminator to the `Triple`
-(http-json | sql | html) so the modality is explicit and validated (mirror the existing VALUE_DELTA
-guards: e.g. SQL transport requires a `sqlLocator` + a DB connection descriptor; HTML requires a
-field locator). The case-JSON `readback.modality` already carries `sql-probe`/`api-get` — the triple
-builder maps it. **`mist_bindable` flips false→true for these two modalities at THIS commit**; record
-the flip in `c2-freeze.md` §6 (the T9 rows become bindable-and-run, moving out of the boundary bucket
-into the MIST recall denominator — exactly the mechanism the T9 + bindable-pending-eval conventions
-pre-registered).
+## 5. Discipline / freeze
+- `main_track`; karpathy; no Co-Authored-By; no file deletion; FILE_INDEX + memory sync; per-item
+  commits. OTel + TeaStore are UP (wave-3a close-out) — no redeploy; OTel kafka recovery runbook
+  (rollout-restart on pod replacement) on standby.
+- **Freeze §6 amendments (dated):** (a) TeaStore modality `api-get`-HTML → `api-get`-JSON durable
+  `/rest/orders` (A-F13) with the internal-durable-store disclosure; (b) the two `mist_bindable`
+  false→true flips, each atomic with its run; (c) the concordance / sole-oracle reporting convention
+  for these cells (own bucket, recall with/without).
+- Regression guard: decision-loop untouched; suites green; new transport unit tests
+  (SQL rows→collection, JSON pass-through, **exec/HTTP failure→non-2xx not ABSENT**, key quoting/
+  injection, per-leg isolation, an end-to-end probe→`evaluate` FIRE/NO_FIRE verdict test — B-F8).
 
-**2.3 Anti-circularity (pre-empt the reviewer concern).** MIST's SQL read-back uses the SAME psql
-locator the capture used — that is NOT circular: the case LABEL (positive/negative) comes from the
-authored design, never from MIST's output; MIST is being TESTED on whether its oracle, given the
-binding, independently produces FLAG/no_flag. The shared read-back path is expected (it is the SUT's
-only durable record). Disclose this explicitly in the run record.
+## 6. Resolved questions (rev-1 §6 open items, now decided)
+1. SQL transport = **kubectl-exec psql** (parity, no shaded driver, no PF to die on reboot; argv +
+   constants pinned; failure→non-2xx) — B-F6 over JDBC.
+2. Scope = **both SUTs, TeaStore primary** (native request-marker, synchronous, durable-JSON = lowest
+   risk), OTel the async follow — reconciled from A (OTel-only) + B (TeaStore-cleaner).
+3. `mist_bindable` flip bar = **atomic with a measured paired run + dated §6 amendment** (A-F9).
+4. Enablement shape = **YAML triples** (loader exists) + Java stimulus/transport — the "bespoke vs
+   config" dichotomy was false (A-F7/B-F4).
+5. Mode = **paired** (observe can't FLAG a trace-uninstrumented SUT — A-F6/B-F1).
+Residual for reviewers: is binding OTel's read-back to `accounting.shipping.street_address` (rather
+than the capture's `order`.`order_id`) an acceptable principled deviation, or must the capture spec be
+amended to match? (Rev 2's position: MIST uses the request-derived key by design; disclose, don't
+rewrite the capture.)
 
-## 3. Per-SUT enablement packages (2.75 checklist)
-Follow the existing code-per-SUT pattern (a small harness class per SUT reusing the reviewed oracle),
-NOT a speculative config-driven registry (that generality is not requested — karpathy §2).
-- **OTel-Demo:** author OpenAPI (pre-registered as authored-by-us) for the entry write
-  (`POST /api/checkout`) + the (nonexistent) read-back → the read-back is SQL, so the OpenAPI covers
-  the write path only + documents the SQL read-back as the durable oracle; registry entry; auth =
-  none (session = uuid, no JWT); a target triple for the checkout-lost pair; one observe-mode run
-  whose Allure shows the data-integrity section. Record authoring cost (minutes-per-bound-endpoint).
-- **TeaStore:** author OpenAPI for `POST …/placeorder` + the `/profile` read-back; registry; auth
-  glue (the cookie-session the capture used); triple; observe run + Allure. Record authoring cost.
-- **DoD per SUT = the 1.9 user flow** (observe-mode run reaches ≥1 authed endpoint and emits the
-  data-integrity Allure section on BOTH legs).
+## 7. File manifest (rev 2)
+- MIST code: two transport impls (`SqlDurableReadback`, `JsonDurableReadback`) installed via the
+  EXISTING `installHttpOverride`; `readback.transport` registry field + validation; two Java
+  `Stimulus` impls (OTel, TeaStore); a bespoke kafka-scale injector; unit tests. NO `ReadbackProbe`
+  interface; NO decision-loop edits.
+- SUT assets: authored OpenAPI (OTel, TeaStore); two YAML triples; auth glue (TeaStore per-leg session).
+- Corpus: the two positives + controls gain measured `mist_readback`/`mist_bindable` cells (atomic
+  freeze §6 amendment).
+- Docs: this plan → confirmation; a RESULT record per SUT run; FILE_INDEX + memory.
 
-## 4. Runs — what gets measured (the "跑测")
-For each SUT, run MIST observe/paired mode on the captured pair, N≥4 consecutive per leg (the standing
-runbook), control-leg-first:
-- **Expected cells (pre-registered NOW, before any run):** `mist_readback = FLAG` on the fault leg,
-  `no_flag` on the control leg; `mist_bindable = true`. The ack columns stay success-shaped-clean
-  (no sentinel). If a run REFUTES the expectation (e.g. the psql read-back can't be reached, or the
-  HTML locator is too brittle) → dated disclosure + the cell stays `not_applicable` with the reason,
-  NO silent re-scope (the wave-3a refutation discipline).
-- **Deterministic vs stochastic:** OTel broker-DOWN loss is PERMANENT and deterministic (unlike the
-  kafkaQueueProblems flag) → clean FLAG expected. Use the captured `oteldemo-checkout-lost-001`
-  mechanism (kafka scale-0), NOT the stochastic flag.
-- Record each run's raw psql/HTML observation + the RunRecord (for the disclosure trail).
-
-## 5. Discipline / standing rules (carried)
-- All code on `main_track`; karpathy skill; no Co-Authored-By; no file deletion; FILE_INDEX + memory
-  sync per change; per-item commits.
-- **Regression guard:** the existing mist-cli suites (incl. the TT/SS oracle tests) MUST stay green
-  after the seam refactor — the `HttpJsonReadbackProbe` extraction is behavior-preserving. Add unit
-  tests for the SQL + HTML probes (count>0/⩵0, HTML marker present/absent, error→ERROR-record).
-- Cases changed only via the freeze §6 amendment (mist_bindable flip + the run cells).
-- Cluster ops via CRLF-stripped script files; OTel + TeaStore are UP (from the wave-3a close-out) —
-  no redeploy; the OTel recovery runbook (rollout-restart on kafka pod replacement) applies if a run
-  cycles kafka.
-
-## 6. Open questions for reviewers (pressure-test these)
-1. **SQL transport:** kubectl-exec-psql (capture-parity, no dep) vs JDBC-over-PF (principled, +driver).
-   Which is the sounder MIST binding, and does exec-shell-out compromise the "tool" framing?
-2. **Scope cut:** OTel-only this wave (derisk the seam on the clean case) vs OTel+TeaStore together
-   (the checklist authors both OpenAPI specs as a B-MAJOR). Is the HTML extractor brittle enough to
-   warrant its own wave?
-3. **`mist_bindable` flip provenance:** is flipping false→true at this commit + running enough to move
-   the T9 rows into the recall denominator, or must the binding meet a higher bar (e.g. the OpenAPI
-   contract must express the read-back) before the cells count as measured MIST results?
-4. **Enablement shape:** bespoke harness-per-SUT (matches g3, fast) vs a first step toward a
-   config-driven triple registry (more general, more code). Is the bespoke path acceptable for the
-   paper, or does it undercut a "general tool" claim?
-5. **Observe vs paired mode:** run the new SUTs in the same paired-executor mode as TT/SS, or a
-   simpler observe-mode single-leg + control? Which produces the cleaner, defensible result cell?
-
-## 7. File manifest (what this wave will touch)
-- MIST tool code: a new `ReadbackProbe` seam + `Sql`/`HtmlField`/`HttpJson` probes under
-  `io/mist/cli/fault/`; `TargetTripleRegistry.Triple` gains the transport discriminator + guards;
-  two enablement harness classes (OTel, TeaStore) under `io/mist/cli/…`; unit tests.
-- SUT enablement assets: authored OpenAPI specs (OTel, TeaStore); registry + triple configs; auth glue.
-- Corpus: `oteldemo-checkout-lost-001` / `-control-001` + `teastore-order-maintenance-masked-001` /
-  `-control-001` gain measured `mist_readback`/`mist_bindable` cells (freeze §6 amendment).
-- Docs: this plan → RECONCILIATION after review; a RESULT record per SUT run; FILE_INDEX + memory.
-
-## 8. DoD (wave complete when)
-- Suites green (regression + new probe tests). `mist_bindable=true` for the two modalities.
-- OTel (and, if in-scope, TeaStore) observe/paired runs recorded, N≥4/leg, with FLAG/no_flag measured
-  (or a dated refutation if the binding fails). Freeze §6 + README + FILE_INDEX + memory synced.
-- Authoring cost recorded per SUT. RESULT-of-record note written. Per-item commits on `main_track`.
+## 8. DoD
+- Suites green (regression + new transport tests). Paired runs recorded N≥4/leg, control-first, with
+  FLAG/no_flag measured — OR a dated refutation if a binding fails. `mist_bindable` flipped atomically.
+- Concordance (OTel) / sole-oracle (TeaStore) framing in the RESULT record; recall stated with/without
+  the self-concordant bucket; live-re-run disclosure. Authoring cost per SUT. Freeze §6 + README +
+  FILE_INDEX + memory synced. Per-item commits on `main_track`.
