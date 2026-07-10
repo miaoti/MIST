@@ -29,14 +29,30 @@ import yaml
 _VAR = re.compile(r"\{(\w+)\}")
 
 
-def _http(method, url, payload=None, token=None, timeout=25):
+# Cookie-session support (tenancy-window B4: Sock Shop authenticates via a logged_in cookie, not a
+# bearer). When a spec sets `cookie_session: true`, every step sends the jar and Set-Cookie response
+# headers are collected into it. The sidecar records neither cookies nor Set-Cookie (same rule as
+# auth headers: identity material never lands in rater-facing artifacts).
+_COOKIES = {}
+
+
+def _http(method, url, payload=None, token=None, timeout=25, cookies=False):
     data = payload.encode("utf-8") if payload else None
     req = urllib.request.Request(url, data=data, method=method)
     req.add_header("Content-Type", "application/json")
     if token:
         req.add_header("Authorization", "Bearer " + token)
+    if cookies and _COOKIES:
+        req.add_header("Cookie", "; ".join("%s=%s" % kv for kv in _COOKIES.items()))
     try:
         with urllib.request.urlopen(req, timeout=timeout) as r:
+            if cookies:
+                for h, v in r.getheaders():
+                    if h.lower() == "set-cookie":
+                        kv = v.split(";", 1)[0]
+                        if "=" in kv:
+                            k, val = kv.split("=", 1)
+                            _COOKIES[k.strip()] = val.strip()
             return r.status, r.read().decode("utf-8", "replace")
     except urllib.error.HTTPError as e:
         return e.code, e.read().decode("utf-8", "replace")
@@ -115,7 +131,7 @@ def run(spec_path, out_path, mist_commit, case_id_override=None):
         path = _subst(step["path"], variables)
         payload = _subst(step.get("payload"), variables)
         t = rel()
-        status, resp = _http(step["method"], base + path, payload, token_for(step.get("auth", "session")))
+        status, resp = _http(step["method"], base + path, payload, token_for(step.get("auth", "session")), cookies=spec.get("cookie_session", False))
         # capture BEFORE redaction (reads the real response body)
         for var, jp in (step.get("capture") or {}).items():
             try:
@@ -137,7 +153,7 @@ def run(spec_path, out_path, mist_commit, case_id_override=None):
         time.sleep(obs.get("delay_ms", 0) / 1000.0)
         path = _subst(obs["path"], variables)
         t = rel()
-        status, resp = _http("GET", base + path, None, token_for(obs.get("auth", "session")))
+        status, resp = _http("GET", base + path, None, token_for(obs.get("auth", "session")), cookies=spec.get("cookie_session", False))
         records.append({"t_rel_ms": t, "kind": "observation",
                         "probe": obs.get("probe", "GET " + path), "status": status, "body": resp})
 
