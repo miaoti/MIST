@@ -68,5 +68,25 @@ dependency-down case), the drain-before-record rule + horizon, the identity ledg
 arithmetic + first-mesh-sever + value-dependency), the self-test reporting language + MIST-target
 pre-registration, refutation branches on all three items (with C-m8's split), §5 wave-start/close
 conventions, and the budget restatement. Counts unchanged (18→23 target; 24 if item 2b counts —
-it does: **19→24 committed files, but the REPORTED corpus counts remain "10 pos / 13 neg captured
+it does: **18→24 committed files, but the REPORTED corpus counts remain "10 pos / 13 neg captured
 + 1 specified"** — reported per the R1 rule, never a bare S1 count).
+
+## Confirmation-pass outcome (rev 2 → rev 2.1) — UNANIMOUS
+- **C: CONFIRM-ACCEPT** on rev 2 (verified its C-B1 modified-fix grounds against the repo record —
+  the TT verdict cells ARE run-backed — and all its M/m findings folded; two cosmetic observations,
+  explicitly not conditions: the 19→24 recon slip [fixed above] + the "§1.3" dangling pointer
+  [fixed in the plan header]).
+- **B: CONFIRM-ACCEPT** on rev 2 (all F1–F15 verified folded; independently re-verified §7 counts
+  and that all 18 existing cases are `captured`; same recon slip noted non-blocking).
+- **A: RESIDUAL ×4, all textual, none reopening substance**, with the explicit pre-commitment
+  "with these four folded (no other changes), my confirmation converts to CONFIRM-ACCEPT without a
+  further pass." All four are folded as **rev 2.1** (same file, same commit as this addendum):
+  (1) A-2c grandfather sentence for the two pre-convention benign cells (noop-modify, dedupe) in
+  the §1 MIST-cells pin — the audit property now holds by construction; (2) the item-3 AUTHOR
+  margin (minimum observed delay ≥ 2× the ack→export-close lag; straddling ⇒ NOT-AUTHORED);
+  (3) the A-4 catch-all (outside both branches ⇒ STOP, pin the measured 7-cell set pre-record,
+  dated divergence note); (4) bookkeeping (18→24 here; the §2b cross-reference made true by adding
+  the 2-of-3-legs phrase to §0). Per A's own words the four foldings convert its verdict; B and C's
+  confirmations carry over (the rev-2.1 delta is exactly the textual items they flagged as
+  non-blocking plus A's residuals, inside substance they endorsed).
+**GATE RESULT: UNANIMOUS ACCEPT — wave-3a rev 2.1 is cleared for execution.**

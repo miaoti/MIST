@@ -6,7 +6,7 @@ reviewers' unanimous confirmation of THIS revision.**
 Scope: the live-tenant subset of checklist step 3a. Executes on the tenancy end-state (OTel-Demo
 UP, TeaStore UP, TT at 0 — `tenancy-window-result.md` §3). NO MIST tool code (prep rule). NO TT
 revival in this wave. Corpus schema rev-2 FROZEN (changes only via freeze §6 amendments — this
-wave adds exactly one convention row, §1.3 below).
+wave adds exactly one convention row: the §1 MIST-cells pin below).
 
 ## 0. Why now / what it buys (facts grep-verified at review)
 - All 7 non-TT cases today are `mist_bindable=false`; 11 TT rows are `mist_bindable=true`
@@ -16,7 +16,9 @@ wave adds exactly one convention row, §1.3 below).
   (design target preserved, enrolled for the MIST run)"; the claim "MIST catches a non-TT positive"
   is earned only at 2.5/E2 after the 2.75 enablement — this case is authored to be first in line.
 - **Item 2 is the corpus's FIRST mesh-sever case of any status** (grep-verified: zero exist), making
-  the captured cross-SUT mechanism set {flag, dependency-down, mesh-sever}.
+  the captured cross-SUT mechanism set {flag, dependency-down, mesh-sever}; within TeaStore it is
+  live evidence for 2 of the 3 min-3 legs (flag + mesh-sever captured; dependency-down = the §2b
+  specified row).
 - **Floor honesty (explicit gap arithmetic, C-M2):** distinct defect sites today = **7** (TT 4:
   cancel→refund [natural+fabricatedack = one site], createaccount, adminroute-add,
   adminbasic-contacts-add; SS 1: shipping-enqueue; TeaStore 1: order-confirm; OTel 1:
@@ -64,7 +66,11 @@ the expected durable effect is a REMOVAL (membership-absence on a list read-back
 pinned engine (7d69de9) expresses removal-as-effect is itself a 2.75 enablement finding.
 `mist_trace_shape_oracle: not_applicable` (Branch-B traced-but-not-run, natively-traced deploy —
 the standard note). **A freeze §6 row pins the `bindable-pending-eval` convention** (this wave's
-only freeze change).
+only freeze change). **The same §6 row GRANDFATHERS the two pre-convention benign cells
+(`TT-contacts-noop-modify-benign-001`, `TT-contacts-dedupe-benign-001`) whose
+`mist_readback_oracle=no_flag` is an analytically-derived target not backed by a recorded MIST run
+— disclosed legacy target-valued cells — so the audit property "verdict-valued mist cells appear
+only where MIST ran" holds by construction going forward (A-2c residual).**
 
 **Trace columns (pin BOTH branches now, A-4; canary selects, probe confirms, pre-record):**
 canary a healthy checkout trace, bind the cart EmptyCart span (service `cart`, op fragment
@@ -76,7 +82,10 @@ against the linked-trace risk, B-F3). Then:
 - **Branch β: the span is ABSENT under the flag** → `tracetest_presence=flag` (catch) +
   `naive_span_error` per the remaining error spans (pin at canary).
 Both branches' full 7-cell sets are written in the case-JSON draft BEFORE the record leg; the probe
-round selects α or β; **the case is authored iff the MASK holds** (200 ack + non-emptied cart);
+round selects α or β; **if the canary/probe lands OUTSIDE both branches (e.g. the EmptyCart span
+present AND clean under the flag), STOP: pin the measured 7-cell set pre-record with a dated
+divergence-as-measured note (T2), then proceed (A-4 catch-all);** **the case is authored iff the
+MASK holds** (200 ack + non-emptied cart);
 **refutation branch (C-M5): if the N≥4 probes refute the masked semantics on deployed 2.2.0, the
 case is NOT authored — dated survey correction, disclosed finding (C-m8/R9 precedent).**
 Ack columns: status/schema/body = no_flag expected (success-shaped clean — verify no sentinel at
@@ -164,7 +173,9 @@ drain check (fraud backlog clears in ~minutes) + RAM check.
 **PROBE ROUND (≤1 h, artifacts pinned per B-F8):** records the per-order placed→landed delay
 distribution, dedupe evidence (row counts vs duplicate volume), duplicate-send volume, the deployed
 2.2.0 semantics vs the D3c row, and ends with an explicit decision line:
-- **AUTHOR** (delayed-not-lost confirmed, delay > horizon): pin ALL SEVEN expectation cells at the
+- **AUTHOR** (delayed-not-lost confirmed, WITH MARGIN: the probe round's MINIMUM observed landing
+  delay ≥ 2× the ack→export-close lag; a straddling delay distribution ⇒ NOT-AUTHORED — A-11
+  residual): pin ALL SEVEN expectation cells at the
   probe-freeze gate (A-12): status/schema/body no_flag; naive no_flag EXPECTED on the checkout-side
   entry trace (dedupe errors, if spans at all, land in accounting's linked traces post-window —
   verify at probe); `tracetest_presence=flag` (the trap firing, an FP on a negative — freeze-§4
