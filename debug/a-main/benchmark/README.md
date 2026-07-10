@@ -37,7 +37,10 @@
 > corpus's FIRST mesh-sever case; sidecars-parity; the min-3 floor now points at 3 TeaStore corpus rows
 > incl. the specified dependency-down row) — while `cartFailure` was REFUTED as a masked-write producer
 > on 2.2.0 (LOUD 504, measured N=5; the pre-registered refutation branch; 3rd SUT with honest-loud
-> cart-store failure — survey corrected).** The S3 wild stratum remains the scale plan (§8); a
+> cart-store failure — survey corrected), and `kafkaQueueProblems` fired the pre-registered STOP/C-m8
+> branch — a STOCHASTIC MIX dominated by PERMANENT PRODUCTION LOSS (7/8 in-window acked orders lost,
+> 0 pending) so the "delayed-not-lost" S2 label is REFUTED; recorded as an S1-positive candidate
+> deferred to its own discipline, NO case authored.** The S3 wild stratum remains the scale plan (§8); a
 > `specified` case's `oracle_expectation` is a design TARGET.
 
 > **PREP deliverable (main-track). NO MIST tool code.** Contribution **C2 — an open-source labeled

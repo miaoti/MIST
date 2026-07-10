@@ -62,3 +62,58 @@ modality bindings) + 3a (live S1 quota: TeaStore mesh-sever candidate, OTel vend
 S3 wild-hunt)** → TT revival from snapshot when the TT-side legs (2.5/E2 `mist_trace_shape` runs)
 are scheduled. Rater track proceeds in parallel (user-side screening; rating corpus from the
 corpus track at the step-5 gate).
+
+---
+
+## 6. WAVE-3A CLOSE-OUT (2026-07-10) — executed on the standing OTel-Demo + TeaStore tenant
+
+Plan `wave-3a-plan.md` rev 2.1 (unanimous 3-cold-review + confirmation pass; recon
+`REVIEW-3A-RECONCILIATION.md`). Three items, each with a pre-registered refutation/STOP branch;
+**two of three fired a negative branch — which is the point** (the discipline let the SUTs speak).
+
+**Item outcomes:**
+- **Item 1 — OTel `cartFailure` bindable-read-back positive → REFUTED, NOT AUTHORED** (commit
+  `738815c`). Deployed 2.2.0 `cartFailure` makes the cart store throw FailedPrecondition
+  (simulated redis-down) and PlaceOrder fails LOUDLY (504 @ ~15 s, no order, cart intact; N=5) —
+  no masked ack to label. 3rd SUT with honest-loud cart-store failure (SS carts β, Boutique). En
+  route: the **1-P0 flagd mechanism-of-record finding** — a ConfigMap patch NEVER reaches the
+  running flagd (initContainer copies CM→emptyDir for flagd-ui's writable file); the toggle of
+  record is the flagd-ui API (`flagd-toggle.sh`), integer-variant aware, frozen-restore verified.
+- **Item 2 (+2b) — TeaStore mesh-sever pair → CAPTURED** (commit `bd40df2`): the corpus's FIRST
+  mesh-sever case (`teastore-order-meshsever-masked-001` + `-control-001`; sidecars-parity both
+  legs, enumerated teardown verified, A-7 measured the temp sidecars export nothing) + `2b`
+  `teastore-order-depdown-specified-001` (the C-M4 min-3 fix). Corpus **18 → 21** files.
+- **Item 3 — OTel `kafkaQueueProblems` probe-gated S2 → STOP / C-m8, NO case** (commit `a2a6e2e`).
+  Probe N=4 + confirmatory N=2 + a pending-vs-missing separation run measured the flag on 2.2.0 as
+  a STOCHASTIC MIX dominated by **PERMANENT PRODUCTION LOSS** — 7 of 8 in-window acked orders lost,
+  1 fast success under-flag, **0 pending**. A later canary drained PAST the four probe orders
+  (dropped at production, not queued); a post-flag AND a flag-off canary were also lost (the wedge
+  persists past toggle-off); an accounting+checkout+fraud rollout-restart restored LIVE traffic but
+  recovered ZERO lost orders (kafka pod 0 restarts — NOT the Phase-D broker-replacement wedge). The
+  survey's "delayed-not-lost / pending-vs-missing trap" S2 label is REFUTED as-deployed; recorded as
+  a dated survey correction + an **S1-positive candidate (vendor-flag provenance), deferred to its
+  own disciplined characterization** (never silently subsumed). Evidence `b4/runners/3a/item3-*`.
+
+**New conventions / disclosures this wave (freeze §6):** `bindable-pending-eval` (pre-registered for
+the next machine-bindable-but-MIST-not-yet-run case; its instantiating item-1 case was refuted, so
+the convention stands pre-registered) with the A-2c grandfather clause; the item-3 STOP disposition
+row.
+
+**Corpus at close:** 21 files, validator exit 0 — **9 positive / 11 negative CAPTURED + 1 specified**
+across 4 write-path SUTs (item 3 added no case; the count is unchanged from item 2).
+
+**Tenant end-state (verified at close):**
+- **OTel-Demo**: UP and **healthy** — item-3 recovery rollout-restarted accounting+checkout+fraud
+  and a post-recovery health canary landed `rows=1` at ~10 s; `kafkaQueueProblems` restored to `off`
+  and frozen-equality verified; flagd boot-state ConfigMap never touched.
+- **TeaStore**: UP (identity ledger consumed through user20 → user21 next-free).
+- **TT**: still scaled to 0 (snapshot revival = §2.6 runbook + nacos doubleWrite rule).
+- Port-forwards (die on reboot): OTel frontend-proxy :8085, OTel jaeger :16687 (`/jaeger/ui/api/*`),
+  TeaStore webui :8082, TeaStore persistence :8083.
+
+**Revised next:** the §5 direction stands — the live S1-quota portion of 3a is now discharged on the
+capturable producers (TeaStore mesh-sever CAPTURED; OTel vendor-flag `kafkaQueueProblems` adjudicated
+as an S1-candidate, not a benign S2). Remaining: **2.75 MIST enablement decisions** (read-back
+modality bindings — the gate for turning the `bindable-pending-eval` and T9 boundary cells into
+scored results), the deferred **kafkaQueueProblems S1** under its own discipline, **S3 wild-hunt**
+(rater-gated), and **TT revival** from snapshot when the 2.5/E2 `mist_trace_shape` runs are scheduled.
