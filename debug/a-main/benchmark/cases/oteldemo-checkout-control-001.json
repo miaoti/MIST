@@ -26,10 +26,10 @@
     },
     "readback": {
       "modality": "sql-probe",
-      "locator": "SELECT count(*) FROM accounting.\"order\" WHERE order_id='<the acked orderId>' on the postgresql pod (db otel; tables in schema accounting - a bare \\dt shows only public and misleads).",
+      "locator": "[2.75-A BOUND] SELECT street_address FROM accounting.shipping WHERE street_address='<the request-derived marker>' on the postgresql pod (db otel; schema accounting - a bare \\dt shows only public and misleads). KEY = the request-derived street_address marker, not the server-assigned order_id (co-persisted in one SaveChanges, C-R2). The Phase-D capture keyed on order_id; this is the 2.75-A enablement form.",
       "expect_without_fault": "landed",
       "expect_with_fault": "not-landed",
-      "mist_bindable": false
+      "mist_bindable": true
     }
   },
   "fault": {
@@ -75,14 +75,14 @@
     "body_marker_oracle": "no_flag",
     "naive_span_error_oracle": "no_flag",
     "tracetest_presence_oracle": "no_flag",
-    "mist_readback_oracle": "not_applicable",
+    "mist_readback_oracle": "no_flag",
     "mist_trace_shape_oracle": "not_applicable"
   },
   "provenance": {
     "control_trace": "debug/a-main/benchmark/b4/captures/oteldemo-checkout-control/trace-control.json",
     "fault_trace": null,
     "readback_response": "debug/a-main/benchmark/b4/captures/oteldemo-checkout-control/readback-psql.txt",
-    "notes": "TENANCY-WINDOW CAPTURE-OF-RECORD (2026-07-10, plan rev-2 unanimous-accept, Phase D). MEASURED (marker otlc1, order 64fe18eb): cart 200 -> checkout 200 (clean JSON ack with orderId + shipping tracking id) -> psql row_count=1 for the acked orderId + the orderitem corroboration row (readback-psql.txt). SCORED (frozen scorer, Phase-D extension 8bb0424 pre-committed): naive_span_error = no_flag (zero error spans across the merged 50-span export); tracetest_presence = no_flag TN - the accounting 'receive orders' CONSUMER span is PRESENT in the linked accounting trace (presence_scope=file; merged export = service=checkout + service=accounting windowed queries), which VALIDATES the consumer span family for the pair (T2: the fault twin's ABSENT verdict is attributable to the broker fault, not to instrumentation); T6 db report {product-catalog: 2, accounting: 1} - the accounting postgres INSERT client span (db.system.name=postgresql, INSERT INTO accounting.\"order\"/orderitem/shipping) is the control-side write evidence the fault leg lacks. The checkout 'publish orders' producer span is present AND CLEAN on this leg - and, notably, ALSO on the fault leg (async local-enqueue instrumentation), so the producer side never discriminates; only the consumer-side absence does. T9: mist_readback_oracle = not_applicable (sql-probe unbindable at the pinned commit; applicability boundary, distinct from none-durable); mist_trace_shape not_applicable (Branch-B, deferred 2.5/E2); on a bindable surface the paired read-back oracle's control-leg expectation is the clean no_flag TN (design note, not a cell)."
+    "notes": "TENANCY-WINDOW CAPTURE-OF-RECORD (2026-07-10, plan rev-2 unanimous-accept, Phase D). MEASURED (marker otlc1, order 64fe18eb): cart 200 -> checkout 200 (clean JSON ack with orderId + shipping tracking id) -> psql row_count=1 for the acked orderId + the orderitem corroboration row (readback-psql.txt). SCORED (frozen scorer, Phase-D extension 8bb0424 pre-committed): naive_span_error = no_flag (zero error spans across the merged 50-span export); tracetest_presence = no_flag TN - the accounting 'receive orders' CONSUMER span is PRESENT in the linked accounting trace (presence_scope=file; merged export = service=checkout + service=accounting windowed queries), which VALIDATES the consumer span family for the pair (T2: the fault twin's ABSENT verdict is attributable to the broker fault, not to instrumentation); T6 db report {product-catalog: 2, accounting: 1} - the accounting postgres INSERT client span (db.system.name=postgresql, INSERT INTO accounting.\"order\"/orderitem/shipping) is the control-side write evidence the fault leg lacks. The checkout 'publish orders' producer span is present AND CLEAN on this leg - and, notably, ALSO on the fault leg (async local-enqueue instrumentation), so the producer side never discriminates; only the consumer-side absence does. T9: mist_readback_oracle = not_applicable (sql-probe unbindable at the pinned commit; applicability boundary, distinct from none-durable); mist_trace_shape not_applicable (Branch-B, deferred 2.5/E2); on a bindable surface the paired read-back oracle's control-leg expectation is the clean no_flag TN (design note, not a cell). || [2.75-A ENABLEMENT RUN - MIST READ-BACK BOUND, CLEAN NO_FLAG, 2026-07-10, plan wave-275a-plan.md rev 2.1]: same enablement as the fault twin (freeze §6 2026-07-10 WAVE 2.75-A OTel row) - MIST's MEMBERSHIP read-back binds accounting.shipping/street_address via SqlDurableReadback (mist_bindable false->true; key = request-derived street_address per C-R2). MEASURED LIVE as the CONTROL leg of the paired run (OtelCheckoutHeadToHead, kafka UP): all 5 control-leg probes ACKED HTTP 200 and their street_address markers PERSISTED on the read-back (control.readbackContainedX=true in b4/enable/oteldemo-checkout-run.report.json) => MIST correctly does NOT fire on the clean control (mist_readback_oracle not_applicable->no_flag, the clean-control TN). INDEPENDENT GROUND TRUTH: 5/5 control markers persisted on the direct psql read. This TN makes the fault twin's FIRE attributable to the broker fault, not to the flow/read-back. Evidence + code as on the twin."
   },
   "license": {
     "case_code": "Apache-2.0",
