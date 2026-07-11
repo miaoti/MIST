@@ -1,0 +1,45 @@
+########## RUN 1 (java -cp ... io.mist.cli.g3.TrainTicketStimulus) ##########
+=== stratum: constructed ===
+  MIST B2 (differential value-delta): FIRE
+      fault run acknowledged X (http 200, body status 1) but X is absent from its own read-back (20 poll(s), gate TIMEOUT_ABSENT); control's X persisted — acknowledged-but-lost write
+  Comparator (frozen response contract): control flagged=false, fault flagged=false  -> MISSED
+  claim-eligibility: joinMode=correlator, correlatorUnique=true
+  value-delta probe (buyer /account balance, evidence only):
+      control baseline=50.00 -> final=130.00
+
+########## RUN 2 (java -cp ... io.mist.cli.g3.TrainTicketStimulus) ##########
+=== stratum: constructed ===
+  MIST B2 (differential value-delta): FIRE
+      fault run acknowledged X (http 200, body status 1) but X is absent from its own read-back (20 poll(s), gate TIMEOUT_ABSENT); control's X persisted — acknowledged-but-lost write
+  Comparator (frozen response contract): control flagged=false, fault flagged=false  -> MISSED
+  claim-eligibility: joinMode=correlator, correlatorUnique=true
+  value-delta probe (buyer /account balance, evidence only):
+      control baseline=50.00 -> final=130.00
+
+########## RUN 3 (java -cp ... io.mist.cli.g3.TrainTicketStimulus) ##########
+=== stratum: constructed ===
+  MIST B2 (differential value-delta): FIRE
+      fault run acknowledged X (http 200, body status 1) but X is absent from its own read-back (20 poll(s), gate TIMEOUT_ABSENT); control's X persisted — acknowledged-but-lost write
+  Comparator (frozen response contract): control flagged=false, fault flagged=false  -> MISSED
+  claim-eligibility: joinMode=correlator, correlatorUnique=true
+  value-delta probe (buyer /account balance, evidence only):
+      control baseline=50.00 -> final=130.00
+
+########## RUN 4 (java -cp ... io.mist.cli.g3.TrainTicketStimulus) ##########
+=== stratum: constructed ===
+  MIST B2 (differential value-delta): FIRE
+      fault run acknowledged X (http 200, body status 1) but X is absent from its own read-back (20 poll(s), gate TIMEOUT_ABSENT); control's X persisted — acknowledged-but-lost write
+  Comparator (frozen response contract): control flagged=false, fault flagged=false  -> MISSED
+  claim-eligibility: joinMode=correlator, correlatorUnique=true
+  value-delta probe (buyer /account balance, evidence only):
+      control baseline=50.00 -> final=130.00
+
+########## RUN 5 (java -cp ... io.mist.cli.g3.TrainTicketStimulus) ##########
+=== stratum: constructed ===
+  MIST B2 (differential value-delta): FIRE
+      fault run acknowledged X (http 200, body status 1) but X is absent from its own read-back (20 poll(s), gate TIMEOUT_ABSENT); control's X persisted — acknowledged-but-lost write
+  Comparator (frozen response contract): control flagged=false, fault flagged=false  -> MISSED
+  claim-eligibility: joinMode=correlator, correlatorUnique=true
+  value-delta probe (buyer /account balance, evidence only):
+      control baseline=50.00 -> final=130.00
+

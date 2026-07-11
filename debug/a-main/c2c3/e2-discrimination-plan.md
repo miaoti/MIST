@@ -26,7 +26,8 @@ headline. The headline — a NATURAL fault where an in-practice trace oracle mis
    - service-map-granularity presence (cross-service HTTP span exists) → **MISS**,
    - **DB-span-granularity presence** (the inside-payment INSERT client span) → **CATCH** (T6: fault
      trace has 0 such spans vs control's 2),
-   - MIST durable-value read-back → **CATCH** with no pre-specified per-write assertion.
+   - MIST durable-value read-back → **CATCH** (specified once per SUT at durable-outcome granularity —
+     not per-write, not assertion-free; C-F6).
    The claim is therefore NOT "read-back beats trace" (false — a DB-granularity trace assertion catches
    it), and NOT "read-back is assertion-free" (false — it needs a per-SUT triple binding, costed at
    ~1–2 h/SUT in 2.75-A). The honest claim is a **granularity / implementation-coupling** distinction
@@ -52,9 +53,11 @@ Neither deliverable is a prevalence, recall, or "trace can never catch it" claim
   "trace-runs-and-misses-but-read-back-catches" instance. So the discrimination-over-trace rests solely
   on the synthetic fork; the corpus provides read-back *applicability breadth*, not natural discrimination.
   The RESULT must say this explicitly.
-- **Granularity qualifier in the headline everywhere (A-M2).** Never write "beats trace" unqualified;
-  write "naive + service-map-granularity presence miss; DB-granularity presence catches only with a
-  pre-specified assertion; read-back catches out-of-the-box."
+- **Granularity qualifier in the headline everywhere (A-M2).** Never write "beats trace" unqualified,
+  and NEVER "out-of-the-box" (retracted per A-MAJOR / reviewer C-F6 — the read-back needs a per-SUT
+  binding); write "naive + service-map-granularity presence miss; DB-granularity presence catches only
+  with an assertion pre-specified on the exact write span; read-back catches at a coarser, once-per-SUT
+  durable-outcome granularity (specified, not assertion-free)."
 - **The owed headline stays owed.** The S3 natural discriminator is the real discrimination headline;
   it is rater-gated/deferred and named here so this run is not mis-sold as closing it.
 

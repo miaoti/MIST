@@ -36,8 +36,17 @@ remains the S3 wild-hunt, deferred/rater-gated — this run de-risks it, does no
 | ground truth — `/account` value-delta | 50.00 → **130.00** (refund landed) | 50.00 → **50.00** (refund lost) |
 | ground truth — direct `inside_money` DB (P4) | `A 50` + **`D 80.00`** (drawback present) | `A 50` only (**no drawback**) |
 
-Evidence: `e2-run-summary.txt`, `e2-trace-scores.txt`, `e2-p4-db-groundtruth.txt`,
-`e2-run1-{control,fault}-trace.json`.
+Evidence (all 5 runs independently auditable — reviewer A-1/B-1/C-F2): `e2-run.sh` (the runner of
+record + exact `-D` matrix + deploy pins), `e2-run-stdout.txt` (all 5 runs' harness stdout: FIRE,
+gate `TIMEOUT_ABSENT` @ ~20 polls, MISSED, correlator-unique, value-delta), `e2-run{1..5}-{control,fault}-trace.json`
+(all 10 per-leg traces, re-scorable with the frozen `trace_score.py`), `e2-run-summary.txt`,
+`e2-trace-scores.txt`, `e2-p4-db-groundtruth.txt`.
+
+**N-scope (reviewer C-F3):** N=5 replicates a DETERMINISTIC by-construction skip (a flakiness/determinism
+check), not five independent samples; no rate/recall is claimed.
+**Gate (reviewer B-2):** the read-back used the DEFAULT timeout (10 s; `mst.oracle.dataintegrity.timeout.ms`
+not overridden) — the fault-leg absence at ~20 polls is sound because the fabricated-ack skip is permanent
+and control landed well within the cap on all 5.
 
 ## The claim — specification-locality (A-MAJOR wording, NOT "out-of-the-box")
 
@@ -46,10 +55,15 @@ On this acknowledged-but-lost write (clean `{status:1,"Success."}` ack, clean tr
 MIST's durable-value read-back CATCHES. The honest distinction is **granularity + implementation-coupling,
 NOT zero-authoring**: MIST's read-back is specified ONCE per SUT (a triple: readback endpoint + isolation
 key + value probe — costed ~1–2 h/SUT in 2.75-A) at the **durable business-outcome** granularity (the
-refunded balance), so it catches the loss regardless of the internal mechanism; the DB-span assertion is
-coupled to the **exact internal write span** (`INSERT ts.inside_money`) the author must know to assert on
-and is brittle to a persistence refactor. Same detection here; the read-back's specification is
-coarser-grained, reusable across drop mechanisms, and implementation-decoupled.
+refunded balance), whereas the DB-span assertion is coupled to the **exact internal write span**
+(`INSERT ts.inside_money`) the author must know to assert on. **We ARGUE BY INSPECTION — we do NOT
+measure it (reviewer C-F1/A-3) — that the read-back's durable-outcome granularity is robust to the drop
+mechanism and to a persistence refactor:** a read of the durable balance is indifferent to *how* the
+balance failed to move (a skipped INSERT here; a rolled-back tx or a wrong-account write would present
+the same balance-unchanged), while a span assertion names one specific span. **THIS RUN measures exactly
+ONE drop mechanism (the skipped INSERT);** the cross-mechanism robustness is a design-inference from the
+specification granularity, not a measured generality. Same detection here; the read-back's specification
+is coarser-grained and implementation-decoupled.
 
 **NOT claimed:** "beats trace" (a DB-span assertion catches it); "assertion-free" (read-back needs a
 per-SUT binding); prevalence/recall (N=5, one SYNTHETIC fork fault shaped to be trace-clean).
@@ -61,8 +75,12 @@ per-SUT binding); prevalence/recall (N=5, one SYNTHETIC fork fault shaped to be 
 2. The `/account` re-read wraps the same endpoint MIST reads (a store re-read, not an orthogonal oracle —
    the 2.75-A caveat).
 3. **P4 orthogonal ground truth:** the direct `inside_money` DB read (mysql, distinct from the `/account`
-   REST transport) confirms fault = no drawback row / control = drawback `D 80.00` present. The trace
-   DB-span-presence (jaeger) independently corroborates the same (INSERT absent-on-fault / present-on-control).
+   REST transport) confirms fault = no drawback row / control = drawback `D 80.00` present. **DISCLOSURE
+   (reviewer A-2/B-minor-2):** P4 is a SEPARATE manual probe on its OWN fault+control buyer pair (not the
+   5 harness-run buyers), so it is a *mechanism-class* orthogonality cross-check, not per-run orthogonal
+   ground truth. The PER-RUN durable evidence for each of the 5 is the fault trace's DB-span absence
+   (the `INSERT ts.inside_money` span present-on-control / absent-on-fault, from jaeger — a channel
+   orthogonal to the `/account` read-back).
 
 ## Honest framing (carried verbatim; the reviewers' standing constraints)
 
@@ -92,6 +110,19 @@ force-recreating `tsdb-mysql-0`. TT was then brought up as the cancel-refund sub
 scaled to 0 for RAM). Runbook addition: **a force-delete of the stuck mysql-0 pod re-forms the Xenon
 quorum after a hard restart.**
 
-## Post-run
+## Reproducibility posture (reviewer C-F4)
 
-A 3-cold review of THIS result is the §7 backstop before it is called claim-ready.
+This is an **auditable** result, not reproducible-from-scratch: the committed per-leg traces + the frozen
+`trace_score.py` re-score to the same verdicts (all three cold reviewers independently re-ran the scorer
+and reproduced them), and the runner + `-D` matrix + deploy/agent pins are recorded. But the live
+deployment is NOT turnkey — it required the disclosed manual environment recovery (RAM wedge →
+`wsl --shutdown` → Docker Desktop restart → `tsdb-mysql-0` force-recreate → cancel-subgraph-only). The
+measurement stands on the committed evidence regardless of the environment being gone.
+
+## Post-run (3-cold review — DONE)
+
+3-cold-reviewed (`REVIEW-E2-RESULT-RECONCILIATION.md`): A (oracle-soundness), B (engineering), C
+(hostile-PC) all **ACCEPT-WITH-FIXES, 0 blocking**; all three independently reproduced the verdicts from
+the committed traces. Fixes folded: the mechanism-robustness claim relabeled argument-by-inspection
+(C-F1/A-3); all 5 runs' evidence + runner committed (B-1/B-2); P4-is-a-mechanism-cross-check, N-is-
+determinism, auditable-not-turnkey, and the stale-Javadoc/C1-test-guard all addressed.

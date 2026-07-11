@@ -47,7 +47,12 @@ import java.util.List;
  * the cancel write yields no Istio/Jaeger trace → {@code traceId} is null → MIST's
  * read-back is timeout-gated, not trace-gated. The differential balance-delta verdict
  * still holds (control: balance moves +refund, X present fast; fault: balance never moves,
- * X absent to the cap → FIRE). Recorded as a known weaker-gate limitation.
+ * X absent to the cap → FIRE). E2/C1 UPDATE (reviewer B-minor-1): the cancel now DOES yield a trace (the
+ * stimulus injects a client traceparent the SUT adopts), but the read-back stays timeout-gated BY DESIGN
+ * — {@link #runLeg} passes {@code afterWrite(..., null)}, using the captured trace-id ONLY for out-of-band
+ * trace selection, never to gate the verdict (no Jaeger coupling, zero verdict difference). This null is
+ * a LOAD-BEARING invariant: trace-gating the read-back here would couple the verdict to export latency —
+ * do not pass the trace-id to afterWrite.
  */
 public final class CancelRefundHeadToHead {
 
