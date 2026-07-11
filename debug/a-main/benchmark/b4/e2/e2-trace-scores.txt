@@ -1,0 +1,18 @@
+E2 traced discrimination run — frozen trace_score.py (3 configs), N=5, per leg.
+Case TT-cancel-refund-fabricatedack-001, traced deploy (javaagent 1.33.6 on ts-cancel/inside-payment/order).
+Trace selected by the C1 client-injected traceparent trace-id (per-leg, exact operation).
+
+           naive_span_error   service-map-presence   DB-span-presence
+RUN1 ctrl  no_flag            no_flag                no_flag   (INSERT ts.inside_money present)
+RUN1 FAULT no_flag(MISS)      no_flag(MISS)          flag(CATCH)  (INSERT absent)
+RUN2 ctrl  no_flag            no_flag                no_flag
+RUN2 FAULT no_flag(MISS)      no_flag(MISS)          flag(CATCH)
+RUN3 ctrl  no_flag            no_flag                no_flag
+RUN3 FAULT no_flag(MISS)      no_flag(MISS)          flag(CATCH)
+RUN4 ctrl  no_flag            no_flag                no_flag
+RUN4 FAULT no_flag(MISS)      no_flag(MISS)          flag(CATCH)
+RUN5 ctrl  no_flag            no_flag                no_flag
+RUN5 FAULT no_flag(MISS)      no_flag(MISS)          flag(CATCH)
+
+MIST read-back (value-delta, harness): FIRE 5/5 on the fault leg; response-contract comparator MISSED 5/5.
+value-delta probe (/account): control 50.00->130.00 (refund landed); fault 50.00->50.00 (refund lost).

@@ -1,0 +1,5 @@
+RUN1 MIST=FIRE comparator=MISSED | control=2d9e843a0fd840c7eec223c9a1d3abdf fault=c5b9788936b9f1a9bb071bff08416eb5 |       control baseline=50.00 -> final=130.00       fault   baseline=50.00 -> final=50.00 
+RUN2 MIST=FIRE comparator=MISSED | control=c073405dc48d9d1becfd495a4c0efa81 fault=e207196b57a7d8a425fb1fc12706aefb |       control baseline=50.00 -> final=130.00       fault   baseline=50.00 -> final=50.00 
+RUN3 MIST=FIRE comparator=MISSED | control=275df645fee2a301e3f7eb1f18f4fee3 fault=ac3438c7585f1f202939c863ae224e1d |       control baseline=50.00 -> final=130.00       fault   baseline=50.00 -> final=50.00 
+RUN4 MIST=FIRE comparator=MISSED | control=3e5cf833e752d7a39beebe7390166073 fault=02209d5f64ac4c97f512d98bdc9a4b1f |       control baseline=50.00 -> final=130.00       fault   baseline=50.00 -> final=50.00 
+RUN5 MIST=FIRE comparator=MISSED | control=b7285c4306fa96f322ed3915b5713a17 fault=a63a88263195b403edf2e9fb022a3903 |       control baseline=50.00 -> final=130.00       fault   baseline=50.00 -> final=50.00 

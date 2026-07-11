@@ -1,0 +1,10 @@
+P4 orthogonal ground truth — DIRECT inside_money DB read (kubectl exec tsdb-mysql-0 mysql -uroot),
+a mechanism distinct from MIST's /account REST read-back transport (anti-circularity firewall).
+Query: SELECT type,money FROM ts.inside_money WHERE user_id=<buyer>.  type A = addMoney(prefund), D = drawback(refund).
+
+FAULT buyer b9951e14-e6e5-46ef-b74d-748cb164ee0e (fabricatedack ON):
+  A  50.00        <- prefund only; NO drawback D row => refund NEVER written to the DB (acked-but-lost)
+CONTROL buyer ea16d8b5-899a-4ded-966b-e7a89dc07dc2 (clean):
+  A  50.00
+  D  80.00        <- the drawback refund row present => refund landed
+Fault mode restored to none after.
