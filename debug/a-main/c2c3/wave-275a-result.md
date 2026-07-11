@@ -108,7 +108,12 @@ Counts unchanged (still 9 pos / 11 neg captured + 1 specified from wave-3a).
 ## End state
 
 - Code committed on `main_track`: transports 655fa0b; TeaStore leg 9eff481; OTel leg ba87306.
-- Tenants: OTel-Demo UP + verified healthy (post-recovery); TeaStore UP; TT still 0.
+- Tenants (at 2.75-A close): OTel-Demo UP + verified healthy (post-recovery); TeaStore UP; TT still 0.
+  **SUPERSEDED 2026-07-11:** both OTel-Demo and TeaStore were later scaled to 0 (user-authorized) to
+  free WSL RAM for the E2 TrainTicket revival — the 26 GB VM cannot hold all three tenants at once. So
+  this "tenants UP" end-state **no longer holds** (they are DOWN now, reversibly). The 2.75-A
+  *measurements* are unaffected (captured/committed/archived: the report JSONs + `ground-truth-*.txt`).
+  Disclosure of record: `debug/a-main/c2c3/e2-ram-teardown-note.md`.
 - Unit tests: 10 green (SqlDurableReadbackTest 6, JsonDurableReadbackTest 4); mist-cli BUILD SUCCESS.
 
 ## Not in this wave (deferred, unchanged)
