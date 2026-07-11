@@ -47,10 +47,20 @@ polling window is conclusively lost.
 
 ## Anti-circularity firewall (independent ground truth)
 
-MIST read the durable store via its oracle transport (`JsonDurableReadback`). Independently — a
-separate direct `curl` read of `/rest/orders`, NOT MIST's oracle — confirmed the same ground truth:
+Two distinct guards (not one — cold-review A-3/C-F5): (1) the ground-truth *label* is SUT-native (the
+order did/didn't durably land), read directly from `/rest/orders`, never from MIST's verdict; this
+direct read wraps the same collection MIST's transport reads, so it is a store re-read distinct from
+MIST's transport, not an orthogonal oracle. (2) The read-mechanism validator is the paired CONTROL
+leg: a systemically-broken read would null the control marker too → `control.readbackContainedX=false`
+→ NOT_EVALUABLE, never FIRE (the report shows `control.readbackContainedX=true`). This also carries
+the truncation soundness — the equally-fresh control marker found in the SAME full `/rest/orders`
+read proves the read window includes just-written orders (no `readback_bound` is set; `/rest/orders`
+serves newest-first, unbounded).
 
-- **5/5 control markers PERSISTED**; **0/5 fault markers persisted**; +5 total orders on the store.
+Committed evidence: `b4/enable/ground-truth-teastore.txt` lists every landed control marker (9 across
+this wave's two TeaStore runs — run1 N=4 + run2 N=5-of-record) and confirms **0 fault markers** —
+per-probe auditable. For the recorded run alone (run2, `teastore-order-run.report.json`): **5/5
+control persisted, 0/5 fault**.
 
 The verdict-valued MIST cell (`mist_readback_oracle=flag`) is therefore earned by a measured run
 whose ground truth was verified out-of-band. Audit property preserved: verdict-valued MIST cells

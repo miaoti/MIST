@@ -26,8 +26,11 @@ the live SUT (kind cluster `mist`, chart 0.40.9 / app 2.2.0, frontend-proxy PF :
 - **Fault (leg-level, single toggle — A-F8/B-F7):** the harness runs the control leg (kafka up),
   then a SINGLE `kubectl scale kafka --replicas=0`, then the fault leg, then restores. Broker-down
   makes checkout's async produce fail; checkout swallows-and-logs and acks 200 anyway.
-- **Async floor:** the read-back timeout is 25 s (≥ 20 s), comfortably over the measured ~5 s async
-  landing, so a control-leg late landing is never mis-read as absence.
+- **Async floor:** the read-back timeout is 25 s (≥ 20 s). The measured control landing this run was
+  sub-second (p0 present on the first poll at `elapsedMs=224`), so the floor is a conservative
+  over-provision — over-margin only ever risks a MISSED fire, never a false one; a control-leg late
+  landing can never be mis-read as absence. (The 25 s value was pre-registered against a
+  capture-time worst case of a few seconds; the live landing was faster.)
 - **N = 5 probe-pairs.**
 
 Harness/transport (committed): `mist-cli/src/main/java/io/mist/cli/enable/{OtelCheckoutHeadToHead,
@@ -48,10 +51,17 @@ Machine evidence: `b4/enable/oteldemo-checkout-run.report.json`.
 
 ## Anti-circularity firewall + permanence
 
-MIST read `accounting.shipping` via its oracle transport. Independently — direct `psql`, NOT MIST's
-oracle — confirmed:
+Two distinct guards (not one — cold-review A-3/C-F5): (1) the ground-truth *label* is SUT-native, read
+directly from the store, never taken from MIST's verdict; this direct `psql` read wraps the same
+query MIST's transport wraps, so it is a store re-read distinct from MIST's transport, not an
+orthogonal oracle. (2) The read-mechanism validator that forecloses a shared-mode read failure is the
+paired CONTROL leg: a silent wrong-schema/db read would null the control marker too →
+`control.readbackContainedX=false` → NOT_EVALUABLE, never FIRE (the report shows
+`control.readbackContainedX=true`). Committed evidence: `b4/enable/ground-truth-oteldemo.txt` (all 5
+control markers listed present, 0 fault). Confirmed:
 
-- **5/5 control markers persisted; 0/5 fault markers persisted.**
+- **5/5 control markers persisted; 0/5 fault markers persisted** (each of the 5 control markers is
+  listed in the ground-truth artifact — per-probe auditable).
 - **Fault markers STILL 0** after the pipeline was fully recovered and a heal canary drained. The
   loss is **permanent**, not pending: the fault-leg produce never entered the topic (kafka was
   down), so there is nothing to drain — distinct from a post-recovery heal canary, which landed only

@@ -1,0 +1,24 @@
+<stdin>:6: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+# TeaStore wave-2.75-A INDEPENDENT GROUND TRUTH (direct GET /rest/orders, NOT MIST's oracle)
+# Captured 2026-07-11T00:23:38Z from the persistence order collection.
+# Purpose (cold-review A-2/B-3/C-F5): per-probe auditable evidence - every control-leg marker
+# PRESENT, every fault-leg marker ABSENT - on a read distinct from MIST's JsonDurableReadback.
+# TWO TeaStore runs happened this wave: run1 (N=4) + run2 (N=5, the run OF RECORD =
+# teastore-order-run.report.json). So 9 control markers persisted across both; 0 fault, ALWAYS.
+# The point is per-probe: EVERY control write landed, EVERY fault write was masked-lost.
+
+## control-leg markers PRESENT (9 = run1 4 + run2 5):
+mist-control-p0-01cd67f9-5072-40bc-bb6c-6f081ecb540c
+mist-control-p0-ca03ca84-0bf5-40b2-bd15-2b98ecc0fbe0
+mist-control-p1-5879859b-a3ab-4443-82a8-e57adea77112
+mist-control-p1-a5241500-2751-4852-b079-49e1bee8455d
+mist-control-p2-1a3c0a6e-c6e5-4b08-a62f-8719dfd071a5
+mist-control-p2-f0e7526d-4a83-4e15-a853-b87fb9b8152f
+mist-control-p3-2c348189-8435-4c66-a800-b142073a9ec2
+mist-control-p3-5906b774-6597-473e-8fd9-6b752d4906e0
+mist-control-p4-dd997d55-b04d-41c0-b724-30b944f96ddb
+
+## fault-leg markers PRESENT (expect 0 = maintenance-masked, across BOTH runs' 9 fault probes):
+(end fault list - empty above = 0 rows)
+
+## counts: control present = 9   fault present = 0

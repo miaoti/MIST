@@ -73,6 +73,7 @@ public final class OtelCheckoutHeadToHead {
     private List<DataIntegrityRuntime.RunRecord> runLeg(TargetTripleRegistry.Triple triple, String leg)
             throws Exception {
         DataIntegrityRuntime.beginRun(Collections.singletonList(triple), leg);
+        List<DataIntegrityRuntime.RunRecord> records;
         try {
             for (int i = 0; i < probes; i++) {
                 String corr = triple.name + "#p" + i;                 // shared across legs, unique within
@@ -84,8 +85,11 @@ public final class OtelCheckoutHeadToHead {
                 DataIntegrityRuntime.afterWrite(triple.writeEndpoint, corr, ack.status, ack.body, null);
             }
         } finally {
-            return DataIntegrityRuntime.endRun();
+            // endRun() ALWAYS closes the session; do NOT `return` from finally — a probe-loop
+            // exception must PROPAGATE loud, not be swallowed into a silent partial leg (B-1).
+            records = DataIntegrityRuntime.endRun();
         }
+        return records;
     }
 
     /**
@@ -99,9 +103,13 @@ public final class OtelCheckoutHeadToHead {
         List<DataIntegrityRuntime.RunRecord> fault;
         System.out.println("  [inject] scaling kafka -> 0 (single toggle) ...");
         cluster.scaleKafka(0);
-        cluster.waitKafkaGone(90_000);
-        System.out.println("  [inject] kafka down; running fault leg ...");
+        // scaleKafka(0) is IMMEDIATELY followed by the restore-guarded try: if waitKafkaGone throws
+        // (pod stuck terminating), the finally still scales kafka back to 1 — the broker is never
+        // left down (cold-review B-2). If scaleKafka(0) itself threw, the command failed and kafka
+        // was never scaled, so no restore is owed.
         try {
+            cluster.waitKafkaGone(90_000);
+            System.out.println("  [inject] kafka down; running fault leg ...");
             fault = runLeg(triple, "fault");
         } finally {
             System.out.println("  [restore] scaling kafka -> 1 ...");

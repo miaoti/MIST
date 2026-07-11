@@ -1,0 +1,19 @@
+# OTel-Demo wave-2.75-A INDEPENDENT GROUND TRUTH (direct psql, NOT MIST's oracle)
+# Captured 2026-07-11T00:23:21Z from accounting.shipping on the postgresql pod.
+# Purpose (cold-review A-2/B-3/C-F5): per-probe auditable evidence — every control-leg marker
+# is PRESENT, every fault-leg marker is ABSENT — measured on a read distinct from the harness.
+# The run of record = oteldemo-checkout-run.report.json (N=5). One OTel run happened this wave.
+
+## control-leg markers PRESENT (expect 5):
+mist-control-p0-c511bd74-40db-484e-9b30-53d941ab2601
+mist-control-p1-3c35f147-38f1-44e1-aa2e-f925a7c200e3
+mist-control-p2-e77c7d50-f651-4bd5-8c21-10f8de51cd6c
+mist-control-p3-41960fb6-643b-4ab5-a2f6-5b45fc1647c6
+mist-control-p4-2c30d4f8-9b6a-401e-a74c-ff46e6d5a75a
+
+## fault-leg markers PRESENT (expect 0 = permanent async loss, STILL 0 post-heal):
+(end fault list — empty above = 0 rows)
+
+## counts:
+control present: 5
+fault present:   0

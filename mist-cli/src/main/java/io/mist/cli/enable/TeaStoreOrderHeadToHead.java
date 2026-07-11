@@ -68,6 +68,7 @@ public final class TeaStoreOrderHeadToHead {
     private List<DataIntegrityRuntime.RunRecord> runLeg(TargetTripleRegistry.Triple triple,
                                                         String leg, boolean faulted) throws Exception {
         DataIntegrityRuntime.beginRun(Collections.singletonList(triple), leg);
+        List<DataIntegrityRuntime.RunRecord> records;
         try {
             for (int i = 0; i < probes; i++) {
                 String corr = triple.name + "#p" + i;         // shared across legs, unique within a leg
@@ -78,8 +79,12 @@ public final class TeaStoreOrderHeadToHead {
                 DataIntegrityRuntime.afterWrite(triple.writeEndpoint, corr, ack.status, ack.body, null);
             }
         } finally {
-            return DataIntegrityRuntime.endRun();
+            // endRun() ALWAYS closes the session; but do NOT `return` from finally — a probe-loop
+            // exception (e.g. a stimulus failure, or maintenance left ON if the toggle throws) must
+            // PROPAGATE loud, not be swallowed into a silent partial leg (cold-review B-1).
+            records = DataIntegrityRuntime.endRun();
         }
+        return records;
     }
 
     /** Control leg then fault leg, then the paired MIST verdicts (one per probe pair). */
@@ -131,8 +136,10 @@ public final class TeaStoreOrderHeadToHead {
         System.setProperty("mst.test.parallelism", "1");
         try {
             // Full /rest/orders read (complete collection -> sound MEMBERSHIP absence; the marker is
-            // globally unique so no false match). Scope is left empty; the triple's readback_bound
-            // guards a truncation surprise (review B-R1).
+            // globally unique so no false match). Scope is left empty. Truncation soundness is carried
+            // by the paired CONTROL leg, not a row bound (none is set on this triple): the equally-fresh
+            // control marker is found in the SAME full read, so the read window demonstrably includes
+            // the just-written orders (cold-review A-4/B-4; /rest/orders serves newest-first, unbounded).
             DataIntegrityRuntime.installHttpOverride(new JsonDurableReadback(persistence, "", 8000));
             TargetTripleRegistry.Registry reg = TargetTripleRegistry.load(Paths.get(required("ts.triple")));
             TargetTripleRegistry.Triple triple = reg.triples.get(0);
