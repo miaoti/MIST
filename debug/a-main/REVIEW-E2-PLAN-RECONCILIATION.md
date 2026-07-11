@@ -87,6 +87,33 @@ the stimulus (fresh buyer, pre-fund 50.00, PAID order, bodyless cancel) still ma
 Rev 2 folds all 3 blocking + all 6 major findings + the minors. The conceptual upgrade (C-F1's
 DB-granularity comparator → specification-locality claim) makes the datum genuinely defensible rather
 than tautological, and the honest reframe (provenance-closure + bounded capability, NOT the headline;
-S3 still owed) matches all three reviewers. **NEXT: re-review rev 2 (unanimous ACCEPT required) before
-any execution.** The run itself is now correctly scoped as a secondary, S3-de-risking step — the real
-discrimination headline remains the rater-gated S3 natural-discriminator hunt.
+S3 still owed) matches all three reviewers.
+
+## Rev-2 confirmation pass (re-review) — UNANIMOUS CLEAR TO EXECUTE
+
+All three reviewers were resumed on rev 2 (context intact) and confirmed:
+
+| reviewer | rev-2 verdict | residual blocking |
+|---|---|---|
+| A (oracle-soundness) | ACCEPT-WITH-FIXES — "oracle-sound to execute now" | none (1 MAJOR = RESULT-wording, not run-blocking; 2 minor pins) |
+| B (engineering/repro) | ACCEPT-WITH-FIXES — "No residual blocking. Rev 2 is executable as written" | none (4 minor advisories) |
+| C (hostile-PC/claim) | **ACCEPT** — "cleared to execute" | none (4 minor RESULT-authoring guards) |
+
+**Both prior blockers verified closed** (B verified the new traceparent mechanism against the code +
+trace runbook; the P0 canary STOP gate makes the one new propagation assumption safe to attempt).
+
+**rev 2.1** folds the confirmation-pass minors: **A-MAJOR** (the claim is granularity/reusability +
+implementation-decoupling, NOT "out-of-the-box / zero-authoring" — MIST's read-back still needs a
+per-SUT binding; it is specified once at durable-business-outcome granularity vs the DB-span assertion
+coupled to the exact write span); **B-minor-1 + A-minor-1 reconciled** (read-back stays TIMEOUT-gated,
+trace-id used for export selection only — no Jaeger coupling, zero verdict difference, so
+`jaeger.base.url` is not needed for the gate); **B-minor-2** association fallback (per-leg time window,
+viable via the 5 separated JVMs); **B-minor-3** concrete P4 inside-payment-DB read; **B-minor-4**
+explicit P0 RAM-headroom step (consign-price→0, ≥400 MB); **A-minor-2 + C-minor-1** DoD = 5/5 EVALUABLE
+pairs + trace outcome reported AS MEASURED (frozen selectors, a deviation is the finding).
+
+The remaining reviewer items (A-MAJOR wording already folded; C's "per-write-specificity not
+impracticality" nuance; the DB-span-INSERT-vs-SELECT verify) are RESULT-authoring guards for the §7
+post-run 3-cold review, not run-blockers. **GATE SATISFIED → cleared to execute** (the standing rule:
+execution begins only after all reviewers accept — met). The run stays correctly scoped as a secondary,
+S3-de-risking step; the real discrimination headline remains the rater-gated S3 natural-discriminator hunt.

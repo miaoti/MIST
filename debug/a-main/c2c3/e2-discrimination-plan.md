@@ -1,7 +1,13 @@
-# Plan — E2 read-back capability + provenance-closure run (rev 2)
+# Plan — E2 read-back capability + provenance-closure run (rev 2.1)
 
-**Status:** rev 2 (after 3-cold-review: 1 REJECT + 2 ACCEPT-WITH-FIXES on rev 1; reconciliation =
-`REVIEW-E2-PLAN-RECONCILIATION.md`). Nothing executes until a re-review returns unanimous ACCEPT.
+**Status:** rev 2.1 — **RE-REVIEW UNANIMOUS: all three reviewers CLEARED EXECUTION** (A oracle-soundness
+"oracle-sound to execute now"; B engineering "no residual blocking, executable as written"; C hostile-PC
+"cleared to execute"). rev 1 was 1 REJECT + 2 ACCEPT-WITH-FIXES; rev 2 folded every blocking+major; rev
+2.1 folds the confirmation-pass minors (A-MAJOR granularity-not-"out-of-the-box" wording; B-1 gate stays
+TIMEOUT-gated with trace-id for export-selection-only; concrete P4 DB read; explicit P0 RAM-headroom;
+5/5-EVALUABLE + trace-outcome-as-measured DoD; association fallback). Reconciliation of both rounds =
+`REVIEW-E2-PLAN-RECONCILIATION.md`. **GATE SATISFIED → cleared to execute.** Residual reviewer items are
+RESULT-authoring guards for the post-run 3-cold review (§7), not run-blockers.
 **What this run IS (reframed per the review — C-F1/C-F2/C-F5):** it CLOSES a provenance liability and
 produces a bounded *specification-locality* capability datum. It is **NOT** the paper's discrimination
 headline. The headline — a NATURAL fault where an in-practice trace oracle misses and read-back catches
@@ -22,9 +28,15 @@ headline. The headline — a NATURAL fault where an in-practice trace oracle mis
      trace has 0 such spans vs control's 2),
    - MIST durable-value read-back → **CATCH** with no pre-specified per-write assertion.
    The claim is therefore NOT "read-back beats trace" (false — a DB-granularity trace assertion catches
-   it). It is: **read-back catches this acked-lost write out-of-the-box, whereas a trace oracle catches
-   it only if the author pre-specified an assertion on the exact durable write that was skipped** — a
-   specification-locality / authoring-burden argument (C-F1). That is the interesting, honest point.
+   it), and NOT "read-back is assertion-free" (false — it needs a per-SUT triple binding, costed at
+   ~1–2 h/SUT in 2.75-A). The honest claim is a **granularity / implementation-coupling** distinction
+   (A-MAJOR): MIST's read-back is specified ONCE, per SUT, at the **durable business-outcome** granularity
+   (the buyer's refunded balance) — implementation-independent, so it catches ANY drop mechanism (skipped
+   INSERT, rolled-back tx, wrong-account write) without change; whereas the DB-span presence assertion is
+   coupled to the **exact internal write span** the author must know to assert on, and is brittle to a
+   persistence refactor. So: same detection here, but the read-back's specification is coarser-grained,
+   reusable across mechanisms, and implementation-decoupled — NOT "zero authoring." That is the honest,
+   defensible point (C-F1 as corrected by A-MAJOR).
 
 Neither deliverable is a prevalence, recall, or "trace can never catch it" claim.
 
@@ -55,15 +67,22 @@ guards `requirePreFundedBaselines` (same POSITIVE baseline both legs) and `requi
 retained as a secondary comparator, not the point.
 
 **Disclosed changes required (rev-1 wrongly said "no harness change"):**
-- **C1 — trace-id capture (resolves the A-B1/B-2 BLOCKING coherence gap AND the gate).** The TT gateway
-  is header-transparent and the harness passes `afterWrite(..., traceId=null)`, so nothing ties a leg's
-  cancel to a trace, and `trace_score.py` requires exactly-one-trace-per-file (it selects by
+- **C1 — trace-id capture for EXPORT SELECTION (resolves the A-B1/B-2 BLOCKING coherence gap).** The TT
+  gateway is header-transparent and the harness passes `afterWrite(..., traceId=null)`, so nothing ties a
+  leg's cancel to a trace, and `trace_score.py` requires exactly-one-trace-per-file (it selects by
   service+kind, not by buyer). Fix: the stimulus injects a CLIENT-GENERATED W3C `traceparent` on the
-  cancel, returns its trace-id in `Resp`, and the harness (a) feeds it to `afterWrite` (earning a
-  trace-gated read-back instead of timeout-gated — the real, not aspirational, stronger gate) and (b)
-  uses it to select EXACTLY that cancel's trace for scoring. This is a real behavioral change to the g3
-  harness + stimulus — disclosed, visibility-plus-gate, unit-tested, and it does not alter the verdict
-  predicate.
+  cancel and returns its trace-id in `Resp`; the harness uses that id to fetch EXACTLY that cancel's trace
+  (`/jaeger/api/traces/<id>`) for scoring — satisfying the exactly-one-trace guard by construction.
+  **The read-back stays TIMEOUT-gated as in G3** (B-minor-1 + A-minor-1 reconciled): the trace-id is used
+  for EXPORT SELECTION ONLY, NOT fed to `afterWrite` to trace-gate the verdict. Trace-gating would couple
+  MIST's poll to Jaeger export latency/availability for ZERO verdict difference (both gates FIRE on the
+  permanent fabricated-ack skip; only the confidence label changes), so we drop that failure surface. This
+  is a real, disclosed behavioral change to the g3 harness + stimulus — visibility-only (no verdict-predicate
+  change), unit-tested. Because the read-back is not trace-gated, `jaeger.base.url` is NOT needed for the
+  gate; the Jaeger QUERY API is used only by the out-of-band trace fetch/scoring. **Association fallback
+  (B-minor-2):** if P0's canary shows the injected traceparent is NOT adopted (gateway strips it / istio
+  re-roots), fall back to a per-leg tight time-window query — viable precisely because C3 runs 5 temporally
+  separated JVMs (one cancel per window); the exactly-one guard then holds by temporal isolation.
 - **C2 — DB-span-granularity presence selector in `trace_score.py`.** Add a third, FROZEN selector: the
   inside-payment DB-client INSERT span (db.system + the drawback/Money write). Report all three trace
   configs (C-F1). Committed BEFORE the run (pre-registered selectors, no post-hoc tuning), scored off
@@ -81,7 +100,9 @@ retained as a secondary comparator, not the point.
   restores replica counts + nacos doubleWrite + image tags ONLY. So P0 re-runs the traced-wave
   instrumentation for the cancel path (order / cancel / inside-payment): the `scale-0 → single kubectl
   patch (javaagent hostPath volume+mount + OTEL_* env) → scale-1` dance with its pre-wave gates
-  (deploy-spec snapshot, RAM headroom, agent-OOM watch). Verify: istio + `jaeger-collector.istio-system:4318`
+  (deploy-spec snapshot; **RAM-headroom step made explicit (B-4): scale `consign-price` to 0 and confirm
+  ≥400 MB free before the OOM-prone agent patch**, per the traced-capture-wave runbook; `-Xmx` cap +
+  agent-OOM watch). Verify: istio + `jaeger-collector.istio-system:4318`
   up (they live OUTSIDE the TT ns and are not in the TT snapshot); a canary cancel produces a trace in
   Jaeger v2 with the injected traceparent's id resolvable. GATE: no canary trace ⇒ STOP, do not measure.
 - **P1 — Revive + smoke.** Snapshot replica revival + nacos doubleWrite + demo-DoD 7/7 GREEN + N≥4
@@ -97,9 +118,12 @@ retained as a secondary comparator, not the point.
   blind, an export-health canary — control MUST show the DB-client spans or the fault no_flag is
   uninformative); DB-span presence = present-control / absent-fault = CATCH. This is the
   specification-locality datum.
-- **P4 — Independent ground truth (anti-circularity).** Read the label from the inside-payment DB (a
-  mechanism ORTHOGONAL to MIST's `/account` transport — A-m3; the `/account` re-read wraps the same
-  endpoint, so it is a store re-read, not an orthogonal oracle, carried as the 2.75-A caveat). The
+- **P4 — Independent ground truth (anti-circularity).** Pin the read (B-3): `kubectl exec` the
+  inside-payment MySQL pod and query the money/payment table for the buyer's persisted drawback row
+  (`SELECT ... FROM <inside-payment money table> WHERE userId=<buyer>` — the exact table/pod named at
+  P0 from the fork schema), a mechanism ORTHOGONAL to MIST's `/account` REST transport (A-m3; the
+  `/account` re-read wraps the same endpoint, so it is a store re-read, not an orthogonal oracle, carried
+  as the 2.75-A caveat). Expect: the drawback money row PRESENT on control, ABSENT on fault. The
   read-mechanism validator remains the paired CONTROL leg (control must show +refund, else NOT_EVALUABLE).
 - **P5 — Flip the cell + freeze + RESULT.** `mist_readback_oracle` PRE-REGISTERED→run-backed flag
   (dated freeze §6 row); add the DB-span-granularity trace-comparator result to the case; RESULT-of-record
@@ -114,10 +138,12 @@ retained as a secondary comparator, not the point.
   delta==refund; refund-magnitude is carried by `printProbeValues` + the ground-truth read, not the
   predicate. State this so FIRE is not over-read as amount-verified. `requirePreFundedBaselines` makes it
   a real arithmetic delta (same positive baseline both legs), defeating the appear-vs-absent critique.
-- **Gate (A-M1/B-4 corrected):** with C1's trace-id capture the read-back is TRACE-GATED (stronger). If
-  C1 is descoped, the timeout-gate is still sound HERE because `fabricatedack` is a by-construction
-  PERMANENT skip (no slow-refund competing hypothesis) and control lands within the cap — NOT because
-  the deploy "may" strengthen it (rev-1's claim was unreachable with `traceId=null`).
+- **Gate (A-M1/B-4/B-minor-1 corrected):** the read-back is TIMEOUT-gated (C1 uses the trace-id for
+  export selection only, not to trace-gate the verdict — one fewer failure surface, zero verdict
+  difference). Timeout-gating is sound HERE because `fabricatedack` is a by-construction PERMANENT skip
+  (no slow-refund competing hypothesis) and control lands within the cap. (rev-1's "traced deploy may
+  strengthen the gate" was unreachable with `traceId=null` and is retired; we deliberately do NOT
+  re-introduce trace-gating.)
 - **Claim-eligibility:** correlator join + unique per leg (asserted, fail-closed).
 - **Trace T6 attestation:** DEFAULT javaagent instrumentation, no suppression — "trace misses at
   naive/service-map granularity" is not an artifact of hidden spans.
@@ -142,10 +168,17 @@ retained as a secondary comparator, not the point.
 
 ## §7 Definition of done
 
-MIST read-back FIRE 5/5 on the traced fabricated-ack deploy (harness, trace-id-gated); frozen
-`trace_score.py` (3 configs) on the SAME run's traces = naive MISS + service-map-presence MISS +
-DB-span-presence CATCH, reported for BOTH legs; independent ground truth from the orthogonal DB read
-committed; the corpus cell flipped to run-backed + the DB-span-comparator result added, with a dated
-freeze §6 row; RESULT-of-record carrying §0/§1 verbatim (provenance-closure + specification-locality,
-NOT the headline; corpus gives breadth not natural discrimination; S3 still owed); docs/memory synced;
-TT left in a known state. THEN a 3-cold review of the RESULT before it is called claim-ready.
+MIST read-back FIRE on **5/5 EVALUABLE pairs** (timeout-gated, harness) on the traced fabricated-ack
+deploy — a pair that goes NOT_EVALUABLE on a fail-closed guard (stable-baseline / pre-fund) is RE-RUN,
+never counted as a soft result; any residual attrition is disclosed (A-minor-2). The frozen
+`trace_score.py` (3 configs) is run on the SAME run's id-selected traces for BOTH legs and its outcome
+is **reported AS MEASURED** (C-minor-1) — the PRE-REGISTERED expectation is naive MISS + service-map
+MISS + DB-span CATCH; the selectors are frozen and NOT re-tuned, so a deviation (e.g. a service-map
+CATCH) is THE FINDING, not a DoD failure to reconcile; the control-leg export-health canary must show
+the inside-payment DB-client spans or the fault-leg no_flag is declared uninformative. Independent
+ground truth from the orthogonal inside-payment DB read committed; the corpus cell flipped to run-backed
++ the DB-span-comparator result added, with a dated freeze §6 row; RESULT-of-record carrying §0/§1
+verbatim (provenance-closure + the granularity/reusability specification-locality claim — NOT "out-of-
+the-box", NOT the headline; corpus gives breadth not natural discrimination; S3 still owed);
+docs/memory synced; TT left in a known state. THEN a 3-cold review of the RESULT before it is called
+claim-ready.
