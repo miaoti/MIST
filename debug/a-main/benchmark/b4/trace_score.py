@@ -21,6 +21,14 @@ Pinned semantics (reconciliation T6/T8, B-M1):
   services in the selected trace. Mechanical. NO exclusions ever.
 - DB-granularity REPORT (not a verdict): counts DB-client spans (jdbc/mysql/mongo) per service -- the
   T6 mandatory disclosure datum (control leg shows the write span; fabricated-ack leg lacks it).
+- DB-granularity PRESENCE verdict (E2 plan rev 2.1, C2; FROZEN + committed BEFORE the E2 run): an
+  EXISTENCE assertion at DB-CLIENT-span granularity -- a DB-client span (db.system in DB_SYSTEMS) of the
+  case's "db_presence" service whose operation matches the frozen fragment. This is the STRONGEST trace
+  comparator and it CATCHES the fabricated-ack (the skipped INSERT is absent on the fault leg), so the
+  head-to-head reports all THREE trace configs (naive MISS / service-map-presence MISS / DB-span CATCH).
+  The point is specification-locality: this verdict exists only because the author pre-specified an
+  assertion on the EXACT skipped durable write; the coarser service-map presence (drawback SERVER span,
+  present on both legs) misses. only cases carrying a "db_presence" selector emit this verdict.
 - Agent pin: opentelemetry-javaagent 1.33.6
   sha256 055c4fe4c67b0eed944d09e4e130d79255ad226929d11cdc71286d6ba67e4fdb; 1.x semconv
   (http.target/http.method/http.status_code). Selector authoring cost: ~12 min for the 4-case table.
@@ -51,7 +59,12 @@ INSTRUMENTED = {
 #   (sockshop: POST /orders). Canary-bound names: Envoy = <svc>.<ns> (productpage.default,
 #   ratings.default...); javaagent = plain OTEL_SERVICE_NAME (orders, shipping, queue-master).
 SELECTORS = {
-    "TT-cancel-refund":        {"entry": "ts-cancel-service",           "presence": ("ts-inside-payment-service", "drawback")},
+    "TT-cancel-refund":        {"entry": "ts-cancel-service",           "presence": ("ts-inside-payment-service", "drawback"),
+                                # E2/C2 (FROZEN pre-E2-run): the DB-CLIENT INSERT of the drawback Money row
+                                # in inside-payment. Present-control / absent-fault = the DB-granularity
+                                # trace comparator that CATCHES (op fragment "insert"; the P3 control-leg
+                                # canary must show this span or the fault no_flag is declared uninformative).
+                                "db_presence": ("ts-inside-payment-service", "insert")},
     "TT-createaccount":        {"entry": "ts-inside-payment-service",   "presence": None},
     "TT-adminroute":           {"entry": "ts-admin-route-service",      "presence": ("ts-route-service", "routeservice")},
     "TT-adminbasic-contacts":  {"entry": "ts-admin-basic-info-service", "presence": ("ts-contacts-service", "contact")},
@@ -167,6 +180,7 @@ def score(case_id, trace_path):
     spans = [(t, s) for t in scan for s in t.get("spans", [])]
 
     entry_seen, presence_hit, error_spans, db_report = False, False, [], {}
+    db_presence_hit = False  # E2/C2: the frozen DB-client INSERT span of the drawback write
     for t, s in spans:
         procs = {pid: p.get("serviceName", "?") for pid, p in t.get("processes", {}).items()}
         svc = procs.get(s.get("processID"), "?")
@@ -187,6 +201,10 @@ def score(case_id, trace_path):
         db_sys = str(tags.get("db.system", tags.get("db.system.name", ""))).lower()
         if db_sys in DB_SYSTEMS:
             db_report[svc] = db_report.get(svc, 0) + 1
+            # E2/C2: the DB-CLIENT-granularity presence verdict (frozen selector; existence-only).
+            dp = sel.get("db_presence")
+            if dp and svc == dp[0] and dp[1] in op.lower():
+                db_presence_hit = True
 
     if not entry_seen:
         raise SystemExit("ERROR: entry server span for %s not found -- wrong trace selected?" % sel["entry"])
@@ -197,12 +215,21 @@ def score(case_id, trace_path):
     else:
         presence = "no_flag" if presence_hit else "flag"
 
+    # E2/C2: the DB-CLIENT-granularity presence verdict (only for cases with a frozen db_presence).
+    db_presence_sel = sel.get("db_presence")
+    if db_presence_sel is None:
+        db_presence = "not_applicable"
+    else:
+        db_presence = "no_flag" if db_presence_hit else "flag"
+
     print(json.dumps({
         "case_id": case_id, "trace": trace_path, "spans": len(spans),
         "naive_span_error_oracle": naive,
         "error_spans": error_spans,
         "tracetest_presence_oracle_verdict_on_this_leg": presence,
         "presence_selector": sel["presence"],
+        "db_span_presence_oracle_verdict_on_this_leg": db_presence,
+        "db_presence_selector": db_presence_sel,
         "db_client_spans_per_service (T6 disclosure)": db_report,
     }, indent=1))
 

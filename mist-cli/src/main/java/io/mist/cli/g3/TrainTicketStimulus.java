@@ -33,6 +33,8 @@ import static io.restassured.RestAssured.given;
 public final class TrainTicketStimulus implements CancelRefundHeadToHead.Stimulus {
 
     private static final AtomicLong SEQ = new AtomicLong();
+    /** E2/C1: source of the client-generated traceparent trace/span ids (not security-sensitive). */
+    private static final java.util.Random RNG = new java.util.Random();
 
     /**
      * TrainTicket launcher: sets the gateway base URL, registers a fresh per-JVM reader
@@ -174,9 +176,16 @@ public final class TrainTicketStimulus implements CancelRefundHeadToHead.Stimulu
 
     @Override
     public CancelRefundHeadToHead.Resp cancel(CancelRefundHeadToHead.Order order) {
+        // E2/C1: inject a client-generated W3C traceparent so the SUT (always-on sampler) roots the
+        // cancel's server span on OUR trace-id, making exactly this operation's trace fetchable by id
+        // for out-of-band scoring. Export-selection only — the read-back stays timeout-gated, so this
+        // never touches the verdict. If the SUT does not adopt it (P0 canary), the run falls back to
+        // per-leg time windows (viable via the 5 temporally-separated JVMs).
+        CancelRefundHeadToHead.ClientTrace ct = CancelRefundHeadToHead.newClientTrace(RNG);
         Response r = given().header("Authorization", "Bearer " + order.token)
+                .header("traceparent", ct.traceparent)
                 .get("/api/v1/cancelservice/cancel/" + order.orderId + "/" + order.loginId);
-        return new CancelRefundHeadToHead.Resp(r.statusCode(), r.asString());
+        return new CancelRefundHeadToHead.Resp(r.statusCode(), r.asString(), ct.traceId);
     }
 
     private static String firstOrderId(String queryBody) {

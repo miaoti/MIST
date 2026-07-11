@@ -76,15 +76,50 @@ public final class CancelRefundHeadToHead {
         }
     }
 
-    /** A minimal HTTP response (status + raw body). */
+    /** A minimal HTTP response (status + raw body + the client trace-id, if one was injected). */
     public static final class Resp {
         public final int status;
         public final String body;
+        /**
+         * E2 (plan rev 2.1, C1): the client-generated W3C trace-id the stimulus put on this write's
+         * {@code traceparent}, used ONLY to select exactly this operation's trace for out-of-band
+         * scoring. It does NOT gate the read-back (that stays timeout-gated — B-minor-1), so it never
+         * touches the verdict; {@code null} when no traceparent was injected (the legacy G3 path).
+         */
+        public final String traceId;
 
         public Resp(int status, String body) {
+            this(status, body, null);
+        }
+
+        public Resp(int status, String body, String traceId) {
             this.status = status;
             this.body = body;
+            this.traceId = traceId;
         }
+    }
+
+    /** A client-generated W3C trace context: the 32-hex trace-id + the full {@code traceparent} header. */
+    public static final class ClientTrace {
+        public final String traceId;
+        public final String traceparent;
+
+        public ClientTrace(String traceId, String traceparent) {
+            this.traceId = traceId;
+            this.traceparent = traceparent;
+        }
+    }
+
+    /**
+     * E2/C1: mint a valid W3C {@code traceparent} (version 00, sampled) with a fresh non-zero 32-hex
+     * trace-id + 16-hex parent-span-id, so the SUT (always-on sampler) roots the cancel's server span on
+     * OUR trace-id and the exact operation's trace is fetchable by id. Extracted + deterministic-format
+     * so it is unit-testable without the live SUT.
+     */
+    public static ClientTrace newClientTrace(java.util.Random rnd) {
+        String traceId = String.format("%016x%016x", rnd.nextLong(), rnd.nextLong() | 1L); // non-zero
+        String spanId = String.format("%016x", rnd.nextLong() | 1L);                        // non-zero
+        return new ClientTrace(traceId, "00-" + traceId + "-" + spanId + "-01");
     }
 
     private final Stimulus stimulus;
@@ -99,11 +134,14 @@ public final class CancelRefundHeadToHead {
     private static final class LegOutcome {
         final List<DataIntegrityRuntime.RunRecord> mistRecords;
         final ContractEvaluator.EndpointOutcome comparator;
+        /** E2/C1: the cancel's client trace-id for out-of-band trace export selection; may be null. */
+        final String traceId;
 
         LegOutcome(List<DataIntegrityRuntime.RunRecord> mistRecords,
-                   ContractEvaluator.EndpointOutcome comparator) {
+                   ContractEvaluator.EndpointOutcome comparator, String traceId) {
             this.mistRecords = mistRecords;
             this.comparator = comparator;
+            this.traceId = traceId;
         }
     }
 
@@ -113,6 +151,7 @@ public final class CancelRefundHeadToHead {
         DataIntegrityRuntime.beginRun(Collections.singletonList(triple), leg);
         ContractEvaluator.EndpointOutcome comparator;
         List<DataIntegrityRuntime.RunRecord> records;
+        String traceId = null;
         try {
             Order order = stimulus.createPaidOrder();
             // Correlator identifies the WRITE, not the leg — it must be IDENTICAL across the
@@ -123,7 +162,9 @@ public final class CancelRefundHeadToHead {
             DataIntegrityRuntime.beforeWriteSupplied(triple.writeEndpoint, corr, null,
                     "userId", order.loginId);
             Resp cancel = stimulus.cancel(order);
-            // MIST: acknowledge + poll the /account read-back for the refund (value-delta).
+            traceId = cancel.traceId; // E2/C1: for out-of-band trace export selection (NOT the gate)
+            // MIST: acknowledge + poll the /account read-back for the refund (value-delta). traceId
+            // stays null here on purpose — the read-back is TIMEOUT-gated (B-minor-1), not trace-gated.
             DataIntegrityRuntime.afterWrite(triple.writeEndpoint, corr, cancel.status,
                     cancel.body, null);
             // Comparator: the SAME cancel response against the frozen contract. The cancel's
@@ -138,7 +179,7 @@ public final class CancelRefundHeadToHead {
         } finally {
             records = DataIntegrityRuntime.endRun();
         }
-        return new LegOutcome(records, comparator);
+        return new LegOutcome(records, comparator, traceId);
     }
 
     /** One stratum: clean control leg, then the faulted leg, then both oracles' verdicts. */
@@ -160,6 +201,10 @@ public final class CancelRefundHeadToHead {
         requirePreFundedBaselines(control.mistRecords, fault.mistRecords);
         printCell(stratum, mist, control.comparator, fault.comparator);
         printProbeValues(control.mistRecords, fault.mistRecords);
+        // E2/C1: emit each leg's cancel trace-id so the out-of-band scorer fetches EXACTLY that
+        // operation's trace (exactly-one-trace guard satisfied by id). Read-back stays timeout-gated.
+        System.out.println("  cancel trace-ids (out-of-band trace-score selection): control="
+                + control.traceId + " fault=" + fault.traceId);
     }
 
     /**
