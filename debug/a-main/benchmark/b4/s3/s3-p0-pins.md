@@ -17,7 +17,18 @@ One observation cadence for ALL strata (plan §4.2): initial poll cadence + the 
 pinned identically for S3 windows, top-up captures, and calibration. Each journey has exactly ONE
 bound write (the marker-carrying create/checkout) preceded by ≥1 read step (the write-path-fraction
 denominator, plan §5). Markers use the pre-registered ban-free grammar `corpus-w<seq>-<12hex>`
-(`WildHuntEngine.nextMarker`, seed `20260713`).
+(`WildHuntEngine.nextMarker`, base seed `20260713`).
+
+**Marker-seed salting (disclosed refinement, TT-only).** TT's admin-basic writes are UNIQUE-KEYED
+(station.name/id, config.name, price.trainType), so a *fixed* seed re-generates a prior run's markers
+and the store rejects the duplicate (HTTP 200 `{status:0}` → not-acked, NOT a detector event). The TT
+runner therefore XOR-salts the pinned base seed `20260713` with a per-run nonce (`System.nanoTime()`)
+so every run's markers are globally unique against the persistent store; the effective seed is recorded
+our-side in `window-log.json.environment_guard.marker_seed_effective` (provenance; never rater-facing).
+The ban-free grammar and the "no tell-string" property are UNCHANGED (unit-tested); exact hex values are
+scientifically opaque (the assembler rebases/opaquifies). OTel/TeaStore writes are NOT unique-keyed (a
+re-run just appends a row; the marker-scoped read-back still finds it), so their runners keep the raw
+pinned seed and their already-emitted windows are unaffected.
 
 ### OTel-Demo (`OtelWildHunt`, SqlDurableReadback — MEMBERSHIP on accounting.shipping)
 1. `GET /api/products/0PUK6V6EV0` (read step)

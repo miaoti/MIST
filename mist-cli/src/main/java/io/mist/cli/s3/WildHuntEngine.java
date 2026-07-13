@@ -128,6 +128,14 @@ public final class WildHuntEngine {
     private long readSteps = 0;
     private long writeSteps = 0;
     private int failedJourneys = 0;
+    /** Inter-journey pacing (default 0). TT sets it to stay under the gateway rate limiter (429s);
+     *  this is workload pacing only — it does NOT change the per-case observation cadence (poll +
+     *  re-probe are set by the knobs), so cross-strata cadence uniformity is preserved. */
+    private long journeyDelayMs = 0;
+
+    public void setJourneyDelayMs(long ms) {
+        this.journeyDelayMs = ms;
+    }
 
     public WildHuntEngine(String sutName, String windowId, Path outDir, long reProbeDelayMs,
                           long markerSeed, FlagHook hook) {
@@ -392,6 +400,9 @@ public final class WildHuntEngine {
                     System.err.println("journey " + done + " failed (operational, skipped): " + ex);
                 }
                 pumpReProbes(reProbeTransportOrNull, swap);
+                if (journeyDelayMs > 0) {
+                    Thread.sleep(journeyDelayMs);
+                }
                 if (++done % 25 == 0) {
                     System.out.println("progress " + done + "/" + total + " writes=" + ledger.size()
                             + " failed=" + failedJourneys);

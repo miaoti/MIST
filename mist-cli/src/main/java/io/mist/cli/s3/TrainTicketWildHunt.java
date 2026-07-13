@@ -70,8 +70,22 @@ public final class TrainTicketWildHunt {
         TargetTripleRegistry.Registry reg = TargetTripleRegistry.load(Paths.get(System.getProperty(
                 "s3.triples", "debug/a-main/benchmark/b4/s3/trainticket-adminbasic-triples.yaml")));
 
+        // TT admin-basic writes are UNIQUE-KEYED (station.name/id, config.name, price.trainType), so a
+        // FIXED marker seed re-generates a prior run's markers and the store rejects the duplicate
+        // (HTTP 200 {status:0} → not-acked). Salt the pinned base seed with a per-run nonce so every
+        // run's markers are globally unique against the persistent store. The ban-free grammar
+        // `corpus-w<seq>-<12hex>` is unchanged (unit-tested); marker values are scientifically opaque
+        // (the assembler rebases/opaquifies). Disclosed in s3-p0-pins.md §1/§3. (OTel/TeaStore writes
+        // are NOT unique-keyed — re-runs simply add rows — so only TT needs the salt.)
+        long baseSeed = Long.getLong("s3.marker.seed", 20260713L);
+        long effSeed = baseSeed ^ System.nanoTime();
+        System.out.println("marker seed: base=" + baseSeed + " effective=" + effSeed + " (per-run salted)");
         WildHuntEngine engine = new WildHuntEngine("trainticket", mode + "-trainticket", outDir,
-                reProbeMs, Long.getLong("s3.marker.seed", 20260713L), null);
+                reProbeMs, effSeed, null);
+        // TT's gateway (Spring Cloud Gateway + Sentinel) rate-limits bursts (429s corrupt read-backs).
+        // Pace the workload to stay under it — pure inter-journey pacing, NOT an observation-cadence
+        // knob (poll/re-probe are unchanged), so cross-strata cadence uniformity holds. Default 800 ms.
+        engine.setJourneyDelayMs(Long.getLong("s3.journey.delay.ms", 800L));
         for (TargetTripleRegistry.Triple t : reg.triples) {
             engine.setProbe(t.name, t.readbackEndpoint); // per-triple neutral read-back descriptor
         }
@@ -91,7 +105,8 @@ public final class TrainTicketWildHunt {
         engine.emit(System.getProperty("s3.mist.commit", "unpinned"),
                 "train-ticket @ MIST-trainticket branch (k8s/minikube deploy)",
                 new JSONObject().put("gateway", base).put("bound_endpoints", reg.triples.size())
-                        .put("admin_auth", "MstAuthHandler per_jvm"));
+                        .put("admin_auth", "MstAuthHandler per_jvm")
+                        .put("marker_seed_base", baseSeed).put("marker_seed_effective", effSeed));
         System.out.println("window done: see " + outDir.resolve("window-log.json"));
     }
 
