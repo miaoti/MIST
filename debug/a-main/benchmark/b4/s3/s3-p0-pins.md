@@ -103,10 +103,16 @@ into the bundle.
   build will re-run this check against the actual pinned OTel doc set and record verbatim any
   completion statement IF ONE EXISTS; absent that, none is manufactured.
 
-- **TeaStore order confirm — check deferred to P2 bundle build; expected: NO bound.**
-  The webui→persistence order write; TeaStore is a reference/benchmark app whose material describes
-  architecture, not durability SLAs. Expected finding: no async-completion bound statement upstream.
-  Recorded verbatim IF one exists at the P2 bundle build; never manufactured.
+- **TeaStore order confirm — SYNCHRONOUS, no async bound needed (P2, observed).**
+  The webui `cartAction` confirm makes a BLOCKING REST call to the persistence service's order
+  create and returns only after it responds; there is no queue/async deferral. Observed live: the
+  §3 FP calibration's 20/20 writes were present-at-cap IMMEDIATELY (poll 1, no async lag), and 2.75-A
+  already pinned TeaStore as a sync SUT (`TIMEOUT_ABSENT`, no async-completion signal). **Consequence:**
+  a `cartAction`-acked order absent from `/rest/orders` at cap is NOT excusable as async lag — it is
+  sync-acked-but-lost, genuine-eligible exactly like TT (though the honest prior C-M1 still expects 0
+  NATURAL finds — every TeaStore acked-loss ever captured required an injected fault: maintenance-mask
+  / mesh-sever). TeaStore has no upstream durability-SLA material, so no async-completion bound exists
+  or is manufactured. (TeaStore is trace-uninstrumented ⇒ sidecar-only; no comparator trace column.)
 
 **Rule of record:** OTel/TeaStore bundles do not exist yet (built at P1/P2); this check is
 pre-registered here and DISCHARGED verbatim at each bundle build. Only TT's bundle exists now and its

@@ -1,0 +1,16 @@
+{
+ "breaker_events": [],
+ "environment_guard": {"maintenance_verified_false": "autoseed-100users-185orders-baseline"},
+ "read_steps": 20,
+ "sut": "teastore",
+ "failed_journeys": 0,
+ "per_endpoint": {"POST /tools.descartes.teastore.webui/cartAction": {
+  "raw_confirmed": 0,
+  "acked_writes": 20
+ }},
+ "write_path_fraction": 0.5,
+ "writes_total": 20,
+ "classification_counts": {"present": 20},
+ "window": "calibration-teastore",
+ "write_steps": 20
+}
