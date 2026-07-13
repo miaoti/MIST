@@ -1,0 +1,211 @@
+[
+ {
+  "recordError": null,
+  "traceId": null,
+  "reProbe": null,
+  "endpoint": "POST /api/v1/adminbasicservice/adminbasic/stations",
+  "ackStatus": 200,
+  "marker": "corpus-w1-9b571d418c3d",
+  "index": 0,
+  "gate": "OBSERVED_PRESENT",
+  "classification": "present"
+ },
+ {
+  "recordError": null,
+  "traceId": null,
+  "reProbe": null,
+  "endpoint": "POST /api/v1/adminbasicservice/adminbasic/configs",
+  "ackStatus": 200,
+  "marker": "corpus-w2-4d65bc1dd5e8",
+  "index": 1,
+  "gate": "OBSERVED_PRESENT",
+  "classification": "present"
+ },
+ {
+  "recordError": null,
+  "traceId": null,
+  "reProbe": null,
+  "endpoint": "POST /api/v1/adminbasicservice/adminbasic/prices",
+  "ackStatus": 200,
+  "marker": "corpus-w3-56843db977e7",
+  "index": 2,
+  "gate": "OBSERVED_PRESENT",
+  "classification": "present"
+ },
+ {
+  "recordError": null,
+  "traceId": null,
+  "reProbe": null,
+  "endpoint": "POST /api/v1/adminbasicservice/adminbasic/stations",
+  "ackStatus": 200,
+  "marker": "corpus-w4-8e58977385f0",
+  "index": 3,
+  "gate": "OBSERVED_PRESENT",
+  "classification": "present"
+ },
+ {
+  "recordError": null,
+  "traceId": null,
+  "reProbe": null,
+  "endpoint": "POST /api/v1/adminbasicservice/adminbasic/prices",
+  "ackStatus": 200,
+  "marker": "corpus-w6-0dbbeacb5051",
+  "index": 4,
+  "gate": "OBSERVED_PRESENT",
+  "classification": "present"
+ },
+ {
+  "recordError": null,
+  "traceId": null,
+  "reProbe": null,
+  "endpoint": "POST /api/v1/adminbasicservice/adminbasic/stations",
+  "ackStatus": 200,
+  "marker": "corpus-w7-d512e6bce9e9",
+  "index": 5,
+  "gate": "OBSERVED_PRESENT",
+  "classification": "present"
+ },
+ {
+  "recordError": null,
+  "traceId": null,
+  "reProbe": null,
+  "endpoint": "POST /api/v1/adminbasicservice/adminbasic/configs",
+  "ackStatus": 200,
+  "marker": "corpus-w8-5781444fe2b4",
+  "index": 6,
+  "gate": "OBSERVED_PRESENT",
+  "classification": "present"
+ },
+ {
+  "recordError": null,
+  "traceId": null,
+  "reProbe": null,
+  "endpoint": "POST /api/v1/adminbasicservice/adminbasic/prices",
+  "ackStatus": 200,
+  "marker": "corpus-w9-1bb5b13aca89",
+  "index": 7,
+  "gate": "OBSERVED_PRESENT",
+  "classification": "present"
+ },
+ {
+  "recordError": null,
+  "traceId": null,
+  "reProbe": null,
+  "endpoint": "POST /api/v1/adminbasicservice/adminbasic/stations",
+  "ackStatus": 200,
+  "marker": "corpus-w10-d14120883644",
+  "index": 8,
+  "gate": "OBSERVED_PRESENT",
+  "classification": "present"
+ },
+ {
+  "recordError": null,
+  "traceId": null,
+  "reProbe": null,
+  "endpoint": "POST /api/v1/adminbasicservice/adminbasic/configs",
+  "ackStatus": 200,
+  "marker": "corpus-w11-61c9a1f8603c",
+  "index": 9,
+  "gate": "OBSERVED_PRESENT",
+  "classification": "present"
+ },
+ {
+  "recordError": null,
+  "traceId": null,
+  "reProbe": null,
+  "endpoint": "POST /api/v1/adminbasicservice/adminbasic/prices",
+  "ackStatus": 200,
+  "marker": "corpus-w12-c774366213e8",
+  "index": 10,
+  "gate": "OBSERVED_PRESENT",
+  "classification": "present"
+ },
+ {
+  "recordError": null,
+  "traceId": null,
+  "reProbe": null,
+  "endpoint": "POST /api/v1/adminbasicservice/adminbasic/stations",
+  "ackStatus": 200,
+  "marker": "corpus-w13-0b2a0aa97bdb",
+  "index": 11,
+  "gate": "OBSERVED_PRESENT",
+  "classification": "present"
+ },
+ {
+  "recordError": null,
+  "traceId": null,
+  "reProbe": null,
+  "endpoint": "POST /api/v1/adminbasicservice/adminbasic/configs",
+  "ackStatus": 200,
+  "marker": "corpus-w14-c521f7d6d98d",
+  "index": 12,
+  "gate": "OBSERVED_PRESENT",
+  "classification": "present"
+ },
+ {
+  "recordError": null,
+  "traceId": null,
+  "reProbe": null,
+  "endpoint": "POST /api/v1/adminbasicservice/adminbasic/prices",
+  "ackStatus": 200,
+  "marker": "corpus-w15-1dd6189236ec",
+  "index": 13,
+  "gate": "OBSERVED_PRESENT",
+  "classification": "present"
+ },
+ {
+  "recordError": null,
+  "traceId": null,
+  "reProbe": null,
+  "endpoint": "POST /api/v1/adminbasicservice/adminbasic/stations",
+  "ackStatus": 200,
+  "marker": "corpus-w16-258e71be7d74",
+  "index": 14,
+  "gate": "OBSERVED_PRESENT",
+  "classification": "present"
+ },
+ {
+  "recordError": null,
+  "traceId": null,
+  "reProbe": null,
+  "endpoint": "POST /api/v1/adminbasicservice/adminbasic/configs",
+  "ackStatus": 200,
+  "marker": "corpus-w17-f1532ed1a35d",
+  "index": 15,
+  "gate": "OBSERVED_PRESENT",
+  "classification": "present"
+ },
+ {
+  "recordError": null,
+  "traceId": null,
+  "reProbe": null,
+  "endpoint": "POST /api/v1/adminbasicservice/adminbasic/prices",
+  "ackStatus": 200,
+  "marker": "corpus-w18-e9c0ef75d1c5",
+  "index": 16,
+  "gate": "OBSERVED_PRESENT",
+  "classification": "present"
+ },
+ {
+  "recordError": null,
+  "traceId": null,
+  "reProbe": null,
+  "endpoint": "POST /api/v1/adminbasicservice/adminbasic/stations",
+  "ackStatus": 200,
+  "marker": "corpus-w19-240b4d43a60d",
+  "index": 17,
+  "gate": "OBSERVED_PRESENT",
+  "classification": "present"
+ },
+ {
+  "recordError": null,
+  "traceId": null,
+  "reProbe": null,
+  "endpoint": "POST /api/v1/adminbasicservice/adminbasic/configs",
+  "ackStatus": 200,
+  "marker": "corpus-w20-caefa5da0800",
+  "index": 18,
+  "gate": "OBSERVED_PRESENT",
+  "classification": "present"
+ }
+]

@@ -1,0 +1,32 @@
+{
+ "breaker_events": [],
+ "environment_guard": {
+  "admin_auth": "MstAuthHandler per_jvm",
+  "marker_seed_base": 20260713,
+  "marker_seed_effective": 317704970330729,
+  "gateway": "http://localhost:8080",
+  "bound_endpoints": 3
+ },
+ "read_steps": 515,
+ "sut": "trainticket",
+ "failed_journeys": 1,
+ "per_endpoint": {
+  "POST /api/v1/adminbasicservice/adminbasic/configs": {
+   "raw_confirmed": 0,
+   "acked_writes": 172
+  },
+  "POST /api/v1/adminbasicservice/adminbasic/stations": {
+   "raw_confirmed": 0,
+   "acked_writes": 171
+  },
+  "POST /api/v1/adminbasicservice/adminbasic/prices": {
+   "raw_confirmed": 0,
+   "acked_writes": 171
+  }
+ },
+ "write_path_fraction": 0.5,
+ "writes_total": 514,
+ "classification_counts": {"present": 514},
+ "window": "window-trainticket",
+ "write_steps": 515
+}
