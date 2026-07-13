@@ -1,0 +1,97 @@
+{
+  "case_id": "oteldemo-checkout-eventual-benign-001",
+  "schema_version": "2.0.0",
+  "stratum": 2,
+  "capture_status": "captured",
+  "fault_class": "none",
+  "sut": {
+    "name": "oteldemo",
+    "repo": "github.com/open-telemetry/opentelemetry-demo",
+    "branch": "",
+    "commit": "app 2.2.0 / helm chart 0.40.9 (pinned at install)",
+    "image_digest": "sha256:6d0183a38947840837321f7c90d4e01eb70a4dc4e74c150749e62302a15b3eb0",
+    "deploy": "kind cluster 'mist', ns otel-demo; chart open-telemetry/opentelemetry-demo 0.40.9 (app 2.2.0). Natively OTel-instrumented. frontend-proxy PF localhost:8085. This case is a NATURAL by-product of the S3 wild-hunt counted window (NO fault injected; flagd at frozen 15-off defaults, load-generator OFF) — the write w120 that was absent-at-cap and present at the >=T+5min re-probe (bounded eventual consistency on the async kafka->accounting path).",
+    "replay_script": "debug/a-main/benchmark/b4/runners/s3/oteldemo.sh",
+    "health_precondition": null
+  },
+  "target": {
+    "entry_endpoint": {
+      "method": "POST",
+      "path": "/api/checkout",
+      "service": "frontend (via frontend-proxy ingress)"
+    },
+    "dependency": {
+      "service": "kafka ('orders' topic; checkout producer -> accounting consumer -> Postgres)",
+      "kind": "broker"
+    },
+    "readback": {
+      "modality": "sql-probe",
+      "locator": "SELECT street_address FROM accounting.shipping WHERE street_address='<the request-derived marker>' (db otel, schema accounting). KEY = the request-derived street_address marker (C-R2). Observed ABSENT at the at-cap read (poll cap ~27s) and PRESENT at the >=T+5min re-probe (~328s) — the row landed after the cap, not lost.",
+      "expect_without_fault": "landed (eventually; absent-at-cap on a slow async settle)",
+      "expect_with_fault": "n/a (no fault; this is the benign eventual-consistency shape)",
+      "mist_bindable": true
+    }
+  },
+  "fault": {
+    "mechanism": "none",
+    "injection_method": "none",
+    "config": {
+      "note": "NO fault injected. Natural bounded eventual consistency: the checkout ack (200, orderId) returned, the accounting Postgres shipping row was NOT yet visible at the at-cap read (~27s) but WAS durable at the >=T+5min re-probe (~328s). The async kafka->accounting consume+persist simply settled beyond the read-back cap on this write."
+    },
+    "injected_by": "",
+    "target_service": "kafka",
+    "provenance_class": "by-observation"
+  },
+  "stimulus": {
+    "script": "GET /api/products/0PUK6V6EV0 -> POST /api/cart (session uuid) -> POST /api/checkout (kafka UP, client W3C traceparent injected) -> runner read-back poll to cap, then a >=T+5min re-probe; psql read-back keyed on the request-derived street_address marker",
+    "write_path": true,
+    "workload_class": "authored-scenario",
+    "workload_variant": "s3-wildhunt-window"
+  },
+  "oracle_eval": {
+    "ack_content_visibility": "success-shaped-clean",
+    "trace_visibility": "span-presence-visible",
+    "write_shape": "whole",
+    "oracle_mode": "observe",
+    "config_provenance": {
+      "mist_commit": "5802fa8",
+      "mist_authoring": {
+        "tier": "hand-written",
+        "minutes": 0
+      }
+    },
+    "comparator_configs": []
+  },
+  "ground_truth": {
+    "label": "negative",
+    "rationale": "BENIGN bounded eventual consistency, NOT an acked-lost write. The accounting shipping row IS durable — absent at the ~27s at-cap read but PRESENT at the ~328s re-probe (the value landed after the cap). The S3 CONFIRMED detector (which requires the >=T+5min re-probe to STILL be absent) correctly classifies this raw-delayed, NOT CONFIRMED. A NAIVE at-cap-only read-back oracle WOULD false-positive here — this case is exactly why the re-probe gate exists. Oracles keyed on the full detector must NOT fire.",
+    "source": "by_observation",
+    "version": 1,
+    "doc_citation": null
+  },
+  "oracle_expectation": {
+    "status_code_oracle": "no_flag",
+    "schema_oracle": "no_flag",
+    "body_marker_oracle": "no_flag",
+    "naive_span_error_oracle": "no_flag",
+    "tracetest_presence_oracle": "no_flag",
+    "mist_readback_oracle": "no_flag",
+    "mist_trace_shape_oracle": "not_applicable"
+  },
+  "provenance": {
+    "control_trace": null,
+    "fault_trace": null,
+    "readback_response": "debug/a-main/benchmark/b4/s3/window-oteldemo/flags/flag-w120.json",
+    "notes": "S3 WILD-HUNT NATURAL TOP-UP (2026-07-13, plan s3-wildhunt-plan.md rev 2.1 P1/P5). The single degradation-shaped benign the counted windows yielded (OTel raw-delayed w120; TeaStore + TT are fully synchronous -> 0). Rater-facing sidecar = s3/window-oteldemo/sidecars/w120-sidecar.json (3 observations: baseline / at-cap ABSENT ~27s / re-probe PRESENT ~328s), FULL-PIPELINE-VALIDATED through b4_harness.render at P1 (no banned-string leak; opaque-id only; 3-observation shape). Detector pin 5802fa8; window ran clean (env_guard: flagd-15-off, loadgen-off, traceparent-adopted). This is a KNOWN-benign calibration/top-up case (label negative by observation of the re-probe-present datum), authored as an S2 benign per plan §4.1 (degradation-shaped ONLY). CADENCE NOTE (tell-audit): cadence = OTel pinned knobs (timeout 25s / poll 2s / re-probe 300s); the re-probe-PRESENT shape must not perfectly correlate with the benign label across the MERGED corpus (C-B3/A-F10) — a cross-track tell-audit item recorded in RESULT-p5."
+  },
+  "license": {
+    "case_code": "Apache-2.0",
+    "case_data": "CC-BY-4.0",
+    "upstream_sut": "Apache-2.0",
+    "sources": [
+      "open-telemetry/opentelemetry-demo src/checkout/main.go",
+      "open-telemetry/opentelemetry-demo src/accounting/Consumer.cs"
+    ]
+  },
+  "adjudication": null
+}
