@@ -1,10 +1,12 @@
-# Plan — S3 wild-hunt + M-prevalence window (rev 2, post 3-cold-review)
+# Plan — S3 wild-hunt + M-prevalence window (rev 2.1 — CONFIRMED UNANIMOUS, cleared to execute)
 
-**Status:** rev 2 — folds ALL findings from the 3-cold review of rev 1 (A oracle-soundness 5-BLOCKING/
-5-MAJOR · B engineering 3-BLOCKING/4-MAJOR · C hostile-PC 3-BLOCKING/6-MAJOR; reconciliation =
-`REVIEW-S3-PLAN-RECONCILIATION.md`). **Nothing executes until the confirmation pass returns unanimous
-ACCEPT.** Deliverable identity unchanged: the Step-5 hunt + the assembly-ready C3 rating corpus, with
-the rater-material pipeline and the A-goal as first-class constraints.
+**Status:** rev 2.1 — **the confirmation pass returned UNANIMOUS ACCEPT (A "no residual blocking" ·
+B "executable as written" · C "worth executing as scoped")**; this revision folds the confirmation
+pass's 9 residual MINOR pins (B-r1..3, A-R1..4, C-1..2 — marked [r2.1] below). rev 2 folded all 11
+BLOCKING + 15 MAJOR from the rev-1 review (reconciliation = `REVIEW-S3-PLAN-RECONCILIATION.md`).
+**GATE SATISFIED → P0 may begin.** Deliverable identity unchanged: the Step-5 hunt + the
+assembly-ready C3 rating corpus, with the rater-material pipeline and the A-goal as first-class
+constraints.
 
 ## §0 Deliverables + the HONEST PRIOR (C-M1: stated before we look)
 
@@ -57,12 +59,20 @@ scoring (§2d) — the headline needs the comparator to miss, not MIST's trace o
 ## §2 Detector spec (fully pinned; A-F1, B-m8)
 
 **RAW flag** (runtime terms): write acked (2xx/success envelope per the frozen ack rule) ∧ observe
-record `error == null` ∧ absence at cap (gate `TIMEOUT_ABSENT`; gates reported per stratum — on
-un-traced SUTs every absence is timeout-gated and CONFIRMED is explicitly REACHABLE from
-`TIMEOUT_ABSENT`, A-F1b) ∧ the W3 quarantine gate open (≥1 `OBSERVED_PRESENT` for the same triple
-in-session). Read-back ERROR records (non-2xx decisive read, `VANISHED` value-delta, collection at
-`readback_bound`) are UNUSABLE — counted in their own window-log bucket per triple (A-F11), never
-flags.
+record `error == null` ∧ absence at cap — **gate ∈ {`TIMEOUT_ABSENT`, `OBSERVED_COMPLETE_ABSENT`},
+reported per gate stratum [r2.1 A-R1]** (on un-traced SUTs every absence is timeout-gated and
+CONFIRMED is explicitly REACHABLE from `TIMEOUT_ABSENT`, A-F1b) ∧ the W3 quarantine gate open (≥1
+`OBSERVED_PRESENT` for the same triple in-session, evaluated at window end). Read-back ERROR records
+(non-2xx decisive read, `VANISHED` value-delta, collection at `readback_bound`) are UNUSABLE —
+counted in their own window-log bucket per triple (A-F11), never flags.
+**Re-probe scheduling is W3-INDEPENDENT [r2.1 B-r2]:** a T+5 min re-probe is scheduled for EVERY
+acked-absent-at-cap write (including writes before the triple's first `OBSERVED_PRESENT`); the W3
+gate and the RAW/CONFIRMED classification are applied at WINDOW END over the full evidence — so a
+write that only classifies RAW at window end still has its CONFIRMED-level evidence.
+**Isolation keys are journey-SUPPLIED for every hunted triple [r2.1 A-R3]:** the runtime's
+`freshValueLike` (FRESH_STRINGS strategy) generates `mist-…` values that would trip the B4
+banned-strings render gate — hunted triples therefore all use `isolation_strategy: supplied` with
+the §2 marker grammar; no FRESH_STRINGS triple enters the hunt.
 
 **CONFIRMED flag** = RAW ∧ a **T+5 min re-probe still absent**, where the re-probe: (i) goes through
 the SAME transport instance; (ii) uses the SAME presence predicate as the runtime — via a **public
@@ -91,12 +101,19 @@ would change the detector). The estimand carries the W3 conditioning explicitly 
 defect sites are UNHUNTABLE by design — exactly the class the OTel flagship represents; disclosed.
 
 **Mid-window circuit breaker (B-M5):** ≥5 consecutive RAW flags OR trailing-50 RAW rate >20% →
-PAUSE + runbook health check (kafka/rdkafka wedge, accounting, DB, PFs). Pre-registered resolution:
-if the health check finds an infrastructure fault, the window is marked INTERRUPTED at that write
-index, the environment is repaired, and the window RESUMES with the interruption + repair logged
-(counted writes before/after both reported); flags raised during a diagnosed infrastructure fault
-are excluded from S3 (environment artifacts) but reported. If no infrastructure fault is found, the
-flags stand and the window continues.
+PAUSE + runbook health check. Pre-registered resolution: if the health check finds an on-list
+environment artifact, the window is marked INTERRUPTED at that write index, the environment is
+repaired, and the window RESUMES with the interruption + repair logged (counted writes before/after
+both reported). **The exclusion is LIST-DRIVEN, never ad-hoc [r2.1 A-R2 + C-1]:** the
+ENVIRONMENT-ARTIFACT CLASS LIST (pinned in the P0 freeze row) = the runbook's known cluster
+pathologies — rdkafka wedge after a kafka-pod replacement · port-forward death · host/WSL OOM or
+wedge of OUR OWN hosting · DB snapshot/quorum artifacts (Xenon cold-start class) · operator
+revival/scale operations. Flags coinciding with an ON-LIST diagnosis are excluded-but-reported (with
+the health-check evidence); **anything OFF-LIST — including SUT-endogenous degradation under the
+pinned workload — is NOT an exclusion ground: the flags stand, remain S3-eligible, and are surfaced
+to the P6 RESULT review with the health-check evidence** (this is exactly the lottery-ticket
+scenario — e.g. spontaneous kafka trouble with no injector — that §2b keeps eligible; the breaker
+must not be able to veto it at breaker time).
 
 **Knobs (numeric, P0-pinned — B-m9):** OTel `timeout.ms=25000`, `poll.ms=2000` (psql-exec-dominated);
 TeaStore/TT `timeout.ms=10000`, `poll.ms=500`. TT JWT refresh per journey batch (401 ⇒ ERROR record
@@ -115,6 +132,9 @@ injector active is a NEW defect. Guard: pre-window environment verification — 
 defaults (via the flagd-ui API, the toggle of record), kafka healthy, TeaStore maintenance=false, no
 VS/mesh artifacts — recorded in the window log; every such flag's bundle carries a mandatory
 root-cause-distinction note ("no injector active; frozen-default config verified at <t_rel>").
+**The note lives SEALED-SIDE ONLY [r2.1 B-r1]** — in the case file's provenance (or a side file),
+NEVER inside sidecar records: its own vocabulary ("injector") is a B4 banned string and would fail
+the render (mirroring §2d's traceparent-id placement rule).
 **Precision reported BOTH ways (A-F8):** (i) new-sites-only (rater-labeled); (ii) all-CONFIRMED
 including rediscoveries scored by their known authored labels; rediscovery counts reported by class.
 
@@ -168,14 +188,21 @@ degradation-shape rule.
    would make the stratum decodable from observation content, C-B3/A-F10); surplus discarded at P5
    by a pinned deterministic rule. If the degradation-shaped supply cannot reach the skew at the
    computed size ⇒ the **disclosed shortfall branch at floor 30** (never dilute shape or skew).
-   Disclose: the bias-audit's genuine row is thin (9 captured positives) and its negatives are
-   easier than S3 material to the extent the top-up under-represents async ambiguity (A-F10).
+   **Corrected worst case [r2.1 C-2]:** the genuine supply is ~7–8 after eligibility-screen +
+   worked-example consumption, so at |S3|=0 the benign requirement is 50−(genuine supply) ≈ **42–43**
+   (not 34) — the floor-30 shortfall branch is NEAR-CERTAIN in that scenario; the branch reports the
+   achieved size + its power consequence, so nobody is surprised at RESULT time. Disclose: the
+   bias-audit's genuine row is thin (9 captured positives) and its negatives are easier than S3
+   material to the extent the top-up under-represents async ambiguity (A-F10).
 2. **ONE observation cadence for ALL rater-facing strata (C-M2):** initial poll cadence + the
    T+5 min re-probe pinned identically for S3 bundles, top-up captures, and calibration cases;
    legacy calibration cases that cannot match the cadence are re-captured with the S3 runner or
-   excluded from the rated mix. "Observation-record cadence uniformity" is added to the tell-audit
-   checklist and the P0 unit tests. (The re-probe is NOT stripped from S3 — the relative-time datum
-   is judgment-relevant for the async tie-break.)
+   excluded from the rated mix. **Legacy S1-POSITIVE re-captures ride the §5 measured-recall leg
+   [r2.1 B-r3]** (same tenancy, observe mode, distinct markers, cadence-conformant, post-window) —
+   blanket exclusion is the FALLBACK only if a re-capture fails, else the calibration mix's already-
+   thin genuine row would be quietly emptied. "Observation-record cadence uniformity" is added to
+   the tell-audit checklist and the P0 unit tests. (The re-probe is NOT stripped from S3 — the
+   relative-time datum is judgment-relevant for the async tie-break.)
 3. **Sidecar pins (B-M6):** `t_rel_ms` rebased to each case's FIRST record (never window-global);
    record scope = the flagged write's whole journey transcript + observations (baseline / at-cap /
    ≥T+5 min re-probe — one shape for every producer); credentials REDACTED by the producer (TT
@@ -208,7 +235,13 @@ scope) — honestly: an always-on permanent-loss fault with no benign same-tripl
 **analytic recall 0 (quarantined)**; analytic entries are `specified`-grade, never pooled with
 measured entries. **Measured leg (scheduled):** one observe-mode run per SUT with the already-built
 2.75-A/G3 injectors, during the same tenancy, **strictly AFTER the counted window closes** (C-m2),
-distinct markers, excluded from all window denominators.
+distinct markers, excluded from all window denominators. **Per-case injector schedule pinned at P0
+[r2.1 A-R4]** so each measured number's gate conditioning is pre-registered: an ALWAYS-ON
+permanent-loss schedule measures recall-UNDER-QUARANTINE (expected 0 — the W3 gate never opens for
+that triple); a MIXED on/off schedule (benign writes interleaved, gate opened by the on-window's
+clean sibling writes) measures recall-WITH-GATE-OPEN; the P0 pin states which schedule each S1 case
+gets, so measured entries are interpretable next to the analytic ones. These legs double as the
+§4.2 legacy-positive cadence re-captures (B-r3).
 
 ## §6 SUT set (C-M6 + B-M7 reconciled: TT MANDATORY)
 

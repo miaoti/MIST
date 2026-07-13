@@ -112,5 +112,28 @@ Rev 2 folds every blocking + major + minor finding. The three deepest structural
 provenance-scoped dedup rule (the rev-1 rule would have vetoed the headline by construction), the
 CONFIRMED-level FP bar (the frozen bar was structurally blind exactly where the hunt runs), and the
 honest-prior/TT-mandatory rescope (the headline's only plausible surface is a sync path on the
-known-buggy SUT; the async rubric trap is now stated before the data exist). **NEXT: confirmation
-pass by the same three reviewers (unanimous ACCEPT required) → only then P0.**
+known-buggy SUT; the async rubric trap is now stated before the data exist).
+
+## Rev-2 confirmation pass — UNANIMOUS ACCEPT (gate satisfied)
+
+| reviewer | rev-2 verdict | residual |
+|---|---|---|
+| A (oracle-soundness) | **ACCEPT — "no residual blocking"** (all 15 findings verified against the text) | 4 minors (R1–R4) |
+| B (engineering) | **ACCEPT — "executable as written"** (all 3 blocking + 4 majors verified; marker grammar double-checked vs whitelist AND banned list) | 3 minors (r1–r3) |
+| C (hostile-PC) | **ACCEPT — "worth executing as scoped"** (all conditions met, several stronger than specified; re-attacked the new rev-2 machinery and it held) | 2 minors (1–2) |
+
+**rev 2.1 folds all 9 confirmation minors** (marked [r2.1] in the plan): A-R1 RAW gate ∈
+{TIMEOUT_ABSENT, OBSERVED_COMPLETE_ABSENT} · A-R2+C-1 list-driven breaker exclusion (on-list
+environment artifacts excluded-but-reported; off-list — incl. SUT-endogenous degradation and the
+spontaneous-kafka lottery scenario — stays S3-eligible, surfaced to P6) · A-R3 journey-supplied keys
+for every hunted triple (`freshValueLike`'s `mist-…` values would trip the render gate) · A-R4
+measured-recall leg schedules pinned per S1 case (always-on = recall-under-quarantine, expected 0;
+mixed = gate-open recall) · B-r1 root-cause note sealed-side only ("injector" is a banned string) ·
+B-r2 re-probe scheduling W3-independent (every acked-absent write; classification at window end) ·
+B-r3 legacy S1-positive cadence re-captures ride the measured-recall leg (exclusion = fallback) ·
+C-2 corrected worst-case calibration arithmetic (benign ≈ 42–43 at |S3|=0; floor-30 branch
+near-certain there, reported with its power consequence).
+
+**GATE SATISFIED (the standing rule: execution only after all reviewers accept — met). NEXT: P0**
+(the freeze §6 "Step-5-as-amended" row FIRST, then runner/accessor/assembler code + journey scripts
++ unit tests; no calibration or counted window before the freeze row is committed).
