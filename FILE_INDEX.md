@@ -30,9 +30,9 @@ _Generated 2026-06-30. Tracked files: 643._
 | [mist-cli & mist-llm](#mist-cli--mist-llm) | 55 |
 | [evaluation — SUTs & harness](#evaluation--suts--harness) | 58 |
 | [debug — notes, inputs & measurements](#debug--notes-inputs--measurements) | 248 |
-| [docs — design & evidence](#docs--design--evidence) | 66 |
+| [docs — design & evidence](#docs--design--evidence) | 67 |
 | [paper — LaTeX sources](#paper--latex-sources) | 23 |
-| **Total** | **643** |
+| **Total** | **644** |
 
 ## Repository root & CI / config
 
@@ -1541,6 +1541,7 @@ Architecture/design markdown, implementation summaries, decision records, plans,
 | `docs/Enhancer-Diagnostic-Report.md` | Diagnostic report: the Test Case Enhancer works architecturally but wrongly tries to fix negative tests exposing validation bugs |
 | `docs/FAULT_DETECTION_IMPLEMENTATION.md` | Implementation notes for fault-detection tracking in MST mode (FaultDetectionTracker, generated-test instrumentation, coverage reports) |
 | `docs/MAIN_CONTRIBUTION.md` | Author-facing navigation doc (Chinese) re-positioning MIST's headline label-free HiddenDownstreamFailure trace oracle |
+| `docs/PROMPT_INVENTORY.md` | Single catalogue of all 12 runtime LLM prompts MIST sends (file:line, purpose, owning mist-core component, model params); notes mist-llm=transport, mist-cli=wiring |
 | `docs/RESTest_architecture_v4.png` | Architecture diagram (v4) of the RESTest test-generation pipeline |
 | `docs/RESTest_v3.png` | Architecture/pipeline diagram (v3) of RESTest |
 | `docs/SMART_INPUT_FETCHING_IMPLEMENTATION_SUMMARY.md` | Summary of the implemented Smart Input Fetching system components, configuration, and integration into RESTest |
