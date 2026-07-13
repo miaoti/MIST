@@ -1,0 +1,29 @@
+# OTel-Demo checkout KAFKA MESH-SEVER pair leg — Wave R1 §1.1 (2nd MECHANISM on the existing
+# checkout→kafka→accounting defect site; NOT a new distinct site, freeze §6 R1 row item 1).
+# Same spec for both legs; the leg variable is the TCP blackhole (r1-otel-blackhole.yaml: a
+# STATIC-resolution ServiceEntry to an unroutable IP + a VS routing kafka:9092 TCP to it, applied
+# at the TEMPORARY Envoy sidecar on the checkout deployment — DEPLOY-SHAPE PARITY: both legs run
+# the checkout sidecar; the only variable is the VS). Under the sever the producer cannot reach the
+# broker; checkout's kafka publish errors are swallowed (logged only) and PlaceOrder acks 200 —
+# the message is never produced ⇒ PERMANENT loss (same class as the broker-down flagship).
+# Marker convention = C-R2 (2.75-A): the request-derived street_address carries the marker; the
+# read-back of record is the runner-level psql probe
+#   SELECT count(*) FROM accounting.shipping WHERE street_address='<marker>';
+# at the pinned OTel cadence (25 s at-cap, T+300 s re-probe) — recorded in the runner log.
+# calibration-genuine-INELIGIBLE (async-no-bound) stamp applies to the authored case (freeze R1
+# row item 5). Product 0PUK6V6EV0 verified live. Frontend JSON API via frontend-proxy PF :8085.
+case_id: oteldemo-checkout-meshsever-flow
+sut: {name: oteldemo, version_ref: "opentelemetry-demo app 2.2.0 / chart 0.40.9 @ kind 'mist' ns otel-demo; natively OTel-instrumented; TEMPORARY Envoy sidecar on checkout for this pair"}
+base_url: http://localhost:8085
+steps:
+  - method: POST
+    path: /api/cart?currencyCode=USD
+    payload: '{"item":{"productId":"0PUK6V6EV0","quantity":1},"userId":"{session}"}'
+  - method: POST
+    path: /api/checkout?currencyCode=USD
+    payload: '{"userId":"{session}","userCurrency":"USD","email":"{marker}@corpus.test","address":{"streetAddress":"{marker}","state":"CA","country":"United States","city":"Mountain View","zipCode":"94043"},"creditCard":{"creditCardCvv":672,"creditCardExpirationMonth":1,"creditCardExpirationYear":2030,"creditCardNumber":"4432-8015-6152-0454"}}'
+observations:
+  - probe: "GET the session's cart (entry surface healthy; cart emptied by the acked checkout)"
+    path: /api/cart?sessionId={session}&currencyCode=USD
+    delay_ms: 2000
+    auth: none

@@ -1,0 +1,100 @@
+{
+  "case_id": "teastore-orderitems-meshsever-control-001",
+  "schema_version": "2.0.0",
+  "stratum": 1,
+  "capture_status": "captured",
+  "fault_class": "acknowledged_lost_write",
+  "sut": {
+    "name": "teastore",
+    "repo": "github.com/DescartesResearch/TeaStore",
+    "branch": "",
+    "commit": "v1.4.2 (release tag; images pinned :1.4.2)",
+    "image_digest": "sha256:ac6b0fe9aeca04ee31fea20caed0b49af2ddf709c28a2cf1f4b9b041af05279b",
+    "deploy": "kind cluster 'mist', ns teastore; TeaStore v1.4.2 (persistence digest above). DEPLOY-SHAPE PARITY: sidecars TEMPORARILY on webui+auth (parity with the fault twin), NO VirtualService on this leg. App trace-uninstrumented (Kieker-only). webui PF localhost:8082, persistence PF localhost:8083.",
+    "replay_script": "debug/a-main/benchmark/b4/capture-specs/teastore-orderitems-meshsever-flow.yaml",
+    "health_precondition": null
+  },
+  "target": {
+    "entry_endpoint": {
+      "method": "POST",
+      "path": "/tools.descartes.teastore.webui/cartAction?confirm=Confirm",
+      "service": "webui"
+    },
+    "dependency": {
+      "service": "persistence (order + order-item create; call chain webui -> auth /placeorder -> persistence /rest/orders then /rest/orderitems; no VS on this leg)",
+      "kind": "persistence"
+    },
+    "readback": {
+      "modality": "api-get",
+      "locator": "GET /tools.descartes.teastore.persistence/rest/orderitems/order/{orderId} - the child order-item collection of the acked order, read after the pair's VS teardown. Corroborating: the parent GET /rest/orders/user/{id} carries the marker addressName.",
+      "expect_without_fault": "count-delta-positive",
+      "expect_with_fault": "count-delta-zero",
+      "mist_bindable": false
+    }
+  },
+  "fault": {
+    "mechanism": "none",
+    "injection_method": "none",
+    "config": {
+      "note": "Clean control: sidecars on (parity with the fault twin), NO VirtualService; the same cookie-session order flow, distinct fresh user + marker. Both the order row AND its item collection land."
+    },
+    "injected_by": "",
+    "target_service": "persistence",
+    "provenance_class": "by-injection"
+  },
+  "negative_control": {
+    "present": false,
+    "replay_script": null
+  },
+  "stimulus": {
+    "script": "login (pre-generated user21, fresh per the identity ledger) -> add product 42 -> POST cartAction confirm with marker R1C<ts> (no VS) -> post-teardown persistence read-back of the child collection",
+    "write_path": true,
+    "workload_class": "authored-scenario",
+    "workload_variant": null
+  },
+  "oracle_eval": {
+    "ack_content_visibility": "success-shaped-clean",
+    "trace_visibility": "trace-uninstrumented",
+    "write_shape": "partial-aggregate",
+    "oracle_mode": "paired",
+    "config_provenance": {
+      "mist_commit": "7d69de9",
+      "mist_authoring": {
+        "tier": "hand-written",
+        "minutes": 0
+      }
+    },
+    "comparator_configs": []
+  },
+  "ground_truth": {
+    "label": "negative",
+    "rationale": "The clean twin of teastore-orderitems-meshsever-masked-001 (same stimulus, same sidecars-on deploy shape, no VS). The confirm POST returns the same success-shaped confirmed page AND both the order row and its item collection durably land: order 1386 present with 1 item (post-teardown persistence read-back + parent corroboration). With the four sidecars-on healthy probes (R1H1-4, orders 1378-1384, items 1/1 each) this leg attributes the fault twin's item-count-0 verdict to the /rest/orderitems VirtualService alone - not the temporary sidecars, the flow, or the read-back surface. Oracles must NOT fire (else FP).",
+    "source": "by_construction",
+    "version": 1,
+    "doc_citation": null
+  },
+  "oracle_expectation": {
+    "status_code_oracle": "no_flag",
+    "schema_oracle": "no_flag",
+    "body_marker_oracle": "no_flag",
+    "naive_span_error_oracle": "not_applicable",
+    "tracetest_presence_oracle": "not_applicable",
+    "mist_readback_oracle": "not_applicable",
+    "mist_trace_shape_oracle": "not_applicable"
+  },
+  "provenance": {
+    "control_trace": null,
+    "fault_trace": null,
+    "readback_response": "debug/a-main/benchmark/b4/captures/teastore-orderitems-meshsever-control/sidecar-postteardown.json",
+    "notes": "WAVE-R1 §4-A2 CAPTURE-OF-RECORD (2026-07-13, plan rev 2; runner b4/runners/r1/r1-a2-orderitems.sh, control-first). MEASURED: control leg (user21, marker R1C<ts>, sidecars on webui+auth, NO VS) — confirm returned the confirmed page; parent order 1386 PRESENT and its child item count = 1 (post-teardown persistence read-back of record, sidecar-postteardown.json). Sidecars-on baseline additionally validated by four healthy probes (user23, R1H1-R1H4, orders 1378-1384) landing 1 item each at sidecar-injection time BEFORE any VS existed. Identity ledger: user21=control (order 1386, items 1) / user22=fault / user23=probes. TRACE CELLS: the pair's pre-registered exclusion applies (see the fault twin's notes). MIST READ-BACK: T9 boundary (api-get JSON child-collection binding is a 2.75 decision) => not_applicable; on a bindable surface the paired control-leg expectation is the clean no_flag TN. Teardown per the C-F7 gate verified (VS deleted vs=0/envoyfilter=0, labels removed, 1/1 both deployments, heal probe items=1, maintenance false throughout; no persistence/db restarts)."
+  },
+  "license": {
+    "case_code": "Apache-2.0",
+    "case_data": "CC-BY-4.0",
+    "upstream_sut": "Apache-2.0",
+    "sources": [
+      "DescartesResearch/TeaStore webui order-confirmation flow + persistence order-item collection"
+    ]
+  },
+  "adjudication": null
+}

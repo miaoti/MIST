@@ -1,0 +1,26 @@
+{
+ "sidecar_version": 1,
+ "case_id": "teastore-orderitems-meshsever-control-001",
+ "producer": "seed-capture-driver",
+ "mist_commit": "7d69de9",
+ "sut": {
+  "name": "teastore",
+  "version_ref": "TeaStore v1.4.2 @ kind 'mist' ns teastore (images pinned :1.4.2); app trace-uninstrumented; TEMPORARY Envoy sidecars on webui+auth for this pair"
+ },
+ "records": [
+  {
+   "t_rel_ms": 1000,
+   "kind": "observation",
+   "probe": "persistence orders of the acting user (parent row: expected PRESENT both legs, addressName carries the marker)",
+   "status": 200,
+   "body": "[{\"id\":1387,\"productId\":42,\"orderId\":1386,\"quantity\":1,\"unitPriceInCents\":5125}]"
+  },
+  {
+   "t_rel_ms": 1516,
+   "kind": "observation",
+   "probe": "persistence order list of the acting user (parent evidence: id + addressName '{marker} Corpus')",
+   "status": 200,
+   "body": "[{\"id\":1196,\"userId\":593,\"time\":\"2018-02-13T08:58:00\",\"totalPriceInCents\":24258,\"addressName\":\"Joshua Johnson\",\"address1\":\"8531 East 8106 North\",\"address2\":\"District 11, Utopia, 40645\",\"creditCardCompany\":\"Visa\",\"creditCardNumber\":\"6020 1968 5751 4503\",\"creditCardExpiryDate\":\"2030-05-25\"},{\"id\":1282,\"userId\":593,\"time\":\"2024-09-21T02:11:00\",\"totalPriceInCents\":84476,\"addressName\":\"Joshua Johnson\",\"address1\":\"8024 East 4071 North\",\"address2\":\"District 20, Utopia, 10510\",\"creditCardCompany\":\"Visa\",\"creditCardNumber\":\"1994 9551 5954 3134\",\"creditCardExpiryDate\":\"2031-06-29\"},{\"id\":1386,\"userId\":593,\"time\":\"2026-07-13T23:01:22.721937\",\"totalPriceInCents\":5125,\"addressName\":\"R1C1783983659 Corpus\",\"address1\":\"Street1\",\"address2\":\"City1\",\"creditCardCompany\":\"visa\",\"creditCardNumber\":\"314159265359\",\"creditCardExpiryDate\":\"2029-12-01\"}]"
+  }
+ ]
+}

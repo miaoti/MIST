@@ -1,0 +1,43 @@
+# Wave R1: the checkout→kafka TCP MESH-SEVER — client-side blackhole (the kafka pod is NEVER
+# touched: no sidecar on kafka, no restart, no replacement — the rdkafka-wedge class is thereby
+# structurally avoided; the only meshed workload is the TEMPORARY checkout sidecar).
+# Mechanics: a STATIC-resolution ServiceEntry pins an unroutable endpoint (240.0.0.1, reserved
+# class E) + a VirtualService routes kafka:9092 TCP, as seen by the client sidecar, to it.
+# The producer's connect fails; checkout swallows publish errors; PlaceOrder acks 200.
+# Applied/deleted by r1-a1-otelmesh.sh; NEVER left behind (C-F7 teardown gate).
+apiVersion: networking.istio.io/v1
+kind: ServiceEntry
+metadata:
+  name: r1-blackhole-kafka
+  namespace: otel-demo
+spec:
+  hosts:
+  - r1-blackhole.internal
+  addresses:
+  - 240.0.0.1
+  ports:
+  - number: 9092
+    name: tcp-black
+    protocol: TCP
+  location: MESH_EXTERNAL
+  resolution: STATIC
+  endpoints:
+  - address: 240.0.0.1
+---
+apiVersion: networking.istio.io/v1
+kind: VirtualService
+metadata:
+  name: r1-meshsever-kafka
+  namespace: otel-demo
+spec:
+  hosts:
+  - kafka
+  - kafka.otel-demo.svc.cluster.local
+  tcp:
+  - match:
+    - port: 9092
+    route:
+    - destination:
+        host: r1-blackhole.internal
+        port:
+          number: 9092

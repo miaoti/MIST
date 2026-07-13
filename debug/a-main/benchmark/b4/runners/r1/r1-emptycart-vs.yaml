@@ -1,0 +1,35 @@
+# Wave R1 VERIFY-FIRST item: method-scoped sever of checkout→cart EmptyCart ONLY (gRPC-over-HTTP/2
+# exact-path match at the TEMPORARY checkout client sidecar). Unlike the REFUTED cartFailure flag
+# (which broke the cart STORE and made the prep-phase GetCart fail loudly, wave-3a item 1), this
+# leaves GetCart/AddItem healthy and severs exactly the post-charge EmptyCart call — testing
+# whether checkout swallows THAT error as-deployed (main-branch reading: `_ = cs.emptyUserCart`).
+# Outcomes pre-registered: MASKED (200 ack + order lands + cart NOT emptied) → capture pair;
+# LOUD → refutation datum, no case (plan §1.1/§6). Applied/deleted by r1-a1-otelmesh.sh.
+apiVersion: networking.istio.io/v1
+kind: VirtualService
+metadata:
+  name: r1-methodsever-emptycart
+  namespace: otel-demo
+spec:
+  hosts:
+  - cart
+  - cart.otel-demo.svc.cluster.local
+  http:
+  - match:
+    - uri:
+        exact: /oteldemo.CartService/EmptyCart
+    fault:
+      abort:
+        httpStatus: 503
+        percentage:
+          value: 100
+    route:
+    - destination:
+        host: cart.otel-demo.svc.cluster.local
+        port:
+          number: 8080
+  - route:
+    - destination:
+        host: cart.otel-demo.svc.cluster.local
+        port:
+          number: 8080

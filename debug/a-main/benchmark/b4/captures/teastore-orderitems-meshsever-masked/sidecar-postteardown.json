@@ -1,0 +1,26 @@
+{
+ "sidecar_version": 1,
+ "case_id": "teastore-orderitems-meshsever-masked-001",
+ "producer": "seed-capture-driver",
+ "mist_commit": "7d69de9",
+ "sut": {
+  "name": "teastore",
+  "version_ref": "TeaStore v1.4.2 @ kind 'mist' ns teastore (images pinned :1.4.2); app trace-uninstrumented; TEMPORARY Envoy sidecars on webui+auth for this pair"
+ },
+ "records": [
+  {
+   "t_rel_ms": 1000,
+   "kind": "observation",
+   "probe": "persistence orders of the acting user (parent row: expected PRESENT both legs, addressName carries the marker)",
+   "status": 200,
+   "body": "[]"
+  },
+  {
+   "t_rel_ms": 1516,
+   "kind": "observation",
+   "probe": "persistence order list of the acting user (parent evidence: id + addressName '{marker} Corpus')",
+   "status": 200,
+   "body": "[{\"id\":625,\"userId\":572,\"time\":\"2026-08-07T12:13:00\",\"totalPriceInCents\":45366,\"addressName\":\"Anthony Johnson\",\"address1\":\"361 East 1509 North\",\"address2\":\"District 348, Utopia, 35395\",\"creditCardCompany\":\"Visa\",\"creditCardNumber\":\"5588 3911 7166 4072\",\"creditCardExpiryDate\":\"2028-10-20\"},{\"id\":688,\"userId\":572,\"time\":\"2017-02-12T05:37:00\",\"totalPriceInCents\":56440,\"addressName\":\"Anthony Johnson\",\"address1\":\"5865 West 4791 North\",\"address2\":\"District 406, Utopia, 46759\",\"creditCardCompany\":\"MasterCard\",\"creditCardNumber\":\"1198 8625 3990 8838\",\"creditCardExpiryDate\":\"2027-11-15\"},{\"id\":1392,\"userId\":572,\"time\":\"2026-07-13T23:01:54.234596\",\"totalPriceInCents\":5125,\"addressName\":\"R1X1783983659 Corpus\",\"address1\":\"Street1\",\"address2\":\"City1\",\"creditCardCompany\":\"visa\",\"creditCardNumber\":\"314159265359\",\"creditCardExpiryDate\":\"2029-12-01\"}]"
+  }
+ ]
+}

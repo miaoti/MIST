@@ -1,0 +1,102 @@
+{
+  "case_id": "teastore-orderitems-meshsever-masked-001",
+  "schema_version": "2.0.0",
+  "stratum": 1,
+  "capture_status": "captured",
+  "fault_class": "acknowledged_lost_write",
+  "sut": {
+    "name": "teastore",
+    "repo": "github.com/DescartesResearch/TeaStore",
+    "branch": "",
+    "commit": "v1.4.2 (release tag; images pinned :1.4.2)",
+    "image_digest": "sha256:ac6b0fe9aeca04ee31fea20caed0b49af2ddf709c28a2cf1f4b9b041af05279b",
+    "deploy": "kind cluster 'mist', ns teastore; TeaStore v1.4.2 (persistence digest above). DEPLOY-SHAPE PARITY DISCLOSURE: BOTH legs of this pair ran with Istio sidecars TEMPORARILY on webui+auth (per-deployment pod-template labels; injected before the pair, verified, removed + verified 1/1 after — the only variable between legs is the VirtualService). App remains trace-uninstrumented (Kieker-only). webui PF localhost:8082, persistence PF localhost:8083. Leg = the VS (control absent / fault applied on the /rest/orderitems prefix only).",
+    "replay_script": "debug/a-main/benchmark/b4/capture-specs/teastore-orderitems-meshsever-flow.yaml",
+    "health_precondition": null
+  },
+  "target": {
+    "entry_endpoint": {
+      "method": "POST",
+      "path": "/tools.descartes.teastore.webui/cartAction?confirm=Confirm",
+      "service": "webui"
+    },
+    "dependency": {
+      "service": "persistence (order-ITEM create; call chain webui -> auth /placeorder -> persistence /rest/orderitems, per-item, AFTER the parent /rest/orders create succeeds — the auth-side client sidecar is where the VS abort lands, scoped to /rest/orderitems only)",
+      "kind": "persistence"
+    },
+    "readback": {
+      "modality": "api-get",
+      "locator": "GET /tools.descartes.teastore.persistence/rest/orderitems/order/{orderId} - the child order-item collection of the acked order, read AFTER the VirtualService was deleted and verified gone. The PARENT order (GET /rest/orders/user/{id}, addressName carrying the per-leg marker) is PRESENT on both legs; the discriminator is the child item count.",
+      "expect_without_fault": "count-delta-positive",
+      "expect_with_fault": "count-delta-zero",
+      "mist_bindable": false
+    }
+  },
+  "fault": {
+    "mechanism": "mesh-sever",
+    "injection_method": "mesh_abort",
+    "config": {
+      "note": "Plain host-match VirtualService (committed manifest b4/runners/r1/r1-orderitems-vs.yaml): abort 503 at 100% on the persistence /tools.descartes.teastore.persistence/rest/orderitems prefix ONLY; the /rest/orders create (parent) and all other prefixes route normally, so the ORDER row lands while every order-ITEM create receives the 503. Interception works on THIS deploy per the T15 datum (registry hands out service-DNS, the CLIENT sidecar host-matches; no EnvoyFilter needed). The masking itself is UNMODIFIED SUT source: NonBalancedCRUDOperations swallows any non-404/408 failure status to -1L, placeOrder writes the order then loops the items WITHOUT checking each -1L, the webui renders the order-confirmed page.",
+      "manifest": "debug/a-main/benchmark/b4/runners/r1/r1-orderitems-vs.yaml"
+    },
+    "injected_by": "runner (kubectl apply/delete of the committed VS manifest), out of band of the capture driver",
+    "target_service": "persistence (order-item inbound leg severed at the auth-side client sidecar; the order create leg is untouched)",
+    "provenance_class": "by-injection"
+  },
+  "negative_control": {
+    "present": true,
+    "replay_script": "teastore-orderitems-meshsever-flow.yaml @ no VS, sidecars on (teastore-orderitems-meshsever-control-001)"
+  },
+  "stimulus": {
+    "script": "login (pre-generated user22, fresh per the identity ledger) -> add product 42 -> POST cartAction confirm with marker R1X<ts> (VS applied on /rest/orderitems) -> post-teardown persistence read-back of the child collection",
+    "write_path": true,
+    "workload_class": "authored-scenario",
+    "workload_variant": null
+  },
+  "oracle_eval": {
+    "ack_content_visibility": "success-shaped-clean",
+    "trace_visibility": "trace-uninstrumented",
+    "write_shape": "partial-aggregate",
+    "oracle_mode": "paired",
+    "config_provenance": {
+      "mist_commit": "7d69de9",
+      "mist_authoring": {
+        "tier": "hand-written",
+        "minutes": 0
+      }
+    },
+    "comparator_configs": []
+  },
+  "ground_truth": {
+    "label": "positive",
+    "rationale": "The survey's pre-registered PARTIAL-WRITE variant, now CAPTURED: placeOrder writes the order row FIRST (which lands) then creates order-items in a loop; a 503 scoped to the persistence /rest/orderitems prefix makes each item create return -1L silently (NonBalancedCRUDOperations swallows non-404/408), placeOrder never checks, the webui renders ORDERCONFIRMED. The user is told success and the ORDER exists, but its CHILD COLLECTION (the line items) is durably absent - an acknowledged-but-lost partial write, distinct from the order-row cases (the lost artifact is the item collection, not the order). Measured: fault legs acked CONFIRMED with parent order PRESENT and item count 0 (orders 1388-1392); control parent order 1386 carries 1 item. NORM: an order-confirmed page asserts the whole order (with its items) was recorded; a silently item-less order is a lost write.",
+    "source": "natural",
+    "version": 1,
+    "doc_citation": "DescartesResearch/TeaStore v1.4.2: registryclient NonBalancedCRUDOperations (non-404/408 -> silent -1L), auth placeOrder order-then-items loop (unchecked), webui order-confirmation flow. Survey: debug/a-main/c2c3/c2-depth-survey.md §1 'Partial-write variant' (order acked and present but items lost — the object/aggregate class from the Rider-2 residue)."
+  },
+  "oracle_expectation": {
+    "status_code_oracle": "no_flag",
+    "schema_oracle": "no_flag",
+    "body_marker_oracle": "no_flag",
+    "naive_span_error_oracle": "not_applicable",
+    "tracetest_presence_oracle": "not_applicable",
+    "mist_readback_oracle": "not_applicable",
+    "mist_trace_shape_oracle": "not_applicable"
+  },
+  "provenance": {
+    "control_trace": null,
+    "fault_trace": null,
+    "readback_response": "debug/a-main/benchmark/b4/captures/teastore-orderitems-meshsever-masked/sidecar-postteardown.json",
+    "notes": "WAVE-R1 §4-A2 CAPTURE-OF-RECORD (2026-07-13, plan rev 2 3-cold-reviewed; runner b4/runners/r1/r1-a2-orderitems.sh, control-first). THE CORPUS'S FIRST CHILD-COLLECTION / PARTIAL-AGGREGATE loss (a DISTINCT DEFECT SITE from the order-row cases per the §1.0 counting convention: the lost durable artifact is the order-items collection, not the order row). MEASURED: fault leg (user22, marker R1X<ts>, VS on the /rest/orderitems prefix) — confirm returned the success-shaped confirmed page; parent order 1392 PRESENT, child items = 0 (post-teardown persistence read-back of record, sidecar-postteardown.json, taken AFTER the VS was deleted and `kubectl get vs` verified empty). N>=4 RULE: four consecutive fault probes (user23, R1F1-R1F4, orders 1388-1391) all returned CONFIRMED-shaped acks with parent PRESENT and item count 0/4; four healthy probes at sidecar-injection time (R1H1-R1H4, BEFORE the VS, orders 1378-1384) landed items 1/1 each = the sidecars-on baseline isolating the VS as the only variable. Probe-first: the scoped endpoint /rest/orderitems/order/{id} returned HTTP 200 before the run (spec depends on it). IDENTITY LEDGER: user21=control (order 1386, items 1) / user22=fault (order 1392, items 0) / user23=probes. TRACE CELLS PRE-REGISTERED EXCLUDED (same basis as the order-row mesh-sever pair, plan §2: temporary 2-sidecar fragments = injector artifacts, T2-unvalidatable, app trace-uninstrumented). MIST READ-BACK: T9 boundary (api-get over the persistence JSON surface exists and is decisive, but the child-collection count-delta binding is a 2.75 enablement decision) => not_applicable with the T1-preserved design target (item count 0 under a clean ack). TEARDOWN VERIFIED (C-F7 gate): VS deleted + verified (vs=0, envoyfilter=0), sidecar labels removed, both deployments back 1/1, PFs re-created, heal probe R1P1 CONFIRMED with items=1, maintenance false throughout; HARD GUARD held (no persistence/db restarts — the no-PVC wipe hazard)."
+  },
+  "license": {
+    "case_code": "Apache-2.0",
+    "case_data": "CC-BY-4.0",
+    "upstream_sut": "Apache-2.0",
+    "sources": [
+      "DescartesResearch/TeaStore registryclient NonBalancedCRUDOperations (-1L swallow)",
+      "DescartesResearch/TeaStore auth placeOrder order-then-items loop + webui order-confirmation flow"
+    ]
+  },
+  "adjudication": null
+}

@@ -1,0 +1,35 @@
+# Wave R1: the ORDER-ITEMS mesh-sever fault — plain host-match VirtualService, abort 503 scoped to
+# the persistence /rest/orderitems prefix ONLY (the order create on /rest/orders passes; each
+# order-ITEM create gets the 503 -> NonBalancedCRUDOperations swallows non-404/408 to -1L ->
+# placeOrder never checks -> ORDERCONFIRMED renders; parent lands, child collection lost).
+# T15-verified interception mechanics (identical to wave-3a item 2: registry entries are
+# service-DNS, the CLIENT sidecar on auth matches). Applied/deleted by r1-a2-orderitems.sh;
+# NEVER left behind.
+apiVersion: networking.istio.io/v1
+kind: VirtualService
+metadata:
+  name: r1-meshsever-orderitems
+  namespace: teastore
+spec:
+  hosts:
+  - teastore-persistence
+  - teastore-persistence.teastore.svc.cluster.local
+  http:
+  - match:
+    - uri:
+        prefix: /tools.descartes.teastore.persistence/rest/orderitems
+    fault:
+      abort:
+        httpStatus: 503
+        percentage:
+          value: 100
+    route:
+    - destination:
+        host: teastore-persistence.teastore.svc.cluster.local
+        port:
+          number: 8080
+  - route:
+    - destination:
+        host: teastore-persistence.teastore.svc.cluster.local
+        port:
+          number: 8080

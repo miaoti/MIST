@@ -1,0 +1,34 @@
+# TeaStore ORDER-ITEMS mesh-sever pair leg — Wave R1 §1.1 (plan rev 2, freeze §6 R1 row; the survey
+# §1 "partial-write variant": placeOrder writes the ORDER row FIRST, then order-items in a loop; a
+# 503 scoped to the persistence /rest/orderitems prefix makes each item create return -1 silently
+# (NonBalancedCRUDOperations swallows non-404/408), the order itself lands, and the webui renders
+# ORDERCONFIRMED — the ORDER is acked AND PRESENT while its CHILD COLLECTION is lost. This is a
+# DISTINCT DEFECT SITE from the order-row cases (§1.0 convention: the lost durable artifact differs
+# — order-items vs order row) sharing the same entry endpoint.
+# Same spec for both legs; the only variable is the VirtualService (r1-orderitems-vs.yaml). Istio
+# sidecars TEMPORARILY on webui+auth, DEPLOY-SHAPE PARITY: both legs run sidecars-on (item-2
+# precedent). Trace columns PRE-REGISTERED EXCLUDED for this pair (2-sidecar fragments = injector
+# artifacts, same as the item-2/meshsever pair).
+# SHARP EDGES: never GET /rest/generatedb (DB REGENERATION = wipe); users pre-seeded (shared demo
+# password, redacted); fresh deploy-generation identity ledger (db re-seeded at the R1 revival):
+# user21 (control) / user22 (fault) / user23 (probes); distinct firstname marker per leg via --var.
+# HARD GUARD: no persistence/db restarts while any sidecar config exists.
+# Cadence note (freeze R1 row item 3): TeaStore pinned 10 s absence cap — the in-window observation
+# below sits at ~10 s post-confirm (at-cap); the durable read-back of record is the post-teardown
+# readback spec (T+minutes, past the 300 s re-probe horizon by construction of the teardown flow).
+case_id: teastore-orderitems-meshsever-flow
+sut: {name: teastore, version_ref: "TeaStore v1.4.2 @ kind 'mist' ns teastore (images pinned :1.4.2); app trace-uninstrumented; TEMPORARY Envoy sidecars on webui+auth for this pair"}
+base_url: http://localhost:8082
+cookie_session: true
+steps:
+  - method: POST
+    path: /tools.descartes.teastore.webui/loginAction?username={user}&password={pw}
+    redact: true
+  - method: POST
+    path: /tools.descartes.teastore.webui/cartAction?addToCart=&productid=42
+  - method: POST
+    path: /tools.descartes.teastore.webui/cartAction?firstname={marker}&lastname=Corpus&address1=Street1&address2=City1&cardtype=visa&cardnumber=314159265359&expirydate=12%2F2029&confirm=Confirm
+observations:
+  - probe: "GET the acting user's profile (orders table — the PARENT order with the marker is expected VISIBLE on BOTH legs; the fault artifact is the missing CHILD collection, read at the persistence API in the post-teardown readback spec)"
+    path: /tools.descartes.teastore.webui/profile
+    delay_ms: 10000

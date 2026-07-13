@@ -1,0 +1,23 @@
+# TeaStore ORDER-ITEMS mesh-sever pair — POST-TEARDOWN read-back of record (Wave R1; own-header
+# twin discipline from teastore-order-meshsever-readback.yaml): run AFTER the VirtualService is
+# deleted AND verified gone. Persistence REST surface (no login needed), base_url = the persistence
+# PF (:8083). The durable black-box read-back of record for the CHILD-COLLECTION case:
+#   - /rest/orders/user/{uid}    -> the PARENT order with addressName "{marker} Corpus" is expected
+#                                   PRESENT on BOTH legs (the order row landed);
+#   - /rest/orderitems           -> items whose orderId == that order's id: >=1 on CONTROL,
+#                                   0 on FAULT (the lost child collection — the case's verdict).
+# {uid} is resolved by the runner (GET /rest/users/name/{user}) and passed via --var.
+# Taken minutes after the write (teardown + verification precede it), i.e. at/past the pinned 300 s
+# re-probe horizon — the absence is durable, not transient.
+case_id: teastore-orderitems-meshsever-readback
+sut: {name: teastore, version_ref: "TeaStore v1.4.2 @ kind 'mist' ns teastore (images pinned :1.4.2); app trace-uninstrumented; TEMPORARY Envoy sidecars on webui+auth for this pair"}
+base_url: http://localhost:8083
+cookie_session: false
+steps: []
+observations:
+  - probe: "persistence orders of the acting user (parent row: expected PRESENT both legs, addressName carries the marker)"
+    path: /tools.descartes.teastore.persistence/rest/orderitems/order/{orderid}
+    delay_ms: 1000
+  - probe: "persistence order list of the acting user (parent evidence: id + addressName '{marker} Corpus')"
+    path: /tools.descartes.teastore.persistence/rest/orders/user/{uid}
+    delay_ms: 500
