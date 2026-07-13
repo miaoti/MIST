@@ -1,0 +1,222 @@
+[
+ {
+  "recordError": null,
+  "traceId": "4057fa0493bedad9dbff3538a362272a",
+  "reProbe": null,
+  "endpoint": "POST /api/checkout",
+  "ackStatus": 200,
+  "marker": "corpus-w1-d05ad1408817",
+  "index": 0,
+  "gate": "OBSERVED_PRESENT",
+  "classification": "present"
+ },
+ {
+  "recordError": null,
+  "traceId": "9d8a9ac1db9632d630189355dd43566f",
+  "reProbe": null,
+  "endpoint": "POST /api/checkout",
+  "ackStatus": 200,
+  "marker": "corpus-w2-32cf93fa8b28",
+  "index": 1,
+  "gate": "OBSERVED_PRESENT",
+  "classification": "present"
+ },
+ {
+  "recordError": null,
+  "traceId": "5e3c77c5afb388568011073051a6e846",
+  "reProbe": null,
+  "endpoint": "POST /api/checkout",
+  "ackStatus": 200,
+  "marker": "corpus-w3-36e76c93421f",
+  "index": 2,
+  "gate": "OBSERVED_PRESENT",
+  "classification": "present"
+ },
+ {
+  "recordError": null,
+  "traceId": "c9aed2d818a609c62a62140abed1c191",
+  "reProbe": null,
+  "endpoint": "POST /api/checkout",
+  "ackStatus": 200,
+  "marker": "corpus-w4-97ade5da22c0",
+  "index": 3,
+  "gate": "OBSERVED_PRESENT",
+  "classification": "present"
+ },
+ {
+  "recordError": null,
+  "traceId": "2694802ffb967eb0eda8ae628f6ffdea",
+  "reProbe": null,
+  "endpoint": "POST /api/checkout",
+  "ackStatus": 200,
+  "marker": "corpus-w5-90ff73db6195",
+  "index": 4,
+  "gate": "OBSERVED_PRESENT",
+  "classification": "present"
+ },
+ {
+  "recordError": null,
+  "traceId": "5e905b2c8d25f5752264109f2d6444d2",
+  "reProbe": null,
+  "endpoint": "POST /api/checkout",
+  "ackStatus": 200,
+  "marker": "corpus-w6-68aa64354468",
+  "index": 5,
+  "gate": "OBSERVED_PRESENT",
+  "classification": "present"
+ },
+ {
+  "recordError": null,
+  "traceId": "4ac555887c2a2503caa5dfdd30644fa5",
+  "reProbe": null,
+  "endpoint": "POST /api/checkout",
+  "ackStatus": 200,
+  "marker": "corpus-w7-1ccf34a322d6",
+  "index": 6,
+  "gate": "OBSERVED_PRESENT",
+  "classification": "present"
+ },
+ {
+  "recordError": null,
+  "traceId": "f8688debfbc7eafe6e8eb4bd171d41df",
+  "reProbe": null,
+  "endpoint": "POST /api/checkout",
+  "ackStatus": 200,
+  "marker": "corpus-w8-357d2c279dd1",
+  "index": 7,
+  "gate": "OBSERVED_PRESENT",
+  "classification": "present"
+ },
+ {
+  "recordError": null,
+  "traceId": "2c6ea2960dc6c385a1e29be925bebf90",
+  "reProbe": null,
+  "endpoint": "POST /api/checkout",
+  "ackStatus": 200,
+  "marker": "corpus-w9-1db1c085a29a",
+  "index": 8,
+  "gate": "OBSERVED_PRESENT",
+  "classification": "present"
+ },
+ {
+  "recordError": null,
+  "traceId": "877da472ac444ed085be7fffbf2be0c1",
+  "reProbe": null,
+  "endpoint": "POST /api/checkout",
+  "ackStatus": 200,
+  "marker": "corpus-w10-62af7f97279c",
+  "index": 9,
+  "gate": "OBSERVED_PRESENT",
+  "classification": "present"
+ },
+ {
+  "recordError": null,
+  "traceId": "848240108e34bf407d061f1da96cb0cb",
+  "reProbe": null,
+  "endpoint": "POST /api/checkout",
+  "ackStatus": 200,
+  "marker": "corpus-w11-cd653f2dc7bc",
+  "index": 10,
+  "gate": "OBSERVED_PRESENT",
+  "classification": "present"
+ },
+ {
+  "recordError": null,
+  "traceId": "aca6578a8b90be54936d41e13875a614",
+  "reProbe": null,
+  "endpoint": "POST /api/checkout",
+  "ackStatus": 200,
+  "marker": "corpus-w12-3cdc7933ac97",
+  "index": 11,
+  "gate": "OBSERVED_PRESENT",
+  "classification": "present"
+ },
+ {
+  "recordError": null,
+  "traceId": "11cde02c9dd899eb044ad30745f88f93",
+  "reProbe": null,
+  "endpoint": "POST /api/checkout",
+  "ackStatus": 200,
+  "marker": "corpus-w13-92220c9d61d5",
+  "index": 12,
+  "gate": "OBSERVED_PRESENT",
+  "classification": "present"
+ },
+ {
+  "recordError": null,
+  "traceId": "4138f7d1b2d397d78c2a15039da671ba",
+  "reProbe": null,
+  "endpoint": "POST /api/checkout",
+  "ackStatus": 200,
+  "marker": "corpus-w14-4c5e1d9a8808",
+  "index": 13,
+  "gate": "OBSERVED_PRESENT",
+  "classification": "present"
+ },
+ {
+  "recordError": null,
+  "traceId": "72951e857ca40a57ef7c8e012af783d5",
+  "reProbe": null,
+  "endpoint": "POST /api/checkout",
+  "ackStatus": 200,
+  "marker": "corpus-w15-70f196db8b18",
+  "index": 14,
+  "gate": "OBSERVED_PRESENT",
+  "classification": "present"
+ },
+ {
+  "recordError": null,
+  "traceId": "d7621fbe8abf4b6863ab4293f290c30c",
+  "reProbe": null,
+  "endpoint": "POST /api/checkout",
+  "ackStatus": 200,
+  "marker": "corpus-w16-f0fdfd32b3f4",
+  "index": 15,
+  "gate": "OBSERVED_PRESENT",
+  "classification": "present"
+ },
+ {
+  "recordError": null,
+  "traceId": "796fa1d8d187d3253286aa237d2bcf41",
+  "reProbe": null,
+  "endpoint": "POST /api/checkout",
+  "ackStatus": 200,
+  "marker": "corpus-w17-bf13b8305714",
+  "index": 16,
+  "gate": "OBSERVED_PRESENT",
+  "classification": "present"
+ },
+ {
+  "recordError": null,
+  "traceId": "071046d0f41eb462340543c511236bb0",
+  "reProbe": null,
+  "endpoint": "POST /api/checkout",
+  "ackStatus": 200,
+  "marker": "corpus-w18-2675cf93febc",
+  "index": 17,
+  "gate": "OBSERVED_PRESENT",
+  "classification": "present"
+ },
+ {
+  "recordError": null,
+  "traceId": "8e98476b56593bb53044d0657db2a940",
+  "reProbe": null,
+  "endpoint": "POST /api/checkout",
+  "ackStatus": 200,
+  "marker": "corpus-w19-1d5ccadda935",
+  "index": 18,
+  "gate": "OBSERVED_PRESENT",
+  "classification": "present"
+ },
+ {
+  "recordError": null,
+  "traceId": "dfd2c4e214abf1ca81cf53bd1574ff87",
+  "reProbe": null,
+  "endpoint": "POST /api/checkout",
+  "ackStatus": 200,
+  "marker": "corpus-w20-abdc37569d86",
+  "index": 19,
+  "gate": "OBSERVED_PRESENT",
+  "classification": "present"
+ }
+]

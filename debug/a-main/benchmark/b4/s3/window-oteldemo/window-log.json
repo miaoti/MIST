@@ -1,0 +1,22 @@
+{
+ "breaker_events": [],
+ "environment_guard": {
+  "flagd_defaults_verified": "flagd-15-off-2026-07-13;loadgen-absent;traceparent-adopted-57spans;dbbaseline-23",
+  "load_generator": "off"
+ },
+ "read_steps": 500,
+ "sut": "oteldemo",
+ "failed_journeys": 0,
+ "per_endpoint": {"POST /api/checkout": {
+  "raw_confirmed": 0,
+  "acked_writes": 500
+ }},
+ "write_path_fraction": 0.5,
+ "writes_total": 500,
+ "classification_counts": {
+  "present": 499,
+  "raw-delayed": 1
+ },
+ "window": "window-oteldemo",
+ "write_steps": 500
+}

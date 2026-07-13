@@ -1,0 +1,18 @@
+{
+ "breaker_events": [],
+ "environment_guard": {
+  "flagd_defaults_verified": "flagd-15-off-2026-07-13",
+  "load_generator": "off"
+ },
+ "read_steps": 20,
+ "sut": "oteldemo",
+ "per_endpoint": {"POST /api/checkout": {
+  "raw_confirmed": 0,
+  "acked_writes": 20
+ }},
+ "write_path_fraction": 0.5,
+ "writes_total": 20,
+ "classification_counts": {"present": 20},
+ "window": "calibration-oteldemo",
+ "write_steps": 20
+}

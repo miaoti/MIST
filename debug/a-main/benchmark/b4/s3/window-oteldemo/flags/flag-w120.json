@@ -1,0 +1,66 @@
+{
+ "endpoint": "POST /api/checkout",
+ "sut": {
+  "name": "oteldemo",
+  "version_ref": "opentelemetry-demo app 2.2.0 / chart 0.40.9"
+ },
+ "marker": "corpus-w121-3b5f90840d2c",
+ "observations": {
+  "at_cap_elapsed_ms": 27273,
+  "re_probe_body": "[{\"street_address\":\"corpus-w121-3b5f90840d2c\"}]",
+  "at_cap_status": 200,
+  "re_probe_outcome": "PRESENT",
+  "baseline_body": "[]",
+  "at_cap_polls": 13,
+  "at_cap_body": "[]",
+  "re_probe_status": 200,
+  "re_probe_abs_ms": 1783933978558
+ },
+ "write_index": 120,
+ "producer": "wildflag-bundle",
+ "window": "window-oteldemo",
+ "classification": "raw-delayed",
+ "probe_descriptor": "SQL SELECT street_address FROM accounting.shipping WHERE street_address='<marker>'",
+ "journey_records": [
+  {
+   "path": "/api/products/0PUK6V6EV0",
+   "method": "GET",
+   "kind": "request",
+   "t_abs_ms": 1783933650442
+  },
+  {
+   "kind": "response",
+   "t_abs_ms": 1783933650447,
+   "body": "<product json elided>",
+   "status": 200
+  },
+  {
+   "path": "/api/cart?currencyCode=USD",
+   "method": "POST",
+   "payload": "{\"item\":{\"productId\":\"0PUK6V6EV0\",\"quantity\":1},\"userId\":\"1624af2a-31a3-4409-9689-25849379569d\"}",
+   "kind": "request",
+   "t_abs_ms": 1783933650447
+  },
+  {
+   "kind": "response",
+   "t_abs_ms": 1783933650447,
+   "body": "{\"userId\":\"1624af2a-31a3-4409-9689-25849379569d\",\"items\":[{\"productId\":\"0PUK6V6EV0\",\"quantity\":1}]}",
+   "status": 200
+  },
+  {
+   "path": "/api/checkout?currencyCode=USD",
+   "method": "POST",
+   "payload": "{\"userId\":\"1624af2a-31a3-4409-9689-25849379569d\",\"userCurrency\":\"USD\",\"email\":\"corpus-w121-3b5f90840d2c@example.test\",\"address\":{\"streetAddress\":\"corpus-w121-3b5f90840d2c\",\"state\":\"CA\",\"country\":\"United States\",\"city\":\"Mountain View\",\"zipCode\":\"94043\"},\"creditCard\":{\"creditCardCvv\":672,\"creditCardExpirationMonth\":1,\"creditCardExpirationYear\":2030,\"creditCardNumber\":\"4432-8015-6152-0454\"}}",
+   "kind": "request",
+   "t_abs_ms": 1783933650458
+  },
+  {
+   "kind": "response",
+   "t_abs_ms": 1783933650867,
+   "body": "{\"orderId\":\"4714783e-7e9a-11f1-a92b-72c3ce69f378\",\"shippingTrackingId\":\"c3cf14f4-1fab-4bf6-8497-e54bf69dbb55\",\"shippingCost\":{\"currencyCode\":\"USD\",\"units\":8,\"nanos\":990000000},\"shippingAddress\":{\"streetAddress\":\"corpus-w121-3b5f90840d2c\",\"city\":\"Mountain View\",\"state\":\"CA\",\"country\":\"United States\",\"zipCode\":\"94043\"},\"items\":[{\"cost\":{\"currencyCode\":\"USD\",\"units\":175,\"nanos\":0},\"item\":{\"productId\":\"0PUK6V6EV0\",\"quantity\":1,\"product\":{\"id\":\"0PUK6V6EV0\",\"name\":\"Solar System Color Imager\",\"description\":\"You have your new telescope and have observed Saturn and Jupiter. Now you're ready to take the next step and start imaging them. But where do you begin? The NexImage 10 Solar System Imager is the perfect solution.\",\"picture\":\"SolarSystemColorImager.jpg\",\"priceUsd\":{\"currencyCode\":\"USD\",\"units\":175,\"nanos\":0},\"categories\":[\"accessories\",\"telescopes\"]}}}]}",
+   "status": 200
+  }
+ ],
+ "mist_commit": "10eb19e",
+ "bundle_version": 1
+}
