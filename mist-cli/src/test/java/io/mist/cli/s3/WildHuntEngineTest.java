@@ -189,6 +189,31 @@ public class WildHuntEngineTest {
     }
 
     @Test
+    public void traceId_visibleToOnAckedAbsent_setBeforeHookFires() throws Exception {
+        // The RAW-time trace snapshot (§2d) reads e.traceId INSIDE onAckedAbsent, which fires inside
+        // write(); a caller assigning e.traceId after write() returns would be too late. The 5-arg
+        // write() must make the passed traceId visible to the hook.
+        final String[] seen = {"HOOK-NOT-CALLED"};
+        WildHuntEngine.FlagHook hook = new WildHuntEngine.FlagHook() {
+            @Override
+            public void onAckedAbsent(WildHuntEngine.WriteEntry e) {
+                seen[0] = e.traceId;
+            }
+        };
+        WildHuntEngine eng = new WildHuntEngine("fakesut", "test-window", tmp.resolve("out"), 0L, 42L, hook);
+        DataIntegrityRuntime.beginObserveRun(Collections.singletonList(triple), "t");
+        try {
+            WildHuntEngine.JourneyContext ctx = eng.new JourneyContext();
+            String m = eng.nextMarker(); // store empty -> acked-absent -> onAckedAbsent fires
+            ctx.write(triple, "address1", m, "c98529a983d7e096",
+                    () -> new WildHuntEngine.Ack(200, "{\"status\":1}"));
+            assertEquals("traceId set before onAckedAbsent fires", "c98529a983d7e096", seen[0]);
+        } finally {
+            DataIntegrityRuntime.endRun();
+        }
+    }
+
+    @Test
     public void breaker_tripsOnFiveConsecutiveCandidates() throws Exception {
         WildHuntEngine eng = engine(0);
         DataIntegrityRuntime.beginObserveRun(Collections.singletonList(triple), "t");

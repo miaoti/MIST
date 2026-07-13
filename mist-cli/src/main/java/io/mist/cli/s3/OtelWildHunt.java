@@ -132,12 +132,13 @@ public final class OtelWildHunt {
                 + "\"creditCard\":{\"creditCardCvv\":672,\"creditCardExpirationMonth\":1,"
                 + "\"creditCardExpirationYear\":2030,\"creditCardNumber\":\"4432-8015-6152-0454\"}}";
         ctx.recorder.request("POST", "/api/checkout?currencyCode=USD", payload);
-        WildHuntEngine.WriteEntry e = ctx.write(triple, triple.isolationKey.get(0), marker, () -> {
+        // traceId passed INTO write() so it is set before onAckedAbsent fires (the RAW-time trace
+        // snapshot needs it); export-selection only — never enters the sidecar records (plan §2d).
+        ctx.write(triple, triple.isolationKey.get(0), marker, traceId, () -> {
             Resp r = http("POST", base + "/api/checkout?currencyCode=USD", payload, traceparent);
             ctx.recorder.response(r.status, r.body);
             return new WildHuntEngine.Ack(r.status, r.body);
         });
-        e.traceId = traceId; // export-selection only; never enters sidecar records (plan §2d)
     }
 
     private static void snapshotTrace(String jaeger, WildHuntEngine.WriteEntry e, Path outDir,

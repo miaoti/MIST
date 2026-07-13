@@ -162,12 +162,20 @@ public final class WildHuntEngine {
             readSteps++;
         }
 
+        public WriteEntry write(TargetTripleRegistry.Triple triple, String keyField, String marker,
+                                WriteCall call) throws Exception {
+            return write(triple, keyField, marker, null, call);
+        }
+
         /**
          * One bound write: baseline via {@code beforeWriteSupplied}, the journey's HTTP call, the
          * observe poll via {@code afterWrite}, the ledger entry + W3-independent re-probe schedule.
+         * {@code traceId} (nullable; OTel journeys pass their client trace id) is set on the entry
+         * BEFORE {@link FlagHook#onAckedAbsent} fires, so the RAW-time trace snapshot (§2d) can find
+         * it — a post-hoc assignment by the caller would be too late (the hook runs inside here).
          */
         public WriteEntry write(TargetTripleRegistry.Triple triple, String keyField, String marker,
-                                WriteCall call) throws Exception {
+                                String traceId, WriteCall call) throws Exception {
             writeSteps++;
             int idx = ledger.size();
             String corr = triple.name + "#w" + idx;
@@ -179,6 +187,7 @@ public final class WildHuntEngine {
             WriteEntry e = new WriteEntry(idx, triple, corr, key, marker,
                     new ArrayList<>(recorder.records()));
             e.ack = ack;
+            e.traceId = traceId;
             e.record = DataIntegrityRuntime.observeRecordFor(corr);
             ledger.add(e);
             boolean ackedAbsent = e.record != null && e.record.acked
