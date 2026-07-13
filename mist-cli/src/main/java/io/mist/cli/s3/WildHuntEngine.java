@@ -127,6 +127,7 @@ public final class WildHuntEngine {
     private final java.util.Deque<Boolean> trailing = new java.util.ArrayDeque<>();
     private long readSteps = 0;
     private long writeSteps = 0;
+    private int failedJourneys = 0;
 
     public WildHuntEngine(String sutName, String windowId, Path outDir, long reProbeDelayMs,
                           long markerSeed, FlagHook hook) {
@@ -307,6 +308,7 @@ public final class WildHuntEngine {
         log.put("window", windowId).put("sut", sutName)
                 .put("writes_total", ledger.size())
                 .put("read_steps", readSteps).put("write_steps", writeSteps)
+                .put("failed_journeys", failedJourneys)
                 .put("write_path_fraction",
                         writeSteps + readSteps == 0 ? 0 : (double) writeSteps / (writeSteps + readSteps))
                 .put("classification_counts", new JSONObject(counts))
@@ -367,9 +369,24 @@ public final class WildHuntEngine {
             throws Exception {
         DataIntegrityRuntime.beginObserveRun(triples, "s3-" + windowId);
         try {
+            int done = 0;
+            int total = journeySequence.size();
             for (Journey j : journeySequence) {
-                j.run(new JourneyContext());
+                // A journey that throws is an OPERATIONAL failure (transient port-forward drop /
+                // connection reset over a long window), NOT a SUT behavior: skip + count + continue
+                // so one blip never aborts a multi-hundred-write session (the write is simply not
+                // recorded, so it is excluded from the denominator like a breaker-window flag).
+                try {
+                    j.run(new JourneyContext());
+                } catch (Exception ex) {
+                    failedJourneys++;
+                    System.err.println("journey " + done + " failed (operational, skipped): " + ex);
+                }
                 pumpReProbes(reProbeTransportOrNull, swap);
+                if (++done % 25 == 0) {
+                    System.out.println("progress " + done + "/" + total + " writes=" + ledger.size()
+                            + " failed=" + failedJourneys);
+                }
             }
             // Drain: wait out the remaining re-probe delays (single-threaded, between no journeys).
             while (reProbesPending()) {
