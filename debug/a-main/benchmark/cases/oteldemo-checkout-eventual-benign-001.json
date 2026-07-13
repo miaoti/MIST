@@ -27,8 +27,8 @@
     "readback": {
       "modality": "sql-probe",
       "locator": "SELECT street_address FROM accounting.shipping WHERE street_address='<the request-derived marker>' (db otel, schema accounting). KEY = the request-derived street_address marker (C-R2). Observed ABSENT at the at-cap read (poll cap ~27s) and PRESENT at the >=T+5min re-probe (~328s) — the row landed after the cap, not lost.",
-      "expect_without_fault": "landed (eventually; absent-at-cap on a slow async settle)",
-      "expect_with_fault": "n/a (no fault; this is the benign eventual-consistency shape)",
+      "expect_without_fault": "landed",
+      "expect_with_fault": "not-landed",
       "mist_bindable": true
     }
   },
@@ -40,7 +40,7 @@
     },
     "injected_by": "",
     "target_service": "kafka",
-    "provenance_class": "by-observation"
+    "provenance_class": "by-docs"
   },
   "stimulus": {
     "script": "GET /api/products/0PUK6V6EV0 -> POST /api/cart (session uuid) -> POST /api/checkout (kafka UP, client W3C traceparent injected) -> runner read-back poll to cap, then a >=T+5min re-probe; psql read-back keyed on the request-derived street_address marker",
@@ -54,7 +54,7 @@
     "write_shape": "whole",
     "oracle_mode": "observe",
     "config_provenance": {
-      "mist_commit": "5802fa8",
+      "mist_commit": "10eb19e",
       "mist_authoring": {
         "tier": "hand-written",
         "minutes": 0
@@ -64,8 +64,8 @@
   },
   "ground_truth": {
     "label": "negative",
-    "rationale": "BENIGN bounded eventual consistency, NOT an acked-lost write. The accounting shipping row IS durable — absent at the ~27s at-cap read but PRESENT at the ~328s re-probe (the value landed after the cap). The S3 CONFIRMED detector (which requires the >=T+5min re-probe to STILL be absent) correctly classifies this raw-delayed, NOT CONFIRMED. A NAIVE at-cap-only read-back oracle WOULD false-positive here — this case is exactly why the re-probe gate exists. Oracles keyed on the full detector must NOT fire.",
-    "source": "by_observation",
+    "rationale": "BENIGN bounded eventual consistency, NOT an acked-lost write. The accounting shipping row IS durable — absent at the ~27s at-cap read but PRESENT at the ~328s re-probe (the value landed after the cap). The S3 CONFIRMED detector (which requires the >=T+5min re-probe to STILL be absent) correctly classifies this raw-delayed, NOT CONFIRMED. A NAIVE at-cap-only read-back oracle WOULD false-positive here — this case is exactly why the re-probe gate exists. Oracles keyed on the full detector must NOT fire. PROVENANCE (freeze §6 2026-07-13 amendment, disclosed): source=natural — the benign label rests on the OBSERVED re-probe-present datum (the row landed), NOT on a documented completion bound (per §0.4 the OTel async path has NO upstream completion bound to cite), so doc_citation is null by honest necessity; this natural-observation S2 benign is exempt from the by-docs+citation sub-clause of the §2 S2-invariant, authorized by that dated amendment.",
+    "source": "natural",
     "version": 1,
     "doc_citation": null
   },
@@ -82,7 +82,7 @@
     "control_trace": null,
     "fault_trace": null,
     "readback_response": "debug/a-main/benchmark/b4/s3/window-oteldemo/flags/flag-w120.json",
-    "notes": "S3 WILD-HUNT NATURAL TOP-UP (2026-07-13, plan s3-wildhunt-plan.md rev 2.1 P1/P5). The single degradation-shaped benign the counted windows yielded (OTel raw-delayed w120; TeaStore + TT are fully synchronous -> 0). Rater-facing sidecar = s3/window-oteldemo/sidecars/w120-sidecar.json (3 observations: baseline / at-cap ABSENT ~27s / re-probe PRESENT ~328s), FULL-PIPELINE-VALIDATED through b4_harness.render at P1 (no banned-string leak; opaque-id only; 3-observation shape). Detector pin 5802fa8; window ran clean (env_guard: flagd-15-off, loadgen-off, traceparent-adopted). This is a KNOWN-benign calibration/top-up case (label negative by observation of the re-probe-present datum), authored as an S2 benign per plan §4.1 (degradation-shaped ONLY). CADENCE NOTE (tell-audit): cadence = OTel pinned knobs (timeout 25s / poll 2s / re-probe 300s); the re-probe-PRESENT shape must not perfectly correlate with the benign label across the MERGED corpus (C-B3/A-F10) — a cross-track tell-audit item recorded in RESULT-p5."
+    "notes": "S3 WILD-HUNT NATURAL TOP-UP (2026-07-13, plan s3-wildhunt-plan.md rev 2.1 P1/P5). The single degradation-shaped benign the counted windows yielded as an ACKED-ABSENT shape (OTel raw-delayed w120; TeaStore + TT are fully synchronous -> 0 acked-absent shapes — by-design soft-rejects DO exist on sync paths, e.g. TT admin-basic duplicate-key {status:0}, but were deferred to the cross-track corpus + the recommended capture wave). Rater-facing sidecar = s3/window-oteldemo/sidecars/w120-sidecar.json (3 observations: baseline / at-cap ABSENT ~27s / re-probe PRESENT ~328s), FULL-PIPELINE-VALIDATED through b4_harness.render at P1 (no banned-string leak; opaque-id only; 3-observation shape). The OTel window RAN at commit 10eb19e (its flag-w120 bundle stamps mist_commit=10eb19e); the CLASSIFIER (classify() + the RAW/CONFIRMED predicate) is byte-identical across 10eb19e->5802fa8->0fbe00f, so the raw-delayed verdict is invariant. Window ran clean (env_guard: flagd-15-off, loadgen-off, traceparent-adopted). This is a KNOWN-benign calibration/top-up case (label negative by observation of the re-probe-present datum), authored as an S2 benign per plan §4.1 (degradation-shaped ONLY). CADENCE NOTE (tell-audit): cadence = OTel pinned knobs (timeout 25s / poll 2s / re-probe 300s); the re-probe-PRESENT shape must not perfectly correlate with the benign label across the MERGED corpus (C-B3/A-F10) — a cross-track tell-audit item recorded in RESULT-p5."
   },
   "license": {
     "case_code": "Apache-2.0",

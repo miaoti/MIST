@@ -20,9 +20,15 @@ stratum, C-B3/A-F10). The counted windows' achieved degradation-shaped supply:
 | SUT | shape | degradation-shaped benigns yielded |
 |-----|-------|-----|
 | OTel-Demo | async (kafka→accounting) | **1** (`w120`, bounded eventual consistency: absent-at-cap, present-at-re-probe) |
-| TeaStore | fully synchronous | 0 (no degradation shape exists on a sync path) |
-| TrainTicket | fully synchronous | 0 (same) |
+| TeaStore | fully synchronous | 0 *acked-absent* shapes |
+| TrainTicket | fully synchronous | 0 *acked-absent* shapes |
 | **total** | | **1** |
+
+**M4-correction (post-review):** the sync SUTs yield 0 of the *acked-absent / eventual-consistency*
+sub-shape only — NOT 0 degradation shapes absolutely. By-design **soft-rejects** exist on sync paths
+(TT admin-basic duplicate-key `{status:0}` "already exists"; the `tt-s2-contacts-dedupe` family). No
+dedicated ~25–30 degradation-shaped batch was captured during the windows, so soft-reject benigns were
+deferred to the cross-track corpus + the recommended capture wave (they are NOT structurally impossible).
 
 Deterministic surplus rule: achieved (1) < computed size ⇒ **no surplus to trim; the disclosed
 floor-30 shortfall branch is invoked** ("never dilute shape or skew" — a clean-present top-up is
@@ -57,24 +63,30 @@ recommendation in §6, not executed here.)
 ## §4 B4 render (all S3 strata) + our-side entry-gate checks
 
 The single S3 rating case (the `w120` benign top-up) is authored + rendered:
-- Case file `cases/oteldemo-checkout-eventual-benign-001.json` (schema 2.0.0, stratum 2, label negative
-  by_observation) + sidecar `s3/window-oteldemo/sidecars/w120-sidecar.json`.
+- Case file `cases/oteldemo-checkout-eventual-benign-001.json` (schema 2.0.0, stratum 2, label negative,
+  `ground_truth.source=natural`, `fault.provenance_class=by-docs`) + sidecar
+  `s3/window-oteldemo/sidecars/w120-sidecar.json`. **Post-review (F2/M2): the case now validates against
+  `schema/fault-case.schema.json` with 0 errors** (earlier draft used non-enum `by-observation`/
+  `by_observation` + prose `expect_*` — corrected to enum tokens); the natural-observation S2 provenance
+  (source `natural`, `doc_citation: null` — no completion-bound doc exists to cite per §0.4) is authorized
+  by a dated freeze §6 amendment as an exception to the §2 S2 by-docs+citation sub-clause.
 - **Rendered clean through `b4_harness.render`:** opaque `S3-BENIGN-01`, `case_md_sha256 =
   75dce034…d45f7`; **0 BANNED_STRINGS**; answer key (label/rationale/classification/mist_commit) fully
   **stripped** — only legitimate SUT-domain content reaches the rater (the `accounting.shipping` read-back
   probe, which the rater must see to judge). NO S3 CONFIRMED (stratum-3) cases exist to render (|S3|=0).
 
-Our-side entry-gate checks on the S3 material: leak-clean render ✓ · opaque-id-only (true id only in the
-manifest row) ✓ · deterministic bytes (stable `case_md_sha256`) ✓ · 3-observation one-shape ✓ · no
-absolute-time key (harness rejects; sidecar rebases `t_rel`) ✓ · credentials N/A (OTel flow has no login)
-✓ · cadence uniformity ✓ (cross-corpus correlation caveat per §3). The FULL 9-check entry gate on the
-MERGED corpus is the cross-track/user-side step.
+Our-side entry-gate checks on the S3 material: **machine-schema validation ✓ (0 errors — ADDED
+post-review F2, the check RESULT-p5 originally omitted)** · leak-clean render ✓ · opaque-id-only (true id
+only in the manifest row) ✓ · deterministic bytes (stable `case_md_sha256`) ✓ · 3-observation one-shape ✓
+· no absolute-time key (harness rejects; sidecar rebases `t_rel`) ✓ · credentials N/A (OTel flow has no
+login) ✓ · cadence uniformity ✓ (cross-corpus correlation caveat per §3). The FULL 9-check entry gate on
+the MERGED corpus is the cross-track/user-side step.
 
 ## §5 SEALED manifest + hash
 
 `s3/SEALED-MANIFEST.sha256` — SHA-256 over 17 S3 deliverable artifacts (the 1 benign rating case + its
 sidecar + flag bundle; the 3 counted windows + 3 FP calibrations; the 5 phase-result/pins docs). Seal
-fingerprint (sha256 of the manifest) = `9080dbb8b9d1ef46a3adece423c255d974f0cdb2b5e825239fb00c8bdb93eacd`.
+fingerprint (sha256 of the manifest) = `5c982d1f10728a15da92705728ec491db0c410ceb3495a3591d274a5d3c2b27d (v2, post-review re-seal; v1 was 9080dbb8)`.
 CONFIRMED S3 cases sealed = 0 (scarcity). Final corpus-wide opaque-id assignment + the merge into the
 sealed rating mix is the cross-track/user-side assembly step.
 

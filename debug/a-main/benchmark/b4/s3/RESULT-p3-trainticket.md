@@ -3,14 +3,17 @@
 Plan `s3-wildhunt-plan.md` rev 2.1 §7 P3 (**MANDATORY**: the only sync-acked + nonzero-prior surface,
 §0.4/§6). Artifacts: `s3/window-trainticket/{window-log.json, ledger.json}` (no `flags/` — 0 candidates).
 
-**MIST pin.** Detector code is **unchanged since `5802fa8`** (the pin OTel/TeaStore recorded). The window
-JVM ran the working tree captured by **`0fbe00f`** ("S3 TT window enablement"), whose diff over `6a448f7`
-is workload-harness only — the gateway journey-pacing knob (`WildHuntEngine.setJourneyDelayMs`, default 0)
-and the TT per-run marker salt + versioned runner — and touches **neither** `classify()` nor the
-RAW/CONFIRMED predicate. The runner snapshotted the launch-time HEAD `6a448f7` into `-Ds3.mist.commit`;
-with 0 flag bundles emitted that value is not written to any artifact, so no recorded field conflicts with
-this note. **The window result is invariant to the `0fbe00f` diff** (salt = opaque marker values; pacing =
-inter-write timing).
+**MIST pin (per-window run commits; corrected post-review F1).** The CLASSIFIER (`classify()` + the
+RAW/CONFIRMED predicate) is byte-identical across the three windows' run commits — OTel ran `10eb19e`
+(its flag-w120 bundle stamps it), TeaStore ran `5802fa8`, and this TT window's JVM ran the working tree
+captured by **`0fbe00f`** ("S3 TT window enablement"). The `0fbe00f` diff over `6a448f7` is
+workload-harness only — the gateway journey-pacing knob (`WildHuntEngine.setJourneyDelayMs`, default 0)
+and the TT per-run marker salt + versioned runner — touching **neither** `classify()` nor the
+RAW/CONFIRMED predicate. Provenance bookkeeping: the runner snapshotted the launch-time HEAD `6a448f7`
+into `-Ds3.mist.commit` (I committed `0fbe00f` moments after launch), but with 0 flag bundles emitted
+that value is never written to any artifact — so the run's true tree is `0fbe00f`'s and nothing records a
+conflicting stamp. **The window result is invariant to the `0fbe00f` diff** (salt = opaque marker values;
+pacing = inter-write timing).
 
 ## Environment + gates (GREEN)
 

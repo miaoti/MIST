@@ -1,8 +1,10 @@
 # S3 P4 — dedup + environment-guard audit + SCARCITY BRANCH (invoked)
 
 Plan `s3-wildhunt-plan.md` rev 2.1 §7 P4. Operates on the three committed window artifacts
-(`s3/window-{oteldemo,teastore,trainticket}/`); no live SUT (all tenants at 0). Detector pin `5802fa8`
-(unchanged across all three windows; TT ran the `0fbe00f` tree, workload-harness diff only).
+(`s3/window-{oteldemo,teastore,trainticket}/`); no live SUT (all tenants at 0). Per-window run commits
+(corrected post-review F1): OTel `10eb19e`, TeaStore `5802fa8`, TT `0fbe00f` — the CLASSIFIER is
+byte-identical across all three (the diffs are the traceId-snapshot reorder + TT pacing/salt, neither
+touching `classify()`/the RAW-CONFIRMED predicate).
 
 ## §1 Provenance-scoped dedup + rediscovery counts
 
@@ -25,13 +27,16 @@ conditions that make an acked-loss *natural* (not induced). Result: **PASS** on 
 |-----|----------------------------|---------------------------|---------|-------|
 | OTel-Demo | `flagd-15-off-2026-07-13; loadgen-absent; traceparent-adopted-57spans; dbbaseline-23`; `load_generator: off` | flagd at frozen defaults (15 flags OFF) **and** load-generator OFF — the two contamination risks affirmatively ruled out; traceparent adoption canary-confirmed | `[]` | 500 / 1 ep |
 | TeaStore | `autoseed-100users; maintenance-false; sync-SUT` | the known fault (persistence maintenance-mask) affirmatively OFF; auto-seed baseline | `[]` | 500 / 1 ep |
-| TrainTicket | `admin_auth per_jvm; marker_seed_base/effective; gateway; bound_endpoints:3` | (a) the runner has **no fault-injection code path** (pure benign workload); (b) the invocation's `-Ds3.envguard="admin-auth-ok; subgraph-healthy; no-fault-injected; sync-SUT"` (greppable in `runners/s3/trainticket.sh` + RESULT-p3); (c) §0.4 SYNC proxy, 514/514 present-at-cap | `[]` | 514 / 3 ep |
+| TrainTicket | `admin_auth per_jvm; marker_seed_base/effective; gateway; bound_endpoints:3` | (a, PRIMARY) the runner has **no fault-injection code path** (pure benign workload) AND admin-basic has **no injectable fault flag/toggle to leave ON** (nothing analogous to flagd/maintenance to verify OFF); (b) §0.4 SYNC proxy, 514/514 present-at-cap poll-1 | `[]` | 514 / 3 ep |
 
-**One documented minor inconsistency (not a substantive gap):** TT's `emit()` builds its env_guard JSON
-from SUT-specific fields and does not re-serialize the `-Ds3.envguard` shell string, so the TT JSON lacks
-an explicit `no-fault` token that OTel/TeaStore carry (`loadgen off` / `maintenance-false`). TT's
-fault-free status is nonetheless established three independent ways (above). Recorded here rather than
-re-running a 12-minute window for a cosmetic field.
+**One documented minor inconsistency (not a substantive gap; F4 reworded post-review):** TT's `emit()`
+builds its env_guard JSON from SUT-specific fields and does NOT re-serialize the `-Ds3.envguard` shell
+string — so the TT JSON lacks an explicit `no-fault` token that OTel/TeaStore carry
+(`loadgen off` / `maintenance-false`), and that shell literal is a **discarded launch arg, not a verified
+probe** (do not lean on it). TT's fault-free status rests on the two substantive grounds above — most
+importantly that admin-basic has no injectable fault state to verify-OFF in the first place — the WEAKEST
+of the three attestations but not a substantive hole. Recorded here rather than re-running a 12-minute
+window for a cosmetic field. (Optional 1-line fix: have `emit()` serialize the envguard string for parity.)
 
 ## §3 Stratified sample
 
@@ -61,10 +66,15 @@ calibration κ + the bias audit.
 
 ## Carry-forward to P5
 
-- Rating-corpus benign/top-up mix (P5): the 1 OTel raw-delayed (`w120`, already B4-validated end-to-end)
-  + calibration-derived clean present cases (19 TT + 20 TeaStore + 20 OTel available) → the §4
-  floor-30 top-up is met from calibration presents (the pre-registered floor-30 shortfall branch — the
-  natural top-up yield was 1, exactly the C-2 worst case).
+- Rating-corpus benign/top-up mix (P5): the ONLY admissible degradation-shaped top-up S3 yielded is the
+  1 OTel raw-delayed (`w120`, already B4-validated end-to-end). **CORRECTION (post-review F3): calibration
+  *clean-present* cases are INADMISSIBLE as top-ups** — plan §4.1 forbids "nothing happened" clean
+  journeys (a present-vs-absent split between benign and genuine strata would make the stratum decodable,
+  C-B3/A-F10). So the floor-30 is **NOT met**: achieved degradation-shaped supply = 1; combined with the
+  11 legacy captured negatives the benign pool = 12 < floor 30 < computed ≈42–43. The pre-registered
+  **floor-30 shortfall branch is INVOKED** (natural yield 1 = exactly the C-2 worst case); P5 reports the
+  achieved size + its power consequence (thin benign side; async ambiguity under-represented). The
+  earlier "met from calibration presents" wording was wrong and is retracted here.
 - Measured-recall legs: OTel analytic-0 (always-on) + 2.75-A paired 5/5; TeaStore maintenance-toggle
   (2.75-A paired 5/5 cross-ref); TT fabricated-ack SYNTHETIC exemplar — all cross-referenced, none owed
   new by S3 (the real traced discrimination run stays owed at 2.5/E2).

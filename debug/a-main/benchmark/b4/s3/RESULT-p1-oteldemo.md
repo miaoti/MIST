@@ -1,7 +1,14 @@
 # S3 P1 — OTel-Demo window RESULT (intermediate; feeds the P6 aggregate)
 
 Plan `s3-wildhunt-plan.md` rev 2.1 §7 P1. Pre-registration: freeze §6 "Step-5-as-amended"
-(2026-07-13). MIST code pin: `mist_commit 5802fa8` (engine + reProbe accessor + traceId fix).
+(2026-07-13). **MIST run commit (corrected post-review, 2026-07-13): the OTel window JVM RAN at
+`10eb19e` — its `flags/flag-w120.json` bundle stamps `mist_commit=10eb19e` (the run truth via
+`git rev-parse HEAD` at launch). The traceId-snapshot fix `5802fa8` was committed AFTER, surfaced BY
+this very window; the reProbe accessor + engine predate it.** The CLASSIFIER (`classify()` + the
+RAW/CONFIRMED predicate) is byte-identical across `10eb19e`→`5802fa8` (the diff only reorders
+`e.traceId=` before the `onAckedAbsent` hook for the §2d RAW-time trace snapshot, never read by
+`classify()`), so the 0-CONFIRMED / w120-raw-delayed result is invariant. Earlier drafts of this file
+mislabeled the pin as `5802fa8`; corrected here per the 3-cold review (F1, unanimous).
 Artifacts: `s3/window-oteldemo/{window-log.json, ledger.json, flags/, sidecars/}`.
 
 ## Environment + pre-window gates (all GREEN)
@@ -36,7 +43,10 @@ Artifacts: `s3/window-oteldemo/{window-log.json, ledger.json, flags/, sidecars/}
 **Result: 0 CONFIRMED wild flags in 500 acked writes on OTel checkout** — the pre-registered
 SCARCITY outcome (honest prior C-M1: a natural acked-lost find on OTel ≈ 0; every acked-lost behavior
 ever captured here required an injected fault). DB row count 523 = 23 pre-window baseline + 500,
-exact (no lost/duplicate writes at the DB).
+exact (no lost/duplicate writes at the DB). **Disclosure (post-review m5/F5): the DB-count 523 and the
+57-span traceparent canary are UNSEALED operator observations** (recorded in prose / the `environment_guard`
+string, corroborating zero loss independently of MIST's read-back) — they are NOT committed as sealed
+artifacts (unlike 2.75-A/E2's psql evidence); the headline rests on the sealed ledger, not on these.
 
 ## The 1 raw-delayed case (w120) — a real degradation-shaped top-up
 

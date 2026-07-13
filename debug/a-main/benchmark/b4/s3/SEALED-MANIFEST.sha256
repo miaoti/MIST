@@ -1,13 +1,16 @@
-# S3 wild-hunt — SEALED MANIFEST (SHA-256)
-# sealed_at: 2026-07-13T19:00:35.218546Z
-# scope: the S3 deliverable — 1 degradation-shaped benign top-up (rating material) +
+# S3 wild-hunt -- SEALED MANIFEST (SHA-256) -- v2 (post-review re-seal)
+# sealed_at: 2026-07-13T19:35:09.379434+00:00
+# v2 REASON: the 3-cold review of RESULT-s3 (all ACCEPT-WITH-FIXES) drove edits to sealed members
+#   (the benign case F2/F1, RESULT-p1/p3/p4 F1/F3); re-hashed here. v1 fingerprint was
+#   9080dbb8b9d1ef46a3adece423c255d974f0cdb2b5e825239fb00c8bdb93eacd. No number/headline change.
+# scope: the S3 deliverable -- 1 degradation-shaped benign top-up (rating material) +
 #        3 counted windows + 3 FP calibrations (evidence) + phase results + P0 pins.
-# rendered blind case (deterministic from case+sidecar): opaque S3-BENIGN-01,
-#   case_md_sha256 = 75dce034fadcf7cc13cf88fcb2d6ca18fb6195190a72b48f4f83bcebea7d45f7 (leak-clean).
-# CONFIRMED S3 cases sealed: 0 (scarcity branch; |S3|=0). Final corpus opaque-id
-#   assignment + merge is the cross-track/user-side assembly step.
+# rendered blind case (deterministic from case+sidecar; UNCHANGED by the metadata fixes): opaque
+#   S3-BENIGN-01, case_md_sha256 = 75dce034fadcf7cc13cf88fcb2d6ca18fb6195190a72b48f4f83bcebea7d45f7.
+# CONFIRMED S3 cases sealed: 0 (scarcity branch; |S3|=0). Final corpus opaque-id assignment + merge
+#   is the cross-track/user-side assembly step. Recon: REVIEW-S3-RESULT-RECONCILIATION.md.
 
-137b3740dd5b72233e53fd3e78dd425422dec4ea0dc109951d409e26463e68f9  cases/oteldemo-checkout-eventual-benign-001.json
+ef62c1f97df9cdd8a3ab6916a61bac6f1208cdcff1dccb5139c4d49b1b082cd9  cases/oteldemo-checkout-eventual-benign-001.json
 5866f37ccfac75b81fa81b39064f1007075a31e3ed5272fc8d655727944f04c8  b4/s3/window-oteldemo/sidecars/w120-sidecar.json
 d86ab31147f94b5ae8f4f9ed23681b0f6cdcc8b858ec4588b38b9ab969ae3429  b4/s3/window-oteldemo/flags/flag-w120.json
 85aa3e4143a5527f6a85af94870c28a5328048e4779bbfa0c32c47c15b5f33f6  b4/s3/window-oteldemo/window-log.json
@@ -20,7 +23,7 @@ ea1891a9a3db934cb1c290519cfd376466286e5fdd6995694c9bbf3613dcd514  b4/s3/window-t
 ab7bc23eccab0adb4045cdbd026058bdcd2470f30071ea1b3b1f043707e46e16  b4/s3/calibration-teastore/window-log.json
 956e1f3516c718ef4f634fb7959098526784876e4380b82509a0d2ed6d2abcc6  b4/s3/calibration-trainticket/window-log.json
 f99a201f21ef0b1e15726f9eecc480c9d419c858902616a3146da78e45edeb16  b4/s3/s3-p0-pins.md
-d294bd12e998aed8ea905f9a22b15b822228f481916de86f72f065ced836f96b  b4/s3/RESULT-p1-oteldemo.md
+2672c6ff3c41549418391c508ae7389970cef19ca7614fd7e46a6324322bf29d  b4/s3/RESULT-p1-oteldemo.md
 ef336aa6e009c025c82b2663bd62238f606d3a2cfe6c804b71a10cfe11957b10  b4/s3/RESULT-p2-teastore.md
-dff6785597a17fe8581a921d4ebb6112ad2054de8965a72fb4257202d68834fe  b4/s3/RESULT-p3-trainticket.md
-ef6dc6787aaf83275f64255180d9357c8b5d15ffbba3345ec6ecd1ad82397f4d  b4/s3/RESULT-p4-scarcity.md
+169b3cb50bac1843a36524b8c7059a9ca3604793e8a024935b866b3735465cec  b4/s3/RESULT-p3-trainticket.md
+6e286f61c905a2d8afae085565841a99aba5325f6b28e2b2d64a4f435c8d35c4  b4/s3/RESULT-p4-scarcity.md
