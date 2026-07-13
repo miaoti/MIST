@@ -1,0 +1,46 @@
+# S3 wild-hunt — TrainTicket admin-basic write endpoints (plan rev 2.1 §6 P3 rider; freeze §6
+# "Step-5-as-amended", pin: "2-3 new TT triples").
+#
+# 2-3 ADDITIONAL TT write endpoints bound as SUPPLIED + MEMBERSHIP triples over the EXISTING
+# installHttpOverride/RestAssured mechanics (NO new detector code). Chosen at P0 from admin-basic
+# CRUD sites with NO natural-provenance authored cases (the authored TT sites are cancel /
+# adminroute / adminbasic-contacts / createaccount / eligibility), so §2b keeps these S3-eligible.
+# TT is the sync-acked surface: each create returns a {status:1,...} envelope synchronously, so an
+# acked create ABSENT from its GET-all collection at cap is the RAW candidate.
+#
+# READ-BACK: the built-in RestAssured transport (override left null) carries an ADMIN bearer via
+# MstAuthHandler and GETs the collection; the reviewed MEMBERSHIP oracle checks {<key>: <marker>}
+# membership over the returned {status,msg,data:[...]} envelope. The marker is request-supplied in
+# the create body (never read from the response) -> request-derived. readback_endpoint doubles as
+# the per-triple neutral probe descriptor (WildHuntEngine.setProbe).
+#
+# P3 PREFLIGHT VERIFY (before the window, live gateway) — pre-registered checks, not free re-scoping:
+#   1. gateway paths + admin creds (-Ds3.admin.*) resolve 2xx on both create and GET-all;
+#   2. the GET-all envelope's data[] is what the MEMBERSHIP oracle's extractItems parses (the g3
+#      /account read-back already proved the {data:[...]} envelope parses; confirm for admin-basic);
+#   3. the keyed field round-trips create -> collection (marker visible in GET-all items);
+#   4. tt-adminbasic-price FALLBACK: if `prices` create validates trainType against known types and
+#      rejects a marker value, swap to `/adminbasic/trains` keyed on `id` (same shape, free-string
+#      key) — documented here so the swap is a pre-registered contingency, not a mid-window decision.
+triples:
+  - name: tt-adminbasic-station
+    write_endpoint: "POST /api/v1/adminbasicservice/adminbasic/stations"
+    dependency: ts-station-service
+    readback_endpoint: "GET /api/v1/adminbasicservice/adminbasic/stations"
+    isolation_key: [name]
+    isolation_strategy: supplied
+    readback_mode: membership
+  - name: tt-adminbasic-config
+    write_endpoint: "POST /api/v1/adminbasicservice/adminbasic/configs"
+    dependency: ts-config-service
+    readback_endpoint: "GET /api/v1/adminbasicservice/adminbasic/configs"
+    isolation_key: [name]
+    isolation_strategy: supplied
+    readback_mode: membership
+  - name: tt-adminbasic-price
+    write_endpoint: "POST /api/v1/adminbasicservice/adminbasic/prices"
+    dependency: ts-price-service
+    readback_endpoint: "GET /api/v1/adminbasicservice/adminbasic/prices"
+    isolation_key: [trainType]
+    isolation_strategy: supplied
+    readback_mode: membership

@@ -274,6 +274,68 @@ public final class DataIntegrityRuntime {
         defaultHttpOverride = http;
     }
 
+    /** S3 re-probe outcome (wild-hunt plan rev 2.1 §2): ERROR is never evidence of absence. */
+    public enum ReProbeOutcome { PRESENT, ABSENT, ERROR }
+
+    /** One decisive S3 re-probe read: outcome + the read itself (for the flag bundle). */
+    public static final class ReProbeResult {
+        public final ReProbeOutcome outcome;
+        public final int httpStatus;
+        public final String body;
+        public final String error; // non-null iff outcome == ERROR
+
+        ReProbeResult(ReProbeOutcome outcome, int httpStatus, String body, String error) {
+            this.outcome = outcome;
+            this.httpStatus = httpStatus;
+            this.body = body;
+            this.error = error;
+        }
+    }
+
+    /**
+     * S3 wild-hunt CONFIRMED re-probe accessor (plan `s3-wildhunt-plan.md` rev 2.1 §2; review B-M4):
+     * ONE decisive read, judged with the SAME predicates the poll loop uses — no predicate fork.
+     * Evidence rules verbatim (review A-F1a): a non-2xx read, a VANISHED value-delta row, or a
+     * MEMBERSHIP collection at the pre-registered {@code readback_bound} is an {@code ERROR} —
+     * unusable, never evidence of absence. {@code http == null} selects the transport exactly as
+     * {@link #beginRun} does (the installed override, else the default RestAssured transport), so
+     * the re-probe rides the SAME transport as the observe session. Visibility-only widening
+     * (precedent: {@link #installHttpOverride}), disclosed under the opened tool-code gate.
+     */
+    public static ReProbeResult reProbe(TargetTripleRegistry.Triple triple, Http http,
+                                        Map<String, String> isolationKey, String baselineBody) {
+        Http transport = http != null ? http
+                : (defaultHttpOverride != null ? defaultHttpOverride : new RestAssuredHttp());
+        try {
+            HttpResponse read = transport.getSut(readbackPath(triple));
+            if (read.status / 100 != 2) {
+                return new ReProbeResult(ReProbeOutcome.ERROR, read.status, read.body,
+                        "re-probe read non-2xx (" + read.status + ") — unusable, not absence");
+            }
+            if (triple.readbackMode == TargetTripleRegistry.ReadbackMode.VALUE_DELTA) {
+                String base = extractProbeValue(triple, baselineBody, isolationKey);
+                String cur = extractProbeValue(triple, read.body, isolationKey);
+                if (base != null && cur == null) {
+                    return new ReProbeResult(ReProbeOutcome.ERROR, read.status, read.body,
+                            "value-delta probe row vanished on the re-probe — unreliable surface, not absence");
+                }
+                return new ReProbeResult(valueDiffers(base, cur)
+                        ? ReProbeOutcome.PRESENT : ReProbeOutcome.ABSENT, read.status, read.body, null);
+            }
+            boolean present = containsKey(read.body, isolationKey);
+            if (!present && triple.readbackBound > 0
+                    && extractItems(read.body).size() >= triple.readbackBound) {
+                return new ReProbeResult(ReProbeOutcome.ERROR, read.status, read.body,
+                        "read-back collection at the pre-registered bound (" + triple.readbackBound
+                                + ") — absence unverifiable");
+            }
+            return new ReProbeResult(present ? ReProbeOutcome.PRESENT : ReProbeOutcome.ABSENT,
+                    read.status, read.body, null);
+        } catch (RuntimeException e) {
+            return new ReProbeResult(ReProbeOutcome.ERROR, 0, null, "re-probe transport error: " + e);
+        }
+    }
+
     private DataIntegrityRuntime() {
         // static hooks only
     }

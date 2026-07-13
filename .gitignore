@@ -13,6 +13,9 @@
 /target
 # Stage 1.C: Maven reactor — also ignore target/ inside every module
 **/target/
+# Python bytecode caches (b4 harness/assembler tooling)
+**/__pycache__/
+*.pyc
 /logs/
 # Stage 1.C: Maven reactor — also ignore logs/ inside every module
 **/logs/
@@ -137,3 +140,6 @@ allure-report/
 # Large local artifacts (distributed via YouTube/Zenodo, not tracked in git)
 /MIST-screencast.mp4
 /MIST-zenodo-*.zip
+
+# personal untracked notes (never commit)
+debug/a-main/benchmark/rater-packet/*勿提交*.md
