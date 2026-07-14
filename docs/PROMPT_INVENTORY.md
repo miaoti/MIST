@@ -1,28 +1,12 @@
 # MIST — Prompt Inventory
 
-**Single catalogue of every LLM prompt MIST sends at runtime, with the prompt text reproduced verbatim from the source.**
+Every prompt MIST sends to an LLM at runtime, with the text as it appears in the source. The code that builds these prompts is all in `mist-core`. `mist-llm` is only transport — `LLMClient`, `LLMService`, and the OpenAI-compatible / Gemini / Ollama adapters — and `mist-cli` just wires the classes together; neither holds prompt text.
 
-Every prompt below is copied exactly as it is written in MIST's own source — the Java string literals / `StringBuilder` blocks that build it, or (for the two registry-templated prompts) the registry default text. Nothing here is paraphrased or invented. Where the code splices in a runtime value, the splice point is shown as a `{placeholder}`, and conditional blocks are flagged with a short `# note`. To see the live string for a given run, read the cited `file:line`.
+Two prompts aren't hard-coded: `apiDiscovery` (#4) and `directValueExtraction` (#5) come from the input-fetch registry. Their defaults live in `InputFetchRegistry.initializeDefaults()` and a per-SUT `input-fetch-registry.yaml` can override them. The registry also carries a `valueSelection` template, but nothing currently calls it.
 
-> ⚠️ **Maintenance contract.** When you add, remove, or change a runtime LLM prompt (its text, output contract, or call site), update its entry here — including the verbatim text — in the same change. Keep this the single prompt catalogue. See also `FILE_INDEX.md` and the memory entries `file-index-consult-first` / `file-index-maintenance`.
+In the prompt text below, `{name}` is a value the code splices in and a trailing `#` marks a conditional block. Line numbers follow `main_track` as of 2026-07-13 — grep a line if the code has moved. (The `debug/**/PROMPT_*.md` and `VERIFICATION_PROMPT.md` files are work briefs, not runtime prompts.)
 
-## Scope — what counts as a "prompt" here
-
-- **In scope:** text assembled at runtime and passed to `LLMService.generateText(...)` / `LLMClient.prompt(...)`. All the *code that builds* these prompts lives in **`mist-core`**.
-- **Two prompts are registry-templated, not code-literal:** `apiDiscovery` (#4) and `directValueExtraction` (#5) are loaded from the input-fetch registry via `registry.getLlmPrompts().get(...)`. Their default text is defined in `mist-core/.../smart/InputFetchRegistry.java` (`initializeDefaults()`), and a per-SUT `input-fetch-registry.yaml` may override it. The verbatim default is reproduced under each entry.
-- **`mist-llm`** is the transport/SPI layer (`LLMClient`, `LLMRequest`, `LLMService`, backend adapters for OpenAI-compatible / Gemini / Ollama). It routes prompts and caches responses but **contains no prompt text of its own.**
-- **`mist-cli`** only *wires up* the prompt-owning classes (`MistRunner` constructs `TestCaseEnhancer` / `StatusCodeExplorationEnhancer`); it holds **no prompt text.**
-- **Dormant template:** the registry also defines a `valueSelection` template (`InputFetchRegistry.java:499`), but no code path reads `getLlmPrompts().get("valueSelection")`, so it is **not dispatched** and is not counted among the active sites below.
-- **Not runtime prompts:** the `debug/Conference-refinement/PROMPT_*.md` and `debug/negative_test/VERIFICATION_PROMPT.md` files are developer/agent *execution briefs*, not prompts MIST sends to an LLM. Listed at the bottom for disambiguation only.
-
-## How to use this catalogue
-
-- **Find a prompt:** grep the prompt name, the class, or a distinctive line of its text. Every entry carries the full `file:line`.
-- **Line numbers** are anchors for the current source; if code shifts, grep a quoted line to relocate.
-
-_Source snapshot: 2026-07-13 · branch `main_track`. Active runtime prompt sites: 12 (across 8 code files + the input-fetch registry)._
-
-## Contents — prompt sites at a glance
+## Prompt sites
 
 | # | Prompt | Component / area | Where the text lives | Purpose (one line) | Dispatch (maxTokens · temp) |
 |---|--------|------------------|----------------------|--------------------|-----------------------------|
@@ -43,19 +27,19 @@ All prompts flow through `mist-llm`'s `LLMService.getInstance(...).generateText(
 
 ---
 
-## Detailed entries — verbatim prompt text
+## The prompts
 
 ### 1. Parameter value generation — `ZeroShotLLMGenerator`
 - **Component:** mist-core · generation (the primary input-generation path).
 - **Location:** `mist-core/src/main/java/io/mist/core/generation/ZeroShotLLMGenerator.java`; system in `callLLM` (line 975), user built in `buildPrompt(param, howMany)` (line 815); dispatched `generateText(system, prompt, 200, 0.7)` at line 991.
 - **Purpose:** given one OpenAPI parameter, produce `howMany` distinct, realistic, strictly-valid values (one per line, or a JSON array for `array`-typed params).
 
-**System prompt** (verbatim, `callLLM`):
+**System prompt** (from `callLLM`)
 ````
 You are an expert API tester specialising in test data generation. Your sole task is to produce realistic, constraint-compliant values for API parameters. STRICT RULES: (1) When asked for N values, return EXACTLY N items — no more, no fewer. (2) For line-separated output: one value per line, nothing else on that line. (3) For JSON array output: a single valid JSON array, nothing else. (4) Never add markdown fences (```), bullet points, numbering, explanations, or commentary of any kind. (5) Always respect the Type, Format, Enum, and numeric/length Constraints stated in the prompt. (6) If an enum list is provided, output ONLY values from that list.
 ````
 
-**User prompt** (verbatim template, `buildPrompt`; `#` marks conditional blocks):
+**User prompt** (from `buildPrompt`)
 ```
 You are an expert API tester. Generate {howMany} distinct, highly realistic, and strictly valid values for the following API parameter.
 Current Date/Time: {timestamp}
@@ -114,7 +98,7 @@ Generate your {howMany} values now, one per line:
 - **Location:** same file; `validateResponse` builds the system prompt at line 1343 and calls `generateText(..., 500, 0.3)` at line 1404. Result cached via `PROP_VALIDATION_CACHE_PATH` (`.mist/llm-validation-cache.json`).
 - **Purpose:** detect "success-looking" 2xx responses that actually failed.
 
-**System prompt** (verbatim):
+**System prompt**
 ```
 You are an API testing expert analyzing response data.
 
@@ -143,7 +127,7 @@ FAILED: true|false
 RCA: <detailed root cause analysis explaining why this is a failure or success>
 ```
 
-**User prompt** (verbatim template):
+**User prompt**
 ````
 TASK: Determine if this API call actually FAILED despite returning a success status code.
 
@@ -176,7 +160,7 @@ Now analyze the response above and provide your answer:
 - **Location:** same file; `validateNegativeTestResponse` builds the system prompt at line 1470, calls `generateText(..., 500, 0.3)` at line 1565.
 - **Purpose:** for an intentionally-invalid input, decide whether the API rejected it *for a reason related to the designed invalid parameter* (test PASSES) vs accepted it / failed for an unrelated reason (test FAILS).
 
-**System prompt** (verbatim template):
+**System prompt**
 ```
 You are an API testing expert validating NEGATIVE TEST results.
 
@@ -205,7 +189,7 @@ RELATED_TO_INVALID_INPUT: true|false
 RCA: <explanation of whether the error is about our designed invalid input>
 ```
 
-**User prompt** (verbatim template):
+**User prompt**
 ````
 TASK: Determine if this API response correctly rejected our DESIGNED INVALID INPUT.
 
@@ -344,12 +328,12 @@ Which field is most relevant for parameter '{paramName}'?
 - **Location:** `mist-core/src/main/java/io/mist/core/smart/ParameterErrorAnalyzer.java`; user prompt at line 165, system + dispatch `generateText(system, prompt)` at line 181. A deterministic trace-pattern extraction short-circuits the LLM when the failure already names the parameter.
 - **Purpose:** classify whether an API failure is caused by an input parameter and, if so, which one and what category.
 
-**System prompt** (verbatim):
+**System prompt**
 ```
 You are an API testing expert. Analyze API failures to identify which parameter caused the issue.
 ```
 
-**User prompt** (verbatim template):
+**User prompt**
 ```
 Analyze this API failure to determine if it's caused by an input parameter:
 
@@ -374,7 +358,7 @@ Respond ONLY in the specified format.
 - **Location:** `mist-core/src/main/java/io/mist/core/coverage/LLMStatusCodeDiscovery.java`; `buildSystemPrompt()` (line 188), `buildDiscoveryPrompt(...)` (line 196), `generateText(system, prompt, 2000, 0.3)` (line 142). Falls back to `createDefaultTargets` on empty/unparseable output.
 - **Purpose:** for one operation, enumerate ALL status codes it could return, each with category, description, trigger strategy, `requiresAuthManipulation`, and suggested inputs — as a JSON array.
 
-**System prompt** (verbatim):
+**System prompt**
 ```
 You are an API testing expert specializing in HTTP status codes and REST API behavior.
 Your task is to analyze API operations and identify ALL possible HTTP status codes they could return.
@@ -385,7 +369,7 @@ For each status code, provide a clear strategy to trigger it and suggested param
 Always respond with valid JSON only. No markdown, no explanations outside the JSON.
 ```
 
-**User prompt** (verbatim template):
+**User prompt**
 ```
 Analyze this REST API operation and identify ALL HTTP status codes it could possibly return.
 
@@ -439,7 +423,7 @@ Respond with a JSON array ONLY (no markdown, no explanation):
 - **Location:** `mist-core/src/main/java/io/mist/core/enhancer/TestCaseEnhancer.java`; `buildSystemPrompt()` (line 414), `buildUserPrompt(failedTest)` (line 434), `generateText(system, user, maxTokens, temperature)` (line 83).
 - **Purpose:** analyze a failed test and suggest improved parameter values more likely to pass — never changing intentionally-invalid params (negative tests) or structurally-locked params (wired to captured outputs of prior steps).
 
-**System prompt** (verbatim):
+**System prompt**
 ```
 You are an expert API test case analyzer and enhancer.
 
@@ -460,7 +444,7 @@ RESPONSE FORMAT:
 }
 ```
 
-**User prompt** (verbatim template):
+**User prompt**
 ````
 ANALYZE THIS FAILED TEST AND SUGGEST IMPROVED PARAMETER VALUES:
 
@@ -505,7 +489,7 @@ Return ONLY a valid JSON response in the specified format.
 - **Location:** `mist-core/src/main/java/io/mist/core/enhancer/StatusCodeExplorationEnhancer.java`; `buildExplorationSystemPrompt()` (line 704), `buildExplorationUserPrompt(...)` (line 729), `generateText(...)` (line 591).
 - **Purpose:** given a test and the set of not-yet-triggered status codes, generate exploration test variants (parameter changes on a target step) that would trigger those codes, without touching dynamically-injected/dependency params.
 
-**System prompt** (verbatim):
+**System prompt**
 ```
 You are an API testing expert specializing in HTTP status code coverage.
 Your task is to generate exploration test cases that trigger specific HTTP status codes.
@@ -524,7 +508,7 @@ Your job:
 IMPORTANT: Respond with valid JSON only. No markdown, no explanations outside JSON.
 ```
 
-**User prompt** (verbatim template; abridged only where it echoes runtime data):
+**User prompt** (abridged where it just echoes runtime data)
 ```
 GENERATE EXPLORATION TEST CASES FOR STATUS CODE COVERAGE
 
@@ -602,7 +586,7 @@ If this test is NOT a good candidate, respond:
 - **Location:** `mist-core/src/main/java/io/mist/core/fault/FaultMiner.java`; `SYSTEM_PROMPT` constant (line 88), `buildUserPrompt(spec, responses)` (line 200), `llmClient.prompt(SYSTEM_PROMPT, userPrompt)` (line 154). This is the one site that calls `LLMClient.prompt(...)` directly.
 - **Purpose:** from OpenAPI parameter descriptions plus a sample of observed 4xx/5xx responses, propose up to 3 SUT-specific invalid-input categories, as one JSON object per line; candidates are validated against the registry shape and de-duplicated against the eight defaults.
 
-**System prompt** (verbatim):
+**System prompt**
 ```
 You are an expert REST API security and robustness tester.
 Given an OpenAPI parameter description and a sample of observed
@@ -620,7 +604,7 @@ Do not propose categories that overlap with these defaults:
   ENUM_VIOLATION.
 ```
 
-**User prompt** (verbatim template; budget-capped by `MAX_USER_PROMPT_CHARS` / `MAX_OBSERVED_RESPONSES_PER_PROMPT`):
+**User prompt** (capped by `MAX_USER_PROMPT_CHARS` / `MAX_OBSERVED_RESPONSES_PER_PROMPT`)
 ```
 SUT: {apiKey}
 
@@ -636,12 +620,12 @@ Observed 4xx/5xx responses (sample):             # if responses present
 - **Location:** `mist-core/src/main/java/io/mist/core/analysis/TraceErrorAnalyzer.java`; context assembled from line 479, tail appended at line 586, `generateText(system, prompt)` at line 619. Result is cached; falls back to `getFallbackAnalysis` when the LLM is unavailable.
 - **Purpose:** from a distributed trace (services, failed spans, stack traces, HTTP methods/endpoints), produce a concise technical `ROOT CAUSE:` + `FIX:` analysis.
 
-**System prompt** (verbatim):
+**System prompt**
 ```
 You are a microservice debugging expert. Analyze traces and provide direct technical insights.
 ```
 
-**User prompt** (verbatim template; `context` + fixed tail):
+**User prompt**
 ```
 Analyze this microservice distributed trace error:
 
