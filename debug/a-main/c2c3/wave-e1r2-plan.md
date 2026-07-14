@@ -1,109 +1,116 @@
-# Wave E1+R2 — OpenAPI authoring + corpus assembly PREP — rev 1 (DRAFT, pre-review)
+# Wave E1+R2 — OpenAPI authoring + corpus rater-safety audit — rev 2 (folded, CLEARED)
 
-**Date:** 2026-07-14 · Owner: main_track · Status: **DRAFT — needs 3-cold review (all ACCEPT) before
-execution** (goal-mode). Low-risk finalization leg the user selected (AskUserQuestion 2026-07-14) after R1d
-closed: **no TT revival, no tenant teardown, no fragile cluster ops.** Both parts are no-tenant authoring /
-machine-check work.
+**Date:** 2026-07-14 · Owner: main_track · Status: **rev 2 — 3-cold-reviewed (A/B/C all ACCEPT-WITH-FIXES,
+NONE reject; B's 2 BLOCKING = the SAME narrative-leak, verified LIVE + folded). CLEARED for execution**
+(recon `REVIEW-E1R2-PLAN-RECONCILIATION.md`; reviews `REVIEW-E1R2-PLAN-{A,B,C}.md` local-only). The DoD
+`RESULT-e1r2 + post-hoc 3-cold review` is the downstream gate. Low-risk finalization the user selected after
+R1d: **no TT revival, no tenant teardown, no cluster ops.**
 
-**Provenance:** the R1d rev-2.1 plan §6 named "E1 OpenAPI (parallel, no tenant window)" as the finalization
-track; the corpus-assembly entry gate is `step2-execution-checklist.md` Step-5 §6 (8+1 checks). This wave
-does the AUTONOMOUS, machine-checkable subset and DISCLOSES every user/pending gate — it is NOT a final
-rater-ready seal.
+**rev-2 headline change (the BLOCKING fold):** R2 is UPGRADED from a "-002/-003 marker-swap" to a
+**corpus-wide rater-facing NARRATIVE-LEAK audit + neutralization** — the review found (and I verified LIVE)
+that `b4_harness.render()` L97-99 emits the sidecar `probe` field VERBATIM into the rater case.md while
+`_scan_banned` misses injection-mechanism prose, and ≈18 capture sidecars narrate their mechanism
+("scaled 0", "maintenance toggle", "meshsever", "post-VS-teardown"). This is a real pre-rater corpus defect
+this wave now fixes.
 
 ---
 
 ## §1 E1 — author the 2 MISSING OpenAPI specs (TeaStore + OTel-Demo)
 
-**Grounded state (verified 2026-07-14):** `evaluation/suts/{sockshop,trainticket,bookinfo,boutique}/openapi/`
-ALREADY exist (Swagger 2.0 / OpenAPI, one file/SUT, full front-end write surface, service-tagged,
-provenance-described in `info.description`, Apache-2.0). **MISSING = TeaStore + OTel-Demo** — exactly the two
-`step2-execution-checklist.md` lines 217-221 call for ("author OpenAPI, pre-registered as authored-by-us").
+**Grounded state (verified 2026-07-14, corrected per A-1/C-F3/B):** `evaluation/suts/{sockshop,trainticket,
+bookinfo,boutique}/openapi/` exist; TeaStore + OTel-Demo have NO `openapi/` dir → the two to author (checklist
+2.75 L217/L219). The existing four are **HETEROGENEOUS, NOT uniformly authored-by-us/Apache-2.0**: `sockshop`
+= the clean authored-by-us Swagger-2.0 exemplar (follow it); `bookinfo` = the STOCK UPSTREAM Istio spec
+(upstream-derived); `boutique` = no in-file license; `trainticket` = a generated OpenAPI 3.0.3 merged spec.
+Author the two NEW specs cleanly (authored-by-us Swagger-2.0, Apache-2.0) — do NOT claim the existing set is
+uniform, and (A-5) the §1.4 license note UPDATEs the existing `c2-license-audit.md` TeaStore+OTel rows +
+DISCLOSES bookinfo's upstream provenance (no laundering).
 
 - **§1.1 TeaStore** `evaluation/suts/teastore/openapi/teastore-swagger.yaml` — cover the corpus-bound write
-  surface + read-backs: webui `POST /tools.descartes.teastore.webui/loginAction`,
-  `POST …/cartAction` (addToCart + `?confirm=Confirm` order-place), read-backs `GET …/webui/profile`
-  (order history) + the REST API `GET/POST /tools.descartes.teastore.persistence/rest/orders`,
-  `/rest/cart`, `/rest/products` (the 2.75-A `JsonDurableReadback` surface). Service-tag per owning
-  service (webui/auth/persistence/image/recommender). Authored-by-us (route handlers + REST controllers,
-  cited in `externalDocs`). License Apache-2.0.
-- **§1.2 OTel-Demo** `evaluation/suts/oteldemo/openapi/oteldemo-swagger.yaml` — cover the frontend-proxy REST
-  write surface + reads: `POST /api/cart`, `POST /api/checkout` (the bound write), `GET /api/products/{id}`,
-  `GET /api/cart`, `GET /api/recommendations`, `GET /api/shipping`. Note the async caveat in the
-  description: the `/api/checkout` durable read-back is the `accounting.shipping` SQL row (NOT an API GET) —
-  documented as an `externalDocs` note, not a fabricated GET endpoint. Authored-by-us (frontend-proxy +
-  checkout `main.go` route shapes). License Apache-2.0.
-- **§1.3 Named consumers (why these specs exist — checklist cross-ref):** (a) the **E1 two-tier baseline
-  grid** REST test-generation tools (Step 3b — Morest/RestTestGen/AutoRestTest/…; they consume the OpenAPI
-  as input) and (b) the **contract-invariant comparator arm** (Step 6 arm 5 / item 2.5.8; blind assertions
-  derived FROM the OpenAPI, `EXECUTION.md` L131). This wave AUTHORS the specs only; the grid EXECUTION
-  (~160 h, wave-runner) + the arm run are downstream, NOT here.
-- **§1.4 DoD:** each spec (i) parses under an OpenAPI/Swagger validator (offline linter); (ii) covers EVERY
-  corpus-bound entry endpoint for that SUT (cross-checked vs the case files — a mechanical grep gate);
-  (iii) carries `info.license` Apache-2.0 + a provenance `info.description` (authored-by-us from route
-  handlers, upstream cited in `externalDocs`, NO code copied — the R1 X6 clean-room + license conduct); (iv)
-  request-body schemas for the write ops; (v) FILE_INDEX + a dated `c2-license-audit.md` note (authored-by-us
-  provenance, so no upstream-license entanglement).
+  surface + read-backs: webui `POST …/loginAction`, `POST …/cartAction` (addToCart + `?confirm=Confirm`),
+  read-backs `GET …/webui/profile`, and the REST API `GET/POST …/persistence/rest/orders`,
+  **`GET …/rest/orderitems/order/{orderId}` + `GET …/rest/orders/user/{id}` (A-2 — bound by the orderitems
+  cases)**, `/rest/cart`, `/rest/products`. Service-tag per owning service. Authored-by-us from route
+  handlers + REST controllers (cited in `externalDocs`), NO upstream text copied.
+- **§1.2 OTel-Demo** `evaluation/suts/oteldemo/openapi/oteldemo-swagger.yaml` — `POST /api/cart`,
+  `POST /api/checkout` (the bound write), `GET /api/products/{id}`, `GET /api/cart`,
+  `GET /api/recommendations`, `GET /api/shipping`. The `/api/checkout` durable read-back is the
+  `accounting.shipping` SQL row (NOT an API GET) — documented as an `externalDocs`/description note, NOT a
+  fabricated GET endpoint (A-verified as the highest-risk honesty item; keep it honest).
+- **§1.3 Named consumers (AUTHORING-only this wave):** (a) the E1 two-tier baseline grid REST tools (Step 3b,
+  ~160 h wave-runner — NOT run here) and (b) the contract-invariant comparator arm (Step 6 arm 5 / item
+  2.5.8; blind assertions FROM the OpenAPI, `EXECUTION.md` L131-132 — NOT run here).
+- **§1.4 DoD:** each spec (i) parses under a Swagger-2.0-capable OFFLINE validator (`openapi-spec-validator`
+  or `prance` — C-F5); (ii) covers EVERY corpus-bound endpoint for that SUT — a mechanical grep gate over
+  BOTH `entry_endpoint.path` AND `readback.locator` in the case files (A-3, so it catches read-backs);
+  (iii) `info.license` Apache-2.0 + provenance `info.description` (authored-by-us from route handlers,
+  upstream cited in `externalDocs`, clean-room per freeze §6 R1 **X5** — the two-actor clean-room, A-4);
+  (iv) request-body schemas for the writes; (v) UPDATE `c2-license-audit.md` TeaStore+OTel rows + the
+  bookinfo-upstream disclosure; (vi) FILE_INDEX.
 
-## §2 R2 — corpus assembly PREP (machine-checkable subset only)
+## §2 R2 — corpus-wide rater-facing NARRATIVE-LEAK audit + neutralization (the BLOCKING-fold scope)
 
-Run the machine-checkable half of the Step-5 §6 entry gate on the current 26-case corpus, producing a
-DISCLOSED-PARTIAL assembly report — NOT a sealed rater-ready corpus (§3 lists the gates that block the seal).
+Render every RATED case rater-facing and prove 0 leaks — where "leak" now explicitly includes
+injection-mechanism NARRATION, not just `BANNED_STRINGS`.
 
-- **§2.1 Rater-facing render + 0 BANNED_STRINGS (DISCHARGES the R1d C-F8 residual):** run all 26 cases +
-  their sidecars through `b4/b4_harness.py` render → verify 0 BANNED_STRINGS and opaque-id only. THIS wave
-  discharges the owed R1d C-F8 item: the -002/-003 induced-eventual sidecars use raw markers (`r1dev*` — a
-  wave-label leak); assign opaque ids + re-key the marker in the rater-facing render (the corpus-wide
-  ASSEMBLY step the R1d RESULT deferred here). GROUNDED 2026-07-14: `b4_harness` `BANNED_STRINGS` does NOT
-  include `r1dev`, but `ABSOLUTE_TIME_KEYS=/epoch|timestamp|…/` guards absolute time AND the evidence
-  sidecars carry `epoch_ms …` inside the probe strings; `render(…, opaque_id, …)` takes the opaque id as an
-  ASSEMBLY INPUT (never mints it). So the discharge = produce RATER-CLEAN derivative sidecars (opaque marker
-  substituted for `r1dev*`, relative `t_rel_ms` only, no `epoch_ms`) rendered under an assigned opaque id;
-  the capture-evidence sidecars stay as-is (provenance). Verify the eventual-present PRESENT-at-re-probe observation
-  renders (the disclosed present⇒benign tell, per R1d §9).
-- **§2.2 Machine-disjointness (Step-5 §6 check 5):** verify calibration ∩ S3 ∩ M-yield-audit ∩ eligibility =
-  ∅ by true case-id. At |S3|=0 + M-yield-not-merged this is a partial check (report which strata are
-  populated vs empty), but the machine invariant (no id in two strata) is checkable NOW.
-- **§2.3 Tell-audit (Step-5 §6):** the cross-strata shape/timestamp/provenance uniformity audit — compute
-  the `readback_shape` × label confusion (the R1d bias-audit input, F17), the re-probe-cadence uniformity
-  (300 s across eventual-present cases), and the timestamp/marker-grammar uniformity. Report the known
-  present⇒benign + body-tell⇒benign decode directions as DISCLOSED (not defused).
-- **§2.4 Corpus-hash freeze (Step-5 §6):** compute + record a corpus content hash over the 26 validated
-  cases (a reproducibility pin), and a MANIFEST listing every case + its sha256. NOT the final SEALED
-  manifest (that needs the rubric-version + IRB + M-yield — §3), a PRE-seal snapshot.
-- **§2.5 DoD:** render clean (0 BANNED_STRINGS, verified via `test_b4_harness.py` + a fresh run);
-  disjointness report (∅ where populated); tell-audit report committed; corpus-hash + pre-seal manifest
-  committed; the C-F8 residual explicitly discharged (or, if the opaque re-key needs a harness change,
-  disclosed as still-owed with the exact reason).
+- **§2.0 Scope = the 25 CAPTURED rated cases (C-F1/B):** exclude `teastore-order-depdown-specified-001`
+  (`capture_status: specified`, no sidecar). ADD the Step-5 §6 check-6 gate: every rated case
+  `capture_status==captured`. Enumerate + normalize the 4 inconsistent `readback_response` conventions (B:
+  2 plain-text evidence, 1 wrong-schema S3 bundle, 1 `null`) — each case gets a well-formed rater-facing
+  sidecar or is flagged.
+- **§2.1 NEUTRALIZE the rater-facing sidecars (the BLOCKING fix):** for each rated case produce a
+  rater-facing sidecar whose `probe`/`body` text is a PLAIN read-back description (endpoint path or
+  `SELECT … WHERE key=<opaque>`) with NO mechanism prose (`scaled`/`toggle`/`maintenance`/`meshsever`/
+  `post-VS`/`teardown`/`drain`), NO `epoch_ms`, opaque marker only, relative `t_rel_ms`. Model on the clean
+  S3 `w120-sidecar.json`. The capture-evidence sidecars stay as-is (provenance); these are clean
+  derivatives. THIS discharges the R1d C-F8 residual for -002/-003 AND fixes the ≈18-sidecar corpus-wide
+  class (teastore maintenance/meshsever, oteldemo meshsever/emptycart, etc.).
+- **§2.2 Harden the leak detector (strict-only, disclosed):** extend `b4_harness.BANNED_STRINGS` with the
+  mechanism-narration class (`meshsever`, `mesh-sever`, `teardown`, `post-vs`, `envoyfilter`, `scaled`,
+  `toggle`, `drain`, `maintenance`, `read-back cap`). This ONLY tightens the gate (never loosens behavior);
+  re-run `test_b4_harness.py` GREEN + confirm it now FAILS-loud on an un-neutralized sample. (A small
+  defensive add, NOT a behavior change — distinct from the stop-rule's forbidden "harness hack".)
+- **§2.3 MANDATORY MANUAL read-through (B1/C-F2):** after the automated render+scan passes, a human/agent
+  reads EVERY rendered `case.md` for residual mechanism narration the scan can't enumerate (the automated
+  gate is necessary-NOT-sufficient). Record the read-through as an audit log.
+- **§2.4 De-risking dry runs (C-F4 — framed as such, NOT "assembly done"):** machine-disjointness (Step-5 §6
+  check-5, PARTIAL at |S3|=0 + M-yield-unmerged — report which strata are populated); tell-audit
+  (`readback_shape` × label confusion = the R1d bias-audit input, re-probe-cadence uniformity); corpus
+  content hash + a PRE-seal manifest. These are RE-RUN at the real seal (post-M-yield/IRB); the durable R2
+  outputs are the neutralized sidecars + the leak-audit log + the hardened harness.
+- **§2.5 DoD:** 25 cases render clean (0 BANNED_STRINGS incl. the new terms + 0 manual-read-through hits);
+  neutralized rater-facing sidecars committed; `test_b4_harness.py` green; disjointness/tell-audit/hash
+  committed as dry-runs; C-F8 explicitly discharged.
 
-## §3 What R2 does NOT do (DISCLOSED gates — the seal stays OPEN)
+## §3 What this wave does NOT do (DISCLOSED gates — the seal stays OPEN)
 
-To avoid over-claiming (the R1d honesty bar), this wave does NOT and CANNOT produce a final rater-ready seal:
-- **IRB determination** (Step-5 §6 check 8) = USER-side, not received.
-- **M-yield merge** (Step 4) = NOT run; the M-yield stratum is a NAMED HOLD on rating. The assembly is
-  calibration + S1/S2 only, with M-yield disclosed-pending.
-- **Final calibration draw** = the R1d disclosed shortfall stands (decode-safe rateable benign traps ≈ 5-6 ≪
-  the ≥35 / ~40-43 obligations); the calibration is run at the largest achievable size with the shortfall +
-  pooled-κ(n≥50)-basis loss disclosed — a SCORING-time decision, not sealed here.
-- **Blindness-screen + §10 debrief records + rubric-version in the seal** = rater-contact artifacts, user-
-  gated. The rater packet (rev ≥3) is already shipped (28fbe3a); this wave does not re-cut it.
+- **IRB determination** (Step-5 §6 **item 7**, B-corrected) = USER-side, not received.
+- **M-yield merge** (Step 4) = NOT run; the M-yield stratum is a NAMED HOLD on rating.
+- **Final calibration draw** = the R1d disclosed shortfall stands (rateable benign traps ≈ 5-6 ≪ ≥35 AND
+  ~40-43); the size + pooled-κ(n≥50)-basis loss are a SCORING-time decision, not sealed here.
+- **Rater-packet worked examples (B):** the shipped rubric's worked examples are GENERIC patterns, not the
+  checklist-required REAL-calibration-case examples — itself blocked on the open calibration draw. The
+  packet (28fbe3a) is not re-cut here; this gate is disclosed, not "done".
 
 ## §4 Sequencing
-Both parts are no-tenant + parallel-safe. §1 (OpenAPI) is a self-contained authoring job (optionally a
-subagent per SUT with explicit non-fable model). §2 (assembly prep) runs on the committed corpus files +
-`b4_harness.py`. No cluster ops, no RAM pressure, OTel/TeaStore stay UP, TT stays 0.
+Both parts no-tenant + parallel-safe. §1 (OpenAPI) = a self-contained authoring job (may be a subagent per
+SUT, explicit non-fable). §2 runs on committed corpus files + `b4_harness.py`. OTel/TeaStore stay UP, TT 0.
 
 ## §5 DoD + stop rules
-1. §1: both specs authored, validate, cover all corpus-bound endpoints, license/provenance clean, indexed.
-2. §2: render clean + C-F8 discharged (or disclosed-owed), disjointness + tell-audit + hash committed.
-3. §3 gates DISCLOSED in a RESULT-e1r2.md; freeze §6 note if any convention is added (e.g. an `openapi`
-   provenance field or the opaque-id re-key convention).
-4. RESULT-e1r2 + 3-cold review (the goal-mode gate) + FILE_INDEX/memory synced.
-- **Stop rules:** if authoring a spec requires copying upstream OpenAPI text ⇒ STOP (license — author from
-  route handlers only, clean-room); if the opaque re-key needs a non-trivial `b4_harness` change ⇒ disclose
-  C-F8 as still-owed (do not hack the harness under a finalization wave without its own review); if a
-  disjointness/tell-audit check reveals a real corpus defect ⇒ STOP + surface (do not paper over).
+1. §1: both specs authored, validate (offline), cover all bound endpoints (entry + readback), license/
+   provenance clean + audit updated + bookinfo-upstream disclosed, indexed.
+2. §2: 25 cases render 0-leak (automated incl. new terms + manual read-through), neutralized sidecars +
+   hardened harness + audit log committed, dry-runs committed, C-F8 discharged.
+3. `RESULT-e1r2.md` written with the §3 disclosed gates + the corpus-wide leak finding; freeze §6 note for
+   the new conventions (the `BANNED_STRINGS` extension + the rater-facing-sidecar-neutralization convention).
+4. **RESULT-e1r2 + 3-cold review** (goal-mode gate) + FILE_INDEX/memory synced.
+- **Stop rules:** copying upstream OpenAPI text ⇒ STOP (author from route handlers, clean-room); a
+  neutralization that would need a NON-trivial `b4_harness` BEHAVIOR change (beyond the strict-only
+  BANNED_STRINGS add) ⇒ STOP + disclose (don't hack the harness under a finalization wave); a
+  disjointness/tell-audit/leak check revealing a deeper corpus defect ⇒ STOP + surface (don't paper over —
+  this is exactly how the narrative-leak was found).
 
 ## §6 Out of scope
-The E1 grid EXECUTION (Step 3b ~160 h wave-runner); the contract-invariant arm RUN (Step 6); M-yield (Step
-4); the final rater-ready SEAL (IRB/M-yield-gated); the owed 2.5/E2 traced MIST discrimination run; the
-paper draft (user-gated on experiments-done). This wave is deliberately the low-risk finalization subset.
+E1 grid EXECUTION (Step 3b); the contract-invariant arm RUN (Step 6); M-yield (Step 4); the final
+rater-ready SEAL (IRB/M-yield-gated); the owed 2.5/E2 traced MIST discrimination run; the paper draft
+(user-gated on experiments-done).
