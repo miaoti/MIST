@@ -1,131 +1,139 @@
-# Wave R1d — benign-power lift (S2 → floor) — rev 1 (FOR 3-COLD REVIEW)
+# Wave R1d — benign-power lift (S2) — rev 2 (FOR CONFIRMATION PASS)
 
-**Date:** 2026-07-13 · Owner: main_track · Status: **DRAFT — requires ≥3 independent cold reviewers
-UNANIMOUS-ACCEPT before capture (standing /goal rule).**
-**Provenance:** the R1b (≥20) and R1c (micro-widen) reviews CONVERGED (twice) that the BINDING
-constraint on the C3 rater study is the BENIGN side, not the positive-site count. Positive-side widening
-is CLOSED (`REVIEW-R1C-RECONCILIATION.md`). This wave addresses the actual gate. It adopts R1c-review-C's
-"one wave" structure: benign-power is the spine; E1 OpenAPI is a parallel no-tenant track (§5); the
-positive ride-along is dropped.
+**Date:** 2026-07-13 · Owner: main_track · Status: **DRAFT rev 2 — folds the 3-cold review
+(`REVIEW-R1D-RECONCILIATION.md`; A/C 0-blocking, B 4-BLOCKING). Requires a CONFIRMATION PASS (the 3
+reviewers confirm the fixes landed + the decode-safety redesign is sound) BEFORE any capture** (wave-3a
+precedent; rev 1 had real errors — a confabulated SockShop story, a mischaracterized TeaStore toggle, a
+mis-assigned decode-safety floor).
+**Provenance:** the binding-constraint wave (all R1b+R1c+R1d-A/C reviewers: the C3 study's gate is the
+benign side). Positive-side widening is CLOSED (`REVIEW-R1C-RECONCILIATION.md`).
 
 ---
 
-## §1 The demand (pinned from the FROZEN materials — this is the whole point of the wave)
+## §1 Demand, supply, and the RE-SCOPE
 
-- **S2 stratum floor = ≥ 35 distinct benign traps** (`c2-freeze.md` §5 L255-257). The survey projected
-  ~16 (4 new SUTs + 2 packaged corpora ≤2 each) + "TT/SS designed-degradation paths — to be enumerated
-  at step 2, **disclosed if short**." → the shortfall response is ALREADY pre-registered (freeze §5),
-  same discipline as the positive side.
-- **Calibration draws ~33 benigns** from that same S2 pool (calibration = max(30, 50−|S3|) = **50** with
-  |S3|=0, benign-skewed **≥2:1** → ~33 benign + ~17 genuine; `c3-rater-materials.md` §6). Mechanical
-  oracle-FP runs do NOT consume cases, so **one pool of ≥35 distinct benign traps serves BOTH** the
-  FP-rate story AND the calibration draw (calibration-not-reused-as-measurement holds because the
-  measurement κ round is S3+M-yield, not S2).
-- **Supply today = 4 captured benign traps** (bookinfo-ratings-benign, oteldemo-checkout-eventual-benign,
-  TT-contacts-noop-modify-benign, TT-contacts-dedupe-benign). **Gap ≈ 31.**
-- **NOT padding (the key disanalogy to the rejected positive widening):** inducing a *transient
-  degradation* (latency / transient-503 / eventual-consistency / retry-heal) produces a GENUINE benign —
-  the write really does land eventually, or the response is honestly degraded. This is real corpus
-  construction, not a fabricated fault. (Diversity across shapes/SUTs still matters — §2/§3 — so it is
-  not "35 clones of one shape.")
+- **Demand (frozen): S2 ≥ 35 distinct benign traps** (`c2-freeze.md` §5). This **subsumes** the ~34
+  calibration benign draw (calibration = max(30,50−|S3|)=50 at |S3|=0, benign-skewed ≥2:1; it draws
+  FROM the S2 pool; mechanical FP-rate runs don't consume cases). The grounding's "~42-43" **double-
+  counted** FP + calibration as disjoint pools → a dated freeze §6 note will reconcile the number
+  (OWED). **Supply today = 4** benign traps (dated-correct the S3 RESULT's "12", which folded in
+  non-rateable items).
+- **RE-SCOPE (R1d-C):** ≥35 is ALREADY pre-registered as "structurally unreachable → disclose the
+  shortfall" (freeze §5 + the R1 row). So this wave targets the **decode-safety MINIMUM**, not volume-
+  to-35. Inducing benigns is genuine construction ONLY up to what decode-safety structurally requires
+  (nature cannot supply masked-absent-then-healed writes — that is the S3-scarce phenomenon); inducing
+  volume beyond that is padding-in-a-benign-hat. **Revised size ≈ 8–10 captures**, then DISCLOSE the
+  ≥35 shortfall + the calibration/pooled-κ consequence.
 
-## §2 Decoder-safety = the CENTRAL design constraint (do NOT let the stratum decode)
+## §2 Decode-safety — SUBSTRATE-ALIGNED honest framing (rev-1's central error, B-BLOCKING-1)
 
-The C3 study is blind; a benign pool that a rater can DECODE ("if it heals it's benign / if it stays
-absent it's genuine") destroys the FP measurement. Frozen constraints (C-B3 / A-F10 / R1 rev2 §3 / the
-S3-review presence↮label tell):
-1. **Degradation-shaped ONLY — never clean-present.** A benign where the write simply succeeded with
-   everything present is a decodable tell (clean ⇒ benign). Forbidden in the S2 stratum.
-2. **Absence-at-decision-point must NOT be a genuine-tell.** The S1 positives are acked-absent-permanent;
-   if EVERY benign is acked-present, "absent ⇒ genuine" decodes. So the benign pool MUST include
-   **acked-absent-at-observation-cap** shapes (eventual-consistency benigns that are absent at the
-   rater's fixed observation point and only heal later) — R1 rev2 §3 floor ≥8 of these — so absence at
-   the decision point is genuinely ambiguous (P(genuine|absent) pushed toward 0.5).
-3. **Balanced shape mix**, disclosed, with the residual decode direction stated and a **per-rater
-   bias-audit used as a detector** (a rater who decodes will show a structured confusion matrix vs the
-   known calibration labels → feeds the S3-precision sensitivity band, F17).
-4. **Genuinely tempting** — each trap must plausibly read as a masked loss at first glance (acked +
-   something-off) so it actually tests FP discipline; an obviously-benign case teaches nothing.
+Verified against `b4_harness.render()` (renders EVERY observation verbatim, no cap/truncation) + the
+real `w120-sidecar.json` (ends in a PRESENT observation). Consequences, corrected:
 
-## §3 Degradation-shape taxonomy + Phase 0 supply survey (BEFORE any counted capture)
+- **A rater sees the full transcript.** An eventual-present benign renders PRESENT (heals) → the rater
+  sees the write LANDED → it is a **present⇒benign** case, a DISCLOSED structural tell — it does NOT
+  defuse "absent⇒genuine". (rev 1 wrongly claimed the opposite.)
+- **The ≥8 floor belongs on `write-acked-absent` benigns** — cases that render ABSENT (like a genuine
+  loss) yet are benign by an **ack-body tell or documented semantics** (idempotent dedupe / no-op-modify
+  — we have 2; by-design soft-rejects: 2xx whose body signals rejection, nothing persisted). Because
+  these render ABSENT alongside the genuine positives, a **presence-only** decoder's "absent⇒genuine"
+  falls toward P≈0.50. Floor: **write-acked-absent ≥8** (need ~6 more), **eventual-present ≥2** (w120 +
+  ~1 more).
+- **We do NOT claim to "defuse" the decode.** Per the substrate (R1 rev2 §3): the structural decode
+  directions (present⇒benign; body-reject⇒benign) are **DISCLOSED**, and the **known-label bias-audit
+  is the pre-registered detector** (a rater who uses a tell shows a structured confusion matrix vs the
+  known calibration labels → feeds the S3-precision sensitivity band, F17). Honest disclosure + a
+  detector, not a defusing claim.
+- **Optional render-path hardening (Phase-0 decision):** for eventual-present benigns, a bounded change
+  to strip the post-cap PRESENT observation from the *rater-facing* sidecar (heal recorded only in the
+  admin answer-key) would let them render ABSENT and actually defuse — evaluate cost vs just inheriting
+  the disclosed-tell framing.
 
-**Shapes (decoder-safe benign classes):**
-- **S-A eventual-consistency / acked-absent-then-present** (absent at cap, present at re-probe) — the
-  decode-defusing shape (§2.2); floor ≥8.
-- **S-B eventual-present / delayed-present** (present but late) — floor ≥2.
-- **S-C transient-503-then-healed / retry-succeeded** (honest degraded response, write lands on retry).
-- **S-D maintenance-window honest-degraded** (TeaStore maintenance toggle = an honest 503/"-1", NOT a
-  masked success — benign because the user is TOLD it failed).
-- **S-E idempotent dedupe / no-op-modify** (re-submit or unchanged-modify acked, no new row expected) —
-  the 2 captured TT traps.
-- **S-F draining-backlog-then-drained** (a queue that is behind at cap but drains) — SockShop's
-  shipping/carts (its S3 FP-storm shape is exactly an S2 benign here — see §4).
+## §3 Phase 0 — LIVE per-SUT verification survey (no pre-asserted candidates; the confabulation lesson)
 
-**Phase 0 (mandatory, no capture yet):** enumerate achievable {shape × endpoint} per SUT and PROJECT the
-ceiling. Two PRE-REGISTERED branches (freeze §5 "disclosed if short" already blesses branch b):
-- **ceiling ≥ 35** → capture to the floor with a decoder-safe shape mix.
-- **ceiling < 35** → capture all achievable, DISCLOSE the shortfall, AND shrink calibration toward its
-  max(30, …) floor of **30** (re-derive pooled-≥50 feasibility with the smaller benign draw; the
-  reliability ladder §6 is unchanged) — NO clean-present padding (decoder hazard §2.1).
+rev 1 asserted specific candidates that turned out unsound. rev 2 asserts FAMILIES only; Phase 0
+DISCOVERS + verifies live before counting:
+- **write-acked-absent family:** by-design soft-rejects (2xx + body-reject + no persist) + dedupe/no-op
+  on the sync SUTs (TT/TeaStore; S3 noted "by-design soft-rejects exist & were deferred"). Verify each
+  is (a) 2xx-acked, (b) durably ABSENT, (c) benign by body-tell/semantics, (d) NOT a masked loss.
+- **eventual-present family:** OTel accounting eventual-consistency (w120 class); TeaStore
+  persistence-retry-heal IF real — the survey warns "TeaStore does NOT gracefully degrade… few masked
+  benign traps", so verify cheaply before counting.
+- **Phase 0 outputs (pinned before capture):** the reconciled demand/supply numbers (§1); the verified
+  candidate list per SUT; the calibration decision (§4); per-SUT/shape ceilings (§5).
 
-## §4 Per-SUT capture plan (RAM-aware order in §5)
+## §4 Calibration decision (A+C MAJOR — NO "shrink to 30")
 
-| SUT | tenant status | candidate degradation-shaped benigns | shapes |
-|---|---|---|---|
-| OTel-Demo | UP | accounting scale-0→buffer→drain (eventual-consistency, have 1 `w120`); transient-503 on a sync dep then heal; kafka bounded-lag-then-drain | S-A, S-B, S-C |
-| TeaStore | UP | maintenance-toggle honest-degraded (503/"-1"); persistence retry-heal; recommender cold-start warm-up window (the C3b datum — user-visible?-re-test as benign) | S-D, S-C, S-B |
-| TrainTicket | 0 (revive) | admin-basic soft-rejects (S3 found "by-design soft-rejects"); dedupe/no-op (have 2); order/travel transient-latency-then-present | S-E, S-A, S-C |
-| SockShop | 0 (revive) | shipping-enqueue draining-backlog-then-drained (its S3-FP-storm shape = a GENUINE S2 benign here); carts eventual | S-F, S-A |
-| Bookinfo | 0 (revive) | ratings dependency-flap-then-recover (have 1 benign) | S-B (packaged, ≤2) |
-| Boutique | 0 (revive) | one packaged degradation benign | S-C (packaged, ≤2) |
+At |S3|=0, `max(30,50−0)=50` MANDATES 50 and pooled=calibration, so pooled-≥50 REQUIRES calibration=50;
+"30" is not a legal floor here and M-yield joins measurement-κ, not pooled-κ. **Decision: run the
+LARGEST calibration the achieved decode-safe benign supply permits; any calibration < 50 at |S3|=0 is a
+DISCLOSED shortfall (not a formula floor), reported with the pooled-κ(n≥50)-basis loss + power
+consequence** (the already-frozen honest version, freeze L309/L306). Do NOT pre-commit 30-vs-50; the
+achieved supply sets it.
 
-**SockShop reconsidered (defensible):** S3 EXCLUDED SockShop for a draining-queue "FP storm" (read-back
-sees absent-then-present). That exact shape is a *legitimate S2 benign* (S-F) — SS's S3 liability is its
-S2 asset. Include it as a benign source (NOT re-opened for S3).
+## §5 Anti-concentration ceilings + magnitude-grounding (R1d-C MAJOR)
 
-**Discipline per capture (unchanged from R1/S3):** probe-first N≥4 vs ribbon round-robin; the s3-p0-pins
-cadence (OTel 25s/2s, TeaStore 10s/0.5s, TT 10s/0.5s, re-probe 300s — freeze:309); a negative control
-where a control is meaningful; C-F7 teardown-verify between captures; per-run marker salt (S3 lesson);
-NEVER GET /rest/generatedb (TeaStore wipe); TT nacos doubleWrite after any nacos restart.
+- **Hard ceilings that can actually fire** (checked at Phase 0): **≤ 40% of the new benigns per single
+  SUT**, **≤ 40% per single shape family**, **≥ 3 SUTs represented**, **≥ 2 fault mechanisms** among
+  the induced ones (avoid a `dependency-down` monoculture = the benign twin of the all-`flag` relapse).
+  If a ceiling would be breached, STOP and disclose rather than concentrate.
+- **Induced-degradation magnitudes GROUNDED in documented SLOs / plausible p99s**, disclosed per case;
+  the S2 FP-rate is reported as a **sensitivity band over magnitude** (else MIST's FP number is a knob
+  artifact — "you chose the latencies that set your FP rate").
+- Note the enum: toxiproxy-latency is not a `fault.mechanism` value — record induced degradation as its
+  true mechanism (`dependency-down` for scale-0, etc.) + the magnitude in `fault.config`; specify at
+  authoring.
 
-## §5 Sequencing (RAM-aware — the E2 3-tenant lesson) + E1 parallel track
-
-- **Batch 1 (now, no revival):** OTel + TeaStore benigns (both UP) → S-A/B/C/D. Fastest path to a large
-  chunk of the 31.
-- **Batch 2:** revive TT (snapshot + nacos doubleWrite) → S-E/A/C; scale OTel/TeaStore to 0 first if RAM
-  demands (E2 lesson: 3 full tenants over-commit 25Gi).
-- **Batch 3:** revive SockShop (S-F) + Bookinfo/Boutique packaged (≤2 each).
+## §6 Sequencing (RAM-aware) + E1 parallel
+- **Batch 1 (now, no revival):** TeaStore (soft-rejects, retry-heal if real) + OTel (eventual-present) —
+  both UP. Subject to the §5 ceilings (do NOT let batch-1 concentrate the stratum on 2 SUTs).
+- **Batch 2:** revive TT (snapshot + nacos doubleWrite) for its soft-reject write-acked-absent family +
+  the 2 legacy dedupe/noop re-captures under the R1 cadence pin; scale OTel/TeaStore to 0 first if RAM
+  demands (the E2 3-tenant lesson).
+- **Bookinfo/Boutique packaged** (≤2 each) are the freeze §5 "packaged FP corpora" — **EXCLUDED from C3
+  rateable supply** (carve them out of the calibration arithmetic; they count only to the C2 corpus).
+- **Marker-salt is TT-ONLY** (`s3-p0-pins.md` §1); verify key-uniqueness for any newly-entering SUT
+  before assuming salt is needed/safe. Cadence-extension pin (SS/Bookinfo/Boutique) already dated in the
+  R1 row — cross-reference before those captures.
 - **E1 OpenAPI (parallel, no tenant window):** author OpenAPI specs for TeaStore + OTel-Demo for the
-  Gate-4 baseline grid — a subagent AUTHORING job runnable anytime, independent of the capture batches.
-  Scoped lightly here; its own DoD is "specs that the baseline tools can consume," verified at the grid.
+  **Gate-4 baseline-grid comparator arms** (name the specific arm(s) that consume them in the E1 DoD) —
+  a subagent authoring job, independent of the capture batches.
 
-## §6 Provenance honesty
-Each benign labeled by true provenance: `natural-observation` (observed degradation, e.g. the existing
-`oteldemo-checkout-eventual-benign`) vs `by-injection` (induced transient degradation — latency/503
-toxiproxy/scale-0-then-restore). Do NOT claim induced benigns are natural. `ground_truth.source` set
-accordingly; the tell-free-natural floor (R8) counts only the natural ones and stays honestly small.
+## §7 Provenance honesty
+Each benign labeled by true provenance: `natural-observation` (e.g. the existing w120, `source=natural`)
+vs `by-injection` (induced transient degradation). Count them separately (a new induced OTel eventual
+capture is `by-injection`, NOT folded with the natural w120). The R8 tell-free-natural floor is a
+POSITIVE (S1) floor — it does NOT appear in this benign wave.
 
-## §7 Disclosure machinery (carry the R1c M5/M6 discipline)
-- **Pinned claim sentence (S3 §0.5 style):** *"The S2 benign-trap stratum comprises N distinct
-  degradation-shaped benign cases across K SUTs (M natural-observation / N−M induced transient
-  degradation), spanning S-A…S-F shapes; the calibration set draws ~33 benign from it. Where N < 35 the
-  shortfall is disclosed (freeze §5) and the calibration set is sized to its max(30,…) floor."*
-- **One reconciled benign-count table** (supply 4 → captured N → shortfall vs 35), by SUT and shape.
-- **Decoder-safety audit reported:** the shape-balance, the residual decode direction, and the per-rater
-  bias-audit-as-detector (F17).
+## §8 Framing + disclosure (R1d-C MAJOR)
+- **S2 is a CONSTRUCTED FP-trap stratum**, parallel to the constructed S1 positives; natural-prevalence
+  claims cite **S3 only** (0/1514); the induced majority is DISCLOSED and expected. Pin this sentence.
+- **MIST's single-shot-timeout read-back FIRES on eventual-present traps BY CONSTRUCTION** (confirmed vs
+  source: `reProbe` is an S3-hunt-only accessor; the product observe path is single-shot poll-to-cap →
+  TIMEOUT_ABSENT). Frame this as a **documented read-back-oracle LIMITATION** (a timeout oracle cannot
+  distinguish eventual-consistency-beyond-cap from loss), NOT buried at scoring. MIST's S2 precision
+  splits honestly: fires on eventual-present (a known limit); correctly no-fires on dedupe/no-op/clean
+  soft-rejects where the read-back is unambiguous.
+- **Record the shape family in a STRUCTURED case field** (not free-text) so the shape-polarity census is
+  mechanically computable. One reconciled benign-count table by SUT × shape × provenance.
 
-## §8 DoD + stop rules
-1. Phase 0 supply survey done + ceiling projected + branch (a/b) selected + disclosed.
-2. Benign traps captured toward 35 with a decoder-safe shape mix (≥8 S-A acked-absent, ≥2 S-B) OR the
-   shortfall disclosed + calibration shrunk to floor-30; each case schema-valid, rendered, controlled
-   where meaningful, honest provenance.
-3. §7 disclosure delivered; corpus-wide validator green.
-4. RESULT-r1d + ≥3-cold review PASSED; README/freeze §6/FILE_INDEX/memory synced.
-- **Stop rules:** decoder-safety failure (a shape that decodes the stratum) ⇒ drop + disclose; RAM
-  over-commit ⇒ scale-to-0 per §5; TT/nacos fragility ⇒ runbook; if a "benign" turns out to be a masked
-  LOSS on inspection (not a heal) ⇒ it is a POSITIVE, not padded into S2 (honest reclassification).
+## §9 DoD + stop rules
+1. Phase 0 done: numbers pinned + candidate list verified + calibration decision + ceilings set.
+2. ≥8 write-acked-absent (defuser family) + ≥2 eventual-present captured, decode-safe, within §5
+   ceilings; OR the shortfall disclosed with the calibration/pooled-κ consequence.
+3. Each case schema-valid + rendered (0 BANNED_STRINGS) + honest provenance + structured shape field;
+   corpus-wide validator green.
+4. §8 disclosure delivered; a dated freeze §6 note reconciling the demand number (35 vs the frozen
+   42-43) + the supply number (4 vs the S3 RESULT's 12).
+5. RESULT-r1d + **CONFIRMATION PASS + post-capture 3-cold review** PASSED; README/freeze/FILE_INDEX/
+   memory synced.
+- **Stop rules:** a candidate that is a masked LOSS on inspection ⇒ it is a POSITIVE, not padded into S2
+  (honest reclassification; needs a heal-bound decision for slow-heal candidates — extend the benign
+  re-probe bound beyond 300s or reclassify); a shape that only decodes via presence with no ambiguity ⇒
+  disclose it as a tell (don't claim defusing); §5 ceiling breach ⇒ STOP + disclose; RAM over-commit ⇒
+  scale-to-0 per §6; TT/nacos fragility ⇒ runbook.
 
-## §9 Out of scope
-Positive-side widening (CLOSED); the MIST value-corruption scope boundary (→ paper Scope/Limitations,
+## §10 Out of scope
+Positive-side widening (CLOSED); the MIST value-corruption scope boundary (paper Scope/Limitations,
 `REVIEW-R1C-RECONCILIATION.md`); R2 assembly/seal + M1 (E1-grid execution, E2 done, E5/E6); the
 fork-publication + IRB decisions (USER).
