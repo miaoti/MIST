@@ -4,6 +4,7 @@
   "stratum": 2,
   "capture_status": "captured",
   "fault_class": "swallowed_downstream_error",
+  "readback_shape": "degraded-present",
   "sut": {
     "name": "bookinfo",
     "repo": "github.com/istio/istio (samples/bookinfo)",

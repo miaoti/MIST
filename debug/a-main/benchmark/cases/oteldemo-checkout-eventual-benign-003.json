@@ -1,0 +1,98 @@
+{
+  "case_id": "oteldemo-checkout-eventual-benign-003",
+  "schema_version": "2.0.0",
+  "stratum": 2,
+  "capture_status": "captured",
+  "fault_class": "none",
+  "readback_shape": "eventual-present",
+  "sut": {
+    "name": "oteldemo",
+    "repo": "github.com/open-telemetry/opentelemetry-demo",
+    "branch": "",
+    "commit": "app 2.2.0 / helm chart 0.40.9 (pinned at install)",
+    "image_digest": "sha256:6d0183a38947840837321f7c90d4e01eb70a4dc4e74c150749e62302a15b3eb0",
+    "deploy": "kind cluster 'mist', ns otel-demo; chart open-telemetry/opentelemetry-demo 0.40.9 (app 2.2.0). Natively OTel-instrumented. frontend-proxy PF localhost:8085. This case is an INDUCED bounded-eventual-consistency benign (NOT natural): the accounting CONSUMER deployment was scaled to 0 replicas so the checkout->kafka 'orders' message BUFFERS durably while accounting cannot consume; the order is acked (200, orderId) and the accounting.shipping row stays ABSENT past MIST's ~25s read-back cap; accounting is then scaled back to 1, the consumer drains the backlog, and the row LANDS (PRESENT at the re-probe). Kafka pod is NEVER touched (no rdkafka wedge). Capture log: debug/a-main/benchmark/b4/captures/oteldemo-checkout-eventual-induced/r1d-run-1784003126.log (benign #2, marker r1dev2-1784003126).",
+    "replay_script": "debug/a-main/benchmark/b4/runners/r1/r1d-otel-eventual.sh",
+    "health_precondition": null
+  },
+  "target": {
+    "entry_endpoint": {
+      "method": "POST",
+      "path": "/api/checkout",
+      "service": "frontend (via frontend-proxy ingress)"
+    },
+    "dependency": {
+      "service": "kafka ('orders' topic; checkout producer -> accounting consumer -> Postgres)",
+      "kind": "broker"
+    },
+    "readback": {
+      "modality": "sql-probe",
+      "locator": "SELECT street_address FROM accounting.shipping WHERE street_address='r1dev2-1784003126' (db otel, schema accounting). KEY = the request-derived street_address marker (C-R2). Observed ABSENT at the at-cap read (~29.3s post-ack: epoch_ms 1784003241700 vs ack 1784003212363) and PRESENT at the post-drain re-probe (~58.8s post-ack: epoch_ms 1784003271205) — the row landed after the cap once accounting was scaled back, NOT lost.",
+      "expect_without_fault": "landed",
+      "expect_with_fault": "not-landed",
+      "mist_bindable": true
+    }
+  },
+  "fault": {
+    "mechanism": "dependency-down",
+    "injection_method": "dependency_scale_zero",
+    "config": {
+      "note": "INDUCED transient dependency-down (NOT a persistent fault): `kubectl -n otel-demo scale deploy/accounting --replicas=0` before the write, then `--replicas=1` after the at-cap read. The accounting consumer is the async worker that persists the shipping row from the kafka 'orders' topic; with it at 0 the message buffers durably in kafka and the row is absent past the read-back cap, then drains and lands when accounting returns. Accounting-down window magnitude ~35s (order at epoch 1784003212363 during the down window; scaled back after the ~29.3s at-cap read) — the SAME ORDER as the natural w120's 328s kafka->accounting backlog (oteldemo-checkout-eventual-benign-001), disclosed. This is by-injection (I control the scale), distinct from the natural w120; the write is NOT lost (benign eventual consistency)."
+    },
+    "injected_by": "runner r1d-otel-eventual.sh (kubectl scale deploy/accounting --replicas=0 then 1); kafka pod untouched",
+    "target_service": "accounting",
+    "provenance_class": "by-injection"
+  },
+  "stimulus": {
+    "script": "scale accounting -> 0 -> POST /api/cart (session uuid) -> POST /api/checkout (marker in streetAddress; kafka UP, accounting DOWN) -> psql read-back poll to cap (ABSENT) -> scale accounting -> 1 -> drain -> psql re-probe (PRESENT); read-back keyed on the request-derived street_address marker",
+    "write_path": true,
+    "workload_class": "authored-scenario",
+    "workload_variant": "r1d-induced-eventual"
+  },
+  "oracle_eval": {
+    "ack_content_visibility": "success-shaped-clean",
+    "trace_visibility": "span-presence-visible",
+    "write_shape": "whole",
+    "oracle_mode": "observe",
+    "config_provenance": {
+      "mist_commit": "7d69de9",
+      "mist_authoring": {
+        "tier": "hand-written",
+        "minutes": 0
+      }
+    },
+    "comparator_configs": []
+  },
+  "ground_truth": {
+    "label": "negative",
+    "rationale": "BENIGN induced bounded eventual consistency, NOT an acked-lost write. The accounting shipping row IS durable — absent at the ~29.3s at-cap read but PRESENT at the ~58.8s post-drain re-probe (the value landed once the accounting consumer was scaled back and drained the kafka backlog). A MIST product single-shot read-back oracle (poll-to-cap -> TIMEOUT_ABSENT, no re-probe) WILL false-positive here BY CONSTRUCTION — this induced trap exists exactly to exercise that documented read-back-oracle limitation; the S3 CONFIRMED detector (which re-probes) correctly no-fires. Oracles keyed on the full re-probe-capable detector must NOT fire. PROVENANCE (freeze §6 2026-07-13 R1d amendment, disclosed): source=by_construction — the benign label rests on (a) causal control (I scaled accounting 0 then 1 and watched the backlog drain) AND (b) the observed re-probe-present datum; there is no upstream completion bound to cite (per §0.4 the OTel async path has no documented bound) so doc_citation is null by honest necessity. This by_construction induced-eventual S2 benign is authorized as an S2 trap by the dated §6 R1d amendment, which extends the -001 natural-observation exemption to induced bounded-eventual-consistency of the SAME mechanism and SAME magnitude order.",
+    "source": "by_construction",
+    "version": 1,
+    "doc_citation": null
+  },
+  "oracle_expectation": {
+    "status_code_oracle": "no_flag",
+    "schema_oracle": "no_flag",
+    "body_marker_oracle": "no_flag",
+    "naive_span_error_oracle": "no_flag",
+    "tracetest_presence_oracle": "no_flag",
+    "mist_readback_oracle": "no_flag",
+    "mist_trace_shape_oracle": "not_applicable"
+  },
+  "provenance": {
+    "control_trace": null,
+    "fault_trace": null,
+    "readback_response": "debug/a-main/benchmark/b4/captures/oteldemo-checkout-eventual-induced/sidecar-003.json",
+    "notes": "WAVE R1d INDUCED EVENTUAL-PRESENT BENIGN #2 (2026-07-13, plan wave-r1d-benign-power-plan.md rev 2.1). Captured LIVE on the standing otel-demo tenant (accounting 1/1, kafka 1/1 pre-flight; both restored 1/1 post-run; kafka pod NEVER touched). EVIDENCE = capture log r1d-run-1784003126.log: ack HTTP 200 orderId 3cfd32b3-7f3c-11f1-90da-96ecc7e640eb @ epoch_ms 1784003212363; at-cap probe [] @ epoch_ms 1784003241700 (+29337ms, ABSENT past cap); post-drain re-probe [r1dev2-1784003126] @ epoch_ms 1784003271205 (+58842ms, PRESENT). Health canary landed @12s and final canary landed (both clean, accounting UP). Rater-facing sidecar (evidence, w120 format) = captures/oteldemo-checkout-eventual-induced/sidecar-003.json; rater-facing opaque-id + marker re-key is an ASSEMBLY step (corpus-wide, same as every case — the b4_harness.render opaque mapping). MIST did NOT run on this case (psql read-back captured directly); oracle_expectation is hand-authored (the correct-oracle target: no_flag on a benign). DISTINCT from natural w120 (-001): source=by_construction (induced), provenance_class=by-injection, counted SEPARATELY per rev-2.1 §7. This is the SECOND induced-eventual benign captured in the same run (marker r1dev2-1784003126); with -002 and natural -001 the eventual-present family = 3 (>= the >=2 floor). CADENCE/TELL NOTE (C-B3/A-F10): the re-probe-PRESENT shape must not perfectly correlate with the benign label across the merged corpus — a known-label bias-audit item (RESULT-r1d), NOT a defused tell; the present=>benign decode direction is DISCLOSED (r1d-phase0-findings.md)."
+  },
+  "license": {
+    "case_code": "Apache-2.0",
+    "case_data": "CC-BY-4.0",
+    "upstream_sut": "Apache-2.0",
+    "sources": [
+      "open-telemetry/opentelemetry-demo src/checkout/main.go",
+      "open-telemetry/opentelemetry-demo src/accounting/Consumer.cs"
+    ]
+  },
+  "adjudication": null
+}

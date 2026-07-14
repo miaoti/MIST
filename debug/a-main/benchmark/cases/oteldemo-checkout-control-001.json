@@ -4,6 +4,7 @@
   "stratum": 1,
   "capture_status": "captured",
   "fault_class": "none",
+  "readback_shape": "present-landed",
   "sut": {
     "name": "oteldemo",
     "repo": "github.com/open-telemetry/opentelemetry-demo",

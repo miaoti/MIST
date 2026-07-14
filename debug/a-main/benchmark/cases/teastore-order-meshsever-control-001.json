@@ -4,6 +4,7 @@
   "stratum": 1,
   "capture_status": "captured",
   "fault_class": "none",
+  "readback_shape": "present-landed",
   "sut": {
     "name": "teastore",
     "repo": "github.com/DescartesResearch/TeaStore",

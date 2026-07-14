@@ -38,6 +38,11 @@
       "enum": ["acknowledged_lost_write", "missing_compensation", "swallowed_downstream_error", "none"],
       "description": "Surface phenomenon (NOT the verdict). none = clean control / benign."
     },
+    "readback_shape": {
+      "type": "string",
+      "enum": ["present-landed", "absent-lost", "partial-aggregate-loss", "eventual-present", "reject-no-delta", "reject-absent-empty", "degraded-present"],
+      "description": "R1d/§8: OPTIONAL structured render-shape of the durable read-back, so the shape-polarity census (SUT x shape x provenance) is mechanically computable rather than free-text. Populated on NEGATIVES (the benign census): present-landed = clean write lands (control/clean-twin); eventual-present = absent at cap then heals PRESENT at re-probe (bounded eventual consistency; MIST single-shot timeout FPs by construction); reject-no-delta = by-design 2xx no-persist/no-change rendering present-unchanged or zero-delta, disambiguated by a body-tell (status:0) OR a same-with-same norm (dedupe / no-op-modify); reject-absent-empty = fresh-key soft-reject that renders EMPTY like a genuine loss (the presence-defuser shape; structurally near-unreachable per r1d-phase0-findings.md — 0 today, enum reserved); degraded-present = designed graceful degradation / optional-dependency-down 2xx (swallowed_downstream_error). POSITIVES omit this field — their shape is fault_class-derived (acknowledged_lost_write=absent-lost; the parent-landed/child-lost meshsever=partial-aggregate-loss)."
+    },
     "sut": {
       "type": "object",
       "additionalProperties": false,

@@ -4,6 +4,7 @@
   "stratum": 1,
   "capture_status": "captured",
   "fault_class": "none",
+  "readback_shape": "present-landed",
   "sut": {
     "name": "trainticket",
     "repo": "github.com/miaoti/train-ticket-injection",

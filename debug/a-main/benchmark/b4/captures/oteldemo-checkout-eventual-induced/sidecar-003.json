@@ -1,0 +1,53 @@
+{
+ "sidecar_version": 1,
+ "case_id": "oteldemo-checkout-eventual-benign-003",
+ "producer": "r1d-otel-eventual capture (evidence sidecar; rater-facing opaque-id + marker re-key owed at assembly)",
+ "mist_commit": "7d69de9",
+ "sut": {
+  "name": "oteldemo",
+  "version_ref": "opentelemetry-demo app 2.2.0 / chart 0.40.9"
+ },
+ "capture_note": "INDUCED bounded-eventual-consistency benign #2. accounting deploy scaled 0 before the write, scaled 1 after the at-cap read (kafka pod untouched). t_rel_ms anchored at the checkout ack (epoch_ms 1784003212363). Full run log: debug/a-main/benchmark/b4/captures/oteldemo-checkout-eventual-induced/r1d-run-1784003126.log",
+ "records": [
+  {
+   "t_rel_ms": 0,
+   "kind": "request",
+   "method": "POST",
+   "path": "/api/cart?currencyCode=USD",
+   "payload": "{\"item\":{\"productId\":\"0PUK6V6EV0\",\"quantity\":1},\"userId\":\"<session uuid, internal>\"}"
+  },
+  {
+   "t_rel_ms": 0,
+   "kind": "response",
+   "status": 200,
+   "body": "<cart accepted>"
+  },
+  {
+   "t_rel_ms": 0,
+   "kind": "request",
+   "method": "POST",
+   "path": "/api/checkout?currencyCode=USD",
+   "payload": "{\"userId\":\"<session uuid>\",\"userCurrency\":\"USD\",\"email\":\"r1dev2-1784003126@corpus.test\",\"address\":{\"streetAddress\":\"r1dev2-1784003126\",\"state\":\"CA\",\"country\":\"United States\",\"city\":\"Mountain View\",\"zipCode\":\"94043\"},\"creditCard\":{\"creditCardCvv\":672,\"creditCardExpirationMonth\":1,\"creditCardExpirationYear\":2030,\"creditCardNumber\":\"4432-8015-6152-0454\"}}"
+  },
+  {
+   "t_rel_ms": 0,
+   "kind": "response",
+   "status": 200,
+   "body": "{\"orderId\":\"3cfd32b3-7f3c-11f1-90da-96ecc7e640eb\",\"shippingAddress\":{\"streetAddress\":\"r1dev2-1784003126\",\"city\":\"Mountain View\",\"state\":\"CA\",\"country\":\"United States\",\"zipCode\":\"94043\"},\"items\":\"<elided>\"}"
+  },
+  {
+   "t_rel_ms": 29337,
+   "kind": "observation",
+   "probe": "SQL SELECT street_address FROM accounting.shipping WHERE street_address='r1dev2-1784003126' (epoch_ms 1784003241700, accounting scaled 0, past ~25s read-back cap)",
+   "status": 200,
+   "body": "[]"
+  },
+  {
+   "t_rel_ms": 58842,
+   "kind": "observation",
+   "probe": "SQL SELECT street_address FROM accounting.shipping WHERE street_address='r1dev2-1784003126' (epoch_ms 1784003271205, post-drain after accounting scaled back to 1)",
+   "status": 200,
+   "body": "[{\"street_address\":\"r1dev2-1784003126\"}]"
+  }
+ ]
+}

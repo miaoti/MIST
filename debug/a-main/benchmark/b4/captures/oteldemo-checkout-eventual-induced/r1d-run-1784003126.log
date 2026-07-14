@@ -1,0 +1,39 @@
+===== R1D-OTEL-EVENTUAL pre-flight (1784003126) =====
+PF :8085 -> 200
+pg pod: postgresql-8d5f48bc4-6cxmp
+accounting now: 1/1
+===== HEALTH CANARY (accounting UP, lands immediately) =====
+canary order: code=200 order=0ca4349d-7f3c-11f1-90da-96ecc7e640eb
+canary probe @12s: [r1dhc1784003126] (expect the marker = landed)
+===== INDUCED EVENTUAL-PRESENT #1 (marker r1dev1-1784003126) =====
+scale accounting -> 0
+deployment "accounting" successfully rolled out
+order (accounting down): code=200 order=17158d51-7f3c-11f1-90da-96ecc7e640eb
+  ack at epoch_ms=1784003148767
+  probe @~5s: [] (expect empty)
+  waiting to pass MIST 25s cap...
+  PROBE-AT-CAP (~31s, epoch_ms=1784003179169): [] (expect EMPTY = absent past cap)
+scale accounting -> 1 (drain)
+deployment "accounting" successfully rolled out
+  draining...
+  PROBE-AT-REPROBE (post-drain, epoch_ms=1784003206981): [r1dev1-1784003126] (expect PRESENT = landed = benign)
+  RESULT #1: marker=r1dev1-1784003126 ack=see-above cap=[] reprobe=[r1dev1-1784003126]
+===== INDUCED EVENTUAL-PRESENT #2 (marker r1dev2-1784003126) =====
+scale accounting -> 0
+deployment "accounting" successfully rolled out
+order (accounting down): code=200 order=3cfd32b3-7f3c-11f1-90da-96ecc7e640eb
+  ack at epoch_ms=1784003212363
+  probe @~5s: [] (expect empty)
+  waiting to pass MIST 25s cap...
+  PROBE-AT-CAP (~31s, epoch_ms=1784003241700): [] (expect EMPTY = absent past cap)
+scale accounting -> 1 (drain)
+deployment "accounting" successfully rolled out
+  draining...
+  PROBE-AT-REPROBE (post-drain, epoch_ms=1784003271205): [r1dev2-1784003126] (expect PRESENT = landed = benign)
+  RESULT #2: marker=r1dev2-1784003126 ack=see-above cap=[] reprobe=[r1dev2-1784003126]
+===== restore + final health =====
+deployment "accounting" successfully rolled out
+final canary: code=200 order=603c464e-7f3c-11f1-90da-96ecc7e640eb
+final canary probe: [r1dz1784003126] (expect landed)
+accounting final: 1/1
+===== R1D-OTEL-EVENTUAL DONE =====
