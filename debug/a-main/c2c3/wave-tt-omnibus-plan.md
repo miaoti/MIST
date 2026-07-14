@@ -176,9 +176,11 @@ Honest calendar ≈ 1.5-2.5 wk end-to-end (was mis-framed "one window" in rev 1)
   record-as-observed only; any evidence the revival corrupted existing capture provenance
   (it cannot — captures are committed files — but verify nothing rewrites them) ⇒ STOP.
 
-## §7 Confirmation pass (the execution gate)
+## §7 Confirmation pass (the execution gate) — **PASSED, UNANIMOUS (2026-07-14)**
 
-3 cold re-reads of THIS rev 2 (fresh reviewers or the same axes re-run cold); execution
-starts ONLY on unanimous confirm. Their brief: verify the 11 blocking dispositions landed
-as claimed (each maps to a §1/§3/§4/§5 edit), and that no new over-claim was introduced by
-the re-scope.
+3 cold re-reads of rev 2 → A' CONFIRM-WITH-RESIDUAL (item-1 re-scope landed, source-accurate;
+residual R1 = the traceparent wiring, folded into Phase 0a) + B' CONFIRM-WITH-RESIDUAL
+(runnability/axes/DoD fixes landed; 4 minor residuals folded) + C' FAIL→**CONFIRM on rev 2.1
+re-verification** (the two FAIL items fixed against primary sources: the WSL rail un-inverted
+to the 3bb8209 record; the gate quoted from the live rule). **EXECUTION CLEARED — Phase 0
+begins.** Confirm records: `REVIEW-TTOMNI-CONFIRM-{A,B,C}.md` (local-only).
