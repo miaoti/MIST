@@ -126,12 +126,17 @@ POSITIVE (S1) floor — it does NOT appear in this benign wave.
 ## §8 Framing + disclosure (R1d-C MAJOR)
 - **S2 is a CONSTRUCTED FP-trap stratum**, parallel to the constructed S1 positives; natural-prevalence
   claims cite **S3 only** (0/1514); the induced majority is DISCLOSED and expected. Pin this sentence.
-- **MIST's single-shot-timeout read-back FIRES on eventual-present traps BY CONSTRUCTION** (confirmed vs
+- **[CORRECTED at RESULT time — 2026-07-14, post-capture review B-F1; see `RESULT-r1d.md` §7 + freeze row
+  310 item 7. This pre-registration premise was INVERTED and is RETRACTED:** in OBSERVE mode
+  `TIMEOUT_ABSENT` is WARN-only, NOT a defect (`DataIntegrityObserveCheck` L58-73), so MIST's observe oracle
+  does NOT fire on eventual-present — it correctly ABSTAINS (precision STRENGTH). The FP trap is a NAIVE
+  at-cap comparator; PAIRED-mode-without-re-probe would FP. Only the `reProbe`-is-S3-only half below was
+  right.]** ~~MIST's single-shot-timeout read-back FIRES on eventual-present traps BY CONSTRUCTION~~ (confirmed vs
   source: `reProbe` is an S3-hunt-only accessor; the product observe path is single-shot poll-to-cap →
-  TIMEOUT_ABSENT). Frame this as a **documented read-back-oracle LIMITATION** (a timeout oracle cannot
+  TIMEOUT_ABSENT). ~~Frame this as a documented read-back-oracle LIMITATION~~ (a timeout oracle cannot
   distinguish eventual-consistency-beyond-cap from loss), NOT buried at scoring. MIST's S2 precision
-  splits honestly: fires on eventual-present (a known limit); correctly no-fires on dedupe/no-op/clean
-  soft-rejects where the read-back is unambiguous.
+  splits honestly: ~~fires on eventual-present (a known limit)~~ [correctly ABSTAINS on eventual-present,
+  observe-mode]; correctly no-fires on dedupe/no-op/clean soft-rejects where the read-back is unambiguous.
 - **Record the shape family in a STRUCTURED case field** (not free-text) so the shape-polarity census is
   mechanically computable. One reconciled benign-count table by SUT × shape × provenance.
 

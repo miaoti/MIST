@@ -30,7 +30,7 @@ decoder *cannot* be defused, so honesty (disclose + detect) is the only coherent
 
 | shape | MIST behavior | rater decode axis | source (to live-verify) | have |
 |---|---|---|---|---|
-| **eventual-present** (absent-at-cap → heals) | **FPs by construction** (single-shot timeout, the documented limitation) | present⇒benign (disclosed) | OTel accounting eventual-consistency (w120 class); OTel/Bookinfo bounded-backlog | 1 (w120) |
+| **eventual-present** (absent-at-cap → heals) | **MIST OBSERVE oracle correctly ABSTAINS** [CORRECTED 2026-07-14, B-F1: TIMEOUT_ABSENT=WARN, NOT a defect, `DataIntegrityObserveCheck` L58-73; my earlier "FPs by construction" was inverted]; the NAIVE at-cap comparator + PAIRED-mode-without-re-probe are what FP | present⇒benign (disclosed) | OTel accounting eventual-consistency (w120 class); OTel/Bookinfo bounded-backlog | 1 (w120) |
 | **dedupe / no-op-modify** (renders PRESENT-unchanged, body `status:0`) | ack-rule EXCLUDES → correct no-fire (true negative) | delta/body-tell⇒benign (disclosed) | TT contacts (have 2) | 2 |
 | **designed-degradation / optional-dep** (graceful 200) | depends on read-back surface | present⇒benign | Bookinfo productpage→reviews/details degraded → 200 (packaged, ≤2, C3-EXCLUDED) | 0 |
 
@@ -41,7 +41,7 @@ the 2 body-tell dedupe/no-op. The presence-defuser column is ~empty.
 
 1. **≥8 presence-defuser floor → DISCLOSED SHORTFALL** (structural, per the finding above). Do NOT
    manufacture clean-ack-empty cases — that would mint masked-loss positives mislabeled benign.
-2. **Capture the achievable:** live-verify + capture the **eventual-present** MIST-FP-traps on OTel
+2. **Capture the achievable:** live-verify + capture the **eventual-present** naive-comparator-FP-traps on OTel (MIST OBSERVE oracle correctly abstains — corrected 2026-07-14, B-F1)
    (bounded-backlog beyond w120) + any real TeaStore retry-heal; keep the 2 dedupe/no-op body-traps;
    Bookinfo designed-degradation counts to C2 only (C3-excluded). Realistic decode-safe rateable
    benign yield ≈ **4–8** (mostly eventual-present + body-tell), NOT 35.

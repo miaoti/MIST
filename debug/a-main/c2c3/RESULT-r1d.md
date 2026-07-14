@@ -1,15 +1,18 @@
-# RESULT — Wave R1d (benign-power lift, S2) — 2026-07-13
+# RESULT — Wave R1d (benign-power lift, S2) — 2026-07-13 (3-cold review closed 2026-07-14)
 
-**Status:** EXECUTED (capture + authoring done); **CONFIRMATION PASS + post-capture 3-cold review OWED**
-(plan `wave-r1d-benign-power-plan.md` rev 2.1 §9.5). RESULT-of-record for the benign-side (S2)
-completion leg of Wave R1. Plan: rev 2.1 (CLEARED). Phase-0 finding: `r1d-phase0-findings.md`.
+**Status:** EXECUTED + **post-capture 3-cold review DONE (2026-07-14, all 3 ACCEPT-WITH-FIXES; the 1
+BLOCKING item source-verified + folded) → R1d CLOSES.** Reconciliation:
+`REVIEW-R1D-RESULT-RECONCILIATION.md` (reviews `REVIEW-R1D-RESULT-{A,B,C}.md`). RESULT-of-record for the
+benign-side (S2) completion leg of Wave R1. Plan: `wave-r1d-benign-power-plan.md` rev 2.1 (CLEARED).
+Phase-0 finding: `r1d-phase0-findings.md`.
 
-**One-line result:** the benign side is the corpus's binding constraint (all R1b/R1c/R1d reviewers); R1d
-captured the **achievable** decode-safe benign supply — **2 induced eventual-present benigns** on live
-OTel (clean, ground-truth-verified) lifting the decode-safe FP-trap pool **4 → 6** (5 C3-rateable) — and
-**DISCLOSES the structural shortfall** against the frozen S2 ≥35 / calibration-50 floors, per the §9
-OR-branch. The shortfall is itself a finding: it QUANTIFIES (with the S3 0/1514 scarcity + the Phase-0
-presence-defuser structural-scarcity) why a natural masked-benign corpus cannot be manufactured to volume.
+**One-line result:** the S2 benign floor is **NOT met and is disclosed short** — R1d captured the
+**achievable** decode-safe benign supply (**2 induced eventual-present benigns** on live OTel, clean +
+ground-truth-verified, lifting the decode-safe FP-trap pool **4 → 6**, 5 C3-rateable) against a frozen
+demand of **≥35 S2 traps AND ~40-43 benign for a 50-case calibration**; the gap is disclosed with its
+power/κ consequence (§3, §8). The benign side is the binding constraint (all R1b/R1c/R1d reviewers). The
+shortfall is itself a finding: with the S3 0/1514 wild scarcity + the Phase-0 presence-defuser
+structural-scarcity, it QUANTIFIES why a natural masked-benign corpus cannot be manufactured to volume.
 
 ---
 
@@ -32,8 +35,9 @@ Controls in the same run (clean): health canary landed @12 s; final canary lande
 `accounting.shipping`, not a MIST verdict.
 
 **Provenance (§7):** these are `source=by_construction`, `provenance_class=by-injection`, magnitude ~35 s
-accounting-down window (the SAME ORDER as the natural w120's 328 s backlog — disclosed) — counted
-SEPARATELY from the natural w120 (`oteldemo-checkout-eventual-benign-001`, `source=natural`). Sidecars:
+accounting-down window (~9× smaller than the natural w120's 328 s backlog; both sub-minute-to-minutes
+bounded backlog on this exact path — disclosed) — counted SEPARATELY from the natural w120
+(`oteldemo-checkout-eventual-benign-001`, `source=natural`). Sidecars:
 `b4/captures/oteldemo-checkout-eventual-induced/sidecar-00{2,3}.json` (w120 format; rater-facing opaque-id
 + marker re-key is the corpus-wide ASSEMBLY step). All 26 cases validate green.
 
@@ -53,24 +57,34 @@ Census computed mechanically from the field:
 | TOTAL negatives | **15** | |
 
 **Decode-safe FP-TRAPS** (non-control benigns) = eventual-present (3) + reject-no-delta (2) +
-degraded-present (1) = **6**, of which Bookinfo is **C3-excluded** (packaged, freeze §6 R1 X7) ⇒
+degraded-present (1) = **6**, of which Bookinfo is **C3-excluded** (packaged FP corpus — plan §6/§11 +
+freeze §5 "packaged FP corpora"; NOT the freeze §6 R1 X7 clause, which names the TT/SS probe corpora) ⇒
 **C3-rateable decode-safe traps = 5**. Pre-R1d = 4 (plan §1) → post-R1d = 6. **Δ = +2** (the 2 induced
 eventual). The 9 `present-landed` cases are clean CONTROLS (S1 clean twins), which per freeze line 142 R1
 X1 **never count toward the ≥35 S2-trap floor or the C3 benign supply**.
 
 ## §3 Demand vs supply reconciliation (freeze §6 note, OWED per DoD §9.4)
 
-- **Demand number 35 vs 42-43 (double-count corrected):** the frozen S2 floor is **≥35 distinct benign
-  traps** (freeze §5). This SUBSUMES the ~34-benign calibration draw (calibration = max(30, 50−|S3|) = 50
-  at |S3|=0, benign-skewed ≥2:1; it draws FROM the S2 pool; mechanical FP-rate runs do NOT consume cases).
-  The S3-era "~42-43" **double-counted** the FP-calibration pool and the S2 pool as disjoint. **The correct
-  single demand is ≥35** (a dated freeze §6 row records this).
+- **Demand — TWO frozen obligations, BOTH unmet (A-F1 correction; my first draft under-stated this):**
+  (i) the **S2 floor = ≥35 distinct benign traps** (freeze §5); AND
+  (ii) the **calibration target = 50** at |S3|=0 (`max(30, 50−|S3|)=50`, pooled=calibration), which at the
+  benign-skew ≥2:1 needs **benign ≈ 50 − genuine ≈ 40-43** (rateable genuine ≈ 7-10, §8).
+  The S3-era grounding's "~42-43" was PARTLY a double-count — its *33+10* derivation wrongly treated the
+  FP-calibration pool and the S2 pool as disjoint (they are not: calibration draws FROM S2, mechanical
+  FP-rate runs don't consume cases), so THAT 43 is corrected down toward the ~34 calibration draw. BUT
+  obligation (ii), `50 − genuine ≈ 40-43` benign, is INDEPENDENT of that double-count and is NOT subsumed
+  by ≥35 (my draft's "correct single demand is ≥35" was wrong to drop it). Honest demand = **≥35 (S2 floor)
+  AND ~40-43 (calibration-50 benign share)**; the dated freeze §6 row records both.
 - **Supply number 4 vs S3's "12":** the S3 RESULT's "benign pool 12" folded in NON-rateable items (clean
   controls + packaged corpora). The rateable **decode-safe trap** supply pre-R1d was **4**; post-R1d **6**
   (5 C3-rateable). Total negatives (incl. controls) = 15.
-- **Verdict: DISCLOSED SHORTFALL.** 5-6 rateable traps (or 15 total negatives) ≪ 35. This was
-  **pre-registered** as structurally unreachable (freeze §5 + the R1 pre-reg row X2: "≥35 structurally
-  unreachable on this SUT set"). R1d does not close it — it captures the achievable and quantifies the gap.
+- **Verdict: DISCLOSED SHORTFALL against BOTH obligations.** 5-6 rateable traps (or 15 total negatives) ≪
+  35 ≪ 40-43. TWO disclosure bases (C-F7): the **≥8 presence-defuser floor is STRUCTURAL** (near-unreachable
+  by logic, §4), while the **≥35 / ~40-43 volume floor is an EXHAUSTION-bar** shortfall — the candidate
+  SITES are not all exhausted, but the achievable decode-safe SHAPES are structurally scarce (the S3
+  finding). Both were pre-registered (freeze §5 + the R1 pre-reg row X2 "≥35 structurally unreachable on
+  this SUT set", X3 "≥8 write-acked-absent"). R1d captures the achievable and quantifies the gap; it does
+  not close it.
 
 ## §4 The structural finding — the presence-defuser is near-unreachable (`readback_shape: reject-absent-empty` = 0)
 
@@ -105,34 +119,61 @@ Both are decode-SAFE (neither relies on ABSENCE), but the disambiguator differs 
 Both share `readback_shape: reject-no-delta` (they trap the DELTA/ack-body decoders, not the presence
 decoder) — recorded accurately so the census is not over-claimed as uniformly body-tell.
 
-## §6 Anti-concentration ceilings (plan §5) — the induced captures are mono-mechanism/mono-SUT (DISCLOSED)
+## §6 Anti-concentration ceilings (plan §5) — induced captures mono-mechanism; trap-pool OTel-concentrated (DISCLOSED)
 
-- **≤40% per single SUT** (across all 15 negatives): TT 6/15 = 40% (boundary), OTel 4/15 = 27%, TeaStore
-  3/15 = 20%, SockShop 1/15, Bookinfo 1/15. **≥3 SUTs represented ✓** (5 SUTs).
-- **≥2 mechanisms among the INDUCED ones — NOT MET for this wave (DISCLOSED).** This wave's 2 induced
-  captures are BOTH `dependency-down`/`dependency_scale_zero` on OTel (a single mechanism, a single SUT).
-  Phase-0 found the alternatives near-unreachable on the standing tenants: the presence-defuser shape does
-  not exist (§4), TeaStore does not gracefully degrade (no eventual-present), TT is at 0 (no live capture
-  this wave). Per plan §9 stop-rule ("§5 ceiling breach ⇒ STOP + disclose") I did **NOT** manufacture a
-  second mechanism to hit the ceiling — that would be padding-in-a-benign-hat. The **whole benign POOL is
-  mechanism-diverse** (dependency-down + mesh-sever + natural + none across the 15), so the pool is not a
-  monoculture; only this wave's 2 induced captures are, disclosed here.
-- **Magnitude grounding:** the ~35 s accounting-down window is grounded as the SAME ORDER as the natural
+- **≤40% per single SUT — two denominators (A-F3 / C-F4):** across all 15 negatives TT 6/15 = 40%
+  (boundary), OTel 4/15 = 27%, TeaStore 3/15 = 20%, SockShop 1/15, Bookinfo 1/15 — passes at the boundary.
+  But across the **6 decode-safe TRAPS** (the plan-§5 ≤40%-per-shape cap's real target) **eventual-present =
+  OTel = 3/6 = 50%** — over the 40% line. This trap-level OTel/eventual concentration is the SAME phenomenon
+  as the mono-mechanism miss below and is disclosed as ONE shortfall, not a clean pass. **≥3 SUTs across the
+  full pool ✓** (5 SUTs); across the traps = 3 (OTel/TT/Bookinfo) ✓.
+- **≥2 mechanisms among the INDUCED captures — NOT MET (DISCLOSED); three honestly-separated reasons (B):**
+  this wave's 2 induced captures are both `dependency-down`/`dependency_scale_zero` on OTel. Why no 2nd
+  induced mechanism:
+  (a) the presence-defuser shape is **STRUCTURALLY unreachable** (§4) — a real finding, not a miss;
+  (b) TeaStore eventual-present was **SURVEYED absent** (does not gracefully degrade, `c2-depth-survey` L113);
+  (c) TrainTicket was **NOT ATTEMPTED this wave** — plan §6 Batch 2 (TT revival) was deferred; this is a
+  disclosed SCOPE choice, NOT an "unreachable" finding. Precise note: reviving TT would add its NATURAL
+  soft-reject traps (`fault.mechanism=none` — the 2 existing `reject-no-delta` already ARE that family), NOT
+  a second INDUCED mechanism, so the mono-INDUCED-mechanism disclosure stands regardless of TT.
+  Per the plan §9 stop-rule ("§5 ceiling breach ⇒ STOP + disclose") I did **NOT** manufacture a second
+  mechanism to hit the ceiling (= padding-in-a-benign-hat). The **whole benign POOL is mechanism-diverse**
+  (dependency-down + mesh-sever + natural + none across the 15); only this wave's 2 induced captures are mono.
+- **Mechanism-diversity firewall (C-F3):** the `fault.mechanism` diversity floor (≥4 per write-path SUT) is
+  computed over `label==positive` sites ONLY, so a NEGATIVE's `mechanism` stamp (these dependency-down
+  benigns) can NEVER inflate it. Verified latent-but-does-not-bite: OTel already carries `dependency-down`
+  among its POSITIVES, so the 3 dependency-down negatives add no new per-SUT positive mechanism.
+- **Magnitude grounding:** the ~35 s accounting-down window is grounded as ~9× smaller than the natural
   w120's 328 s kafka→accounting backlog (an observed bound on this exact path), disclosed per case. The S2
   FP-rate must be reported as a **sensitivity band over magnitude** at scoring (plan §5), not a point knob.
 
-## §7 MIST's eventual-present limitation (plan §8) — a documented read-back-oracle boundary
+## §7 MIST's observe oracle on eventual-present (plan §8) — CORRECT abstention, a precision strength
 
-MIST's PRODUCT observe oracle is single-shot poll-to-cap → `TIMEOUT_ABSENT` (verified vs source: `reProbe`
-is an S3-hunt-only accessor, NOT in the product observe path). So on the 3 eventual-present benigns MIST's
-product oracle **FIRES (a false-positive) BY CONSTRUCTION** — a timeout oracle cannot distinguish
-eventual-consistency-beyond-cap from loss. This is framed as a **documented LIMITATION**, not buried at
-scoring. The corpus's `oracle_expectation.mist_readback_oracle = no_flag` on these cases is the
-CORRECT-oracle TARGET (a correct oracle must not fire on a benign); the S3 CONFIRMED detector (which
-re-probes) correctly no-fires and demonstrates the fix. MIST's S2 precision splits honestly: **fires on
-eventual-present (known limit); correctly no-fires on dedupe/no-op/clean** where the read-back is
-unambiguous. (This is why the corpus's positives are injected: nature does not hand you masked-absent-then-
-healed writes at volume — the S3-scarce phenomenon.)
+**CORRECTED after the review (B-F1, source-verified — my draft here was INVERTED).** My first draft claimed
+MIST's observe oracle "FIRES a false-positive by construction"; that is wrong. Per source:
+- `DataIntegrityObserveCheck.java` L58-73: in OBSERVE mode an at-cap absence with no trace-confirmation is
+  gated `TIMEOUT_ABSENT` = "persistence UNCONFIRMED", reported WARN-only and **NOT counted as a defect**
+  (shipped default WARN, L16-20/L104-107).
+- `DataIntegrityRuntime.java` L736-773: the defect tier `OBSERVED_COMPLETE_ABSENT` is reached ONLY when
+  `traceComplete(traceId)` (a Jaeger trace shows the step's own trace complete); the async
+  checkout→kafka→accounting downstream-persist path does not provide that, so the gate stays
+  `TIMEOUT_ABSENT`.
+- `reProbe` is S3-hunt-only (grep: called only from `WildHuntEngine.java`) — the one half of my draft that
+  checked out.
+
+So **MIST's OBSERVE oracle correctly does NOT flag these benigns** — `mist_readback_oracle = no_flag` is
+ACHIEVED by MIST (precision-first design), not a target it fails. Consistency verified against the corpus:
+the flagship async loss `oteldemo-checkout-lost-001` is `oracle_mode=paired` → `mist_readback_oracle=flag`
+(paired fires on the absence-delta); the 3 eventual-present benigns are `oracle_mode=observe` → `no_flag`
+(observe correctly abstains) — the cells were right; only my prose explanation was inverted.
+
+The oracle these benigns actually TRAP is a **NAIVE at-cap read-back comparator** (fires on any at-cap
+absence → FP). **PAIRED**-mode MIST would ALSO FP here — it fires on the absence-delta with **no re-probe**,
+which is precisely why the S3 CONFIRMED detector adds the T+5 min re-probe gate. Honest split: MIST's
+**OBSERVE** oracle is a **precision STRENGTH** on eventual-present (correct abstention where the naive
+baseline FPs); MIST's **PAIRED** oracle without re-probe would FP (the re-probe is the fix). These R1d cases
+exercise observe mode. (This is also why the corpus's positives are injected: nature does not hand you
+masked-absent-then-healed writes at volume — the S3-scarce phenomenon.)
 
 ## §8 Calibration decision (plan §4) — largest achievable ≪ 50, binding side = benign
 
@@ -159,6 +200,14 @@ design, exactly because the presence-defuser shape that WOULD break it is struct
 2. **The eventual-present benigns are induced** (`by_construction`); only w120 is a natural observation.
 3. The two structural-scarcity data (S3 0/1514 wild + the R1d presence-defuser 0) together justify why the
    corpus's positives are injected and why the S2 volume floor is disclosed-short, not met.
+4. **MIST's observe oracle correctly ABSTAINS on eventual-present** (§7) — these benigns are FP traps for
+   the NAIVE at-cap comparator and PAIRED-mode-without-re-probe, NOT for MIST's observe oracle (a precision
+   STRENGTH, correcting the draft's inverted "limitation" wording).
+5. **S2-invariant exemption (disclosed):** the induced -002/-003 (`by_construction`/`by-injection`,
+   `doc_citation=null`) are exempt from the §2 S2-invariant `by-docs`+citation sub-clause, EXTENDING the
+   -001 natural-observation exemption (freeze row 308). The shared *exemption basis* is the async path's
+   lack of a citable completion bound (§0.4); the *provenance genuinely SHIFTS* (natural → induced), so the
+   induced cases carry the stricter disclosures (separate count §1, induced-magnitude sensitivity band §6).
 
 ## §11 DoD check (plan §9) + residuals/owed
 
@@ -168,14 +217,21 @@ design, exactly because the presence-defuser shape that WOULD break it is struct
 | §9.2 ≥8 presence-defuser + ≥2 eventual **OR shortfall disclosed** | ✅ OR-branch: 3 eventual (≥2 ✓); presence-defuser 0 → **shortfall disclosed** (§4) with calibration/κ consequence (§8) |
 | §9.3 schema-valid + honest provenance + **structured shape field** | ✅ 26/26 validate; `readback_shape` added + 15 negatives populated |
 | §9.4 §8 disclosure + dated freeze §6 note (35-vs-42-43 + 4-vs-12) | ✅ §3 + §10; freeze §6 R1d row landed |
-| §9.5 RESULT-r1d + **CONFIRMATION PASS + post-capture 3-cold review** | ⏳ **OWED** (this RESULT + the review) |
+| §9.5 RESULT-r1d + **CONFIRMATION PASS + post-capture 3-cold review** | ✅ **DONE** — 3-cold review complete (A/B/C all ACCEPT-WITH-FIXES; the 1 BLOCKING item source-verified + folded; `REVIEW-R1D-RESULT-RECONCILIATION.md`) → **R1d CLOSES** |
 
 **Residuals / owed:**
-- **Post-capture 3-cold review of this RESULT** (DoD §9.5) — the gate before R1d closes.
-- Rater-facing opaque-id + marker re-key for -002/-003 sidecars = the corpus-wide ASSEMBLY step (R2).
+- **Rater-facing render is an R2 ASSEMBLY gate, NOT done this wave (C-F8):** the -002/-003 sidecars use raw
+  markers (`r1dev*` — a wave-label leak that WOULD trip BANNED_STRINGS); the opaque-id + marker re-key + the
+  0-BANNED_STRINGS `b4_harness.render` round-trip happen at R2 assembly (corpus-wide), not here. No clean
+  rater-facing render is claimed for these two cases yet.
 - The S2 FP-rate **magnitude sensitivity band** is reported at SCORING (R2 assembly), not here.
 - The **real traced MIST discrimination run** stays PRE-REGISTERED + owed at 2.5/E2 (unchanged by R1d).
-- Bookinfo/Boutique packaged benigns stay C3-excluded (freeze §6 R1 X7).
+- Bookinfo/Boutique packaged benigns stay C3-excluded (plan §6/§11 + freeze §5 "packaged FP corpora").
+
+**Folded corpus-hygiene fix (C-F1):** `teastore-orderitems-meshsever-control-001.fault_class` corrected
+`acknowledged_lost_write` → `none` (it is a clean control where order + items both land; its sibling
+`teastore-order-meshsever-control` was already `none`). Does not affect the census (which reads
+`readback_shape`).
 
 **End-state:** OTel-Demo UP & healthy (accounting 1/1, kafka 1/1, restored post-run); TeaStore UP; TT at 0.
 Corpus = 26 cases (11 positive / 15 negative), all validator-green.
