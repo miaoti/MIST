@@ -1,10 +1,15 @@
-# Wave R1d — benign-power lift (S2) — rev 2 (FOR CONFIRMATION PASS)
+# Wave R1d — benign-power lift (S2) — rev 2.1 (CONFIRMATION PASS PASSED — residuals folded)
 
-**Date:** 2026-07-13 · Owner: main_track · Status: **DRAFT rev 2 — folds the 3-cold review
-(`REVIEW-R1D-RECONCILIATION.md`; A/C 0-blocking, B 4-BLOCKING). Requires a CONFIRMATION PASS (the 3
-reviewers confirm the fixes landed + the decode-safety redesign is sound) BEFORE any capture** (wave-3a
-precedent; rev 1 had real errors — a confabulated SockShop story, a mischaracterized TeaStore toggle, a
-mis-assigned decode-safety floor).
+**Date:** 2026-07-13 · Owner: main_track · Status: **CLEARED for capture (Phase 0 first). CONFIRMATION
+PASS PASSED** — all 3 reviewers resumed (C CONFIRM-ACCEPT; A + B ACCEPT-WITH-RESIDUAL, all textual/
+foldable, none requiring another review round; B: "on those two folds landing, this is a confirm").
+rev 2.1 folds the residuals: R1d-B R-1 (decoder-precision — the ≥8 presence-defuser shape is the
+fresh-key-reject-that-renders-EMPTY, we have 0 not 2; dedupe/no-op render PRESENT = delta/body traps,
+§2); R1d-B/C R-2 (the ≤40%-per-shape ceiling does NOT bind the write-acked-absent defuser family, §5);
+R1d-A (calibration bounded by BOTH benign AND rateable-genuine supply, §4). **Authoring to-do: the
+structured shape-taxonomy field must be ADDED to `fault-case.schema.json` (it does not exist yet).**
+History: rev 1 had real errors (a confabulated SockShop story, a mischaracterized TeaStore toggle, a
+mis-assigned decode-safety floor) fixed in rev 2 per `REVIEW-R1D-RECONCILIATION.md`.
 **Provenance:** the binding-constraint wave (all R1b+R1c+R1d-A/C reviewers: the C3 study's gate is the
 benign side). Positive-side widening is CLOSED (`REVIEW-R1C-RECONCILIATION.md`).
 
@@ -33,12 +38,18 @@ real `w120-sidecar.json` (ends in a PRESENT observation). Consequences, correcte
 - **A rater sees the full transcript.** An eventual-present benign renders PRESENT (heals) → the rater
   sees the write LANDED → it is a **present⇒benign** case, a DISCLOSED structural tell — it does NOT
   defuse "absent⇒genuine". (rev 1 wrongly claimed the opposite.)
-- **The ≥8 floor belongs on `write-acked-absent` benigns** — cases that render ABSENT (like a genuine
-  loss) yet are benign by an **ack-body tell or documented semantics** (idempotent dedupe / no-op-modify
-  — we have 2; by-design soft-rejects: 2xx whose body signals rejection, nothing persisted). Because
-  these render ABSENT alongside the genuine positives, a **presence-only** decoder's "absent⇒genuine"
-  falls toward P≈0.50. Floor: **write-acked-absent ≥8** (need ~6 more), **eventual-present ≥2** (w120 +
-  ~1 more).
+- **The ≥8 floor targets the PRESENCE decoder, and its qualifying shape is the FRESH-KEY soft-reject
+  that renders EMPTY** — a fresh-key 2xx write whose body signals rejection, nothing persisted, nothing
+  prior → read-back EMPTY, ABSENT like a genuine loss → dilutes "absent⇒genuine" toward P≈0.50.
+  **Precision correction (R1d-B R-1): dedupe / no-op-modify do NOT render empty** — dedupe reads the
+  first row PRESENT (trap = count-delta-zero), no-op reads the row PRESENT-unchanged (trap = zero-delta);
+  they correctly trap the DELTA and ACK-BODY decoders, NOT the presence decoder → they do NOT count
+  toward the presence-defuser ≥8. **Recount: fresh-key-reject presence-defusers = 0 today → need ~8;
+  the 2 dedupe/no-op are kept as delta/body traps (separate count).** **eventual-present ≥2** (w120 + ~1)
+  render PRESENT = the disclosed present⇒benign tell. **Phase 0 verifies render-shape PER candidate
+  (empty vs present-row vs body-tell), not just "2xx + benign"**; fresh-key-rejects that render empty may
+  be scarce → disclosed-short if the ≥8 is unreachable (the honest floor survives via disclose+bias-audit
+  regardless).
 - **We do NOT claim to "defuse" the decode.** Per the substrate (R1 rev2 §3): the structural decode
   directions (present⇒benign; body-reject⇒benign) are **DISCLOSED**, and the **known-label bias-audit
   is the pre-registered detector** (a rater who uses a tell shows a structured confusion matrix vs the
@@ -66,17 +77,24 @@ DISCOVERS + verifies live before counting:
 
 At |S3|=0, `max(30,50−0)=50` MANDATES 50 and pooled=calibration, so pooled-≥50 REQUIRES calibration=50;
 "30" is not a legal floor here and M-yield joins measurement-κ, not pooled-κ. **Decision: run the
-LARGEST calibration the achieved decode-safe benign supply permits; any calibration < 50 at |S3|=0 is a
-DISCLOSED shortfall (not a formula floor), reported with the pooled-κ(n≥50)-basis loss + power
-consequence** (the already-frozen honest version, freeze L309/L306). Do NOT pre-commit 30-vs-50; the
-achieved supply sets it.
+LARGEST calibration the achieved supply permits — bounded by BOTH the decode-safe benign supply AND the
+rateable-GENUINE supply (~16 from S1 positives; currently ~9-10 positive case-runs, so the genuine side
+may bind calibration below 50 INDEPENDENT of benign supply, R1d-A residual); any calibration < 50 at
+|S3|=0 is a DISCLOSED shortfall (not a formula floor), reported with the pooled-κ(n≥50)-basis loss +
+power consequence AND the binding side (benign vs genuine)** (the already-frozen honest version, freeze
+L309/L306). Do NOT pre-commit 30-vs-50; the achieved supply sets it.
 
 ## §5 Anti-concentration ceilings + magnitude-grounding (R1d-C MAJOR)
 
-- **Hard ceilings that can actually fire** (checked at Phase 0): **≤ 40% of the new benigns per single
-  SUT**, **≤ 40% per single shape family**, **≥ 3 SUTs represented**, **≥ 2 fault mechanisms** among
-  the induced ones (avoid a `dependency-down` monoculture = the benign twin of the all-`flag` relapse).
-  If a ceiling would be breached, STOP and disclose rather than concentrate.
+- **Hard ceilings that can actually fire** (checked at Phase 0): **≤ 40% per single SUT**, **≥ 3 SUTs
+  represented**, **≥ 2 fault mechanisms** among the induced ones (avoid a `dependency-down` monoculture
+  = the benign twin of the all-`flag` relapse). **The ≤40%-per-shape ceiling does NOT bind the
+  write-acked-absent decode-safety family** (R1d-B/C R-2: that family is REQUIRED to be dominant, so a
+  per-shape cap would contradict the ≥8 floor) — its anti-concentration is enforced WITHIN it (≥3 SUTs,
+  ≥2 mechanisms, ≤40%/SUT); the ≤40%-per-shape cap binds only the NON-defuser shapes. **Phase-0
+  feasibility check:** rateable decode-safe benigns come mainly from TT/TeaStore/OTel (Bookinfo/Boutique
+  packaged-excluded), so ≥3-SUTs × ≤40%/SUT is feasible but TIGHT — verify before counting. If a ceiling
+  would be breached, STOP and disclose rather than concentrate.
 - **Induced-degradation magnitudes GROUNDED in documented SLOs / plausible p99s**, disclosed per case;
   the S2 FP-rate is reported as a **sensitivity band over magnitude** (else MIST's FP number is a knob
   artifact — "you chose the latencies that set your FP rate").
