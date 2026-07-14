@@ -1,8 +1,10 @@
-# Wave TT-OMNIBUS — one TT-revival window: traced MIST live-run (E2 MIST-column provenance) + M-yield TT leg + E5 ablations — rev 2 (post-3-cold-review fold; CONFIRMATION PASS pending)
+# Wave TT-OMNIBUS — one TT-revival window: traced MIST live-run (E2 MIST-column provenance) + M-yield TT leg + E5 ablations — rev 2.1 (confirmation-pass folds)
 
-**Date:** 2026-07-14 · Owner: main_track · Status: **rev 2 — 3-cold review of rev 1 = A/B/C all
-ACCEPT-WITH-FIXES, 11 BLOCKING folded per `REVIEW-TTOMNI-PLAN-RECONCILIATION.md`; execution
-gated on a CONFIRMATION PASS (unanimous).** User direction (AskUserQuestion 2026-07-14): the
+**Date:** 2026-07-14 · Owner: main_track · Status: **rev 2.1 — rev-1 3-cold review (11 BLOCKING)
+folded at rev 2; CONFIRMATION PASS on rev 2 = A' CONFIRM-WITH-RESIDUAL + B' CONFIRM-WITH-RESIDUAL
++ C' FAIL (2 items) → rev 2.1 folds ALL residuals + the C' FAILs (the INVERTED WSL rail corrected
+to the 3bb8209 record's actual lesson; the tool-code gate quoted from the live rule); C'
+re-verification pending → unanimous = EXECUTE.** User direction (AskUserQuestion 2026-07-14): the
 TT-revival omnibus. Grounding: `remaining-experiments-map.md`.
 
 **rev-2 headline changes:** (1) item 1 RE-SCOPED to an honest **traced MIST LIVE-RUN
@@ -56,19 +58,23 @@ flap-cycle rail; exact tool-code-gate wording.
    datum predicts low/zero flagged events on upstream TT.
    **Step 4 folds ◐ PARTIAL; the M-YIELD-COMPLETION follow-up window is hereby NAMED:**
    scope = Step-2.75 enablement authoring for TeaStore/OTel (real-system-conf +
-   target-triples + auth glue; TeaStore additionally Jaeger-less → TIMEOUT_ABSENT-only,
-   disclosed) + the SS/Bookinfo/Boutique thin legs + the TeaStore/OTel legs at pinned
-   budgets. Separate plan + review; NOT silently dropped.
+   target-triples + auth glue, **with `mist_authoring` tier/minutes cost RECORDED per the
+   frozen schema — the automation-gap symmetry obligation carries into that window**
+   [B'-R4]; TeaStore additionally Jaeger-less → TIMEOUT_ABSENT-only, disclosed) + the
+   SS/Bookinfo/Boutique thin legs + the TeaStore/OTel legs at pinned budgets. Separate
+   plan + review; NOT silently dropped.
 3. **E5 ablations (Step 7; "one-SUT-pair scope, TT ×5 seeds"):** axes PINNED NOW,
    config-only (source-verified toggles):
    - A1 `oracle_mode`: paired ↔ observe (invocation-level, two run configs);
    - A2 trace-gate: `jaeger.base.url` set ↔ absent (observe mode);
    - A3 quiescence/cadence: the poll/timeout/settle property set (default cap ↔ extended
      cap variant).
-   **EXCLUDED by name** (no config toggle; would need oracle code → collides with the §4
-   gate): re-probe toggle, per-triple value-delta semantics. Design = OAT around the
-   default config: baseline + 3 axis-variants ≈ 4-5 configs × 5 seeds = 20-25 runs on the
-   S1 pair (fork RE-APPLIED by set-image only — never a build while a graph is deployed).
+   **EXCLUDED by name** (no config toggle; would need oracle code → out of this wave's
+   scope): re-probe toggle, per-triple value-delta semantics. A1 is invocation-level (two
+   run configs, no code) — "config/invocation-level" is the precise framing (B'-R2).
+   Design = OAT around the default config: **exactly 4 configs** (baseline + one variant
+   per axis A1/A2/A3) × 5 seeds = 20 runs on the S1 pair (fork RE-APPLIED by set-image
+   only — never a build while a graph is deployed).
    Per-run duration MEASURED from leg-1 runs BEFORE the batch schedule is fixed; hard cap
    4 d; per-axis deltas reported, no post-hoc axis edits.
 4. **Checklist hygiene riders:** 2.5.4 trace-coverage row refreshed if the re-instrumented
@@ -87,9 +93,12 @@ deferred above); any corpus label/cell changes beyond the §1 deliverables.
 
 ## §3 Phases (all legs EXCLUSIVE/sequential — no concurrent runs; the R6 host-wedge rail)
 
-- **Phase 0 (no-tenant prep; blocks everything):** (a) freeze the leg-1 run protocol
+- **Phase 0 (no-tenant prep; blocks everything; ≤1 d):** (a) freeze the leg-1 run protocol
   (sites: cancel-refund fabricated-ack + clean twin; javaagent pins + Jaeger PF from the
-  traced-capture runbook; exactly-one-trace rule; per-run marker SALT — TT discipline is
+  traced-capture runbook; exactly-one-trace rule; **client-traceparent injection wired into
+  the OBSERVE path so the run carries a non-null step traceId — without it the
+  trace-complete tier is unreachable regardless of `jaeger.base.url` [A'-R1; machinery
+  exists in the traced-capture runbook]**; per-run marker SALT — TT discipline is
   marker-salt-only; 800 ms journey pacing); (b) freeze the M-yield clustering convention +
   seed list + the ONE pinned MIST commit for all legs; (c) author the FULL-GRAPH revival +
   teardown script FILES (shell, in debug/ — NOT MIST tool code) per runbook §2.6; (d)
@@ -116,22 +125,32 @@ deferred above); any corpus label/cell changes beyond the §1 deliverables.
 Never GET /rest/generatedb (human/script rail; the M-yield generator is additionally
 STRUCTURALLY incapable of it — the E1 spec declares no destructive path and the generator
 cannot reach undeclared paths, C-6); never build images while a graph is deployed (all fork
-changes = set-image); 26 GB WSL — the TT window runs ALONE; **WSL flap-cycle (3bb8209): if
-WSL goes unresponsive/flaps, run the runbook's `wsl --shutdown` cycle, then re-do the nacos
-doubleWrite PUT + re-create PFs before ANY leg resumes**; kafka pod untouched (rdkafka
-wedge — moot with OTel at 0, kept for symmetry); TT admin writes unique-keyed → per-run
-marker salt; 800 ms journey pacing (gateway 429s); PFs die per reboot → each sub-leg
-re-establishes its own standing PF; disk prune per wave; cluster ops via script FILES only.
-**MIST tool-code gate (verbatim rule):** all repo changes on `main_track`; MIST tool code
-is scoped-open ONLY for the sanctioned categories with S3 precedent (SUT runners /
-orchestration / read-only accessors); ANYTHING beyond — especially oracle-semantics or
-verdict-path changes — requires ASKING THE USER FIRST. Shell runbook scripts under
-`debug/` are not MIST tool code.
+changes = set-image); 26 GB WSL — the TT window runs ALONE; **WSL flap window (3bb8209, CORRECTED rev 2.1 —
+the rev-2 rail had this INVERTED): every BATCH of TT pod restarts triggers a ~5–15 min WSL
+unresponsive window (0x8007274c) while JVM boots spike memory; it SELF-RECOVERS — do NOT
+`wsl --shutdown` (it kills the running kind cluster), do NOT hammer probes (each connection
+attempt adds load); restart pods in SMALL batches and EXPECT the window. Separately, after
+any nacos pod restart: joint 2-member restart if Distro uninitialized → readiness → PUT
+doubleWriteEnabled=false (verify False) → reset crash-looping pods**; kafka pod untouched
+(rdkafka wedge — moot with OTel at 0, kept for symmetry); TT admin writes unique-keyed →
+per-run marker salt; 800 ms journey pacing (gateway 429s); PFs die per reboot → each
+sub-leg re-establishes its own standing PF; disk prune per wave; cluster ops via script
+FILES only.
+**MIST tool-code gate (the 2026-07-10 amendment, quoted-scope):** MIST tool code is
+UNBLOCKED only for: the step-2.75 per-SUT enablement packages (authored OpenAPI + auth
+glue + registry + target triples), the read-back modality bindings, and the 2.5/2.5.x
+instrumentation + step-6 E2 comparator-arm runs (incl. `mist_trace_shape`). Tool work
+OUTSIDE this scope — especially oracle-semantics/verdict-path changes — requires ASKING
+THE USER FIRST. (The §1-1 `mist_trace_shape` DEFER is therefore a FEASIBILITY choice —
+the learned oracle needs training/wiring effort out of this wave's budget — not a gate
+prohibition.) Shell runbook scripts under `debug/` are not MIST tool code. All repo
+changes on `main_track`.
 
 ## §5 Per-leg budgets (the >1.5× stop rule binds against THESE)
 
 | leg | baseline |
 |---|---|
+| Phase 0 prep | ≤1 d |
 | Phase 1 close-out | ≤0.5 d |
 | Phase 2(i) revival + health | ≤0.5 d |
 | Phase 2(ii) traced live-run | ≤1 d (≤30 min/run × ≥10 runs + exports) |
