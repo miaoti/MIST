@@ -28,12 +28,18 @@ kubectl -n "$NS" rollout status sts/nacosdb-mysql --timeout=600s
 kubectl -n "$NS" rollout status sts/tsdb-mysql   --timeout=600s
 kubectl -n "$NS" rollout status sts/nacos        --timeout=900s
 
+trap 'log "EXIT trap: script leaving with rc=$? (a missing FATAL above this = external kill)"' EXIT
 log "=== Phase B: nacos readiness + the MANDATORY doubleWrite rule (2026-07-10 incident) ==="
-# readiness via a temporary PF on 18848
-kubectl -n "$NS" port-forward svc/nacos 18848:8848 >/tmp/pf-nacos.log 2>&1 &
-PF_NACOS=$!
-sleep 5
+# readiness via a SELF-HEALING PF on 18848: kubectl port-forward EXITS on its first
+# refused connection (nacos early-boot), so re-create it whenever it has died.
+PF_NACOS=0
+R=000
 for i in $(seq 1 60); do
+  if ! kill -0 "$PF_NACOS" 2>/dev/null; then
+    kubectl -n "$NS" port-forward svc/nacos 18848:8848 >/tmp/pf-nacos.log 2>&1 &
+    PF_NACOS=$!
+    sleep 4
+  fi
   R=$(curl -s -o /dev/null -w '%{http_code}' "http://localhost:18848/nacos/v1/console/health/readiness" || true)
   [ "$R" = "200" ] && break
   sleep 10
