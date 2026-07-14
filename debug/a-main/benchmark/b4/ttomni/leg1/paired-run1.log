@@ -1,0 +1,11 @@
+ERROR StatusConsoleListener Unable to rename file C:\Users\miaot\Github\MIST\logs\mist.log to C:\Users\miaot\Github\MIST\logs\mist_2026-07-14T17:13:39.743.log: java.nio.file.InvalidPathException Illegal char <:> at index 50: C:\Users\miaot\Github\MIST\logs\mist_2026-07-14T17:13:39.743.log
+
+=== stratum: constructed ===
+  MIST B2 (differential value-delta): FIRE
+      fault run acknowledged X (http 200, body status 1) but X is absent from its own read-back (20 poll(s), gate TIMEOUT_ABSENT); control's X persisted — acknowledged-but-lost write
+  Comparator (frozen response contract): control flagged=false, fault flagged=false  -> MISSED
+  claim-eligibility: joinMode=correlator, correlatorUnique=true
+  value-delta probe (buyer /account balance, evidence only):
+      control baseline=50.00 -> final=130.00
+      fault   baseline=50.00 -> final=50.00
+  cancel trace-ids (out-of-band trace-score selection): control=a6b115ad151696d59f1725bb203bcf35 fault=915eae1fb0475c090ae81da2ee057f25
