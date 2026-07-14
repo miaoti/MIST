@@ -70,14 +70,14 @@
    "t_rel_ms": 229,
    "kind": "response",
    "status": 201,
-   "body": "{\"id\":\"6a5068fe04eb4f000a414b7e\",\"customerId\":\"6a5068fea39e9b00016cddad\",\"customer\":{\"id\":null,\"firstName\":\"cb\",\"lastName\":\"cb\",\"username\":\"cb1783654654860\",\"addresses\":[],\"cards\":[]},\"address\":{\"id\":null,\"number\":\"3\",\"street\":\"my road\",\"city\":\"London\",\"postcode\":\"E2 8RS\",\"country\":\"UK\"},\"card\":{\"id\":null,\"longNum\":\"5544154011345918\",\"expires\":\"08/29\",\"ccv\":\"958\"},\"items\":[{\"id\":\"6a5068febf9479000ae1b99d\",\"itemId\":\"819e1fbf-8b7e-4f6d-811f-693534916a8b\",\"quantity\":1,\"unitPrice\":14}],\"shipment\":{\"id\":\"bc082ee5-128d-4830-a86a-742a229c89cb\",\"name\":\"6a5068fea39e9b00016cddad\"},\"date\":\"2026-07-10T03:…"
+   "body": "{\"id\":\"6a5068fe04eb4f000a414b7e\",\"customerId\":\"6a5068fea39e9b00016cddad\",\"customer\":{\"id\":null,\"firstName\":\"cb\",\"lastName\":\"cb\",\"username\":\"cb1783654654860\",\"addresses\":[],\"cards\":[]},\"address\":{\"id\":null,\"number\":\"3\",\"street\":\"my road\",\"city\":\"London\",\"postcode\":\"E2 8RS\",\"country\":\"UK\"},\"card\":{\"id\":null,\"longNum\":\"5544154011345918\",\"expires\":\"08/29\",\"ccv\":\"958\"},\"items\":[{\"id\":\"6a5068febf9479000ae1b99d\",\"itemId\":\"819e1fbf-8b7e-4f6d-811f-693534916a8b\",\"quantity\":1,\"unitPrice\":14}],\"shipment\":{\"id\":\"bc082ee5-128d-4830-a86a-742a229c89cb\",\"name\":\"6a5068fea39e9b00016cddad\"},\"date\":\"<time>…"
   },
   {
    "t_rel_ms": 3229,
    "kind": "observation",
    "probe": "GET /orders (the acting customer's orders)",
    "status": 201,
-   "body": "[{\"customerId\":\"6a5068fea39e9b00016cddad\",\"customer\":{\"firstName\":\"cb\",\"lastName\":\"cb\",\"username\":\"cb1783654654860\",\"addresses\":[],\"cards\":[]},\"address\":{\"number\":\"3\",\"street\":\"my road\",\"city\":\"London\",\"postcode\":\"E2 8RS\",\"country\":\"UK\"},\"card\":{\"longNum\":\"5544154011345918\",\"expires\":\"08/29\",\"ccv\":\"958\"},\"items\":[{\"itemId\":\"819e1fbf-8b7e-4f6d-811f-693534916a8b\",\"quantity\":1,\"unitPrice\":14}],\"shipment\":{\"name\":\"6a5068fea39e9b00016cddad\"},\"date\":\"2026-07-10T03:37:34.315+0000\",\"total\":18.99,\"_links\":{\"self\":{\"href\":\"http://orders/orders/6a5068fe04eb4f000a414b7e\"},\"order\":{\"href\":\"http://orders/or…"
+   "body": "[{\"customerId\":\"6a5068fea39e9b00016cddad\",\"customer\":{\"firstName\":\"cb\",\"lastName\":\"cb\",\"username\":\"cb1783654654860\",\"addresses\":[],\"cards\":[]},\"address\":{\"number\":\"3\",\"street\":\"my road\",\"city\":\"London\",\"postcode\":\"E2 8RS\",\"country\":\"UK\"},\"card\":{\"longNum\":\"5544154011345918\",\"expires\":\"08/29\",\"ccv\":\"958\"},\"items\":[{\"itemId\":\"819e1fbf-8b7e-4f6d-811f-693534916a8b\",\"quantity\":1,\"unitPrice\":14}],\"shipment\":{\"name\":\"6a5068fea39e9b00016cddad\"},\"date\":\"<time>+0000\",\"total\":18.99,\"_links\":{\"self\":{\"href\":\"http://orders/orders/6a5068fe04eb4f000a414b7e\"},\"order\":{\"href\":\"http://orders/or…"
   }
  ]
 }

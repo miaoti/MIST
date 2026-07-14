@@ -45,16 +45,16 @@
    "body": "<success-shaped page rendered>"
   },
   {
-   "t_rel_ms": 2145,
+   "t_rel_ms": 120145,
    "kind": "observation",
-   "probe": "GET /tools.descartes.teastore.persistence/rest/orderitems/order/{orderId} (line items)",
+   "probe": "GET /tools.descartes.teastore.persistence/rest/orderitems/order/{orderId} (line items) — read in a later verification pass",
    "status": 200,
    "body": "line items: 0 item(s)"
   },
   {
-   "t_rel_ms": 2645,
+   "t_rel_ms": 120661,
    "kind": "observation",
-   "probe": "GET /tools.descartes.teastore.persistence/rest/orders/user/{id} (parent order)",
+   "probe": "GET /tools.descartes.teastore.persistence/rest/orders/user/{id} (parent order) — read in a later verification pass",
    "status": 200,
    "body": "parent order 'corpus-marker': PRESENT"
   }

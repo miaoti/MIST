@@ -41,6 +41,17 @@ BANNED_STRINGS = [
 # Sidecar keys that would smuggle absolute time.
 ABSOLUTE_TIME_KEYS = re.compile(r"epoch|timestamp|generatedat|walltime|date", re.I)
 
+# Label vocabulary that must never appear in the OPAQUE ID (it becomes the
+# rater-facing case TITLE). Added E1+R2 post-review (C-5, strict-only): the
+# blind-id rule was convention-only — an id like "TT-adminroute-control-001"
+# (or the sealed "S3-BENIGN-01") renders a label-bearing title without tripping
+# BANNED_STRINGS. render() now fails loud on such ids AND on ids containing the
+# case's true id.
+OPAQUE_ID_LABEL_VOCAB = [
+    "control", "benign", "masked", "swallowed", "clean", "natural", "eventual",
+    "lost", "genuine", "positive", "negative", "dedupe", "noop", "agreement",
+]
+
 ALLOWED_SUT_DOC_BUNDLES = "docs-bundles"  # per-SUT pinned bundle dir name (assembly provides)
 
 
@@ -79,6 +90,16 @@ def render(case_path, sidecar_path, opaque_id, out_dir, sut_doc_note=None):
     case = yaml.safe_load(Path(case_path).read_text(encoding="utf-8"))
     sidecar = json.loads(Path(sidecar_path).read_text(encoding="utf-8"))
     recs = _check_sidecar(sidecar)
+
+    # OPAQUE-ID guard (strict-only): the id becomes the rater-facing title.
+    low_id = (opaque_id or "").lower()
+    for tok in OPAQUE_ID_LABEL_VOCAB:
+        if tok in low_id:
+            _fail("opaque id carries label vocabulary '%s': %r" % (tok, opaque_id))
+    true_id = (case.get("id") or case.get("case_id") or Path(case_path).stem or "").lower()
+    if true_id and true_id in low_id:
+        _fail("opaque id contains the true case id: %r" % opaque_id)
+    _scan_banned(low_id, "opaque id")
 
     # ALLOW-LIST reads only (never touch label/fault/oracle_eval/title/etc.).
     sut = (case.get("sut") or {}).get("name") or (sidecar.get("sut") or {}).get("name")

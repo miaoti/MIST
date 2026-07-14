@@ -45,9 +45,9 @@
    "body": "<success-shaped page rendered>"
   },
   {
-   "t_rel_ms": 2181,
+   "t_rel_ms": 120181,
    "kind": "observation",
-   "probe": "GET /tools.descartes.teastore.webui/profile (orders table)",
+   "probe": "GET /tools.descartes.teastore.webui/profile (orders table) — read in a later verification pass",
    "status": 200,
    "body": "orders table: order 'corpus-marker' ABSENT"
   }

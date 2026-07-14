@@ -18,7 +18,7 @@
    "t_rel_ms": 30,
    "kind": "response",
    "status": 200,
-   "body": "<success-shaped page rendered>"
+   "body": "page rendered: product and reviews content shown; ratings panel displays the message \"Ratings service is currently unavailable\""
   }
  ]
 }

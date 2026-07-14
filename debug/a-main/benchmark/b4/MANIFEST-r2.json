@@ -1,7 +1,8 @@
 {
- "schema": "r2-preseal-manifest/1",
+ "schema": "r2-preseal-manifest/2",
+ "note": "ADMIN-side pre-seal manifest (carries labels; never ship next to renders). corpus_content_hash = sha256(concat(sorted per-sidecar sha256 hex digests)). rateability = pre-seal record, final at the gated Step-5 seal.",
  "n": 25,
- "corpus_content_hash": "373e0b2139b20579e4b190e3e4c70f6340bbb70f984730706514258cb2b147bf",
+ "corpus_content_hash": "d814011e9fe756f711ebdddc772395ffac987d543ad4004c750ed24190ea57f3",
  "deterministic_all": true,
  "rows": [
   {
@@ -12,8 +13,9 @@
    "shape": "present-landed",
    "records": 5,
    "observations": 1,
+   "rateability": "tt-collection-truncation-gated",
    "sidecar_sha256": "f41c464024faef16c5770896378fc1d86a4efc3471c71d7ff4e42bd906a3b549",
-   "case_md_sha256": "bf1111635bdb826cd6f2f4efc880bcd05619b04bf4309ad1e1650b31252dddb2",
+   "case_md_sha256": "83c3aa46dd82189643fb21f19974ccc5f1bc73da1946d9cc61d0e00dd03448e9",
    "deterministic": true
   },
   {
@@ -24,8 +26,9 @@
    "shape": null,
    "records": 5,
    "observations": 1,
+   "rateability": "tt-collection-truncation-gated",
    "sidecar_sha256": "0511133b61f6b78b375fac99d60086d69f16fb4db722abdcf678c5314ae61a0c",
-   "case_md_sha256": "4fded80bde8ecbfaafc8ae58edde92fc28af99582c9ffea7510c0f870a8f4fa6",
+   "case_md_sha256": "32f6e74e7c2cdf4b47776f3ab3355e1dfc29e75be663b1f9d5ef0376d5a3409c",
    "deterministic": true
   },
   {
@@ -36,8 +39,9 @@
    "shape": "present-landed",
    "records": 5,
    "observations": 1,
+   "rateability": "tt-collection-truncation-gated",
    "sidecar_sha256": "d6b07c60bd315f297c74d26816f51680f0eb924756b66a4757742dbe14b58d3c",
-   "case_md_sha256": "95d6a812fafa511cdb0fab12b2da93c4f7d82480b1269fdd09e8f8b19fbc5c3d",
+   "case_md_sha256": "3822933e24d5422ca5270e7c1f5ac5c7111250985672230fda7d076a76b468c4",
    "deterministic": true
   },
   {
@@ -48,8 +52,9 @@
    "shape": null,
    "records": 5,
    "observations": 1,
+   "rateability": "tt-collection-truncation-gated",
    "sidecar_sha256": "55959a69b668376ae297389b7cb13093ed2c96140748186e2a15ab972ac6d07a",
-   "case_md_sha256": "fe280be8d46838ccd29bd01457a1d7680e3314fb0a23294558ffd934d916d1ff",
+   "case_md_sha256": "911175ac3c831d304a0d461a8e1be676b8c7a24bd5ceffe69ac20f7f81cd94bd",
    "deterministic": true
   },
   {
@@ -60,8 +65,9 @@
    "shape": "present-landed",
    "records": 13,
    "observations": 1,
+   "rateability": "tt-collection-truncation-gated",
    "sidecar_sha256": "af6e9a0c99c047bd347542f47da6ba7ed558c1e3af5ee612638b4a068886aee7",
-   "case_md_sha256": "8b7557501d87d07882f7d831bed6ccf15fab9b02251ba5df00f185a71f8d98c5",
+   "case_md_sha256": "8b185c5fb63ed77a3698cd374f33a4fc5d9e3845dade29af7caf4e1fe21cd766",
    "deterministic": true
   },
   {
@@ -72,8 +78,9 @@
    "shape": null,
    "records": 13,
    "observations": 1,
+   "rateability": "tt-collection-truncation-gated",
    "sidecar_sha256": "b47ae74c168838ea362c3c7b55f2bb98c580ca70cadc3af2e937a9ca1830c77f",
-   "case_md_sha256": "1e30259be59574df19c62c9c0eb85af18e16965bcd411cf767daf38cb97034f4",
+   "case_md_sha256": "2958dd4e31da4e0be669ee6dc64fd1a58be8d6a5ee06fa2e82cd2a6386c35201",
    "deterministic": true
   },
   {
@@ -84,8 +91,9 @@
    "shape": null,
    "records": 13,
    "observations": 1,
+   "rateability": "tt-collection-truncation-gated",
    "sidecar_sha256": "87db235a969f3a6eb4fcfeb60a5c467937374edc60fdea9d8e4aefe78cb04c17",
-   "case_md_sha256": "02c60cd74e5908ea9d1fc0f9fb748f0dd386433c0cbc0b04dff9786c665126e1",
+   "case_md_sha256": "8c686903c1d41dd2675cabd2a9a9a6dd14ae23c01baac30c1d0f83603ed94e1a",
    "deterministic": true
   },
   {
@@ -96,8 +104,9 @@
    "shape": "reject-no-delta",
    "records": 9,
    "observations": 1,
+   "rateability": "ok",
    "sidecar_sha256": "1f947aa21789928e6d3d3ed210bff2093e737b52bd2e38dcc47204719c2e4cad",
-   "case_md_sha256": "f1e6cb1fcc8e13e6af61c8439b8e08c6ba147e823a4a6e28310f193771eb2fc2",
+   "case_md_sha256": "acd9ef7058fc1ff0d6fe8f9f1cd66c28c9d67ec1a7d36778d945e355a9941619",
    "deterministic": true
   },
   {
@@ -108,8 +117,9 @@
    "shape": "reject-no-delta",
    "records": 9,
    "observations": 1,
+   "rateability": "ok",
    "sidecar_sha256": "00c12a3a3641902949b6b78b9169ca0c960efdcb189d8bfb9ac5ebecc4493a03",
-   "case_md_sha256": "8f00c184745bcf154c68c5051a472868be23c021c61d069ce066f2887ed11d61",
+   "case_md_sha256": "c9641af5d07038b9105c1874eedc4515bd585f78a9970f2825e3d1ac09a31b0c",
    "deterministic": true
   },
   {
@@ -120,8 +130,9 @@
    "shape": null,
    "records": 7,
    "observations": 1,
+   "rateability": "tt-collection-truncation-gated",
    "sidecar_sha256": "4c5964a283825f342b7e8bd7044e16258e125569474751d86b03bcd0e1c06795",
-   "case_md_sha256": "b7bf1bacb46bcca683732f121818a1b0471c3b2f4f6d4a6cd881c10a18e1d372",
+   "case_md_sha256": "67a1cecb5539447694ebcd721770782724dec9266e8dfa2e6cef2db18e187daa",
    "deterministic": true
   },
   {
@@ -132,8 +143,9 @@
    "shape": "present-landed",
    "records": 7,
    "observations": 1,
+   "rateability": "tt-collection-truncation-gated",
    "sidecar_sha256": "eca25d0203e01b18db770964d350ee05607291fb8696f190baa78473adfda9c4",
-   "case_md_sha256": "5f79ad21f948d2c6a0f8ef67df2db52d5664ab8396694f0946e18dca36ce4426",
+   "case_md_sha256": "321e73f87c503c4c9c6cdfe2657e17926aa59f8a530b9e8a1f6d282fd9e1c27c",
    "deterministic": true
   },
   {
@@ -144,8 +156,9 @@
    "shape": "degraded-present",
    "records": 2,
    "observations": 0,
-   "sidecar_sha256": "6e09657c6d4ab6d647adaea79713107a02d9eee7bace97e824389132e7af4f89",
-   "case_md_sha256": "9e3349a773c9772b3030d578f696e2575a8ef72992e1982df205e0cd25526b8d",
+   "rateability": "ok",
+   "sidecar_sha256": "51d533ce52d3429b9fba3636380ed95469bff37ca03c8cf282b6318096d777a9",
+   "case_md_sha256": "1912688d4a8a4810698631bf8d1a03d31ad2fff9bf983ba863c602a026e32e4e",
    "deterministic": true
   },
   {
@@ -156,8 +169,9 @@
    "shape": "present-landed",
    "records": 5,
    "observations": 1,
-   "sidecar_sha256": "afc10c4346118517e532ecaeab5d801f0d05625aaa6895e8bfb962cd52f2951e",
-   "case_md_sha256": "79629c214f39cff1eba67878e93f44f8d374b4d0d37c2bf24d0ca67c71778dab",
+   "rateability": "ok",
+   "sidecar_sha256": "acc750b7b3200460dac6ae0baf2b9d9d338cfb87a25ee23d0d66f2b0ffd4094f",
+   "case_md_sha256": "4e7b717acf44102d41d7e9e3e20e06b1b41eea862d169861f9e08684645b8f4a",
    "deterministic": true
   },
   {
@@ -168,8 +182,9 @@
    "shape": "eventual-present",
    "records": 9,
    "observations": 3,
+   "rateability": "ok",
    "sidecar_sha256": "364f7ce5e926c4fd7a6cffce1605f48320f0f86e5ab206a4090583513aad3bf3",
-   "case_md_sha256": "5866e617243cebcc8bb4926e1efc49ed07b796194e3bb34ed7f2d30c49febe06",
+   "case_md_sha256": "de0a3ce487d12e11e35798f746af9f39ed22f0442f7d7c84fb9f9b747be59e2d",
    "deterministic": true
   },
   {
@@ -180,8 +195,9 @@
    "shape": "eventual-present",
    "records": 6,
    "observations": 2,
+   "rateability": "ok",
    "sidecar_sha256": "bb8fb299dd963c4d36c1550538236b190f5cff0fd61e4164f3341516be84b37d",
-   "case_md_sha256": "04e876f24a1725e7f7d7cff8786b9d5ff8c8a7c50c427b0415fa6759f32be8bd",
+   "case_md_sha256": "ab23aae7031fce033646429ffa9d8d6d1a808b7e9dc295d10e7a46ed6dbbc898",
    "deterministic": true
   },
   {
@@ -192,8 +208,9 @@
    "shape": "eventual-present",
    "records": 6,
    "observations": 2,
+   "rateability": "ok",
    "sidecar_sha256": "6b098cac90854d91eb584dfaffec5bb48d7c08470784f4531b6d5c6da22357ef",
-   "case_md_sha256": "d4080ad0a37b311cc321604f5692c57f252dfcb26ea420bd91ddb96293bf8557",
+   "case_md_sha256": "fa6497196a763d65fb8928553062da5cb5c8f50edd2dcca2eec06b56ea0938ab",
    "deterministic": true
   },
   {
@@ -202,10 +219,11 @@
    "stratum": 1,
    "label": "positive",
    "shape": null,
-   "records": 5,
-   "observations": 1,
-   "sidecar_sha256": "ef9372ffb1924c87f834e379692df170bf0d4de3c892459b8995b82896f06229",
-   "case_md_sha256": "dc1dd654c34c561cc6bb38c20f63e0b78b2db66e42484311c694a246f5aa302a",
+   "records": 7,
+   "observations": 3,
+   "rateability": "async-no-bound-calibration-ineligible",
+   "sidecar_sha256": "3603db78467fb9572710e323b7b9996e9fab5f18924225777ff343b257a24871",
+   "case_md_sha256": "006a9202cb22ec8e9e62edadb574dd83ef17a49317510d59cc69be9207337d8b",
    "deterministic": true
   },
   {
@@ -216,8 +234,9 @@
    "shape": "present-landed",
    "records": 11,
    "observations": 1,
-   "sidecar_sha256": "9407f406676f9016ad0a18e1ae801d602a92e2964892a78921dd22875859d8c0",
-   "case_md_sha256": "283b97da03eccfb82a2b654827596774396986baf9447ed09190ce59770cede1",
+   "rateability": "ok",
+   "sidecar_sha256": "41a1a83d3c836c17c21c3309c396df0ed95d14be8d96b6d7c36af9b8572d4100",
+   "case_md_sha256": "1bed406c3b151e12ad57bc6f689a86a8433c56c8b03afbd4cfa23cac394bc060",
    "deterministic": true
   },
   {
@@ -228,8 +247,9 @@
    "shape": null,
    "records": 11,
    "observations": 1,
-   "sidecar_sha256": "602194063b9176e62047806bccd72d1bdd4669b8b3eeb974384fab806d021b31",
-   "case_md_sha256": "2dd7abf32570deb0393f935d86557a3e5884c3c9d3d092914248e763c2b00f73",
+   "rateability": "trace-required-not-blind-rateable",
+   "sidecar_sha256": "9ad3fc18dad93f03a341927f7118740435249b18676f7a581640b7b882f9fa27",
+   "case_md_sha256": "a712b9c97b1d7c54c157563ec8ed54b30fcbf35c09f85ad141c0bb5cbd77cd15",
    "deterministic": true
   },
   {
@@ -240,8 +260,9 @@
    "shape": "present-landed",
    "records": 7,
    "observations": 1,
-   "sidecar_sha256": "84b048873a7b68f0cef1ff779881cbc76da754d4fc9f3f23971eac9d4afe0f63",
-   "case_md_sha256": "9e73814fbee6f87d2bb382c1b791c7489db013e58d7ebb7838f2f94f896d53f9",
+   "rateability": "ok",
+   "sidecar_sha256": "e8e2f793f684643df39c2887067a3c142be018a0425bc8dfe652f6a8acb1268e",
+   "case_md_sha256": "1e5ebb5df62a69bbfbc3575467ee8140a1c629f7376db7f10b3de9f9f0b9a0b9",
    "deterministic": true
   },
   {
@@ -252,8 +273,9 @@
    "shape": null,
    "records": 7,
    "observations": 1,
-   "sidecar_sha256": "1731d646bd8f2c6388ee5c89b6252d4b73124fc4288a6bd0bba3c4deee0cd625",
-   "case_md_sha256": "33ba649506b1c7bf99ed15982a165c7a685933c12681e46fcb0050b51f41a589",
+   "rateability": "ok",
+   "sidecar_sha256": "cd837c1feb5c289ad2e7b774dc06952acdb11f5e07532aa218633d41e29b49ab",
+   "case_md_sha256": "34f30e6d87ab8e7b5ce5c338746dded3b6f58f96b7958b0e2ab937b4ad16101c",
    "deterministic": true
   },
   {
@@ -264,8 +286,9 @@
    "shape": "present-landed",
    "records": 7,
    "observations": 1,
-   "sidecar_sha256": "d1cbb8fdba4b2bf2ee71e567c3a05fd1a86a633af4f81358927bef5654e19d9e",
-   "case_md_sha256": "a59cf80fb28dbe224307a4034036b645444b6607c829670823a3de98c41c042f",
+   "rateability": "ok",
+   "sidecar_sha256": "0e6ece7d2ca8fa484d71ad72875c61c2335bc29708f88beb2275286478d1877d",
+   "case_md_sha256": "c2c1444fd835afd0a4cc80a64f2942f15ac04813e7ed0bba10966e588b45c49d",
    "deterministic": true
   },
   {
@@ -276,8 +299,9 @@
    "shape": null,
    "records": 7,
    "observations": 1,
-   "sidecar_sha256": "af88d67e8a2c39edcc136e977e47f6128e1bd7d3eb5cb8c9f55ee5cd41b25241",
-   "case_md_sha256": "8b5e77568df569b58bebfd42a7c67b2e9453b23206970705aaea43436af3512a",
+   "rateability": "ok",
+   "sidecar_sha256": "b83d47c9f8fa1dcc714a4fe5281e2e216d4063e27a058795fc8f3ddb8ab95bb0",
+   "case_md_sha256": "c1b9e5ada929aafaa0c3bf4bac544c05cd1f35a167317c8508c168996b6550db",
    "deterministic": true
   },
   {
@@ -288,8 +312,9 @@
    "shape": "present-landed",
    "records": 8,
    "observations": 2,
-   "sidecar_sha256": "7f32627176809ab0955df8660374e60060651f94b25412aba78cad23589df371",
-   "case_md_sha256": "d30d69adea1b280d56a50b9c789b5544d3e8a68e740150b590095872a9848bb7",
+   "rateability": "ok",
+   "sidecar_sha256": "86fc82592168188386a7dc39f85e3eb9e2f715f42679eba158732f1747addfcf",
+   "case_md_sha256": "2611f600a3a79b1caacb9aa6937262ef1a20287b32d4b3639e140ccf1532aa2d",
    "deterministic": true
   },
   {
@@ -300,8 +325,9 @@
    "shape": null,
    "records": 8,
    "observations": 2,
-   "sidecar_sha256": "28879b15755eb40d644ba3a6e571ed9e1089c3d858aa89d4694603777b687c34",
-   "case_md_sha256": "6a71c8f9e4259ebf9d85eb57843117cfb424bd8b93f646398365fa7d5fafd4e9",
+   "rateability": "ok",
+   "sidecar_sha256": "895d4b4f54adba9d6deb1864bb028a3a31d6e7a5e0b7ec8ef8ab24019a8c011e",
+   "case_md_sha256": "17027414f7a21ef41e3aec9bf5e540bf548a5bd67081664077d0634405efb65a",
    "deterministic": true
   }
  ]

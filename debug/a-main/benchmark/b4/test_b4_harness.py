@@ -82,6 +82,19 @@ class B4Tests(unittest.TestCase):
                 with self.assertRaises(SystemExit):
                     self._render(tmp, bad)
 
+    def test_label_bearing_opaque_id_fails_loud(self):
+        # E1+R2 post-review (C-5): the opaque id becomes the rater-facing title;
+        # label vocabulary, the true case id, and banned strings must fail loud.
+        for bad_id in ("TT-adminroute-control-001",   # label vocab ("control")
+                       "S3-BENIGN-01",                # label vocab ("benign")
+                       "case-tt-s1-cancel-demo",      # contains the true id
+                       "case-lostwrite-3"):           # banned string
+            with tempfile.TemporaryDirectory() as tmp:
+                c = _write(tmp, "case.yaml", LEAKY_CASE)
+                s = _write(tmp, "sidecar.json", json.dumps(GOOD_SIDECAR))
+                with self.assertRaises(SystemExit, msg=bad_id):
+                    b4.render(c, s, bad_id, str(Path(tmp) / "out"))
+
     def test_absolute_time_key_rejected(self):
         bad = json.loads(json.dumps(GOOD_SIDECAR))
         bad["generatedAtEpochMs"] = 123
