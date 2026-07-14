@@ -1,0 +1,71 @@
+{
+ "sidecar_version": 1,
+ "case_id": "TT-contacts-dedupe-benign-001",
+ "producer": "seed-capture-driver",
+ "mist_commit": "7d69de9",
+ "sut": {
+  "name": "trainticket",
+  "version_ref": "train-ticket (pinned image set)"
+ },
+ "records": [
+  {
+   "t_rel_ms": 0,
+   "kind": "request",
+   "method": "POST",
+   "path": "/api/v1/userservice/users/register",
+   "payload": "<credentials redacted>"
+  },
+  {
+   "t_rel_ms": 253,
+   "kind": "response",
+   "status": 201,
+   "body": "<response redacted (carries a session token)>"
+  },
+  {
+   "t_rel_ms": 253,
+   "kind": "request",
+   "method": "POST",
+   "path": "/api/v1/users/login",
+   "payload": "<credentials redacted>"
+  },
+  {
+   "t_rel_ms": 345,
+   "kind": "response",
+   "status": 200,
+   "body": "<response redacted (carries a session token)>"
+  },
+  {
+   "t_rel_ms": 345,
+   "kind": "request",
+   "method": "POST",
+   "path": "/api/v1/contactservice/contacts",
+   "payload": "{\"accountId\":\"887401ce-c39f-48b5-b84f-a016856b7807\",\"name\":\"CB Contact\",\"documentType\":1,\"documentNumber\":\"D12345678\",\"phoneNumber\":\"13800000000\"}"
+  },
+  {
+   "t_rel_ms": 436,
+   "kind": "response",
+   "status": 201,
+   "body": "{\"status\":1,\"msg\":\"Create contacts success\",\"data\":{\"id\":\"86ca8bf6-c1b4-4641-a8f0-41baf3fc1689\",\"accountId\":\"887401ce-c39f-48b5-b84f-a016856b7807\",\"name\":\"CB Contact\",\"documentType\":1,\"documentNumber\":\"D12345678\",\"phoneNumber\":\"13800000000\"}}"
+  },
+  {
+   "t_rel_ms": 436,
+   "kind": "request",
+   "method": "POST",
+   "path": "/api/v1/contactservice/contacts",
+   "payload": "{\"accountId\":\"887401ce-c39f-48b5-b84f-a016856b7807\",\"name\":\"CB Contact\",\"documentType\":1,\"documentNumber\":\"D12345678\",\"phoneNumber\":\"13800000000\"}"
+  },
+  {
+   "t_rel_ms": 534,
+   "kind": "response",
+   "status": 201,
+   "body": "{\"status\":0,\"msg\":\"Contacts already exists\",\"data\":null}"
+  },
+  {
+   "t_rel_ms": 2034,
+   "kind": "observation",
+   "probe": "GET /api/v1/contactservice/contacts/account/{accountId}",
+   "status": 200,
+   "body": "{\"status\":1,\"msg\":\"Success\",\"data\":[{\"id\":\"86ca8bf6-c1b4-4641-a8f0-41baf3fc1689\",\"accountId\":\"887401ce-c39f-48b5-b84f-a016856b7807\",\"name\":\"CB Contact\",\"documentType\":1,\"documentNumber\":\"D12345678\",\"phoneNumber\":\"13800000000\"}]}"
+  }
+ ]
+}

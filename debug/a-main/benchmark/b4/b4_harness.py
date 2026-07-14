@@ -21,10 +21,22 @@ from pathlib import Path
 import yaml
 
 # Vocabulary that must never reach a rater-facing byte (case-insensitive).
+# Two classes: (1) tool/label vocabulary; (2) INJECTION-MECHANISM narration —
+# added E1+R2 2026-07-14 after the narrative-leak audit found capture sidecars
+# narrating the mechanism ("scaled 0", "maintenance toggle", "meshsever",
+# "post-VS-teardown", "read-back cap") in probe/body prose that render() emits
+# verbatim. This list is a STRICT-ONLY tightening of the leak gate (it never
+# loosens behavior); it is necessary-NOT-sufficient (the mandatory manual
+# read-through §2.3 is the backstop for prose the enumerated list can't catch).
 BANNED_STRINGS = [
+    # (1) tool / label vocabulary
     "mist", "oracle", "verdict", "fire", "no_fire", "quiescence", "gate",
     "triple", "paired", "fault_flag", "fabricated", "injection", "injector",
     "acked-but-lost", "lost write", "lostwrite", "observe mode",
+    # (2) injection-mechanism narration
+    "meshsever", "mesh-sever", "severed", "teardown", "post-vs", "post-drain",
+    "envoyfilter", "virtualservice", "scaled", "scale to", "toggle", "drain",
+    "maintenance", "read-back cap", "readback cap", "epoch_ms",
 ]
 # Sidecar keys that would smuggle absolute time.
 ABSOLUTE_TIME_KEYS = re.compile(r"epoch|timestamp|generatedat|walltime|date", re.I)

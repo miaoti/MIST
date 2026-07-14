@@ -1,0 +1,83 @@
+{
+ "sidecar_version": 1,
+ "case_id": "sockshop-shipping-control-001",
+ "producer": "seed-capture-driver",
+ "mist_commit": "7d69de9",
+ "sut": {
+  "name": "sockshop",
+  "version_ref": "microservices-demo (Sock Shop)"
+ },
+ "records": [
+  {
+   "t_rel_ms": 0,
+   "kind": "request",
+   "method": "POST",
+   "path": "/register",
+   "payload": "<credentials redacted>"
+  },
+  {
+   "t_rel_ms": 28,
+   "kind": "response",
+   "status": 200,
+   "body": "<response redacted (carries a session token)>"
+  },
+  {
+   "t_rel_ms": 28,
+   "kind": "request",
+   "method": "POST",
+   "path": "/addresses",
+   "payload": "{\"street\":\"my road\",\"number\":\"3\",\"country\":\"UK\",\"city\":\"London\",\"postcode\":\"E2 8RS\"}"
+  },
+  {
+   "t_rel_ms": 78,
+   "kind": "response",
+   "status": 200,
+   "body": "{\"id\":\"6a50689ea39e9b00016cdd9f\"}"
+  },
+  {
+   "t_rel_ms": 78,
+   "kind": "request",
+   "method": "POST",
+   "path": "/cards",
+   "payload": "{\"longNum\":\"5544154011345918\",\"expires\":\"08/29\",\"ccv\":\"958\"}"
+  },
+  {
+   "t_rel_ms": 126,
+   "kind": "response",
+   "status": 200,
+   "body": "{\"id\":\"6a50689ea39e9b00016cdda0\"}"
+  },
+  {
+   "t_rel_ms": 126,
+   "kind": "request",
+   "method": "POST",
+   "path": "/cart",
+   "payload": "{\"id\":\"819e1fbf-8b7e-4f6d-811f-693534916a8b\"}"
+  },
+  {
+   "t_rel_ms": 151,
+   "kind": "response",
+   "status": 201,
+   "body": ""
+  },
+  {
+   "t_rel_ms": 151,
+   "kind": "request",
+   "method": "POST",
+   "path": "/orders"
+  },
+  {
+   "t_rel_ms": 322,
+   "kind": "response",
+   "status": 201,
+   "body": "{\"id\":\"6a50689e04eb4f000a414b79\",\"customerId\":\"6a50689ea39e9b00016cdd9e\",\"customer\":{\"id\":null,\"firstName\":\"cb\",\"lastName\":\"cb\",\"username\":\"cb1783654558838\",\"addresses\":[],\"cards\":[]},\"address\":{\"id\":null,\"number\":\"3\",\"street\":\"my road\",\"city\":\"London\",\"postcode\":\"E2 8RS\",\"country\":\"UK\"},\"card\":{\"id\":null,\"longNum\":\"5544154011345918\",\"expires\":\"08/29\",\"ccv\":\"958\"},\"items\":[{\"id\":\"6a50689ebf9479000ae1b98e\",\"itemId\":\"819e1fbf-8b7e-4f6d-811f-693534916a8b\",\"quantity\":1,\"unitPrice\":14}],\"shipment\":{\"id\":\"09dbb47d-009b-4070-8dda-abf2dd032a40\",\"name\":\"6a50689ea39e9b00016cdd9e\"},\"date\":\"2026-07-10T03:…"
+  },
+  {
+   "t_rel_ms": 3322,
+   "kind": "observation",
+   "probe": "GET /orders (the acting customer's orders)",
+   "status": 201,
+   "body": "[{\"customerId\":\"6a50689ea39e9b00016cdd9e\",\"customer\":{\"firstName\":\"cb\",\"lastName\":\"cb\",\"username\":\"cb1783654558838\",\"addresses\":[],\"cards\":[]},\"address\":{\"number\":\"3\",\"street\":\"my road\",\"city\":\"London\",\"postcode\":\"E2 8RS\",\"country\":\"UK\"},\"card\":{\"longNum\":\"5544154011345918\",\"expires\":\"08/29\",\"ccv\":\"958\"},\"items\":[{\"itemId\":\"819e1fbf-8b7e-4f6d-811f-693534916a8b\",\"quantity\":1,\"unitPrice\":14}],\"shipment\":{\"name\":\"6a50689ea39e9b00016cdd9e\"},\"date\":\"2026-07-10T03:35:58.654+0000\",\"total\":18.99,\"_links\":{\"self\":{\"href\":\"http://orders/orders/6a50689e04eb4f000a414b79\"},\"order\":{\"href\":\"http://orders/or…"
+  }
+ ]
+}

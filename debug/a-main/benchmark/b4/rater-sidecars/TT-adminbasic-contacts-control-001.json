@@ -1,0 +1,45 @@
+{
+ "sidecar_version": 1,
+ "case_id": "TT-adminbasic-contacts-control-001",
+ "producer": "seed-capture-driver",
+ "mist_commit": "7d69de9",
+ "sut": {
+  "name": "trainticket",
+  "version_ref": "train-ticket (pinned image set)"
+ },
+ "records": [
+  {
+   "t_rel_ms": 0,
+   "kind": "request",
+   "method": "POST",
+   "path": "/api/v1/users/login",
+   "payload": "{\"username\":\"<redacted>\",\"password\":\"<redacted>\"}"
+  },
+  {
+   "t_rel_ms": 184,
+   "kind": "response",
+   "status": 200,
+   "body": "<login response — token redacted>"
+  },
+  {
+   "t_rel_ms": 184,
+   "kind": "request",
+   "method": "POST",
+   "path": "/api/v1/adminbasicservice/adminbasic/contacts",
+   "payload": "{\"id\":\"4c7a2f9e-8b31-4e05-a6d2-1f8c9b0e7a53\",\"accountId\":\"9a8b7c6d-5e4f-4a3b-9c2d-1e0f9a8b7c6d\",\"name\":\"Corpus Breadth Contact\",\"documentType\":1,\"documentNumber\":\"BR-R3\",\"phoneNumber\":\"13800000001\"}"
+  },
+  {
+   "t_rel_ms": 362,
+   "kind": "response",
+   "status": 200,
+   "body": "{\"status\":1,\"msg\":\"Create Success\",\"data\":null}"
+  },
+  {
+   "t_rel_ms": 3363,
+   "kind": "observation",
+   "probe": "GET /api/v1/adminbasicservice/adminbasic/contacts",
+   "status": 200,
+   "body": "{\"status\":1,\"msg\":\"Success\",\"data\":[{\"id\":\"acd0356e-9be0-4a74-9f1c-158fa0e76f9f\",\"accountId\":\"4d2a46c7-71cb-4cf1-b5bb-b68406d9da6f\",\"name\":\"Contacts_One\",\"documentType\":1,\"documentNumber\":\"DocumentNumber_One\",\"phoneNumber\":\"ContactsPhoneNum_One\"},{\"id\":\"60fa62d3-3128-4e0c-9c8f-a39e4dc7325a\",\"accountId\":\"4d2a46c7-71cb-4cf1-b5bb-b68406d9da6f\",\"name\":\"Contacts_Two\",\"documentType\":1,\"documentNumber\":\"DocumentNumber_Two\",\"phoneNumber\":\"ContactsPhoneNum_Two\"},{\"id\":\"63cb05ee-f49c-4857-9c7d-90933b5a09eb\",\"accountId\":\"e26cc533-f1e9-451a-8094-8a3248b81417\",\"name\":\"CB Contact\",\"documentType\":1,\"document…"
+  }
+ ]
+}

@@ -1,0 +1,24 @@
+{
+ "sidecar_version": 1,
+ "case_id": "bookinfo-ratings-benign-001",
+ "producer": "seed-capture-driver",
+ "mist_commit": "7d69de9",
+ "sut": {
+  "name": "bookinfo",
+  "version_ref": "Istio Bookinfo sample"
+ },
+ "records": [
+  {
+   "t_rel_ms": 0,
+   "kind": "request",
+   "method": "GET",
+   "path": "/productpage"
+  },
+  {
+   "t_rel_ms": 30,
+   "kind": "response",
+   "status": 200,
+   "body": "<success-shaped page rendered>"
+  }
+ ]
+}

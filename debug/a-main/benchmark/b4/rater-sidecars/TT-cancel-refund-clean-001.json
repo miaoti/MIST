@@ -1,0 +1,95 @@
+{
+ "sidecar_version": 1,
+ "case_id": "TT-cancel-refund-clean-001",
+ "producer": "seed-capture-driver",
+ "mist_commit": "7d69de9",
+ "sut": {
+  "name": "trainticket",
+  "version_ref": "train-ticket (pinned image set)"
+ },
+ "records": [
+  {
+   "t_rel_ms": 0,
+   "kind": "request",
+   "method": "POST",
+   "path": "/api/v1/userservice/users/register",
+   "payload": "<credentials redacted>"
+  },
+  {
+   "t_rel_ms": 200,
+   "kind": "response",
+   "status": 201,
+   "body": "<response redacted (carries a session token)>"
+  },
+  {
+   "t_rel_ms": 200,
+   "kind": "request",
+   "method": "POST",
+   "path": "/api/v1/users/login",
+   "payload": "<credentials redacted>"
+  },
+  {
+   "t_rel_ms": 373,
+   "kind": "response",
+   "status": 200,
+   "body": "<response redacted (carries a session token)>"
+  },
+  {
+   "t_rel_ms": 373,
+   "kind": "request",
+   "method": "GET",
+   "path": "/api/v1/inside_pay_service/inside_payment/c9ff14aa-51ee-4e54-b8c2-8aec5e7a8f78/50.00"
+  },
+  {
+   "t_rel_ms": 395,
+   "kind": "response",
+   "status": 200,
+   "body": "{\"status\":1,\"msg\":\"Add Money Success\",\"data\":null}"
+  },
+  {
+   "t_rel_ms": 395,
+   "kind": "request",
+   "method": "POST",
+   "path": "/api/v1/orderservice/order",
+   "payload": "{\"accountId\":\"c9ff14aa-51ee-4e54-b8c2-8aec5e7a8f78\",\"status\":1,\"price\":\"100.0\",\"boughtDate\":\"2026-01-01 10:00:00\",\"travelDate\":\"2027-12-01\",\"travelTime\":\"2027-12-01 10:00:00\",\"from\":\"Shang Hai\",\"to\":\"Su Zhou\",\"trainNumber\":\"G1234\",\"coachNumber\":5,\"seatClass\":2,\"seatNumber\":\"5A\",\"contactsName\":\"CB Buyer\",\"documentType\":1,\"contactsDocumentNumber\":\"CB1783634399588\"}"
+  },
+  {
+   "t_rel_ms": 421,
+   "kind": "response",
+   "status": 200,
+   "body": "{\"status\":1,\"msg\":\"Success\",\"data\":{\"id\":\"8da07f89-daa4-4ec7-bfaa-ac3300da2a47\",\"boughtDate\":\"2026-01-01 10:00:00\",\"travelDate\":\"2027-12-01\",\"travelTime\":\"2027-12-01 10:00:00\",\"accountId\":\"c9ff14aa-51ee-4e54-b8c2-8aec5e7a8f78\",\"contactsName\":\"CB Buyer\",\"documentType\":1,\"contactsDocumentNumber\":\"CB1783634399588\",\"trainNumber\":\"G1234\",\"coachNumber\":5,\"seatClass\":2,\"seatNumber\":\"5A\",\"from\":\"Shang Hai\",\"to\":\"Su Zhou\",\"status\":1,\"price\":\"100.0\"}}"
+  },
+  {
+   "t_rel_ms": 421,
+   "kind": "request",
+   "method": "POST",
+   "path": "/api/v1/orderservice/order/query",
+   "payload": "{\"loginId\":\"c9ff14aa-51ee-4e54-b8c2-8aec5e7a8f78\",\"enableStateQuery\":false,\"enableTravelDateQuery\":false,\"enableBoughtDateQuery\":false}"
+  },
+  {
+   "t_rel_ms": 434,
+   "kind": "response",
+   "status": 200,
+   "body": "{\"status\":1,\"msg\":\"Get order num\",\"data\":[{\"id\":\"2c53dc3a-d3ab-4844-8516-0215632b524f\",\"boughtDate\":\"2026-01-01 10:00:00\",\"travelDate\":\"2027-12-01\",\"travelTime\":\"2027-12-01 10:00:00\",\"accountId\":\"c9ff14aa-51ee-4e54-b8c2-8aec5e7a8f78\",\"contactsName\":\"CB Buyer\",\"documentType\":1,\"contactsDocumentNumber\":\"CB1783634399588\",\"trainNumber\":\"G1234\",\"coachNumber\":5,\"seatClass\":2,\"seatNumber\":\"5A\",\"from\":\"Shang Hai\",\"to\":\"Su Zhou\",\"status\":1,\"price\":\"100.0\"}]}"
+  },
+  {
+   "t_rel_ms": 434,
+   "kind": "request",
+   "method": "GET",
+   "path": "/api/v1/cancelservice/cancel/2c53dc3a-d3ab-4844-8516-0215632b524f/c9ff14aa-51ee-4e54-b8c2-8aec5e7a8f78"
+  },
+  {
+   "t_rel_ms": 530,
+   "kind": "response",
+   "status": 200,
+   "body": "{\"status\":1,\"msg\":\"Success.\",\"data\":\"test not null\"}"
+  },
+  {
+   "t_rel_ms": 2530,
+   "kind": "observation",
+   "probe": "GET /api/v1/inside_pay_service/inside_payment/account",
+   "status": 200,
+   "body": "{\"status\":1,\"msg\":\"Success\",\"data\":[{\"userId\":\"a30e7df5-00dd-4c2b-908b-0bfa9899cb0d\",\"balance\":\"50.00\"},{\"userId\":\"470ae43b-a8db-4d1a-b926-4cf76b814eea\",\"balance\":\"80.00\"},{\"userId\":\"921fad85-1983-4fb4-b89c-5cd2d1a5eeea\",\"balance\":\"50.00\"},{\"userId\":\"de793953-636e-4df8-b21e-3162cccdbcff\",\"balance\":\"80.00\"},{\"userId\":\"b8355284-af5b-4351-97c4-5f9e73514e52\",\"balance\":\"80.00\"},{\"userId\":\"3a9d1c93-5704-45d4-886f-125c86f28fc2\",\"balance\":\"50\"},{\"userId\":\"9e323946-4919-4913-a3d4-0e853470a9ed\",\"balance\":\"80.00\"},{\"userId\":\"60c3db5a-63d2-4aed-820d-74a29a9113aa\",\"balance\":\"130.00\"},{\"userId\":\"508ca78b-8f…"
+  }
+ ]
+}

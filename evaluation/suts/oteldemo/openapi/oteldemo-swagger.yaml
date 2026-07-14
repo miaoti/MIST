@@ -1,0 +1,403 @@
+swagger: "2.0"
+info:
+  description: "Authored-by-us OpenAPI description of the OpenTelemetry Demo (app\
+    \ 2.2.0) frontend HTTP API exercised by the MIST C2 benchmark. The OTel Demo is\
+    \ gRPC-native and ships NO REST/OpenAPI document upstream; its browser-facing\
+    \ surface is the frontend's /api/* gateway, which proxies to the gRPC services\
+    \ declared in pb/demo.proto. This spec is a CLEAN-ROOM representation authored\
+    \ from (a) that gateway + the demo.proto contract and (b) our own corpus capture\
+    \ specs — NO upstream OpenAPI text is copied (there is none). It covers the cart\
+    \ and checkout WRITE paths plus the product/recommendation/shipping reads.\
+    \ IMPORTANT read-back note: the checkout write is ASYNCHRONOUS — PlaceOrder\
+    \ acknowledges synchronously (200 with an OrderResult) and emits the order to\
+    \ Kafka; the accounting service later consumes it and writes a durable row to\
+    \ the accounting.shipping table (Postgres). There is NO frontend API GET for\
+    \ that durable row, so MIST's checkout read-back is a direct SQL probe of\
+    \ accounting.shipping keyed on the request-derived street_address marker (see\
+    \ the /api/checkout externalDocs note). This spec does NOT fabricate a GET for\
+    \ it. Each operation is tagged with the owning gRPC service. Provenance of the\
+    \ exact paths and request fields: the MIST corpus OTel cases\
+    \ (target.entry_endpoint / target.readback) and the capture flow specs, both\
+    \ authored-by-us; the upstream source tree is cited in externalDocs. Two-actor\
+    \ clean-room per the benchmark freeze §6 R1 (X5)."
+  version: "2.2.0"
+  title: "OpenTelemetry Demo Frontend API (MIST-authored)"
+  license:
+    name: "Apache 2.0"
+    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
+basePath: "/api"
+tags:
+- name: "cart"
+  description: "Shopping cart operations, proxied by the frontend gateway to the\
+    \ CartService gRPC service (backed by Valkey/Redis)."
+- name: "checkout"
+  description: "Order placement, proxied to the CheckoutService gRPC service. The\
+    \ write is acknowledged synchronously and completed asynchronously downstream\
+    \ (Kafka -> accounting)."
+- name: "product"
+  description: "Product catalogue reads, proxied to the ProductCatalogService gRPC\
+    \ service."
+- name: "recommendation"
+  description: "Product recommendations, proxied to the RecommendationService gRPC\
+    \ service."
+- name: "shipping"
+  description: "Shipping quotes, proxied to the ShippingService gRPC service."
+externalDocs:
+  description: "open-telemetry/opentelemetry-demo source (frontend /api gateway\
+    \ src/frontend/gateways; gRPC contract pb/demo.proto). Paths and request fields\
+    \ authored from this source; no upstream OpenAPI exists."
+  url: "https://github.com/open-telemetry/opentelemetry-demo"
+paths:
+  /cart:
+    get:
+      tags:
+      - "cart"
+      summary: "Get the current cart"
+      description: "Returns the items currently in a session's cart. Source: frontend\
+        \ /api/cart gateway -> CartService.GetCart (demo.proto)."
+      operationId: "getCart"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "sessionId"
+        in: "query"
+        description: "Session/user id whose cart to return."
+        required: false
+        type: "string"
+      - name: "currencyCode"
+        in: "query"
+        description: "Currency code for price conversion (e.g. USD)."
+        required: false
+        type: "string"
+      responses:
+        "200":
+          description: "The session cart."
+          schema:
+            $ref: "#/definitions/Cart"
+    post:
+      tags:
+      - "cart"
+      summary: "Add an item to the cart"
+      description: "Adds a product line to a session's cart. Source: frontend\
+        \ /api/cart gateway -> CartService.AddItem (demo.proto). The corpus checkout\
+        \ flow adds a product (e.g. 0PUK6V6EV0) to a fresh session before placing\
+        \ the order."
+      operationId: "addCartItem"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "body"
+        in: "body"
+        required: true
+        description: "The cart item to add, with the owning session id."
+        schema:
+          $ref: "#/definitions/AddItemRequest"
+      responses:
+        "200":
+          description: "Item added; the updated cart is returned."
+          schema:
+            $ref: "#/definitions/Cart"
+  /checkout:
+    post:
+      tags:
+      - "checkout"
+      summary: "Place an order (checkout)"
+      description: "Places an order for the session's cart. The frontend gateway\
+        \ calls CheckoutService.PlaceOrder, which charges payment, requests\
+        \ shipping, EMPTIES the cart, emits the order to Kafka, and returns an\
+        \ OrderResult synchronously (200). The durable order record is written\
+        \ ASYNCHRONOUSLY by the accounting service that consumes the Kafka order\
+        \ event — it is NOT returned by this call and has NO frontend GET. The MIST\
+        \ corpus carries a globally-unique marker in address.streetAddress and reads\
+        \ the durable record back by SQL on accounting.shipping (see externalDocs).\
+        \ Source: frontend /api/checkout gateway -> CheckoutService.PlaceOrder\
+        \ (demo.proto)."
+      operationId: "placeOrder"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "currencyCode"
+        in: "query"
+        description: "Currency code for the order (e.g. USD)."
+        required: false
+        type: "string"
+      - name: "body"
+        in: "body"
+        required: true
+        description: "The checkout request: session id, contact email, shipping\
+          \ address (streetAddress carries the corpus read-back marker), currency\
+          \ and payment card."
+        schema:
+          $ref: "#/definitions/PlaceOrderRequest"
+      responses:
+        "200":
+          description: "Order acknowledged synchronously; an OrderResult is returned.\
+            \ NOTE: the durable order row is written asynchronously downstream and is\
+            \ not part of this response."
+          schema:
+            $ref: "#/definitions/OrderResult"
+      externalDocs:
+        description: "Durable read-back is NOT an API GET: the accounting service\
+          \ consumes the Kafka order event and writes accounting.shipping; MIST\
+          \ reads it by SQL — SELECT street_address FROM accounting.shipping WHERE\
+          \ street_address='<request-derived marker>'."
+        url: "https://github.com/open-telemetry/opentelemetry-demo"
+  /products/{id}:
+    get:
+      tags:
+      - "product"
+      summary: "Get a product"
+      description: "Returns one catalogue product by id. Source: frontend\
+        \ /api/products/{id} gateway -> ProductCatalogService.GetProduct\
+        \ (demo.proto)."
+      operationId: "getProduct"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "Product id (e.g. 0PUK6V6EV0)."
+        required: true
+        type: "string"
+      - name: "currencyCode"
+        in: "query"
+        description: "Currency code for price conversion (e.g. USD)."
+        required: false
+        type: "string"
+      responses:
+        "200":
+          description: "The product."
+          schema:
+            $ref: "#/definitions/Product"
+        "404":
+          description: "No product with that id."
+  /recommendations:
+    get:
+      tags:
+      - "recommendation"
+      summary: "List product recommendations"
+      description: "Returns recommended product ids for a session, optionally seeded\
+        \ by products currently in view. Source: frontend /api/recommendations\
+        \ gateway -> RecommendationService.ListRecommendations (demo.proto)."
+      operationId: "listRecommendations"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "productIds"
+        in: "query"
+        description: "Seed product ids currently in context."
+        required: false
+        type: "array"
+        items:
+          type: "string"
+        collectionFormat: "multi"
+      - name: "sessionId"
+        in: "query"
+        description: "Session id to personalise recommendations."
+        required: false
+        type: "string"
+      responses:
+        "200":
+          description: "Recommended products."
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Product"
+  /shipping:
+    get:
+      tags:
+      - "shipping"
+      summary: "Get a shipping quote"
+      description: "Returns a shipping cost quote for a set of cart items to an\
+        \ address. Source: frontend /api/shipping gateway ->\
+        \ ShippingService.GetQuote (demo.proto)."
+      operationId: "getShippingQuote"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "itemList"
+        in: "query"
+        description: "Cart items to quote (product ids and quantities)."
+        required: false
+        type: "string"
+      - name: "currencyCode"
+        in: "query"
+        description: "Currency code for the quote (e.g. USD)."
+        required: false
+        type: "string"
+      responses:
+        "200":
+          description: "The shipping cost quote."
+          schema:
+            $ref: "#/definitions/Money"
+definitions:
+  Money:
+    type: "object"
+    description: "A monetary amount, matching the demo.proto Money message."
+    properties:
+      currencyCode:
+        type: "string"
+        description: "ISO 4217 currency code."
+      units:
+        type: "integer"
+        format: "int64"
+        description: "Whole units of the amount."
+      nanos:
+        type: "integer"
+        format: "int32"
+        description: "Fractional units in nanos (10^-9)."
+  CartItem:
+    type: "object"
+    description: "A single cart line."
+    properties:
+      productId:
+        type: "string"
+        description: "Catalogue product id."
+      quantity:
+        type: "integer"
+        format: "int32"
+        description: "Quantity of this product."
+    required:
+    - "productId"
+    - "quantity"
+  Cart:
+    type: "object"
+    description: "A session's shopping cart."
+    properties:
+      userId:
+        type: "string"
+        description: "Session/user id owning the cart."
+      items:
+        type: "array"
+        description: "Cart lines."
+        items:
+          $ref: "#/definitions/CartItem"
+  AddItemRequest:
+    type: "object"
+    description: "Request to add an item to the cart (CartService.AddItem)."
+    properties:
+      userId:
+        type: "string"
+        description: "Session/user id owning the cart."
+      item:
+        $ref: "#/definitions/CartItem"
+    required:
+    - "item"
+  Address:
+    type: "object"
+    description: "A shipping address (demo.proto Address). streetAddress carries the\
+      \ corpus read-back marker."
+    properties:
+      streetAddress:
+        type: "string"
+        description: "Street address line."
+      city:
+        type: "string"
+        description: "City."
+      state:
+        type: "string"
+        description: "State/region."
+      country:
+        type: "string"
+        description: "Country."
+      zipCode:
+        type: "string"
+        description: "Postal/ZIP code."
+  CreditCardInfo:
+    type: "object"
+    description: "Payment card details (demo.proto CreditCardInfo)."
+    properties:
+      creditCardNumber:
+        type: "string"
+        description: "Card number."
+      creditCardCvv:
+        type: "integer"
+        format: "int32"
+        description: "Card verification value."
+      creditCardExpirationYear:
+        type: "integer"
+        format: "int32"
+        description: "Expiry year."
+      creditCardExpirationMonth:
+        type: "integer"
+        format: "int32"
+        description: "Expiry month."
+  PlaceOrderRequest:
+    type: "object"
+    description: "Checkout request (CheckoutService.PlaceOrder)."
+    properties:
+      userId:
+        type: "string"
+        description: "Session/user id whose cart to check out."
+      userCurrency:
+        type: "string"
+        description: "Currency code for the order."
+      email:
+        type: "string"
+        description: "Contact email for the order."
+      address:
+        $ref: "#/definitions/Address"
+      creditCard:
+        $ref: "#/definitions/CreditCardInfo"
+    required:
+    - "address"
+    - "email"
+  OrderItem:
+    type: "object"
+    description: "A line item on a placed order, with its cost."
+    properties:
+      item:
+        $ref: "#/definitions/CartItem"
+      cost:
+        $ref: "#/definitions/Money"
+  OrderResult:
+    type: "object"
+    description: "The synchronous acknowledgement returned by PlaceOrder. NOTE: this\
+      \ is the ack, not the durable record; the durable order row is written\
+      \ asynchronously by the accounting consumer and read back by SQL."
+    properties:
+      orderId:
+        type: "string"
+        description: "Generated order id."
+      shippingTrackingId:
+        type: "string"
+        description: "Shipping tracking id."
+      shippingCost:
+        $ref: "#/definitions/Money"
+      shippingAddress:
+        $ref: "#/definitions/Address"
+      items:
+        type: "array"
+        description: "Ordered line items with costs."
+        items:
+          $ref: "#/definitions/OrderItem"
+  Product:
+    type: "object"
+    description: "A catalogue product (demo.proto Product)."
+    properties:
+      id:
+        type: "string"
+        description: "Product id."
+      name:
+        type: "string"
+        description: "Product name."
+      description:
+        type: "string"
+        description: "Product description."
+      picture:
+        type: "string"
+        description: "Product image path."
+      priceUsd:
+        $ref: "#/definitions/Money"
+      categories:
+        type: "array"
+        description: "Category labels."
+        items:
+          type: "string"
+    required:
+    - "id"
+    - "name"

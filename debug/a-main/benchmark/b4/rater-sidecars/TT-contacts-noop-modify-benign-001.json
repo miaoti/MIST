@@ -1,0 +1,71 @@
+{
+ "sidecar_version": 1,
+ "case_id": "TT-contacts-noop-modify-benign-001",
+ "producer": "seed-capture-driver",
+ "mist_commit": "7d69de9",
+ "sut": {
+  "name": "trainticket",
+  "version_ref": "train-ticket (pinned image set)"
+ },
+ "records": [
+  {
+   "t_rel_ms": 0,
+   "kind": "request",
+   "method": "POST",
+   "path": "/api/v1/userservice/users/register",
+   "payload": "<credentials redacted>"
+  },
+  {
+   "t_rel_ms": 1051,
+   "kind": "response",
+   "status": 201,
+   "body": "<response redacted (carries a session token)>"
+  },
+  {
+   "t_rel_ms": 1053,
+   "kind": "request",
+   "method": "POST",
+   "path": "/api/v1/users/login",
+   "payload": "<credentials redacted>"
+  },
+  {
+   "t_rel_ms": 1177,
+   "kind": "response",
+   "status": 200,
+   "body": "<response redacted (carries a session token)>"
+  },
+  {
+   "t_rel_ms": 1177,
+   "kind": "request",
+   "method": "POST",
+   "path": "/api/v1/contactservice/contacts",
+   "payload": "{\"accountId\":\"460fb741-d516-407a-8a96-6cf6c7e825c0\",\"name\":\"Corpus Contact\",\"documentType\":1,\"documentNumber\":\"NM20260710\",\"phoneNumber\":\"13900000000\"}"
+  },
+  {
+   "t_rel_ms": 1211,
+   "kind": "response",
+   "status": 201,
+   "body": "{\"status\":1,\"msg\":\"Create contacts success\",\"data\":{\"id\":\"20627a10-bdab-4d8c-9627-a5ef11986442\",\"accountId\":\"460fb741-d516-407a-8a96-6cf6c7e825c0\",\"name\":\"Corpus Contact\",\"documentType\":1,\"documentNumber\":\"NM20260710\",\"phoneNumber\":\"13900000000\"}}"
+  },
+  {
+   "t_rel_ms": 1212,
+   "kind": "request",
+   "method": "PUT",
+   "path": "/api/v1/contactservice/contacts",
+   "payload": "{\"id\":\"20627a10-bdab-4d8c-9627-a5ef11986442\",\"accountId\":\"460fb741-d516-407a-8a96-6cf6c7e825c0\",\"name\":\"Corpus Contact\",\"documentType\":1,\"documentNumber\":\"NM20260710\",\"phoneNumber\":\"13900000000\"}"
+  },
+  {
+   "t_rel_ms": 1280,
+   "kind": "response",
+   "status": 200,
+   "body": "{\"status\":1,\"msg\":\"Modify success\",\"data\":{\"id\":\"20627a10-bdab-4d8c-9627-a5ef11986442\",\"accountId\":\"460fb741-d516-407a-8a96-6cf6c7e825c0\",\"name\":\"Corpus Contact\",\"documentType\":1,\"documentNumber\":\"NM20260710\",\"phoneNumber\":\"13900000000\"}}"
+  },
+  {
+   "t_rel_ms": 2781,
+   "kind": "observation",
+   "probe": "GET /api/v1/contactservice/contacts/account/{accountId}",
+   "status": 200,
+   "body": "{\"status\":1,\"msg\":\"Success\",\"data\":[{\"id\":\"20627a10-bdab-4d8c-9627-a5ef11986442\",\"accountId\":\"460fb741-d516-407a-8a96-6cf6c7e825c0\",\"name\":\"Corpus Contact\",\"documentType\":1,\"documentNumber\":\"NM20260710\",\"phoneNumber\":\"13900000000\"}]}"
+  }
+ ]
+}

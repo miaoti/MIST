@@ -22,8 +22,8 @@ record API + local repo inspection. **No BLOCKED items.** Two decisive findings:
 | FudanSELab/train-ticket | Apache-2.0 | manifests + fork diff; images by digest | redistribute + reference-by-digest | §4: license copy, notices, change statements in modified files (fork diff carries modification notice) |
 | FudanSELab/train-ticket-fault-replicate | **NONE** | replicate ≥6 of F1–F22 | **replicate-by-description + cite** (zero code copying) | cite repo + industry-survey paper; document independent re-implementation |
 | microservices-demo (Sock Shop) | Apache-2.0 | manifests + weaveworksdemos images | redistribute + reference-by-digest | attribution + change notices |
-| DescartesResearch/TeaStore | Apache-2.0 | manifests + OUR authored OpenAPI (derived from docs) | redistribute + attribution | note the spec is authored-by-us-from-their-docs |
-| open-telemetry/opentelemetry-demo | Apache-2.0 | manifests + flagd fault configs as S1 cases | redistribute + attribution | mark modified flag configs |
+| DescartesResearch/TeaStore | Apache-2.0 | manifests + OUR authored OpenAPI (`evaluation/suts/teastore/openapi/teastore-swagger.yaml`, E1 2026-07-14) | redistribute + attribution | authored-by-us CLEAN-ROOM from the v1.4.2 source (webui servlets + persistence JAX-RS) + our corpus specs; TeaStore ships NO upstream OpenAPI → zero copied; note authored-by-us in the spec `info.description` (done) |
+| open-telemetry/opentelemetry-demo | Apache-2.0 | manifests + flagd fault configs as S1 cases + OUR authored OpenAPI (`evaluation/suts/oteldemo/openapi/oteldemo-swagger.yaml`, E1 2026-07-14) | redistribute + attribution | mark modified flag configs; the OpenAPI is authored-by-us CLEAN-ROOM from `pb/demo.proto` + the frontend `/api` gateway (OTel Demo is gRPC-native, ships NO upstream OpenAPI → zero copied); the async checkout read-back is documented as an SQL note, NOT a fabricated GET |
 | GoogleCloudPlatform/microservices-demo (Boutique) | Apache-2.0 | manifests + image refs | redistribute + reference-by-digest | attribution |
 | istio Bookinfo samples | Apache-2.0 (istio/istio LICENSE) | samples + our EnvoyFilter/VS derivatives | redistribute + attribution | change notices on derived manifests |
 | Uber Tale-of-Errors Zenodo (10.5281/zenodo.13947828) | CC-BY-4.0 | CITE only | cite-only | normal citation (CC-BY would even permit redistribution w/ attribution) |
@@ -47,3 +47,26 @@ record API + local repo inspection. **No BLOCKED items.** Two decisive findings:
 3. Fork diffs and modified upstream manifests carry change notices (Apache-2.0 §4).
 4. The benchmark repo is a NEW standalone repo (not a subtree of miaoti/MIST) to keep the license
    split clean.
+
+## OpenAPI spec provenance (E1, 2026-07-14) — HETEROGENEOUS, disclosed not laundered
+
+The E1 wave authored the two MISSING specs (TeaStore, OTel-Demo). While cataloguing, the existing
+`evaluation/suts/*/openapi/` set was found to be **heterogeneous** (NOT uniformly authored-by-us) — this is
+disclosed here rather than laundered. `<none>` in-file means the upstream project is Apache-2.0 but the spec
+file carries no `info.license` key.
+
+| SUT | spec file | origin | authored-by-us? | in-file license |
+|---|---|---|---|---|
+| sockshop | `sockshop-swagger.yaml` | authored-by-us from the front-end route handlers (clean Swagger-2.0 exemplar) | YES | Apache 2.0 |
+| teastore | `teastore-swagger.yaml` | **authored-by-us CLEAN-ROOM (E1)** from TeaStore v1.4.2 source (webui servlets + persistence JAX-RS) + our corpus specs; no upstream OpenAPI exists | YES | Apache 2.0 |
+| oteldemo | `oteldemo-swagger.yaml` | **authored-by-us CLEAN-ROOM (E1)** from `pb/demo.proto` + the frontend `/api` gateway; OTel Demo is gRPC-native, no upstream OpenAPI exists | YES | Apache 2.0 |
+| bookinfo | `bookinfo-swagger.yaml` | **STOCK UPSTREAM Istio sample spec** (`info.description` = "the API of the Istio BookInfo sample application", `termsOfService` istio.io) — upstream-derived, NOT authored-by-us | **NO (upstream)** | Apache 2.0 |
+| boutique | `boutique-swagger.yaml` | authored-by-us from `frontend/handlers.go` (single HTTP frontend; other services gRPC) | YES | **`<none>`** (upstream GoogleCloudPlatform Apache-2.0) |
+| trainticket | `merged_openapi_spec.yaml` | **machine-GENERATED** OpenAPI 3.0.3 (springdoc-style merge from the running Spring services; generator tags e.g. `basic-error-controller`) — NOT hand-authored | **NO (generated)** | Apache 2.0 |
+
+Obligations: the two E1 specs (`teastore`, `oteldemo`) are clean-room derivatives citing upstream in
+`externalDocs`, copying ZERO upstream OpenAPI text (neither project ships one). The `bookinfo` spec is an
+upstream Istio artifact redistributed under its Apache-2.0 (attribution kept via its own `info`/`externalDocs`);
+it is NOT claimed as authored-by-us. The `boutique` spec is authored-by-us but should gain an explicit
+`info.license` block on any future touch (its upstream is Apache-2.0). The `trainticket` spec is a generated
+document, not a clean-room authoring — cite it as generated when used as a comparator input.

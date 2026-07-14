@@ -1,0 +1,52 @@
+{
+ "sidecar_version": 1,
+ "case_id": "oteldemo-checkout-eventual-benign-002",
+ "producer": "r1d-otel-eventual capture (evidence sidecar; rater-facing opaque-id + marker re-key owed at assembly)",
+ "mist_commit": "7d69de9",
+ "sut": {
+  "name": "oteldemo",
+  "version_ref": "opentelemetry-demo app 2.2.0 / chart 0.40.9"
+ },
+ "records": [
+  {
+   "t_rel_ms": 0,
+   "kind": "request",
+   "method": "POST",
+   "path": "/api/cart?currencyCode=USD",
+   "payload": "{\"item\":{\"productId\":\"0PUK6V6EV0\",\"quantity\":1},\"userId\":\"<session uuid, internal>\"}"
+  },
+  {
+   "t_rel_ms": 0,
+   "kind": "response",
+   "status": 200,
+   "body": "<cart accepted>"
+  },
+  {
+   "t_rel_ms": 0,
+   "kind": "request",
+   "method": "POST",
+   "path": "/api/checkout?currencyCode=USD",
+   "payload": "{\"userId\":\"<session uuid>\",\"userCurrency\":\"USD\",\"email\":\"r1dev1-1784003126@corpus.test\",\"address\":{\"streetAddress\":\"r1dev1-1784003126\",\"state\":\"CA\",\"country\":\"United States\",\"city\":\"Mountain View\",\"zipCode\":\"94043\"},\"creditCard\":{\"creditCardCvv\":672,\"creditCardExpirationMonth\":1,\"creditCardExpirationYear\":2030,\"creditCardNumber\":\"4432-8015-6152-0454\"}}"
+  },
+  {
+   "t_rel_ms": 0,
+   "kind": "response",
+   "status": 200,
+   "body": "{\"orderId\":\"17158d51-7f3c-11f1-90da-96ecc7e640eb\",\"shippingAddress\":{\"streetAddress\":\"r1dev1-1784003126\",\"city\":\"Mountain View\",\"state\":\"CA\",\"country\":\"United States\",\"zipCode\":\"94043\"},\"items\":\"<elided>\"}"
+  },
+  {
+   "t_rel_ms": 30402,
+   "kind": "observation",
+   "probe": "SQL SELECT street_address FROM accounting.shipping WHERE street_address='r1dev1-1784003126'",
+   "status": 200,
+   "body": "[]"
+  },
+  {
+   "t_rel_ms": 58214,
+   "kind": "observation",
+   "probe": "SQL SELECT street_address FROM accounting.shipping WHERE street_address='r1dev1-1784003126'",
+   "status": 200,
+   "body": "[{\"street_address\":\"r1dev1-1784003126\"}]"
+  }
+ ]
+}

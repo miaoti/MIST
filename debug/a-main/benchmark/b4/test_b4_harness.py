@@ -70,6 +70,18 @@ class B4Tests(unittest.TestCase):
             with self.assertRaises(SystemExit):
                 self._render(tmp, bad)
 
+    def test_mechanism_narration_in_probe_fails_loud(self):
+        # R2 (2026-07-14): an un-neutralized capture probe that narrates the
+        # injection mechanism must now be caught by the hardened BANNED_STRINGS.
+        for narration in ("accounting scaled 0, past ~25s read-back cap",
+                          "GET profile (reads pass under maintenance)",
+                          "GET profile (reads are NOT severed by the VirtualService)"):
+            bad = json.loads(json.dumps(GOOD_SIDECAR))
+            bad["records"][2]["probe"] = narration
+            with tempfile.TemporaryDirectory() as tmp:
+                with self.assertRaises(SystemExit):
+                    self._render(tmp, bad)
+
     def test_absolute_time_key_rejected(self):
         bad = json.loads(json.dumps(GOOD_SIDECAR))
         bad["generatedAtEpochMs"] = 123

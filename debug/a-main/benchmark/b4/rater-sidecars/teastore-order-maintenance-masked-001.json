@@ -1,0 +1,55 @@
+{
+ "sidecar_version": 1,
+ "case_id": "teastore-order-maintenance-masked-001",
+ "producer": "seed-capture-driver",
+ "mist_commit": "7d69de9",
+ "sut": {
+  "name": "teastore",
+  "version_ref": "TeaStore v1.4.2"
+ },
+ "records": [
+  {
+   "t_rel_ms": 0,
+   "kind": "request",
+   "method": "POST",
+   "path": "/tools.descartes.teastore.webui/loginAction?<credentials redacted>"
+  },
+  {
+   "t_rel_ms": 30,
+   "kind": "response",
+   "status": 200,
+   "body": "<response redacted (carries a session token)>"
+  },
+  {
+   "t_rel_ms": 30,
+   "kind": "request",
+   "method": "POST",
+   "path": "/tools.descartes.teastore.webui/cartAction?addToCart=&productid=42"
+  },
+  {
+   "t_rel_ms": 99,
+   "kind": "response",
+   "status": 200,
+   "body": "<success-shaped page rendered>"
+  },
+  {
+   "t_rel_ms": 99,
+   "kind": "request",
+   "method": "POST",
+   "path": "/tools.descartes.teastore.webui/cartAction?firstname=corpus-marker&lastname=Corpus&address1=Street1&address2=City1&cardtype=visa&cardnumber=314159265359&expirydate=12%2F2029&confirm=Confirm"
+  },
+  {
+   "t_rel_ms": 131,
+   "kind": "response",
+   "status": 200,
+   "body": "<success-shaped page rendered>"
+  },
+  {
+   "t_rel_ms": 2131,
+   "kind": "observation",
+   "probe": "GET /tools.descartes.teastore.webui/profile (orders table)",
+   "status": 200,
+   "body": "orders table: order 'corpus-marker' ABSENT"
+  }
+ ]
+}
