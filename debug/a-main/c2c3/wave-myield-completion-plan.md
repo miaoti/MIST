@@ -53,8 +53,9 @@ Every seed of every SUT = the SUT's shipped demo profile + this APPENDED overrid
 `llm.enabled=false · base.url=<PF> · random.seed=<seed> · experiment.name=myc_<sut>_s<seed>
 · jaeger.enabled=false · <trace-dependent oracle keys>=off (per-SUT enumerated at Phase 0
 from each profile — hidden-downstream/trace-shape oracles CANNOT run with no jaeger
-deployed; disabling = environment-matching, DISCLOSED as the uniform condition, identical
-to the TT leg which also ran without trace oracles)`. The exact per-SUT key list is frozen
+deployed; disabling = environment-matching, DISCLOSED as the uniform condition; NOTE the TT leg's
+seed profiles kept jaeger.enabled=true — the comparison is NOT claimed; this disposition
+stands on its own: no jaeger deployed ⇒ trace-dependent oracles off — C'-residual)`. The exact per-SUT key list is frozen
 at Phase 0 and committed with the driver.
 
 ## §3 Phases (single-tenant sequential; ~3-5 days)
@@ -86,14 +87,16 @@ at Phase 0 and committed with the driver.
   convention; the TT leg's 0 included); per-SUT outcome tables (run/paused/total);
   `RESULT-myield-completion.md` + freeze EXECUTED row + **branch-determined folds (C):**
   Step 4 → **✔ iff all 5 legs ran at pinned budgets with outcomes recorded (paused seeds
-  disclosed); else ◐ with the blocker named**; 2.4 → **✔ iff deploy+smoke passed, else
-  stays ☐ with the failure recorded**; FILE_INDEX/memory; post-hoc 3-cold review.
+  disclosed); else ◐ with the blocker named**; 2.4 → **◐ max from this wave** (deploy+smoke earns
+  deploy-DONE; the row's Istio gRPC abort-rider live check is NOT performed here and
+  stays open — C'-residual; ☐ with the failure recorded if deploy fails); FILE_INDEX/memory; post-hoc 3-cold review.
 
 ## §4 Known risks, pinned dispositions
 
 - **SS `readback_bound: 500` vs a 10 h cumulative global collection (C):** the membership
-  read-back may saturate the bound late in the campaign — DISCLOSED per-seed (the driver
-  logs the collection size probe each seed); no bound-raising (that would be
+  read-back may saturate the bound late in the campaign — DISCLOSED per-seed (Phase 0(e) BUILDS a driver probe — a bounded authenticated GET of
+  the orders read-back collection, counting items, logged before each seed; the runtime's
+  own readback_bound check only logs the threshold reactively — C'-residual); no bound-raising (that would be
   oracle-condition tuning); if saturation occurs, affected seeds are annotated (the DI
   no-op is an environment artifact, not a SUT verdict).
 - **TeaStore unauthenticated coverage** limits the write-path fraction — DISCLOSED (the
