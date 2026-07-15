@@ -43,7 +43,7 @@ foreach ($i in 0..($Seeds-1)) {
     Log "seed $seed pre-probe: health=$h ramAvailGi=$ramGi"
     if ($h -ne 200 -or $ramGi -lt 3) {
         "health=$h ramAvailGi=$ramGi at $(Get-Date -Format s)" | Set-Content "$logdir/PAUSED-s$seed.txt"
-        Log "seed $seed PAUSED (probe fail) — remaining seeds of this SUT paused too"
+        Log "seed $seed PAUSED (probe fail) - remaining seeds of this SUT paused too"
         foreach ($j in ($i+1)..($Seeds-1)) { "cascade-paused after s$seed" | Set-Content "$logdir/PAUSED-s$(20260714+$j).txt" }
         break
     }
@@ -52,17 +52,19 @@ foreach ($i in 0..($Seeds-1)) {
         Log "seed $seed SS collection probe: bytes=$len (readback_bound saturation watch)"
     }
     # per-seed props
-    $sp = "$logdir/props-s$seed.properties"
+    $propsDir = Split-Path -Parent $Props
+    $sp = "$propsDir/myc-props-s$seed.properties"
     Copy-Item $Props $sp -Force
-    @"
-
-# ===== MYC override block (appended; Properties last-key-wins; plan rev 2 SS2) =====
-llm.enabled=false
-jaeger.enabled=false
-base.url=http://localhost:$PfLocal
-experiment.name=myc_${Sut}_s$seed
-random.seed=$seed
-"@ | Add-Content $sp
+    $ovr = @(
+        "",
+        "# ===== MYC override block (appended; Properties last-key-wins; plan rev 2 S2) =====",
+        "llm.enabled=false",
+        "jaeger.enabled=false",
+        "base.url=http://localhost:$PfLocal",
+        ("experiment.name=myc_" + $Sut + "_s" + $seed),
+        "random.seed=$seed"
+    )
+    $ovr | Add-Content $sp
     Log "seed $seed START"
     $p = Start-Process java -ArgumentList '-cp', $cp, 'io.mist.cli.MistMain', $sp `
         -RedirectStandardOutput "$logdir/myc-s$seed.log" -RedirectStandardError "$logdir/myc-s$seed.err" `
