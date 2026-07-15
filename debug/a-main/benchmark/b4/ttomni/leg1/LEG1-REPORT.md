@@ -22,8 +22,10 @@ control-first; per-run Jaeger export immediately (immediate-export rule).
 | control ×5 | 5/5 HTTP 200/{1} | refund PRESENT (value-delta moved) | **OBSERVED_PRESENT 5/5** | 1 |
 | fault (fabricatedack) ×5 | 5/5 HTTP 200/{1,"Success."} | ABSENT at cap | **OBSERVED_COMPLETE_ABSENT 5/5** | 20-21 |
 
-**The trace-gated defect tier (DataIntegrityRuntime L736-773) was REACHED and FIRED for the
-first time in any run of record** — traceComplete(traceId) confirmed each fault write's
+**The trace-gated defect tier (DataIntegrityRuntime L736-773) was REACHED and FIRED — the first
+controlled, pre-registered either-way measurement of it on this masked-loss site in the c2c3
+benchmark record [scope corrected post-review: the tier itself fired 126× in the G1-era
+adminroute pairing run of 2026-07-02, trace-gated since 696a2fe]** — traceComplete(traceId) confirmed each fault write's
 trace complete while the durable refund stayed absent, escalating past the WARN-only
 TIMEOUT_ABSENT. The pre-registered either-way measurement came out FIRES; control stayed
 clean (no FP). Descriptive trace-shape datum: control traces 31 spans vs fault 24 (the

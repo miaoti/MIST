@@ -8,7 +8,17 @@ additions during the window; runtime/oracle untouched — verifiable from the wi
 Evidence commits: `be7bdb9` `1c9e4df` (leg 1) · `bafc894` (leg 2) · `347edd1` (leg 3 +
 recovery) · `128adc0` `04834a8` (drivers).
 
-## Headline (leg 1) — the trace-gated defect tier REACHED and FIRED, first time in any run of record
+## Headline (leg 1) — the first CONTROLLED, pre-registered observe-mode measurement of the trace-gated tier on the cancel-refund masked-loss site (c2c3 benchmark record)
+
+**[Scope corrected post-review, A-BLOCKING:]** the tier itself is NOT new behavior — the
+trace-gated `OBSERVED_COMPLETE_ABSENT` branch has existed since commit `696a2fe`
+(2026-07-01) and fired 126× in the G1-era `adminroute-create` pairing run of 2026-07-02
+(mist.log). What IS new: no run in the **c2c3 benchmark record** had measured it, and no
+prior run anywhere was a CONTROLLED either-way pre-registered measurement on the
+cancel-refund masked-loss site with a clean paired control — that is this leg's
+contribution (the rev-1 "first time in any run of record" wording was a false universal;
+the confirmation pass had scoped its precedent check to the c2c3 waves and missed the
+G-gate era).
 
 On the revived full-graph TT (53 pods) with the cancel path instrumented (OTel javaagent
 1.33.6, the traced-capture recipe verbatim) and the fork's fabricated-ack toggled at runtime:
@@ -61,18 +71,18 @@ confirmed armed), per-seed `experiment.name`.
 
 **Per-seed outcomes (from the banked logs; `bafc894`):**
 
-| seed | outcome | last execution progress | log KB |
-|---|---|---|---|
-| 20260714 | killed @1 h | 1440/2550 | 1785 |
-| 20260715 | killed @1 h | 19/26 (early batch) | 483 |
-| 20260716 | killed @1 h | 18/26 (early batch) | 957 |
-| 20260717 | killed @1 h | 1702/2551 | 1696 |
-| 20260718 | killed @1 h | 1265/2550 | 1752 |
-| 20260719 | killed @1 h | 7/26 (early batch) | 478 |
-| 20260720 | **completed naturally (49 min)** | **2707/2707** | 2637 |
-| 20260721 | killed @1 h | 2/3 (degraded SUT) | 182 |
-| 20260722 | killed @1 h | 2/3 (degraded SUT) | 184 |
-| 20260723 | killed @1 h | 2/3 (degraded SUT) | 183 |
+| seed | outcome | last execution progress |
+|---|---|---|
+| 20260714 | killed @1 h | 1440/2550 |
+| 20260715 | killed @1 h | 19/26 (early batch) |
+| 20260716 | killed @1 h | 18/26 (early batch) |
+| 20260717 | killed @1 h | 1702/2551 |
+| 20260718 | killed @1 h | 1265/2550 |
+| 20260719 | killed @1 h | 7/26 (early batch) |
+| 20260720 | **completed naturally (49 min)** | **2707/2707** |
+| 20260721 | killed @1 h | 2/3 (degraded SUT) |
+| 20260722 | killed @1 h | 2/3 (degraded SUT) |
+| 20260723 | killed @1 h | 2/3 (degraded SUT) |
 
 **Flagged events:** data-integrity observe = **0** across all seeds (the pipeline armed
 observe in the enhancer final-round stretch on 4 seeds — `observe-final-round` sessions in
@@ -84,13 +94,19 @@ an evidence-preservation defect of the driver profile, disclosed; the per-seed s
 the one complete fault report are the durable record). **Clustering:** with 0 flagged events
 there are no clusters to represent and no audit sample to draw (the convention was frozen
 pre-run; vacuously satisfied). **NO yield statistic is reported** (rater-gated, Step 5).
-The stated prior held: the S3 0/1514 datum predicted low/zero flagged events on upstream TT.
+The zero is CONSISTENT WITH the S3 0/1514 prior AND is coverage-limited (the hooked registry triples saw no in-budget coverage) — reported as both, not as a confirmation [B].
 
-**Seeds 8-10 degradation ROOT-CAUSED (not SUT-endogenous):** both nacos pods restarted
-overnight (01:17 / 05:16 — memory pressure), re-enabling 1.X doubleWrite mode → the registry
-refused re-registrations → progressive service unavailability. The list-driven breaker rule
-(freeze row 306(10)) classifies this as an on-list environment artifact (operator-hosting
-infra), disclosed rather than excluded since M-yield reports run outcomes, not flag rates.
+**Seeds 8-10 degradation — ATTRIBUTED, not fully root-caused [re-hedged post-review,
+B-BLOCKING]:** SUT health FLUCTUATED across the window (seeds 16 and 20 also hit 0/39
+preflight and recovered; seed-21 was ALREADY degraded — 12/39 preflight — at its 00:23
+start). Both nacos pods were OBSERVED restarted the next morning (live kubectl at ~08:40
+showed restarts ~01:17 / ~05:16 — a live observation NOT corroborated by any on-disk log,
+so it is an attribution, not a proof), and post-restart 1.X-doubleWrite registration
+refusals ARE consistent with the E5 rep-1 all-503 state at 03:30; but the 01:17 restart
+cannot explain seed-21's degradation which PRECEDED it. Honest summary: environment-side
+degradation of uncertain onset (on-list operator-hosting class, freeze row 306(10)),
+disclosed rather than excluded since M-yield reports run outcomes, not flag rates; the
+0-flagged-events headline is unaffected (degraded seeds contributed 0 flags regardless).
 
 **Step 4 folds ◐ PARTIAL**: the named M-YIELD-COMPLETION follow-up window owns TeaStore/OTel
 2.75 enablement (+ `mist_authoring` cost recording) + the SS/BI/Boutique thin legs.
@@ -109,9 +125,13 @@ driver wedged pre-reboot). **All 5 reps identical:**
 
 **A2 (the trace gate) is the single axis that moves the verdict tier** — the cleanest
 ablation contrast, 5/5 consistent, directly quantifying what trace-completeness evidence
-buys the observe oracle. Evidence: `b4/ttomni/leg3/` (35 run logs).
+buys the observe oracle. Evidence: `b4/ttomni/leg3/` (30 rep run logs + the pre-reboot failed rep-1 attempt logs +
+the wedged driver's log). Terminology: the protocol's "5 seeds" realizes as 5 REPETITIONS
+(the g3 runners take no seed input) [C]. Note: the E5 C1/C2 mist.log sessions reuse the
+`ttomni-leg1-observe-*` label (the runner's fixed prefix) — disambiguate by timestamp [A].
 
-## Operational incidents (recorded; all recovered, no data loss)
+## Operational incidents (recorded; all recovered — no MEASUREMENT-evidence loss; the
+killed seeds' per-test Allure outcomes were lost as disclosed in Leg 2)
 
 1. **Overnight double nacos restart** (01:17/05:16) → 1.X doubleWrite re-enabled →
    registration refusals → M-yield seeds 8-10 degraded + E5 rep-1 all-503. Fix: joint
@@ -124,11 +144,17 @@ buys the observe oracle. Evidence: `b4/ttomni/leg3/` (35 run logs).
    boot stampede** (RAM held at 8.4 Gi), doubleWrite=false applied **via `kubectl exec`**
    (the PF channel to nacos was broken while in-pod readiness was 200 — a kind portforward
    netns fault), crash-loop sweep, login 200.
-3. **`evaluation/suts/trainticket/g3/target-triples-{constructed,natural}.yaml` deleted from
-   the worktree at 23:37 Jul-14** (untracked duplicates; prime suspect: the pipeline's
-   `deletepreviousresults` cleanup during seed-20260720). Restored from the TRACKED
-   canonical copies in `evaluation/suts/trainticket/triples/` (triple name + fault_flag
-   verified identical) and NOW COMMITTED at the g3/ path so the class cannot recur.
+3. **The g3/ triples files MOVED, not deleted [narrative corrected post-review,
+   C-BLOCKING]:** `target-triples-{constructed,natural}.yaml` had been TRACKED at
+   `evaluation/suts/trainticket/g3/` since Jul-3. At ~23:37 Jul-14 they were MOVED on disk
+   to `evaluation/suts/trainticket/triples/` — git records the move as a clean `R100`
+   rename inside commit `bafc894` (that commit swept the then-pending index state; the
+   mover is UNKNOWN — the rev-1 "untracked duplicates deleted, suspect
+   `deletepreviousresults`" story is RETRACTED on both counts: they were tracked, and no
+   plausible pipeline code path targets that directory). The practical breakage was that
+   `e5-rep.sh`/`e2-run.sh` hardcode the g3/ path, which the move vacated. Copies were
+   restored (content verified identical) and committed at g3/, so BOTH paths are now
+   tracked; the path duplication is noted for a future tidy.
 4. Jaeger's badger emptyDir wiped by the reboot — harmless: leg-1 exports were taken under
    the immediate-export rule and committed before the wedge.
 
@@ -140,7 +166,8 @@ helm releases persist; the resting deployment spec keeps inside-payment at image
 same as the pre-wave resting snapshot). End-state: trainticket 0 pods; otel-demo/teastore
 already 0 (Phase 1); cluster idle.
 
-## Budgets vs actuals (§5; the >1.5× rule)
+## Budgets vs actuals (§5; the >1.5× rule) — actuals are wall-clock approximations
+reconstructed from logs/commit timestamps [C]
 
 | leg | baseline | actual | verdict |
 |---|---|---|---|
@@ -174,6 +201,6 @@ out of scope as planned).
    TrainTicketStimulus.main reader-auth block, else the toggle 403s. 5. Long batches must
    redirect per-seed evidence OUT of wipe-able dirs (`deletepreviousresults` cost the killed
    seeds' Allure outcomes) — and never leave load-bearing config as UNTRACKED worktree files.
-6. nacos restarts are not just a revival concern: they can happen SPONTANEOUSLY under memory
-   pressure overnight — any long unattended TT window should schedule a doubleWrite
-   re-check.
+6. nacos restarts are not just a revival concern: they were OBSERVED (live, next-morning
+   kubectl) to have occurred spontaneously overnight — any long unattended TT window should
+   schedule a doubleWrite re-check regardless of the exact restart cause.

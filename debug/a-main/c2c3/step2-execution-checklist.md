@@ -254,7 +254,8 @@ Sources consolidated: plan v2 §5, `c2-freeze.md` rev 2, `e-sut-applicability-ma
   (DI observe 0 across seeds — hooked steps never covered the 2 registry triples in-budget; injected-fault
   detection 0/10 on the complete seed; killed seeds' Allure outcomes lost to per-seed wipes — disclosed);
   clustering vacuously satisfied at 0 flags; NO yield statistic (rater-gated). Seeds 8-10 degraded =
-  the overnight nacos double-restart (environment artifact, root-caused + disclosed). **REMAINING =
+  environment-side degradation, ATTRIBUTED to the overnight nacos double-restart but not proven
+  (live-only observation; seed-21 preceded the first restart — RESULT review B). **REMAINING =
   the named M-YIELD-COMPLETION window:** TeaStore/OTel 2.75 enablement (+ mist_authoring cost) +
   SS/Bookinfo/Boutique thin legs.
 ☐ Event→case clustering (endpoint × fault-signature × SUT); 1 representative + 10% audit sample →
