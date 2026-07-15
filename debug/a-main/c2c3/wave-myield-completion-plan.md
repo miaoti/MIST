@@ -66,7 +66,9 @@ at Phase 0 and committed with the driver.
   TeaStore conf + input-fetch + spec for `generatedb` — must be 0 hits) wired into the
   driver before any TeaStore seed; (e) extend the myield driver: per-seed evidence copy-out
   (allure-results + fault report + test-data → `b4/ttomni/myc/<sut>/s<seed>/` BEFORE the
-  next seed), health probe between seeds (home/login 200; on failure PAUSE the SUT's
+  next seed), health probe between seeds (home/login 200 **+ a RAM check — available < 3 Gi ⇒ PAUSE**,
+  the B'-residual: the TT-leg wedge was single-tenant sustained-load, so single-tenancy
+  alone does not remove the exhaustion mechanism; on failure PAUSE the SUT's
   remaining seeds — **paused seeds appear in the outcome table as PAUSED rows with the
   probe evidence; denominators report run/paused/total** (B)); (f) the Window-B revival
   script (SS: scale-up + re-create the `mist:mist` RabbitMQ user + warm-up POST +
@@ -78,6 +80,8 @@ at Phase 0 and committed with the driver.
   the SS leg's DI claim depends on it** → 10 seeds) → Bookinfo (revive → smoke → 3 seeds)
   → Boutique (deploy 2.4 + home-200 smoke → 3 seeds). Each phase: tenant up → RAM
   checkpoint → smoke → seeds (detached Windows driver) → evidence verify → tenant to 0.
+  Swap cost (B'-residual): 5 up/down cycles ≈ 10-20 min each on these light SUTs (4-21
+  pods; nothing TT-scale) — ~1.5 h total, inside the 3-5 d calendar.
 - **Phase 6 (close-out):** clustering over ALL flagged events across 6 SUTs (frozen
   convention; the TT leg's 0 included); per-SUT outcome tables (run/paused/total);
   `RESULT-myield-completion.md` + freeze EXECUTED row + **branch-determined folds (C):**
