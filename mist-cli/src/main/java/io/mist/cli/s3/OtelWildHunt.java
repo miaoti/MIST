@@ -57,7 +57,7 @@ public final class OtelWildHunt {
                 () -> currentMarker, 20_000, new ProcessCommandRunner());
 
         TargetTripleRegistry.Registry reg = TargetTripleRegistry.load(Paths.get(System.getProperty(
-                "s3.triple", "debug/a-main/benchmark/b4/enable/oteldemo-checkout-triple.yaml")));
+                "s3.triple", "evaluation/suts/oteldemo/triples/oteldemo-checkout-triple.yaml")));
         TargetTripleRegistry.Triple triple = reg.triples.get(0);
 
         WildHuntEngine.FlagHook hook = new WildHuntEngine.FlagHook() {

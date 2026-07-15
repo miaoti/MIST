@@ -39,3 +39,9 @@ experiments are exactly A-above. Whether the line is "done enough" to start draf
 parallel (e.g., sections that don't depend on the TT omnibus: corpus construction, S3
 scarcity finding, oracle-eval design, MIST scope/limitations) is the USER's call, not an
 execution decision.
+
+## E. Product-usability future work (tool-track, NOT paper-gating; post-submission)
+
+| item | what it is | why it is NOT paper-gating | state |
+|---|---|---|---|
+| **read-back spec-locality → CRUD-pairing auto-inference** | Today MIST's read-back is specified once per SUT write-endpoint as a `target-triples*.yaml` (`readback_endpoint` + `isolation_key` + `mode`) — E2's disclosed *"specification-locality, NOT zero-authoring"*. The tool-usability gap: a user hand-writes that triple per write-endpoint. **Auto-inference route:** derive the read-back from the OpenAPI **CRUD pairing** (`POST /orders` → `GET /orders`) + isolation key from the request schema; fall back to manual only for non-CRUD/async (kafka→SQL). | The benchmark paper evaluates oracle **capability** on the masked-2xx column; MIST's per-endpoint spec cost is a **disclosed oracle property** (E2 specification-locality), not a result. It belongs to the tool track, after submission. | **TODO — future work**; no design spike yet. Raised 2026-07-14 (user-flagged usability question). |

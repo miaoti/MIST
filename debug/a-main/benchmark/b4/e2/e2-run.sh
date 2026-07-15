@@ -16,8 +16,8 @@ for i in 1 2 3 4 5; do
   java -cp "$CP" \
     -Dg3.base.url=http://localhost:8080 \
     -Dg3.strata=constructed \
-    -Dg3.triples.natural=evaluation/suts/trainticket/g3/target-triples-natural.yaml \
-    -Dg3.triples.constructed=evaluation/suts/trainticket/g3/target-triples-constructed.yaml \
+    -Dg3.triples.natural=evaluation/suts/trainticket/triples/target-triples-natural.yaml \
+    -Dg3.triples.constructed=evaluation/suts/trainticket/triples/target-triples-constructed.yaml \
     -Dg3.contract.path=debug/a-main/g3-comparator-tt/assertion-bindings-cancel-refund.yaml \
     io.mist.cli.g3.TrainTicketStimulus > e2-run$i.log 2>&1
 done

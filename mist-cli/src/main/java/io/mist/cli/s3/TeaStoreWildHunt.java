@@ -46,7 +46,7 @@ public final class TeaStoreWildHunt {
 
         JsonDurableReadback readback = new JsonDurableReadback(persistence, "", 8000);
         TargetTripleRegistry.Registry reg = TargetTripleRegistry.load(Paths.get(System.getProperty(
-                "s3.triple", "debug/a-main/benchmark/b4/enable/teastore-order-triple.yaml")));
+                "s3.triple", "evaluation/suts/teastore/triples/teastore-order-triple.yaml")));
         TargetTripleRegistry.Triple triple = reg.triples.get(0);
 
         WildHuntEngine engine = new WildHuntEngine("teastore", mode + "-teastore", outDir,

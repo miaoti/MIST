@@ -68,7 +68,7 @@ public final class TrainTicketWildHunt {
         String bearer = "Bearer " + MstAuthHandler.getDefaultToken();
 
         TargetTripleRegistry.Registry reg = TargetTripleRegistry.load(Paths.get(System.getProperty(
-                "s3.triples", "debug/a-main/benchmark/b4/s3/trainticket-adminbasic-triples.yaml")));
+                "s3.triples", "evaluation/suts/trainticket/triples/trainticket-adminbasic-triples.yaml")));
 
         // TT admin-basic writes are UNIQUE-KEYED (station.name/id, config.name, price.trainType), so a
         // FIXED marker seed re-generates a prior run's markers and the store rejects the duplicate

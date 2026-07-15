@@ -50,7 +50,7 @@ java -cp "$CP" \
   -Dg3.base.url=http://localhost:8080 -Ds3.admin.user=admin -Ds3.admin.pass=222222 \
   -Ds3.mode=$MODE -Ds3.journeys=$N \
   -Ds3.out=debug/a-main/benchmark/b4/s3/${MODE}-trainticket \
-  -Ds3.triples=debug/a-main/benchmark/b4/s3/trainticket-adminbasic-triples.yaml \
+  -Ds3.triples=evaluation/suts/trainticket/triples/trainticket-adminbasic-triples.yaml \
   -Ds3.mist.commit="$HEAD" -Ds3.envguard="admin-auth-ok;subgraph-healthy;no-fault-injected;sync-SUT" \
   io.mist.cli.s3.TrainTicketWildHunt \
   2>&1 | grep -viE "StatusConsoleListener|Unable to rename|I/O exception|Retrying request|DefaultHttpClient"

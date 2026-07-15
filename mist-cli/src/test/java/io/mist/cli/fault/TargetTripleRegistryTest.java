@@ -379,14 +379,14 @@ public class TargetTripleRegistryTest {
 
     @Test
     public void shippedG3Configs_parseToTheCancelRefundTriples() throws Exception {
-        // The two committed G3 head-to-head registries (evaluation/suts/trainticket/g3)
+        // The two committed G3 head-to-head registries (evaluation/suts/trainticket/triples)
         // must parse through the reviewed loader to the expected supplied+value-delta
         // cancel->refund triple — natural with the fork's drawback-fail flag, constructed
         // with the fork's fabricated-ack flag (both toggled by the SutFlagFaultInjector).
-        java.nio.file.Path g3 = locateG3Dir();
+        java.nio.file.Path triplesDir = locateTrainticketTriplesDir();
 
         TargetTripleRegistry.Registry natural =
-                TargetTripleRegistry.load(g3.resolve("target-triples-natural.yaml"));
+                TargetTripleRegistry.load(triplesDir.resolve("target-triples-natural.yaml"));
         assertEquals(1, natural.triples.size());
         TargetTripleRegistry.Triple n = natural.triples.get(0);
         assertEquals("tt-cancel-refund-natural", n.name);
@@ -403,7 +403,7 @@ public class TargetTripleRegistryTest {
         assertEquals("trainticket", natural.cluster.namespace);
 
         TargetTripleRegistry.Registry constructed =
-                TargetTripleRegistry.load(g3.resolve("target-triples-constructed.yaml"));
+                TargetTripleRegistry.load(triplesDir.resolve("target-triples-constructed.yaml"));
         TargetTripleRegistry.Triple c = constructed.triples.get(0);
         assertEquals("tt-cancel-refund-constructed", c.name);
         assertEquals(TargetTripleRegistry.IsolationStrategy.SUPPLIED, c.isolationStrategy);
@@ -413,29 +413,29 @@ public class TargetTripleRegistryTest {
         assertEquals("mist.fault.drawback.fabricatedack.enabled", c.faultFlag.property);
     }
 
-    /** The g3 configs live in evaluation/ (not the classpath); find them from either
+    /** The triple configs live in evaluation/ (not the classpath); find them from either
      *  the module basedir or the repo root, so the test works under -pl and the reactor. */
-    private static java.nio.file.Path locateG3Dir() {
+    private static java.nio.file.Path locateTrainticketTriplesDir() {
         for (String rel : new String[]{
-                "../evaluation/suts/trainticket/g3", "evaluation/suts/trainticket/g3"}) {
+                "../evaluation/suts/trainticket/triples", "evaluation/suts/trainticket/triples"}) {
             java.nio.file.Path p = java.nio.file.Paths.get(rel);
             if (java.nio.file.Files.isDirectory(p)) {
                 return p;
             }
         }
-        throw new IllegalStateException("cannot locate evaluation/suts/trainticket/g3 from "
+        throw new IllegalStateException("cannot locate evaluation/suts/trainticket/triples from "
                 + java.nio.file.Paths.get("").toAbsolutePath());
     }
 
     @Test
     public void shippedShippingTriple_parsesToTheEnqueueValueDelta() throws Exception {
-        // The committed Sock Shop shipping-enqueue registry (evaluation/suts/sockshop/g3) must
+        // The committed Sock Shop shipping-enqueue registry (evaluation/suts/sockshop/triples) must
         // parse through the reviewed loader to the supplied+value-delta enqueue triple whose
         // read-back is the broker-mgmt queue depth (name->shipping-task, messages) — and with
         // NO fault_flag, because the head-to-head harness owns fault injection per stratum.
-        java.nio.file.Path g3 = locateSockShopG3Dir();
+        java.nio.file.Path triplesDir = locateSockShopTriplesDir();
         TargetTripleRegistry.Registry reg =
-                TargetTripleRegistry.load(g3.resolve("target-triple-shipping.yaml"));
+                TargetTripleRegistry.load(triplesDir.resolve("target-triple-shipping.yaml"));
         assertEquals(1, reg.triples.size());
         TargetTripleRegistry.Triple t = reg.triples.get(0);
         assertEquals("shipping-enqueue", t.name);
@@ -450,15 +450,15 @@ public class TargetTripleRegistryTest {
         assertEquals("sock-shop", reg.cluster.namespace);
     }
 
-    private static java.nio.file.Path locateSockShopG3Dir() {
+    private static java.nio.file.Path locateSockShopTriplesDir() {
         for (String rel : new String[]{
-                "../evaluation/suts/sockshop/g3", "evaluation/suts/sockshop/g3"}) {
+                "../evaluation/suts/sockshop/triples", "evaluation/suts/sockshop/triples"}) {
             java.nio.file.Path p = java.nio.file.Paths.get(rel);
             if (java.nio.file.Files.isDirectory(p)) {
                 return p;
             }
         }
-        throw new IllegalStateException("cannot locate evaluation/suts/sockshop/g3 from "
+        throw new IllegalStateException("cannot locate evaluation/suts/sockshop/triples from "
                 + java.nio.file.Paths.get("").toAbsolutePath());
     }
 

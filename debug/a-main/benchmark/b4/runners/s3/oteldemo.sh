@@ -51,7 +51,7 @@ case "$MODE" in
       -Ds3.base=http://localhost:8085 -Ds3.pgpod="$PGPOD" -Ds3.jaeger=http://localhost:16687 \
       -Ds3.mode=$MODE -Ds3.journeys=$N \
       -Ds3.out=debug/a-main/benchmark/b4/s3/${MODE}-oteldemo \
-      -Ds3.triple=debug/a-main/benchmark/b4/enable/oteldemo-checkout-triple.yaml \
+      -Ds3.triple=evaluation/suts/oteldemo/triples/oteldemo-checkout-triple.yaml \
       -Ds3.mist.commit="$HEAD" -Ds3.envguard="$GUARD" \
       io.mist.cli.s3.OtelWildHunt 2>&1 | grep -viE "StatusConsoleListener|Unable to rename"
     ;;

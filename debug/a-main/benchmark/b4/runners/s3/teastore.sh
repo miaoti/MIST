@@ -33,6 +33,6 @@ java -cp "$CP" \
   -Ds3.persistence=http://localhost:8083/tools.descartes.teastore.persistence \
   -Ds3.mode=$MODE -Ds3.journeys=$N -Ds3.userbase=22 -Ds3.userspan=40 \
   -Ds3.out=debug/a-main/benchmark/b4/s3/${MODE}-teastore \
-  -Ds3.triple=debug/a-main/benchmark/b4/enable/teastore-order-triple.yaml \
+  -Ds3.triple=evaluation/suts/teastore/triples/teastore-order-triple.yaml \
   -Ds3.mist.commit="$HEAD" -Ds3.envguard="autoseed-100users;maintenance-false;sync-SUT" \
   io.mist.cli.s3.TeaStoreWildHunt 2>&1 | grep -viE "StatusConsoleListener|Unable to rename"
