@@ -1,0 +1,76 @@
+{
+  "root_apis": {
+    "GET /tags": {
+      "path": "/tags",
+      "method": "GET",
+      "trees": [{
+        "children": [{
+          "path": "/tags",
+          "method": "GET"
+        }],
+        "source_trace": "sockshop_tags"
+      }]
+    },
+    "GET /catalogue": {
+      "path": "/catalogue",
+      "method": "GET",
+      "trees": [{
+        "children": [{
+          "path": "/catalogue",
+          "method": "GET"
+        }],
+        "source_trace": "sockshop_catalogue"
+      }]
+    },
+    "POST /cards": {
+      "path": "/cards",
+      "method": "POST",
+      "trees": [{
+        "children": [{
+          "path": "/cards",
+          "method": "POST"
+        }],
+        "source_trace": "sockshop_cards"
+      }]
+    },
+    "GET /catalogue/size": {
+      "path": "/catalogue/size",
+      "method": "GET",
+      "trees": [{
+        "children": [{
+          "path": "/catalogue/size",
+          "method": "GET"
+        }],
+        "source_trace": "sockshop_catalogue_size"
+      }]
+    },
+    "POST /addresses": {
+      "path": "/addresses",
+      "method": "POST",
+      "trees": [{
+        "children": [{
+          "path": "/addresses",
+          "method": "POST"
+        }],
+        "source_trace": "sockshop_addresses"
+      }]
+    },
+    "GET /catalogue/03fef6ac-1896-4ce8-bd69-b798f85c6e0b": {
+      "path": "/catalogue/03fef6ac-1896-4ce8-bd69-b798f85c6e0b",
+      "method": "GET",
+      "trees": [{
+        "children": [{
+          "path": "/catalogue/03fef6ac-1896-4ce8-bd69-b798f85c6e0b",
+          "method": "GET"
+        }],
+        "source_trace": "sockshop_catalogue_id"
+      }]
+    }
+  },
+  "registry_metadata": {
+    "total_root_apis": 6,
+    "last_updated": "Sat Jul 04 02:21:00 CDT 2026",
+    "total_trees": 6,
+    "version": "1.0"
+  }
+}

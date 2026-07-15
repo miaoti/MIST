@@ -1,0 +1,149 @@
+---
+version: "1.0"
+lastUpdated:
+- 2026
+- 7
+- 4
+- 3
+- 13
+- 10
+- 109610500
+parameterMappings: {}
+servicePatterns: []
+llmPrompts:
+  apiDiscovery: "Parameter: {parameterName} (type: {parameterType}, location: {parameterLocation})\n\
+    Description: {parameterDescription}\n\nServices: {availableServices}\n\nTask:\
+    \ Select the TOP 3 services most likely to provide realistic data for this parameter.\n\
+    Consider semantic meaning and naming patterns.\n\nIf you find good matches, respond\
+    \ with a JSON array of 1-3 service names in priority order:\n[\"service1\", \"\
+    service2\", \"service3\"]\n\nIf NO services seem suitable for this parameter,\
+    \ respond with:\nNO_GOOD_MATCH\n\nRespond ONLY with the JSON array OR 'NO_GOOD_MATCH',\
+    \ no explanations."
+  valueSelection: "Data: {extractedData}\nParameter: {parameterName} (type: {parameterType})\n\
+    Description: {parameterDescription}\n\nTask: Select the most suitable value for\
+    \ this parameter based on its name, type, and description.\n\nIf you find a suitable\
+    \ value, respond with just the value:\nselectedValue\n\nIf NO value seems appropriate\
+    \ for this parameter, respond with:\nNO_GOOD_MATCH"
+  directValueExtraction: "API Response: {responseSchema}\n\nTarget Parameter: {parameterName}\
+    \ (type: {parameterType})\nDescription: {parameterDescription}\n\nTask: Extract\
+    \ or derive a suitable value for this parameter from the API response above.\n\
+    You must use ONLY values that appear in the response - do not generate new values.\n\
+    \nGuidelines:\n- Look for exact field matches first\n- Consider semantically related\
+    \ fields\n- Use any reasonable value from the response\n- For list parameters:\
+    \ you can combine multiple values with commas\n- Ensure the returned value matches\
+    \ the parameter type\n\nExamples:\n- For a location/name parameter: use values\
+    \ from semantically related fields (e.g. 'from', 'to', 'name')\n- For 'price':\
+    \ use values from 'price' or cost-related fields\n- For 'id': use any ID field\
+    \ from the response\n- For a list parameter: use numeric values or names that\
+    \ match the element type\n\nRespond with ONLY the extracted value (e.g., '<a value\
+    \ from the response>' or '100.0')\nIf no suitable value exists in the response:\
+    \ NO_GOOD_MATCH"
+cache:
+  enabled: true
+  maxEntries: 1000
+  ttlSeconds: 300
+parameterErrors: {}
+poolEntryStatus:
+  POST /cards:
+    expires:
+      "07/26": "VERIFIED_VALID"
+      "08/28": "VERIFIED_VALID"
+      "04/30": "VERIFIED_VALID"
+      "08/26": "VERIFIED_VALID"
+      "03/31": "VERIFIED_VALID"
+      "05/30": "VERIFIED_VALID"
+      "11/26": "VERIFIED_VALID"
+      "09/30": "VERIFIED_VALID"
+      "12/28": "VERIFIED_VALID"
+      "01/29": "VERIFIED_VALID"
+      "10/29": "VERIFIED_VALID"
+      "01/28": "VERIFIED_VALID"
+    longNum:
+      "4929123456789010": "VERIFIED_VALID"
+      "4532111122223333": "VERIFIED_VALID"
+      "4532015112830366": "VERIFIED_VALID"
+      "4929300012345678": "VERIFIED_VALID"
+      "4929182736451023": "VERIFIED_VALID"
+      "4916333322221111": "VERIFIED_VALID"
+      "4929112233445566": "VERIFIED_VALID"
+      "4916000000000000": "VERIFIED_VALID"
+      "4532778899001122": "VERIFIED_VALID"
+      "4532444433332222": "VERIFIED_VALID"
+      "4532789456123012": "VERIFIED_VALID"
+      "4916123456789012": "VERIFIED_VALID"
+      "4916888877776666": "VERIFIED_VALID"
+    ccv:
+      "012": "VERIFIED_VALID"
+      "222": "VERIFIED_VALID"
+      "123": "VERIFIED_VALID"
+      "333": "VERIFIED_VALID"
+      "234": "VERIFIED_VALID"
+      "444": "VERIFIED_VALID"
+      "555": "VERIFIED_VALID"
+      "456": "VERIFIED_VALID"
+      "666": "VERIFIED_VALID"
+      "567": "VERIFIED_VALID"
+      "888": "VERIFIED_VALID"
+      "789": "VERIFIED_VALID"
+      "999": "VERIFIED_VALID"
+      "901": "VERIFIED_VALID"
+  POST /addresses:
+    country:
+      New Zealand: "VERIFIED_VALID"
+      Sweden: "VERIFIED_VALID"
+      Netherlands: "VERIFIED_VALID"
+      China: "VERIFIED_VALID"
+      Brazil: "VERIFIED_VALID"
+      Italy: "VERIFIED_VALID"
+      United Kingdom: "VERIFIED_VALID"
+      France: "VERIFIED_VALID"
+      Germany: "VERIFIED_VALID"
+      Spain: "VERIFIED_VALID"
+    number:
+      "77": "VERIFIED_VALID"
+      "45A": "VERIFIED_VALID"
+      "33": "VERIFIED_VALID"
+      "67": "VERIFIED_VALID"
+      "100": "VERIFIED_VALID"
+      "123": "VERIFIED_VALID"
+      "4": "VERIFIED_VALID"
+      "19": "VERIFIED_VALID"
+      "8": "VERIFIED_VALID"
+      "9": "VERIFIED_VALID"
+      "7B": "VERIFIED_VALID"
+      "50": "VERIFIED_VALID"
+    city:
+      New York: "VERIFIED_VALID"
+      Singapore: "VERIFIED_VALID"
+      Cairo: "VERIFIED_VALID"
+      Tokyo: "VERIFIED_VALID"
+      Madrid: "VERIFIED_VALID"
+      London: "VERIFIED_VALID"
+      São Paulo: "VERIFIED_VALID"
+      Dubai: "VERIFIED_VALID"
+      Toronto: "VERIFIED_VALID"
+    street:
+      Elm Street: "VERIFIED_VALID"
+      Station Road: "VERIFIED_VALID"
+      Cedar Road: "VERIFIED_VALID"
+      Oak Lane: "VERIFIED_VALID"
+      Park Avenue: "VERIFIED_VALID"
+      Victoria Road: "VERIFIED_VALID"
+      Main Street: "VERIFIED_VALID"
+      Broadway: "VERIFIED_VALID"
+      School Lane: "VERIFIED_VALID"
+      Maple Drive: "VERIFIED_VALID"
+      Queen Street: "VERIFIED_VALID"
+      River Road: "VERIFIED_VALID"
+    postcode:
+      W1J 7NT: "VERIFIED_VALID"
+      B1 1AD: "VERIFIED_VALID"
+      "60601": "VERIFIED_VALID"
+      "90210": "VERIFIED_VALID"
+      SW1A 1AA: "VERIFIED_VALID"
+      V6B 4Y8: "VERIFIED_VALID"
+      "10001": "VERIFIED_VALID"
+      L1 8PQ: "VERIFIED_VALID"
+      "30303": "VERIFIED_VALID"
+      EC1A 1BB: "VERIFIED_VALID"
+      "10115": "VERIFIED_VALID"
