@@ -5,6 +5,7 @@
 # the mist:mist RabbitMQ user + warm-up POST (standing runbook) + catalogue-db race wait;
 # bookinfo = scale-up + reviews-v3 VS check. 'down <ns>' scales a namespace's workloads to 0.
 set -u
+export PATH="$PATH:/usr/local/bin"
 K="kubectl --context kind-mist"
 log(){ echo "[$(date +%H:%M:%S)] $*"; }
 case "${1:?sut}" in
