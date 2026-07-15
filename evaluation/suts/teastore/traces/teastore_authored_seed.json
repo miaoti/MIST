@@ -1,0 +1,149 @@
+{
+ "data": [
+  {
+   "traceID": "aaaa1111aaaa1111aaaa1111aaaa1111",
+   "warnings": null,
+   "spans": [
+    {
+     "traceID": "aaaa1111aaaa1111aaaa1111aaaa1111",
+     "spanID": "00000000000000a1",
+     "operationName": "/tools.descartes.teastore.webui/",
+     "processID": "p1",
+     "startTime": 1784000000000000,
+     "duration": 120000,
+     "logs": [],
+     "warnings": null,
+     "tags": [
+      {
+       "key": "http.method",
+       "type": "string",
+       "value": "GET"
+      },
+      {
+       "key": "http.url",
+       "type": "string",
+       "value": "http://webui:8080/tools.descartes.teastore.webui/"
+      },
+      {
+       "key": "http.status_code",
+       "type": "string",
+       "value": "200"
+      },
+      {
+       "key": "span.kind",
+       "type": "string",
+       "value": "server"
+      },
+      {
+       "key": "authored.seed",
+       "type": "string",
+       "value": "myc-synthetic-workflow-seed"
+      }
+     ],
+     "references": []
+    },
+    {
+     "traceID": "aaaa1111aaaa1111aaaa1111aaaa1111",
+     "spanID": "00000000000000a2",
+     "operationName": "/tools.descartes.teastore.persistence/rest/products",
+     "processID": "p2",
+     "startTime": 1784000000020000,
+     "duration": 40000,
+     "logs": [],
+     "warnings": null,
+     "tags": [
+      {
+       "key": "http.method",
+       "type": "string",
+       "value": "GET"
+      },
+      {
+       "key": "http.url",
+       "type": "string",
+       "value": "http://persistence:8080/tools.descartes.teastore.persistence/rest/products"
+      },
+      {
+       "key": "http.status_code",
+       "type": "string",
+       "value": "200"
+      },
+      {
+       "key": "span.kind",
+       "type": "string",
+       "value": "server"
+      },
+      {
+       "key": "authored.seed",
+       "type": "string",
+       "value": "myc-synthetic-workflow-seed"
+      }
+     ],
+     "references": [
+      {
+       "refType": "CHILD_OF",
+       "traceID": "aaaa1111aaaa1111aaaa1111aaaa1111",
+       "spanID": "00000000000000a1"
+      }
+     ]
+    },
+    {
+     "traceID": "aaaa1111aaaa1111aaaa1111aaaa1111",
+     "spanID": "00000000000000a3",
+     "operationName": "/tools.descartes.teastore.persistence/rest/orders",
+     "processID": "p2",
+     "startTime": 1784000000070000,
+     "duration": 30000,
+     "logs": [],
+     "warnings": null,
+     "tags": [
+      {
+       "key": "http.method",
+       "type": "string",
+       "value": "GET"
+      },
+      {
+       "key": "http.url",
+       "type": "string",
+       "value": "http://persistence:8080/tools.descartes.teastore.persistence/rest/orders"
+      },
+      {
+       "key": "http.status_code",
+       "type": "string",
+       "value": "200"
+      },
+      {
+       "key": "span.kind",
+       "type": "string",
+       "value": "server"
+      },
+      {
+       "key": "authored.seed",
+       "type": "string",
+       "value": "myc-synthetic-workflow-seed"
+      }
+     ],
+     "references": [
+      {
+       "refType": "CHILD_OF",
+       "traceID": "aaaa1111aaaa1111aaaa1111aaaa1111",
+       "spanID": "00000000000000a1"
+      }
+     ]
+    }
+   ],
+   "processes": {
+    "p1": {
+     "serviceName": "webui",
+     "tags": []
+    },
+    "p2": {
+     "serviceName": "persistence",
+     "tags": []
+    }
+   }
+  }
+ ],
+ "total": 1,
+ "limit": 0,
+ "offset": 0
+}
