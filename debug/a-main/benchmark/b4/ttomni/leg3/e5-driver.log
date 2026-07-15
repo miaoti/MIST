@@ -1,0 +1,4 @@
+03:30:03 === E5 driver start (exact-4 OAT x 5 reps; fork set-image 1.0.5) ===
+deployment.apps/ts-inside-payment-service image updated
+Waiting for deployment "ts-inside-payment-service" rollout to finish: 1 old replicas are pending termination...
+03:35:10 PF 16686 dead - restarting (istio-system/pod/jaeger-85666b76-npvtn)

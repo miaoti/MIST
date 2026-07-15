@@ -1,0 +1,2830 @@
+ERROR StatusConsoleListener Unable to rename file C:\Users\miaot\Github\MIST\logs\mist.log to C:\Users\miaot\Github\MIST\logs\mist_2026-07-15T01:23:13.900.log: java.nio.file.InvalidPathException Illegal char <:> at index 50: C:\Users\miaot\Github\MIST\logs\mist_2026-07-15T01:23:13.900.log
+WARN  MstConfig: unknown property 'mst.oracle.dataintegrity.registry' (typo?). Strict mode = false
+
+  ╔════════════════════════════════════════════════════════════╗
+  ║                                                            ║
+  ║     ███╗   ███╗██╗███████╗████████╗                        ║
+  ║     ████╗ ████║██║██╔════╝╚══██╔══╝                        ║
+  ║     ██╔████╔██║██║███████╗   ██║                           ║
+  ║     ██║╚██╔╝██║██║╚════██║   ██║                           ║
+  ║     ██║ ╚═╝ ██║██║███████║   ██║                           ║
+  ║     ╚═╝     ╚═╝╚═╝╚══════╝   ╚═╝                           ║
+  ║                                                            ║
+  ║     Microservice Integration & Scenario Tester             ║
+  ║     v1.6.0-SNAPSHOT                                       ║
+  ║                                                            ║
+  ╚════════════════════════════════════════════════════════════╝
+
+WARN  [MIST] ablation profile: [oracle:on (span,status,response | timing:off) bandit:on faultmining:off]
+ERROR MstAuthHandler: login failed - AssertionError: 1 expectation failed.
+Expected status code <200> but was <503>.
+
+WARN  SUT preflight: auth not ready (login failed or no token); falling back to unauthenticated probe
+WARN  SUT preflight: ⚠ SUT preflight: 13/39 endpoints reachable, 26 unhealthy (unauthenticated)
+WARN    ✗ GET http://localhost:8080/api/v1/adminbasicservice/adminbasic/trains — HttpTimeoutException: request timed out (5004ms)
+WARN    ✗ GET http://localhost:8080/api/v1/userservice/users — HttpTimeoutException: request timed out (5001ms)
+WARN    ✗ GET http://localhost:8080/api/v1/adminbasicservice/adminbasic/stations — HttpTimeoutException: request timed out (5002ms)
+WARN    ✗ GET http://localhost:8080/api/v1/adminbasicservice/adminbasic/prices — HttpTimeoutException: request timed out (5015ms)
+WARN    ✗ GET http://localhost:8080/api/v1/adminbasicservice/adminbasic/prices — HttpTimeoutException: request timed out (5011ms)
+WARN    ✗ GET http://localhost:8080/api/v1/trainservice/trains — HttpTimeoutException: request timed out (5002ms)
+WARN    ✗ GET http://localhost:8080/api/v1/travelservice/trips/left — HttpTimeoutException: request timed out (5006ms)
+WARN    ✗ GET http://localhost:8080/api/v1/users/login — HTTP 503 (16ms)
+WARN    ✗ GET http://localhost:8080/api/v1/adminbasicservice/adminbasic/trains — HttpTimeoutException: request timed out (5003ms)
+WARN    ✗ GET http://localhost:8080/api/v1/admintravelservice/admintravel — HTTP 503 (4ms)
+WARN    ✗ GET http://localhost:8080/api/v1/adminrouteservice/adminroute — HTTP 503 (3ms)
+WARN    ✗ GET http://localhost:8080/api/v1/orderservice/order/refresh — HttpTimeoutException: request timed out (5011ms)
+WARN    ✗ GET http://localhost:8080/api/v1/orderOtherService/orderOther/refresh — HttpTimeoutException: request timed out (5014ms)
+WARN    ✗ GET http://localhost:8080/api/v1/travel2service/trips/left — HttpTimeoutException: request timed out (5012ms)
+WARN    ✗ GET http://localhost:8080/api/v1/admintravelservice/admintravel — HTTP 503 (10ms)
+WARN    ✗ GET http://localhost:8080/api/v1/admintravelservice/admintravel/null1111 — HTTP 503 (3ms)
+WARN    ✗ GET http://localhost:8080/api/v1/routeservice/routes — HttpTimeoutException: request timed out (5015ms)
+WARN    ✗ GET http://localhost:8080/api/v1/adminbasicservice/adminbasic/contacts — HTTP 500 (205ms)
+WARN    ✗ GET http://localhost:8080/api/v1/adminbasicservice/adminbasic/trains — HttpTimeoutException: request timed out (5001ms)
+WARN    ✗ GET http://localhost:8080/api/v1/stationservice/stations — HttpTimeoutException: request timed out (5013ms)
+WARN    ✗ GET http://localhost:8080/api/v1/adminbasicservice/adminbasic/stations — HttpTimeoutException: request timed out (4999ms)
+WARN    ✗ GET http://localhost:8080/api/v1/admintravelservice/admintravel/null32321 — HTTP 503 (2ms)
+WARN    ✗ GET http://localhost:8080/api/v1/admintravelservice/admintravel/nullescss — HTTP 503 (2ms)
+WARN    ✗ GET http://localhost:8080/api/v1/adminbasicservice/adminbasic/configs — HTTP 500 (10ms)
+WARN    ✗ GET http://localhost:8080/api/v1/adminrouteservice/adminroute — HTTP 503 (2ms)
+WARN    Scenarios touching these endpoints may drop silently. Inspect SUT logs before relying on this run's detection counts.
+WARN  [MIST] data-integrity oracle ON: 2 target triple(s) from C:\Users\miaot\Github\MIST\mist-cli\src\main\resources\My-Example\trainticket\target-triples.yaml
+▶ Step 1/5: Pool Gen (17 items)
+[2K[96m⠙[0m [90m[[0m[92m[0m[2m                            [0m[90m][0m [1m[33m  0%[0m  [96mPool Gen[0m [97m0/17[0m[90m  · [0m[97m0s[0m[2K[96m⠹[0m [90m[[0m[92m[0m[2m                            [0m[90m][0m [1m[33m  0%[0m  [96mPool Gen[0m [97m0/17[0m [2m(0/9)[0m[90m  · [0m[97m0s[0mERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=152)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'boughtDateEnd'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'boughtDateEnd'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'boughtDateEnd'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=152)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'boughtDateEnd'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'boughtDateEnd'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=152)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'boughtDateEnd'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=152)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'boughtDateEnd'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'boughtDateEnd'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=152)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=152)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'boughtDateEnd'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'boughtDateEnd'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'boughtDateEnd'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'boughtDateEnd'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'boughtDateEnd'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'boughtDateEnd'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'boughtDateEnd'
+[2K[96m⠸[0m [90m[[0m[92m[0m[2m                            [0m[90m][0m [1m[33m  0%[0m  [96mPool Gen[0m [97m0/17[0m [2m(1/9)[0m[90m  · [0m[97m3:46[0mERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  Authentication response 403 from http://localhost:8080/api/v1/adminorderservice/adminorder → invalidating JWT for next attempt
+WARN  ❌ API call failed with HTTP 403: http://localhost:8080/api/v1/adminorderservice/adminorder
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'boughtDateStart'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  Authentication response 403 from http://localhost:8080/api/v1/adminorderservice/adminorder → invalidating JWT for next attempt
+WARN  ❌ API call failed with HTTP 403: http://localhost:8080/api/v1/adminorderservice/adminorder
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'boughtDateStart'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  Authentication response 403 from http://localhost:8080/api/v1/adminorderservice/adminorder → invalidating JWT for next attempt
+WARN  ❌ API call failed with HTTP 403: http://localhost:8080/api/v1/adminorderservice/adminorder
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=152)
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'boughtDateStart'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  Authentication response 403 from http://localhost:8080/api/v1/adminorderservice/adminorder → invalidating JWT for next attempt
+WARN  ❌ API call failed with HTTP 403: http://localhost:8080/api/v1/adminorderservice/adminorder
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'boughtDateStart'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  Authentication response 403 from http://localhost:8080/api/v1/adminorderservice/adminorder → invalidating JWT for next attempt
+WARN  ❌ API call failed with HTTP 403: http://localhost:8080/api/v1/adminorderservice/adminorder
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'boughtDateStart'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  Authentication response 403 from http://localhost:8080/api/v1/adminorderservice/adminorder → invalidating JWT for next attempt
+WARN  ❌ API call failed with HTTP 403: http://localhost:8080/api/v1/adminorderservice/adminorder
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'boughtDateStart'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  Authentication response 403 from http://localhost:8080/api/v1/adminorderservice/adminorder → invalidating JWT for next attempt
+WARN  ❌ API call failed with HTTP 403: http://localhost:8080/api/v1/adminorderservice/adminorder
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'boughtDateStart'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  Authentication response 403 from http://localhost:8080/api/v1/adminorderservice/adminorder → invalidating JWT for next attempt
+WARN  ❌ API call failed with HTTP 403: http://localhost:8080/api/v1/adminorderservice/adminorder
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'boughtDateStart'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  Authentication response 403 from http://localhost:8080/api/v1/adminorderservice/adminorder → invalidating JWT for next attempt
+WARN  ❌ API call failed with HTTP 403: http://localhost:8080/api/v1/adminorderservice/adminorder
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'boughtDateStart'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  Authentication response 403 from http://localhost:8080/api/v1/adminorderservice/adminorder → invalidating JWT for next attempt
+WARN  ❌ API call failed with HTTP 403: http://localhost:8080/api/v1/adminorderservice/adminorder
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'boughtDateStart'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  Authentication response 403 from http://localhost:8080/api/v1/adminorderservice/adminorder → invalidating JWT for next attempt
+WARN  ❌ API call failed with HTTP 403: http://localhost:8080/api/v1/adminorderservice/adminorder
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'boughtDateStart'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=152)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=152)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  Authentication response 403 from http://localhost:8080/api/v1/adminorderservice/adminorder → invalidating JWT for next attempt
+WARN  ❌ API call failed with HTTP 403: http://localhost:8080/api/v1/adminorderservice/adminorder
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'boughtDateStart'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  Authentication response 403 from http://localhost:8080/api/v1/adminorderservice/adminorder → invalidating JWT for next attempt
+WARN  ❌ API call failed with HTTP 403: http://localhost:8080/api/v1/adminorderservice/adminorder
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=152)
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'boughtDateStart'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  Authentication response 403 from http://localhost:8080/api/v1/adminorderservice/adminorder → invalidating JWT for next attempt
+WARN  ❌ API call failed with HTTP 403: http://localhost:8080/api/v1/adminorderservice/adminorder
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'boughtDateStart'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  Authentication response 403 from http://localhost:8080/api/v1/adminorderservice/adminorder → invalidating JWT for next attempt
+WARN  ❌ API call failed with HTTP 403: http://localhost:8080/api/v1/adminorderservice/adminorder
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=152)
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'boughtDateStart'
+[2K[96m⠼[0m [90m[[0m[92m[0m[2m                            [0m[90m][0m [1m[33m  0%[0m  [96mPool Gen[0m [97m0/17[0m [2m(2/9)[0m[90m  · [0m[97m6:16[0mERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  ❌ API call failed with HTTP 404: http://localhost:8080/api/v1/waitorderservice/orders
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'enableBoughtDateQuery'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  ❌ API call failed with HTTP 404: http://localhost:8080/api/v1/waitorderservice/orders
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'enableBoughtDateQuery'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  ❌ API call failed with HTTP 404: http://localhost:8080/api/v1/waitorderservice/orders
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'enableBoughtDateQuery'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  ❌ API call failed with HTTP 404: http://localhost:8080/api/v1/waitorderservice/orders
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'enableBoughtDateQuery'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  ❌ API call failed with HTTP 404: http://localhost:8080/api/v1/waitorderservice/orders
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'enableBoughtDateQuery'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  ❌ API call failed with HTTP 404: http://localhost:8080/api/v1/waitorderservice/orders
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'enableBoughtDateQuery'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=152)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  ❌ API call failed with HTTP 404: http://localhost:8080/api/v1/waitorderservice/orders
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'enableBoughtDateQuery'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  ❌ API call failed with HTTP 404: http://localhost:8080/api/v1/waitorderservice/orders
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'enableBoughtDateQuery'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  ❌ API call failed with HTTP 404: http://localhost:8080/api/v1/waitorderservice/orders
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=151)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'enableBoughtDateQuery'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  ❌ API call failed with HTTP 404: http://localhost:8080/api/v1/waitorderservice/orders
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'enableBoughtDateQuery'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=152)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  ❌ API call failed with HTTP 404: http://localhost:8080/api/v1/waitorderservice/orders
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'enableBoughtDateQuery'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  ❌ API call failed with HTTP 404: http://localhost:8080/api/v1/waitorderservice/orders
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'enableBoughtDateQuery'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  ❌ API call failed with HTTP 404: http://localhost:8080/api/v1/waitorderservice/orders
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'enableBoughtDateQuery'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  ❌ API call failed with HTTP 404: http://localhost:8080/api/v1/waitorderservice/orders
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'enableBoughtDateQuery'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  ❌ API call failed with HTTP 404: http://localhost:8080/api/v1/waitorderservice/orders
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'enableBoughtDateQuery'
+[2K[96m⠴[0m [90m[[0m[92m[0m[2m                            [0m[90m][0m [1m[33m  0%[0m  [96mPool Gen[0m [97m0/17[0m [2m(3/9)[0m[90m  · [0m[97m8:47[0mERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  ❌ API call failed with HTTP 503: http://localhost:8080/api/v1/adminuserservice/users
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'enableStateQuery'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=152)
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  ❌ API call failed with HTTP 503: http://localhost:8080/api/v1/adminuserservice/users
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'enableStateQuery'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  ❌ API call failed with HTTP 503: http://localhost:8080/api/v1/adminuserservice/users
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'enableStateQuery'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  ❌ API call failed with HTTP 503: http://localhost:8080/api/v1/adminuserservice/users
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'enableStateQuery'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  ❌ API call failed with HTTP 503: http://localhost:8080/api/v1/adminuserservice/users
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'enableStateQuery'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=151)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  ❌ API call failed with HTTP 503: http://localhost:8080/api/v1/adminuserservice/users
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'enableStateQuery'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  ❌ API call failed with HTTP 503: http://localhost:8080/api/v1/adminuserservice/users
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'enableStateQuery'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=152)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  ❌ API call failed with HTTP 503: http://localhost:8080/api/v1/adminuserservice/users
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'enableStateQuery'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  ❌ API call failed with HTTP 503: http://localhost:8080/api/v1/adminuserservice/users
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'enableStateQuery'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  ❌ API call failed with HTTP 503: http://localhost:8080/api/v1/adminuserservice/users
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'enableStateQuery'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  ❌ API call failed with HTTP 503: http://localhost:8080/api/v1/adminuserservice/users
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'enableStateQuery'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  ❌ API call failed with HTTP 503: http://localhost:8080/api/v1/adminuserservice/users
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'enableStateQuery'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  ❌ API call failed with HTTP 503: http://localhost:8080/api/v1/adminuserservice/users
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'enableStateQuery'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=152)
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  ❌ API call failed with HTTP 503: http://localhost:8080/api/v1/adminuserservice/users
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'enableStateQuery'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  ❌ API call failed with HTTP 503: http://localhost:8080/api/v1/adminuserservice/users
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'enableStateQuery'
+[2K[96m⠦[0m [90m[[0m[92m[0m[2m                            [0m[90m][0m [1m[33m  0%[0m  [96mPool Gen[0m [97m0/17[0m [2m(4/9)[0m[90m  · [0m[97m10:03[0mERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'enableTravelDateQuery'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=152)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'enableTravelDateQuery'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'enableTravelDateQuery'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'enableTravelDateQuery'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'enableTravelDateQuery'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'enableTravelDateQuery'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'enableTravelDateQuery'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'enableTravelDateQuery'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'enableTravelDateQuery'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=152)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'enableTravelDateQuery'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'enableTravelDateQuery'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'enableTravelDateQuery'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'enableTravelDateQuery'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'enableTravelDateQuery'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'enableTravelDateQuery'
+[2K[96m⠧[0m [90m[[0m[92m[0m[2m                            [0m[90m][0m [1m[33m  0%[0m  [96mPool Gen[0m [97m0/17[0m [2m(5/9)[0m[90m  · [0m[97m12:33[0mERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  ❌ API call failed with HTTP 503: http://localhost:8080/api/v1/adminuserservice/users
+WARN  ❌ No mappings discovered for parameter 'loginId'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=152)
+[2K[96m⠇[0m [90m[[0m[92m[0m[2m                            [0m[90m][0m [1m[33m  0%[0m  [96mPool Gen[0m [97m0/17[0m [2m(6/9)[0m[90m  · [0m[97m12:33[0mERROR ❌ Admin login failed with HTTP 503 (body redacted, length=152)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=152)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'state'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'state'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=152)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'state'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'state'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=152)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'state'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'state'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'state'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'state'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'state'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'state'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=152)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'state'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'state'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'state'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'state'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=152)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'state'
+[2K[96m⠏[0m [90m[[0m[92m[0m[2m                            [0m[90m][0m [1m[33m  0%[0m  [96mPool Gen[0m [97m0/17[0m [2m(7/9)[0m[90m  · [0m[97m16:19[0mERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'travelDateEnd'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'travelDateEnd'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'travelDateEnd'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'travelDateEnd'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=152)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'travelDateEnd'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'travelDateEnd'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'travelDateEnd'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'travelDateEnd'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'travelDateEnd'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'travelDateEnd'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'travelDateEnd'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=152)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'travelDateEnd'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=152)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'travelDateEnd'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=152)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'travelDateEnd'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'travelDateEnd'
+[2K[96m⠋[0m [90m[[0m[92m[0m[2m                            [0m[90m][0m [1m[33m  0%[0m  [96mPool Gen[0m [97m0/17[0m [2m(8/9)[0m[90m  · [0m[97m18:50[0mERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=152)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'travelDateStart'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=151)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'travelDateStart'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'travelDateStart'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=152)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'travelDateStart'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'travelDateStart'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'travelDateStart'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'travelDateStart'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'travelDateStart'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=152)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'travelDateStart'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=152)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'travelDateStart'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'travelDateStart'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'travelDateStart'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'travelDateStart'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'travelDateStart'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=152)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'travelDateStart'
+[2K[96m⠙[0m [90m[[0m[92m[0m[2m                            [0m[90m][0m [1m[33m  0%[0m  [96mPool Gen[0m [97m0/17[0m [2m(9/9)[0m[90m  · [0m[97m21:21[0m[2K[96m⠹[0m [90m[[0m[92m[0m[2m                            [0m[90m][0m [1m[33m  0%[0m  [96mPool Gen[0m [97m0/17[0m[90m  · [0m[97m21:21[0m[2K[96m⠸[0m [90m[[0m[92m[0m[2m                            [0m[90m][0m [1m[33m  0%[0m  [96mPool Gen[0m [97m1/17[0m[90m  · [0m[97m21:21[0m[2K[96m⠼[0m [90m[[0m[92m▏[0m[2m                           [0m[90m][0m [1m[33m  0%[0m  [96mPool Gen[0m [97m2/17[0m[90m  · [0m[97m21:21[0m[2K[96m⠴[0m [90m[[0m[92m▏[0m[2m                           [0m[90m][0m [1m[33m  1%[0m  [96mPool Gen[0m [97m3/17[0m[90m  · [0m[97m21:21[0m[2K[96m⠦[0m [90m[[0m[92m▎[0m[2m                           [0m[90m][0m [1m[33m  1%[0m  [96mPool Gen[0m [97m4/17[0m[90m  · [0m[97m21:21[0m[2K[96m⠧[0m [90m[[0m[92m▎[0m[2m                           [0m[90m][0m [1m[33m  1%[0m  [96mPool Gen[0m [97m4/17[0m [2m(0/1)[0m[90m  · [0m[97m21:21[0mERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  Authentication response 403 from http://localhost:8080/api/v1/adminorderservice/adminorder → invalidating JWT for next attempt
+WARN  ❌ API call failed with HTTP 403: http://localhost:8080/api/v1/adminorderservice/adminorder
+WARN  ❌ No mappings discovered for parameter 'orderId'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=152)
+[2K[96m⠇[0m [90m[[0m[92m▎[0m[2m                           [0m[90m][0m [1m[33m  1%[0m  [96mPool Gen[0m [97m4/17[0m [2m(1/1)[0m[90m  · [0m[97m21:22[0m[2K[96m⠏[0m [90m[[0m[92m▎[0m[2m                           [0m[90m][0m [1m[33m  1%[0m  [96mPool Gen[0m [97m4/17[0m[90m  · [0m[97m21:22[0m[2K[96m⠋[0m [90m[[0m[92m▎[0m[2m                           [0m[90m][0m [1m[33m  1%[0m  [96mPool Gen[0m [97m5/17[0m[90m  · [0m[97m21:22[0m[2K[96m⠙[0m [90m[[0m[92m▎[0m[2m                           [0m[90m][0m [1m[33m  1%[0m  [96mPool Gen[0m [97m5/17[0m [2m(0/1)[0m[90m  · [0m[97m21:22[0mWARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'id'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'id'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=152)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'id'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=152)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'id'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'id'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'id'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'id'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'id'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'id'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'id'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'id'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'id'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'id'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'id'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'id'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=152)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'id'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'id'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'id'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'id'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'id'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'id'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=152)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'id'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'id'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'id'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'id'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'id'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'id'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'id'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'id'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'id'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'id'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'id'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'id'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'id'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'id'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=152)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'id'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'id'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'id'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'id'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'id'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'id'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=152)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'id'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=152)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'id'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'id'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'id'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'id'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'id'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=152)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'id'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'id'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'id'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'id'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'id'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'id'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'id'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=152)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'id'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=152)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'id'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'id'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'id'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'id'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'id'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'id'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'id'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'id'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'id'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'id'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'id'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'id'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'id'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'id'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'id'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'id'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'id'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'id'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'id'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'id'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'id'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'id'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'id'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=152)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'id'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'id'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'id'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'id'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'id'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'id'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'id'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'id'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'id'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'id'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'id'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'id'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'id'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=152)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'id'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'id'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'id'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'id'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'id'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'id'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'id'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'id'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'id'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'id'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'id'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'id'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'id'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=152)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'id'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'id'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'id'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'id'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'id'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'id'
+[2K[96m⠹[0m [90m[[0m[92m▎[0m[2m                           [0m[90m][0m [1m[33m  1%[0m  [96mPool Gen[0m [97m5/17[0m [2m(1/1)[0m[90m  · [0m[97m30:34[0m[2K[96m⠸[0m [90m[[0m[92m▎[0m[2m                           [0m[90m][0m [1m[33m  1%[0m  [96mPool Gen[0m [97m5/17[0m[90m  · [0m[97m30:34[0m[2K[96m⠼[0m [90m[[0m[92m▎[0m[2m                           [0m[90m][0m [1m[33m  1%[0m  [96mPool Gen[0m [97m6/17[0m[90m  · [0m[97m30:34[0m[2K[96m⠴[0m [90m[[0m[92m▎[0m[2m                           [0m[90m][0m [1m[33m  1%[0m  [96mPool Gen[0m [97m6/17[0m [2m(0/9)[0m[90m  · [0m[97m30:34[0mERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'boughtDateEnd'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=152)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'boughtDateEnd'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=152)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'boughtDateEnd'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'boughtDateEnd'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'boughtDateEnd'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'boughtDateEnd'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'boughtDateEnd'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'boughtDateEnd'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'boughtDateEnd'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=152)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'boughtDateEnd'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'boughtDateEnd'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'boughtDateEnd'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'boughtDateEnd'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'boughtDateEnd'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'boughtDateEnd'
+[2K[96m⠦[0m [90m[[0m[92m▎[0m[2m                           [0m[90m][0m [1m[33m  1%[0m  [96mPool Gen[0m [97m6/17[0m [2m(1/9)[0m[90m  · [0m[97m34:19[0mERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  Authentication response 403 from http://localhost:8080/api/v1/adminorderservice/adminorder → invalidating JWT for next attempt
+WARN  ❌ API call failed with HTTP 403: http://localhost:8080/api/v1/adminorderservice/adminorder
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'boughtDateStart'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  Authentication response 403 from http://localhost:8080/api/v1/adminorderservice/adminorder → invalidating JWT for next attempt
+WARN  ❌ API call failed with HTTP 403: http://localhost:8080/api/v1/adminorderservice/adminorder
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'boughtDateStart'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  Authentication response 403 from http://localhost:8080/api/v1/adminorderservice/adminorder → invalidating JWT for next attempt
+WARN  ❌ API call failed with HTTP 403: http://localhost:8080/api/v1/adminorderservice/adminorder
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'boughtDateStart'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  Authentication response 403 from http://localhost:8080/api/v1/adminorderservice/adminorder → invalidating JWT for next attempt
+WARN  ❌ API call failed with HTTP 403: http://localhost:8080/api/v1/adminorderservice/adminorder
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'boughtDateStart'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=152)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  Authentication response 403 from http://localhost:8080/api/v1/adminorderservice/adminorder → invalidating JWT for next attempt
+WARN  ❌ API call failed with HTTP 403: http://localhost:8080/api/v1/adminorderservice/adminorder
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'boughtDateStart'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  Authentication response 403 from http://localhost:8080/api/v1/adminorderservice/adminorder → invalidating JWT for next attempt
+WARN  ❌ API call failed with HTTP 403: http://localhost:8080/api/v1/adminorderservice/adminorder
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'boughtDateStart'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  Authentication response 403 from http://localhost:8080/api/v1/adminorderservice/adminorder → invalidating JWT for next attempt
+WARN  ❌ API call failed with HTTP 403: http://localhost:8080/api/v1/adminorderservice/adminorder
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'boughtDateStart'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  Authentication response 403 from http://localhost:8080/api/v1/adminorderservice/adminorder → invalidating JWT for next attempt
+WARN  ❌ API call failed with HTTP 403: http://localhost:8080/api/v1/adminorderservice/adminorder
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'boughtDateStart'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  Authentication response 403 from http://localhost:8080/api/v1/adminorderservice/adminorder → invalidating JWT for next attempt
+WARN  ❌ API call failed with HTTP 403: http://localhost:8080/api/v1/adminorderservice/adminorder
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'boughtDateStart'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=152)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=152)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  Authentication response 403 from http://localhost:8080/api/v1/adminorderservice/adminorder → invalidating JWT for next attempt
+WARN  ❌ API call failed with HTTP 403: http://localhost:8080/api/v1/adminorderservice/adminorder
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'boughtDateStart'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  Authentication response 403 from http://localhost:8080/api/v1/adminorderservice/adminorder → invalidating JWT for next attempt
+WARN  ❌ API call failed with HTTP 403: http://localhost:8080/api/v1/adminorderservice/adminorder
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'boughtDateStart'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  Authentication response 403 from http://localhost:8080/api/v1/adminorderservice/adminorder → invalidating JWT for next attempt
+WARN  ❌ API call failed with HTTP 403: http://localhost:8080/api/v1/adminorderservice/adminorder
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'boughtDateStart'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=152)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=152)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  Authentication response 403 from http://localhost:8080/api/v1/adminorderservice/adminorder → invalidating JWT for next attempt
+WARN  ❌ API call failed with HTTP 403: http://localhost:8080/api/v1/adminorderservice/adminorder
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'boughtDateStart'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  Authentication response 403 from http://localhost:8080/api/v1/adminorderservice/adminorder → invalidating JWT for next attempt
+WARN  ❌ API call failed with HTTP 403: http://localhost:8080/api/v1/adminorderservice/adminorder
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'boughtDateStart'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  Authentication response 403 from http://localhost:8080/api/v1/adminorderservice/adminorder → invalidating JWT for next attempt
+WARN  ❌ API call failed with HTTP 403: http://localhost:8080/api/v1/adminorderservice/adminorder
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'boughtDateStart'
+[2K[96m⠧[0m [90m[[0m[92m▎[0m[2m                           [0m[90m][0m [1m[33m  1%[0m  [96mPool Gen[0m [97m6/17[0m [2m(2/9)[0m[90m  · [0m[97m36:50[0mERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  ❌ API call failed with HTTP 404: http://localhost:8080/api/v1/waitorderservice/orders
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'enableBoughtDateQuery'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=152)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  ❌ API call failed with HTTP 404: http://localhost:8080/api/v1/waitorderservice/orders
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'enableBoughtDateQuery'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=152)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  ❌ API call failed with HTTP 404: http://localhost:8080/api/v1/waitorderservice/orders
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'enableBoughtDateQuery'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  ❌ API call failed with HTTP 404: http://localhost:8080/api/v1/waitorderservice/orders
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'enableBoughtDateQuery'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  ❌ API call failed with HTTP 404: http://localhost:8080/api/v1/waitorderservice/orders
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=152)
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'enableBoughtDateQuery'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  ❌ API call failed with HTTP 404: http://localhost:8080/api/v1/waitorderservice/orders
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'enableBoughtDateQuery'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  ❌ API call failed with HTTP 404: http://localhost:8080/api/v1/waitorderservice/orders
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'enableBoughtDateQuery'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  ❌ API call failed with HTTP 404: http://localhost:8080/api/v1/waitorderservice/orders
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'enableBoughtDateQuery'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  ❌ API call failed with HTTP 404: http://localhost:8080/api/v1/waitorderservice/orders
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'enableBoughtDateQuery'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  ❌ API call failed with HTTP 404: http://localhost:8080/api/v1/waitorderservice/orders
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'enableBoughtDateQuery'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  ❌ API call failed with HTTP 404: http://localhost:8080/api/v1/waitorderservice/orders
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'enableBoughtDateQuery'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=152)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  ❌ API call failed with HTTP 404: http://localhost:8080/api/v1/waitorderservice/orders
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=152)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'enableBoughtDateQuery'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  ❌ API call failed with HTTP 404: http://localhost:8080/api/v1/waitorderservice/orders
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'enableBoughtDateQuery'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  ❌ API call failed with HTTP 404: http://localhost:8080/api/v1/waitorderservice/orders
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'enableBoughtDateQuery'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  ❌ API call failed with HTTP 404: http://localhost:8080/api/v1/waitorderservice/orders
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'enableBoughtDateQuery'
+[2K[96m⠇[0m [90m[[0m[92m▍[0m[2m                           [0m[90m][0m [1m[33m  1%[0m  [96mPool Gen[0m [97m6/17[0m [2m(3/9)[0m[90m  · [0m[97m39:21[0mERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  ❌ API call failed with HTTP 503: http://localhost:8080/api/v1/adminuserservice/users
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'enableStateQuery'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  ❌ API call failed with HTTP 503: http://localhost:8080/api/v1/adminuserservice/users
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'enableStateQuery'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=152)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  ❌ API call failed with HTTP 503: http://localhost:8080/api/v1/adminuserservice/users
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'enableStateQuery'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  ❌ API call failed with HTTP 503: http://localhost:8080/api/v1/adminuserservice/users
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'enableStateQuery'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  ❌ API call failed with HTTP 503: http://localhost:8080/api/v1/adminuserservice/users
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'enableStateQuery'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  ❌ API call failed with HTTP 503: http://localhost:8080/api/v1/adminuserservice/users
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'enableStateQuery'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=152)
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  ❌ API call failed with HTTP 503: http://localhost:8080/api/v1/adminuserservice/users
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'enableStateQuery'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  ❌ API call failed with HTTP 503: http://localhost:8080/api/v1/adminuserservice/users
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'enableStateQuery'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  ❌ API call failed with HTTP 503: http://localhost:8080/api/v1/adminuserservice/users
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'enableStateQuery'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=152)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  ❌ API call failed with HTTP 503: http://localhost:8080/api/v1/adminuserservice/users
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'enableStateQuery'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=152)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  ❌ API call failed with HTTP 503: http://localhost:8080/api/v1/adminuserservice/users
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'enableStateQuery'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  ❌ API call failed with HTTP 503: http://localhost:8080/api/v1/adminuserservice/users
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'enableStateQuery'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  ❌ API call failed with HTTP 503: http://localhost:8080/api/v1/adminuserservice/users
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'enableStateQuery'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  ❌ API call failed with HTTP 503: http://localhost:8080/api/v1/adminuserservice/users
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'enableStateQuery'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=152)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  ❌ API call failed with HTTP 503: http://localhost:8080/api/v1/adminuserservice/users
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'enableStateQuery'
+[2K[96m⠏[0m [90m[[0m[92m▍[0m[2m                           [0m[90m][0m [1m[33m  1%[0m  [96mPool Gen[0m [97m6/17[0m [2m(4/9)[0m[90m  · [0m[97m40:36[0mERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'enableTravelDateQuery'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'enableTravelDateQuery'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'enableTravelDateQuery'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=152)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'enableTravelDateQuery'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'enableTravelDateQuery'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=152)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'enableTravelDateQuery'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=152)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'enableTravelDateQuery'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'enableTravelDateQuery'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'enableTravelDateQuery'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'enableTravelDateQuery'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'enableTravelDateQuery'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'enableTravelDateQuery'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'enableTravelDateQuery'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'enableTravelDateQuery'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'enableTravelDateQuery'
+[2K[96m⠋[0m [90m[[0m[92m▍[0m[2m                           [0m[90m][0m [1m[33m  1%[0m  [96mPool Gen[0m [97m6/17[0m [2m(5/9)[0m[90m  · [0m[97m43:09[0mERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  ❌ API call failed with HTTP 503: http://localhost:8080/api/v1/adminuserservice/users
+WARN  ❌ No mappings discovered for parameter 'loginId'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=152)
+[2K[96m⠙[0m [90m[[0m[92m▍[0m[2m                           [0m[90m][0m [1m[33m  1%[0m  [96mPool Gen[0m [97m6/17[0m [2m(6/9)[0m[90m  · [0m[97m43:09[0mERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'state'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'state'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=152)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'state'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'state'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'state'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'state'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'state'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'state'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'state'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=152)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'state'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'state'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=152)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=152)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'state'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=152)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'state'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'state'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'state'
+[2K[96m⠹[0m [90m[[0m[92m▍[0m[2m                           [0m[90m][0m [1m[33m  1%[0m  [96mPool Gen[0m [97m6/17[0m [2m(7/9)[0m[90m  · [0m[97m46:55[0mERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'travelDateEnd'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=152)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'travelDateEnd'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'travelDateEnd'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'travelDateEnd'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=152)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'travelDateEnd'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'travelDateEnd'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'travelDateEnd'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=152)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'travelDateEnd'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=152)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'travelDateEnd'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'travelDateEnd'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'travelDateEnd'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=152)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'travelDateEnd'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'travelDateEnd'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'travelDateEnd'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'travelDateEnd'
+[2K[96m⠸[0m [90m[[0m[92m▍[0m[2m                           [0m[90m][0m [1m[33m  1%[0m  [96mPool Gen[0m [97m6/17[0m [2m(8/9)[0m[90m  · [0m[97m49:25[0mERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'travelDateStart'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'travelDateStart'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=152)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=152)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'travelDateStart'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'travelDateStart'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'travelDateStart'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'travelDateStart'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'travelDateStart'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'travelDateStart'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'travelDateStart'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=152)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'travelDateStart'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'travelDateStart'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=152)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'travelDateStart'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'travelDateStart'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'travelDateStart'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'travelDateStart'
+[2K[96m⠼[0m [90m[[0m[92m▍[0m[2m                           [0m[90m][0m [1m[33m  1%[0m  [96mPool Gen[0m [97m6/17[0m [2m(9/9)[0m[90m  · [0m[97m51:56[0m[2K[96m⠴[0m [90m[[0m[92m▍[0m[2m                           [0m[90m][0m [1m[33m  1%[0m  [96mPool Gen[0m [97m6/17[0m[90m  · [0m[97m51:56[0m[2K[96m⠦[0m [90m[[0m[92m▍[0m[2m                           [0m[90m][0m [1m[33m  1%[0m  [96mPool Gen[0m [97m7/17[0m[90m  · [0m[97m51:56[0mWARN  No operation config for get /api/v1/verifycode/generate (service 'ts-verification-code-service') for root API: GET__api_v1_verifycode_generate
+[2K[96m⠧[0m [90m[[0m[92m▍[0m[2m                           [0m[90m][0m [1m[33m  1%[0m  [96mPool Gen[0m [97m8/17[0m[90m  · [0m[97m51:56[0m[2K[96m⠇[0m [90m[[0m[92m▍[0m[2m                           [0m[90m][0m [1m[33m  1%[0m  [96mPool Gen[0m [97m8/17[0m [2m(0/3)[0m[90m  · [0m[97m51:56[0mERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'departureTime'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=152)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'departureTime'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'departureTime'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'departureTime'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'departureTime'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'departureTime'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'departureTime'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'departureTime'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'departureTime'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'departureTime'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'departureTime'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'departureTime'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'departureTime'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'departureTime'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'departureTime'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=152)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'departureTime'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'departureTime'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=152)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'departureTime'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'departureTime'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'departureTime'
+[2K[96m⠏[0m [90m[[0m[92m▍[0m[2m                           [0m[90m][0m [1m[33m  1%[0m  [96mPool Gen[0m [97m8/17[0m [2m(1/3)[0m[90m  · [0m[97m53:36[0mERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'endPlace'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'endPlace'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'endPlace'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'endPlace'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'endPlace'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'endPlace'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'endPlace'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'endPlace'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'endPlace'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=152)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'endPlace'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'endPlace'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'endPlace'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'endPlace'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'endPlace'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'endPlace'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'endPlace'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'endPlace'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'endPlace'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'endPlace'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'endPlace'
+[2K[96m⠋[0m [90m[[0m[92m▍[0m[2m                           [0m[90m][0m [1m[33m  2%[0m  [96mPool Gen[0m [97m8/17[0m [2m(2/3)[0m[90m  · [0m[97m55:16[0mERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'startPlace'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'startPlace'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=152)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'startPlace'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=152)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=152)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'startPlace'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'startPlace'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=152)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'startPlace'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'startPlace'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'startPlace'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'startPlace'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'startPlace'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'startPlace'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'startPlace'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'startPlace'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'startPlace'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'startPlace'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'startPlace'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'startPlace'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'startPlace'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+WARN  LLM is disabled in configuration
+WARN  [Service Discovery LLM] LLM service returned null or empty result
+WARN  ❌ No mappings discovered for parameter 'startPlace'
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request
+ERROR ❌ Admin login failed with HTTP 503 (body redacted, length=153)
+WARN  ⚠️ No valid authentication token available for API request

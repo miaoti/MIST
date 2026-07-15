@@ -1,0 +1,7 @@
+[ttomni] leg=control n=1 jaeger.base.url=(unset)
+ERROR StatusConsoleListener Unable to rename file C:\Users\miaot\Github\MIST\logs\mist.log to C:\Users\miaot\Github\MIST\logs\mist_2026-07-15T03:39:17.010.log: java.nio.file.InvalidPathException Illegal char <:> at index 50: C:\Users\miaot\Github\MIST\logs\mist_2026-07-15T03:39:17.010.log
+ERROR MstAuthHandler: login failed - AssertionError: 1 expectation failed.
+Expected status code <200> but was <503>.
+
+Exception in thread "main" java.lang.IllegalStateException: reader auth login failed for ttor4726122
+	at io.mist.cli.g3.TtOmniObserveLeg.main(TtOmniObserveLeg.java:69)

@@ -1,0 +1,24 @@
+17:33:22 === M-yield driver start (10 seeds x 1h, MIST pin = main_track HEAD at launch) ===
+17:33:27 PF dead - restarting wsl kubectl port-forward 8080
+17:33:37 seed 20260714 START (props=mist-cli/src/main/resources/My-Example/ttomni-myield-s20260714.properties)
+18:33:37 seed 20260714 KILLED at the 1h wall budget (pinned; by design)
+18:33:37 seed 20260715 START (props=mist-cli/src/main/resources/My-Example/ttomni-myield-s20260715.properties)
+19:33:37 seed 20260715 KILLED at the 1h wall budget (pinned; by design)
+19:33:38 seed 20260716 START (props=mist-cli/src/main/resources/My-Example/ttomni-myield-s20260716.properties)
+20:33:38 seed 20260716 KILLED at the 1h wall budget (pinned; by design)
+20:33:38 seed 20260717 START (props=mist-cli/src/main/resources/My-Example/ttomni-myield-s20260717.properties)
+21:33:38 seed 20260717 KILLED at the 1h wall budget (pinned; by design)
+21:33:39 seed 20260718 START (props=mist-cli/src/main/resources/My-Example/ttomni-myield-s20260718.properties)
+22:33:39 seed 20260718 KILLED at the 1h wall budget (pinned; by design)
+22:33:39 seed 20260719 START (props=mist-cli/src/main/resources/My-Example/ttomni-myield-s20260719.properties)
+23:33:39 seed 20260719 KILLED at the 1h wall budget (pinned; by design)
+23:33:39 seed 20260720 START (props=mist-cli/src/main/resources/My-Example/ttomni-myield-s20260720.properties)
+00:22:58 seed 20260720 EXIT rc=
+00:23:02 PF dead - restarting wsl kubectl port-forward 8080
+00:23:12 seed 20260721 START (props=mist-cli/src/main/resources/My-Example/ttomni-myield-s20260721.properties)
+01:23:13 seed 20260721 KILLED at the 1h wall budget (pinned; by design)
+01:23:13 seed 20260722 START (props=mist-cli/src/main/resources/My-Example/ttomni-myield-s20260722.properties)
+02:23:13 seed 20260722 KILLED at the 1h wall budget (pinned; by design)
+02:23:13 seed 20260723 START (props=mist-cli/src/main/resources/My-Example/ttomni-myield-s20260723.properties)
+03:23:13 seed 20260723 KILLED at the 1h wall budget (pinned; by design)
+03:23:13 === M-yield driver DONE ===
