@@ -1,0 +1,357 @@
+testConfiguration:
+  services:
+    webui:
+    - expectedResponse: 200
+      method: post
+      operationId: cartAction
+      testPath: /tools.descartes.teastore.webui/cartAction
+      testParameters:
+      - name: confirm
+        in: query
+        weight: null
+        description: 'When set to ''Confirm'', places the order using the order-form
+          fields below (the corpus write path: POST cartAction?confirm=Confirm).'
+        type: string
+        required: false
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: length
+            values:
+            - '10'
+    - expectedResponse: 200
+      method: post
+      operationId: loginAction
+      testPath: /tools.descartes.teastore.webui/loginAction
+      testParameters: null
+    - expectedResponse: 200
+      method: get
+      operationId: getProfile
+      testPath: /tools.descartes.teastore.webui/profile
+      testParameters: null
+    persistence:
+    - expectedResponse: 200
+      method: get
+      operationId: listOrderItemsForOrder
+      testPath: /tools.descartes.teastore.persistence/rest/orderitems/order/{oid}
+      testParameters:
+      - name: oid
+        in: path
+        weight: null
+        description: Order id whose line items to return.
+        type: integer
+        format: int64
+        required: true
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: type
+            values:
+            - integer
+          - name: min
+            values:
+            - '1'
+          - name: max
+            values:
+            - '100'
+    - expectedResponse: 200
+      method: get
+      operationId: listOrders
+      testPath: /tools.descartes.teastore.persistence/rest/orders
+      testParameters:
+      - name: start
+        in: query
+        weight: null
+        description: Index of the first order to return (paging; -1 for all).
+        type: integer
+        format: int32
+        required: false
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: type
+            values:
+            - integer
+          - name: min
+            values:
+            - '1'
+          - name: max
+            values:
+            - '100'
+      - name: max
+        in: query
+        weight: null
+        description: Maximum number of orders to return (paging; -1 for all).
+        type: integer
+        format: int32
+        required: false
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: type
+            values:
+            - integer
+          - name: min
+            values:
+            - '1'
+          - name: max
+            values:
+            - '100'
+    - expectedResponse: 200
+      method: post
+      operationId: createOrder
+      testPath: /tools.descartes.teastore.persistence/rest/orders
+      testParameters:
+      - name: id
+        in: formData
+        weight: null
+        description: Order id.
+        type: integer
+        format: int64
+        required: true
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: type
+            values:
+            - integer
+          - name: min
+            values:
+            - '1'
+          - name: max
+            values:
+            - '100'
+      - name: userId
+        in: formData
+        weight: null
+        description: Id of the customer who placed the order.
+        type: integer
+        format: int64
+        required: true
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: type
+            values:
+            - integer
+          - name: min
+            values:
+            - '1'
+          - name: max
+            values:
+            - '100'
+      - name: time
+        in: formData
+        weight: null
+        description: Order timestamp as recorded by the store.
+        type: string
+        required: false
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: length
+            values:
+            - '10'
+      - name: totalPriceInCents
+        in: formData
+        weight: null
+        description: Order total in cents.
+        type: integer
+        format: int64
+        required: false
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: type
+            values:
+            - integer
+          - name: min
+            values:
+            - '1'
+          - name: max
+            values:
+            - '100'
+      - name: addressName
+        in: formData
+        weight: null
+        description: Recipient name on the order (first/last name from the order form;
+          carries the profile read-back marker).
+        type: string
+        required: false
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: length
+            values:
+            - '10'
+      - name: address1
+        in: formData
+        weight: null
+        description: Address line 1 on the order (carries the persistence read-back
+          membership marker).
+        type: string
+        required: false
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: length
+            values:
+            - '10'
+      - name: address2
+        in: formData
+        weight: null
+        description: Address line 2 on the order.
+        type: string
+        required: false
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: length
+            values:
+            - '10'
+      - name: creditCardCompany
+        in: formData
+        weight: null
+        description: Payment card type.
+        type: string
+        required: false
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: length
+            values:
+            - '10'
+      - name: creditCardNumber
+        in: formData
+        weight: null
+        description: Payment card number.
+        type: string
+        required: false
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: length
+            values:
+            - '10'
+      - name: creditCardExpiryDate
+        in: formData
+        weight: null
+        description: Payment card expiry.
+        type: string
+        required: false
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: length
+            values:
+            - '10'
+    - expectedResponse: 200
+      method: get
+      operationId: listOrdersForUser
+      testPath: /tools.descartes.teastore.persistence/rest/orders/user/{uid}
+      testParameters:
+      - name: uid
+        in: path
+        weight: null
+        description: User id whose orders to return.
+        type: integer
+        format: int64
+        required: true
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: type
+            values:
+            - integer
+          - name: min
+            values:
+            - '1'
+          - name: max
+            values:
+            - '100'
+    - expectedResponse: 200
+      method: get
+      operationId: listProducts
+      testPath: /tools.descartes.teastore.persistence/rest/products
+      testParameters:
+      - name: category
+        in: query
+        weight: null
+        description: Category id to filter by (optional).
+        type: integer
+        format: int64
+        required: false
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: type
+            values:
+            - integer
+          - name: min
+            values:
+            - '1'
+          - name: max
+            values:
+            - '100'
+      - name: start
+        in: query
+        weight: null
+        description: Index of the first product to return (paging; -1 for all).
+        type: integer
+        format: int32
+        required: false
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: type
+            values:
+            - integer
+          - name: min
+            values:
+            - '1'
+          - name: max
+            values:
+            - '100'
+      - name: max
+        in: query
+        weight: null
+        description: Maximum number of products to return (paging; -1 for all).
+        type: integer
+        format: int32
+        required: false
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: type
+            values:
+            - integer
+          - name: min
+            values:
+            - '1'
+          - name: max
+            values:
+            - '100'
+    - expectedResponse: 200
+      method: get
+      operationId: getProduct
+      testPath: /tools.descartes.teastore.persistence/rest/products/{pid}
+      testParameters:
+      - name: pid
+        in: path
+        weight: null
+        description: Product id.
+        type: integer
+        format: int64
+        required: true
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: type
+            values:
+            - integer
+          - name: min
+            values:
+            - '1'
+          - name: max
+            values:
+            - '100'

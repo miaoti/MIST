@@ -42,6 +42,17 @@ consumption; TeaStore's spec structurally excludes `/rest/generatedb`). `mist_au
 cost (tier/minutes) recorded for the 2 conf authorings. LLM-off; seeds `20260714+i`;
 **ONE wave-wide MIST pin** stamped per-run (B).
 
+**Phase-0 EXECUTION AMENDMENT (2026-07-15, dated — not silent): SEED TRACES.** MST
+generation REQUIRES Jaeger-JSON seed traces (`TraceWorkflowExtractor.extractScenarios`;
+no spec-only branch — verified in source). SS/Bookinfo/Boutique ship `traces/` dirs;
+the two enabled SUTs do not. Disposition (input-authoring, within the gate):
+**OTel** = capture 2-3 REAL seed traces at leg start from its OWN in-cluster jaeger
+(browse/cart/checkout journeys; committed to `evaluation/suts/oteldemo/traces/`);
+**TeaStore** (Kieker-only, no real Jaeger trace obtainable on this deploy) = AUTHOR one
+synthetic Jaeger-format seed trace encoding the canonical webui-browse + persistence-GET
+workflow — a DISCLOSED authored GENERATION INPUT (recorded under `mist_authoring`; a
+workflow seed, never evidence). Both dispositions reported in the RESULT.
+
 **Note (B):** tracked `evaluation/suts/{teastore,oteldemo}` triples files DO exist (swept
 into `bafc894`) — they are HARNESS-era artifacts (2.75-A custom-runner bindings), NOT
 pipeline-usable (per A's five reasons); the enablement table above reflects that reality.

@@ -1,0 +1,226 @@
+testConfiguration:
+  services:
+    cart:
+    - expectedResponse: 200
+      method: get
+      operationId: getCart
+      testPath: /api/cart
+      testParameters:
+      - name: sessionId
+        in: query
+        weight: null
+        description: Session/user id whose cart to return.
+        type: string
+        required: false
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: length
+            values:
+            - '10'
+      - name: currencyCode
+        in: query
+        weight: null
+        description: Currency code for price conversion (e.g. USD).
+        type: string
+        required: false
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: length
+            values:
+            - '10'
+    - expectedResponse: 200
+      method: post
+      operationId: addCartItem
+      testPath: /api/cart
+      testParameters:
+      - name: userId
+        in: formData
+        weight: null
+        description: Session/user id owning the cart.
+        type: string
+        required: false
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: length
+            values:
+            - '10'
+      - name: item
+        in: formData
+        weight: null
+        description: null
+        required: true
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: length
+            values:
+            - '10'
+    checkout:
+    - expectedResponse: 200
+      method: post
+      operationId: placeOrder
+      testPath: /api/checkout
+      testParameters:
+      - name: currencyCode
+        in: query
+        weight: null
+        description: Currency code for the order (e.g. USD).
+        type: string
+        required: false
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: length
+            values:
+            - '10'
+      - name: userId
+        in: formData
+        weight: null
+        description: Session/user id whose cart to check out.
+        type: string
+        required: false
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: length
+            values:
+            - '10'
+      - name: userCurrency
+        in: formData
+        weight: null
+        description: Currency code for the order.
+        type: string
+        required: false
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: length
+            values:
+            - '10'
+      - name: email
+        in: formData
+        weight: null
+        description: Contact email for the order.
+        type: string
+        required: true
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: length
+            values:
+            - '10'
+      - name: address
+        in: formData
+        weight: null
+        description: null
+        required: true
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: length
+            values:
+            - '10'
+      - name: creditCard
+        in: formData
+        weight: null
+        description: null
+        required: false
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: length
+            values:
+            - '10'
+    product:
+    - expectedResponse: 200
+      method: get
+      operationId: getProduct
+      testPath: /api/products/{id}
+      testParameters:
+      - name: id
+        in: path
+        weight: null
+        description: Product id (e.g. 0PUK6V6EV0).
+        type: string
+        required: true
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: length
+            values:
+            - '10'
+      - name: currencyCode
+        in: query
+        weight: null
+        description: Currency code for price conversion (e.g. USD).
+        type: string
+        required: false
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: length
+            values:
+            - '10'
+    recommendation:
+    - expectedResponse: 200
+      method: get
+      operationId: listRecommendations
+      testPath: /api/recommendations
+      testParameters:
+      - name: productIds
+        in: query
+        weight: null
+        description: Seed product ids currently in context.
+        type: array
+        required: false
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: length
+            values:
+            - '10'
+      - name: sessionId
+        in: query
+        weight: null
+        description: Session id to personalise recommendations.
+        type: string
+        required: false
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: length
+            values:
+            - '10'
+    shipping:
+    - expectedResponse: 200
+      method: get
+      operationId: getShippingQuote
+      testPath: /api/shipping
+      testParameters:
+      - name: itemList
+        in: query
+        weight: null
+        description: Cart items to quote (product ids and quantities).
+        type: string
+        required: false
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: length
+            values:
+            - '10'
+      - name: currencyCode
+        in: query
+        weight: null
+        description: Currency code for the quote (e.g. USD).
+        type: string
+        required: false
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: length
+            values:
+            - '10'
