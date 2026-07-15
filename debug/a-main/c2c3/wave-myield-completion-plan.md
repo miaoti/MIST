@@ -44,7 +44,7 @@ cost (tier/minutes) recorded for the 2 conf authorings. LLM-off; seeds `20260714
 
 **Note (B):** tracked `evaluation/suts/{teastore,oteldemo}` triples files DO exist (swept
 into `bafc894`) — they are HARNESS-era artifacts (2.75-A custom-runner bindings), NOT
-pipeline-usable (per A's six reasons); the enablement table above reflects that reality.
+pipeline-usable (per A's five reasons); the enablement table above reflects that reality.
 
 ## §2 Uniform run condition (the override block; C)
 
