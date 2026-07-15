@@ -6,7 +6,8 @@ BLOCKING) · B REVISE (3 BLOCKING) · C REQUEST-CHANGES (6 BLOCKING); ALL 15 fol
 User direction (2026-07-15): finish ALL experiments before drafting.
 
 **rev-2 headline changes:** (1) **NO pipeline DI triples for TeaStore/OTel — dead-by-construction
-without tool code** (A, six source-verified reasons: the writer emits `beforeWriteSupplied` only
+without tool code** (A, five source-verified reasons — the sixth blocking item was the
+missing smoke, a remedy, folded below: the writer emits `beforeWriteSupplied` only
 for path-segment keys so form/body-keyed supplied triples hard-error in `beforeWrite`; OTel's
 `{userId,items[]}` read-back shape is outside `extractItems`; TeaStore's form-urlencoded write
 breaks `freshen()`'s JSON assumption; a query-string `write_endpoint` never matches
@@ -18,7 +19,7 @@ The rev-1 "the pipeline triple binds the cart write" clause is DELETED. (2) **Si
 sequential legs** (B: co-fit was proven only IDLE; under-load co-residency is the wedge regime)
 — each SUT runs ALONE. (3) **Mandatory pre-run smokes**: per-SUT 5-min pipeline smoke +
 for SS a BINDING smoke proving the shipping triple hooks ≥1 generated step (the
-armed-but-uncovered lesson). (4) **Uniform oracle-condition override block** across all 5
+armed-but-uncovered lesson; hardened with a mist.log `DataIntegrity[` record assertion — A'-residual). (4) **Uniform oracle-condition override block** across all 5
 SUTs (C: the G-era per-SUT profiles carry hidden-downstream/jaeger oracles that would
 error with no jaeger deployed): LLM-off + `jaeger.enabled=false` + trace-dependent oracles
 OFF + base.url + seed + experiment.name — the SAME disclosed condition as the TT leg.
