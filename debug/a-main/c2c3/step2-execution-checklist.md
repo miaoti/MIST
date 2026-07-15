@@ -249,8 +249,17 @@ Sources consolidated: plan v2 §5, `c2-freeze.md` rev 2, `e-sut-applicability-ma
   G1). Machine spec + exclusivity per "No Time to Rest Yet".
 
 ## Step 4 — M-yield (1 h × 10 seeds spec-rich tier; 1 h × 3 thin; LLM-off disclosed)
+◐ **TT LEG EXECUTED (TT-omnibus 2026-07-15, `RESULT-tt-omnibus.md`):** 10 seeds × 1 h, LLM-off,
+  canonical registry armed; 1 natural-complete (2707/2707) + 9 killed-at-budget; **flagged events = 0**
+  (DI observe 0 across seeds — hooked steps never covered the 2 registry triples in-budget; injected-fault
+  detection 0/10 on the complete seed; killed seeds' Allure outcomes lost to per-seed wipes — disclosed);
+  clustering vacuously satisfied at 0 flags; NO yield statistic (rater-gated). Seeds 8-10 degraded =
+  the overnight nacos double-restart (environment artifact, root-caused + disclosed). **REMAINING =
+  the named M-YIELD-COMPLETION window:** TeaStore/OTel 2.75 enablement (+ mist_authoring cost) +
+  SS/Bookinfo/Boutique thin legs.
 ☐ Event→case clustering (endpoint × fault-signature × SUT); 1 representative + 10% audit sample →
   feeds the rater M-yield audit set (B-M3). Upstream filings for genuine finds DURING execution.
+  (Convention frozen at `ttomni-phase0-protocol.md` (b); vacuous at the TT leg's 0 flags.)
 
 ## Step 5 — M-prevalence + S3 (rater-gated ∥)
 ☐ Wild detectors: (i) trace-shape masking oracle on instrumented SUTs; (ii) single-leg read-back
@@ -283,7 +292,14 @@ Sources consolidated: plan v2 §5, `c2-freeze.md` rev 2, `e-sut-applicability-ma
   trace-invisible-by-construction = its own N-vs-0 row; NOT_EVALUABLE its own bucket.
 ☐ **E2-results ≥3-cold-review at this step's acceptance gate (plan §6 — B-MAJOR).**
 
-## Step 7 — E5 ablations (TT ×5 seeds; 3–4 d). Step 8 — E6 packaging + review
+## Step 7 — E5 ablations (TT ×5 seeds; 3–4 d) — ✔ EXECUTED at the pinned one-SUT-pair scope
+✔ **(TT-omnibus 2026-07-15, `RESULT-tt-omnibus.md`):** exact-4 OAT × 5 reps on the cancel-refund
+  pair, ALL UNIFORM — C0 paired FIRE · C3 (2× cap) FIRE (permanence: cap size irrelevant) ·
+  C1 observe+jaeger fault=OBSERVED_COMPLETE_ABSENT · C2 observe−jaeger fault=TIMEOUT_ABSENT;
+  **A2 (trace gate) = the only verdict-tier-moving axis, 5/5.** Config-only axes; re-probe +
+  value-delta excluded-by-name (no toggles). Evidence `b4/ttomni/leg3/`.
+
+## Step 8 — E6 packaging + review
 ☐ E6: standalone benchmark repo (Apache-2.0 + CC-BY-4.0 + component map; MIST by reference LGPL);
   index.generated + MANIFEST.sha256; large artifacts → Zenodo/OSF by hash; scoring-harness home +
   license decided (B-m4). (MIST study-commit pin: DONE back at 1.9.5 — verify all recorded verdicts
@@ -293,7 +309,10 @@ Sources consolidated: plan v2 §5, `c2-freeze.md` rev 2, `e-sut-applicability-ma
 
 ## Standing constraints (never forget)
 - Single box; 26 GB WSL for TT; tenancy schedule; never build while a graph is deployed; docker-exec
-  recovery runbook; disk prune per wave; kind cluster "mist": TT up (53 pods), sockshop + bookinfo scaled to 0/absent (C-B2 live-verified), minikube stopped.
+  recovery runbook; disk prune per wave; kind cluster "mist" **(footer refreshed 2026-07-15,
+  TT-omnibus C-12 rider): ALL tenants at 0 (trainticket incl. infra sts, otel-demo, teastore;
+  PVCs + helm releases persist; snapshots in /home/miaot/gate1-logs/ttomni/), minikube stopped;
+  revival = `b4/runners/ttomni/revive-stage.sh` (TT full-graph) / per-SUT snapshots.**
 - All MIST-repo changes on `main_track`; no Co-Authored-By; no file deletion; FILE_INDEX + memory sync.
 - Frozen docs change only via disclosed amendments (`c2-freeze.md` §6).
 - Paper honesty riders: lead with the study; two-denominator S1; tell-free floor; MIST vs arm-3
