@@ -1,6 +1,11 @@
-ERROR StatusConsoleListener Unable to rename file C:\Users\miaot\Github\MIST\logs\mist.log to C:\Users\miaot\Github\MIST\logs\mist_2026-07-15T03:37:10.500.log: java.nio.file.InvalidPathException Illegal char <:> at index 50: C:\Users\miaot\Github\MIST\logs\mist_2026-07-15T03:37:10.500.log
-ERROR MstAuthHandler: login failed - AssertionError: 1 expectation failed.
-Expected status code <200> but was <503>.
+ERROR StatusConsoleListener Unable to rename file C:\Users\miaot\Github\MIST\logs\mist.log to C:\Users\miaot\Github\MIST\logs\mist_2026-07-15T11:08:30.908.log: java.nio.file.InvalidPathException Illegal char <:> at index 50: C:\Users\miaot\Github\MIST\logs\mist_2026-07-15T11:08:30.908.log
 
-Exception in thread "main" java.lang.IllegalStateException: read-back auth login failed for reader g3rdr4599162 — /account read-back would be unauthenticated
-	at io.mist.cli.g3.TrainTicketStimulus.main(TrainTicketStimulus.java:72)
+=== stratum: constructed ===
+  MIST B2 (differential value-delta): FIRE
+      fault run acknowledged X (http 200, body status 1) but X is absent from its own read-back (18 poll(s), gate TIMEOUT_ABSENT); control's X persisted — acknowledged-but-lost write
+  Comparator (frozen response contract): control flagged=false, fault flagged=false  -> MISSED
+  claim-eligibility: joinMode=correlator, correlatorUnique=true
+  value-delta probe (buyer /account balance, evidence only):
+      control baseline=50.00 -> final=130.00
+      fault   baseline=50.00 -> final=50.00
+  cancel trace-ids (out-of-band trace-score selection): control=281d39aee63d86047f1f12d6f2fa2d41 fault=b9f268e699549ec9507bdb1ee510636d

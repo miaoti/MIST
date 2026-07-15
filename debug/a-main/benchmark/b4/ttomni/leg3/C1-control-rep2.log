@@ -1,0 +1,5 @@
+[ttomni] leg=control n=1 jaeger.base.url=http://localhost:16686/jaeger/api
+ERROR StatusConsoleListener Unable to rename file C:\Users\miaot\Github\MIST\logs\mist.log to C:\Users\miaot\Github\MIST\logs\mist_2026-07-15T11:11:11.895.log: java.nio.file.InvalidPathException Illegal char <:> at index 50: C:\Users\miaot\Github\MIST\logs\mist_2026-07-15T11:11:11.895.log
+[ttomni] run 1/1 leg=control ack=200 traceId=b32dc69b39b2109f1bc1e1ca314e2ebf
+[ttomni] ===== observe RunRecords leg=control (1) =====
+[ttomni] step=GET /api/v1/cancelservice/cancel/{orderId}/{loginId} acked=true ackHttp=200/1 baselineContainedX=false readbackContainedX=true gate=OBSERVED_PRESENT polls=1 elapsedMs=31

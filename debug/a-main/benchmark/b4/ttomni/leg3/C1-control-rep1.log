@@ -1,7 +1,5 @@
 [ttomni] leg=control n=1 jaeger.base.url=http://localhost:16686/jaeger/api
-ERROR StatusConsoleListener Unable to rename file C:\Users\miaot\Github\MIST\logs\mist.log to C:\Users\miaot\Github\MIST\logs\mist_2026-07-15T03:38:13.860.log: java.nio.file.InvalidPathException Illegal char <:> at index 50: C:\Users\miaot\Github\MIST\logs\mist_2026-07-15T03:38:13.860.log
-ERROR MstAuthHandler: login failed - AssertionError: 1 expectation failed.
-Expected status code <200> but was <503>.
-
-Exception in thread "main" java.lang.IllegalStateException: reader auth login failed for ttor4662845
-	at io.mist.cli.g3.TtOmniObserveLeg.main(TtOmniObserveLeg.java:69)
+ERROR StatusConsoleListener Unable to rename file C:\Users\miaot\Github\MIST\logs\mist.log to C:\Users\miaot\Github\MIST\logs\mist_2026-07-15T11:09:17.647.log: java.nio.file.InvalidPathException Illegal char <:> at index 50: C:\Users\miaot\Github\MIST\logs\mist_2026-07-15T11:09:17.647.log
+[ttomni] run 1/1 leg=control ack=200 traceId=9d7ac09f8f104e55e022ebe4402285e7
+[ttomni] ===== observe RunRecords leg=control (1) =====
+[ttomni] step=GET /api/v1/cancelservice/cancel/{orderId}/{loginId} acked=true ackHttp=200/1 baselineContainedX=false readbackContainedX=true gate=OBSERVED_PRESENT polls=1 elapsedMs=46
