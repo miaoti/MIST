@@ -1,0 +1,412 @@
+ERROR StatusConsoleListener Unable to rename file C:\Users\miaot\Github\MIST\logs\mist.log to C:\Users\miaot\Github\MIST\logs\mist_2026-07-15T18:10:27.109.log: java.nio.file.InvalidPathException Illegal char <:> at index 50: C:\Users\miaot\Github\MIST\logs\mist_2026-07-15T18:10:27.109.log
+
+  ╔════════════════════════════════════════════════════════════╗
+  ║                                                            ║
+  ║     ███╗   ███╗██╗███████╗████████╗                        ║
+  ║     ████╗ ████║██║██╔════╝╚══██╔══╝                        ║
+  ║     ██╔████╔██║██║███████╗   ██║                           ║
+  ║     ██║╚██╔╝██║██║╚════██║   ██║                           ║
+  ║     ██║ ╚═╝ ██║██║███████║   ██║                           ║
+  ║     ╚═╝     ╚═╝╚═╝╚══════╝   ╚═╝                           ║
+  ║                                                            ║
+  ║     Microservice Integration & Scenario Tester             ║
+  ║     v1.6.0-SNAPSHOT                                       ║
+  ║                                                            ║
+  ╚════════════════════════════════════════════════════════════╝
+
+WARN  [MIST] ablation profile: [oracle:on (span,status,response | timing:off) bandit:on faultmining:off]
+WARN  Root API Registry path not configured. Set 'root.api.registry.path' property to enable registry.
+WARN  ❌ Smart Input Fetching is DISABLED - enable it by setting smart.input.fetch.enabled=true in the MST configuration file
+WARN  ❌ No smart input fetching properties found, using traditional LLM generation only
+WARN     Make sure properties like 'smart.input.fetch.enabled=true' are in your properties file
+▶ Step 1/5: Pool Gen (1 items)
+[2K[96m⠙[0m [90m[[0m[92m[0m[2m                            [0m[90m][0m [1m[33m  0%[0m  [96mPool Gen[0m [97m0/1[0m[90m  · [0m[97m0s[0mWARN  No operation config for get /tools/descartes/teastore/webui/ (service 'webui') for root API: GET__tools_descartes_teastore_webui_
+[2K[96m⠹[0m [90m[[0m[92m▉[0m[2m                           [0m[90m][0m [1m[33m  3%[0m  [96mPool Gen[0m [97m1/1[0m[90m  · [0m[97m0s[0m[90m → [0m[97m0s[0m
+▶ Step 2/5: Faulty Pools (1 items)
+[2K[96m⠸[0m [90m[[0m[92m▉[0m[2m                           [0m[90m][0m [1m[33m  3%[0m  [96mFaulty Pools[0m [97m0/1[0m[90m  · [0m[97m0s[0m[90m → [0m[97m0s[0m[2K[96m⠼[0m [90m[[0m[92m██▊[0m[2m                         [0m[90m][0m [1m[33m 10%[0m  [96mFaulty Pools[0m [97m1/1[0m[90m  · [0m[97m0s[0m[90m → [0m[97m0s[0m
+▶ Step 3/5: Variants (1 items)
+[2K[96m⠴[0m [90m[[0m[92m██▊[0m[2m                         [0m[90m][0m [1m[33m 10%[0m  [96mVariants[0m [97m0/1[0m[90m  · [0m[97m0s[0m[90m → [0m[97m0s[0m▶ Step 3/5: Variants (100 items)
+[2K[96m⠦[0m [90m[[0m[92m██▊[0m[2m                         [0m[90m][0m [1m[33m 10%[0m  [96mVariants[0m [97m0/1[0m [2m(0/100)[0m[90m  · [0m[97m0s[0m[90m → [0m[97m0s[0mWARN  No Operation config get /tools.descartes.teastore.webui/ in service 'webui' (step R1)
+ERROR [OpenAI-compatible LLM] Error calling OpenAI-compatible API: Failed to connect to localhost/[0:0:0:0:0:0:0:1]:4891
+java.net.ConnectException: Failed to connect to localhost/[0:0:0:0:0:0:0:1]:4891
+	at okhttp3.internal.connection.RealConnection.connectSocket(RealConnection.kt:297) ~[okhttp-4.10.0.jar:?]
+	at okhttp3.internal.connection.RealConnection.connect(RealConnection.kt:207) ~[okhttp-4.10.0.jar:?]
+	at okhttp3.internal.connection.ExchangeFinder.findConnection(ExchangeFinder.kt:226) ~[okhttp-4.10.0.jar:?]
+	at okhttp3.internal.connection.ExchangeFinder.findHealthyConnection(ExchangeFinder.kt:106) ~[okhttp-4.10.0.jar:?]
+	at okhttp3.internal.connection.ExchangeFinder.find(ExchangeFinder.kt:74) ~[okhttp-4.10.0.jar:?]
+	at okhttp3.internal.connection.RealCall.initExchange$okhttp(RealCall.kt:255) ~[okhttp-4.10.0.jar:?]
+	at okhttp3.internal.connection.ConnectInterceptor.intercept(ConnectInterceptor.kt:32) ~[okhttp-4.10.0.jar:?]
+	at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.kt:109) ~[okhttp-4.10.0.jar:?]
+	at okhttp3.internal.cache.CacheInterceptor.intercept(CacheInterceptor.kt:95) ~[okhttp-4.10.0.jar:?]
+	at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.kt:109) ~[okhttp-4.10.0.jar:?]
+	at okhttp3.internal.http.BridgeInterceptor.intercept(BridgeInterceptor.kt:83) ~[okhttp-4.10.0.jar:?]
+	at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.kt:109) ~[okhttp-4.10.0.jar:?]
+	at okhttp3.internal.http.RetryAndFollowUpInterceptor.intercept(RetryAndFollowUpInterceptor.kt:76) ~[okhttp-4.10.0.jar:?]
+	at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.kt:109) ~[okhttp-4.10.0.jar:?]
+	at okhttp3.internal.connection.RealCall.getResponseWithInterceptorChain$okhttp(RealCall.kt:201) ~[okhttp-4.10.0.jar:?]
+	at okhttp3.internal.connection.RealCall.execute(RealCall.kt:154) ~[okhttp-4.10.0.jar:?]
+	at io.mist.llm.LLMService.generateWithOpenAICompatible(LLMService.java:454) [mist-llm-1.6.0-SNAPSHOT.jar:?]
+	at io.mist.llm.LLMService.generateText(LLMService.java:234) [mist-llm-1.6.0-SNAPSHOT.jar:?]
+	at io.mist.core.generation.ZeroShotLLMGenerator.callLLM(ZeroShotLLMGenerator.java:991) [classes/:?]
+	at io.mist.core.generation.ZeroShotLLMGenerator.generateParameterValues(ZeroShotLLMGenerator.java:126) [classes/:?]
+	at io.mist.core.generation.AiDrivenLLMGenerator.generateParameterValues(AiDrivenLLMGenerator.java:26) [classes/:?]
+	at io.mist.core.generation.MistGenerator.traverse(MistGenerator.java:1268) [classes/:?]
+	at io.mist.core.generation.MistGenerator.gotoChildren(MistGenerator.java:2321) [classes/:?]
+	at io.mist.core.generation.MistGenerator.traverse(MistGenerator.java:1049) [classes/:?]
+	at io.mist.core.generation.MistGenerator.generateScenarioVariants(MistGenerator.java:785) [classes/:?]
+	at io.mist.core.generation.MistGenerator.generate(MistGenerator.java:558) [classes/:?]
+	at io.mist.cli.MistRunner.runSinglePhasePipeline(MistRunner.java:525) [classes/:?]
+	at io.mist.cli.MistRunner.runSinglePhasePipeline(MistRunner.java:514) [classes/:?]
+	at io.mist.cli.MistRunner.run(MistRunner.java:399) [classes/:?]
+	at io.mist.cli.MistMain.main(MistMain.java:189) [classes/:?]
+	Suppressed: java.net.ConnectException: Failed to connect to localhost/127.0.0.1:4891
+		at okhttp3.internal.connection.RealConnection.connectSocket(RealConnection.kt:297) ~[okhttp-4.10.0.jar:?]
+		at okhttp3.internal.connection.RealConnection.connect(RealConnection.kt:207) ~[okhttp-4.10.0.jar:?]
+		at okhttp3.internal.connection.ExchangeFinder.findConnection(ExchangeFinder.kt:226) ~[okhttp-4.10.0.jar:?]
+		at okhttp3.internal.connection.ExchangeFinder.findHealthyConnection(ExchangeFinder.kt:106) ~[okhttp-4.10.0.jar:?]
+		at okhttp3.internal.connection.ExchangeFinder.find(ExchangeFinder.kt:74) ~[okhttp-4.10.0.jar:?]
+		at okhttp3.internal.connection.RealCall.initExchange$okhttp(RealCall.kt:255) ~[okhttp-4.10.0.jar:?]
+		at okhttp3.internal.connection.ConnectInterceptor.intercept(ConnectInterceptor.kt:32) ~[okhttp-4.10.0.jar:?]
+		at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.kt:109) ~[okhttp-4.10.0.jar:?]
+		at okhttp3.internal.cache.CacheInterceptor.intercept(CacheInterceptor.kt:95) ~[okhttp-4.10.0.jar:?]
+		at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.kt:109) ~[okhttp-4.10.0.jar:?]
+		at okhttp3.internal.http.BridgeInterceptor.intercept(BridgeInterceptor.kt:83) ~[okhttp-4.10.0.jar:?]
+		at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.kt:109) ~[okhttp-4.10.0.jar:?]
+		at okhttp3.internal.http.RetryAndFollowUpInterceptor.intercept(RetryAndFollowUpInterceptor.kt:76) ~[okhttp-4.10.0.jar:?]
+		at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.kt:109) ~[okhttp-4.10.0.jar:?]
+		at okhttp3.internal.connection.RealCall.getResponseWithInterceptorChain$okhttp(RealCall.kt:201) ~[okhttp-4.10.0.jar:?]
+		at okhttp3.internal.connection.RealCall.execute(RealCall.kt:154) ~[okhttp-4.10.0.jar:?]
+		at io.mist.llm.LLMService.generateWithOpenAICompatible(LLMService.java:454) [mist-llm-1.6.0-SNAPSHOT.jar:?]
+		at io.mist.llm.LLMService.generateText(LLMService.java:234) [mist-llm-1.6.0-SNAPSHOT.jar:?]
+		at io.mist.core.generation.ZeroShotLLMGenerator.callLLM(ZeroShotLLMGenerator.java:991) [classes/:?]
+		at io.mist.core.generation.ZeroShotLLMGenerator.generateParameterValues(ZeroShotLLMGenerator.java:126) [classes/:?]
+		at io.mist.core.generation.AiDrivenLLMGenerator.generateParameterValues(AiDrivenLLMGenerator.java:26) [classes/:?]
+		at io.mist.core.generation.MistGenerator.traverse(MistGenerator.java:1268) [classes/:?]
+		at io.mist.core.generation.MistGenerator.gotoChildren(MistGenerator.java:2321) [classes/:?]
+		at io.mist.core.generation.MistGenerator.traverse(MistGenerator.java:1049) [classes/:?]
+		at io.mist.core.generation.MistGenerator.generateScenarioVariants(MistGenerator.java:785) [classes/:?]
+		at io.mist.core.generation.MistGenerator.generate(MistGenerator.java:558) [classes/:?]
+		at io.mist.cli.MistRunner.runSinglePhasePipeline(MistRunner.java:525) [classes/:?]
+		at io.mist.cli.MistRunner.runSinglePhasePipeline(MistRunner.java:514) [classes/:?]
+		at io.mist.cli.MistRunner.run(MistRunner.java:399) [classes/:?]
+		at io.mist.cli.MistMain.main(MistMain.java:189) [classes/:?]
+	Caused by: java.net.ConnectException: Connection refused: connect
+		at sun.nio.ch.Net.connect0(Native Method) ~[?:?]
+		at sun.nio.ch.Net.connect(Net.java:597) ~[?:?]
+		at sun.nio.ch.Net.connect(Net.java:586) ~[?:?]
+		at sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:583) ~[?:?]
+		at java.net.SocksSocketImpl.connect(SocksSocketImpl.java:327) ~[?:?]
+		at java.net.Socket.connect(Socket.java:751) ~[?:?]
+		at okhttp3.internal.platform.Platform.connectSocket(Platform.kt:128) ~[okhttp-4.10.0.jar:?]
+		at okhttp3.internal.connection.RealConnection.connectSocket(RealConnection.kt:295) ~[okhttp-4.10.0.jar:?]
+		... 29 more
+Caused by: java.net.ConnectException: Connection refused: connect
+	at sun.nio.ch.Net.connect0(Native Method) ~[?:?]
+	at sun.nio.ch.Net.connect(Net.java:597) ~[?:?]
+	at sun.nio.ch.Net.connect(Net.java:586) ~[?:?]
+	at sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:583) ~[?:?]
+	at java.net.SocksSocketImpl.connect(SocksSocketImpl.java:327) ~[?:?]
+	at java.net.Socket.connect(Socket.java:751) ~[?:?]
+	at okhttp3.internal.platform.Platform.connectSocket(Platform.kt:128) ~[okhttp-4.10.0.jar:?]
+	at okhttp3.internal.connection.RealConnection.connectSocket(RealConnection.kt:295) ~[okhttp-4.10.0.jar:?]
+	... 29 more
+WARN  [LLM] Primary OPENAI_COMPATIBLE returned null — falling back to Ollama for this call
+WARN  [Ollama API] Request failed on attempt 1/3: Failed to connect to localhost/[0:0:0:0:0:0:0:1]:11434. Retrying...
+WARN  [Ollama API] Request failed on attempt 2/3: Failed to connect to localhost/[0:0:0:0:0:0:0:1]:11434. Retrying...
+ERROR [Ollama API] Error calling Ollama API after 3 attempts: Failed to connect to localhost/[0:0:0:0:0:0:0:1]:11434
+java.net.ConnectException: Failed to connect to localhost/[0:0:0:0:0:0:0:1]:11434
+	at okhttp3.internal.connection.RealConnection.connectSocket(RealConnection.kt:297) ~[okhttp-4.10.0.jar:?]
+	at okhttp3.internal.connection.RealConnection.connect(RealConnection.kt:207) ~[okhttp-4.10.0.jar:?]
+	at okhttp3.internal.connection.ExchangeFinder.findConnection(ExchangeFinder.kt:226) ~[okhttp-4.10.0.jar:?]
+	at okhttp3.internal.connection.ExchangeFinder.findHealthyConnection(ExchangeFinder.kt:106) ~[okhttp-4.10.0.jar:?]
+	at okhttp3.internal.connection.ExchangeFinder.find(ExchangeFinder.kt:74) ~[okhttp-4.10.0.jar:?]
+	at okhttp3.internal.connection.RealCall.initExchange$okhttp(RealCall.kt:255) ~[okhttp-4.10.0.jar:?]
+	at okhttp3.internal.connection.ConnectInterceptor.intercept(ConnectInterceptor.kt:32) ~[okhttp-4.10.0.jar:?]
+	at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.kt:109) ~[okhttp-4.10.0.jar:?]
+	at okhttp3.internal.cache.CacheInterceptor.intercept(CacheInterceptor.kt:95) ~[okhttp-4.10.0.jar:?]
+	at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.kt:109) ~[okhttp-4.10.0.jar:?]
+	at okhttp3.internal.http.BridgeInterceptor.intercept(BridgeInterceptor.kt:83) ~[okhttp-4.10.0.jar:?]
+	at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.kt:109) ~[okhttp-4.10.0.jar:?]
+	at okhttp3.internal.http.RetryAndFollowUpInterceptor.intercept(RetryAndFollowUpInterceptor.kt:76) ~[okhttp-4.10.0.jar:?]
+	at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.kt:109) ~[okhttp-4.10.0.jar:?]
+	at okhttp3.internal.connection.RealCall.getResponseWithInterceptorChain$okhttp(RealCall.kt:201) ~[okhttp-4.10.0.jar:?]
+	at okhttp3.internal.connection.RealCall.execute(RealCall.kt:154) ~[okhttp-4.10.0.jar:?]
+	at io.mist.llm.OllamaApiClient.generateContentWithRetry(OllamaApiClient.java:121) [mist-llm-1.6.0-SNAPSHOT.jar:?]
+	at io.mist.llm.OllamaApiClient.generateContent(OllamaApiClient.java:57) [mist-llm-1.6.0-SNAPSHOT.jar:?]
+	at io.mist.llm.LLMService.generateWithOllama(LLMService.java:519) [mist-llm-1.6.0-SNAPSHOT.jar:?]
+	at io.mist.llm.LLMService.generateText(LLMService.java:258) [mist-llm-1.6.0-SNAPSHOT.jar:?]
+	at io.mist.core.generation.ZeroShotLLMGenerator.callLLM(ZeroShotLLMGenerator.java:991) [classes/:?]
+	at io.mist.core.generation.ZeroShotLLMGenerator.generateParameterValues(ZeroShotLLMGenerator.java:126) [classes/:?]
+	at io.mist.core.generation.AiDrivenLLMGenerator.generateParameterValues(AiDrivenLLMGenerator.java:26) [classes/:?]
+	at io.mist.core.generation.MistGenerator.traverse(MistGenerator.java:1268) [classes/:?]
+	at io.mist.core.generation.MistGenerator.gotoChildren(MistGenerator.java:2321) [classes/:?]
+	at io.mist.core.generation.MistGenerator.traverse(MistGenerator.java:1049) [classes/:?]
+	at io.mist.core.generation.MistGenerator.generateScenarioVariants(MistGenerator.java:785) [classes/:?]
+	at io.mist.core.generation.MistGenerator.generate(MistGenerator.java:558) [classes/:?]
+	at io.mist.cli.MistRunner.runSinglePhasePipeline(MistRunner.java:525) [classes/:?]
+	at io.mist.cli.MistRunner.runSinglePhasePipeline(MistRunner.java:514) [classes/:?]
+	at io.mist.cli.MistRunner.run(MistRunner.java:399) [classes/:?]
+	at io.mist.cli.MistMain.main(MistMain.java:189) [classes/:?]
+	Suppressed: java.net.ConnectException: Failed to connect to localhost/127.0.0.1:11434
+		at okhttp3.internal.connection.RealConnection.connectSocket(RealConnection.kt:297) ~[okhttp-4.10.0.jar:?]
+		at okhttp3.internal.connection.RealConnection.connect(RealConnection.kt:207) ~[okhttp-4.10.0.jar:?]
+		at okhttp3.internal.connection.ExchangeFinder.findConnection(ExchangeFinder.kt:226) ~[okhttp-4.10.0.jar:?]
+		at okhttp3.internal.connection.ExchangeFinder.findHealthyConnection(ExchangeFinder.kt:106) ~[okhttp-4.10.0.jar:?]
+		at okhttp3.internal.connection.ExchangeFinder.find(ExchangeFinder.kt:74) ~[okhttp-4.10.0.jar:?]
+		at okhttp3.internal.connection.RealCall.initExchange$okhttp(RealCall.kt:255) ~[okhttp-4.10.0.jar:?]
+		at okhttp3.internal.connection.ConnectInterceptor.intercept(ConnectInterceptor.kt:32) ~[okhttp-4.10.0.jar:?]
+		at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.kt:109) ~[okhttp-4.10.0.jar:?]
+		at okhttp3.internal.cache.CacheInterceptor.intercept(CacheInterceptor.kt:95) ~[okhttp-4.10.0.jar:?]
+		at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.kt:109) ~[okhttp-4.10.0.jar:?]
+		at okhttp3.internal.http.BridgeInterceptor.intercept(BridgeInterceptor.kt:83) ~[okhttp-4.10.0.jar:?]
+		at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.kt:109) ~[okhttp-4.10.0.jar:?]
+		at okhttp3.internal.http.RetryAndFollowUpInterceptor.intercept(RetryAndFollowUpInterceptor.kt:76) ~[okhttp-4.10.0.jar:?]
+		at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.kt:109) ~[okhttp-4.10.0.jar:?]
+		at okhttp3.internal.connection.RealCall.getResponseWithInterceptorChain$okhttp(RealCall.kt:201) ~[okhttp-4.10.0.jar:?]
+		at okhttp3.internal.connection.RealCall.execute(RealCall.kt:154) ~[okhttp-4.10.0.jar:?]
+		at io.mist.llm.OllamaApiClient.generateContentWithRetry(OllamaApiClient.java:121) [mist-llm-1.6.0-SNAPSHOT.jar:?]
+		at io.mist.llm.OllamaApiClient.generateContent(OllamaApiClient.java:57) [mist-llm-1.6.0-SNAPSHOT.jar:?]
+		at io.mist.llm.LLMService.generateWithOllama(LLMService.java:519) [mist-llm-1.6.0-SNAPSHOT.jar:?]
+		at io.mist.llm.LLMService.generateText(LLMService.java:258) [mist-llm-1.6.0-SNAPSHOT.jar:?]
+		at io.mist.core.generation.ZeroShotLLMGenerator.callLLM(ZeroShotLLMGenerator.java:991) [classes/:?]
+		at io.mist.core.generation.ZeroShotLLMGenerator.generateParameterValues(ZeroShotLLMGenerator.java:126) [classes/:?]
+		at io.mist.core.generation.AiDrivenLLMGenerator.generateParameterValues(AiDrivenLLMGenerator.java:26) [classes/:?]
+		at io.mist.core.generation.MistGenerator.traverse(MistGenerator.java:1268) [classes/:?]
+		at io.mist.core.generation.MistGenerator.gotoChildren(MistGenerator.java:2321) [classes/:?]
+		at io.mist.core.generation.MistGenerator.traverse(MistGenerator.java:1049) [classes/:?]
+		at io.mist.core.generation.MistGenerator.generateScenarioVariants(MistGenerator.java:785) [classes/:?]
+		at io.mist.core.generation.MistGenerator.generate(MistGenerator.java:558) [classes/:?]
+		at io.mist.cli.MistRunner.runSinglePhasePipeline(MistRunner.java:525) [classes/:?]
+		at io.mist.cli.MistRunner.runSinglePhasePipeline(MistRunner.java:514) [classes/:?]
+		at io.mist.cli.MistRunner.run(MistRunner.java:399) [classes/:?]
+		at io.mist.cli.MistMain.main(MistMain.java:189) [classes/:?]
+	Caused by: java.net.ConnectException: Connection refused: getsockopt
+		at sun.nio.ch.Net.pollConnect(Native Method) ~[?:?]
+		at sun.nio.ch.Net.pollConnectNow(Net.java:690) ~[?:?]
+		at sun.nio.ch.NioSocketImpl.timedFinishConnect(NioSocketImpl.java:542) ~[?:?]
+		at sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:592) ~[?:?]
+		at java.net.SocksSocketImpl.connect(SocksSocketImpl.java:327) ~[?:?]
+		at java.net.Socket.connect(Socket.java:751) ~[?:?]
+		at okhttp3.internal.platform.Platform.connectSocket(Platform.kt:128) ~[okhttp-4.10.0.jar:?]
+		at okhttp3.internal.connection.RealConnection.connectSocket(RealConnection.kt:295) ~[okhttp-4.10.0.jar:?]
+		... 31 more
+Caused by: java.net.ConnectException: Connection refused: getsockopt
+	at sun.nio.ch.Net.pollConnect(Native Method) ~[?:?]
+	at sun.nio.ch.Net.pollConnectNow(Net.java:690) ~[?:?]
+	at sun.nio.ch.NioSocketImpl.timedFinishConnect(NioSocketImpl.java:542) ~[?:?]
+	at sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:592) ~[?:?]
+	at java.net.SocksSocketImpl.connect(SocksSocketImpl.java:327) ~[?:?]
+	at java.net.Socket.connect(Socket.java:751) ~[?:?]
+	at okhttp3.internal.platform.Platform.connectSocket(Platform.kt:128) ~[okhttp-4.10.0.jar:?]
+	at okhttp3.internal.connection.RealConnection.connectSocket(RealConnection.kt:295) ~[okhttp-4.10.0.jar:?]
+	... 31 more
+WARN  [LLM] Ollama fallback also returned null — caller will use its own fallback
+ERROR [OpenAI-compatible LLM] Error calling OpenAI-compatible API: Failed to connect to localhost/[0:0:0:0:0:0:0:1]:4891
+java.net.ConnectException: Failed to connect to localhost/[0:0:0:0:0:0:0:1]:4891
+	at okhttp3.internal.connection.RealConnection.connectSocket(RealConnection.kt:297) ~[okhttp-4.10.0.jar:?]
+	at okhttp3.internal.connection.RealConnection.connect(RealConnection.kt:207) ~[okhttp-4.10.0.jar:?]
+	at okhttp3.internal.connection.ExchangeFinder.findConnection(ExchangeFinder.kt:226) ~[okhttp-4.10.0.jar:?]
+	at okhttp3.internal.connection.ExchangeFinder.findHealthyConnection(ExchangeFinder.kt:106) ~[okhttp-4.10.0.jar:?]
+	at okhttp3.internal.connection.ExchangeFinder.find(ExchangeFinder.kt:74) ~[okhttp-4.10.0.jar:?]
+	at okhttp3.internal.connection.RealCall.initExchange$okhttp(RealCall.kt:255) ~[okhttp-4.10.0.jar:?]
+	at okhttp3.internal.connection.ConnectInterceptor.intercept(ConnectInterceptor.kt:32) ~[okhttp-4.10.0.jar:?]
+	at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.kt:109) ~[okhttp-4.10.0.jar:?]
+	at okhttp3.internal.cache.CacheInterceptor.intercept(CacheInterceptor.kt:95) ~[okhttp-4.10.0.jar:?]
+	at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.kt:109) ~[okhttp-4.10.0.jar:?]
+	at okhttp3.internal.http.BridgeInterceptor.intercept(BridgeInterceptor.kt:83) ~[okhttp-4.10.0.jar:?]
+	at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.kt:109) ~[okhttp-4.10.0.jar:?]
+	at okhttp3.internal.http.RetryAndFollowUpInterceptor.intercept(RetryAndFollowUpInterceptor.kt:76) ~[okhttp-4.10.0.jar:?]
+	at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.kt:109) ~[okhttp-4.10.0.jar:?]
+	at okhttp3.internal.connection.RealCall.getResponseWithInterceptorChain$okhttp(RealCall.kt:201) ~[okhttp-4.10.0.jar:?]
+	at okhttp3.internal.connection.RealCall.execute(RealCall.kt:154) ~[okhttp-4.10.0.jar:?]
+	at io.mist.llm.LLMService.generateWithOpenAICompatible(LLMService.java:454) [mist-llm-1.6.0-SNAPSHOT.jar:?]
+	at io.mist.llm.LLMService.generateText(LLMService.java:234) [mist-llm-1.6.0-SNAPSHOT.jar:?]
+	at io.mist.core.generation.ZeroShotLLMGenerator.callLLM(ZeroShotLLMGenerator.java:991) [classes/:?]
+	at io.mist.core.generation.ZeroShotLLMGenerator.generateParameterValues(ZeroShotLLMGenerator.java:126) [classes/:?]
+	at io.mist.core.generation.AiDrivenLLMGenerator.generateParameterValues(AiDrivenLLMGenerator.java:26) [classes/:?]
+	at io.mist.core.generation.MistGenerator.traverse(MistGenerator.java:1268) [classes/:?]
+	at io.mist.core.generation.MistGenerator.gotoChildren(MistGenerator.java:2321) [classes/:?]
+	at io.mist.core.generation.MistGenerator.traverse(MistGenerator.java:1049) [classes/:?]
+	at io.mist.core.generation.MistGenerator.generateScenarioVariants(MistGenerator.java:785) [classes/:?]
+	at io.mist.core.generation.MistGenerator.generate(MistGenerator.java:558) [classes/:?]
+	at io.mist.cli.MistRunner.runSinglePhasePipeline(MistRunner.java:525) [classes/:?]
+	at io.mist.cli.MistRunner.runSinglePhasePipeline(MistRunner.java:514) [classes/:?]
+	at io.mist.cli.MistRunner.run(MistRunner.java:399) [classes/:?]
+	at io.mist.cli.MistMain.main(MistMain.java:189) [classes/:?]
+	Suppressed: java.net.ConnectException: Failed to connect to localhost/127.0.0.1:4891
+		at okhttp3.internal.connection.RealConnection.connectSocket(RealConnection.kt:297) ~[okhttp-4.10.0.jar:?]
+		at okhttp3.internal.connection.RealConnection.connect(RealConnection.kt:207) ~[okhttp-4.10.0.jar:?]
+		at okhttp3.internal.connection.ExchangeFinder.findConnection(ExchangeFinder.kt:226) ~[okhttp-4.10.0.jar:?]
+		at okhttp3.internal.connection.ExchangeFinder.findHealthyConnection(ExchangeFinder.kt:106) ~[okhttp-4.10.0.jar:?]
+		at okhttp3.internal.connection.ExchangeFinder.find(ExchangeFinder.kt:74) ~[okhttp-4.10.0.jar:?]
+		at okhttp3.internal.connection.RealCall.initExchange$okhttp(RealCall.kt:255) ~[okhttp-4.10.0.jar:?]
+		at okhttp3.internal.connection.ConnectInterceptor.intercept(ConnectInterceptor.kt:32) ~[okhttp-4.10.0.jar:?]
+		at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.kt:109) ~[okhttp-4.10.0.jar:?]
+		at okhttp3.internal.cache.CacheInterceptor.intercept(CacheInterceptor.kt:95) ~[okhttp-4.10.0.jar:?]
+		at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.kt:109) ~[okhttp-4.10.0.jar:?]
+		at okhttp3.internal.http.BridgeInterceptor.intercept(BridgeInterceptor.kt:83) ~[okhttp-4.10.0.jar:?]
+		at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.kt:109) ~[okhttp-4.10.0.jar:?]
+		at okhttp3.internal.http.RetryAndFollowUpInterceptor.intercept(RetryAndFollowUpInterceptor.kt:76) ~[okhttp-4.10.0.jar:?]
+		at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.kt:109) ~[okhttp-4.10.0.jar:?]
+		at okhttp3.internal.connection.RealCall.getResponseWithInterceptorChain$okhttp(RealCall.kt:201) ~[okhttp-4.10.0.jar:?]
+		at okhttp3.internal.connection.RealCall.execute(RealCall.kt:154) ~[okhttp-4.10.0.jar:?]
+		at io.mist.llm.LLMService.generateWithOpenAICompatible(LLMService.java:454) [mist-llm-1.6.0-SNAPSHOT.jar:?]
+		at io.mist.llm.LLMService.generateText(LLMService.java:234) [mist-llm-1.6.0-SNAPSHOT.jar:?]
+		at io.mist.core.generation.ZeroShotLLMGenerator.callLLM(ZeroShotLLMGenerator.java:991) [classes/:?]
+		at io.mist.core.generation.ZeroShotLLMGenerator.generateParameterValues(ZeroShotLLMGenerator.java:126) [classes/:?]
+		at io.mist.core.generation.AiDrivenLLMGenerator.generateParameterValues(AiDrivenLLMGenerator.java:26) [classes/:?]
+		at io.mist.core.generation.MistGenerator.traverse(MistGenerator.java:1268) [classes/:?]
+		at io.mist.core.generation.MistGenerator.gotoChildren(MistGenerator.java:2321) [classes/:?]
+		at io.mist.core.generation.MistGenerator.traverse(MistGenerator.java:1049) [classes/:?]
+		at io.mist.core.generation.MistGenerator.generateScenarioVariants(MistGenerator.java:785) [classes/:?]
+		at io.mist.core.generation.MistGenerator.generate(MistGenerator.java:558) [classes/:?]
+		at io.mist.cli.MistRunner.runSinglePhasePipeline(MistRunner.java:525) [classes/:?]
+		at io.mist.cli.MistRunner.runSinglePhasePipeline(MistRunner.java:514) [classes/:?]
+		at io.mist.cli.MistRunner.run(MistRunner.java:399) [classes/:?]
+		at io.mist.cli.MistMain.main(MistMain.java:189) [classes/:?]
+	Caused by: java.net.ConnectException: Connection refused: connect
+		at sun.nio.ch.Net.connect0(Native Method) ~[?:?]
+		at sun.nio.ch.Net.connect(Net.java:597) ~[?:?]
+		at sun.nio.ch.Net.connect(Net.java:586) ~[?:?]
+		at sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:583) ~[?:?]
+		at java.net.SocksSocketImpl.connect(SocksSocketImpl.java:327) ~[?:?]
+		at java.net.Socket.connect(Socket.java:751) ~[?:?]
+		at okhttp3.internal.platform.Platform.connectSocket(Platform.kt:128) ~[okhttp-4.10.0.jar:?]
+		at okhttp3.internal.connection.RealConnection.connectSocket(RealConnection.kt:295) ~[okhttp-4.10.0.jar:?]
+		... 29 more
+Caused by: java.net.ConnectException: Connection refused: connect
+	at sun.nio.ch.Net.connect0(Native Method) ~[?:?]
+	at sun.nio.ch.Net.connect(Net.java:597) ~[?:?]
+	at sun.nio.ch.Net.connect(Net.java:586) ~[?:?]
+	at sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:583) ~[?:?]
+	at java.net.SocksSocketImpl.connect(SocksSocketImpl.java:327) ~[?:?]
+	at java.net.Socket.connect(Socket.java:751) ~[?:?]
+	at okhttp3.internal.platform.Platform.connectSocket(Platform.kt:128) ~[okhttp-4.10.0.jar:?]
+	at okhttp3.internal.connection.RealConnection.connectSocket(RealConnection.kt:295) ~[okhttp-4.10.0.jar:?]
+	... 29 more
+WARN  [LLM] Primary OPENAI_COMPATIBLE returned null — falling back to Ollama for this call
+WARN  [Ollama API] Request failed on attempt 1/3: Failed to connect to localhost/[0:0:0:0:0:0:0:1]:11434. Retrying...
+WARN  [Ollama API] Request failed on attempt 2/3: Failed to connect to localhost/[0:0:0:0:0:0:0:1]:11434. Retrying...
+ERROR [Ollama API] Error calling Ollama API after 3 attempts: Failed to connect to localhost/[0:0:0:0:0:0:0:1]:11434
+java.net.ConnectException: Failed to connect to localhost/[0:0:0:0:0:0:0:1]:11434
+	at okhttp3.internal.connection.RealConnection.connectSocket(RealConnection.kt:297) ~[okhttp-4.10.0.jar:?]
+	at okhttp3.internal.connection.RealConnection.connect(RealConnection.kt:207) ~[okhttp-4.10.0.jar:?]
+	at okhttp3.internal.connection.ExchangeFinder.findConnection(ExchangeFinder.kt:226) ~[okhttp-4.10.0.jar:?]
+	at okhttp3.internal.connection.ExchangeFinder.findHealthyConnection(ExchangeFinder.kt:106) ~[okhttp-4.10.0.jar:?]
+	at okhttp3.internal.connection.ExchangeFinder.find(ExchangeFinder.kt:74) ~[okhttp-4.10.0.jar:?]
+	at okhttp3.internal.connection.RealCall.initExchange$okhttp(RealCall.kt:255) ~[okhttp-4.10.0.jar:?]
+	at okhttp3.internal.connection.ConnectInterceptor.intercept(ConnectInterceptor.kt:32) ~[okhttp-4.10.0.jar:?]
+	at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.kt:109) ~[okhttp-4.10.0.jar:?]
+	at okhttp3.internal.cache.CacheInterceptor.intercept(CacheInterceptor.kt:95) ~[okhttp-4.10.0.jar:?]
+	at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.kt:109) ~[okhttp-4.10.0.jar:?]
+	at okhttp3.internal.http.BridgeInterceptor.intercept(BridgeInterceptor.kt:83) ~[okhttp-4.10.0.jar:?]
+	at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.kt:109) ~[okhttp-4.10.0.jar:?]
+	at okhttp3.internal.http.RetryAndFollowUpInterceptor.intercept(RetryAndFollowUpInterceptor.kt:76) ~[okhttp-4.10.0.jar:?]
+	at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.kt:109) ~[okhttp-4.10.0.jar:?]
+	at okhttp3.internal.connection.RealCall.getResponseWithInterceptorChain$okhttp(RealCall.kt:201) ~[okhttp-4.10.0.jar:?]
+	at okhttp3.internal.connection.RealCall.execute(RealCall.kt:154) ~[okhttp-4.10.0.jar:?]
+	at io.mist.llm.OllamaApiClient.generateContentWithRetry(OllamaApiClient.java:121) [mist-llm-1.6.0-SNAPSHOT.jar:?]
+	at io.mist.llm.OllamaApiClient.generateContent(OllamaApiClient.java:57) [mist-llm-1.6.0-SNAPSHOT.jar:?]
+	at io.mist.llm.LLMService.generateWithOllama(LLMService.java:519) [mist-llm-1.6.0-SNAPSHOT.jar:?]
+	at io.mist.llm.LLMService.generateText(LLMService.java:258) [mist-llm-1.6.0-SNAPSHOT.jar:?]
+	at io.mist.core.generation.ZeroShotLLMGenerator.callLLM(ZeroShotLLMGenerator.java:991) [classes/:?]
+	at io.mist.core.generation.ZeroShotLLMGenerator.generateParameterValues(ZeroShotLLMGenerator.java:126) [classes/:?]
+	at io.mist.core.generation.AiDrivenLLMGenerator.generateParameterValues(AiDrivenLLMGenerator.java:26) [classes/:?]
+	at io.mist.core.generation.MistGenerator.traverse(MistGenerator.java:1268) [classes/:?]
+	at io.mist.core.generation.MistGenerator.gotoChildren(MistGenerator.java:2321) [classes/:?]
+	at io.mist.core.generation.MistGenerator.traverse(MistGenerator.java:1049) [classes/:?]
+	at io.mist.core.generation.MistGenerator.generateScenarioVariants(MistGenerator.java:785) [classes/:?]
+	at io.mist.core.generation.MistGenerator.generate(MistGenerator.java:558) [classes/:?]
+	at io.mist.cli.MistRunner.runSinglePhasePipeline(MistRunner.java:525) [classes/:?]
+	at io.mist.cli.MistRunner.runSinglePhasePipeline(MistRunner.java:514) [classes/:?]
+	at io.mist.cli.MistRunner.run(MistRunner.java:399) [classes/:?]
+	at io.mist.cli.MistMain.main(MistMain.java:189) [classes/:?]
+	Suppressed: java.net.ConnectException: Failed to connect to localhost/127.0.0.1:11434
+		at okhttp3.internal.connection.RealConnection.connectSocket(RealConnection.kt:297) ~[okhttp-4.10.0.jar:?]
+		at okhttp3.internal.connection.RealConnection.connect(RealConnection.kt:207) ~[okhttp-4.10.0.jar:?]
+		at okhttp3.internal.connection.ExchangeFinder.findConnection(ExchangeFinder.kt:226) ~[okhttp-4.10.0.jar:?]
+		at okhttp3.internal.connection.ExchangeFinder.findHealthyConnection(ExchangeFinder.kt:106) ~[okhttp-4.10.0.jar:?]
+		at okhttp3.internal.connection.ExchangeFinder.find(ExchangeFinder.kt:74) ~[okhttp-4.10.0.jar:?]
+		at okhttp3.internal.connection.RealCall.initExchange$okhttp(RealCall.kt:255) ~[okhttp-4.10.0.jar:?]
+		at okhttp3.internal.connection.ConnectInterceptor.intercept(ConnectInterceptor.kt:32) ~[okhttp-4.10.0.jar:?]
+		at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.kt:109) ~[okhttp-4.10.0.jar:?]
+		at okhttp3.internal.cache.CacheInterceptor.intercept(CacheInterceptor.kt:95) ~[okhttp-4.10.0.jar:?]
+		at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.kt:109) ~[okhttp-4.10.0.jar:?]
+		at okhttp3.internal.http.BridgeInterceptor.intercept(BridgeInterceptor.kt:83) ~[okhttp-4.10.0.jar:?]
+		at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.kt:109) ~[okhttp-4.10.0.jar:?]
+		at okhttp3.internal.http.RetryAndFollowUpInterceptor.intercept(RetryAndFollowUpInterceptor.kt:76) ~[okhttp-4.10.0.jar:?]
+		at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.kt:109) ~[okhttp-4.10.0.jar:?]
+		at okhttp3.internal.connection.RealCall.getResponseWithInterceptorChain$okhttp(RealCall.kt:201) ~[okhttp-4.10.0.jar:?]
+		at okhttp3.internal.connection.RealCall.execute(RealCall.kt:154) ~[okhttp-4.10.0.jar:?]
+		at io.mist.llm.OllamaApiClient.generateContentWithRetry(OllamaApiClient.java:121) [mist-llm-1.6.0-SNAPSHOT.jar:?]
+		at io.mist.llm.OllamaApiClient.generateContent(OllamaApiClient.java:57) [mist-llm-1.6.0-SNAPSHOT.jar:?]
+		at io.mist.llm.LLMService.generateWithOllama(LLMService.java:519) [mist-llm-1.6.0-SNAPSHOT.jar:?]
+		at io.mist.llm.LLMService.generateText(LLMService.java:258) [mist-llm-1.6.0-SNAPSHOT.jar:?]
+		at io.mist.core.generation.ZeroShotLLMGenerator.callLLM(ZeroShotLLMGenerator.java:991) [classes/:?]
+		at io.mist.core.generation.ZeroShotLLMGenerator.generateParameterValues(ZeroShotLLMGenerator.java:126) [classes/:?]
+		at io.mist.core.generation.AiDrivenLLMGenerator.generateParameterValues(AiDrivenLLMGenerator.java:26) [classes/:?]
+		at io.mist.core.generation.MistGenerator.traverse(MistGenerator.java:1268) [classes/:?]
+		at io.mist.core.generation.MistGenerator.gotoChildren(MistGenerator.java:2321) [classes/:?]
+		at io.mist.core.generation.MistGenerator.traverse(MistGenerator.java:1049) [classes/:?]
+		at io.mist.core.generation.MistGenerator.generateScenarioVariants(MistGenerator.java:785) [classes/:?]
+		at io.mist.core.generation.MistGenerator.generate(MistGenerator.java:558) [classes/:?]
+		at io.mist.cli.MistRunner.runSinglePhasePipeline(MistRunner.java:525) [classes/:?]
+		at io.mist.cli.MistRunner.runSinglePhasePipeline(MistRunner.java:514) [classes/:?]
+		at io.mist.cli.MistRunner.run(MistRunner.java:399) [classes/:?]
+		at io.mist.cli.MistMain.main(MistMain.java:189) [classes/:?]
+	Caused by: java.net.ConnectException: Connection refused: getsockopt
+		at sun.nio.ch.Net.pollConnect(Native Method) ~[?:?]
+		at sun.nio.ch.Net.pollConnectNow(Net.java:690) ~[?:?]
+		at sun.nio.ch.NioSocketImpl.timedFinishConnect(NioSocketImpl.java:542) ~[?:?]
+		at sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:592) ~[?:?]
+		at java.net.SocksSocketImpl.connect(SocksSocketImpl.java:327) ~[?:?]
+		at java.net.Socket.connect(Socket.java:751) ~[?:?]
+		at okhttp3.internal.platform.Platform.connectSocket(Platform.kt:128) ~[okhttp-4.10.0.jar:?]
+		at okhttp3.internal.connection.RealConnection.connectSocket(RealConnection.kt:295) ~[okhttp-4.10.0.jar:?]
+		... 31 more
+Caused by: java.net.ConnectException: Connection refused: getsockopt
+	at sun.nio.ch.Net.pollConnect(Native Method) ~[?:?]
+	at sun.nio.ch.Net.pollConnectNow(Net.java:690) ~[?:?]
+	at sun.nio.ch.NioSocketImpl.timedFinishConnect(NioSocketImpl.java:542) ~[?:?]
+	at sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:592) ~[?:?]
+	at java.net.SocksSocketImpl.connect(SocksSocketImpl.java:327) ~[?:?]
+	at java.net.Socket.connect(Socket.java:751) ~[?:?]
+	at okhttp3.internal.platform.Platform.connectSocket(Platform.kt:128) ~[okhttp-4.10.0.jar:?]
+	at okhttp3.internal.connection.RealConnection.connectSocket(RealConnection.kt:295) ~[okhttp-4.10.0.jar:?]
+	... 31 more
+WARN  [LLM] Ollama fallback also returned null — caller will use its own fallback
+[2K[96m⠧[0m [90m[[0m[92m██▉[0m[2m                         [0m[90m][0m [1m[33m 10%[0m  [96mVariants[0m [97m0/1[0m [2m(1/100)[0m[90m  · [0m[97m9s[0m[90m → [0m[97m1:23[0mWARN  No Operation config get /tools.descartes.teastore.webui/ in service 'webui' (step R1)
+WARN  Dedup: variant 2 still duplicate after 5 retries — skipping
+[2K[96m⠇[0m [90m[[0m[92m██▉[0m[2m                         [0m[90m][0m [1m[33m 10%[0m  [96mVariants[0m [97m0/1[0m [2m(2/100)[0m[90m  · [0m[97m9s[0m[90m → [0m[97m1:23[0mWARN  Dedup: variant 3 still duplicate after 5 retries — skipping
+[2K[96m⠏[0m [90m[[0m[92m██▉[0m[2m                         [0m[90m][0m [1m[33m 10%[0m  [96mVariants[0m [97m0/1[0m [2m(3/100)[0m[90m  · [0m[97m9s[0m[90m → [0m[97m1:22[0mWARN  Dedup: variant 4 still duplicate after 5 retries — skipping
+[2K[96m⠋[0m [90m[[0m[92m██▉[0m[2m                         [0m[90m][0m [1m[33m 10%[0m  [96mVariants[0m [97m0/1[0m [2m(4/100)[0m[90m  · [0m[97m9s[0m[90m → [0m[97m1:22[0mWARN  Dedup: variant 5 still duplicate after 5 retries — skipping
+[2K[96m⠙[0m [90m[[0m[92m██▉[0m[2m                         [0m[90m][0m [1m[33m 10%[0m  [96mVariants[0m [97m0/1[0m [2m(5/100)[0m[90m  · [0m[97m9s[0m[90m → [0m[97m1:22[0mWARN  Dedup: variant 6 still duplicate after 5 retries — skipping
+[2K[96m⠹[0m [90m[[0m[92m██▉[0m[2m                         [0m[90m][0m [1m[33m 10%[0m  [96mVariants[0m [97m0/1[0m [2m(6/100)[0m[90m  · [0m[97m9s[0m[90m → [0m[97m1:21[0mWARN  Dedup: variant 7 still duplicate after 5 retries — skipping
+[2K[96m⠸[0m [90m[[0m[92m██▉[0m[2m                         [0m[90m][0m [1m[33m 10%[0m  [96mVariants[0m [97m0/1[0m [2m(7/100)[0m[90m  · [0m[97m9s[0m[90m → [0m[97m1:21[0mWARN  Dedup: variant 8 still duplicate after 5 retries — skipping
+[2K[96m⠼[0m [90m[[0m[92m██▉[0m[2m                         [0m[90m][0m [1m[33m 10%[0m  [96mVariants[0m [97m0/1[0m [2m(8/100)[0m[90m  · [0m[97m9s[0m[90m → [0m[97m1:20[0mWARN  Dedup: variant 9 still duplicate after 5 retries — skipping
+[2K[96m⠴[0m [90m[[0m[92m██▉[0m[2m                         [0m[90m][0m [1m[33m 10%[0m  [96mVariants[0m [97m0/1[0m [2m(9/100)[0m[90m  · [0m[97m9s[0m[90m → [0m[97m1:20[0mWARN  Dedup: variant 10 still duplicate after 5 retries — skipping
+[2K[96m⠦[0m [90m[[0m[92m███[0m[2m                         [0m[90m][0m [1m[33m 11%[0m  [96mVariants[0m [97m0/1[0m [2m(10/100)[0m[90m  · [0m[97m9s[0m[90m → [0m[97m1:20[0mWARN  Dedup: variant 11 still duplicate after 5 retries — skipping
+WARN  Aborting scenario 1 after 10 consecutive dedup-exhausted variants — fingerprint pool is drained; 89 remaining variant slots will be skipped.
+[2K[96m⠧[0m [90m[[0m[92m███[0m[2m                         [0m[90m][0m [1m[33m 11%[0m  [96mVariants[0m [97m0/1[0m [2m(11/100)[0m[90m  · [0m[97m9s[0m[90m → [0m[97m1:19[0m[2K[96m⠇[0m [90m[[0m[92m████▎[0m[2m                       [0m[90m][0m [1m[33m 15%[0m [2m(0/1)[0m[90m  · [0m[97m9s[0m[90m → [0m[97m53s[0m[2K[96m⠏[0m [90m[[0m[92m████▎[0m[2m                       [0m[90m][0m [1m[33m 15%[0m [2m(1/1)[0m[90m  · [0m[97m9s[0m[90m → [0m[97m53s[0m
+▶ Step 4/5: Writing (1 items)
+[2K[96m⠋[0m [90m[[0m[92m████▎[0m[2m                       [0m[90m][0m [1m[33m 15%[0m  [96mWriting[0m [97m0/1[0m[90m  · [0m[97m9s[0m[90m → [0m[97m53s[0m[2K[96m⠙[0m [90m[[0m[92m████▊[0m[2m                       [0m[90m][0m [1m[33m 17%[0m  [96mWriting[0m [97m1/1[0m[90m  · [0m[97m9s[0m[90m → [0m[97m45s[0m
+WARN  ⚠️  Not running Java 11! Current version: 21.0.10
+WARN     This may cause compilation issues. Please ensure IntelliJ is configured to use Java 11.
+ERROR === FAILURES ===
+ERROR Failed: test_positive_flow_S1_v1(myc_teastore.TeaStoreMycTest_1784157027941.Flow_Scenario_1) - Scenario FAILED: 1 out of 1 steps failed. In microservice testing, all workflow steps must succeed for end-to-end validation.
+WARN  ❌ Some newly generated tests failed. Check the logs above for details.
+
+==================================================================
+  MIST findings: [OK] no oracle anomalies across 1 executed test case(s)
+==================================================================
+
+
+==================================================================
+  MIST outputs (this run: TeaStoreMycTest_1784157027941)
+  ------------------------------------------------------------
+  - generated tests : mist-cli/src/test/java/myc_teastore/TeaStoreMycTest_1784157027941/
+  - Allure results  : target/allure-results/   (render: allure serve target/allure-results)
+  - fault report    : logs/fault-detection-reports/
+  - CSV stats       : target/test-data/
+==================================================================
+

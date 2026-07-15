@@ -1,0 +1,63 @@
+ERROR StatusConsoleListener Unable to rename file C:\Users\miaot\Github\MIST\logs\mist.log to C:\Users\miaot\Github\MIST\logs\mist_2026-07-15T18:14:19.030.log: java.nio.file.InvalidPathException Illegal char <:> at index 50: C:\Users\miaot\Github\MIST\logs\mist_2026-07-15T18:14:19.030.log
+
+  ╔════════════════════════════════════════════════════════════╗
+  ║                                                            ║
+  ║     ███╗   ███╗██╗███████╗████████╗                        ║
+  ║     ████╗ ████║██║██╔════╝╚══██╔══╝                        ║
+  ║     ██╔████╔██║██║███████╗   ██║                           ║
+  ║     ██║╚██╔╝██║██║╚════██║   ██║                           ║
+  ║     ██║ ╚═╝ ██║██║███████║   ██║                           ║
+  ║     ╚═╝     ╚═╝╚═╝╚══════╝   ╚═╝                           ║
+  ║                                                            ║
+  ║     Microservice Integration & Scenario Tester             ║
+  ║     v1.6.0-SNAPSHOT                                       ║
+  ║                                                            ║
+  ╚════════════════════════════════════════════════════════════╝
+
+WARN  [MIST] ablation profile: [oracle:on (span,status,response | timing:off) bandit:on faultmining:off]
+WARN  Root API Registry path not configured. Set 'root.api.registry.path' property to enable registry.
+WARN  ❌ Smart Input Fetching is DISABLED - enable it by setting smart.input.fetch.enabled=true in the MST configuration file
+WARN  ❌ No smart input fetching properties found, using traditional LLM generation only
+WARN     Make sure properties like 'smart.input.fetch.enabled=true' are in your properties file
+▶ Step 1/5: Pool Gen (1 items)
+[2K[96m⠙[0m [90m[[0m[92m[0m[2m                            [0m[90m][0m [1m[33m  0%[0m  [96mPool Gen[0m [97m0/1[0m[90m  · [0m[97m0s[0mWARN  No operation config for get /tools/descartes/teastore/persistence/rest/products (service 'persistence') for root API: GET__tools_descartes_teastore_persistence_rest_products
+[2K[96m⠹[0m [90m[[0m[92m▉[0m[2m                           [0m[90m][0m [1m[33m  3%[0m  [96mPool Gen[0m [97m1/1[0m[90m  · [0m[97m0s[0m[90m → [0m[97m0s[0m
+▶ Step 2/5: Faulty Pools (1 items)
+[2K[96m⠸[0m [90m[[0m[92m▉[0m[2m                           [0m[90m][0m [1m[33m  3%[0m  [96mFaulty Pools[0m [97m0/1[0m[90m  · [0m[97m0s[0m[90m → [0m[97m0s[0m[2K[96m⠼[0m [90m[[0m[92m██▊[0m[2m                         [0m[90m][0m [1m[33m 10%[0m  [96mFaulty Pools[0m [97m1/1[0m[90m  · [0m[97m0s[0m[90m → [0m[97m0s[0m
+▶ Step 3/5: Variants (1 items)
+[2K[96m⠴[0m [90m[[0m[92m██▊[0m[2m                         [0m[90m][0m [1m[33m 10%[0m  [96mVariants[0m [97m0/1[0m[90m  · [0m[97m0s[0m[90m → [0m[97m0s[0m▶ Step 3/5: Variants (100 items)
+[2K[96m⠦[0m [90m[[0m[92m██▊[0m[2m                         [0m[90m][0m [1m[33m 10%[0m  [96mVariants[0m [97m0/1[0m [2m(0/100)[0m[90m  · [0m[97m0s[0m[90m → [0m[97m0s[0mWARN  LLM is disabled in configuration
+[2K[96m⠧[0m [90m[[0m[92m██▉[0m[2m                         [0m[90m][0m [1m[33m 10%[0m  [96mVariants[0m [97m0/1[0m [2m(1/100)[0m[90m  · [0m[97m0s[0m[90m → [0m[97m0s[0mWARN  Dedup: variant 2 still duplicate after 5 retries — skipping
+[2K[96m⠇[0m [90m[[0m[92m██▉[0m[2m                         [0m[90m][0m [1m[33m 10%[0m  [96mVariants[0m [97m0/1[0m [2m(2/100)[0m[90m  · [0m[97m0s[0m[90m → [0m[97m0s[0mWARN  Dedup: variant 3 still duplicate after 5 retries — skipping
+[2K[96m⠏[0m [90m[[0m[92m██▉[0m[2m                         [0m[90m][0m [1m[33m 10%[0m  [96mVariants[0m [97m0/1[0m [2m(3/100)[0m[90m  · [0m[97m0s[0m[90m → [0m[97m0s[0mWARN  Dedup: variant 4 still duplicate after 5 retries — skipping
+[2K[96m⠋[0m [90m[[0m[92m██▉[0m[2m                         [0m[90m][0m [1m[33m 10%[0m  [96mVariants[0m [97m0/1[0m [2m(4/100)[0m[90m  · [0m[97m0s[0m[90m → [0m[97m0s[0mWARN  Dedup: variant 5 still duplicate after 5 retries — skipping
+[2K[96m⠙[0m [90m[[0m[92m██▉[0m[2m                         [0m[90m][0m [1m[33m 10%[0m  [96mVariants[0m [97m0/1[0m [2m(5/100)[0m[90m  · [0m[97m0s[0m[90m → [0m[97m0s[0mWARN  Dedup: variant 6 still duplicate after 5 retries — skipping
+[2K[96m⠹[0m [90m[[0m[92m██▉[0m[2m                         [0m[90m][0m [1m[33m 10%[0m  [96mVariants[0m [97m0/1[0m [2m(6/100)[0m[90m  · [0m[97m0s[0m[90m → [0m[97m0s[0mWARN  Dedup: variant 7 still duplicate after 5 retries — skipping
+[2K[96m⠸[0m [90m[[0m[92m██▉[0m[2m                         [0m[90m][0m [1m[33m 10%[0m  [96mVariants[0m [97m0/1[0m [2m(7/100)[0m[90m  · [0m[97m0s[0m[90m → [0m[97m0s[0mWARN  Dedup: variant 8 still duplicate after 5 retries — skipping
+[2K[96m⠼[0m [90m[[0m[92m██▉[0m[2m                         [0m[90m][0m [1m[33m 10%[0m  [96mVariants[0m [97m0/1[0m [2m(8/100)[0m[90m  · [0m[97m0s[0m[90m → [0m[97m0s[0mWARN  Dedup: variant 9 still duplicate after 5 retries — skipping
+[2K[96m⠴[0m [90m[[0m[92m██▉[0m[2m                         [0m[90m][0m [1m[33m 10%[0m  [96mVariants[0m [97m0/1[0m [2m(9/100)[0m[90m  · [0m[97m0s[0m[90m → [0m[97m0s[0mWARN  Dedup: variant 10 still duplicate after 5 retries — skipping
+[2K[96m⠦[0m [90m[[0m[92m███[0m[2m                         [0m[90m][0m [1m[33m 11%[0m  [96mVariants[0m [97m0/1[0m [2m(10/100)[0m[90m  · [0m[97m0s[0m[90m → [0m[97m0s[0mWARN  Dedup: variant 11 still duplicate after 5 retries — skipping
+WARN  Aborting scenario 1 after 10 consecutive dedup-exhausted variants — fingerprint pool is drained; 89 remaining variant slots will be skipped.
+[2K[96m⠧[0m [90m[[0m[92m███[0m[2m                         [0m[90m][0m [1m[33m 11%[0m  [96mVariants[0m [97m0/1[0m [2m(11/100)[0m[90m  · [0m[97m0s[0m[90m → [0m[97m0s[0m[2K[96m⠇[0m [90m[[0m[92m████▎[0m[2m                       [0m[90m][0m [1m[33m 15%[0m [2m(0/1)[0m[90m  · [0m[97m0s[0m[90m → [0m[97m0s[0m[2K[96m⠏[0m [90m[[0m[92m████▎[0m[2m                       [0m[90m][0m [1m[33m 15%[0m [2m(1/1)[0m[90m  · [0m[97m0s[0m[90m → [0m[97m0s[0m
+▶ Step 4/5: Writing (1 items)
+[2K[96m⠋[0m [90m[[0m[92m████▎[0m[2m                       [0m[90m][0m [1m[33m 15%[0m  [96mWriting[0m [97m0/1[0m[90m  · [0m[97m0s[0m[90m → [0m[97m0s[0m[2K[96m⠙[0m [90m[[0m[92m████▊[0m[2m                       [0m[90m][0m [1m[33m 17%[0m  [96mWriting[0m [97m1/1[0m[90m  · [0m[97m0s[0m[90m → [0m[97m0s[0m
+WARN  ⚠️  Not running Java 11! Current version: 21.0.10
+WARN     This may cause compilation issues. Please ensure IntelliJ is configured to use Java 11.
+ERROR === FAILURES ===
+ERROR Failed: test_positive_flow_S1_v1(myc_teastore_smoke3.TeaStoreMycTest_1784157259637.Flow_Scenario_1) - Scenario FAILED: 1 out of 1 steps failed. In microservice testing, all workflow steps must succeed for end-to-end validation.
+WARN  ❌ Some newly generated tests failed. Check the logs above for details.
+
+==================================================================
+  MIST findings: [OK] no oracle anomalies across 1 executed test case(s)
+==================================================================
+
+
+==================================================================
+  MIST outputs (this run: TeaStoreMycTest_1784157259637)
+  ------------------------------------------------------------
+  - generated tests : mist-cli/src/test/java/myc_teastore_smoke3/TeaStoreMycTest_1784157259637/
+  - Allure results  : target/allure-results/   (render: allure serve target/allure-results)
+  - fault report    : logs/fault-detection-reports/
+  - CSV stats       : target/test-data/
+==================================================================
+

@@ -1,34 +1,5 @@
 testConfiguration:
   services:
-    webui:
-    - expectedResponse: 200
-      method: post
-      operationId: cartAction
-      testPath: /tools.descartes.teastore.webui/cartAction
-      testParameters:
-      - name: confirm
-        in: query
-        weight: null
-        description: 'When set to ''Confirm'', places the order using the order-form
-          fields below (the corpus write path: POST cartAction?confirm=Confirm).'
-        type: string
-        required: false
-        generators:
-        - type: LLMParameterGenerator
-          genParameters:
-          - name: length
-            values:
-            - '10'
-    - expectedResponse: 200
-      method: post
-      operationId: loginAction
-      testPath: /tools.descartes.teastore.webui/loginAction
-      testParameters: null
-    - expectedResponse: 200
-      method: get
-      operationId: getProfile
-      testPath: /tools.descartes.teastore.webui/profile
-      testParameters: null
     persistence:
     - expectedResponse: 200
       method: get
