@@ -1,10 +1,13 @@
 # Wave COMPLETION-SET — everything still owed before the paper draft — rev 2
 
-**Date:** 2026-07-16 · Owner: main_track · Status: **rev 2 — rev-1 3-cold = A REVISE-4B ·
-B REVISE-2B · C ACCEPT-W-FIXES-3B; ALL 9 blocking + non-blocking folded per
-`REVIEW-CSET-PLAN-RECONCILIATION.md` (local), §3.5 user amendment integrated. Gate: a
-3-reviewer CONFIRMATION PASS on THIS rev (it covers the amendment the cold pass never saw);
-unanimous ⇒ AUTO-EXECUTE (user pre-authorized 2026-07-16).**
+**Date:** 2026-07-16 · Owner: main_track · Status: **rev 2 CONFIRMED 3/3 (A'/B'/C' all
+CONFIRM, 2026-07-16; recon + confirm records local `REVIEW-CSET-*.md`) — EXECUTION OPEN
+under the user's 2026-07-16 pre-authorization. Confirm-pass non-blocking residuals carried:
+Phase-A density watched by the >1.5× stop rule; DoD §3.1 transitively includes A5-A8;
+Phase-B "same fault instances" phrasing = inherited B-B1 wording, read per row-314's
+observe-run/paired-rerun split. Order: Phase A → B → C.**
+Rev-1 history: 3-cold = A REVISE-4B · B REVISE-2B · C ACCEPT-W-FIXES-3B; all 9 blocking +
+non-blocking folded per `REVIEW-CSET-PLAN-RECONCILIATION.md`; §3.5 user amendment integrated.
 **Trigger: USER direction 2026-07-16** — "所有的实验和材料都备齐了才去做 paper" — superseding
 my Step-4-scoped "experiment surface complete" reading. This wave = the full inventory of
 what WE can still do without user-side inputs; user-gated items are LISTED, never executed.
