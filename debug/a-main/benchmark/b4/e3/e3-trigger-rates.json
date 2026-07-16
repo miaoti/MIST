@@ -1,0 +1,97 @@
+{
+ "schema": "e3-trigger-rates/1",
+ "generated_by": "b4/e3/mine_trigger_rates.py (completion-set wave A1)",
+ "trigger_definition": "an oracle-check emission above INFO in the preserved per-seed stdout logs, per oracle family per SUT (rev-2 pinned)",
+ "rails": [
+  "descriptive pipeline telemetry only",
+  "no yield/defect language (rater-gated)",
+  "no cross-SUT pooling",
+  "mist.log was NOT preserved (MYC disclosure 8b) - stdout is the mined record; families that print only to mist.log are undercounted by construction, disclosed"
+ ],
+ "failed_test_context_from_clustering": {
+  "teastore": 10,
+  "oteldemo": 534,
+  "sockshop": 3440,
+  "bookinfo": 207,
+  "boutique": 788
+ },
+ "per_source": {
+  "myc/bookinfo": {
+   "seed_logs": 3,
+   "data_integrity_armed": 0,
+   "data_integrity_record": 0,
+   "data_integrity_timeout_absent": 0,
+   "data_integrity_observed_absent": 0,
+   "data_integrity_observed_present": 0,
+   "readback_bound_threshold": 0,
+   "trace_shape_verdict": 0,
+   "oracle_on_banner": 0
+  },
+  "myc/boutique": {
+   "seed_logs": 3,
+   "data_integrity_armed": 0,
+   "data_integrity_record": 0,
+   "data_integrity_timeout_absent": 0,
+   "data_integrity_observed_absent": 0,
+   "data_integrity_observed_present": 0,
+   "readback_bound_threshold": 0,
+   "trace_shape_verdict": 0,
+   "oracle_on_banner": 0
+  },
+  "myc/oteldemo": {
+   "seed_logs": 3,
+   "data_integrity_armed": 0,
+   "data_integrity_record": 0,
+   "data_integrity_timeout_absent": 0,
+   "data_integrity_observed_absent": 0,
+   "data_integrity_observed_present": 0,
+   "readback_bound_threshold": 0,
+   "trace_shape_verdict": 0,
+   "oracle_on_banner": 0
+  },
+  "myc/sockshop": {
+   "seed_logs": 10,
+   "data_integrity_armed": 10,
+   "data_integrity_record": 0,
+   "data_integrity_timeout_absent": 0,
+   "data_integrity_observed_absent": 0,
+   "data_integrity_observed_present": 0,
+   "readback_bound_threshold": 0,
+   "trace_shape_verdict": 0,
+   "oracle_on_banner": 10
+  },
+  "myc/teastore": {
+   "seed_logs": 10,
+   "data_integrity_armed": 0,
+   "data_integrity_record": 0,
+   "data_integrity_timeout_absent": 0,
+   "data_integrity_observed_absent": 0,
+   "data_integrity_observed_present": 0,
+   "readback_bound_threshold": 0,
+   "trace_shape_verdict": 0,
+   "oracle_on_banner": 0
+  },
+  "ttomni/leg1": {
+   "seed_logs": 5,
+   "data_integrity_armed": 0,
+   "data_integrity_record": 0,
+   "data_integrity_timeout_absent": 5,
+   "data_integrity_observed_absent": 0,
+   "data_integrity_observed_present": 0,
+   "readback_bound_threshold": 0,
+   "trace_shape_verdict": 0,
+   "oracle_on_banner": 0
+  },
+  "ttomni/leg3": {
+   "seed_logs": 31,
+   "data_integrity_armed": 0,
+   "data_integrity_record": 0,
+   "data_integrity_timeout_absent": 15,
+   "data_integrity_observed_absent": 5,
+   "data_integrity_observed_present": 10,
+   "readback_bound_threshold": 0,
+   "trace_shape_verdict": 0,
+   "oracle_on_banner": 0
+  }
+ }
+}
