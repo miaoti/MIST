@@ -452,7 +452,26 @@ analysis/evolution/reengineering)
   *maintenance* evidence.
 - Per Reviewer A's standing note: fault detection stays a secondary metric here (no ISSRE-style
   re-lead); "tool-oriented and empirical work" is explicitly welcomed in SANER's CFP.
-- Page limit assumed 10+2 (IEEE) — **verify against the SANER 2027 CFP at story-lock**.
+- **CFP facts VERIFIED from the official SANER 2027 research-track page (G1 sub-item closed
+  2026-07-16; conf.researchr.org/track/saner-2027/saner-2027-papers)**:
+  - **10 pages + 2 references-only**, IEEE `\documentclass[10pt,conference]{IEEEtran}`;
+    EasyChair; deadlines AoE: abstract Sep 21 (**mandatory**) / paper Sep 25 / **notification
+    Dec 1, 2026** / camera-ready Jan 8, 2027. (Dec-1 notification keeps the ~Mar fallback
+    chain workable.) No rebuttal mechanism listed.
+  - **DOUBLE-ANONYMOUS review** — a new work item for the writing window: tool pseudonym for
+    MIST/SmartFetch in the submission, third-person self-citation of the MIST papers,
+    **anonymous artifact mirror** (anonymous.4open.science / anonymized Zenodo) since the real
+    repo de-anonymizes; evaluation criteria explicitly include **open science/verifiability**,
+    and a **Data Availability statement** after the conclusions is expected (encouraged, not
+    mandatory).
+  - **Topic-fit risk softened**: the 2027 CFP's topics explicitly include "AI for Software
+    Engineering," "Generative AI and LLMs applied to software analysis," and "Agentic AI
+    systems" — the venue-scan's "zero LLM-REST precedent" concern is now partially offset by
+    the CFP's own invitation; the evolution-led framing remains the primary pitch, with the
+    AI4SE topic listing cited as fit evidence.
+  - Same conference also hosts an **Agentic AI4SE track and a Tool Demo track (abstracts
+    Oct 19, 2026)** — potential same-venue fallback/companion options, USER decision, not in
+    the sprint's critical path.
 
 ### 9-A.2 Sprint matrix (descoped from §6; the §6 full matrix remains the post-SANER thickening
 target)
@@ -483,7 +502,7 @@ retargets to ICST Nov 2 — still open at every gate — or the ~Mar window, wit
 
 | Window | Work | Gate |
 |---|---|---|
-| now – Jul 19 | USER approves sprint E-items (E1/E3/E4/E8 + E7-AutoRestTest); **verify SANER 2027 page limit + submission format from the official CFP (moved up from story-lock per Round-3 C advisory)**; **record the a-main Aug-Sep cluster-phase basis for the run-day share assumption (Round-3/4 C carry-over)** | **G1 (Jul 19): approval in hand?** NO → revert to v3.1 pacing (ICST Nov 2) |
+| now – Jul 19 | USER approves sprint E-items (E1/E3/E4/E8 + E7-AutoRestTest); ~~verify SANER 2027 CFP~~ **DONE 2026-07-16** (10+2pp IEEE, double-anonymous, EasyChair, abstract MANDATORY Sep 21 / paper Sep 25 / notification Dec 1 — details §9-A.1); ~~record a-main Aug-Sep phase basis~~ **DONE 2026-07-16**: a-main's capture waves are CLOSED and its completion-set (Phase A A1-A8 complete, Phase B underway per commits 631c603/2babb46/d089062) is analysis/staging-dominant — expected Aug-Sep cluster load LOW, with two identified contingencies that would contend if the user elects them (TT re-capture window [+9 units] at the seal decision; rater-study operational needs); re-validated at the G2 smoke | **G1 (Jul 19): approval in hand?** NO → revert to v3.1 pacing (ICST Nov 2) |
 | Jul 19 – Aug 6 (2.5 wks) | Critical-path engineering (off-cluster) + E7-AutoRestTest harness (cluster gaps) + PROTOCOL.md (all §6.1 items incl. B-R2-A1/A2) | — |
 | Aug 7 – Aug 11 | Calibration smoke: banked-runs/day under live a-main contention **+ validation of the available-run-days factor (a-main's Aug-Sep phase share) + reboot/PF-revival overhead budgeted into the run-day arithmetic (Round-3 C advisories)** + per-run duration **+ per-run cost envelope (§9-A.4a: cold-A1 TT run ≤ ~75 min AND LLM-call count within the estimated band — else re-size the run unit before banking)** + **A0′ provenance-gate operationalized as a TWO-SIDED positive control — inject one known trace-sourced value via the `span.getDataProvenance()` (`:1355`) path and one via `getTraceParameterValue` (`:1381`) and confirm the gate FLAGS both, plus one clean A0′ run the gate PASSES (Round-3 B-R3-A1: prevents a `:1355`-blind E4 from passing G2 vacuously)** | **G2 (Aug 11): E-items landed AND ≥8 banked-runs/day demonstrated at the measured per-run cost AND the two-sided gate control passes?** NO → retarget ICST (11.5 wks of runway remain) |
 | Aug 12 – Sep 8 (4 wks) | Sprint matrix (~150 runs, interleaved arm×seed; a-main keeps priority) | **G3 (Sep 8): headline 80 runs banked?** NO → retarget ICST (8 wks remain) |
@@ -635,7 +654,8 @@ regardless of outcome**; labeled un-replicated:
 | **[SPRINT] 9.5-week SANER window slips** | Three hard go/no-go gates (G1 Jul 19 / G2 Aug 11 / G3 Sep 8) with pre-committed exits to ICST Nov 2 (open at every gate) or ~Mar; the sprint bets the calendar, never the protocol — no gate can be "argued past". |
 | **[SPRINT] SANER PC-fit (zero LLM-REST precedent)** | Evolution-led framing (§9-A.1): the evolving producer registry is the headline, live-fetch the mechanism; RQ3a promoted to co-lead. |
 | **[SPRINT] 5-seed power + single external baseline read as thin** | Disclosed as sprint tradeoffs with Â12+CI carrying evidence; second tool disclosed-if-absent; the thickening pipeline (§9-A.4) is stated in the paper so reviewers see the trajectory, not a ceiling. |
-| **[SPRINT] Electing SANER forfeits ICST 2027** | Acknowledged in §9-A; ICST remains the retarget at every gate BEFORE submission; after submission the fallback chain is ICWS/ICSME ~Mar → ISSRE ~Jul. |
+| **[SPRINT] Electing SANER forfeits ICST 2027** | Acknowledged in §9-A; ICST remains the retarget at every gate BEFORE submission; after submission the fallback chain is ICWS/ICSME ~Mar → ISSRE ~Jul (SANER notification Dec 1 keeps it workable). |
+| **[SPRINT] Double-anonymous compliance (CFP-verified)** | Writing-window items: tool pseudonym, third-person self-citation of the MIST papers, anonymous artifact mirror (the public MIST repo de-anonymizes); Data Availability statement drafted with the anonymized links; checked at the internal draft review before submission. |
 | **[SPRINT] Per-run cost blowup (trace-driven input + N serial LLM interactions + test-suite size — the full-TT precedent is 6.5h/run)** | §9-A.4a run-unit definition: scoped suites only (TT ≈ 50 tests/run), fixed versioned seed-trace corpora identical across arms (no in-sprint capture), LLM-latency-aware envelope (cold-A1 TT ≤ ~75 min), G2 cost criterion re-sizes the unit before any banking; the r1→r2 cost drop is itself RQ3a's amortization result. |
 | Service-annotation dependency (Bookinfo zero-services hallucination case) | Disclosed in §2 + Threats; framed as an operating requirement (x-service-name or service-suffixed tags), with Bookinfo as the documented negative case. |
 
