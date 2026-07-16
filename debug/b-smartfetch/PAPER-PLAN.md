@@ -338,12 +338,16 @@ wall-clock budgeting only for AX.
 9. Definitions: workflow depth (deepest consecutive-2xx + fraction-completed), 5xx trace
    signature, grounded-share denominator (all positive-variant params; ID-typed subgroup).
 10. Exclusion rules for degenerate runs (SUT down, auth failure, empty pool, gateway rate-limit
-    storm) + their disclosure.
+    storm) + their disclosure. **A wall-clock-cap bust = discard-and-rerun after re-sizing,
+    never mid-run truncation (B-R4-A3).**
 11. RQ4 injection granularity + control definition; RQ5 rubric + blinding + κ subset.
 12. LLM pin (model, version, temperature) + token accounting per prompt type.
 13. **The run unit per SUT (§9-A.4a): the exact seed-trace corpus (versioned file list), operation
     subset, tests-per-op, enhancer settings — identical across arms/seeds/rounds; plus the
-    per-run cost envelope (wall-clock + LLM-call band) the G2 smoke must confirm.**
+    per-run cost envelope (wall-clock + LLM-call band) the G2 smoke must confirm. Per-ARM
+    expected call bands are recorded too — they double as an A0′ arm-integrity cross-check
+    (an A0′ run whose call profile matches A1's band indicates a leaking switch; B-R4-A5).
+    Cost control is scope-only — no runtime call caps (the §9-A.4a non-censoring rule).**
 
 ## 7. Engineering prerequisites (all user-gated; no tool code until approved)
 
@@ -479,7 +483,7 @@ retargets to ICST Nov 2 — still open at every gate — or the ~Mar window, wit
 
 | Window | Work | Gate |
 |---|---|---|
-| now – Jul 19 | USER approves sprint E-items (E1/E3/E4/E8 + E7-AutoRestTest); **verify SANER 2027 page limit + submission format from the official CFP (moved up from story-lock per Round-3 C advisory)** | **G1 (Jul 19): approval in hand?** NO → revert to v3.1 pacing (ICST Nov 2) |
+| now – Jul 19 | USER approves sprint E-items (E1/E3/E4/E8 + E7-AutoRestTest); **verify SANER 2027 page limit + submission format from the official CFP (moved up from story-lock per Round-3 C advisory)**; **record the a-main Aug-Sep cluster-phase basis for the run-day share assumption (Round-3/4 C carry-over)** | **G1 (Jul 19): approval in hand?** NO → revert to v3.1 pacing (ICST Nov 2) |
 | Jul 19 – Aug 6 (2.5 wks) | Critical-path engineering (off-cluster) + E7-AutoRestTest harness (cluster gaps) + PROTOCOL.md (all §6.1 items incl. B-R2-A1/A2) | — |
 | Aug 7 – Aug 11 | Calibration smoke: banked-runs/day under live a-main contention **+ validation of the available-run-days factor (a-main's Aug-Sep phase share) + reboot/PF-revival overhead budgeted into the run-day arithmetic (Round-3 C advisories)** + per-run duration **+ per-run cost envelope (§9-A.4a: cold-A1 TT run ≤ ~75 min AND LLM-call count within the estimated band — else re-size the run unit before banking)** + **A0′ provenance-gate operationalized as a TWO-SIDED positive control — inject one known trace-sourced value via the `span.getDataProvenance()` (`:1355`) path and one via `getTraceParameterValue` (`:1381`) and confirm the gate FLAGS both, plus one clean A0′ run the gate PASSES (Round-3 B-R3-A1: prevents a `:1355`-blind E4 from passing G2 vacuously)** | **G2 (Aug 11): E-items landed AND ≥8 banked-runs/day demonstrated at the measured per-run cost AND the two-sided gate control passes?** NO → retarget ICST (11.5 wks of runway remain) |
 | Aug 12 – Sep 8 (4 wks) | Sprint matrix (~150 runs, interleaved arm×seed; a-main keeps priority) | **G3 (Sep 8): headline 80 runs banked?** NO → retarget ICST (8 wks remain) |
@@ -505,7 +509,9 @@ danger: the full TT two-stage suite ran **~6.5 h wall-clock** (2026-05-27 run of
 Precedent for the fix: the MYC/a-main legs already run MIST as scoped suites (OTel: 3 seeds ×
 ~214 tests on 4 captured traces; TT omnibus legs: small pre-registered scenario sets). The
 sprint adopts that convention. **Full-corpus runs are OUT of sprint scope** — at most ONE
-optional full-scale showcase run at the very end, if the window allows, disclosed as such:
+optional full-scale showcase run at the very end, if the window allows, under three guardrails
+(Round-4 A-R4-A2): illustrative N-of-1 **outside all statistics**; **reported if run,
+regardless of outcome**; labeled un-replicated:
 
 - **Run unit (pinned in PROTOCOL, per SUT)**: a fixed seed-trace set × a fixed operation subset
   × a fixed tests-per-op count, sized so one **cold-A1 TrainTicket run ≤ ~60-75 min wall-clock**
@@ -514,10 +520,19 @@ optional full-scale showcase run at the very end, if the window allows, disclose
   scale) ≈ 50 test cases/run; other SUTs sized equivalently from their MYC precedents.
 - **Trace input is a dependency, not new work — and a controlled variable**: MIST is
   trace-driven, so each SUT's **seed-trace corpus is fixed, versioned, and IDENTICAL across all
-  arms, seeds, and r-rounds** (else trace variety confounds the value-source contrast). The
-  corpora already exist (TT: the 5-trace eval set + omnibus material; OTel: 4 real captured
-  seed traces; TeaStore: 10 MYC seeds; SS: MYC legs). **No new trace capture inside the sprint
-  window**; if a corpus proves inadequate at smoke, that is a G2 NO, not an ad-hoc capture.
+  arms, seeds, and r-rounds** (else trace variety confounds the value-source contrast).
+  **Actual corpora (corrected per Round-4 C-R4-1 — per-SUT pinned trace counts are set from
+  these at PROTOCOL time, not assumed)**: TT = the 5-trace eval set + omnibus material;
+  OTel = 4 real captured seed traces; **TeaStore = ONE authored synthetic trace (Kieker-only)
+  — the "10 MYC seeds" were 10 statistical replications of that single trace, so TeaStore runs
+  a 1-trace × more-variants shape to reach a comparable #tests, disclosed**; SS = the MYC-leg
+  traces (shallow GETs — see the SS health check below). **No new trace capture inside the
+  sprint window**; if a corpus proves inadequate at smoke, that is a G2 NO, not an ad-hoc
+  capture. **Trace-staleness threat (Round-4 B-R4-A1)**: seed traces carry concrete values
+  that the B4 redeploy-invalidation cannot reach, so trace-grounded stages can degrade with
+  capture-vs-execution staleness — per-run **trace-value resolvability** is recorded via the
+  SUT-state covariate and disclosed (the flagship A0′-vs-A1 contrast is immune by
+  construction; RQ3a sees only a constant offset).
 - **LLM-interaction budget (the real cost is latency, not dollars)**: per parameter fill, the
   chain costs ~1-2 LLM calls in A0/A0′/warm-A2 (generation or extraction) and ~3-6 in cold-A1
   (discovery: service shortlist + endpoint selection per candidate; then extraction), serial at
@@ -527,6 +542,17 @@ optional full-scale showcase run at the very end, if the window allows, disclose
   precisely per run via the E4/§6.1-#12 token accounting. Note the arms' cost asymmetry is
   itself a headline result: **the r1→r2 LLM-call/latency drop IS RQ3a's amortization curve** —
   the cost problem and the paper's registry story are the same measurement.
+  **Non-censoring rule (Round-4 B-R4-A2, elevate-to-blocking if violated): cost is controlled
+  ONLY by scoping fills (variants/operations, pre-banking) — NEVER by a runtime LLM-call cap;
+  cold-A1 discovery always runs to completion** (a call cap would truncate exactly the metric
+  RQ3a reports and artificially flatten the curve). **RQ3a scope statement (Round-4 A-R4-A3):
+  the amortization claim is scoped to recurring-workload discovery-cost amortization (the same
+  pinned corpus re-run); value caches + the verified pool are invalidated between r-rounds
+  (B4), so r2+ gains come from mapping reuse, not cache-warming — stated in the paper.**
+  **No LLM-on precedent caveat (Round-4 C-R4-3): run22's 6.5h was an LLM-OFF run of 15,036
+  tests and the MYC legs ran LLM-off — the ≤75-min envelope is a bottom-up estimate with no
+  measured precedent; G2 is the first LLM-on measurement, and the smoke week reserves slack
+  for one bust→re-size→re-measure cycle before Aug 12.**
 - **G2 gains a cost criterion** (added to the gate row): measured per-run wall-clock and
   LLM-call count for a cold-A1 TT run must fit the pinned envelope (≤ ~75 min; calls within the
   estimated band) — else the run unit is re-sized (fewer variants/operations) or the ladder
@@ -540,7 +566,17 @@ optional full-scale showcase run at the very end, if the window allows, disclose
   the 4-week window — met by **scripted, unattended, per-run-banked execution** (each run banks
   independently; overnight/gap scheduling is the a-main-contention mitigation; the MYC driver
   pattern already supports this). If a cold-A1 run busts the 2-h hard cap at smoke, the re-size
-  rule is variants-first (V=10→5 halves run cost) before touching the seed-trace count.
+  rule is variants-first (V=10→5 halves run cost) before touching the seed-trace count —
+  **and a cap bust is handled by discard-and-rerun after re-sizing, never by mid-run truncation
+  (Round-4 B-R4-A3; added to §6.1 #10)**. **The unattended scheduler consumes the
+  pre-registered interleaved arm×seed order — it must not batch-by-arm for convenience
+  (Round-4 B-R4-A4; protects the B3 order-confound control).** **The G2 smoke runs as a REAL
+  overnight batch including one deliberate mid-batch wedge (kill a port-forward/pod) to
+  measure unattended-batch SURVIVABILITY — lost-slot cost, auto-recovery or safe-halt — not
+  just reboot-revival cost (Round-4 C-R4-2).** **SockShop health check at smoke (Round-4
+  C-R4-4): validate a healthy LLM-on write path first (the only SS run of record was
+  degenerate: 100% of writes 500'd, LLM-off, shallow-GET traces); the paper's scale claim
+  pre-states graceful degradation from 4 systems to 3 if a SUT fails health.**
 - **Scale-claim consistency**: with scoped runs, the paper's scale statement is "N workflow
   scenarios spanning M services / P operations per SUT" (the pinned corpus's actual span,
   stated per SUT) — NOT "all of TrainTicket". §9-A.5's sufficiency argument is read
@@ -558,9 +594,12 @@ optional full-scale showcase run at the very end, if the window allows, disclose
 
 ### 9-A.5 Sufficiency-for-SANER argument (what Round 3 confirms)
 
-- **Scale**: 4 microservice systems / ~70+ services / operation totals stated — at or above the
-  10-12-single-API norm of the comparison literature; SANER's own accepted empirical/tool papers
-  do not exceed this bar (venue scan §2).
+- **Scale**: 4 microservice systems / ~70+ services (**systems context, not evaluation
+  coverage** — per-run coverage is the §9-A.4a pinned scenario span, stated per SUT; Round-4
+  A-R4-A1) / operation totals stated — the *systems-scale* comparison is at or above the
+  10-12-single-API norm of the literature (whose runs are budgeted sessions too); SANER's own
+  accepted empirical/tool papers do not exceed this bar (venue scan §2). Degrades gracefully to
+  3 systems if a SUT fails the smoke health check (C-R4-4).
 - **Baselines**: 3 controlled within-tool contrasts (A0 marginal, A0′ absolute, lexical) + 1
   external SOTA LLM-era tool (AutoRestTest, the sharpest comparator) + disclosed-if-absent
   second tool — vs KAT's single-baseline precedent at the tier; the full quintet remains the
@@ -623,7 +662,7 @@ optional full-scale showcase run at the very end, if the window allows, disclose
 | 2 (2026-07-16, on v3) | **ACCEPT** (0 blocking; 1 venue-contingent advisory) | **ACCEPT** (0 blocking; R2-A1/A2 must-address-in-PROTOCOL + 4 refinements) | **ACCEPT** (0 blocking; R2-1/R2-2 advisories) | **GATE PASSED 3/3.** Four concrete Round-2 advisories adopted post-accept per the reviewers' own wording → v3.1: §6.1 #1 A0′ full grounding-site enumeration incl. `span.getDataProvenance()` (B-R2-A1); §6.1 #3 corroboration positive control (B-R2-A2); §9 plan-of-record = on-bar CCF-B ~Mar window with ICST Nov 2 as the user-electable opportunistic shot (C-R2-1); §9 smoke charter = banked-runs/day under contention (C-R2-2). Reviewer A's ISSRE-re-lead advisory folded into §9's ISSRE sentence. |
 
 | 3 (2026-07-16, on v4 §9-A; scope = sufficiency-for-SANER, venue user-decided) | REVISE→**ACCEPT** (R3-B1 "learns/evolves" headline over-reach fixed per reviewer wording — hook re-scoped to accumulates/self-amortizes, title recalibrated, outcome-learning confined to future-work; R3-A1 disambiguation disclosure added) | **ACCEPT** (0 blocking; R3-A1 two-sided A0′ positive control incl. `:1355` injection folded into G2) | **ACCEPT** (0 blocking; arithmetic re-verified: 148 runs, 8.22/day vs ≥8 floor with ladder cushion to ~6.8, gate runways 11.9/7.9 wks; G1 page-limit check + smoke run-days validation + reboot overhead folded in) | **GATE PASSED 3/3 → v4 = SANER SPRINT PLAN OF RECORD** |
-| 4 (2026-07-16, delta: §9-A.4a run-unit & cost model) | pending | pending | pending | USER flagged full-TT run cost (6.5h run-of-record, ~54h all-traces precedent; trace-input dependency; N serial LLM calls). §9-A.4a pins the scoped run-unit (TT ≈5 traces × ~10 variants ≈50 tests; cold-A1 ≤~75 min target / 2h hard cap), fixed versioned seed-trace corpora identical across arms (no in-sprint capture), LLM latency/cost model + PROTOCOL cost ceiling, machine-hours capacity model with unattended per-run-banked execution, G2 cost criterion, scale-claim consistency. Section consolidates both sessions' same-day passes. Delta-verdict scope: does the run-unit model preserve the accepted design's soundness/feasibility/claims? |
+| 4 (2026-07-16, delta: §9-A.4a run-unit & cost model; successor reviewers — original reviewer transcripts expired, threads continued from the on-disk review files) | **ACCEPT** (0 blocking; R4-A1 scale-rule wiring, R4-A2 showcase guardrails, R4-A3 RQ3a recurring-workload scope — all folded) | **ACCEPT** (0 blocking; R4-A1 trace-staleness covariate+disclosure, R4-A2 non-censoring rule [no runtime call caps], R4-A3 discard-and-rerun, R4-A4 scheduler consumes interleaved order, R4-A5 per-arm call bands as A0′ cross-check — all folded) | **ACCEPT** (0 blocking; **R4-1 HIGH factual fix: TeaStore corpus = ONE authored synthetic trace, not "10 MYC seeds" — corrected pre-G1**; R4-2 overnight-batch survivability wedge test at smoke; R4-3 no-LLM-on-precedent caveat [run22's 6.5h was LLM-OFF] + bust→re-size slack; R4-4 SS health check + 4→3-systems graceful degradation — all folded) | **GATE PASSED 3/3.** USER flagged full-TT run cost (6.5h LLM-off run-of-record, ~54h all-traces; trace-input dependency; N serial LLM calls) → §9-A.4a scoped run-unit + cost model, consolidating both sessions' same-day passes; all 12 Round-4 advisories folded per reviewer wording. |
 
 **Next actions (gate passed)**: (1) **USER approves the sprint E-items (E1/E3/E4/E8 +
 E7-AutoRestTest) — this IS the G1 gate, target Jul 19**; also at G1: verify SANER 2027 page
