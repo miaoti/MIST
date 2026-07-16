@@ -1222,7 +1222,7 @@ Working record for the second paper track (B-venue): SmartFetch (smart input fet
 | Path | Description |
 |------|-------------|
 | `debug/b-smartfetch/README.md` | Folder index for the SmartFetch paper track: contents table and ground rules (mirrors a-main conventions; 3/3 reviewer gate before execution) |
-| `debug/b-smartfetch/PAPER-PLAN.md` | The SmartFetch paper plan of record: pitch, evidence-based artifact state, novelty positioning (3 unclaimed sub-claims), contributions, RQ1-RQ5, arms/protocol, E1-E7 user-gated engineering items, ICST-2027-paced venue strategy + timeline, risk table, no-double-claim policy |
+| `debug/b-smartfetch/PAPER-PLAN.md` | The SmartFetch paper plan of record (v4, 3 review rounds closed 3/3): pitch, evidence-based artifact state, novelty positioning (3 unclaimed sub-claims), contributions, RQ1-RQ5 (RQ3 split 3a/3b), A0/A0′/A1/A2/A3/AX arms + §6.1 pre-registration checklist, E1-E8 user-gated engineering items, §9-A SANER-2027 sprint amendment (user-elected venue; ~150-run matrix; hard gates G1/G2/G3 with lossless exits), risk table, no-double-claim policy |
 | `debug/b-smartfetch/REVIEW-PLAN-A-novelty.md` | Cold review A (novelty/PC angle) of PAPER-PLAN.md — local-only |
 | `debug/b-smartfetch/REVIEW-PLAN-B-soundness.md` | Cold review B (experiment soundness angle) of PAPER-PLAN.md — local-only |
 | `debug/b-smartfetch/REVIEW-PLAN-C-feasibility.md` | Cold review C (feasibility/scope angle) of PAPER-PLAN.md — local-only |

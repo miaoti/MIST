@@ -1,9 +1,10 @@
 # SmartFetch Paper Plan (B-venue track) — PLAN OF RECORD
 
-Status: **v3.1 — REVIEWER-ACCEPTED (Round 2: 3/3 ACCEPT, 2026-07-16; gate log §12).
-This is the PLAN OF RECORD.** Round-2 advisories adopted post-accept per the reviewers' own
-wording (§12 note). Execution of any MIST tool-code change requires explicit user approval
-(standing rule), as does the final venue call (§9).
+Status: **v4 — VENUE ELECTED BY USER (2026-07-16): SANER 2027. §9-A is the sprint amendment of
+record; Round-3 reviewer confirmation (sufficiency-for-SANER) pending.** Base study design =
+v3.1 (REVIEWER-ACCEPTED 3/3, Round 2; gate log §12) — §9-A descopes its execution for the SANER
+window and defines the thickening path back to the full design. Execution of any MIST tool-code
+change still requires explicit user approval of the E-items (standing rule).
 Branch: `main_track`. Working folder: `debug/b-smartfetch/`. Evidence base: `research/*.md`
 (codebase inventory, related-work scan, venue scan — all dated 2026-07-15).
 
@@ -414,6 +415,102 @@ Slack: ~2 weeks absorbable; catastrophic slip retargets ICSME/ICWS (~Mar) with n
 Cluster sharing: a-main has priority; SmartFetch runs schedule into gaps (revival scripts make
 context switches cheap); E-window work is off-cluster by design.
 
+## 9-A. SANER 2027 SPRINT — venue amendment of record (USER-ELECTED 2026-07-16)
+
+**Decision provenance**: v3.1 recommended the ~Mar CCF-B window as plan-of-record and reserved
+the final venue call for the user; the user elected **SANER 2027 (abstract Sept 21 / paper
+Sept 25, 2026 — VERIFIED; Richmond VA, Mar 9-12, 2027; CCF-B + CORE-A; documented 23-26%
+acceptance)**. Electing SANER **forfeits ICST 2027** (SANER notification ~Dec, after ICST's
+Nov 2 deadline; no double submission). This amendment defines the sprint that fits the window
+without betting the protocol: it bets the calendar, with pre-committed exits.
+
+### 9-A.1 SANER-specific framing (the venue has zero LLM-REST-testing precedent; PC gravity =
+analysis/evolution/reengineering)
+
+- **Lead with the registry story, scoped to in-sprint evidence (Round-3 A-R3-B1)**: the hook is
+  a persistent producer registry that **accumulates and self-amortizes parameter→producer
+  mappings across runs** (cold-started by a name-affinity prior, stabilizing run-over-run);
+  live-fetch is the mechanism inside it. RQ3a (cross-run accumulation + discovery-cost
+  amortization curves) is promoted to co-lead narrative beside RQ1. Title candidate:
+  *"SmartFetch: Grounding Microservice API Test Inputs in Live System State with a Persistent,
+  Self-Amortizing Producer Registry."* **"Learns from execution outcomes" / adaptive
+  success-rate ranking is reserved strictly for the deferred RQ3b/E2 and appears only in the
+  abstract's future-work sentence — never as the headline.** Consistency rule: the SANER
+  narrative is carried by RQ3a (accumulation + amortization), mapping-stability, and the
+  de-poison/audit *maintenance* history; outcome-feedback learning (RQ3b/E2) is disclosed as
+  deferred and is NOT part of the SANER evidence or headline (this keeps §9-A.5's "no claim
+  rests on deferred work" true at the framing layer, closing the §9-A.1↔§3.3 seam).
+- Everything else already in the accepted design serves this framing: registry lifecycle,
+  mapping-stability across runs, cold→warm curves, the audit/de-poison history as registry
+  *maintenance* evidence.
+- Per Reviewer A's standing note: fault detection stays a secondary metric here (no ISSRE-style
+  re-lead); "tool-oriented and empirical work" is explicitly welcomed in SANER's CFP.
+- Page limit assumed 10+2 (IEEE) — **verify against the SANER 2027 CFP at story-lock**.
+
+### 9-A.2 Sprint matrix (descoped from §6; the §6 full matrix remains the post-SANER thickening
+target)
+
+| Cell | Sprint scope | Δ vs full design |
+|---|---|---|
+| Headline arms A0 / A0′ / A1(r1) / A2(r2) | 4 SUTs × **5 seeds** = 80 runs | seeds 10→5 (power tradeoff disclosed; Â12 + CI carry the evidence per §6 stats) |
+| Learning curve r3..r5 (RQ3a) | 4 SUTs × **3 seeds** = 36 runs | seeds 5→3 on continuation only |
+| Ablations | **lexical discovery + affinity-prior-off** × 2 SUTs (TT+TeaStore) × 5 seeds = 20 runs | extraction/rotation/P0/gate-sweep/two-phase ablations → deferred |
+| AX external | **AutoRestTest** × 4 SUTs × 3 = 12 runs; second tool (RESTler or EvoMaster BB) only if the window allows, disclosed if not | must-run pair → must-run one |
+| RQ4 (portability), RQ5 (fidelity audit) | **deferred to the thickening pass** (stated as Future Work / in-progress in the paper) | dropped from sprint |
+| **Total** | **≈ 148-160 runs** | vs ≈380 full |
+
+Protected cells (unchanged, never cut below this): A0/A0′/A1 × 4 SUTs + RQ3a curves + the
+per-run provenance gates. E-items on the sprint critical path: **E1, E3, E4, E8** (+ E7 scoped
+to the AutoRestTest harness). **E2 is OFF the sprint path** — RQ3b deferred exactly per the
+accepted §3.3/§5 contingency (sub-claim 3 rests on its operational half). **E5 deferred**
+(per-stage S-metrics limited to what E4/E8 emit naturally; no gold-producer annotation in the
+sprint). E6 deferred with RQ4.
+
+Disambiguation-evidence disclosure (Round-3 A-R3-A1): the **affinity-prior ablation carries the
+multi-producer-disambiguation *evaluation* in-sprint** (the endStation mechanism); demote-only
+scoring and within-run quarantine remain **active but not independently ablated** — disclosed in
+the paper as design elements, not separately-measured components.
+
+### 9-A.3 Sprint timeline with hard go/no-go gates (exits pre-committed; a NO at any gate
+retargets to ICST Nov 2 — still open at every gate — or the ~Mar window, with zero work lost)
+
+| Window | Work | Gate |
+|---|---|---|
+| now – Jul 19 | USER approves sprint E-items (E1/E3/E4/E8 + E7-AutoRestTest); **verify SANER 2027 page limit + submission format from the official CFP (moved up from story-lock per Round-3 C advisory)** | **G1 (Jul 19): approval in hand?** NO → revert to v3.1 pacing (ICST Nov 2) |
+| Jul 19 – Aug 6 (2.5 wks) | Critical-path engineering (off-cluster) + E7-AutoRestTest harness (cluster gaps) + PROTOCOL.md (all §6.1 items incl. B-R2-A1/A2) | — |
+| Aug 7 – Aug 11 | Calibration smoke: banked-runs/day under live a-main contention **+ validation of the available-run-days factor (a-main's Aug-Sep phase share) + reboot/PF-revival overhead budgeted into the run-day arithmetic (Round-3 C advisories)** + per-run duration + **A0′ provenance-gate operationalized as a TWO-SIDED positive control — inject one known trace-sourced value via the `span.getDataProvenance()` (`:1355`) path and one via `getTraceParameterValue` (`:1381`) and confirm the gate FLAGS both, plus one clean A0′ run the gate PASSES (Round-3 B-R3-A1: prevents a `:1355`-blind E4 from passing G2 vacuously)** | **G2 (Aug 11): E-items landed AND ≥8 banked-runs/day demonstrated AND the two-sided gate control passes?** NO → retarget ICST (11.5 wks of runway remain) |
+| Aug 12 – Sep 8 (4 wks) | Sprint matrix (~150 runs, interleaved arm×seed; a-main keeps priority) | **G3 (Sep 8): headline 80 runs banked?** NO → retarget ICST (8 wks remain) |
+| Sep 3 – Sep 19 (overlapping) | Analysis + full draft; internal cold-review pass on the draft | — |
+| **Sep 21** | **SANER abstract (story lock)** | — |
+| **Sep 25** | **SANER 2027 full paper** | — |
+
+Throughput arithmetic: ~150 runs ÷ ~18 run-days ≈ 8.3/day — inside the smoke-verified G2 floor,
+with the §9 de-scope ladder still available beneath it (its lower rungs: continuation seeds
+3→2, ablations 2 SUTs→1, AX 3 repeats→2).
+
+### 9-A.4 Post-SANER pipeline (nothing is wasted)
+
+- **Accept** → camera-ready + thickening items become the artifact/extension work.
+- **Reject (notification ~Dec 2026)** → thicken per §6's full matrix (10-seed headline cells,
+  full ablations, EvoMaster BB + RESTler, RQ4/RQ5, E2 → RQ3b feedback-ranking) → **ICWS/ICSME
+  2027 (~Mar, CCF-B)**; ISSRE 2027 (~Jul) remains the third gate (fault-detection re-lead per
+  §9). The SANER submission is v1 of a strictly-growing study, not a one-shot bet.
+
+### 9-A.5 Sufficiency-for-SANER argument (what Round 3 confirms)
+
+- **Scale**: 4 microservice systems / ~70+ services / operation totals stated — at or above the
+  10-12-single-API norm of the comparison literature; SANER's own accepted empirical/tool papers
+  do not exceed this bar (venue scan §2).
+- **Baselines**: 3 controlled within-tool contrasts (A0 marginal, A0′ absolute, lexical) + 1
+  external SOTA LLM-era tool (AutoRestTest, the sharpest comparator) + disclosed-if-absent
+  second tool — vs KAT's single-baseline precedent at the tier; the full quintet remains the
+  thickening target.
+- **Rigor**: pre-registered PROTOCOL (all 12 §6.1 items), provenance gates, interleaved
+  execution, Holm-Bonferroni + Â12/CI, 5 seeds disclosed as the sprint's power tradeoff.
+- **Fit**: evolution-led framing (9-A.1) aims the paper at SANER's actual identity rather than
+  importing an ICST-shaped testing pitch.
+- **Honesty**: RQ4/RQ5/RQ3b explicitly deferred and stated; no claim rests on deferred work.
+
 ## 10. Risks & mitigations
 
 | Risk | Mitigation |
@@ -436,6 +533,10 @@ context switches cheap); E-window work is off-cluster by design.
 | "Only 4 systems" | ~70+ services / explicit operation totals; field norm is 10-12 single-service APIs — at or above it in operation count. |
 | Two papers in parallel overload | No rater/IRB path here; engineering user-gated; cluster contention managed by a-main-priority + off-cluster E-window. |
 | Stale internal docs leaking into the paper (JSONPath claim, "50%" split, dead classes) | §2 pins current truth; paper text written from `research/codebase-inventory.md`, never from the frozen process doc or old main.tex wording. |
+| **[SPRINT] 9.5-week SANER window slips** | Three hard go/no-go gates (G1 Jul 19 / G2 Aug 11 / G3 Sep 8) with pre-committed exits to ICST Nov 2 (open at every gate) or ~Mar; the sprint bets the calendar, never the protocol — no gate can be "argued past". |
+| **[SPRINT] SANER PC-fit (zero LLM-REST precedent)** | Evolution-led framing (§9-A.1): the evolving producer registry is the headline, live-fetch the mechanism; RQ3a promoted to co-lead. |
+| **[SPRINT] 5-seed power + single external baseline read as thin** | Disclosed as sprint tradeoffs with Â12+CI carrying evidence; second tool disclosed-if-absent; the thickening pipeline (§9-A.4) is stated in the paper so reviewers see the trajectory, not a ceiling. |
+| **[SPRINT] Electing SANER forfeits ICST 2027** | Acknowledged in §9-A; ICST remains the retarget at every gate BEFORE submission; after submission the fallback chain is ICWS/ICSME ~Mar → ISSRE ~Jul. |
 | Service-annotation dependency (Bookinfo zero-services hallucination case) | Disclosed in §2 + Threats; framed as an operating requirement (x-service-name or service-suffixed tags), with Bookinfo as the documented negative case. |
 
 ## 11. Relation to the other track (no-double-claim policy)
@@ -460,6 +561,10 @@ context switches cheap); E-window work is off-cluster by design.
 | 1 (2026-07-15, on v2) | REVISE (2 blocking) | REVISE (6 blocking) | REVISE (1 blocking) | All 9 blocking + 24 advisory adopted → v3 (`REVIEW-PLAN-RECONCILIATION.md`) |
 | 2 (2026-07-16, on v3) | **ACCEPT** (0 blocking; 1 venue-contingent advisory) | **ACCEPT** (0 blocking; R2-A1/A2 must-address-in-PROTOCOL + 4 refinements) | **ACCEPT** (0 blocking; R2-1/R2-2 advisories) | **GATE PASSED 3/3.** Four concrete Round-2 advisories adopted post-accept per the reviewers' own wording → v3.1: §6.1 #1 A0′ full grounding-site enumeration incl. `span.getDataProvenance()` (B-R2-A1); §6.1 #3 corroboration positive control (B-R2-A2); §9 plan-of-record = on-bar CCF-B ~Mar window with ICST Nov 2 as the user-electable opportunistic shot (C-R2-1); §9 smoke charter = banked-runs/day under contention (C-R2-2). Reviewer A's ISSRE-re-lead advisory folded into §9's ISSRE sentence. |
 
-**Next actions (post-gate)**: USER decisions — (1) approve the E1-E8 engineering items (tool
-code is user-gated); (2) venue election (plan-of-record ~Mar CCF-B vs opportunistic ICST Nov 2;
-companion demo yes/no). Then: PROTOCOL.md authored per §6.1 → E-window begins.
+| 3 (2026-07-16, on v4 §9-A; scope = sufficiency-for-SANER, venue user-decided) | REVISE→**ACCEPT** (R3-B1 "learns/evolves" headline over-reach fixed per reviewer wording — hook re-scoped to accumulates/self-amortizes, title recalibrated, outcome-learning confined to future-work; R3-A1 disambiguation disclosure added) | **ACCEPT** (0 blocking; R3-A1 two-sided A0′ positive control incl. `:1355` injection folded into G2) | **ACCEPT** (0 blocking; arithmetic re-verified: 148 runs, 8.22/day vs ≥8 floor with ladder cushion to ~6.8, gate runways 11.9/7.9 wks; G1 page-limit check + smoke run-days validation + reboot overhead folded in) | **GATE PASSED 3/3 → v4 = SANER SPRINT PLAN OF RECORD** |
+
+**Next actions (gate passed)**: (1) **USER approves the sprint E-items (E1/E3/E4/E8 +
+E7-AutoRestTest) — this IS the G1 gate, target Jul 19**; also at G1: verify SANER 2027 page
+limit/format from the official CFP. (2) PROTOCOL.md authored per §6.1 → sprint E-window begins
+Jul 19. Companion-demo decision (ICSE 10/23 / AST 10/30) stays open — both fall between SANER
+submission and notification, so a SmartFetch demo there is compatible.
