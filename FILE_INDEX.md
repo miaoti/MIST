@@ -1215,6 +1215,27 @@ Developer design notes / investigation logs (excluding inputs), plus the input-q
 |------|-------------|
 | `debug/a-rank-fixes/VALIDATION-2026-06-10.md` | Live and offline validation of four deferred A-rank fixes (query params, Phase 3.5 dedup, etc.) on Sock Shop; mist-core suite 328 green |
 
+### `debug/b-smartfetch/`
+
+Working record for the second paper track (B-venue): SmartFetch (smart input fetching) as a standalone conference paper, run in parallel with `debug/a-main/`. Cold-review files here are local-only (gitignored, same rule as a-main).
+
+| Path | Description |
+|------|-------------|
+| `debug/b-smartfetch/README.md` | Folder index for the SmartFetch paper track: contents table and ground rules (mirrors a-main conventions; 3/3 reviewer gate before execution) |
+| `debug/b-smartfetch/PAPER-PLAN.md` | The SmartFetch paper plan of record: pitch, evidence-based artifact state, novelty positioning (3 unclaimed sub-claims), contributions, RQ1-RQ5, arms/protocol, E1-E7 user-gated engineering items, ICST-2027-paced venue strategy + timeline, risk table, no-double-claim policy |
+| `debug/b-smartfetch/REVIEW-PLAN-A-novelty.md` | Cold review A (novelty/PC angle) of PAPER-PLAN.md — local-only |
+| `debug/b-smartfetch/REVIEW-PLAN-B-soundness.md` | Cold review B (experiment soundness angle) of PAPER-PLAN.md — local-only |
+| `debug/b-smartfetch/REVIEW-PLAN-C-feasibility.md` | Cold review C (feasibility/scope angle) of PAPER-PLAN.md — local-only |
+| `debug/b-smartfetch/REVIEW-PLAN-RECONCILIATION.md` | Reconciliation of the 3 plan reviews with per-finding disposition — local-only |
+
+### `debug/b-smartfetch/research/`
+
+| Path | Description |
+|------|-------------|
+| `debug/b-smartfetch/research/codebase-inventory.md` | Evidence report: SmartFetch code inventory (11 files/7,636 LOC), 15+1 LLM prompts, per-SUT registry states (TT structurally mature/all-zero-by-design; SS verified-pool only), D4 SFHR numbers with caveats, S1-S7 designed-but-unrun framework, audit summary, stale-doc warnings, config surface |
+| `debug/b-smartfetch/research/related-work.md` | Online novelty scan (45+ searches): closest prior art incl. EvoMaster harvesting collision, AutoRestTest, ASTRA, KAT; verdict = combination novel with 3 unclaimed sub-claims; expected baselines + metrics norms |
+| `debug/b-smartfetch/research/venue-scan.md` | Venue scan: CCF/CORE table, verified deadlines (SANER 2027 Sept 25; ICST 2027 Nov 2), eval-bar calibration papers, ranked recommendation |
+
 ### `debug/flow/`
 
 | Path | Description |

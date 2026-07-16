@@ -1,0 +1,465 @@
+# SmartFetch Paper Plan (B-venue track) — PLAN OF RECORD
+
+Status: **v3.1 — REVIEWER-ACCEPTED (Round 2: 3/3 ACCEPT, 2026-07-16; gate log §12).
+This is the PLAN OF RECORD.** Round-2 advisories adopted post-accept per the reviewers' own
+wording (§12 note). Execution of any MIST tool-code change requires explicit user approval
+(standing rule), as does the final venue call (§9).
+Branch: `main_track`. Working folder: `debug/b-smartfetch/`. Evidence base: `research/*.md`
+(codebase inventory, related-work scan, venue scan — all dated 2026-07-15).
+
+---
+
+## 1. Pitch (one paragraph)
+
+REST API test generators — spec-based, search-based, and LLM-based alike — routinely fabricate
+parameter values that do not exist in the system under test: request bodies reference accounts,
+products, and stations that were never created, so positive test flows die in 404/400 storms and
+deep multi-service workflows are never exercised. **SmartFetch** treats the deployed microservice
+system's own read surface as a *queryable value oracle*: at generation time it (i) routes a
+needed parameter (e.g. `accountId`) to a producer service and read-only GET endpoint selected
+from the system's merged, service-annotated OpenAPI surface, (ii) issues an authenticated live
+GET and LLM-extracts an *actually existing* value from the response body (no JSONPath
+brittleness, tolerant of field-name/parameter-name mismatch), and (iii) persists the learned
+parameter→producer mappings in a registry that is reused across runs, so discovery cost
+amortizes toward zero. A trace-observed-producer priority and a diversity-rotation cache
+complete a four-level chain that degrades gracefully to plain LLM generation. We evaluate
+SmartFetch inside the MIST generator on four open-source microservice systems (~70+ services
+combined), measuring [EXPECTED: higher valid-request rate and deeper workflow execution than
+LLM-only and lexical-matching value sourcing, at declining per-run discovery cost] — and we
+test whether harvested values transfer to a third-party fuzzer as a drop-in dictionary.
+
+Framing in one line (as an *analogy*, not a mechanism claim — PrediQL owns the literal "first
+retrieval-augmented fuzzer" phrase, for GraphQL + self-session-history): **retrieval-augmented
+test input generation, where the retrieval corpus is the live system itself** (vs.
+LlamaRestTest's frozen weights, AutoRestTest's parametric guessing, Keploy's stale recorded
+traffic, EvoMaster's out-of-band SQL).
+
+Title candidates (final at draft time):
+1. *SmartFetch: Grounding REST API Test Inputs in Live Microservice State*
+2. *Ask the System, Not Just the Model: Live-Value Retrieval for Microservice API Testing*
+
+## 2. The artifact today (evidence: `research/codebase-inventory.md`)
+
+Code: `mist-core/src/main/java/io/mist/core/smart/` — 11 files, 7,636 LOC (orchestrator
+`SmartInputFetcher` 4,576 LOC). Live integration points: `MistGenerator` (3 fetch sites +
+per-scenario rotation reset) and `SharedPoolSupport` (pool seeding via the provenance API
+`fetchSmartInputWithProvenance` → `ResolvedValue` + 5-value `ValueProvenance` enum). NOTE: the
+frozen 2026-06-11 docs (`docs/Smart-Fetch-Process.md`) describe two integration classes that
+**no longer exist** (`SmartLLMParameterGenerator`, `TestDataGeneratorFactory`) — the paper
+describes only the surviving MistGenerator path.
+
+**Metric-definition caution (adopted from review)**: the enum's helper `isLiveGrounded()`
+(`ValueProvenance.java:42-44`) returns true for `LLM_GENERATED` too — its semantics are
+*positive-test candidacy* (screening rule for the negative-test classifier), NOT live
+provenance. The paper's **grounded-share metric is defined on raw enum values:
+grounded = {RESOLVED_LIVE, RESOLVED_CACHE}**, computed by E4 without using `isLiveGrounded()`.
+
+What is already built and verified:
+
+- **Four-level priority chain**: P0 trace-observed producer endpoints (from MIST's workflow
+  traces, session-scoped) → P1 registry mappings, ranked by
+  `0.5·(priority/10) + 0.3·successRate + 0.2·recency` **plus a cold-start name-affinity prior**
+  (token/stem overlap parameter↔service/endpoint; engages while all successRates are zero) →
+  P2 LLM discovery (service shortlist → GET-endpoint selection with forced-choice retry;
+  persists to registry; also fires as last resort when every existing mapping fails) → P3 LLM
+  fallback. Percentage gate (default **1.0, "grounding-first"**) controls the smart/LLM split
+  per call. Mapping quarantine suppresses repeat-failing producers within a run.
+- **15 distinct LLM prompts in the fetcher** (+1 in the parameter-error analyzer): service
+  discovery, endpoint selection (+forced), direct value extraction, multi-value extraction,
+  semantic-similarity expansion, semantic field matching, field relevance, minimal fallbacks,
+  value variation, etc. Two are registry-overridable templates. Verbatim texts + current
+  file:line in `docs/PROMPT_INVENTORY.md` (maintained, 2026-07-13). The prompt suite itself is
+  paper material (design rationale: small budgets, low temperatures for decisions, sentinel
+  tokens, markdown-fence cleaning).
+- **Persistent learned registry** (YAML): parameter→[endpoint, service, priority, successRate,
+  lastUsed, consumerApiKey-scoped], atomic writes, dirty-flag flush at scenario boundary + JVM
+  shutdown, error-context store, verified-value pool (`poolEntryStatus`), re-runnable migration
+  tool. **Precision matters for the paper's claims**: shipped TrainTicket registries are
+  structurally mature (57 parameters, 103/155 endpoint rows across 18/23 services) but their
+  successRates are **all 0.0 by deliberate design** (2026-06-10 de-poison: the old format-check
+  feedback rewarded wrong producers, e.g. `endStation`→trains at 0.97 yielding SUT-400s;
+  demote-only until producer-keyed feedback lands). So today: structural coverage = operational;
+  score learning = designed but awaiting A2 (E2, user-gated — see the contingent-claim split in
+  §3). The **evaluation registry-of-record is `evaluation/suts/trainticket/input-fetch-registry.yaml`
+  (155 rows)**; the demo variant (103 rows) is disclosed but not used for banked runs. Locked by
+  `ProducerRankingTest` (4/4), `ShippedRegistryDepoisonTest`, and the live-gated
+  `TTEndStationLiveCheck`.
+- **Two-phase verified-value loop (landed, opt-in)**: Phase A executes positives with capture +
+  enhancer-rescue (a placeholder positive that 400s is regenerated from the SUT's error text,
+  then harvested), drains SUT-2xx-verified values into the registry; Phase B narrows generation
+  to verified values. Live TT run: 34 enhancer rescues, 869 narrowing events
+  (`debug/grounding/producer-ranking-and-two-phase.md`).
+- **Generic auth** (post-audit): configurable login path/fields/token JSON path/validity;
+  401/403 invalidates the token; no baked-in credentials. Single-arg constructor still defaults
+  to the TrainTicket shape (fine — our other SUTs run auth-less).
+- **Hardened by a 70-finding audit** (2 rounds + independent verification; 64 fixed, 6 disclosed
+  deferrals; registry cleaned 175→82 rows, 0 fabricated endpoints). The audit record doubles as
+  artifact-evaluation rigor evidence, and its design-tension findings feed Discussion honestly.
+- **Existing quantitative evidence — indicative only, superseded by re-measurement**: four D4
+  SFHR runs on TrainTicket (2026-05, pre-grounding-fix): ID-typed N=123/357/178/370, SFHR
+  conservative 45.5/75.9/58.4/47.0% (mean 56.7%, spread 30pp; only 1/4 passed ≥60%), upper
+  57.7/89.6/100/65.7%. Caveats the paper must respect: documented mining-script bugs,
+  placeholder contamination of one upper bound, and D5 trace-confirmation 0.00% in every run
+  (fetch-time provenance ≠ execution-time corroboration — hence the independent corroboration
+  metric in §5/E8). The June grounding fixes lifted the all-parameter grounded share 14%→~99.7%
+  on TT (`debug/a-main/archive-2026-06-01/PLAN.md:113-114`) — while the endStation case proved
+  **grounding ≠ validity**. All headline numbers are RE-MEASURED (E4); old numbers appear only
+  as caveated priors, or not at all.
+- **A designed-but-never-run per-stage metric framework** (7 families, 12 named metric IDs with
+  KPI thresholds). Three implementability gaps documented; executing this framework for the
+  first time = the paper's per-stage instrument (E5). The S1.2 gold-producer set is **manual
+  annotation** (disclosed single-labeler, same rigor rules as RQ5; scoped to 1 SUT or dropped to
+  Future Work if a defensible gold set doesn't fit the window).
+- **Scope boundaries to keep clean**: (a) MIST's *separate* SemanticDependencyRegistry /
+  "JIT bind" subsystem (smart-fetch is its dictionary-miss fallback) is held constant across
+  arms — E1's pre-step verifies the hold-constant knob exists *before execution starts*
+  (fallback: add one, or run all arms JIT-bind OFF globally); (b)
+  `negative.input.generation.mode=smart` is an unrelated knob; (c) **service-annotation
+  dependency disclosed**: endpoint discovery keys on `x-service-name` (falling back to OpenAPI
+  tags); on a plain tag-grouped spec (Bookinfo) it registered ZERO services and smart-fetch
+  degraded to hallucinated service names — the technique requires service-annotated or
+  service-suffixed-tag specs, stated in Threats.
+
+Registry/SUT starting state (measured 2026-07-15): TrainTicket = structurally mature registry;
+SockShop = empty mappings but 92 VERIFIED_VALID pool entries (2 ops / 8 fields — evidence the
+two-phase loop ran); TeaStore / OTel Demo / Bookinfo / Boutique = no registry (cold start).
+TeaStore+OTel's recent minimal-tier runs (LLM off, smart-fetch off by default) produced
+positive-flow 404s from type-naive values — the motivating anecdote; cold-start on them is a
+*feature* of the design (RQ3 learning curves), not missing prep.
+
+## 3. Novelty & positioning (evidence: `research/related-work.md`)
+
+**External scan verdict (45+ searches, 2026-07-15): no single paper or tool combines
+SmartFetch's ingredients.** Individually precedented; the combination is unclaimed. The
+sub-claims, phrased to survive a hostile PC (Round-1 A-B1/A-B2 adopted):
+
+1. **Cross-microservice, live-retrieval routing** — routing a bare parameter to a producer
+   *service + read endpoint*, selected from a merged multi-service registry, *for the purpose of
+   issuing a live GET and harvesting a currently-real value* (inseparable from sub-claim 2).
+   Distinct from AutoRestTest's SPDG (embedding-similarity property-dependency inference over a
+   *single* merged spec, built to *chain* requests, never to fetch) and from the name/schema/noun
+   dependency lineage (RESTler, Morest, RESTest/IDLReasoner, RAFT, ASTRA, KAT). **We do not
+   claim "semantic vs syntactic dependency inference" as the novelty — AutoRestTest already
+   infers dependencies semantically; our novelty is routing-to-a-read-endpoint-for-live-retrieval
+   across an explicit multi-service registry.**
+2. **Freshness / instance-specificity via live fetch at generation time** — the value is
+   guaranteed to exist in *this* deployment *right now*; vs values frozen in fine-tuned weights
+   (LlamaRestTest), hallucinated from parametric knowledge (AutoRestTest/RESTGPT/KAT), replayed
+   from stale recorded traffic (Keploy/Speedscale), or pulled via out-of-band SQL (EvoMaster
+   white-box). The scan found no tool making this guarantee via this mechanism — the paper's
+   anchor claim.
+3. **Persistent, cross-run learned registry** amortizing discovery cost. The
+   *persistence + cold-start name-affinity prior + demote-only multi-producer disambiguation +
+   quarantine* half is **operational and evaluated today** (RQ3a); the *producer-keyed
+   success-rate ranking* that closes the feedback loop is **designed but unlanded
+   [E2-dependent]**, claimed only as a *contingent* contribution and evaluated in RQ3b **iff E2
+   is approved** (tool code is user-gated). Absent E2, the registry's novelty rests on
+   persistence + prior + disambiguation — still unprecedented in the surveyed literature.
+
+**What we must NOT claim** (all well-precedented): LLM value generation per se; producer-consumer
+inference per se; same-session response-value reuse (ARAT-RL/RESTler/Morest/EvoMaster/ASTRA);
+"real backend data instead of synthetic" as a general idea (EvoMaster SQL-select +
+external-service harvesting — different layer, same spirit); probabilistic real-vs-synthetic
+gating (EvoMaster `probOf*`). Internal scan (2026-06-01, `debug/grounding/…md`) agrees and adds
+Arcuri's survey naming test-data setup an open need with "no source claiming robust cross-SUT
+grounding under data pollution / multiple producers solved" — the slot this paper occupies, with
+**multi-producer disambiguation** (prior + demote-only + quarantine + contingent feedback) as
+our documented instance of the open problem.
+
+**Preempting "isn't this just an LLM agent with a GET tool?"**: the contribution is the
+engineered, measured pipeline (4-level graceful degradation, explicit disambiguation, persistent
+registry, provenance instrumentation) plus the empirical characterization of when live-fetch
+beats guess-and-retry — none of which falls out of handing an agent a curl tool; the scan found
+no agentic tool that fetches a real value for a *different* request's parameter.
+
+**Danger papers, preempted explicitly in Related Work**: (1) EvoMaster's
+`probOfHarvestingResponsesFromActualExternalServices` — a *naming* collision (harvests the SUT's
+*outbound* third-party calls to build mocks; we harvest the SUT's *inbound* read surface); quote
+option semantics precisely. (2) AutoRestTest — twice: as the semantic-SPDG holder (see sub-claim
+1) and as the LLM guess-and-retry value agent; the "how much does live-fetch buy?" question is
+answered experimentally (AX/RQ1), not by citation. (3) ASTRA (IBM 2025) — LLM classifies *error
+text* within one spec, session-scoped, no artifact; conceptual comparison only, stated as such.
+(4) KAT (ICST 2024 — target-tier predecessor): spec+LLM *synthetic* values, single-spec ODG, no
+live fetch, **and no persistence — the persistent cross-run registry is a co-equal delta axis**;
+KAT has no runnable artifact, so the comparison is conceptual-by-necessity (stated openly;
+AutoRestTest carries the empirical burden). Also positioned: PrediQL (GraphQL, self-history
+retrieval), MIRAGE (the inverse: fabricates responses when reality is unavailable — we fetch
+reality when it is available), record-replay industry tools (backward-looking corpus vs our
+forward-looking just-in-time retrieval).
+
+## 4. Claims & contributions
+
+1. **Technique**: SmartFetch — live-state-grounded input generation for microservice REST APIs:
+   live-retrieval routing to producer read-endpoints across services, live harvesting with LLM
+   direct extraction, and a persistent mapping registry with explicit multi-producer
+   disambiguation (cold-start prior + demote-only scoring + quarantine; producer-keyed feedback
+   ranking as the E2-contingent completion), organized as a 4-level graceful-degradation chain.
+2. **Measurement instrument**: first-class value provenance (5-way enum at the API level;
+   grounded = {RESOLVED_LIVE, RESOLVED_CACHE} on raw values) + per-stage metric framework +
+   an independent execution-time corroboration metric — grounded-share is
+   mechanism-descriptive; **headline outcomes are the SUT-independent ones** (2xx validity,
+   coverage, unique 5xx, workflow depth).
+3. **Empirical study** on 4 microservice systems (~70+ services; total operation counts stated
+   explicitly): marginal AND absolute value-source contrasts (A0/A0′), component ablations,
+   cold→warm discovery-amortization curves (RQ3a; feedback-ranking curves iff E2), external-tool
+   baseline runs, and a portability experiment (harvested values as a RESTler dictionary).
+4. **Open artifact**: implementation in MIST (open-source), prompts, registries, measurement
+   toolchain, audit record — aimed at the venue's artifact-evaluation badge.
+
+## 5. Research questions
+
+- **RQ1 (Effectiveness — grounding AND validity)**: Does SmartFetch improve input validity and
+  system exercise vs (a) MIST-default-minus-smart-fetch (marginal contrast, A0), (a′) true
+  LLM-only (absolute contrast, A0′), and (b) lexical (non-LLM) producer matching — **(b) scoped
+  to TrainTicket + TeaStore, the ablation hosts**? Report BOTH grounded share (mechanism metric,
+  raw-enum definition) AND validity outcomes, since they diverge. **Primary metric: 2xx
+  valid-request rate.** Secondary: operation coverage (ops with ≥1 2xx), 400/404/5xx breakdown,
+  unique 5xx faults (dedup signature = status + failing endpoint + error-span path; proxy
+  caveat per the survey), workflow depth (deepest consecutive-2xx step AND fraction-of-scenario
+  completed; distributions), service-interaction coverage (unique caller→callee pairs in Jaeger).
+  Plus the **independent corroboration metric** (harvested value observed in the emitted request
+  AND request 2xx; revived trace-presence check) — pre-committed to report even if low.
+- **RQ2 (Component analysis)**: Which ingredients matter? Ablations on TrainTicket + TeaStore:
+  LLM discovery → **lexical discovery** (pinned: RESTler/RAFT-lineage token/noun-overlap matcher
+  — camelCase/snake split + lowercase + stem; Jaccard overlap of parameter tokens vs endpoint
+  path + response-field tokens; fixed threshold; deterministic tie-break — *replaces* LLM
+  candidate-set selection, and is distinct from the affinity-prior ablation, which re-ranks an
+  LLM-discovered candidate set); LLM direct extraction → deterministic field-walk; name-affinity
+  prior off (the documented endStation failure mode); diversity rotation off; P0 off;
+  percentage gate ∈ {0, 0.3, 0.7, 1.0} (midpoints first to cut under the de-scope ladder);
+  two-phase verified loop on/off.
+- **RQ3 (Learning & cost — decomposed for independent degradation)**:
+  - **RQ3a (E2-independent, works today)**: cross-run **discovery-cost amortization** — a warm
+    registry converts P2 LLM-discovery calls into P1 registry hits, seeded cold by the
+    name-affinity prior. Measured over r1..r5: grounded share, validity, and **LLM-discovery-call
+    fraction (primary metric)**, token/$ decomposed **by prompt type** (amortization is claimed
+    on the discovery component — extraction calls persist by design). This alone substantiates
+    the cross-run-registry half of sub-claim 3.
+  - **RQ3b (E2-dependent)**: producer-keyed feedback ranking (successRate movement, mapping
+    re-ordering, EMA convergence). **Iff E2 lands**; on slip, RQ3 reports RQ3a only and feedback
+    ranking moves to Future Work (sub-claim 3's contingency, §3).
+  - SUT-state policy (pinned): fresh SUT redeploy between r's; concrete-value caches and the
+    verified pool invalidated on reset; **only mapping-learning is claimed across resets**;
+    SUT-state covariate recorded. AutoRestTest's ≈$0.02/run/service is compared
+    **token-normalized** (different models — raw $ is apples-to-oranges).
+- **RQ4 (Portability)**: Do harvested values transfer? Control = RESTler with its **default
+  spec-derived dictionary**; treatment = default **+** harvested values (injection granularity
+  pinned in PROTOCOL; per-parameter slotting preferred if feasible, else global-dict disclosed);
+  harvesting cost (MIST's LLM spend) disclosed as part of the treatment; optional
+  random-real-value control (DB-sampled) to separate "real values help" from "*our* pipeline's
+  values help". Metrics: RESTler 2xx rate + coverage delta.
+- **RQ5 (Extraction fidelity, small)**: Stratified sample (~100 harvested values per SUT; 50
+  under the de-scope ladder): does the extracted value occur in the live response, and is it
+  semantically correct for the parameter? Pre-registered rubric; labeler blinded to arm where
+  feasible; ~20% double-labeled with Cohen's κ; labels + rubric published; single-labeler
+  disclosed.
+
+## 6. Experiment design
+
+**SUTs** (all deployable on the existing WSL2/minikube cluster; revival scripts exist):
+
+| SUT | Services | Registry start | Auth | Role |
+|---|---|---|---|---|
+| TrainTicket | ~40 | structurally mature (57 params; eval registry = registry-of-record) | JWT | flagship; ablation host; admin-write salt + 800ms pacing |
+| Sock Shop | ~8 | cold mappings (verified pool present — excluded per arm rules) | none | second system; RabbitMQ warm-up before runs |
+| TeaStore | ~6 | cold | none | ablation host; cold-start curves; motivating 404 anecdote |
+| OTel Demo | ~15 | cold | none | polyglot; real captured seed traces |
+| (optional) Bookinfo / Boutique | 4 / 11 | cold | none | first rung of the de-scope ladder; Bookinfo also illustrates the annotation-dependency threat |
+
+State per-SUT operation/endpoint totals in the paper (reviewers pattern-match on API counts).
+
+**Arms** (MIST generator held fixed; only the value source varies; JIT-bind held constant; fresh
+SUT redeploy/DB reset at arm boundaries — never TrainTicket's destructive `generatedb` mid-run):
+
+- **A0 — MIST-default minus smart-fetch** (trace-payload grounding retained; smart-fetch off).
+  Measures smart-fetch's **marginal** lift over the grounding MIST already has. (Round-1 B-B1:
+  the old "LLM-only" label was code-falsified — `getTraceParameterValue` and
+  `preferVerifiedValues` are not gated by the smart-fetch switch.)
+- **A0′ — true LLM-only** (smart-fetch off + trace-payload grounding off + verified-pool
+  narrowing off; E1 switches). Measures the **absolute** contrast. Context/input *reuse*
+  (same-scenario consistency) stays ON in all arms — it propagates an upstream-chosen value,
+  it does not source new ones (disclosed).
+- **A1** SmartFetch ON, cold registry (r1 of the learning curve).
+- **A2** SmartFetch ON, warm registry (r2..r5 continue A1's registry per the RQ3 state policy).
+- **A3** ablation set (RQ2) on TrainTicket + TeaStore.
+- **AX — external baseline set (expected by the venue, de-risked by staging)**: must-run pair =
+  **AutoRestTest + one of {EvoMaster BB, RESTler}**; the third tool run if the harness lands;
+  any tool that will not run on a SUT is disclosed, never silently dropped. Budget for AX:
+  #requests-issued-to-SUT AND wall-clock-including-generation, both reported; MIST's
+  generation-time LLM cost disclosed separately. ASTRA = conceptual only (no artifact). RQ4
+  reuses the RESTler harness ± dictionary.
+
+**Arm-integrity rules (pre-registered gates, not post-hoc assumptions)**:
+- Per-run provenance gate: **A0′ must emit zero RESOLVED_LIVE / RESOLVED_CACHE / trace-sourced
+  values** (checked from E4 output before a run banks); A0 must emit zero smart-fetch values.
+- Registry lifecycle: pristine/empty registry file for every A0/A0′/cold-A1 run;
+  snapshot-and-restore at arm boundaries; pool-status source disabled in A0′ (and in A0 unless
+  measuring MIST-default explicitly — pinned in PROTOCOL).
+- Execution order: arm×seed interleaved/randomized so SUT data growth is spread across arms, not
+  aligned with one; SUT-state covariate (row/order/user counts) recorded per run and reported.
+
+**Run matrix & throughput honesty** (Round-1 C-F7): headline cells (A0, A0′, A1, A2-warm) at
+**≥10 seeds** × 4 SUTs = 160 runs; learning-curve continuation r3..r5 at 5 seeds = 60; ablations
+(~10 configs × 2 SUTs × 5 seeds) = 100; AX (≤3 tools × 4 SUTs × 3 repeats) ≤ 36; RQ4 (± dict ×
+4 SUTs × 3) = 24 → **≈ 380 runs full matrix**. Working assumption ~12 runs/day in a-main gaps →
+~32 run-days vs the ~25 scheduled: the calibration smoke measures true run duration and
+**re-sizes the matrix before any banked run**; the §9 de-scope ladder sheds load in a
+pre-committed order. Protected cells in all cases: A0/A0′/A1 on 4 SUTs + RQ3a.
+
+**Statistics** (Round-1 B-B6/B-A1): one **primary metric per RQ** (RQ1: 2xx valid-request rate;
+RQ3a: LLM-discovery-call fraction; unique-5xx promoted to co-primary only in an ISSRE-variant
+re-lead); all else secondary/exploratory. Mann-Whitney U with **Holm-Bonferroni within each
+metric family** (family boundaries declared in PROTOCOL), **Â12 + CI as the primary evidence**
+(magnitude over significance in the small-n regime); medians + IQR; ≥10 seeds on headline cells,
+5 elsewhere, with a power note. Budget unit: **fixed #tests for within-tool arms** (wall-clock +
+LLM calls are cost axes, not caps — a wall-clock cap would punish A1's live-GET latency);
+wall-clock budgeting only for AX.
+
+### 6.1 PROTOCOL.md must pin (pre-registration checklist, before any banked run)
+
+1. A0/A0′ exact knob configs + the per-run provenance gates (zero grounded/trace values in
+   A0′). **The A0′ switch/gate enumeration must cover ALL grounding stages in the generator —
+   including the second trace-derived stage `span.getDataProvenance()` (`MistGenerator.java:1355`)
+   alongside `getTraceParameterValue` (`:1381`) — and the gate predicate must not false-trip on
+   the retained output-chaining/context-reuse stage (`:1362`), which propagates upstream-chosen
+   values rather than sourcing new ones (Round-2 B-R2-A1).**
+2. Grounded-share definition = {RESOLVED_LIVE, RESOLVED_CACHE} on raw enum values;
+   `isLiveGrounded()` forbidden for the metric; per-emission-site reporting.
+3. The independent execution-time corroboration metric, reported even if low — **with a
+   positive control proving the metric CAN fire (seed a known-present value and verify
+   detection), given the prior D5=0.00%-every-run history (Round-2 B-R2-A2).**
+4. Registry-file lifecycle per arm; interleaved arm×seed order; SUT-state covariate.
+5. RQ3 SUT-state policy; mapping-vs-value-cache separation; concrete-cache invalidation on reset.
+6. The lexical-discovery algorithm (tokenization, similarity, threshold, tie-break) + its
+   distinctness from the affinity-prior ablation.
+7. Primary/secondary metric split per RQ; Holm-Bonferroni family boundaries.
+8. Seeds per cell with power note; budget unit = fixed #tests (within-tool) / dual-reported (AX).
+9. Definitions: workflow depth (deepest consecutive-2xx + fraction-completed), 5xx trace
+   signature, grounded-share denominator (all positive-variant params; ID-typed subgroup).
+10. Exclusion rules for degenerate runs (SUT down, auth failure, empty pool, gateway rate-limit
+    storm) + their disclosure.
+11. RQ4 injection granularity + control definition; RQ5 rubric + blinding + κ subset.
+12. LLM pin (model, version, temperature) + token accounting per prompt type.
+
+## 7. Engineering prerequisites (all user-gated; no tool code until approved)
+
+| # | Item | Size | Why |
+|---|---|---|---|
+| E1 | Ablation/scope switches: discovery=llm/lexical/off, extraction=llm/heuristic, affinity-prior on/off, rotation on/off, P0 on/off, **trace-grounding off + pool-narrowing off (the A0′ switches)**. **Pre-step before execution: verify the JIT-bind hold-constant knob exists (30-min grep); fallback = add one (size→M) or run all arms JIT-bind OFF globally** | M | RQ1/RQ2 internal validity (Round-1 B-B1, C-F11) |
+| E2 | **A2 producer-keyed execution feedback** — SUT 2xx/4xx raises/lowers the producer's successRate (design on file in `debug/grounding/`); verify dirty-flag flush persists it. **NOVELTY-CRITICAL flag: the only E-item whose absence downgrades a headline sub-claim — if user approval is withheld or it slips, sub-claim 3 and RQ3 re-scope to RQ3a per §3/§5** | M (integration risk: net-new cross-layer wire into a frozen-import orchestrator with no integration tests on its call sites) | RQ3b |
+| E3 | Per-SUT smart-fetch profiles (TeaStore/OTel/SS cold registries, auth=none; Boutique/Bookinfo if used) | S | RQ1/RQ3 |
+| E4 | Provenance-based measurement pipeline v2 — consume raw `ValueProvenance` values (never `isLiveGrounded()`); **wire provenance into all four value-emitting sites (3 bare `fetchSmartInput` generator sites + the trace path) or formally bound coverage and report grounded-share per emission site** | M | all RQs (headline numbers; eliminates rather than relocates the D4 defect class — Round-1 B-B2) |
+| E5 | S-framework calculator + gap-fills. **Gold-producer set = manual annotation (single-labeler disclosed, day-budgeted; 1 SUT scope or Future-Work drop if not defensible in time)** | M | per-stage metrics |
+| E6 | Harvested-values → RESTler dictionary / Schemathesis examples exporter | S | RQ4 |
+| E7 | External-tool harnesses (EvoMaster BB / AutoRestTest / RESTler vs gateway specs, matched budgets) — **resized ~2 weeks, starts in window 1 (cluster/integration work, parallel to E-coding)** | L | AX (venue-expected baseline set) |
+| E8 | **Measurement tooling (new)**: Jaeger 5xx-dedup signature extraction; service-interaction (caller→callee) coverage extraction; workflow-depth instrumentation; the independent execution-time corroboration metric | M | RQ1 metrics are not computable without it (Round-1 B-A9) |
+
+## 8. Paper skeleton (target 10pp + refs, IEEE conference)
+
+1. Introduction (the 404-storm motivating run; grounding≠validity; contributions)
+2. Background & motivating measurement (provenance snapshot of an LLM-only run)
+3. SmartFetch design (priority chain; discovery; extraction; registry learning + multi-producer
+   disambiguation; prompt design rationale)
+4. Implementation in MIST (auth, caches, hardening; audit as rigor evidence)
+5. Evaluation (RQ1-RQ5; protocol; stats)
+6. Discussion & threats (when grounding helps/doesn't; read-only safety & state pollution;
+   service-annotation dependency — the Bookinfo zero-services case; needs a deployed SUT with
+   read endpoints + spec; LLM dependence; self-report vs corroboration)
+7. Related work (dependency inference; LLM testers; EvoMaster harvesting disambiguation;
+   replay tools; RAG framing-as-analogy)
+8. Conclusion + artifact statement (AE badge target)
+
+Page-budget cut order (pre-committed): RQ5 → artifact appendix; RQ4 → short subsection or
+companion demo; per-stage S-metrics → selected highlights + artifact.
+
+## 9. Venue & timeline (evidence: `research/venue-scan.md`; final call = USER at plan approval)
+
+**Primary deliverable = the completed study.** Verified deadlines: **SANER 2027 abstract Sept 21
+/ paper Sept 25, 2026** (CCF-B + CORE-A); **ICST 2027 Nov 2, 2026** (CCF-C / CORE-A; KAT
+precedent, AE badges, Major-Revision mechanism). Estimates (UNVERIFIED): ICSME/ICWS 2027
+~Mar 2027; ISSRE 2027 ~Jun-Jul 2027 (both CCF-B + CORE-A).
+
+**Recommendation (user decides; Round-2 C-R2-1 framing)**: the **plan-of-record submission
+target is the on-bar CCF-B window — ICWS/ICSME 2027 (~Mar 2027)** — matching the stated
+"roughly CCF-B" bar with zero rework; the work is nevertheless **paced to Nov-2 readiness**, so
+**ICST 2027 (Nov 2) stands as an opportunistic early CORE-A shot the user may elect** (strongest
+venue fit: testing-native PC, KAT vocabulary, AE badges, Major-Revision de-risk — but CCF-C).
+ISSRE 2027 (~Jul) remains the later on-bar option and is NOT zero-rework: it requires re-leading
+with fault detection (unique-5xx promoted to co-primary and the intro re-framed; per Reviewer A,
+that re-lead should rest on the depth-unlocks-reachability chain the plan already instruments,
+not on implying grounding finds faults directly). SANER (Sept 25) is NOT recommended: 9.5 weeks
+including user-gated engineering on a shared cluster where a-main has priority is a
+protocol-integrity risk, not just a schedule risk. Companion option (user decision): ICSE 2027
+Tool Demos (Oct 23) / AST 2027 (Oct 30) — the AutoRestTest full-paper+demo pattern.
+
+**Timeline to ICST (assuming plan+engineering approval ~Jul 20):**
+
+| Window | Work |
+|---|---|
+| Jul 20 – Aug 9 (3 wks) | E1-E6 + E8 engineering + TT smoke; **E7 starts here in parallel** (cluster work); PROTOCOL.md drafted |
+| Aug 10 – Aug 14 | Calibration smoke — **chartered to measure achievable banked-runs/day under live a-main contention, not just per-run duration (Round-2 C-R2-2)** → re-sizes the §6 matrix; protocol freeze |
+| Aug 15 – Sep 12 (4 wks) | Main arms A0/A0′/A1/A2 × 4 SUTs (10-seed headline cells); ablations (TT+TeaStore); learning curves r1-r5 |
+| Sep 13 – Sep 19 | AX external runs + RQ4 dictionary injection; RQ5 fidelity audit |
+| Sep 20 – Oct 11 | Analysis + full draft; internal 3-cold-reviewer pass on the draft |
+| Oct 12 – Oct 25 | Revision buffer; artifact packaging (AE) |
+| Oct 23 / Oct 30 | (optional) ICSE-demo / AST companion |
+| **Nov 2** | **ICST 2027 submission** (or hold for the CCF-B fallback per the user's venue call) |
+
+**De-scope ladder (pre-committed order; engage top-down when the smoke or the window forces
+it)**: (1) drop Bookinfo/Boutique; (2) drop AX beyond the must-run pair; (3) ablation seeds 5→3
+and drop gate-sweep midpoints {0.3, 0.7}; (4) RQ5 sample 100→50/SUT; (5) cold-SUT headline seeds
+10→5. **Never cut**: A0/A0′/A1 on all 4 SUTs, RQ3a, the provenance gates.
+
+Slack: ~2 weeks absorbable; catastrophic slip retargets ICSME/ICWS (~Mar) with no work lost.
+Cluster sharing: a-main has priority; SmartFetch runs schedule into gaps (revival scripts make
+context switches cheap); E-window work is off-cluster by design.
+
+## 10. Risks & mitigations
+
+| Risk | Mitigation |
+|---|---|
+| Novelty read as "producer-consumer with an LLM" | §3 positioning: out-of-band live retrieval vs in-sequence dependency resolution; covers pre-existing/seeded data, cross-service gaps, bootstrap; RQ4 shows component value beyond MIST. |
+| **AutoRestTest punctures a "semantic routing" claim (SPDG is already semantic)** | Adopted: sub-claim 1 rests on live-retrieval routing across a multi-service registry, with the explicit "we do not claim semantic-vs-syntactic" sentence; AutoRestTest preempted twice (SPDG + value agent). |
+| **"Feedback-ranked registry" oversold while successRates are all 0.0 and E2 is unlanded** | Adopted: contingent-claim split (§3.3), RQ3a/RQ3b decomposition, E2 novelty-critical flag with re-scope rule. |
+| **A0 mislabeled "LLM-only" (trace grounding + pool narrowing ungated — code-verified)** | Adopted: A0 relabeled marginal contrast + new A0′ absolute contrast + per-run provenance gates + registry lifecycle rules. |
+| **Grounded-share inflated/under-covered/self-reported** | Adopted: raw-enum definition ({RESOLVED_LIVE, RESOLVED_CACHE}), `isLiveGrounded()` forbidden, E4 all-sites wiring or bounded per-site coverage, independent corroboration metric pre-committed, grounded-share never a headline outcome. |
+| EvoMaster "harvesting" naming collision | Preempt early in Related Work quoting `probOf*` semantics: outbound-dependency mocks + SQL vs our inbound read-surface GETs. |
+| KAT (ICST'24) adjacency at the target venue | Delta on two co-equal axes (live fetch; persistent cross-run registry); conceptual-by-necessity disclosed; AutoRestTest carries the empirical burden. |
+| Our own June note calls the grounding fixes "field-standard, not novel" | That note graded two *individual mechanisms* against the a-main bar with grounding deliberately descoped; the paper claims the *composed mechanism* + measured effect, and the same note certifies the composed problem open. Cite the individual-mechanism precedents exactly as the note does. |
+| Old D4 numbers are shaky | Never headlined; re-measured via E4; old numbers only as caveated priors. |
+| Grounded-share ≠ validity (endStation lesson) | Both axes separate in every table; disambiguation machinery evaluated by ablation. |
+| JIT-bind / negative-mode-"smart" confounds | Scope statement §2; E1 pre-step verifies the hold-constant knob before execution; unrelated knob documented. |
+| SUT state pollution / execution-order confound (TT DB growth) | Interleaved arm×seed order; SUT-state covariate; redeploy resets at seed boundaries where feasible; registry lifecycle per arm; never `generatedb` mid-run. |
+| External baselines won't run | AX = expected baseline set with a must-run pair (AutoRestTest + one of EvoMaster BB/RESTler); failures disclosed, never silently dropped; primary claims still rest on controlled within-generator arms. |
+| LLM nondeterminism / provider drift | Pinned model+temp, 10-seed headline cells, medians+IQR+Â12+CI, Holm-Bonferroni; warm-registry arms reduce LLM in the loop; per-prompt-type token accounting. |
+| Run-matrix vs shared-cluster wall-clock | §6 matrix count + throughput assumption stated; calibration smoke re-sizes before banking; pre-committed de-scope ladder; protected cells named. |
+| "Only 4 systems" | ~70+ services / explicit operation totals; field norm is 10-12 single-service APIs — at or above it in operation count. |
+| Two papers in parallel overload | No rater/IRB path here; engineering user-gated; cluster contention managed by a-main-priority + off-cluster E-window. |
+| Stale internal docs leaking into the paper (JSONPath claim, "50%" split, dead classes) | §2 pins current truth; paper text written from `research/codebase-inventory.md`, never from the frozen process doc or old main.tex wording. |
+| Service-annotation dependency (Bookinfo zero-services hallucination case) | Disclosed in §2 + Threats; framed as an operating requirement (x-service-name or service-suffixed tags), with Bookinfo as the documented negative case. |
+
+## 11. Relation to the other track (no-double-claim policy)
+
+- `debug/a-main/` = A-venue main track (masked-2xx read-back oracle benchmark + rater study).
+  Claims: trace-shape oracle / hidden-downstream detection / attribution. Its own record
+  declares value grounding "supporting machinery, not claimed as a contribution" there — no
+  claim collision; a-main can cite this paper for the machinery.
+- The MIST full paper (`paper/full-paper/main.tex`) and the ISSTA 2026 tool-demo material
+  present SmartFetch as a component figure/paragraph with **zero quantitative smart-fetch
+  evaluation anywhere in `paper/`** (grep-confirmed) — this paper adds the first, duplicating
+  nothing. (It also corrects two stale component descriptions; see §10.)
+- `debug/b-smartfetch/` = this track (B-venue, SmartFetch as protagonist). Claims: the grounding
+  mechanism + its evaluation. It does NOT claim MIST's oracles, trace-driven scenario
+  generation, or the benchmark corpus.
+- Shared infrastructure only (cluster, SUTs, driver patterns); a-main has cluster priority.
+
+## 12. Review gate log
+
+| Round | Reviewer A (novelty/PC) | Reviewer B (experiment soundness) | Reviewer C (feasibility/scope) | Outcome |
+|---|---|---|---|---|
+| 1 (2026-07-15, on v2) | REVISE (2 blocking) | REVISE (6 blocking) | REVISE (1 blocking) | All 9 blocking + 24 advisory adopted → v3 (`REVIEW-PLAN-RECONCILIATION.md`) |
+| 2 (2026-07-16, on v3) | **ACCEPT** (0 blocking; 1 venue-contingent advisory) | **ACCEPT** (0 blocking; R2-A1/A2 must-address-in-PROTOCOL + 4 refinements) | **ACCEPT** (0 blocking; R2-1/R2-2 advisories) | **GATE PASSED 3/3.** Four concrete Round-2 advisories adopted post-accept per the reviewers' own wording → v3.1: §6.1 #1 A0′ full grounding-site enumeration incl. `span.getDataProvenance()` (B-R2-A1); §6.1 #3 corroboration positive control (B-R2-A2); §9 plan-of-record = on-bar CCF-B ~Mar window with ICST Nov 2 as the user-electable opportunistic shot (C-R2-1); §9 smoke charter = banked-runs/day under contention (C-R2-2). Reviewer A's ISSRE-re-lead advisory folded into §9's ISSRE sentence. |
+
+**Next actions (post-gate)**: USER decisions — (1) approve the E1-E8 engineering items (tool
+code is user-gated); (2) venue election (plan-of-record ~Mar CCF-B vs opportunistic ICST Nov 2;
+companion demo yes/no). Then: PROTOCOL.md authored per §6.1 → E-window begins.

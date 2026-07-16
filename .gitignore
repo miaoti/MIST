@@ -148,6 +148,9 @@ debug/a-main/benchmark/rater-packet/*勿提交*.md
 # (covers debug/a-main/ top level AND every subdir: research/, c2c3/, g3-comparator-*/, prep/, benchmark/**)
 debug/a-main/**/REVIEW*.md
 debug/a-main/REVIEW*.md
+# same rule for the SmartFetch paper track (B-venue)
+debug/b-smartfetch/**/REVIEW*.md
+debug/b-smartfetch/REVIEW*.md
 
 # personal Chinese progress "memoir" — self-only, explicitly not for git (see its own header)
 debug/a-main/进展全景-给自己读.md
