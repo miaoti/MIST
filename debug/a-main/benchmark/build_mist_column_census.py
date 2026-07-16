@@ -205,7 +205,12 @@ def main():
             "error-span-visible": "fault leg carries an error span - the naive span-error class CAN see it",
             "span-presence-visible": "no error span, but a span present/absent delta exists - presence-class arms CAN see it",
             "trace-invisible-by-construction": "fault and control traces are shape-identical - NO trace-consuming arm can see it (the E2 N-vs-0 row)",
-            "trace-uninstrumented": "the capture has no usable trace (SUT tier uninstrumented) - NOT_EVALUABLE for trace-consuming arms",
+            "trace-uninstrumented": ("the capture has no usable trace - NOT_EVALUABLE for "
+                                     "trace-consuming arms. TWO SENSES (B-NB-3): by SUT "
+                                     "tier (Kieker-only TeaStore / untraced TT legs) or "
+                                     "BY CAPTURE on an instrumented SUT (the kafka S1 "
+                                     "case: the stochastic protocol exported no per-trial "
+                                     "traces, disclosed in-case)"),
         },
         "tally": vis_tally,
         "cases": [{"case_id": r["case_id"], "label": r["label"],

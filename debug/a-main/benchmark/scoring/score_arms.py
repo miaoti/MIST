@@ -32,7 +32,8 @@ VERDICT_DIR = HERE / "verdicts"
 OUT = HERE / "matched-recall-table.json"
 
 LIVE_PROVENANCE_MARKERS = ("2.75-A", "G1 run-3", "TT-omnibus", "G3 head-to-head",
-                           "G3 h2h", "G3 TT natural")
+                           "G3 h2h", "G3 TT natural", "Phase-C A5(iii)",
+                           "completion-set Phase-C")
 
 
 def load_cases():

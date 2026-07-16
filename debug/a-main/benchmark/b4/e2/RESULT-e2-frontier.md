@@ -14,14 +14,23 @@ leg1 CO-GENERATED traces ×5/leg, verdict-UNIFORM; 9 traced-captures) — throug
 
 ## The completed table (per-visibility-class; NO pooled recall — the rails hold)
 
-| arm | error-span-visible (1p/2n) | span-presence-visible (3p/6n) | invisible-by-construction (2p/2n) | uninstrumented (5p/5n) |
+**[REFRESHED post-Phase-C at the wave review (A-B1/B-NB-1 fold): the original inline
+table was the Phase-B 26-case snapshot; Phase C added a case (corpus 27) and filled the 4
+teastore meshsever MIST cells. The committed `scoring/matched-recall-table.json` is the
+authority; this prose mirrors it as of the wave close.]**
+
+| arm | error-span-visible (1p/2n) | span-presence-visible (3p/6n) | invisible-by-construction (2p/2n) | uninstrumented (6p/5n) |
 |---|---|---|---|---|
-| **mist_readback** (A5 column) | 0-evaluable (structural n_e 3) | **3/3 flag**, 0 FP | **2/2 flag**, 0 FP | 2/2-evaluable flag, 0 FP (n_e 5) |
-| naive_span_error | 0/1, **2 FP** (bookinfo benign + SS control noise) | 0/3, 0 FP | 0/1-evaluable, 0 FP | n_e 10 |
-| tracetest_presence **(SURROGATE: span-assertion-semantics; the live tool was NOT run)** | **1/1 flag** (swallowed consumer-span) + 1 FP (bookinfo benign trap) | **3/3 flag**, 0 FP | 0/1-evaluable (fabricated-ack MISS) | n_e 10 |
-| db_span_presence (specification-locality) | n_e | n_e (no frozen db selector) | **1/1-evaluable flag = the fabricated-ack CATCH** | n_e 10 |
+| **mist_readback** (A5 column) | 0-evaluable (structural n_e 3) | **3/3 flag**, 0 FP | **2/2 flag**, 0 FP | **4/4-evaluable flag**, 0 FP (n_e 2: depdown-specified + the kafka case's barred-by-stop-rule) |
+| naive_span_error | 0/1, **2 FP** (bookinfo benign + SS control noise) | 0/3, 0 FP | 0/1-evaluable, 0 FP | n_e 11 |
+| tracetest_presence **(SURROGATE: span-assertion-semantics; the live tool was NOT run)** | **1/1 flag** (swallowed consumer-span) + 1 FP (bookinfo benign trap) | **3/3 flag**, 0 FP | 0/1-evaluable (fabricated-ack MISS) | n_e 11 |
+| db_span_presence (specification-locality) | n_e | n_e (no frozen db selector) | **1/1-evaluable flag = the fabricated-ack CATCH** | n_e 11 |
 | contract_invariant (single-response, live cells) | n_e | n_e | 0/1-evaluable (conforming ⇒ no_flag — the by-construction MISS, measured live ×5) | n_e |
-| traceanomaly | not_evaluable 26/26 — the pre-registered CONSTRUCTION-BLINDNESS branch (below) | | | |
+| traceanomaly | not_evaluable 27/27 — the pre-registered CONSTRUCTION-BLINDNESS branch (below) | | | |
+
+MIST overall after Phase C: **9/9 evaluable positives FIRE, 0/15 negatives flagged** (the
+9th evaluable positive = the two meshsever masked cells filled at the A5(iii) window;
+the kafka case = principled n_e, barred-by-stop-rule).
 
 **The N-vs-0 row (2 invisible positives: fabricated-ack + createaccount-agreement):**
 MIST 2/2 · shape-level trace arms 0 · db-locality 1/1-evaluable (it exists ONLY because a

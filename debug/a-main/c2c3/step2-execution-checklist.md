@@ -316,7 +316,11 @@ Sources consolidated: plan v2 §5, `c2-freeze.md` rev 2, `e-sut-applicability-ma
   license decided (B-m4). (MIST study-commit pin: DONE back at 1.9.5 — verify all recorded verdicts
   carry it.)
 ☐ Benchmark ≥3-cold-review in sampled-reproduction form (k=5 re-runs + m=15 audits each).
-☐ E3 trigger rate mined from E1/M-yield logs (free).
+✔ E3 trigger rate mined — completion-set A1 (f06a2e7, `b4/e3/`): re-scoped to the EXISTING
+  logs (M-yield + TT-omnibus; the "E1-era logs" never existed — Step-3b superseded-by-MYC,
+  disclosed); descriptive-only rails. (This row was flipped at the WAVE REVIEW — freeze
+  row 316 + commit 9ed205a claimed the fold but the checklist edit was missed, the SECOND
+  slip of this class after 3fdf477; disclosed per C-B1.)
 
 ## Standing constraints (never forget)
 - Single box; 26 GB WSL for TT; tenancy schedule; never build while a graph is deployed; docker-exec

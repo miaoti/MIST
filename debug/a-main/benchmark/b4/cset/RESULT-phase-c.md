@@ -70,3 +70,16 @@ column: 9/9 evaluable positives, 0 FP, per-visibility cells only.
 Two background wsl waiters were externally killed mid-sweep (the known
 detached-wsl-client class); no evidence loss — the trials were all placed and the BINDING
 measurement is the T+5 min re-probe, which ran in bounded foreground calls afterward.
+(The kill landed mid-initial-sweep, so `fault.log`'s initial landed-sweep section lacks
+trial 20's line — cosmetic; both re-probe passes cover all 20. The log is evidence and
+was not edited.)
+
+## Category + claim nuance (B-NB-4 fold)
+
+The two new `enable/` transports (`TeaStoreMeshseverHeadToHead`, `ChainedOrderItemsReadback`)
+are A5(iii)-SANCTIONED READ-BACK BINDINGS (the 2026-07-10 gate amendment's
+"read-back modality bindings" category) — they bind MIST's EXISTING membership oracle to
+sites/producers; no oracle semantics were touched (§4-barred territory). The chained
+read-back is a CONSTRUCTED membership view (orders joined to their child collections),
+not a native durable surface — any paper claim citing the orderitems cells carries that
+nuance.
