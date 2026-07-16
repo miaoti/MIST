@@ -1,10 +1,12 @@
 # PAPER DRAFT PLAN (a-main, A-venue empirical/benchmark track) — rev 1
 
-**Date:** 2026-07-16 · Owner: main_track · Status: **rev 1 — awaiting 3-cold review (ALL-ACCEPT
-required before any section is drafted; /goal rule).**
-User direction of record: the draft is the NEXT STATION after M-YIELD-COMPLETION closed
-(user decision 2026-07-15; MYC closed 2026-07-16, commit 65a10a6). The experiment surface is
-FULLY COMPLETE — this plan draws ONLY on committed, reviewed evidence; it runs NO experiments.
+**Date:** 2026-07-16 · Owner: main_track · Status: **rev 1 — DEFERRED BY USER (2026-07-16):
+"实验和材料都备齐了才去做 paper" — drafting waits for the COMPLETION SET
+(`wave-completion-set-plan.md`: E2 5-arm frontier / kafka S1 / contract-invariant spike /
+E3 mining / seal-prep + E6-prep materials). The 3-cold review of THIS plan is ON HOLD; the
+plan re-enters review after the completion set closes.** The earlier "experiment surface is
+FULLY COMPLETE" wording in this header was an overstatement scoped to Step 4 (M-yield) only —
+corrected here; the claim-map §1 stays valid for what IS banked.
 
 ## §0 What this paper is (from the reviewer-cleared direction, `debug/a-main/README.md` v7)
 
