@@ -1,0 +1,29 @@
+{
+ "arm": "db_span_presence",
+ "verdict_source": "frozen DB-CLIENT-granularity existence assertion (specification-locality arm; only cases with a frozen db_presence selector emit a verdict - others not_applicable, recorded as not_evaluable here)",
+ "not_evaluable_reasons": {
+  "oteldemo-checkout-eventual-benign-001": "no committed bundle (w120 natural observation) + no frozen selector",
+  "oteldemo-checkout-eventual-benign-002": "no frozen selector (post-hoc authoring barred)",
+  "oteldemo-checkout-eventual-benign-003": "no frozen selector (post-hoc authoring barred)",
+  "TT-createaccount-agreement-001": "trace-invisible-by-construction (N-vs-0 row); no bundle",
+  "TT-createaccount-clean-001": "trace-invisible-by-construction; no bundle"
+ },
+ "cases": {
+  "TT-cancel-refund-fabricatedack-001": "flag",
+  "TT-cancel-refund-clean-001": "no_flag",
+  "TT-adminroute-lostwrite-001": "not_evaluable",
+  "TT-adminroute-control-001": "not_evaluable",
+  "TT-adminbasic-contacts-lostwrite-001": "not_evaluable",
+  "TT-adminbasic-contacts-control-001": "not_evaluable",
+  "bookinfo-ratings-benign-001": "not_evaluable",
+  "sockshop-shipping-swallowed-enqueue-001": "not_evaluable",
+  "sockshop-shipping-control-001": "not_evaluable",
+  "oteldemo-checkout-lost-001": "not_evaluable",
+  "oteldemo-checkout-control-001": "not_evaluable",
+  "oteldemo-checkout-eventual-benign-001": "not_evaluable",
+  "oteldemo-checkout-eventual-benign-002": "not_evaluable",
+  "oteldemo-checkout-eventual-benign-003": "not_evaluable",
+  "TT-createaccount-agreement-001": "not_evaluable",
+  "TT-createaccount-clean-001": "not_evaluable"
+ }
+}

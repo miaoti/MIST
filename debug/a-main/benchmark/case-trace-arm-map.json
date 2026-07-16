@@ -22,8 +22,9 @@
    "trace_visibility": "span-presence-visible",
    "bundles": [
     {
-     "kind": "none-committed",
-     "detail": "no committed trace bundle - NOT_EVALUABLE for trace-consuming arms, disclosed"
+     "kind": "traced-capture",
+     "path": "b4/captures/tt-s2-adminbasic-contacts-control-traced",
+     "verified_files": 1
     }
    ]
   },

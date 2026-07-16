@@ -92,6 +92,8 @@ def main():
     if VERDICT_DIR.is_dir():
         for f in sorted(VERDICT_DIR.glob("*.json")):
             a = json.loads(f.read_text(encoding="utf-8"))
+            if "arm" not in a:
+                continue  # side artifacts (run detail etc.) are not verdict files
             arms[a["arm"]] = a
 
     classes = sorted(set(visclass.values()))

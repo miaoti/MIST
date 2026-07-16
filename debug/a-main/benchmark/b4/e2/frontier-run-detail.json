@@ -1,0 +1,79 @@
+{
+ "TT-cancel-refund-fabricatedack-001": {
+  "n_traces": 5,
+  "error_spans": [],
+  "db_report": {
+   "ts-order-service": 3
+  }
+ },
+ "TT-cancel-refund-clean-001": {
+  "n_traces": 5,
+  "error_spans": [],
+  "db_report": {
+   "ts-inside-payment-service": 2,
+   "ts-order-service": 3
+  }
+ },
+ "TT-adminroute-lostwrite-001": {
+  "n_traces": 1,
+  "error_spans": [],
+  "db_report": {}
+ },
+ "TT-adminroute-control-001": {
+  "n_traces": 1,
+  "error_spans": [],
+  "db_report": {
+   "ts-route-service": 6
+  }
+ },
+ "TT-adminbasic-contacts-lostwrite-001": {
+  "n_traces": 1,
+  "error_spans": [],
+  "db_report": {}
+ },
+ "TT-adminbasic-contacts-control-001": {
+  "n_traces": 1,
+  "error_spans": [],
+  "db_report": {
+   "ts-contacts-service": 3
+  }
+ },
+ "bookinfo-ratings-benign-001": {
+  "n_traces": 1,
+  "error_spans": [
+   "reviews.default::ratings.default.svc.cluster.local:9080/*"
+  ],
+  "db_report": {}
+ },
+ "sockshop-shipping-swallowed-enqueue-001": {
+  "n_traces": 1,
+  "error_spans": [],
+  "db_report": {
+   "orders": 1
+  }
+ },
+ "sockshop-shipping-control-001": {
+  "n_traces": 1,
+  "error_spans": [
+   "queue-master::POST"
+  ],
+  "db_report": {
+   "orders": 1
+  }
+ },
+ "oteldemo-checkout-lost-001": {
+  "n_traces": 1,
+  "error_spans": [],
+  "db_report": {
+   "product-catalog": 2
+  }
+ },
+ "oteldemo-checkout-control-001": {
+  "n_traces": 1,
+  "error_spans": [],
+  "db_report": {
+   "product-catalog": 2,
+   "accounting": 1
+  }
+ }
+}

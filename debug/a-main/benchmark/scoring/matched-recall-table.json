@@ -119,6 +119,230 @@
     "TT-createaccount-agreement-001": "capture-concordant",
     "TT-createaccount-clean-001": "capture-concordant"
    }
+  },
+  "db_span_presence": {
+   "verdict_source": "frozen DB-CLIENT-granularity existence assertion (specification-locality arm; only cases with a frozen db_presence selector emit a verdict - others not_applicable, recorded as not_evaluable here)",
+   "cells": {
+    "error-span-visible": {
+     "positives": 1,
+     "evaluable_positives": 0,
+     "flagged_positives": 0,
+     "negatives": 2,
+     "flagged_negatives": 0,
+     "not_evaluable": 3,
+     "flagged_positive_ids": [],
+     "flagged_negative_ids": [],
+     "not_evaluable_ids": [
+      "bookinfo-ratings-benign-001",
+      "sockshop-shipping-control-001",
+      "sockshop-shipping-swallowed-enqueue-001"
+     ]
+    },
+    "span-presence-visible": {
+     "positives": 3,
+     "evaluable_positives": 0,
+     "flagged_positives": 0,
+     "negatives": 6,
+     "flagged_negatives": 0,
+     "not_evaluable": 9,
+     "flagged_positive_ids": [],
+     "flagged_negative_ids": [],
+     "not_evaluable_ids": [
+      "oteldemo-checkout-control-001",
+      "oteldemo-checkout-eventual-benign-001",
+      "oteldemo-checkout-eventual-benign-002",
+      "oteldemo-checkout-eventual-benign-003",
+      "oteldemo-checkout-lost-001",
+      "TT-adminbasic-contacts-control-001",
+      "TT-adminbasic-contacts-lostwrite-001",
+      "TT-adminroute-control-001",
+      "TT-adminroute-lostwrite-001"
+     ]
+    },
+    "trace-invisible-by-construction": {
+     "positives": 2,
+     "evaluable_positives": 1,
+     "flagged_positives": 1,
+     "negatives": 2,
+     "flagged_negatives": 0,
+     "not_evaluable": 2,
+     "flagged_positive_ids": [
+      "TT-cancel-refund-fabricatedack-001"
+     ],
+     "flagged_negative_ids": [],
+     "not_evaluable_ids": [
+      "TT-createaccount-agreement-001",
+      "TT-createaccount-clean-001"
+     ]
+    },
+    "trace-uninstrumented": {
+     "positives": 5,
+     "evaluable_positives": 0,
+     "flagged_positives": 0,
+     "negatives": 5,
+     "flagged_negatives": 0,
+     "not_evaluable": 10,
+     "flagged_positive_ids": [],
+     "flagged_negative_ids": [],
+     "not_evaluable_ids": [
+      "teastore-order-control-001",
+      "teastore-order-depdown-specified-001",
+      "teastore-order-maintenance-masked-001",
+      "teastore-order-meshsever-control-001",
+      "teastore-order-meshsever-masked-001",
+      "teastore-orderitems-meshsever-control-001",
+      "teastore-orderitems-meshsever-masked-001",
+      "TT-cancel-refund-natural-001",
+      "TT-contacts-dedupe-benign-001",
+      "TT-contacts-noop-modify-benign-001"
+     ]
+    }
+   }
+  },
+  "naive_span_error": {
+   "verdict_source": "frozen trace_score.py naive_span_error (any error span in the per-case scope; mechanical, no exclusions)",
+   "cells": {
+    "error-span-visible": {
+     "positives": 1,
+     "evaluable_positives": 1,
+     "flagged_positives": 0,
+     "negatives": 2,
+     "flagged_negatives": 2,
+     "not_evaluable": 0,
+     "flagged_positive_ids": [],
+     "flagged_negative_ids": [
+      "bookinfo-ratings-benign-001",
+      "sockshop-shipping-control-001"
+     ],
+     "not_evaluable_ids": []
+    },
+    "span-presence-visible": {
+     "positives": 3,
+     "evaluable_positives": 3,
+     "flagged_positives": 0,
+     "negatives": 6,
+     "flagged_negatives": 0,
+     "not_evaluable": 3,
+     "flagged_positive_ids": [],
+     "flagged_negative_ids": [],
+     "not_evaluable_ids": [
+      "oteldemo-checkout-eventual-benign-001",
+      "oteldemo-checkout-eventual-benign-002",
+      "oteldemo-checkout-eventual-benign-003"
+     ]
+    },
+    "trace-invisible-by-construction": {
+     "positives": 2,
+     "evaluable_positives": 1,
+     "flagged_positives": 0,
+     "negatives": 2,
+     "flagged_negatives": 0,
+     "not_evaluable": 2,
+     "flagged_positive_ids": [],
+     "flagged_negative_ids": [],
+     "not_evaluable_ids": [
+      "TT-createaccount-agreement-001",
+      "TT-createaccount-clean-001"
+     ]
+    },
+    "trace-uninstrumented": {
+     "positives": 5,
+     "evaluable_positives": 0,
+     "flagged_positives": 0,
+     "negatives": 5,
+     "flagged_negatives": 0,
+     "not_evaluable": 10,
+     "flagged_positive_ids": [],
+     "flagged_negative_ids": [],
+     "not_evaluable_ids": [
+      "teastore-order-control-001",
+      "teastore-order-depdown-specified-001",
+      "teastore-order-maintenance-masked-001",
+      "teastore-order-meshsever-control-001",
+      "teastore-order-meshsever-masked-001",
+      "teastore-orderitems-meshsever-control-001",
+      "teastore-orderitems-meshsever-masked-001",
+      "TT-cancel-refund-natural-001",
+      "TT-contacts-dedupe-benign-001",
+      "TT-contacts-noop-modify-benign-001"
+     ]
+    }
+   }
+  },
+  "tracetest_presence_surrogate": {
+   "verdict_source": "span-assertion-semantics (surrogate; the live tool was NOT run) - the frozen EXISTENCE-ONLY presence assertion at cross-service span granularity, per-case frozen selectors (trace_score.py T6/T8)",
+   "cells": {
+    "error-span-visible": {
+     "positives": 1,
+     "evaluable_positives": 1,
+     "flagged_positives": 1,
+     "negatives": 2,
+     "flagged_negatives": 1,
+     "not_evaluable": 0,
+     "flagged_positive_ids": [
+      "sockshop-shipping-swallowed-enqueue-001"
+     ],
+     "flagged_negative_ids": [
+      "bookinfo-ratings-benign-001"
+     ],
+     "not_evaluable_ids": []
+    },
+    "span-presence-visible": {
+     "positives": 3,
+     "evaluable_positives": 3,
+     "flagged_positives": 3,
+     "negatives": 6,
+     "flagged_negatives": 0,
+     "not_evaluable": 3,
+     "flagged_positive_ids": [
+      "oteldemo-checkout-lost-001",
+      "TT-adminbasic-contacts-lostwrite-001",
+      "TT-adminroute-lostwrite-001"
+     ],
+     "flagged_negative_ids": [],
+     "not_evaluable_ids": [
+      "oteldemo-checkout-eventual-benign-001",
+      "oteldemo-checkout-eventual-benign-002",
+      "oteldemo-checkout-eventual-benign-003"
+     ]
+    },
+    "trace-invisible-by-construction": {
+     "positives": 2,
+     "evaluable_positives": 1,
+     "flagged_positives": 0,
+     "negatives": 2,
+     "flagged_negatives": 0,
+     "not_evaluable": 2,
+     "flagged_positive_ids": [],
+     "flagged_negative_ids": [],
+     "not_evaluable_ids": [
+      "TT-createaccount-agreement-001",
+      "TT-createaccount-clean-001"
+     ]
+    },
+    "trace-uninstrumented": {
+     "positives": 5,
+     "evaluable_positives": 0,
+     "flagged_positives": 0,
+     "negatives": 5,
+     "flagged_negatives": 0,
+     "not_evaluable": 10,
+     "flagged_positive_ids": [],
+     "flagged_negative_ids": [],
+     "not_evaluable_ids": [
+      "teastore-order-control-001",
+      "teastore-order-depdown-specified-001",
+      "teastore-order-maintenance-masked-001",
+      "teastore-order-meshsever-control-001",
+      "teastore-order-meshsever-masked-001",
+      "teastore-orderitems-meshsever-control-001",
+      "teastore-orderitems-meshsever-masked-001",
+      "TT-cancel-refund-natural-001",
+      "TT-contacts-dedupe-benign-001",
+      "TT-contacts-noop-modify-benign-001"
+     ]
+    }
+   }
   }
  }
 }

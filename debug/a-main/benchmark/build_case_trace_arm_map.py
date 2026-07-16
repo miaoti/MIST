@@ -38,7 +38,9 @@ BUNDLES = {
     "TT-adminbasic-contacts-lostwrite-001": [
         ("traced-capture", "b4/captures/tt-s1-adminbasic-contacts-lostwrite-traced"),
     ],
-    "TT-adminbasic-contacts-control-001": [],  # no -traced control twin committed
+    "TT-adminbasic-contacts-control-001": [
+        ("traced-capture", "b4/captures/tt-s2-adminbasic-contacts-control-traced"),
+    ],  # A8 v1 wrongly listed none-committed; the s2 control-traced dir exists
     "oteldemo-checkout-lost-001": [
         ("traced-capture", "b4/captures/oteldemo-checkout-lost"),
     ],
