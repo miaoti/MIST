@@ -1,0 +1,124 @@
+{
+ "schema": "matched-recall-table/1",
+ "generated_by": "scoring/score_arms.py (completion-set wave A6)",
+ "rails": [
+  "per-visibility-class cells only - NO pooled headline recall is emitted",
+  "NOT_EVALUABLE leaves the denominator and lands in its own bucket",
+  "the trace-invisible-by-construction row is the N-vs-0 row: 2 positives no trace-consuming arm can see by construction",
+  "MIST cells carry provenance_class (live-run vs capture-concordant); capture-concordant cells must never be pooled into a headline (self-concordance rule)",
+  "matched-recall framing only - never 'discrimination' (the natural-discriminator question was S3's, closed 0/1514)"
+ ],
+ "n_vs_0_row": {
+  "class": "trace-invisible-by-construction",
+  "positives": 2,
+  "positive_ids": [
+   "TT-cancel-refund-fabricatedack-001",
+   "TT-createaccount-agreement-001"
+  ]
+ },
+ "visibility_tally": {
+  "error-span-visible": 3,
+  "span-presence-visible": 9,
+  "trace-uninstrumented": 10,
+  "trace-invisible-by-construction": 4
+ },
+ "arms": {
+  "mist_readback": {
+   "verdict_source": "A5 mist-column-census (per-case provenance pointers)",
+   "cells": {
+    "error-span-visible": {
+     "positives": 1,
+     "evaluable_positives": 0,
+     "flagged_positives": 0,
+     "negatives": 2,
+     "flagged_negatives": 0,
+     "not_evaluable": 3,
+     "flagged_positive_ids": [],
+     "flagged_negative_ids": [],
+     "not_evaluable_ids": [
+      "bookinfo-ratings-benign-001",
+      "sockshop-shipping-control-001",
+      "sockshop-shipping-swallowed-enqueue-001"
+     ]
+    },
+    "span-presence-visible": {
+     "positives": 3,
+     "evaluable_positives": 3,
+     "flagged_positives": 3,
+     "negatives": 6,
+     "flagged_negatives": 0,
+     "not_evaluable": 0,
+     "flagged_positive_ids": [
+      "oteldemo-checkout-lost-001",
+      "TT-adminbasic-contacts-lostwrite-001",
+      "TT-adminroute-lostwrite-001"
+     ],
+     "flagged_negative_ids": [],
+     "not_evaluable_ids": []
+    },
+    "trace-invisible-by-construction": {
+     "positives": 2,
+     "evaluable_positives": 2,
+     "flagged_positives": 2,
+     "negatives": 2,
+     "flagged_negatives": 0,
+     "not_evaluable": 0,
+     "flagged_positive_ids": [
+      "TT-cancel-refund-fabricatedack-001",
+      "TT-createaccount-agreement-001"
+     ],
+     "flagged_negative_ids": [],
+     "not_evaluable_ids": []
+    },
+    "trace-uninstrumented": {
+     "positives": 5,
+     "evaluable_positives": 2,
+     "flagged_positives": 2,
+     "negatives": 5,
+     "flagged_negatives": 0,
+     "not_evaluable": 5,
+     "flagged_positive_ids": [
+      "teastore-order-maintenance-masked-001",
+      "TT-cancel-refund-natural-001"
+     ],
+     "flagged_negative_ids": [],
+     "not_evaluable_ids": [
+      "teastore-order-depdown-specified-001",
+      "teastore-order-meshsever-control-001",
+      "teastore-order-meshsever-masked-001",
+      "teastore-orderitems-meshsever-control-001",
+      "teastore-orderitems-meshsever-masked-001"
+     ]
+    }
+   },
+   "provenance_class": {
+    "bookinfo-ratings-benign-001": "structural",
+    "oteldemo-checkout-control-001": "live-run",
+    "oteldemo-checkout-eventual-benign-001": "capture-concordant",
+    "oteldemo-checkout-eventual-benign-002": "capture-concordant",
+    "oteldemo-checkout-eventual-benign-003": "capture-concordant",
+    "oteldemo-checkout-lost-001": "live-run",
+    "sockshop-shipping-control-001": "structural",
+    "sockshop-shipping-swallowed-enqueue-001": "structural",
+    "teastore-order-control-001": "live-run",
+    "teastore-order-depdown-specified-001": "structural-by-convention",
+    "teastore-order-maintenance-masked-001": "live-run",
+    "teastore-order-meshsever-control-001": "bindable-pending-eval",
+    "teastore-order-meshsever-masked-001": "bindable-pending-eval",
+    "teastore-orderitems-meshsever-control-001": "bindable-pending-eval",
+    "teastore-orderitems-meshsever-masked-001": "bindable-pending-eval",
+    "TT-adminbasic-contacts-control-001": "capture-concordant",
+    "TT-adminbasic-contacts-lostwrite-001": "live-run",
+    "TT-adminroute-control-001": "live-run",
+    "TT-adminroute-lostwrite-001": "live-run",
+    "TT-cancel-refund-clean-001": "live-run",
+    "TT-cancel-refund-fabricatedack-001": "live-run",
+    "TT-cancel-refund-natural-001": "live-run",
+    "TT-contacts-dedupe-benign-001": "capture-concordant",
+    "TT-contacts-noop-modify-benign-001": "capture-concordant",
+    "TT-createaccount-agreement-001": "capture-concordant",
+    "TT-createaccount-clean-001": "capture-concordant"
+   }
+  }
+ }
+}
