@@ -1,12 +1,12 @@
-# PAPER DRAFT PLAN (a-main, A-venue empirical/benchmark track) — rev 1
+# PAPER DRAFT PLAN (a-main, A-venue empirical/benchmark track) — rev 2
 
-**Date:** 2026-07-16 · Owner: main_track · Status: **rev 1 — DEFERRED BY USER (2026-07-16):
-"实验和材料都备齐了才去做 paper" — drafting waits for the COMPLETION SET
-(`wave-completion-set-plan.md`: E2 5-arm frontier / kafka S1 / contract-invariant spike /
-E3 mining / seal-prep + E6-prep materials). The 3-cold review of THIS plan is ON HOLD; the
-plan re-enters review after the completion set closes.** The earlier "experiment surface is
-FULLY COMPLETE" wording in this header was an overstatement scoped to Step 4 (M-yield) only —
-corrected here; the claim-map §1 stays valid for what IS banked.
+**Date:** 2026-07-16 · Owner: main_track · Status: **rev 2 — the COMPLETION SET CLOSED
+(086cf68), so THIS PLAN'S REVIEW RE-ENTERS per its own rev-1 hold terms; the claim map is
+refreshed to the post-wave evidence state. DRAFTING ITSELF REMAINS BEHIND THE EXPLICIT
+USER-CONSENT GATE (user 2026-07-16) — an ALL-ACCEPT review of this plan makes the draft
+START-READY, it does NOT start it.** Rev-1 history: deferred by the user pending the
+completion set; the "experiment surface fully complete" overstatement corrected (it was
+Step-4-scoped).
 
 ## §0 What this paper is (from the reviewer-cleared direction, `debug/a-main/README.md` v7)
 
@@ -33,12 +33,12 @@ as BLOCKING.
 
 | # | Paper claim (honest form) | Provenance |
 |---|---|---|
-| P1 | Corpus: 26 cases (11 pos / 15 neg), schema-validated, 6 SUTs, provenance classes + `readback_shape` census (9 present-landed / 3 eventual-present / 2 reject-no-delta / 1 degraded-present) | freeze §5 + R1d row (2026-07-13/14); `benchmark/cases/**` validator-green |
+| P1 | Corpus: **27 cases (12 pos / 15 neg)**, schema-validated, 6 SUTs, provenance classes + `readback_shape` census (9 present-landed / 3 eventual-present / 2 reject-no-delta / 1 degraded-present; positives omit the field) — the 27th = the additive kafka S1 stochastic case | freeze §5 + R1d row + the Phase-C row (2026-07-16); `benchmark/cases/**` validator-green 27/27 |
 | P2 | 8 distinct positive SITES (TT4/TS2/OTel1/SS1; ~13 w/ F-corpus) — the disclosed positive-side widening CLOSE after 3 rejected attempts | freeze §5; R1b/R1c rows |
 | P3 | STRUCTURAL SCARCITY datum 1: wild-hunt 0 CONFIRMED / N=1514 / K=5 (≤0.20% one-sided; pre-registered) — scarcity IS the finding; NO natural discriminator exists in this regime | S3 rows (2026-07-12/13); `RESULT-s3.md`; per-window commits 10eb19e/5802fa8/0fbe00f, classifier byte-identical |
 | P4 | STRUCTURAL SCARCITY datum 2: write-acked-absent presence-defuser floor 0/≥8 — a clean-ack empty read-back IS a masked loss (structural, not effort) | R1d row; `RESULT-r1d.md` + `r1d-phase0-findings.md` |
 | P5 | MIST read-back enablement: paired FIRE 5/5 ground-truth-verified on BOTH corpus SUT legs (2.75-A) | freeze 2.75-A row; commits + capture logs |
-| P6 | The E2 comparator table: MIST value-delta FIRE 5/5 vs frozen response-contract comparator MISS 5/5 (LIVE provenance) + comparator cells cd275c9; matched-recall framing ONLY (never "discrimination") | TT-omnibus row (2026-07-15) + E2 row (5942bab); `RESULT-tt-omnibus.md` |
+| P6 | **The COMPLETED E2 matched-recall table: 6 arms × 4 visibility classes through the single scoring harness** — MIST 9/9 evaluable positives + 0/15 FP; naive 0 positives + 2 FP; Tracetest-presence SURROGATE (labeled; live tool never run) 4 positives + 1 FP + invisible-MISS; db-locality 1/1 invisible CATCH (specification-locality measured); contract-invariant live flagship cells (by-construction MISS measured ×5); TraceAnomaly construction-blindness (not-cleared by actual check); measured-vs-stamped 0 mismatches; matched-recall framing ONLY (never "discrimination"); no pooled recall exists in the artifact | `benchmark/scoring/matched-recall-table.json` + `RESULT-e2-frontier.md` (post-Phase-C refresh) + TT-omnibus row + E2 row (5942bab) |
 | P7 | Trace-gated tier: the first CONTROLLED pre-registered either-way measurement in the c2c3 record — observe fault 5/5 OBSERVED_COMPLETE_ABSENT + control clean; NEVER "first in any run of record" (G1 2026-07-02 fired it 126×, disclosed) | TT-omnibus row; leg-1 report |
 | P8 | E5 ablation: exact-4 OAT × 5 reps uniform; A2 (trace gate) = the ONLY verdict-tier-moving axis (C1 vs C2 contrast) | TT-omnibus row leg-3; `b4/ttomni/leg3/` |
 | P9 | M-yield: 6-SUT set, 29+10 seeds, 5145+~2700 tests, 26 clusters + reps + cross-seed 10% audit; NO yield statistic (rater-gated); flags on TT complete seed = 0 (S3 prior held) | MYC row (2026-07-16) + `RESULT-myield-completion.md` |
@@ -48,6 +48,9 @@ as BLOCKING.
 | P13 | Scope/Limitations of record: detects acknowledged-but-LOST (absence), NOT acknowledged-but-CORRUPTED; observe-mode CORRECTLY ABSTAINS on eventual-consistency (TIMEOUT_ABSENT = WARN-only; the naive at-cap comparator is what FPs); single-box; induced-vs-natural mix; TT-only exception text | R1c-A + R1d-B rows (source-verified, memory-pinned) |
 | P14 | Rater-study DESIGN + its disclosed shortfalls (calibration ≪50, binding=benign; S2 floor ≥35 unmet w/ earned-exhaustion documentation; rateability census 14 ok / 9 truncation-gated / 1 trace-only / 1 async-ineligible) | R1d + E1+R2 rows; `MANIFEST-r2.json` |
 | P15 | Benchmark release engineering: neutralized rater-sidecars rev 3 (0-leak, hardened BANNED_STRINGS + opaque-id guard), clean-room OpenAPI specs + coverage gate, license audit incl. OpenAPI-provenance heterogeneity | E1+R2 rows (7404873/d4a6c96 + corrections) |
+| P16 | **The C1×C2 integration layer (the benchmark-consumes-the-tool machinery):** the 27-case MIST-column census (flag 9 / no_flag 13 / principled-n_a 5, ZERO silent pending, per-cell provenance incl. live-run vs capture-concordant [self-concordance rule]); the scoring harness as THE single mechanical path; the visibility census (two uninstrumented senses); the existence-verified bundle map; release staging w/ the reproduction census (**26/27 executable-reproducible**) | completion-set Phase A+C rows (96cbbaa→086cf68); `benchmark/{mist-column-census,e2-visibility-census,case-trace-arm-map}.json` + `scoring/` + `release-staging/` |
+| P17 | **The kafka stochastic S1 measurement:** vendor-flag permanent production loss — control 10/10 landed vs fault 19/20 LOST at the T+5min binding re-probe (rate 0.95, Wilson95 [0.764, 0.991]); wedge-past-flag-off reproduced + healed by the pinned recovery-restart; post-recovery permanence re-probe; SECOND attempt of record (the first STOPPED at probe). Frame as a measured vendor-fault characterization + corpus case, never a SUT-defect-rate claim | Phase-C row (34b2f8d); `b4/cset/kafka-s1/` + the case file |
+| P18 | Seal-prep decision surface (rater-study §): the calibration rehearsal quantifies the structural shortfall in EVERY branch (S0=14/36, S1[+TT-re-capture]=22/28, S2=15/35); the TT per-endpoint rendering EVIDENCE-BLOCKED finding; the ack-text tell VACUOUS for the current packet (measured: zero rendered ack payloads in the rateable-ok 14) — all USER-decision inputs, reported as design/disclosure, never as executed rating | A3 staging (d089062 + the wave-close addendum); `b4/rater-sidecars-staging/` |
 
 **Rater-gated numbers (κ, genuine-vs-benign yield, M-prevalence, calibration outcomes) appear
 ONLY as STRUCTURED PLACEHOLDERS** — a table shell + the pre-registered estimand wording, each

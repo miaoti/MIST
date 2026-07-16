@@ -26,3 +26,14 @@ dedupe/noop benigns) must be checked string-by-string against the docs bundle at
 cases actually entering the packet; exclude tellers (branch b) unless that empties a
 needed stratum — then branch (a) with the validity threat stated. Sealed sets untouched
 by this memo.
+
+## MEASURED ADDENDUM (wave-close pre-check, 2026-07-16)
+
+The mechanical survey over the ENTIRE rateable-ok set (14 renders, the current packet):
+**zero non-null response payloads in the neutralized sidecars — NO rendered ack text
+exists anywhere in the current packet.** Consequence: the ack-text tell is CONFINED to
+the truncation-gated 9 (already excluded by their rateability class), so **for the
+current packet this keep-vs-exclude decision is VACUOUS** — nothing rateable can tell.
+The decision becomes LIVE only if the seal elects the TT re-capture branch
+(MEMO-tt-per-endpoint-rendering branch (a)), whose new renders would carry ack text and
+must then pass the string-vs-bundle check before entering the packet.
