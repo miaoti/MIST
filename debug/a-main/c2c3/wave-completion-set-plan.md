@@ -100,6 +100,44 @@ E6-prep MATERIALS (prep only — the seal/fork decisions are USER's).
 5. After DoD: the ONLY remaining pre-draft items are USER-side (IRB/raters, fork-pub, seal
    decisions, venue) ⇒ the paper-draft plan re-enters its review.
 
+## §3.5 USER-DIRECTED AMENDMENT (2026-07-16, dated — added while rev-1 review in flight; folds into rev 2 at reconciliation): C1×C2 INTEGRATION — the benchmark (contribution 1) × MIST (contribution 2) mechanical linkage
+
+User: "benchmark 是第一贡献, MIST 是第二贡献 … 第一贡献和第二贡献的 integration 这些都做好了吗?"
+Verified state (2026-07-16 greps): 26/26 cases carry `mist_readback_oracle` + `mist_commit`;
+verdicts = **flag 7 / no_flag 11 / `not_applicable` 8**. The integration gaps below are OWED:
+
+- **A5. The 26-case MIST-column census + the 8 `not_applicable` adjudication.**
+  (i) One committed artifact (`benchmark/mist-column-census.json` + md rendering): per case —
+  verdict + `oracle_mode` + `mist_commit` + the PROVENANCE RUN pointer (which wave/log), or
+  `not_applicable` with a PRINCIPLED reason class. (ii) Adjudicate EACH of the 8
+  `not_applicable` (bookinfo-ratings; sockshop control + swallowed-enqueue; the teastore
+  meshsever×4 + depdown families): STRUCTURAL (read-only SUT / no read-back surface /
+  trace-only evidence) vs **bindable-pending-eval left over from R1**. (iii) For any case
+  adjudicated bindable-pending-eval: BRANCH — run the missing MIST read-back leg (2.75-A
+  harness-binding style; TeaStore legs fold into a SHORT tenancy window appended to Phase C
+  scheduling; ground truth = direct reads, never MIST) OR re-stamp as
+  `not_evaluable`-with-reason, DISCLOSED. **NO silent pending survives this wave** — the
+  paper's benchmark-with-MIST-column claim needs every cell filled or principled.
+- **A6. The SCORING HARNESS (Step 8 B-m4, built now — the single mechanical C1×C2 path):**
+  benchmark labels × per-tool verdict files → matched-recall cells + per-visibility-class
+  rows + NOT_EVALUABLE bucket + the trace-invisible N-vs-0 row. Committed under
+  `benchmark/scoring/` (license note per Step 8); **Phase B arms MUST be scored through it**
+  (no ad hoc per-arm scoring), and the MIST column flows from A5 through the same harness.
+- **A7. The per-case TRACE-VISIBILITY census** (trace-visible / trace-invisible-by-
+  construction / NOT_EVALUABLE — the E2 reporting obligation's input): committed artifact
+  (`benchmark/e2-visibility-census.json`), derivation rule stated per case (from capture
+  evidence + spec, NOT from any comparator's output — no circularity), feeding A6's rows.
+- **A8. The case ↔ trace-bundle ↔ arm mapping table** (which committed trace bundle serves
+  which case for which Phase-B arm; gaps = that arm's NOT_EVALUABLE rows, disclosed).
+- **A4 extension (reproduction machinery census):** per-case executable-reproduction status
+  (recipe + injection method + replay-ability vs capture-only) recorded in the release
+  staging — the Step-8 sampled-reproduction review (k=5 re-runs + m=15 audits) becomes
+  mechanically possible; the review itself stays at Step 8.
+- Sequencing: A5-A8 are Phase-A no-tenant EXCEPT the A5(iii) run branch (short window,
+  scheduled with/before Phase C). Phase B does not start until A6-A8 exist (its scoring +
+  denominators depend on them). The deferred `paper-draft-plan.md` claim map gains a P16
+  (integration census) when it re-enters review.
+
 ## §4 NOT in scope
 
 Rater contact/rating; IRB; the actual re-seal/publication (decisions = USER); MIST
