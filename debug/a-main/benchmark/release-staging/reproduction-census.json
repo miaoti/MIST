@@ -1,0 +1,218 @@
+{
+ "schema": "reproduction-census/1",
+ "tally": {
+  "executable-reproduction (replay script committed + mechanized injection)": 13,
+  "executable-reproduction (no injection; stimulus replay)": 12,
+  "specified-design-target (no capture to reproduce)": 1
+ },
+ "cases": [
+  {
+   "case_id": "bookinfo-ratings-benign-001",
+   "capture_status": "captured",
+   "injection_method": "dependency_scale_zero",
+   "replay_script": "debug/a-main/benchmark/b4/capture-specs/bookinfo-productpage.yaml",
+   "replay_script_exists": true,
+   "reproduction_status": "executable-reproduction (replay script committed + mechanized injection)"
+  },
+  {
+   "case_id": "oteldemo-checkout-control-001",
+   "capture_status": "captured",
+   "injection_method": "none",
+   "replay_script": "debug/a-main/benchmark/b4/capture-specs/oteldemo-checkout-flow.yaml",
+   "replay_script_exists": true,
+   "reproduction_status": "executable-reproduction (no injection; stimulus replay)"
+  },
+  {
+   "case_id": "oteldemo-checkout-eventual-benign-001",
+   "capture_status": "captured",
+   "injection_method": "none",
+   "replay_script": "debug/a-main/benchmark/b4/runners/s3/oteldemo.sh",
+   "replay_script_exists": true,
+   "reproduction_status": "executable-reproduction (no injection; stimulus replay)"
+  },
+  {
+   "case_id": "oteldemo-checkout-eventual-benign-002",
+   "capture_status": "captured",
+   "injection_method": "dependency_scale_zero",
+   "replay_script": "debug/a-main/benchmark/b4/runners/r1/r1d-otel-eventual.sh",
+   "replay_script_exists": true,
+   "reproduction_status": "executable-reproduction (replay script committed + mechanized injection)"
+  },
+  {
+   "case_id": "oteldemo-checkout-eventual-benign-003",
+   "capture_status": "captured",
+   "injection_method": "dependency_scale_zero",
+   "replay_script": "debug/a-main/benchmark/b4/runners/r1/r1d-otel-eventual.sh",
+   "replay_script_exists": true,
+   "reproduction_status": "executable-reproduction (replay script committed + mechanized injection)"
+  },
+  {
+   "case_id": "oteldemo-checkout-lost-001",
+   "capture_status": "captured",
+   "injection_method": "dependency_scale_zero",
+   "replay_script": "debug/a-main/benchmark/b4/capture-specs/oteldemo-checkout-flow.yaml",
+   "replay_script_exists": true,
+   "reproduction_status": "executable-reproduction (replay script committed + mechanized injection)"
+  },
+  {
+   "case_id": "sockshop-shipping-control-001",
+   "capture_status": "captured",
+   "injection_method": "none",
+   "replay_script": "debug/a-main/benchmark/b4/capture-specs/sockshop-order-flow.yaml",
+   "replay_script_exists": true,
+   "reproduction_status": "executable-reproduction (no injection; stimulus replay)"
+  },
+  {
+   "case_id": "sockshop-shipping-swallowed-enqueue-001",
+   "capture_status": "captured",
+   "injection_method": "dependency_scale_zero",
+   "replay_script": "debug/a-main/benchmark/b4/capture-specs/sockshop-order-flow.yaml",
+   "replay_script_exists": true,
+   "reproduction_status": "executable-reproduction (replay script committed + mechanized injection)"
+  },
+  {
+   "case_id": "teastore-order-control-001",
+   "capture_status": "captured",
+   "injection_method": "none",
+   "replay_script": "debug/a-main/benchmark/b4/capture-specs/teastore-order-flow.yaml",
+   "replay_script_exists": true,
+   "reproduction_status": "executable-reproduction (no injection; stimulus replay)"
+  },
+  {
+   "case_id": "teastore-order-depdown-specified-001",
+   "capture_status": "specified",
+   "injection_method": "dependency_scale_zero",
+   "replay_script": "debug/a-main/benchmark/b4/capture-specs/teastore-order-flow.yaml",
+   "replay_script_exists": true,
+   "reproduction_status": "specified-design-target (no capture to reproduce)"
+  },
+  {
+   "case_id": "teastore-order-maintenance-masked-001",
+   "capture_status": "captured",
+   "injection_method": "vendor_flag",
+   "replay_script": "debug/a-main/benchmark/b4/capture-specs/teastore-order-flow.yaml",
+   "replay_script_exists": true,
+   "reproduction_status": "executable-reproduction (replay script committed + mechanized injection)"
+  },
+  {
+   "case_id": "teastore-order-meshsever-control-001",
+   "capture_status": "captured",
+   "injection_method": "none",
+   "replay_script": "debug/a-main/benchmark/b4/capture-specs/teastore-order-meshsever-flow.yaml",
+   "replay_script_exists": true,
+   "reproduction_status": "executable-reproduction (no injection; stimulus replay)"
+  },
+  {
+   "case_id": "teastore-order-meshsever-masked-001",
+   "capture_status": "captured",
+   "injection_method": "mesh_abort",
+   "replay_script": "debug/a-main/benchmark/b4/capture-specs/teastore-order-meshsever-flow.yaml",
+   "replay_script_exists": true,
+   "reproduction_status": "executable-reproduction (replay script committed + mechanized injection)"
+  },
+  {
+   "case_id": "teastore-orderitems-meshsever-control-001",
+   "capture_status": "captured",
+   "injection_method": "none",
+   "replay_script": "debug/a-main/benchmark/b4/capture-specs/teastore-orderitems-meshsever-flow.yaml",
+   "replay_script_exists": true,
+   "reproduction_status": "executable-reproduction (no injection; stimulus replay)"
+  },
+  {
+   "case_id": "teastore-orderitems-meshsever-masked-001",
+   "capture_status": "captured",
+   "injection_method": "mesh_abort",
+   "replay_script": "debug/a-main/benchmark/b4/capture-specs/teastore-orderitems-meshsever-flow.yaml",
+   "replay_script_exists": true,
+   "reproduction_status": "executable-reproduction (replay script committed + mechanized injection)"
+  },
+  {
+   "case_id": "TT-adminbasic-contacts-control-001",
+   "capture_status": "captured",
+   "injection_method": "none",
+   "replay_script": "debug/a-main/benchmark/b4/capture-specs/tt-s2-adminbasic-contacts-control.yaml",
+   "replay_script_exists": true,
+   "reproduction_status": "executable-reproduction (no injection; stimulus replay)"
+  },
+  {
+   "case_id": "TT-adminbasic-contacts-lostwrite-001",
+   "capture_status": "captured",
+   "injection_method": "sut_injector",
+   "replay_script": "debug/a-main/benchmark/b4/capture-specs/tt-s1-adminbasic-contacts-lostwrite.yaml",
+   "replay_script_exists": true,
+   "reproduction_status": "executable-reproduction (replay script committed + mechanized injection)"
+  },
+  {
+   "case_id": "TT-adminroute-control-001",
+   "capture_status": "captured",
+   "injection_method": "none",
+   "replay_script": "debug/a-main/benchmark/b4/capture-specs/tt-control-adminroute.yaml",
+   "replay_script_exists": true,
+   "reproduction_status": "executable-reproduction (no injection; stimulus replay)"
+  },
+  {
+   "case_id": "TT-adminroute-lostwrite-001",
+   "capture_status": "captured",
+   "injection_method": "sut_injector",
+   "replay_script": "debug/a-main/benchmark/b4/capture-specs/tt-s1-adminroute-lostwrite.yaml",
+   "replay_script_exists": true,
+   "reproduction_status": "executable-reproduction (replay script committed + mechanized injection)"
+  },
+  {
+   "case_id": "TT-cancel-refund-clean-001",
+   "capture_status": "captured",
+   "injection_method": "none",
+   "replay_script": "debug/a-main/benchmark/b4/capture-specs/tt-cancel-refund.yaml",
+   "replay_script_exists": true,
+   "reproduction_status": "executable-reproduction (no injection; stimulus replay)"
+  },
+  {
+   "case_id": "TT-cancel-refund-fabricatedack-001",
+   "capture_status": "captured",
+   "injection_method": "sut_injector",
+   "replay_script": "debug/a-main/benchmark/b4/capture-specs/tt-cancel-refund.yaml",
+   "replay_script_exists": true,
+   "reproduction_status": "executable-reproduction (replay script committed + mechanized injection)"
+  },
+  {
+   "case_id": "TT-cancel-refund-natural-001",
+   "capture_status": "captured",
+   "injection_method": "sut_injector",
+   "replay_script": "debug/a-main/benchmark/b4/capture-specs/tt-cancel-refund.yaml",
+   "replay_script_exists": true,
+   "reproduction_status": "executable-reproduction (replay script committed + mechanized injection)"
+  },
+  {
+   "case_id": "TT-contacts-dedupe-benign-001",
+   "capture_status": "captured",
+   "injection_method": "natural",
+   "replay_script": "debug/a-main/benchmark/b4/capture-specs/tt-benign-contacts-dedupe.yaml",
+   "replay_script_exists": true,
+   "reproduction_status": "executable-reproduction (no injection; stimulus replay)"
+  },
+  {
+   "case_id": "TT-contacts-noop-modify-benign-001",
+   "capture_status": "captured",
+   "injection_method": "natural",
+   "replay_script": "debug/a-main/benchmark/b4/capture-specs/tt-s2-contacts-noop-modify.yaml",
+   "replay_script_exists": true,
+   "reproduction_status": "executable-reproduction (no injection; stimulus replay)"
+  },
+  {
+   "case_id": "TT-createaccount-agreement-001",
+   "capture_status": "captured",
+   "injection_method": "sut_injector",
+   "replay_script": "debug/a-main/benchmark/b4/capture-specs/tt-createaccount.yaml",
+   "replay_script_exists": true,
+   "reproduction_status": "executable-reproduction (replay script committed + mechanized injection)"
+  },
+  {
+   "case_id": "TT-createaccount-clean-001",
+   "capture_status": "captured",
+   "injection_method": "none",
+   "replay_script": "debug/a-main/benchmark/b4/capture-specs/tt-createaccount.yaml",
+   "replay_script_exists": true,
+   "reproduction_status": "executable-reproduction (no injection; stimulus replay)"
+  }
+ ]
+}
