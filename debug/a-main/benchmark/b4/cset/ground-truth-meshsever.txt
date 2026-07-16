@@ -1,0 +1,25 @@
+GROUND TRUTH (direct persistence reads, never MIST) - completion-set Phase C A5(iii) window
+total orders=194; NEWEST 20 (tail): id | address1(marker) | items-count
+  1403 | 505 East 718 North | items=2
+  1426 | 3632 East 4475 South | items=3
+  1429 | 2705 East 3116 South | items=3
+  1448 | 2403 West 2469 North | items=4
+  1453 | 3014 East 3016 South | items=6
+  1457 | 5171 East 5016 North | items=3
+  1466 | 693 West 2148 North | items=6
+  1475 | 192 West 7656 South | items=1
+  1477 | mist-control-p0-6cd74369-6578-4ee3-8ced-aff168f8da95 | items=1
+  1479 | mist-control-p1-54cb6121-da72-4ecf-9bc1-24e6af45a533 | items=1
+  1481 | mist-control-p2-417926fe-83d4-4048-8c37-3e9c6e87de8a | items=1
+  1483 | mist-control-p3-07df41cf-12ec-41ee-8c72-6bb54421de30 | items=1
+  1485 | mist-control-p0-94996515-9e4c-492d-82e4-cfbae28deed1 | items=1
+  1487 | mist-control-p1-49b95c74-5db5-4671-9340-fd580920b904 | items=1
+  1489 | mist-control-p2-2291e7b8-1caf-4dc6-a3d6-8221c57e6d03 | items=1
+  1491 | mist-control-p3-caf0e15c-e6e5-4aa6-aaae-410025ab3c17 | items=1
+  1493 | mist-fault-p0-7ed0c550-6cef-48ba-9d7a-4f145738c344 | items=0
+  1494 | mist-fault-p1-ea26e070-2207-4ba9-b855-3fa8996917e5 | items=0
+  1495 | mist-fault-p2-3a426329-b6c5-40c7-a774-ff44e9dc8677 | items=0
+  1496 | mist-fault-p3-070a03e6-f71f-4e8b-802b-ffa1131be7a8 | items=0
+
+READING: order-site pair - control markers PRESENT as rows, fault-leg order rows ABSENT entirely (masked at /rest/orders).
+orderitems pair - control markers w/ items>=1; fault-leg PARENTS PRESENT w/ items=0 (child collection lost).

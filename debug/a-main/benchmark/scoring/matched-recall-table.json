@@ -72,22 +72,20 @@
     },
     "trace-uninstrumented": {
      "positives": 5,
-     "evaluable_positives": 2,
-     "flagged_positives": 2,
+     "evaluable_positives": 4,
+     "flagged_positives": 4,
      "negatives": 5,
      "flagged_negatives": 0,
-     "not_evaluable": 5,
+     "not_evaluable": 1,
      "flagged_positive_ids": [
       "teastore-order-maintenance-masked-001",
+      "teastore-order-meshsever-masked-001",
+      "teastore-orderitems-meshsever-masked-001",
       "TT-cancel-refund-natural-001"
      ],
      "flagged_negative_ids": [],
      "not_evaluable_ids": [
-      "teastore-order-depdown-specified-001",
-      "teastore-order-meshsever-control-001",
-      "teastore-order-meshsever-masked-001",
-      "teastore-orderitems-meshsever-control-001",
-      "teastore-orderitems-meshsever-masked-001"
+      "teastore-order-depdown-specified-001"
      ]
     }
    },
@@ -103,10 +101,10 @@
     "teastore-order-control-001": "live-run",
     "teastore-order-depdown-specified-001": "structural-by-convention",
     "teastore-order-maintenance-masked-001": "live-run",
-    "teastore-order-meshsever-control-001": "bindable-pending-eval",
-    "teastore-order-meshsever-masked-001": "bindable-pending-eval",
-    "teastore-orderitems-meshsever-control-001": "bindable-pending-eval",
-    "teastore-orderitems-meshsever-masked-001": "bindable-pending-eval",
+    "teastore-order-meshsever-control-001": "capture-concordant",
+    "teastore-order-meshsever-masked-001": "capture-concordant",
+    "teastore-orderitems-meshsever-control-001": "capture-concordant",
+    "teastore-orderitems-meshsever-masked-001": "capture-concordant",
     "TT-adminbasic-contacts-control-001": "capture-concordant",
     "TT-adminbasic-contacts-lostwrite-001": "live-run",
     "TT-adminroute-control-001": "live-run",

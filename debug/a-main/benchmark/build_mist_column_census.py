@@ -47,28 +47,10 @@ ADJUDICATIONS = {
                    "verdict, and capturing it = a new capture out of wave scope "
                    "(positive-side widening CLOSED)"),
     },
-    "teastore-order-meshsever-masked-001": {
-        "class": "bindable-pending-eval",
-        "branch": ("RUN at the Phase-C TeaStore short window (plan 3.5 A5(iii)): "
-                   "2.75-A-style read-back binding over the committed runner "
-                   "b4/runners/3a/item2-meshsever.sh, control-first, ground truth = "
-                   "direct reads never MIST; window fails => restamp "
-                   "not_evaluable-with-reason, disclosed"),
-    },
-    "teastore-order-meshsever-control-001": {
-        "class": "bindable-pending-eval",
-        "branch": "same window as its masked twin (control leg first)",
-    },
-    "teastore-orderitems-meshsever-masked-001": {
-        "class": "bindable-pending-eval",
-        "branch": ("RUN at the same window over b4/runners/r1/r1-a2-orderitems.sh "
-                   "(child-collection site; control-first)"),
-    },
-    "teastore-orderitems-meshsever-control-001": {
-        "class": "bindable-pending-eval",
-        "branch": "same window as its masked twin (control leg first)",
-    },
 }
+# A5(iii) RESOLVED 2026-07-16 (the Phase-C TeaStore window): the 4 former
+# bindable-pending-eval cases now carry MEASURED verdicts (disclosed cell change;
+# labels/ground-truth untouched) - see the PROVENANCE entries below.
 
 # Verdict provenance pointers (which run of record carries each verdict).
 # Cases not listed carry the generic pointer (case-file capture-of-record notes
@@ -90,6 +72,10 @@ PROVENANCE = {
     "TT-adminbasic-contacts-control-001": "manual-G0 control record (no_flag; same disclosure as its twin)",
     "TT-contacts-dedupe-benign-001": "R1 T2 re-capture (legacy trap re-captured under the T2 cadence; no_flag)",
     "TT-contacts-noop-modify-benign-001": "R1 T2 re-capture (no_flag)",
+    "teastore-order-meshsever-masked-001": "completion-set Phase-C A5(iii) window (2026-07-16): TeaStoreMeshseverHeadToHead paired FIRE 4/4 under the mesh-sever VS producer (b4/cset/teastore-order-meshsever-run.report.json; ground truth = direct reads, fault order rows ABSENT)",
+    "teastore-order-meshsever-control-001": "same window, control leg (4/4 present, no false fire)",
+    "teastore-orderitems-meshsever-masked-001": "completion-set Phase-C A5(iii) window: chained child-collection read-back FIRE 4/4 (b4/cset/teastore-orderitems-meshsever-run.report.json; ground truth: fault parents PRESENT w/ items=0)",
+    "teastore-orderitems-meshsever-control-001": "same window, control leg (4/4 present w/ items>=1, no false fire)",
 }
 
 

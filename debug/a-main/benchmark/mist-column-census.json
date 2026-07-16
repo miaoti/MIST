@@ -3,14 +3,13 @@
  "generated_by": "build_mist_column_census.py (completion-set wave A5)",
  "note": "Verdict provenance + the 8 not_applicable adjudications are filled by the wave; no silent pending may survive (plan 3.5).",
  "tally": {
-  "not_applicable": 8,
-  "no_flag": 11,
-  "flag": 7
+  "not_applicable": 4,
+  "no_flag": 13,
+  "flag": 9
  },
  "adjudication_tally": {
   "structural": 3,
-  "structural-by-convention": 1,
-  "bindable-pending-eval": 4
+  "structural-by-convention": 1
  },
  "cases": [
   {
@@ -334,7 +333,7 @@
    },
    "label": "negative",
    "fault_class": "none",
-   "mist_readback_oracle": "not_applicable",
+   "mist_readback_oracle": "no_flag",
    "oracle_mode": "paired",
    "mist_commit": "7d69de9",
    "capture_status": "captured",
@@ -343,11 +342,8 @@
    "ack_content_visibility": "success-shaped-clean",
    "naive_span_error_oracle": "not_applicable",
    "mist_trace_shape_oracle": "not_applicable",
-   "adjudication": {
-    "class": "bindable-pending-eval",
-    "branch": "same window as its masked twin (control leg first)"
-   },
-   "provenance_run": null
+   "adjudication": null,
+   "provenance_run": "same window, control leg (4/4 present, no false fire)"
   },
   {
    "case_id": "teastore-order-meshsever-masked-001",
@@ -364,7 +360,7 @@
    },
    "label": "positive",
    "fault_class": "acknowledged_lost_write",
-   "mist_readback_oracle": "not_applicable",
+   "mist_readback_oracle": "flag",
    "oracle_mode": "paired",
    "mist_commit": "7d69de9",
    "capture_status": "captured",
@@ -373,11 +369,8 @@
    "ack_content_visibility": "success-shaped-clean",
    "naive_span_error_oracle": "not_applicable",
    "mist_trace_shape_oracle": "not_applicable",
-   "adjudication": {
-    "class": "bindable-pending-eval",
-    "branch": "RUN at the Phase-C TeaStore short window (plan 3.5 A5(iii)): 2.75-A-style read-back binding over the committed runner b4/runners/3a/item2-meshsever.sh, control-first, ground truth = direct reads never MIST; window fails => restamp not_evaluable-with-reason, disclosed"
-   },
-   "provenance_run": null
+   "adjudication": null,
+   "provenance_run": "completion-set Phase-C A5(iii) window (2026-07-16): TeaStoreMeshseverHeadToHead paired FIRE 4/4 under the mesh-sever VS producer (b4/cset/teastore-order-meshsever-run.report.json; ground truth = direct reads, fault order rows ABSENT)"
   },
   {
    "case_id": "teastore-orderitems-meshsever-control-001",
@@ -394,7 +387,7 @@
    },
    "label": "negative",
    "fault_class": "none",
-   "mist_readback_oracle": "not_applicable",
+   "mist_readback_oracle": "no_flag",
    "oracle_mode": "paired",
    "mist_commit": "7d69de9",
    "capture_status": "captured",
@@ -403,11 +396,8 @@
    "ack_content_visibility": "success-shaped-clean",
    "naive_span_error_oracle": "not_applicable",
    "mist_trace_shape_oracle": "not_applicable",
-   "adjudication": {
-    "class": "bindable-pending-eval",
-    "branch": "same window as its masked twin (control leg first)"
-   },
-   "provenance_run": null
+   "adjudication": null,
+   "provenance_run": "same window, control leg (4/4 present w/ items>=1, no false fire)"
   },
   {
    "case_id": "teastore-orderitems-meshsever-masked-001",
@@ -424,7 +414,7 @@
    },
    "label": "positive",
    "fault_class": "acknowledged_lost_write",
-   "mist_readback_oracle": "not_applicable",
+   "mist_readback_oracle": "flag",
    "oracle_mode": "paired",
    "mist_commit": "7d69de9",
    "capture_status": "captured",
@@ -433,11 +423,8 @@
    "ack_content_visibility": "success-shaped-clean",
    "naive_span_error_oracle": "not_applicable",
    "mist_trace_shape_oracle": "not_applicable",
-   "adjudication": {
-    "class": "bindable-pending-eval",
-    "branch": "RUN at the same window over b4/runners/r1/r1-a2-orderitems.sh (child-collection site; control-first)"
-   },
-   "provenance_run": null
+   "adjudication": null,
+   "provenance_run": "completion-set Phase-C A5(iii) window: chained child-collection read-back FIRE 4/4 (b4/cset/teastore-orderitems-meshsever-run.report.json; ground truth: fault parents PRESENT w/ items=0)"
   },
   {
    "case_id": "TT-adminbasic-contacts-control-001",

@@ -76,7 +76,7 @@
     "body_marker_oracle": "no_flag",
     "naive_span_error_oracle": "not_applicable",
     "tracetest_presence_oracle": "not_applicable",
-    "mist_readback_oracle": "not_applicable",
+    "mist_readback_oracle": "no_flag",
     "mist_trace_shape_oracle": "not_applicable"
   },
   "provenance": {

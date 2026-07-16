@@ -1,0 +1,21 @@
+# Completion-set wave A5(iii) — TeaStore CHILD-COLLECTION (order-items) masked-write triple.
+#
+# SUPPLIED + MEMBERSHIP over the CHAINED read-back (ChainedOrderItemsReadback): the read-back
+# body contains an order's {id,address1} row ONLY IF its /rest/orderitems/order/{id} child
+# collection is non-empty, so the reviewed MEMBERSHIP marker check reads
+# present <=> (the acked order exists AND has >=1 item). The r1-a2 mesh-sever fault (503 scoped
+# to /rest/orderitems) makes the parent land while every item create is swallowed to -1L ->
+# fault leg ABSENT, control PRESENT -> FIRE. The marker stays request-derived (address1),
+# exactly the 2.75-A discipline; no marker knowledge in the read-back.
+#
+# No fault_flag / cluster block: the fault is the VirtualService window, owned by the
+# harness decorator (TeaStoreMeshseverHeadToHead.MeshseverStimulus; applied before the
+# confirm, ALWAYS deleted before the oracle polls).
+triples:
+  - name: teastore-orderitems-confirm
+    write_endpoint: "POST /tools.descartes.teastore.webui/cartAction"
+    dependency: teastore-persistence
+    readback_endpoint: "GET /rest/orderitems (chained by acked order id)"
+    isolation_key: [address1]
+    isolation_strategy: supplied
+    readback_mode: membership

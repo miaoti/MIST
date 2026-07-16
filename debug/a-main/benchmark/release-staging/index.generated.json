@@ -68,22 +68,22 @@
   {
    "group": "cases",
    "path": "debug/a-main/benchmark/cases/teastore-order-meshsever-control-001.json",
-   "sha256": "c9ece3e3f7679c6f9290b86d33d199cc0960cfd5c990c7b2f74cc5de10cb3a47"
+   "sha256": "04ff69039061fb585249ec15ba4d91957418ec31f93029937d990f5f4c1c1aca"
   },
   {
    "group": "cases",
    "path": "debug/a-main/benchmark/cases/teastore-order-meshsever-masked-001.json",
-   "sha256": "eb0f6a354385ae18195642964e221fe048f74a8fa456016da164720549b07223"
+   "sha256": "b73933c92511ede1732367be61fecdc7d56a1942652b2c2b02567737efa812cb"
   },
   {
    "group": "cases",
    "path": "debug/a-main/benchmark/cases/teastore-orderitems-meshsever-control-001.json",
-   "sha256": "4c91f51f680cea7edc785c715c953cf06695dd1a27644b4961b8223a966384d4"
+   "sha256": "e636bc245641a324fd645d7da5957446b353b416e0a2546dd0f7e4f2d0c8f340"
   },
   {
    "group": "cases",
    "path": "debug/a-main/benchmark/cases/teastore-orderitems-meshsever-masked-001.json",
-   "sha256": "6d3ecd8bc08daebd332aa09b20b87c67783482194536d8be86cd4a63b35bdaa7"
+   "sha256": "e9b0122f3629f6e3f68879d3e24189c261f50277e0113f41938de3cf3949628a"
   },
   {
    "group": "cases",
@@ -148,22 +148,22 @@
   {
    "group": "censuses",
    "path": "debug/a-main/benchmark/mist-column-census.json",
-   "sha256": "2f627871b073c79555ff34a0287cefa5f820bdab91c3b71aa9ac32b39a6d2065"
+   "sha256": "01617a4a4cadba97e3c24fab1affaf8b3c679cc5116ac09cc4527a4078771138"
   },
   {
    "group": "censuses",
    "path": "debug/a-main/benchmark/e2-visibility-census.json",
-   "sha256": "f449af6235e748fafc8cd7fc1cc8ef82ac201ee288b3a1c05d96261b5c252f03"
+   "sha256": "1132138f7c3388e26cfd00400e26a7f7f249bb8f97d06b63ab3982181d3727ed"
   },
   {
    "group": "censuses",
    "path": "debug/a-main/benchmark/case-trace-arm-map.json",
-   "sha256": "5db64dc1f9359d5298a6837e0811ed5d077b28425b4f8f8bf2cc6fc3cb77b5da"
+   "sha256": "7c71f54af5b268264e9242718f8d1c626f9be6895e9386ddfc65f14b75ca0cd6"
   },
   {
    "group": "scoring",
    "path": "debug/a-main/benchmark/scoring/score_arms.py",
-   "sha256": "277d129d27b00ee4feb21e9514ced6705209bf99807f7a19e63425168cf82287"
+   "sha256": "f5dc3af8ad2e1e3f2752026d7667101c8b996724a79c80f71222a452d81468a5"
   },
   {
    "group": "scoring",
@@ -173,7 +173,7 @@
   {
    "group": "scoring",
    "path": "debug/a-main/benchmark/scoring/matched-recall-table.json",
-   "sha256": "b565eee7f0b5cbb536d85854fe79ccb970b01f97d4483cad1820a2b73203391f"
+   "sha256": "daefc0f5fcc679e8dffa7e77d53ff4c5d2cefaf06a7c1c690ba5b3d30fc346f9"
   },
   {
    "group": "specs",
