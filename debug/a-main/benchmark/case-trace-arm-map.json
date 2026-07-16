@@ -203,6 +203,16 @@
    ]
   },
   {
+   "case_id": "oteldemo-checkout-kafkaqueue-lost-001",
+   "trace_visibility": "trace-uninstrumented",
+   "bundles": [
+    {
+     "kind": "none-by-construction",
+     "detail": "trace-uninstrumented tier / specified-uncaptured"
+    }
+   ]
+  },
+  {
    "case_id": "oteldemo-checkout-lost-001",
    "trace_visibility": "span-presence-visible",
    "bundles": [

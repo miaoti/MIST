@@ -19,7 +19,7 @@
  "visibility_tally": {
   "error-span-visible": 3,
   "span-presence-visible": 9,
-  "trace-uninstrumented": 10,
+  "trace-uninstrumented": 11,
   "trace-invisible-by-construction": 4
  },
  "arms": {
@@ -71,12 +71,12 @@
      "not_evaluable_ids": []
     },
     "trace-uninstrumented": {
-     "positives": 5,
+     "positives": 6,
      "evaluable_positives": 4,
      "flagged_positives": 4,
      "negatives": 5,
      "flagged_negatives": 0,
-     "not_evaluable": 1,
+     "not_evaluable": 2,
      "flagged_positive_ids": [
       "teastore-order-maintenance-masked-001",
       "teastore-order-meshsever-masked-001",
@@ -85,6 +85,7 @@
      ],
      "flagged_negative_ids": [],
      "not_evaluable_ids": [
+      "oteldemo-checkout-kafkaqueue-lost-001",
       "teastore-order-depdown-specified-001"
      ]
     }
@@ -95,6 +96,7 @@
     "oteldemo-checkout-eventual-benign-001": "capture-concordant",
     "oteldemo-checkout-eventual-benign-002": "capture-concordant",
     "oteldemo-checkout-eventual-benign-003": "capture-concordant",
+    "oteldemo-checkout-kafkaqueue-lost-001": "barred-by-stop-rule",
     "oteldemo-checkout-lost-001": "live-run",
     "sockshop-shipping-control-001": "structural",
     "sockshop-shipping-swallowed-enqueue-001": "structural",
@@ -172,15 +174,16 @@
      ]
     },
     "trace-uninstrumented": {
-     "positives": 5,
+     "positives": 6,
      "evaluable_positives": 0,
      "flagged_positives": 0,
      "negatives": 5,
      "flagged_negatives": 0,
-     "not_evaluable": 10,
+     "not_evaluable": 11,
      "flagged_positive_ids": [],
      "flagged_negative_ids": [],
      "not_evaluable_ids": [
+      "oteldemo-checkout-kafkaqueue-lost-001",
       "teastore-order-control-001",
       "teastore-order-depdown-specified-001",
       "teastore-order-maintenance-masked-001",
@@ -251,15 +254,16 @@
      ]
     },
     "trace-uninstrumented": {
-     "positives": 5,
+     "positives": 6,
      "evaluable_positives": 0,
      "flagged_positives": 0,
      "negatives": 5,
      "flagged_negatives": 0,
-     "not_evaluable": 10,
+     "not_evaluable": 11,
      "flagged_positive_ids": [],
      "flagged_negative_ids": [],
      "not_evaluable_ids": [
+      "oteldemo-checkout-kafkaqueue-lost-001",
       "teastore-order-control-001",
       "teastore-order-depdown-specified-001",
       "teastore-order-maintenance-masked-001",
@@ -321,15 +325,16 @@
      ]
     },
     "trace-uninstrumented": {
-     "positives": 5,
+     "positives": 6,
      "evaluable_positives": 0,
      "flagged_positives": 0,
      "negatives": 5,
      "flagged_negatives": 0,
-     "not_evaluable": 10,
+     "not_evaluable": 11,
      "flagged_positive_ids": [],
      "flagged_negative_ids": [],
      "not_evaluable_ids": [
+      "oteldemo-checkout-kafkaqueue-lost-001",
       "teastore-order-control-001",
       "teastore-order-depdown-specified-001",
       "teastore-order-maintenance-masked-001",
@@ -400,15 +405,16 @@
      ]
     },
     "trace-uninstrumented": {
-     "positives": 5,
+     "positives": 6,
      "evaluable_positives": 0,
      "flagged_positives": 0,
      "negatives": 5,
      "flagged_negatives": 0,
-     "not_evaluable": 10,
+     "not_evaluable": 11,
      "flagged_positive_ids": [],
      "flagged_negative_ids": [],
      "not_evaluable_ids": [
+      "oteldemo-checkout-kafkaqueue-lost-001",
       "teastore-order-control-001",
       "teastore-order-depdown-specified-001",
       "teastore-order-maintenance-masked-001",
@@ -475,15 +481,16 @@
      ]
     },
     "trace-uninstrumented": {
-     "positives": 5,
+     "positives": 6,
      "evaluable_positives": 0,
      "flagged_positives": 0,
      "negatives": 5,
      "flagged_negatives": 0,
-     "not_evaluable": 10,
+     "not_evaluable": 11,
      "flagged_positive_ids": [],
      "flagged_negative_ids": [],
      "not_evaluable_ids": [
+      "oteldemo-checkout-kafkaqueue-lost-001",
       "teastore-order-control-001",
       "teastore-order-depdown-specified-001",
       "teastore-order-maintenance-masked-001",

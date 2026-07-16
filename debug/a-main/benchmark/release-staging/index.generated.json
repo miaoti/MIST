@@ -37,6 +37,11 @@
   },
   {
    "group": "cases",
+   "path": "debug/a-main/benchmark/cases/oteldemo-checkout-kafkaqueue-lost-001.json",
+   "sha256": "ba78a92e8c2ffcf6c66190b892b9b1f8a1f5c0f8ab8ce7572ada8d2df020193d"
+  },
+  {
+   "group": "cases",
    "path": "debug/a-main/benchmark/cases/oteldemo-checkout-lost-001.json",
    "sha256": "234a32c80ff23cfe45db929f612ef7abe3e890260d8c1be32f933bb3c73abb86"
   },
@@ -148,17 +153,17 @@
   {
    "group": "censuses",
    "path": "debug/a-main/benchmark/mist-column-census.json",
-   "sha256": "01617a4a4cadba97e3c24fab1affaf8b3c679cc5116ac09cc4527a4078771138"
+   "sha256": "4bd3b3f524b20f3b71ba4b7b6cdd3c7aab97eca9745d3ce43b1d19015c9a761f"
   },
   {
    "group": "censuses",
    "path": "debug/a-main/benchmark/e2-visibility-census.json",
-   "sha256": "1132138f7c3388e26cfd00400e26a7f7f249bb8f97d06b63ab3982181d3727ed"
+   "sha256": "78d59e85d084ccce874d811527f2b6751ed49122f177187377cb6c7b80c7732c"
   },
   {
    "group": "censuses",
    "path": "debug/a-main/benchmark/case-trace-arm-map.json",
-   "sha256": "7c71f54af5b268264e9242718f8d1c626f9be6895e9386ddfc65f14b75ca0cd6"
+   "sha256": "3f256d9702aac53d561430c948fc7462b579ca898e4aeb2b05c4b7e8b4df883c"
   },
   {
    "group": "scoring",
@@ -173,7 +178,7 @@
   {
    "group": "scoring",
    "path": "debug/a-main/benchmark/scoring/matched-recall-table.json",
-   "sha256": "daefc0f5fcc679e8dffa7e77d53ff4c5d2cefaf06a7c1c690ba5b3d30fc346f9"
+   "sha256": "4473dc51303af6c8a1df7df8ea23350296e074378f0fbbfe0743789456ae9c66"
   },
   {
    "group": "specs",
@@ -207,7 +212,7 @@
   }
  ],
  "reproduction_census_tally": {
-  "executable-reproduction (replay script committed + mechanized injection)": 13,
+  "executable-reproduction (replay script committed + mechanized injection)": 14,
   "executable-reproduction (no injection; stimulus replay)": 12,
   "specified-design-target (no capture to reproduce)": 1
  }

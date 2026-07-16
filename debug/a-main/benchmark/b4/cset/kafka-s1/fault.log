@@ -1,0 +1,88 @@
+[18:02:53] FAULT leg: flag ON + 20 trials
+kafkaQueueProblems before: 0 (target 100)
+edited kafkaQueueProblems -> defaultVariant=on
+kafkaQueueProblems flipped to 100; write->effect latency 0s
+trial=1 marker=ks1f1-1784242975 resp=200 0.157585 7b469e39-816a-11f1-b33d-ee6cfaeafcca
+trial=2 marker=ks1f2-1784242982 resp=200 0.139927 7f5bce83-816a-11f1-b33d-ee6cfaeafcca
+trial=3 marker=ks1f3-1784242987 resp=200 0.184138 82710abc-816a-11f1-b33d-ee6cfaeafcca
+trial=4 marker=ks1f4-1784242993 resp=200 0.192539 858d04f8-816a-11f1-b33d-ee6cfaeafcca
+trial=5 marker=ks1f5-1784242998 resp=200 0.239197 88a9925d-816a-11f1-b33d-ee6cfaeafcca
+trial=6 marker=ks1f6-1784243003 resp=200 0.251890 8bcd3c28-816a-11f1-b33d-ee6cfaeafcca
+trial=7 marker=ks1f7-1784243008 resp=200 0.270974 8ef25cab-816a-11f1-b33d-ee6cfaeafcca
+trial=8 marker=ks1f8-1784243015 resp=200 0.262740 931e43cf-816a-11f1-b33d-ee6cfaeafcca
+trial=9 marker=ks1f9-1784243021 resp=200 0.272085 9645c1e1-816a-11f1-b33d-ee6cfaeafcca
+trial=10 marker=ks1f10-1784243026 resp=200 0.282259 996dd764-816a-11f1-b33d-ee6cfaeafcca
+trial=11 marker=ks1f11-1784243031 resp=200 0.389329 9c970864-816a-11f1-b33d-ee6cfaeafcca
+trial=12 marker=ks1f12-1784243037 resp=200 0.291858 9fcff524-816a-11f1-b33d-ee6cfaeafcca
+trial=13 marker=ks1f13-1784243042 resp=200 0.309625 a2f98664-816a-11f1-b33d-ee6cfaeafcca
+trial=14 marker=ks1f14-1784243049 resp=200 0.457820 a72b7466-816a-11f1-b33d-ee6cfaeafcca
+trial=15 marker=ks1f15-1784243055 resp=200 0.401164 aa6e96ce-816a-11f1-b33d-ee6cfaeafcca
+trial=16 marker=ks1f16-1784243060 resp=200 0.358109 ada939b2-816a-11f1-b33d-ee6cfaeafcca
+trial=17 marker=ks1f17-1784243065 resp=200 0.457552 b0de1b02-816a-11f1-b33d-ee6cfaeafcca
+trial=18 marker=ks1f18-1784243071 resp=200 0.418631 b4217906-816a-11f1-b33d-ee6cfaeafcca
+trial=19 marker=ks1f19-1784243078 resp=200 0.496993 b85bb804-816a-11f1-b33d-ee6cfaeafcca
+trial=20 marker=ks1f20-1784243083 resp=200 0.356112 bba42231-816a-11f1-b33d-ee6cfaeafcca
+-- initial landed sweep (60 s/order cap) --
+flt ks1f1-1784242975 7b469e39-816a-11f1-b33d-ee6cfaeafcca rows=1
+flt ks1f2-1784242982 7f5bce83-816a-11f1-b33d-ee6cfaeafcca rows=0
+flt ks1f3-1784242987 82710abc-816a-11f1-b33d-ee6cfaeafcca rows=0
+flt ks1f4-1784242993 858d04f8-816a-11f1-b33d-ee6cfaeafcca rows=0
+flt ks1f5-1784242998 88a9925d-816a-11f1-b33d-ee6cfaeafcca rows=0
+flt ks1f6-1784243003 8bcd3c28-816a-11f1-b33d-ee6cfaeafcca rows=0
+flt ks1f7-1784243008 8ef25cab-816a-11f1-b33d-ee6cfaeafcca rows=0
+flt ks1f8-1784243015 931e43cf-816a-11f1-b33d-ee6cfaeafcca rows=0
+flt ks1f9-1784243021 9645c1e1-816a-11f1-b33d-ee6cfaeafcca rows=0
+flt ks1f10-1784243026 996dd764-816a-11f1-b33d-ee6cfaeafcca rows=0
+flt ks1f11-1784243031 9c970864-816a-11f1-b33d-ee6cfaeafcca rows=0
+flt ks1f12-1784243037 9fcff524-816a-11f1-b33d-ee6cfaeafcca rows=0
+flt ks1f13-1784243042 a2f98664-816a-11f1-b33d-ee6cfaeafcca rows=0
+flt ks1f14-1784243049 a72b7466-816a-11f1-b33d-ee6cfaeafcca rows=0
+flt ks1f15-1784243055 aa6e96ce-816a-11f1-b33d-ee6cfaeafcca rows=0
+flt ks1f16-1784243060 ada939b2-816a-11f1-b33d-ee6cfaeafcca rows=0
+flt ks1f17-1784243065 b0de1b02-816a-11f1-b33d-ee6cfaeafcca rows=0
+flt ks1f18-1784243071 b4217906-816a-11f1-b33d-ee6cfaeafcca rows=0
+flt ks1f19-1784243078 b85bb804-816a-11f1-b33d-ee6cfaeafcca rows=0
+[18:25:26] T+5min RE-PROBE of fault trials
+reprobe ks1f1-1784242975 7b469e39-816a-11f1-b33d-ee6cfaeafcca rows=1 -> LANDED
+reprobe ks1f2-1784242982 7f5bce83-816a-11f1-b33d-ee6cfaeafcca rows=0 -> LOST
+reprobe ks1f3-1784242987 82710abc-816a-11f1-b33d-ee6cfaeafcca rows=0 -> LOST
+reprobe ks1f4-1784242993 858d04f8-816a-11f1-b33d-ee6cfaeafcca rows=0 -> LOST
+reprobe ks1f5-1784242998 88a9925d-816a-11f1-b33d-ee6cfaeafcca rows=0 -> LOST
+reprobe ks1f6-1784243003 8bcd3c28-816a-11f1-b33d-ee6cfaeafcca rows=0 -> LOST
+reprobe ks1f7-1784243008 8ef25cab-816a-11f1-b33d-ee6cfaeafcca rows=0 -> LOST
+reprobe ks1f8-1784243015 931e43cf-816a-11f1-b33d-ee6cfaeafcca rows=0 -> LOST
+reprobe ks1f9-1784243021 9645c1e1-816a-11f1-b33d-ee6cfaeafcca rows=0 -> LOST
+reprobe ks1f10-1784243026 996dd764-816a-11f1-b33d-ee6cfaeafcca rows=0 -> LOST
+reprobe ks1f11-1784243031 9c970864-816a-11f1-b33d-ee6cfaeafcca rows=0 -> LOST
+reprobe ks1f12-1784243037 9fcff524-816a-11f1-b33d-ee6cfaeafcca rows=0 -> LOST
+reprobe ks1f13-1784243042 a2f98664-816a-11f1-b33d-ee6cfaeafcca rows=0 -> LOST
+reprobe ks1f14-1784243049 a72b7466-816a-11f1-b33d-ee6cfaeafcca rows=0 -> LOST
+reprobe ks1f15-1784243055 aa6e96ce-816a-11f1-b33d-ee6cfaeafcca rows=0 -> LOST
+reprobe ks1f16-1784243060 ada939b2-816a-11f1-b33d-ee6cfaeafcca rows=0 -> LOST
+reprobe ks1f17-1784243065 b0de1b02-816a-11f1-b33d-ee6cfaeafcca rows=0 -> LOST
+reprobe ks1f18-1784243071 b4217906-816a-11f1-b33d-ee6cfaeafcca rows=0 -> LOST
+reprobe ks1f19-1784243078 b85bb804-816a-11f1-b33d-ee6cfaeafcca rows=0 -> LOST
+reprobe ks1f20-1784243083 bba42231-816a-11f1-b33d-ee6cfaeafcca rows=0 -> LOST
+SUMMARY: lost=19 / N=20
+[18:30:14] T+5min RE-PROBE of fault trials
+reprobe ks1f1-1784242975 7b469e39-816a-11f1-b33d-ee6cfaeafcca rows=1 -> LANDED
+reprobe ks1f2-1784242982 7f5bce83-816a-11f1-b33d-ee6cfaeafcca rows=0 -> LOST
+reprobe ks1f3-1784242987 82710abc-816a-11f1-b33d-ee6cfaeafcca rows=0 -> LOST
+reprobe ks1f4-1784242993 858d04f8-816a-11f1-b33d-ee6cfaeafcca rows=0 -> LOST
+reprobe ks1f5-1784242998 88a9925d-816a-11f1-b33d-ee6cfaeafcca rows=0 -> LOST
+reprobe ks1f6-1784243003 8bcd3c28-816a-11f1-b33d-ee6cfaeafcca rows=0 -> LOST
+reprobe ks1f7-1784243008 8ef25cab-816a-11f1-b33d-ee6cfaeafcca rows=0 -> LOST
+reprobe ks1f8-1784243015 931e43cf-816a-11f1-b33d-ee6cfaeafcca rows=0 -> LOST
+reprobe ks1f9-1784243021 9645c1e1-816a-11f1-b33d-ee6cfaeafcca rows=0 -> LOST
+reprobe ks1f10-1784243026 996dd764-816a-11f1-b33d-ee6cfaeafcca rows=0 -> LOST
+reprobe ks1f11-1784243031 9c970864-816a-11f1-b33d-ee6cfaeafcca rows=0 -> LOST
+reprobe ks1f12-1784243037 9fcff524-816a-11f1-b33d-ee6cfaeafcca rows=0 -> LOST
+reprobe ks1f13-1784243042 a2f98664-816a-11f1-b33d-ee6cfaeafcca rows=0 -> LOST
+reprobe ks1f14-1784243049 a72b7466-816a-11f1-b33d-ee6cfaeafcca rows=0 -> LOST
+reprobe ks1f15-1784243055 aa6e96ce-816a-11f1-b33d-ee6cfaeafcca rows=0 -> LOST
+reprobe ks1f16-1784243060 ada939b2-816a-11f1-b33d-ee6cfaeafcca rows=0 -> LOST
+reprobe ks1f17-1784243065 b0de1b02-816a-11f1-b33d-ee6cfaeafcca rows=0 -> LOST
+reprobe ks1f18-1784243071 b4217906-816a-11f1-b33d-ee6cfaeafcca rows=0 -> LOST
+reprobe ks1f19-1784243078 b85bb804-816a-11f1-b33d-ee6cfaeafcca rows=0 -> LOST
+reprobe ks1f20-1784243083 bba42231-816a-11f1-b33d-ee6cfaeafcca rows=0 -> LOST
+SUMMARY: lost=19 / N=20

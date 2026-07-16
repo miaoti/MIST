@@ -4,6 +4,7 @@ ccb57b41dceda2f64ef7d08bb278b1dfcf88cb6b1b1a7e703cd2dd020d29fc28  debug/a-main/b
 7d3270c79558c5dba8372d84b134213b7ba49a5f5c44267adca2432f32abfe74  debug/a-main/benchmark/cases/oteldemo-checkout-eventual-benign-001.json
 7b5a89ab3cb1853d8d17b53de216593de12ca27be1d01f8d0545ac86fd553f87  debug/a-main/benchmark/cases/oteldemo-checkout-eventual-benign-002.json
 62c79fbfaca755c43e1956036d31e2406692c5a439501cf707f3b66b2cd6c6cb  debug/a-main/benchmark/cases/oteldemo-checkout-eventual-benign-003.json
+ba78a92e8c2ffcf6c66190b892b9b1f8a1f5c0f8ab8ce7572ada8d2df020193d  debug/a-main/benchmark/cases/oteldemo-checkout-kafkaqueue-lost-001.json
 234a32c80ff23cfe45db929f612ef7abe3e890260d8c1be32f933bb3c73abb86  debug/a-main/benchmark/cases/oteldemo-checkout-lost-001.json
 2f8fa9b72b8c9a8e975e84a8019d50601a31304bc4b8b26dcfd4008ff6771466  debug/a-main/benchmark/cases/sockshop-shipping-control-001.json
 12fce64bf713994450227cfefa95bc76749c9ed634573d12fb4c7f4f1e989e49  debug/a-main/benchmark/cases/sockshop-shipping-swallowed-enqueue-001.json
@@ -26,12 +27,12 @@ a680df25217a57c572f308e7a37e4ac64c119ae15afeabafc9bfa7c5ec64c7b7  debug/a-main/b
 1644204b91193b5f7a831950b8a856c51de779b66eabc01ef650761e5fada539  debug/a-main/benchmark/cases/TT-createaccount-agreement-001.json
 1be886c8038b8fed7b4e92b714f0ce926bfc41e240f651869dc0e50880b7c9db  debug/a-main/benchmark/cases/TT-createaccount-clean-001.json
 fa76098b41081d0f46b7b2ace7a1533ddfb247f6c51e0e068145532d13587308  debug/a-main/benchmark/schema/fault-case.schema.json
-01617a4a4cadba97e3c24fab1affaf8b3c679cc5116ac09cc4527a4078771138  debug/a-main/benchmark/mist-column-census.json
-1132138f7c3388e26cfd00400e26a7f7f249bb8f97d06b63ab3982181d3727ed  debug/a-main/benchmark/e2-visibility-census.json
-7c71f54af5b268264e9242718f8d1c626f9be6895e9386ddfc65f14b75ca0cd6  debug/a-main/benchmark/case-trace-arm-map.json
+4bd3b3f524b20f3b71ba4b7b6cdd3c7aab97eca9745d3ce43b1d19015c9a761f  debug/a-main/benchmark/mist-column-census.json
+78d59e85d084ccce874d811527f2b6751ed49122f177187377cb6c7b80c7732c  debug/a-main/benchmark/e2-visibility-census.json
+3f256d9702aac53d561430c948fc7462b579ca898e4aeb2b05c4b7e8b4df883c  debug/a-main/benchmark/case-trace-arm-map.json
 f5dc3af8ad2e1e3f2752026d7667101c8b996724a79c80f71222a452d81468a5  debug/a-main/benchmark/scoring/score_arms.py
 8d9733758ecd9dfaf6b67923873d21dd4987117947b2eee3b22bc4104d2b9ed8  debug/a-main/benchmark/scoring/README.md
-daefc0f5fcc679e8dffa7e77d53ff4c5d2cefaf06a7c1c690ba5b3d30fc346f9  debug/a-main/benchmark/scoring/matched-recall-table.json
+4473dc51303af6c8a1df7df8ea23350296e074378f0fbbfe0743789456ae9c66  debug/a-main/benchmark/scoring/matched-recall-table.json
 77bf4d57b04332157ee950e8d832b4984214a0f32e2d4875a6cfba2d95b6cbc1  evaluation/suts/bookinfo/openapi/bookinfo-swagger.yaml
 46da8ca43acad52eae60304afb8013ca916ce3c9b6573bfe673ac7baea2e495d  evaluation/suts/boutique/openapi/boutique-swagger.yaml
 c2265bfd192535d355c5a1f0d93471d4a560a72495441f732b14eda21fb18512  evaluation/suts/oteldemo/openapi/oteldemo-swagger.yaml

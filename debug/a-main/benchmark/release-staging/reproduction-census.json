@@ -1,7 +1,7 @@
 {
  "schema": "reproduction-census/1",
  "tally": {
-  "executable-reproduction (replay script committed + mechanized injection)": 13,
+  "executable-reproduction (replay script committed + mechanized injection)": 14,
   "executable-reproduction (no injection; stimulus replay)": 12,
   "specified-design-target (no capture to reproduce)": 1
  },
@@ -43,6 +43,14 @@
    "capture_status": "captured",
    "injection_method": "dependency_scale_zero",
    "replay_script": "debug/a-main/benchmark/b4/runners/r1/r1d-otel-eventual.sh",
+   "replay_script_exists": true,
+   "reproduction_status": "executable-reproduction (replay script committed + mechanized injection)"
+  },
+  {
+   "case_id": "oteldemo-checkout-kafkaqueue-lost-001",
+   "capture_status": "captured",
+   "injection_method": "vendor_flag",
+   "replay_script": "debug/a-main/benchmark/b4/capture-specs/oteldemo-checkout-flow.yaml",
    "replay_script_exists": true,
    "reproduction_status": "executable-reproduction (replay script committed + mechanized injection)"
   },

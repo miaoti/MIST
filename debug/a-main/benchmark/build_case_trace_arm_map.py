@@ -67,6 +67,7 @@ BUNDLES = {
     "TT-createaccount-clean-001": [],
 }
 UNINSTRUMENTED = [
+    "oteldemo-checkout-kafkaqueue-lost-001",  # BY CAPTURE: no per-trial traces exported (stochastic X4 protocol)
     "teastore-order-maintenance-masked-001", "teastore-order-control-001",
     "teastore-order-meshsever-masked-001", "teastore-order-meshsever-control-001",
     "teastore-orderitems-meshsever-masked-001",

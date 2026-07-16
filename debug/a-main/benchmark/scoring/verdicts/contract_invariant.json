@@ -8,6 +8,7 @@
   "oteldemo-checkout-eventual-benign-001": "not_evaluable",
   "oteldemo-checkout-eventual-benign-002": "not_evaluable",
   "oteldemo-checkout-eventual-benign-003": "not_evaluable",
+  "oteldemo-checkout-kafkaqueue-lost-001": "not_evaluable",
   "oteldemo-checkout-lost-001": "not_evaluable",
   "sockshop-shipping-control-001": "not_evaluable",
   "sockshop-shipping-swallowed-enqueue-001": "not_evaluable",

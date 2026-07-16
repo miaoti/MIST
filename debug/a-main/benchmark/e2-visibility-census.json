@@ -11,7 +11,7 @@
  "tally": {
   "error-span-visible": 3,
   "span-presence-visible": 9,
-  "trace-uninstrumented": 10,
+  "trace-uninstrumented": 11,
   "trace-invisible-by-construction": 4
  },
  "cases": [
@@ -54,6 +54,14 @@
    "naive_span_error_oracle": "no_flag",
    "mist_trace_shape_oracle": "not_applicable",
    "mist_readback_oracle": "no_flag"
+  },
+  {
+   "case_id": "oteldemo-checkout-kafkaqueue-lost-001",
+   "label": "positive",
+   "trace_visibility": "trace-uninstrumented",
+   "naive_span_error_oracle": "not_applicable",
+   "mist_trace_shape_oracle": "not_applicable",
+   "mist_readback_oracle": "not_applicable"
   },
   {
    "case_id": "oteldemo-checkout-lost-001",
@@ -109,7 +117,7 @@
    "trace_visibility": "trace-uninstrumented",
    "naive_span_error_oracle": "not_applicable",
    "mist_trace_shape_oracle": "not_applicable",
-   "mist_readback_oracle": "not_applicable"
+   "mist_readback_oracle": "no_flag"
   },
   {
    "case_id": "teastore-order-meshsever-masked-001",
@@ -117,7 +125,7 @@
    "trace_visibility": "trace-uninstrumented",
    "naive_span_error_oracle": "not_applicable",
    "mist_trace_shape_oracle": "not_applicable",
-   "mist_readback_oracle": "not_applicable"
+   "mist_readback_oracle": "flag"
   },
   {
    "case_id": "teastore-orderitems-meshsever-control-001",
@@ -125,7 +133,7 @@
    "trace_visibility": "trace-uninstrumented",
    "naive_span_error_oracle": "not_applicable",
    "mist_trace_shape_oracle": "not_applicable",
-   "mist_readback_oracle": "not_applicable"
+   "mist_readback_oracle": "no_flag"
   },
   {
    "case_id": "teastore-orderitems-meshsever-masked-001",
@@ -133,7 +141,7 @@
    "trace_visibility": "trace-uninstrumented",
    "naive_span_error_oracle": "not_applicable",
    "mist_trace_shape_oracle": "not_applicable",
-   "mist_readback_oracle": "not_applicable"
+   "mist_readback_oracle": "flag"
   },
   {
    "case_id": "TT-adminbasic-contacts-control-001",

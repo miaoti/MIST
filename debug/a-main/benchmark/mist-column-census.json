@@ -3,12 +3,13 @@
  "generated_by": "build_mist_column_census.py (completion-set wave A5)",
  "note": "Verdict provenance + the 8 not_applicable adjudications are filled by the wave; no silent pending may survive (plan 3.5).",
  "tally": {
-  "not_applicable": 4,
+  "not_applicable": 5,
   "no_flag": 13,
   "flag": 9
  },
  "adjudication_tally": {
   "structural": 3,
+  "barred-by-stop-rule": 1,
   "structural-by-convention": 1
  },
  "cases": [
@@ -148,6 +149,36 @@
    "mist_trace_shape_oracle": "not_applicable",
    "adjudication": null,
    "provenance_run": "R1d induced capture (observe abstention => no_flag)"
+  },
+  {
+   "case_id": "oteldemo-checkout-kafkaqueue-lost-001",
+   "file": "oteldemo-checkout-kafkaqueue-lost-001.json",
+   "sut": {
+    "name": "oteldemo",
+    "repo": "github.com/open-telemetry/opentelemetry-demo",
+    "branch": "",
+    "commit": "app 2.2.0 / helm chart 0.40.9 (pinned at install)",
+    "image_digest": "sha256:6d0183a38947840837321f7c90d4e01eb70a4dc4e74c150749e62302a15b3eb0",
+    "deploy": "kind cluster 'mist', ns otel-demo; chart open-telemetry/opentelemetry-demo 0.40.9 (app 2.2.0), 21 workloads; pinned values /home/miaot/gate1-logs/tenancy-window/otel/otel-values.yaml (load-generator/llm/product-reviews disabled for capture hygiene + RAM; grafana/prometheus/opensearch off; collector logs+metrics pipelines -> debug only, traces -> bundled jaeger UNTOUCHED). Digest above = checkout (the swallowing service); accounting sha256:1c5ec157..., kafka sha256:5bd713c7.... Natively OTel-instrumented; jaeger v2.17 memory storage, query API /jaeger/ui/api/*. frontend-proxy PF localhost:8085, jaeger PF localhost:16687. Leg = kafka deployment scale (control up / fault 0).",
+    "replay_script": "debug/a-main/benchmark/b4/capture-specs/oteldemo-checkout-flow.yaml",
+    "health_precondition": null
+   },
+   "label": "positive",
+   "fault_class": "acknowledged_lost_write",
+   "mist_readback_oracle": "not_applicable",
+   "oracle_mode": null,
+   "mist_commit": "35f0114",
+   "capture_status": "captured",
+   "readback_shape": null,
+   "trace_visibility": "trace-uninstrumented",
+   "ack_content_visibility": "success-shaped-clean",
+   "naive_span_error_oracle": "not_applicable",
+   "mist_trace_shape_oracle": "not_applicable",
+   "adjudication": {
+    "class": "barred-by-stop-rule",
+    "reason": "a MIST leg requires another flag-on window, barred by the no-third-attempt stop rule this wave; bindable-in-principle via the 2.75-A OtelCheckoutHeadToHead site binding - a future window = USER decision (disclosed, not silent)"
+   },
+   "provenance_run": null
   },
   {
    "case_id": "oteldemo-checkout-lost-001",

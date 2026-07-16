@@ -1,0 +1,113 @@
+{
+  "case_id": "oteldemo-checkout-kafkaqueue-lost-001",
+  "schema_version": "2.0.0",
+  "stratum": 1,
+  "capture_status": "captured",
+  "fault_class": "acknowledged_lost_write",
+  "sut": {
+    "name": "oteldemo",
+    "repo": "github.com/open-telemetry/opentelemetry-demo",
+    "branch": "",
+    "commit": "app 2.2.0 / helm chart 0.40.9 (pinned at install)",
+    "image_digest": "sha256:6d0183a38947840837321f7c90d4e01eb70a4dc4e74c150749e62302a15b3eb0",
+    "deploy": "kind cluster 'mist', ns otel-demo; chart open-telemetry/opentelemetry-demo 0.40.9 (app 2.2.0), 21 workloads; pinned values /home/miaot/gate1-logs/tenancy-window/otel/otel-values.yaml (load-generator/llm/product-reviews disabled for capture hygiene + RAM; grafana/prometheus/opensearch off; collector logs+metrics pipelines -> debug only, traces -> bundled jaeger UNTOUCHED). Digest above = checkout (the swallowing service); accounting sha256:1c5ec157..., kafka sha256:5bd713c7.... Natively OTel-instrumented; jaeger v2.17 memory storage, query API /jaeger/ui/api/*. frontend-proxy PF localhost:8085, jaeger PF localhost:16687. Leg = kafka deployment scale (control up / fault 0).",
+    "replay_script": "debug/a-main/benchmark/b4/capture-specs/oteldemo-checkout-flow.yaml",
+    "health_precondition": null
+  },
+  "target": {
+    "entry_endpoint": {
+      "method": "POST",
+      "path": "/api/checkout",
+      "service": "frontend (via frontend-proxy ingress)"
+    },
+    "dependency": {
+      "service": "kafka ('orders' topic; checkout producer -> accounting consumer -> Postgres)",
+      "kind": "broker"
+    },
+    "readback": {
+      "modality": "sql-probe",
+      "locator": "[2.75-A BOUND] SELECT street_address FROM accounting.shipping WHERE street_address='<the request-derived marker>' on the postgresql pod (db otel; schema accounting - a bare \\dt shows only public and misleads). The accounting Postgres row is the SUT's ONLY durable record of a placed order (no user-facing order query API exists). KEY = the request-derived street_address marker, NOT the server-assigned order_id (which the oracle forbids as a correlation key); accounting persists Order+Shipping+OrderItem in ONE SaveChanges() transaction, so a street_address-keyed absence is equivalence-preserving vs the order_id-keyed capture locator (review C-R2). The Phase-D capture-of-record keyed on accounting.\"order\".order_id; this bound locator is the 2.75-A enablement form.",
+      "expect_without_fault": "landed",
+      "expect_with_fault": "not-landed",
+      "mist_bindable": true
+    }
+  },
+  "fault": {
+    "mechanism": "flag",
+    "injection_method": "vendor_flag",
+    "config": {
+      "flag": "kafkaQueueProblems=100 (defaultVariant on) via the flagd-ui API mechanism of record (b4/runners/3a/flagd-toggle.sh; ConfigMap never touched)",
+      "measured_rate": {
+        "lost": 19,
+        "n": 20,
+        "point": 0.95,
+        "wilson95": [
+          0.7639,
+          0.9911
+        ]
+      },
+      "control_leg": {
+        "landed": 10,
+        "n": 10,
+        "note": "flag-OFF, run FIRST per X4"
+      },
+      "stochastic_mix": "1 fast success under-flag + 19 permanent losses (the tenancy-item-3 first-attempt pattern, now at N=20)",
+      "wedge_record": "post-flag-off canary FAIL (wedge persists past toggle-off; the flag-on condition wedges rdkafka) -> recovery-restart checkout+accounting+fraud -> canary PASS; post-recovery re-probe: the 19 remain absent (permanent production loss, not buffering)",
+      "reprobe": "BINDING T+5min re-probe per trial (X4): delayed-but-landed != LOST; plus a post-recovery permanence re-probe"
+    },
+    "injected_by": "runtime flag flip (flagd-ui API); SECOND ATTEMPT of record (the first STOPPED at probe round, tenancy item 3)",
+    "target_service": "checkout->kafka->accounting",
+    "provenance_class": "by-injection"
+  },
+  "negative_control": {
+    "present": true,
+    "replay_script": "b4/runners/cset/kafka-s1.sh control (10/10 landed, flag OFF, run FIRST)"
+  },
+  "stimulus": {
+    "script": "debug/a-main/benchmark/b4/runners/cset/kafka-s1.sh",
+    "write_path": true,
+    "workload_class": "authored-scenario",
+    "workload_variant": "stochastic-N-trial (X4)"
+  },
+  "oracle_eval": {
+    "ack_content_visibility": "success-shaped-clean",
+    "trace_visibility": "trace-uninstrumented",
+    "write_shape": "whole",
+    "config_provenance": {
+      "mist_commit": "35f0114"
+    },
+    "comparator_configs": []
+  },
+  "ground_truth": {
+    "label": "positive",
+    "rationale": "checkout acks HTTP 200 with an orderId while kafkaQueueProblems=100 drops the order message at production: 19/20 acked orders never reach accounting.\"order\" (direct psql; T+5min re-probe + post-recovery permanence re-probe both absent), while the flag-OFF control leg landed 10/10 and post-recovery canaries land - acknowledged-but-lost writes under a vendor-shipped fault flag.",
+    "source": "vendor",
+    "version": 1,
+    "doc_citation": null
+  },
+  "oracle_expectation": {
+    "status_code_oracle": "no_flag",
+    "schema_oracle": "no_flag",
+    "body_marker_oracle": "no_flag",
+    "naive_span_error_oracle": "not_applicable",
+    "tracetest_presence_oracle": "not_applicable",
+    "mist_readback_oracle": "not_applicable",
+    "mist_trace_shape_oracle": "not_applicable"
+  },
+  "provenance": {
+    "control_trace": null,
+    "fault_trace": null,
+    "readback_response": "debug/a-main/benchmark/b4/cset/kafka-s1/ (control.log, fault.log w/ T+5min + post-recovery re-probes, restore.log)",
+    "notes": "LIVE-CAPTURED 2026-07-16 (completion-set Phase C, SECOND attempt): control 10/10 landed; flag-on 20 trials all acked 200+orderId, 19 LOST at T+5min AND post-recovery (permanent), 1 fast success; wedge past flag-off reproduced + healed by the pinned recovery-restart. mist_readback_oracle=not_applicable OF RECORD: a MIST leg needs another flag-on window, barred by the no-third-attempt stop rule this wave; the site is bindable-in-principle (the 2.75-A OtelCheckoutHeadToHead binding) - a future window = USER decision. readback_shape=absent-lost; NOT counted toward S2 floors (S1 positive). trace_visibility=trace-uninstrumented BY CAPTURE (the SUT is OTel-instrumented; this stochastic protocol exported no per-trial traces, disclosed); async-no-bound => calibration-genuine-INELIGIBLE (standing OTel stamp)."
+  },
+  "license": {
+    "case_code": "Apache-2.0",
+    "case_data": "CC-BY-4.0",
+    "upstream_sut": "Apache-2.0",
+    "sources": [
+      "open-telemetry/opentelemetry-demo src/checkout/main.go (Kafka publish swallow)",
+      "open-telemetry/opentelemetry-demo src/accounting/Consumer.cs (orders topic -> Postgres persist)"
+    ]
+  },
+  "adjudication": null
+}

@@ -1,0 +1,18 @@
+[18:01:26] canary resp=200 0.690046 4639a89f-816a-11f1-b33d-ee6cfaeafcca
+canary 4639a89f-816a-11f1-b33d-ee6cfaeafcca rows=1 PASS
+[18:25:49] flag OFF + restore verify
+kafkaQueueProblems before: 100 (target 0)
+edited kafkaQueueProblems -> defaultVariant=off
+kafkaQueueProblems flipped to 0; write->effect latency 0s
+restore verified: runtime flags == frozen reference flags (semantic equality)
+[18:26:12] canary resp=200 0.463302 bb8edb73-816d-11f1-b33d-ee6cfaeafcca
+canary bb8edb73-816d-11f1-b33d-ee6cfaeafcca rows=0 FAIL
+[18:28:39] recovery-restart checkout+accounting+fraud
+deployment.apps/checkout restarted
+deployment.apps/accounting restarted
+deployment.apps/fraud-detection restarted
+deployment "checkout" successfully rolled out
+deployment "accounting" successfully rolled out
+deployment "fraud-detection" successfully rolled out
+[18:29:00] canary resp=200 0.195417 1f910258-816e-11f1-a8be-f6385f4210b4
+canary 1f910258-816e-11f1-a8be-f6385f4210b4 rows=1 PASS

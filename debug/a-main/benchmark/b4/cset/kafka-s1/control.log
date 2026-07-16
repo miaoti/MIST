@@ -1,0 +1,23 @@
+[18:01:43] CONTROL leg: 10 trials flag-OFF
+kafkaQueueProblems value: 0
+trial=1 marker=ks1c1-1784242905 resp=200 0.186182 5170e569-816a-11f1-b33d-ee6cfaeafcca
+trial=2 marker=ks1c2-1784242910 resp=200 0.161824 548c59db-816a-11f1-b33d-ee6cfaeafcca
+trial=3 marker=ks1c3-1784242916 resp=200 0.113618 57a4c6a1-816a-11f1-b33d-ee6cfaeafcca
+trial=4 marker=ks1c4-1784242922 resp=200 0.107680 5b286ac1-816a-11f1-b33d-ee6cfaeafcca
+trial=5 marker=ks1c5-1784242927 resp=200 0.133711 5e39a5e2-816a-11f1-b33d-ee6cfaeafcca
+trial=6 marker=ks1c6-1784242934 resp=200 0.139785 625cb563-816a-11f1-b33d-ee6cfaeafcca
+trial=7 marker=ks1c7-1784242939 resp=200 0.115291 657307c8-816a-11f1-b33d-ee6cfaeafcca
+trial=8 marker=ks1c8-1784242944 resp=200 0.099245 6883d271-816a-11f1-b33d-ee6cfaeafcca
+trial=9 marker=ks1c9-1784242950 resp=200 0.148154 6c113307-816a-11f1-b33d-ee6cfaeafcca
+trial=10 marker=ks1c10-1784242955 resp=200 0.133630 6f2834be-816a-11f1-b33d-ee6cfaeafcca
+-- landed sweep --
+ctl ks1c1-1784242905 5170e569-816a-11f1-b33d-ee6cfaeafcca rows=1
+ctl ks1c2-1784242910 548c59db-816a-11f1-b33d-ee6cfaeafcca rows=1
+ctl ks1c3-1784242916 57a4c6a1-816a-11f1-b33d-ee6cfaeafcca rows=1
+ctl ks1c4-1784242922 5b286ac1-816a-11f1-b33d-ee6cfaeafcca rows=1
+ctl ks1c5-1784242927 5e39a5e2-816a-11f1-b33d-ee6cfaeafcca rows=1
+ctl ks1c6-1784242934 625cb563-816a-11f1-b33d-ee6cfaeafcca rows=1
+ctl ks1c7-1784242939 657307c8-816a-11f1-b33d-ee6cfaeafcca rows=1
+ctl ks1c8-1784242944 6883d271-816a-11f1-b33d-ee6cfaeafcca rows=1
+ctl ks1c9-1784242950 6c113307-816a-11f1-b33d-ee6cfaeafcca rows=1
+ctl ks1c10-1784242955 6f2834be-816a-11f1-b33d-ee6cfaeafcca rows=1

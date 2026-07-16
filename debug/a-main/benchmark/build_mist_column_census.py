@@ -47,6 +47,13 @@ ADJUDICATIONS = {
                    "verdict, and capturing it = a new capture out of wave scope "
                    "(positive-side widening CLOSED)"),
     },
+    "oteldemo-checkout-kafkaqueue-lost-001": {
+        "class": "barred-by-stop-rule",
+        "reason": ("a MIST leg requires another flag-on window, barred by the "
+                   "no-third-attempt stop rule this wave; bindable-in-principle "
+                   "via the 2.75-A OtelCheckoutHeadToHead site binding - a future "
+                   "window = USER decision (disclosed, not silent)"),
+    },
 }
 # A5(iii) RESOLVED 2026-07-16 (the Phase-C TeaStore window): the 4 former
 # bindable-pending-eval cases now carry MEASURED verdicts (disclosed cell change;
