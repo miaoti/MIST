@@ -1,0 +1,53 @@
+18:52:14 === MYC driver start: sockshop x 10 seeds (wave pin = main_track HEAD at leg start) ===
+18:52:19 PF 8080 dead - restarting (sock-shop/svc/front-end)
+18:52:29 seed 20260714 pre-probe: health=200 ramAvailGi=20
+18:52:29 seed 20260714 SS collection probe: bytes=1132 (readback_bound saturation watch)
+18:52:29 seed 20260714 START
+19:52:29 seed 20260714 KILLED at the 1h wall budget (by design)
+19:52:30 seed 20260714 evidence copied -> debug/a-main/benchmark/b4/ttomni/myc/sockshop/s20260714
+19:52:30 seed 20260715 pre-probe: health=200 ramAvailGi=20
+19:52:30 seed 20260715 SS collection probe: bytes=1132 (readback_bound saturation watch)
+19:52:30 seed 20260715 START
+20:52:30 seed 20260715 KILLED at the 1h wall budget (by design)
+20:52:31 seed 20260715 evidence copied -> debug/a-main/benchmark/b4/ttomni/myc/sockshop/s20260715
+20:52:31 seed 20260716 pre-probe: health=200 ramAvailGi=19
+20:52:31 seed 20260716 SS collection probe: bytes=1132 (readback_bound saturation watch)
+20:52:31 seed 20260716 START
+21:52:31 seed 20260716 KILLED at the 1h wall budget (by design)
+21:52:32 seed 20260716 evidence copied -> debug/a-main/benchmark/b4/ttomni/myc/sockshop/s20260716
+21:52:33 seed 20260717 pre-probe: health=200 ramAvailGi=19
+21:52:33 seed 20260717 SS collection probe: bytes=1132 (readback_bound saturation watch)
+21:52:33 seed 20260717 START
+22:52:33 seed 20260717 KILLED at the 1h wall budget (by design)
+22:52:33 seed 20260717 evidence copied -> debug/a-main/benchmark/b4/ttomni/myc/sockshop/s20260717
+22:52:34 seed 20260718 pre-probe: health=200 ramAvailGi=19
+22:52:34 seed 20260718 SS collection probe: bytes=1132 (readback_bound saturation watch)
+22:52:34 seed 20260718 START
+23:52:34 seed 20260718 KILLED at the 1h wall budget (by design)
+23:52:34 seed 20260718 evidence copied -> debug/a-main/benchmark/b4/ttomni/myc/sockshop/s20260718
+23:52:35 seed 20260719 pre-probe: health=200 ramAvailGi=19
+23:52:35 seed 20260719 SS collection probe: bytes=1132 (readback_bound saturation watch)
+23:52:35 seed 20260719 START
+00:52:35 seed 20260719 KILLED at the 1h wall budget (by design)
+00:52:35 seed 20260719 evidence copied -> debug/a-main/benchmark/b4/ttomni/myc/sockshop/s20260719
+00:52:36 seed 20260720 pre-probe: health=200 ramAvailGi=19
+00:52:36 seed 20260720 SS collection probe: bytes=1132 (readback_bound saturation watch)
+00:52:36 seed 20260720 START
+01:52:36 seed 20260720 KILLED at the 1h wall budget (by design)
+01:52:36 seed 20260720 evidence copied -> debug/a-main/benchmark/b4/ttomni/myc/sockshop/s20260720
+01:52:37 seed 20260721 pre-probe: health=200 ramAvailGi=19
+01:52:37 seed 20260721 SS collection probe: bytes=1132 (readback_bound saturation watch)
+01:52:37 seed 20260721 START
+02:52:37 seed 20260721 KILLED at the 1h wall budget (by design)
+02:52:37 seed 20260721 evidence copied -> debug/a-main/benchmark/b4/ttomni/myc/sockshop/s20260721
+02:52:38 seed 20260722 pre-probe: health=200 ramAvailGi=19
+02:52:38 seed 20260722 SS collection probe: bytes=1132 (readback_bound saturation watch)
+02:52:38 seed 20260722 START
+03:52:38 seed 20260722 KILLED at the 1h wall budget (by design)
+03:52:38 seed 20260722 evidence copied -> debug/a-main/benchmark/b4/ttomni/myc/sockshop/s20260722
+03:52:39 seed 20260723 pre-probe: health=200 ramAvailGi=19
+03:52:39 seed 20260723 SS collection probe: bytes=1132 (readback_bound saturation watch)
+03:52:39 seed 20260723 START
+04:52:39 seed 20260723 KILLED at the 1h wall budget (by design)
+04:52:39 seed 20260723 evidence copied -> debug/a-main/benchmark/b4/ttomni/myc/sockshop/s20260723
+04:52:39 === MYC driver DONE: sockshop ===

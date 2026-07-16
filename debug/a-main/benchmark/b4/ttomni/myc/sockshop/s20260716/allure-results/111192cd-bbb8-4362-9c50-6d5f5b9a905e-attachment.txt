@@ -1,0 +1,1 @@
+{"error":"json: cannot unmarshal bool into Go value of type string","status_code":500,"status_text":"Internal Server Error"}

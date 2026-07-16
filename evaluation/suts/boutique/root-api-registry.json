@@ -1,0 +1,160 @@
+{
+  "root_apis": {
+    "GET /product/6E92ZMYYFZ": {
+      "path": "/product/6E92ZMYYFZ",
+      "method": "GET",
+      "trees": [{
+        "children": [],
+        "source_trace": "boutique_adservice_outage"
+      }]
+    },
+    "GET /product/OLJCESPC7Z": {
+      "path": "/product/OLJCESPC7Z",
+      "method": "GET",
+      "trees": [{
+        "children": [],
+        "source_trace": "boutique_adservice_outage"
+      }]
+    },
+    "POST /hipstershop.ProductCatalogService/GetProduct": {
+      "path": "/hipstershop.ProductCatalogService/GetProduct",
+      "method": "POST",
+      "trees": [{
+        "children": [],
+        "source_trace": "boutique_adservice_outage"
+      }]
+    },
+    "POST /hipstershop.ProductCatalogService/ListProducts": {
+      "path": "/hipstershop.ProductCatalogService/ListProducts",
+      "method": "POST",
+      "trees": [{
+        "children": [],
+        "source_trace": "boutique_adservice_outage"
+      }]
+    },
+    "GET /": {
+      "path": "/",
+      "method": "GET",
+      "trees": [{
+        "children": [],
+        "source_trace": "boutique_home"
+      }]
+    },
+    "POST /hipstershop.CurrencyService/GetSupportedCurrencies": {
+      "path": "/hipstershop.CurrencyService/GetSupportedCurrencies",
+      "method": "POST",
+      "trees": [{
+        "children": [],
+        "source_trace": "boutique_adservice_outage"
+      }]
+    },
+    "GET /product/0PUK6V6EV0": {
+      "path": "/product/0PUK6V6EV0",
+      "method": "GET",
+      "trees": [{
+        "children": [],
+        "source_trace": "boutique_adservice_outage"
+      }]
+    },
+    "POST /hipstershop.RecommendationService/ListRecommendations": {
+      "path": "/hipstershop.RecommendationService/ListRecommendations",
+      "method": "POST",
+      "trees": [{
+        "children": [],
+        "source_trace": "boutique_adservice_outage"
+      }]
+    },
+    "POST /cart": {
+      "path": "/cart",
+      "method": "POST",
+      "trees": [{
+        "children": [{
+          "path": "/cart",
+          "method": "POST"
+        }],
+        "source_trace": "boutique_adservice_outage"
+      }]
+    },
+    "GET /cart": {
+      "path": "/cart",
+      "method": "GET",
+      "trees": [{
+        "children": [{
+          "path": "/cart",
+          "method": "GET"
+        }],
+        "source_trace": "boutique_adservice_outage"
+      }]
+    },
+    "GET /product/L9ECAV7KIM": {
+      "path": "/product/L9ECAV7KIM",
+      "method": "GET",
+      "trees": [{
+        "children": [],
+        "source_trace": "boutique_adservice_outage"
+      }]
+    },
+    "GET /product/9SIQT8TOJO": {
+      "path": "/product/9SIQT8TOJO",
+      "method": "GET",
+      "trees": [{
+        "children": [],
+        "source_trace": "boutique_adservice_outage"
+      }]
+    },
+    "POST /hipstershop.CartService/GetCart": {
+      "path": "/hipstershop.CartService/GetCart",
+      "method": "POST",
+      "trees": [{
+        "children": [],
+        "source_trace": "boutique_adservice_outage"
+      }]
+    },
+    "POST /cart/checkout": {
+      "path": "/cart/checkout",
+      "method": "POST",
+      "trees": [{
+        "children": [],
+        "source_trace": "boutique_home"
+      }]
+    },
+    "POST /hipstershop.AdService/GetAds": {
+      "path": "/hipstershop.AdService/GetAds",
+      "method": "POST",
+      "trees": [{
+        "children": [],
+        "source_trace": "boutique_adservice_outage"
+      }]
+    },
+    "POST /hipstershop.CurrencyService/Convert": {
+      "path": "/hipstershop.CurrencyService/Convert",
+      "method": "POST",
+      "trees": [{
+        "children": [],
+        "source_trace": "boutique_adservice_outage"
+      }]
+    },
+    "POST /setCurrency": {
+      "path": "/setCurrency",
+      "method": "POST",
+      "trees": [{
+        "children": [],
+        "source_trace": "boutique_home"
+      }]
+    },
+    "GET /product/LS4PSXUNUM": {
+      "path": "/product/LS4PSXUNUM",
+      "method": "GET",
+      "trees": [{
+        "children": [],
+        "source_trace": "boutique_adservice_outage"
+      }]
+    }
+  },
+  "registry_metadata": {
+    "total_root_apis": 18,
+    "last_updated": "Thu Jul 16 05:36:30 CDT 2026",
+    "total_trees": 18,
+    "version": "1.0"
+  }
+}

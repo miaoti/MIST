@@ -1,0 +1,1 @@
+{"number":"mist-57b4cd2744f0","country":"FALLBACK_country_11","city":"FALLBACK_city_18","street":"mist-f649927ae2e6","postcode":"1; DELETE FROM users WHERE 1=1"}

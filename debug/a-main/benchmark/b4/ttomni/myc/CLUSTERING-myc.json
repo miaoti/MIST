@@ -1,0 +1,2260 @@
+{
+ "schema": "myc-clustering/1",
+ "convention": "endpoint x fault-signature x SUT; 1 representative/cluster + 10% audit (seed 20260714)",
+ "suts": {
+  "teastore": {
+   "clusters": [
+    {
+     "class": "positive",
+     "signature": "positive-flow-failure",
+     "count": 10,
+     "representative": {
+      "seed": "s20260714",
+      "test": "test_positive_flow_S1_v1"
+     }
+    }
+   ],
+   "audit_sample": [
+    {
+     "seed": "s20260715",
+     "test": "test_positive_flow_S1_v1"
+    }
+   ],
+   "flagged_total": 10
+  },
+  "oteldemo": {
+   "clusters": [
+    {
+     "class": "negative",
+     "signature": "Root1_EMPTY_INPUT",
+     "count": 18,
+     "representative": {
+      "seed": "s20260714",
+      "test": "test_negative_flow_S101_v18_fault_Root1_EMPTY_INPUT"
+     }
+    },
+    {
+     "class": "negative",
+     "signature": "Root1_NULL_INPUT",
+     "count": 3,
+     "representative": {
+      "seed": "s20260714",
+      "test": "test_negative_flow_S101_v7_fault_Root1_NULL_INPUT"
+     }
+    },
+    {
+     "class": "negative",
+     "signature": "Root1_OVERFLOW",
+     "count": 48,
+     "representative": {
+      "seed": "s20260714",
+      "test": "test_negative_flow_S101_v12_fault_Root1_OVERFLOW"
+     }
+    },
+    {
+     "class": "negative",
+     "signature": "Root1_SEMANTIC_MISMATCH",
+     "count": 72,
+     "representative": {
+      "seed": "s20260714",
+      "test": "test_negative_flow_S101_v1_fault_Root1_SEMANTIC_MISMATCH"
+     }
+    },
+    {
+     "class": "negative",
+     "signature": "Root1_SPECIAL_CHARACTERS",
+     "count": 216,
+     "representative": {
+      "seed": "s20260714",
+      "test": "test_negative_flow_S101_v10_fault_Root1_SPECIAL_CHARACTERS"
+     }
+    },
+    {
+     "class": "negative",
+     "signature": "Root1_TYPE_MISMATCH",
+     "count": 84,
+     "representative": {
+      "seed": "s20260714",
+      "test": "test_negative_flow_S101_v16_fault_Root1_TYPE_MISMATCH"
+     }
+    },
+    {
+     "class": "positive",
+     "signature": "positive-flow-failure",
+     "count": 93,
+     "representative": {
+      "seed": "s20260714",
+      "test": "test_positive_flow_S179_v36"
+     }
+    }
+   ],
+   "audit_sample": [
+    {
+     "seed": "s20260714",
+     "test": "test_negative_flow_S101_v44_fault_Root1_SEMANTIC_MISMATCH"
+    },
+    {
+     "seed": "s20260716",
+     "test": "test_negative_flow_S1_v5_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260715",
+     "test": "test_negative_flow_S1_v47_fault_Root1_OVERFLOW"
+    },
+    {
+     "seed": "s20260714",
+     "test": "test_negative_flow_S1_v44_fault_Root1_TYPE_MISMATCH"
+    },
+    {
+     "seed": "s20260714",
+     "test": "test_negative_flow_S1_v36_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260715",
+     "test": "test_positive_flow_S1_v94"
+    },
+    {
+     "seed": "s20260716",
+     "test": "test_negative_flow_S101_v54_fault_Root1_OVERFLOW"
+    },
+    {
+     "seed": "s20260715",
+     "test": "test_negative_flow_S101_v41_fault_Root1_OVERFLOW"
+    },
+    {
+     "seed": "s20260714",
+     "test": "test_negative_flow_S1_v59_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260715",
+     "test": "test_negative_flow_S101_v71_fault_Root1_SEMANTIC_MISMATCH"
+    },
+    {
+     "seed": "s20260716",
+     "test": "test_negative_flow_S1_v68_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260714",
+     "test": "test_negative_flow_S1_v64_fault_Root1_SEMANTIC_MISMATCH"
+    },
+    {
+     "seed": "s20260714",
+     "test": "test_negative_flow_S101_v12_fault_Root1_OVERFLOW"
+    },
+    {
+     "seed": "s20260714",
+     "test": "test_negative_flow_S1_v11_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260716",
+     "test": "test_negative_flow_S101_v2_fault_Root1_OVERFLOW"
+    },
+    {
+     "seed": "s20260714",
+     "test": "test_negative_flow_S101_v39_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260714",
+     "test": "test_positive_flow_S1_v75"
+    },
+    {
+     "seed": "s20260714",
+     "test": "test_negative_flow_S1_v57_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260716",
+     "test": "test_negative_flow_S1_v21_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260714",
+     "test": "test_negative_flow_S101_v27_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260716",
+     "test": "test_positive_flow_S1_v79"
+    },
+    {
+     "seed": "s20260715",
+     "test": "test_negative_flow_S101_v2_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260716",
+     "test": "test_negative_flow_S101_v7_fault_Root1_TYPE_MISMATCH"
+    },
+    {
+     "seed": "s20260714",
+     "test": "test_negative_flow_S1_v26_fault_Root1_TYPE_MISMATCH"
+    },
+    {
+     "seed": "s20260716",
+     "test": "test_negative_flow_S101_v48_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260715",
+     "test": "test_negative_flow_S101_v44_fault_Root1_SEMANTIC_MISMATCH"
+    },
+    {
+     "seed": "s20260715",
+     "test": "test_negative_flow_S1_v22_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260716",
+     "test": "test_negative_flow_S101_v13_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260715",
+     "test": "test_negative_flow_S101_v74_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260716",
+     "test": "test_negative_flow_S1_v31_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260716",
+     "test": "test_negative_flow_S1_v61_fault_Root1_SEMANTIC_MISMATCH"
+    },
+    {
+     "seed": "s20260715",
+     "test": "test_positive_flow_S1_v71"
+    },
+    {
+     "seed": "s20260714",
+     "test": "test_negative_flow_S1_v29_fault_Root1_OVERFLOW"
+    },
+    {
+     "seed": "s20260715",
+     "test": "test_negative_flow_S1_v63_fault_Root1_TYPE_MISMATCH"
+    },
+    {
+     "seed": "s20260714",
+     "test": "test_negative_flow_S101_v2_fault_Root1_SEMANTIC_MISMATCH"
+    },
+    {
+     "seed": "s20260714",
+     "test": "test_negative_flow_S101_v52_fault_Root1_SEMANTIC_MISMATCH"
+    },
+    {
+     "seed": "s20260715",
+     "test": "test_negative_flow_S101_v18_fault_Root1_SEMANTIC_MISMATCH"
+    },
+    {
+     "seed": "s20260716",
+     "test": "test_negative_flow_S1_v59_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260716",
+     "test": "test_negative_flow_S101_v67_fault_Root1_SEMANTIC_MISMATCH"
+    },
+    {
+     "seed": "s20260714",
+     "test": "test_negative_flow_S1_v33_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260716",
+     "test": "test_negative_flow_S101_v27_fault_Root1_OVERFLOW"
+    },
+    {
+     "seed": "s20260716",
+     "test": "test_negative_flow_S101_v52_fault_Root1_EMPTY_INPUT"
+    },
+    {
+     "seed": "s20260714",
+     "test": "test_negative_flow_S1_v22_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260716",
+     "test": "test_positive_flow_S1_v90"
+    },
+    {
+     "seed": "s20260715",
+     "test": "test_negative_flow_S1_v40_fault_Root1_SEMANTIC_MISMATCH"
+    },
+    {
+     "seed": "s20260715",
+     "test": "test_negative_flow_S1_v32_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260716",
+     "test": "test_negative_flow_S1_v3_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260716",
+     "test": "test_negative_flow_S1_v58_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260714",
+     "test": "test_negative_flow_S101_v75_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260716",
+     "test": "test_negative_flow_S101_v71_fault_Root1_TYPE_MISMATCH"
+    },
+    {
+     "seed": "s20260714",
+     "test": "test_negative_flow_S101_v69_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260714",
+     "test": "test_positive_flow_S1_v85"
+    },
+    {
+     "seed": "s20260714",
+     "test": "test_negative_flow_S101_v71_fault_Root1_SEMANTIC_MISMATCH"
+    }
+   ],
+   "flagged_total": 534
+  },
+  "sockshop": {
+   "clusters": [
+    {
+     "class": "negative",
+     "signature": "Root1_EMPTY_INPUT",
+     "count": 538,
+     "representative": {
+      "seed": "s20260714",
+      "test": "test_negative_flow_S1_v101_fault_Root1_EMPTY_INPUT"
+     }
+    },
+    {
+     "class": "negative",
+     "signature": "Root1_NULL_INPUT",
+     "count": 73,
+     "representative": {
+      "seed": "s20260714",
+      "test": "test_negative_flow_S1_v11_fault_Root1_NULL_INPUT"
+     }
+    },
+    {
+     "class": "negative",
+     "signature": "Root1_OVERFLOW",
+     "count": 315,
+     "representative": {
+      "seed": "s20260714",
+      "test": "test_negative_flow_S1_v102_fault_Root1_OVERFLOW"
+     }
+    },
+    {
+     "class": "negative",
+     "signature": "Root1_SEMANTIC_MISMATCH",
+     "count": 473,
+     "representative": {
+      "seed": "s20260714",
+      "test": "test_negative_flow_S1_v104_fault_Root1_SEMANTIC_MISMATCH"
+     }
+    },
+    {
+     "class": "negative",
+     "signature": "Root1_SPECIAL_CHARACTERS",
+     "count": 1409,
+     "representative": {
+      "seed": "s20260714",
+      "test": "test_negative_flow_S1_v100_fault_Root1_SPECIAL_CHARACTERS"
+     }
+    },
+    {
+     "class": "negative",
+     "signature": "Root1_TYPE_MISMATCH",
+     "count": 552,
+     "representative": {
+      "seed": "s20260714",
+      "test": "test_negative_flow_S1_v103_fault_Root1_TYPE_MISMATCH"
+     }
+    },
+    {
+     "class": "positive",
+     "signature": "positive-flow-failure",
+     "count": 80,
+     "representative": {
+      "seed": "s20260714",
+      "test": "test_positive_flow_S1_v216"
+     }
+    }
+   ],
+   "audit_sample": [
+    {
+     "seed": "s20260720",
+     "test": "test_negative_flow_S1_v115_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260717",
+     "test": "test_negative_flow_S220_v37_fault_Root1_SEMANTIC_MISMATCH"
+    },
+    {
+     "seed": "s20260719",
+     "test": "test_negative_flow_S220_v63_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260719",
+     "test": "test_negative_flow_S1_v173_fault_Root1_TYPE_MISMATCH"
+    },
+    {
+     "seed": "s20260722",
+     "test": "test_negative_flow_S220_v66_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260719",
+     "test": "test_negative_flow_S1_v215_fault_Root1_SEMANTIC_MISMATCH"
+    },
+    {
+     "seed": "s20260717",
+     "test": "test_negative_flow_S1_v71_fault_Root1_EMPTY_INPUT"
+    },
+    {
+     "seed": "s20260717",
+     "test": "test_negative_flow_S1_v156_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260721",
+     "test": "test_negative_flow_S220_v66_fault_Root1_EMPTY_INPUT"
+    },
+    {
+     "seed": "s20260714",
+     "test": "test_negative_flow_S1_v141_fault_Root1_EMPTY_INPUT"
+    },
+    {
+     "seed": "s20260717",
+     "test": "test_negative_flow_S220_v64_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260723",
+     "test": "test_negative_flow_S1_v203_fault_Root1_SEMANTIC_MISMATCH"
+    },
+    {
+     "seed": "s20260719",
+     "test": "test_negative_flow_S220_v29_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260715",
+     "test": "test_negative_flow_S1_v101_fault_Root1_TYPE_MISMATCH"
+    },
+    {
+     "seed": "s20260720",
+     "test": "test_negative_flow_S1_v54_fault_Root1_OVERFLOW"
+    },
+    {
+     "seed": "s20260718",
+     "test": "test_negative_flow_S220_v11_fault_Root1_OVERFLOW"
+    },
+    {
+     "seed": "s20260714",
+     "test": "test_positive_flow_S1_v217"
+    },
+    {
+     "seed": "s20260716",
+     "test": "test_negative_flow_S1_v170_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260715",
+     "test": "test_negative_flow_S220_v4_fault_Root1_EMPTY_INPUT"
+    },
+    {
+     "seed": "s20260718",
+     "test": "test_negative_flow_S1_v107_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260715",
+     "test": "test_negative_flow_S1_v10_fault_Root1_EMPTY_INPUT"
+    },
+    {
+     "seed": "s20260714",
+     "test": "test_negative_flow_S220_v17_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260714",
+     "test": "test_negative_flow_S220_v39_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260718",
+     "test": "test_negative_flow_S1_v163_fault_Root1_OVERFLOW"
+    },
+    {
+     "seed": "s20260721",
+     "test": "test_negative_flow_S220_v24_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260716",
+     "test": "test_negative_flow_S1_v212_fault_Root1_TYPE_MISMATCH"
+    },
+    {
+     "seed": "s20260722",
+     "test": "test_negative_flow_S220_v42_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260715",
+     "test": "test_negative_flow_S1_v33_fault_Root1_SEMANTIC_MISMATCH"
+    },
+    {
+     "seed": "s20260714",
+     "test": "test_negative_flow_S1_v118_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260718",
+     "test": "test_negative_flow_S1_v188_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260718",
+     "test": "test_negative_flow_S1_v156_fault_Root1_TYPE_MISMATCH"
+    },
+    {
+     "seed": "s20260723",
+     "test": "test_negative_flow_S220_v70_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260721",
+     "test": "test_negative_flow_S1_v206_fault_Root1_SEMANTIC_MISMATCH"
+    },
+    {
+     "seed": "s20260722",
+     "test": "test_negative_flow_S1_v177_fault_Root1_OVERFLOW"
+    },
+    {
+     "seed": "s20260722",
+     "test": "test_negative_flow_S1_v212_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260723",
+     "test": "test_negative_flow_S1_v136_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260715",
+     "test": "test_negative_flow_S220_v75_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260718",
+     "test": "test_negative_flow_S1_v152_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260722",
+     "test": "test_negative_flow_S220_v87_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260715",
+     "test": "test_negative_flow_S1_v70_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260715",
+     "test": "test_negative_flow_S220_v99_fault_Root1_TYPE_MISMATCH"
+    },
+    {
+     "seed": "s20260715",
+     "test": "test_negative_flow_S1_v25_fault_Root1_SEMANTIC_MISMATCH"
+    },
+    {
+     "seed": "s20260717",
+     "test": "test_negative_flow_S220_v120_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260721",
+     "test": "test_negative_flow_S220_v28_fault_Root1_EMPTY_INPUT"
+    },
+    {
+     "seed": "s20260714",
+     "test": "test_negative_flow_S1_v196_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260723",
+     "test": "test_negative_flow_S220_v118_fault_Root1_EMPTY_INPUT"
+    },
+    {
+     "seed": "s20260714",
+     "test": "test_negative_flow_S1_v155_fault_Root1_TYPE_MISMATCH"
+    },
+    {
+     "seed": "s20260723",
+     "test": "test_negative_flow_S220_v119_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260717",
+     "test": "test_negative_flow_S1_v23_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260718",
+     "test": "test_negative_flow_S1_v106_fault_Root1_EMPTY_INPUT"
+    },
+    {
+     "seed": "s20260720",
+     "test": "test_negative_flow_S1_v184_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260718",
+     "test": "test_negative_flow_S220_v13_fault_Root1_TYPE_MISMATCH"
+    },
+    {
+     "seed": "s20260715",
+     "test": "test_negative_flow_S220_v15_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260719",
+     "test": "test_negative_flow_S1_v103_fault_Root1_EMPTY_INPUT"
+    },
+    {
+     "seed": "s20260714",
+     "test": "test_negative_flow_S220_v98_fault_Root1_SEMANTIC_MISMATCH"
+    },
+    {
+     "seed": "s20260715",
+     "test": "test_negative_flow_S220_v116_fault_Root1_SEMANTIC_MISMATCH"
+    },
+    {
+     "seed": "s20260723",
+     "test": "test_negative_flow_S1_v215_fault_Root1_EMPTY_INPUT"
+    },
+    {
+     "seed": "s20260715",
+     "test": "test_negative_flow_S1_v85_fault_Root1_SEMANTIC_MISMATCH"
+    },
+    {
+     "seed": "s20260719",
+     "test": "test_negative_flow_S1_v63_fault_Root1_SEMANTIC_MISMATCH"
+    },
+    {
+     "seed": "s20260716",
+     "test": "test_negative_flow_S1_v148_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260721",
+     "test": "test_negative_flow_S1_v132_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260719",
+     "test": "test_negative_flow_S1_v164_fault_Root1_EMPTY_INPUT"
+    },
+    {
+     "seed": "s20260718",
+     "test": "test_negative_flow_S220_v52_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260721",
+     "test": "test_negative_flow_S220_v68_fault_Root1_OVERFLOW"
+    },
+    {
+     "seed": "s20260721",
+     "test": "test_negative_flow_S1_v42_fault_Root1_TYPE_MISMATCH"
+    },
+    {
+     "seed": "s20260723",
+     "test": "test_negative_flow_S1_v38_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260718",
+     "test": "test_negative_flow_S1_v102_fault_Root1_TYPE_MISMATCH"
+    },
+    {
+     "seed": "s20260718",
+     "test": "test_negative_flow_S1_v146_fault_Root1_SEMANTIC_MISMATCH"
+    },
+    {
+     "seed": "s20260723",
+     "test": "test_negative_flow_S220_v65_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260719",
+     "test": "test_negative_flow_S1_v75_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260714",
+     "test": "test_negative_flow_S1_v152_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260720",
+     "test": "test_negative_flow_S220_v93_fault_Root1_SEMANTIC_MISMATCH"
+    },
+    {
+     "seed": "s20260719",
+     "test": "test_negative_flow_S1_v109_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260714",
+     "test": "test_negative_flow_S1_v39_fault_Root1_EMPTY_INPUT"
+    },
+    {
+     "seed": "s20260718",
+     "test": "test_negative_flow_S1_v66_fault_Root1_SEMANTIC_MISMATCH"
+    },
+    {
+     "seed": "s20260721",
+     "test": "test_negative_flow_S1_v203_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260716",
+     "test": "test_negative_flow_S1_v147_fault_Root1_SEMANTIC_MISMATCH"
+    },
+    {
+     "seed": "s20260719",
+     "test": "test_negative_flow_S220_v13_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260715",
+     "test": "test_negative_flow_S1_v53_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260715",
+     "test": "test_positive_flow_S1_v217"
+    },
+    {
+     "seed": "s20260717",
+     "test": "test_negative_flow_S1_v207_fault_Root1_TYPE_MISMATCH"
+    },
+    {
+     "seed": "s20260721",
+     "test": "test_negative_flow_S1_v59_fault_Root1_EMPTY_INPUT"
+    },
+    {
+     "seed": "s20260714",
+     "test": "test_negative_flow_S220_v76_fault_Root1_OVERFLOW"
+    },
+    {
+     "seed": "s20260723",
+     "test": "test_negative_flow_S1_v92_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260717",
+     "test": "test_negative_flow_S220_v69_fault_Root1_TYPE_MISMATCH"
+    },
+    {
+     "seed": "s20260723",
+     "test": "test_positive_flow_S1_v218"
+    },
+    {
+     "seed": "s20260718",
+     "test": "test_negative_flow_S1_v38_fault_Root1_TYPE_MISMATCH"
+    },
+    {
+     "seed": "s20260723",
+     "test": "test_negative_flow_S220_v103_fault_Root1_TYPE_MISMATCH"
+    },
+    {
+     "seed": "s20260723",
+     "test": "test_negative_flow_S220_v91_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260718",
+     "test": "test_negative_flow_S1_v57_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260714",
+     "test": "test_negative_flow_S1_v147_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260718",
+     "test": "test_negative_flow_S1_v121_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260714",
+     "test": "test_negative_flow_S1_v100_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260722",
+     "test": "test_negative_flow_S1_v128_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260716",
+     "test": "test_negative_flow_S1_v43_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260717",
+     "test": "test_negative_flow_S220_v77_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260722",
+     "test": "test_negative_flow_S1_v20_fault_Root1_TYPE_MISMATCH"
+    },
+    {
+     "seed": "s20260722",
+     "test": "test_negative_flow_S220_v44_fault_Root1_EMPTY_INPUT"
+    },
+    {
+     "seed": "s20260715",
+     "test": "test_negative_flow_S1_v149_fault_Root1_TYPE_MISMATCH"
+    },
+    {
+     "seed": "s20260720",
+     "test": "test_negative_flow_S1_v111_fault_Root1_EMPTY_INPUT"
+    },
+    {
+     "seed": "s20260715",
+     "test": "test_negative_flow_S1_v195_fault_Root1_SEMANTIC_MISMATCH"
+    },
+    {
+     "seed": "s20260720",
+     "test": "test_negative_flow_S1_v191_fault_Root1_TYPE_MISMATCH"
+    },
+    {
+     "seed": "s20260721",
+     "test": "test_negative_flow_S1_v197_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260719",
+     "test": "test_negative_flow_S1_v15_fault_Root1_TYPE_MISMATCH"
+    },
+    {
+     "seed": "s20260714",
+     "test": "test_negative_flow_S220_v49_fault_Root1_EMPTY_INPUT"
+    },
+    {
+     "seed": "s20260719",
+     "test": "test_negative_flow_S1_v130_fault_Root1_SEMANTIC_MISMATCH"
+    },
+    {
+     "seed": "s20260714",
+     "test": "test_negative_flow_S1_v82_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260723",
+     "test": "test_negative_flow_S1_v10_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260714",
+     "test": "test_negative_flow_S220_v78_fault_Root1_TYPE_MISMATCH"
+    },
+    {
+     "seed": "s20260722",
+     "test": "test_negative_flow_S1_v202_fault_Root1_NULL_INPUT"
+    },
+    {
+     "seed": "s20260720",
+     "test": "test_negative_flow_S1_v142_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260717",
+     "test": "test_negative_flow_S1_v97_fault_Root1_OVERFLOW"
+    },
+    {
+     "seed": "s20260721",
+     "test": "test_negative_flow_S1_v146_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260714",
+     "test": "test_negative_flow_S1_v17_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260717",
+     "test": "test_negative_flow_S1_v25_fault_Root1_TYPE_MISMATCH"
+    },
+    {
+     "seed": "s20260714",
+     "test": "test_negative_flow_S1_v126_fault_Root1_TYPE_MISMATCH"
+    },
+    {
+     "seed": "s20260718",
+     "test": "test_negative_flow_S220_v120_fault_Root1_OVERFLOW"
+    },
+    {
+     "seed": "s20260717",
+     "test": "test_negative_flow_S220_v93_fault_Root1_SEMANTIC_MISMATCH"
+    },
+    {
+     "seed": "s20260716",
+     "test": "test_negative_flow_S220_v111_fault_Root1_EMPTY_INPUT"
+    },
+    {
+     "seed": "s20260719",
+     "test": "test_negative_flow_S1_v205_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260720",
+     "test": "test_negative_flow_S220_v27_fault_Root1_TYPE_MISMATCH"
+    },
+    {
+     "seed": "s20260716",
+     "test": "test_negative_flow_S1_v151_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260714",
+     "test": "test_negative_flow_S220_v83_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260714",
+     "test": "test_negative_flow_S220_v8_fault_Root1_TYPE_MISMATCH"
+    },
+    {
+     "seed": "s20260714",
+     "test": "test_negative_flow_S220_v3_fault_Root1_OVERFLOW"
+    },
+    {
+     "seed": "s20260721",
+     "test": "test_negative_flow_S220_v17_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260714",
+     "test": "test_negative_flow_S220_v85_fault_Root1_OVERFLOW"
+    },
+    {
+     "seed": "s20260722",
+     "test": "test_negative_flow_S1_v154_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260722",
+     "test": "test_negative_flow_S1_v129_fault_Root1_TYPE_MISMATCH"
+    },
+    {
+     "seed": "s20260722",
+     "test": "test_negative_flow_S220_v25_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260718",
+     "test": "test_positive_flow_S1_v217"
+    },
+    {
+     "seed": "s20260722",
+     "test": "test_negative_flow_S220_v117_fault_Root1_TYPE_MISMATCH"
+    },
+    {
+     "seed": "s20260716",
+     "test": "test_negative_flow_S1_v79_fault_Root1_SEMANTIC_MISMATCH"
+    },
+    {
+     "seed": "s20260720",
+     "test": "test_negative_flow_S1_v16_fault_Root1_SEMANTIC_MISMATCH"
+    },
+    {
+     "seed": "s20260714",
+     "test": "test_negative_flow_S1_v35_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260718",
+     "test": "test_negative_flow_S1_v24_fault_Root1_OVERFLOW"
+    },
+    {
+     "seed": "s20260721",
+     "test": "test_negative_flow_S220_v16_fault_Root1_OVERFLOW"
+    },
+    {
+     "seed": "s20260716",
+     "test": "test_negative_flow_S1_v75_fault_Root1_EMPTY_INPUT"
+    },
+    {
+     "seed": "s20260723",
+     "test": "test_negative_flow_S220_v22_fault_Root1_NULL_INPUT"
+    },
+    {
+     "seed": "s20260714",
+     "test": "test_negative_flow_S1_v22_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260714",
+     "test": "test_negative_flow_S220_v99_fault_Root1_TYPE_MISMATCH"
+    },
+    {
+     "seed": "s20260716",
+     "test": "test_negative_flow_S1_v210_fault_Root1_TYPE_MISMATCH"
+    },
+    {
+     "seed": "s20260717",
+     "test": "test_negative_flow_S1_v7_fault_Root1_OVERFLOW"
+    },
+    {
+     "seed": "s20260714",
+     "test": "test_negative_flow_S1_v28_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260716",
+     "test": "test_negative_flow_S1_v197_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260723",
+     "test": "test_negative_flow_S1_v9_fault_Root1_EMPTY_INPUT"
+    },
+    {
+     "seed": "s20260716",
+     "test": "test_negative_flow_S1_v199_fault_Root1_OVERFLOW"
+    },
+    {
+     "seed": "s20260719",
+     "test": "test_negative_flow_S220_v62_fault_Root1_EMPTY_INPUT"
+    },
+    {
+     "seed": "s20260722",
+     "test": "test_negative_flow_S1_v183_fault_Root1_EMPTY_INPUT"
+    },
+    {
+     "seed": "s20260718",
+     "test": "test_negative_flow_S220_v88_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260717",
+     "test": "test_negative_flow_S1_v69_fault_Root1_TYPE_MISMATCH"
+    },
+    {
+     "seed": "s20260718",
+     "test": "test_negative_flow_S1_v4_fault_Root1_SEMANTIC_MISMATCH"
+    },
+    {
+     "seed": "s20260720",
+     "test": "test_negative_flow_S1_v132_fault_Root1_EMPTY_INPUT"
+    },
+    {
+     "seed": "s20260720",
+     "test": "test_negative_flow_S1_v109_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260721",
+     "test": "test_negative_flow_S220_v127_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260720",
+     "test": "test_negative_flow_S220_v91_fault_Root1_EMPTY_INPUT"
+    },
+    {
+     "seed": "s20260721",
+     "test": "test_negative_flow_S1_v124_fault_Root1_SEMANTIC_MISMATCH"
+    },
+    {
+     "seed": "s20260717",
+     "test": "test_negative_flow_S1_v163_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260714",
+     "test": "test_negative_flow_S220_v52_fault_Root1_EMPTY_INPUT"
+    },
+    {
+     "seed": "s20260719",
+     "test": "test_negative_flow_S220_v26_fault_Root1_EMPTY_INPUT"
+    },
+    {
+     "seed": "s20260722",
+     "test": "test_negative_flow_S1_v45_fault_Root1_TYPE_MISMATCH"
+    },
+    {
+     "seed": "s20260716",
+     "test": "test_negative_flow_S1_v40_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260721",
+     "test": "test_negative_flow_S1_v112_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260723",
+     "test": "test_negative_flow_S1_v98_fault_Root1_OVERFLOW"
+    },
+    {
+     "seed": "s20260721",
+     "test": "test_positive_flow_S220_v131"
+    },
+    {
+     "seed": "s20260718",
+     "test": "test_negative_flow_S1_v157_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260720",
+     "test": "test_negative_flow_S220_v75_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260722",
+     "test": "test_negative_flow_S220_v128_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260715",
+     "test": "test_negative_flow_S1_v160_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260718",
+     "test": "test_negative_flow_S220_v90_fault_Root1_OVERFLOW"
+    },
+    {
+     "seed": "s20260714",
+     "test": "test_negative_flow_S1_v162_fault_Root1_EMPTY_INPUT"
+    },
+    {
+     "seed": "s20260717",
+     "test": "test_negative_flow_S220_v6_fault_Root1_EMPTY_INPUT"
+    },
+    {
+     "seed": "s20260715",
+     "test": "test_negative_flow_S220_v92_fault_Root1_SEMANTIC_MISMATCH"
+    },
+    {
+     "seed": "s20260722",
+     "test": "test_negative_flow_S1_v90_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260714",
+     "test": "test_negative_flow_S1_v139_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260721",
+     "test": "test_negative_flow_S220_v22_fault_Root1_TYPE_MISMATCH"
+    },
+    {
+     "seed": "s20260721",
+     "test": "test_negative_flow_S220_v119_fault_Root1_OVERFLOW"
+    },
+    {
+     "seed": "s20260723",
+     "test": "test_negative_flow_S1_v8_fault_Root1_SEMANTIC_MISMATCH"
+    },
+    {
+     "seed": "s20260717",
+     "test": "test_negative_flow_S1_v27_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260722",
+     "test": "test_negative_flow_S1_v57_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260721",
+     "test": "test_negative_flow_S1_v184_fault_Root1_OVERFLOW"
+    },
+    {
+     "seed": "s20260719",
+     "test": "test_negative_flow_S1_v156_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260721",
+     "test": "test_negative_flow_S1_v89_fault_Root1_SEMANTIC_MISMATCH"
+    },
+    {
+     "seed": "s20260719",
+     "test": "test_negative_flow_S220_v16_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260716",
+     "test": "test_negative_flow_S1_v179_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260717",
+     "test": "test_negative_flow_S1_v121_fault_Root1_SEMANTIC_MISMATCH"
+    },
+    {
+     "seed": "s20260716",
+     "test": "test_negative_flow_S1_v91_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260722",
+     "test": "test_negative_flow_S220_v90_fault_Root1_EMPTY_INPUT"
+    },
+    {
+     "seed": "s20260719",
+     "test": "test_negative_flow_S1_v56_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260716",
+     "test": "test_negative_flow_S220_v126_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260719",
+     "test": "test_negative_flow_S1_v10_fault_Root1_EMPTY_INPUT"
+    },
+    {
+     "seed": "s20260716",
+     "test": "test_positive_flow_S1_v218"
+    },
+    {
+     "seed": "s20260718",
+     "test": "test_negative_flow_S220_v59_fault_Root1_SEMANTIC_MISMATCH"
+    },
+    {
+     "seed": "s20260715",
+     "test": "test_negative_flow_S220_v113_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260715",
+     "test": "test_negative_flow_S1_v12_fault_Root1_OVERFLOW"
+    },
+    {
+     "seed": "s20260714",
+     "test": "test_negative_flow_S1_v198_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260722",
+     "test": "test_negative_flow_S1_v32_fault_Root1_TYPE_MISMATCH"
+    },
+    {
+     "seed": "s20260721",
+     "test": "test_negative_flow_S1_v71_fault_Root1_EMPTY_INPUT"
+    },
+    {
+     "seed": "s20260722",
+     "test": "test_negative_flow_S1_v208_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260722",
+     "test": "test_negative_flow_S220_v65_fault_Root1_EMPTY_INPUT"
+    },
+    {
+     "seed": "s20260722",
+     "test": "test_negative_flow_S220_v125_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260722",
+     "test": "test_negative_flow_S1_v65_fault_Root1_SEMANTIC_MISMATCH"
+    },
+    {
+     "seed": "s20260721",
+     "test": "test_negative_flow_S220_v122_fault_Root1_SEMANTIC_MISMATCH"
+    },
+    {
+     "seed": "s20260722",
+     "test": "test_negative_flow_S1_v115_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260719",
+     "test": "test_negative_flow_S220_v88_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260722",
+     "test": "test_negative_flow_S220_v13_fault_Root1_SEMANTIC_MISMATCH"
+    },
+    {
+     "seed": "s20260718",
+     "test": "test_negative_flow_S220_v55_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260720",
+     "test": "test_negative_flow_S220_v18_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260714",
+     "test": "test_negative_flow_S220_v90_fault_Root1_TYPE_MISMATCH"
+    },
+    {
+     "seed": "s20260722",
+     "test": "test_negative_flow_S1_v6_fault_Root1_TYPE_MISMATCH"
+    },
+    {
+     "seed": "s20260717",
+     "test": "test_negative_flow_S1_v13_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260720",
+     "test": "test_negative_flow_S220_v31_fault_Root1_OVERFLOW"
+    },
+    {
+     "seed": "s20260718",
+     "test": "test_negative_flow_S220_v91_fault_Root1_TYPE_MISMATCH"
+    },
+    {
+     "seed": "s20260714",
+     "test": "test_negative_flow_S1_v137_fault_Root1_SEMANTIC_MISMATCH"
+    },
+    {
+     "seed": "s20260717",
+     "test": "test_negative_flow_S1_v194_fault_Root1_EMPTY_INPUT"
+    },
+    {
+     "seed": "s20260716",
+     "test": "test_negative_flow_S1_v49_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260720",
+     "test": "test_negative_flow_S220_v29_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260716",
+     "test": "test_negative_flow_S1_v186_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260722",
+     "test": "test_negative_flow_S220_v39_fault_Root1_SEMANTIC_MISMATCH"
+    },
+    {
+     "seed": "s20260716",
+     "test": "test_negative_flow_S220_v41_fault_Root1_OVERFLOW"
+    },
+    {
+     "seed": "s20260716",
+     "test": "test_negative_flow_S220_v50_fault_Root1_SEMANTIC_MISMATCH"
+    },
+    {
+     "seed": "s20260720",
+     "test": "test_negative_flow_S1_v139_fault_Root1_SEMANTIC_MISMATCH"
+    },
+    {
+     "seed": "s20260722",
+     "test": "test_negative_flow_S220_v70_fault_Root1_SEMANTIC_MISMATCH"
+    },
+    {
+     "seed": "s20260715",
+     "test": "test_negative_flow_S220_v114_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260718",
+     "test": "test_negative_flow_S1_v39_fault_Root1_TYPE_MISMATCH"
+    },
+    {
+     "seed": "s20260716",
+     "test": "test_negative_flow_S1_v139_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260723",
+     "test": "test_negative_flow_S1_v131_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260715",
+     "test": "test_negative_flow_S220_v10_fault_Root1_EMPTY_INPUT"
+    },
+    {
+     "seed": "s20260720",
+     "test": "test_negative_flow_S1_v146_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260718",
+     "test": "test_negative_flow_S220_v42_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260716",
+     "test": "test_negative_flow_S1_v104_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260723",
+     "test": "test_negative_flow_S1_v188_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260714",
+     "test": "test_negative_flow_S1_v54_fault_Root1_SEMANTIC_MISMATCH"
+    },
+    {
+     "seed": "s20260716",
+     "test": "test_negative_flow_S220_v69_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260723",
+     "test": "test_negative_flow_S1_v162_fault_Root1_TYPE_MISMATCH"
+    },
+    {
+     "seed": "s20260723",
+     "test": "test_negative_flow_S1_v193_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260719",
+     "test": "test_negative_flow_S220_v101_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260722",
+     "test": "test_negative_flow_S1_v55_fault_Root1_EMPTY_INPUT"
+    },
+    {
+     "seed": "s20260716",
+     "test": "test_positive_flow_S1_v216"
+    },
+    {
+     "seed": "s20260716",
+     "test": "test_negative_flow_S1_v125_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260714",
+     "test": "test_negative_flow_S1_v161_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260719",
+     "test": "test_negative_flow_S1_v61_fault_Root1_SEMANTIC_MISMATCH"
+    },
+    {
+     "seed": "s20260718",
+     "test": "test_positive_flow_S1_v216"
+    },
+    {
+     "seed": "s20260717",
+     "test": "test_negative_flow_S220_v36_fault_Root1_TYPE_MISMATCH"
+    },
+    {
+     "seed": "s20260715",
+     "test": "test_negative_flow_S220_v83_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260722",
+     "test": "test_negative_flow_S1_v46_fault_Root1_OVERFLOW"
+    },
+    {
+     "seed": "s20260721",
+     "test": "test_negative_flow_S1_v35_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260718",
+     "test": "test_negative_flow_S1_v168_fault_Root1_EMPTY_INPUT"
+    },
+    {
+     "seed": "s20260721",
+     "test": "test_negative_flow_S220_v65_fault_Root1_EMPTY_INPUT"
+    },
+    {
+     "seed": "s20260719",
+     "test": "test_negative_flow_S220_v77_fault_Root1_OVERFLOW"
+    },
+    {
+     "seed": "s20260722",
+     "test": "test_positive_flow_S220_v132"
+    },
+    {
+     "seed": "s20260723",
+     "test": "test_negative_flow_S220_v33_fault_Root1_TYPE_MISMATCH"
+    },
+    {
+     "seed": "s20260715",
+     "test": "test_negative_flow_S1_v200_fault_Root1_TYPE_MISMATCH"
+    },
+    {
+     "seed": "s20260720",
+     "test": "test_negative_flow_S1_v150_fault_Root1_OVERFLOW"
+    },
+    {
+     "seed": "s20260721",
+     "test": "test_negative_flow_S1_v12_fault_Root1_SEMANTIC_MISMATCH"
+    },
+    {
+     "seed": "s20260723",
+     "test": "test_negative_flow_S220_v124_fault_Root1_SEMANTIC_MISMATCH"
+    },
+    {
+     "seed": "s20260715",
+     "test": "test_negative_flow_S220_v47_fault_Root1_SEMANTIC_MISMATCH"
+    },
+    {
+     "seed": "s20260720",
+     "test": "test_negative_flow_S1_v84_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260714",
+     "test": "test_negative_flow_S1_v171_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260719",
+     "test": "test_negative_flow_S1_v147_fault_Root1_SEMANTIC_MISMATCH"
+    },
+    {
+     "seed": "s20260719",
+     "test": "test_negative_flow_S220_v72_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260720",
+     "test": "test_negative_flow_S1_v101_fault_Root1_SEMANTIC_MISMATCH"
+    },
+    {
+     "seed": "s20260714",
+     "test": "test_negative_flow_S220_v30_fault_Root1_SEMANTIC_MISMATCH"
+    },
+    {
+     "seed": "s20260715",
+     "test": "test_negative_flow_S220_v127_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260717",
+     "test": "test_negative_flow_S1_v109_fault_Root1_SEMANTIC_MISMATCH"
+    },
+    {
+     "seed": "s20260717",
+     "test": "test_negative_flow_S220_v33_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260714",
+     "test": "test_negative_flow_S1_v200_fault_Root1_TYPE_MISMATCH"
+    },
+    {
+     "seed": "s20260720",
+     "test": "test_negative_flow_S1_v3_fault_Root1_TYPE_MISMATCH"
+    },
+    {
+     "seed": "s20260716",
+     "test": "test_negative_flow_S1_v124_fault_Root1_OVERFLOW"
+    },
+    {
+     "seed": "s20260715",
+     "test": "test_negative_flow_S1_v119_fault_Root1_SEMANTIC_MISMATCH"
+    },
+    {
+     "seed": "s20260716",
+     "test": "test_negative_flow_S1_v190_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260722",
+     "test": "test_negative_flow_S1_v44_fault_Root1_EMPTY_INPUT"
+    },
+    {
+     "seed": "s20260723",
+     "test": "test_negative_flow_S1_v91_fault_Root1_SEMANTIC_MISMATCH"
+    },
+    {
+     "seed": "s20260715",
+     "test": "test_negative_flow_S1_v22_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260716",
+     "test": "test_negative_flow_S220_v104_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260714",
+     "test": "test_negative_flow_S220_v86_fault_Root1_NULL_INPUT"
+    },
+    {
+     "seed": "s20260722",
+     "test": "test_negative_flow_S220_v82_fault_Root1_SEMANTIC_MISMATCH"
+    },
+    {
+     "seed": "s20260722",
+     "test": "test_negative_flow_S1_v67_fault_Root1_EMPTY_INPUT"
+    },
+    {
+     "seed": "s20260719",
+     "test": "test_negative_flow_S1_v131_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260719",
+     "test": "test_negative_flow_S220_v78_fault_Root1_OVERFLOW"
+    },
+    {
+     "seed": "s20260717",
+     "test": "test_negative_flow_S220_v25_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260719",
+     "test": "test_negative_flow_S1_v66_fault_Root1_TYPE_MISMATCH"
+    },
+    {
+     "seed": "s20260721",
+     "test": "test_negative_flow_S1_v201_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260716",
+     "test": "test_negative_flow_S1_v41_fault_Root1_OVERFLOW"
+    },
+    {
+     "seed": "s20260723",
+     "test": "test_negative_flow_S220_v10_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260718",
+     "test": "test_negative_flow_S220_v127_fault_Root1_SEMANTIC_MISMATCH"
+    },
+    {
+     "seed": "s20260719",
+     "test": "test_negative_flow_S220_v33_fault_Root1_TYPE_MISMATCH"
+    },
+    {
+     "seed": "s20260722",
+     "test": "test_negative_flow_S220_v17_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260716",
+     "test": "test_negative_flow_S1_v135_fault_Root1_EMPTY_INPUT"
+    },
+    {
+     "seed": "s20260723",
+     "test": "test_negative_flow_S1_v195_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260717",
+     "test": "test_positive_flow_S220_v133"
+    },
+    {
+     "seed": "s20260719",
+     "test": "test_negative_flow_S220_v122_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260718",
+     "test": "test_negative_flow_S1_v155_fault_Root1_OVERFLOW"
+    },
+    {
+     "seed": "s20260715",
+     "test": "test_negative_flow_S220_v48_fault_Root1_EMPTY_INPUT"
+    },
+    {
+     "seed": "s20260722",
+     "test": "test_negative_flow_S1_v43_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260719",
+     "test": "test_negative_flow_S220_v18_fault_Root1_TYPE_MISMATCH"
+    },
+    {
+     "seed": "s20260714",
+     "test": "test_negative_flow_S1_v32_fault_Root1_TYPE_MISMATCH"
+    },
+    {
+     "seed": "s20260716",
+     "test": "test_negative_flow_S220_v40_fault_Root1_EMPTY_INPUT"
+    },
+    {
+     "seed": "s20260719",
+     "test": "test_negative_flow_S1_v195_fault_Root1_SEMANTIC_MISMATCH"
+    },
+    {
+     "seed": "s20260717",
+     "test": "test_negative_flow_S220_v21_fault_Root1_SEMANTIC_MISMATCH"
+    },
+    {
+     "seed": "s20260722",
+     "test": "test_negative_flow_S220_v60_fault_Root1_TYPE_MISMATCH"
+    },
+    {
+     "seed": "s20260718",
+     "test": "test_negative_flow_S220_v39_fault_Root1_SEMANTIC_MISMATCH"
+    },
+    {
+     "seed": "s20260715",
+     "test": "test_negative_flow_S220_v23_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260723",
+     "test": "test_negative_flow_S220_v21_fault_Root1_OVERFLOW"
+    },
+    {
+     "seed": "s20260718",
+     "test": "test_negative_flow_S220_v77_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260717",
+     "test": "test_negative_flow_S1_v99_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260716",
+     "test": "test_negative_flow_S220_v2_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260718",
+     "test": "test_negative_flow_S1_v51_fault_Root1_EMPTY_INPUT"
+    },
+    {
+     "seed": "s20260717",
+     "test": "test_negative_flow_S1_v32_fault_Root1_TYPE_MISMATCH"
+    },
+    {
+     "seed": "s20260718",
+     "test": "test_negative_flow_S1_v126_fault_Root1_SEMANTIC_MISMATCH"
+    },
+    {
+     "seed": "s20260720",
+     "test": "test_negative_flow_S220_v36_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260722",
+     "test": "test_negative_flow_S1_v94_fault_Root1_SEMANTIC_MISMATCH"
+    },
+    {
+     "seed": "s20260721",
+     "test": "test_negative_flow_S1_v136_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260719",
+     "test": "test_negative_flow_S1_v18_fault_Root1_SEMANTIC_MISMATCH"
+    },
+    {
+     "seed": "s20260716",
+     "test": "test_negative_flow_S220_v108_fault_Root1_OVERFLOW"
+    },
+    {
+     "seed": "s20260718",
+     "test": "test_positive_flow_S1_v218"
+    },
+    {
+     "seed": "s20260719",
+     "test": "test_negative_flow_S220_v36_fault_Root1_OVERFLOW"
+    },
+    {
+     "seed": "s20260721",
+     "test": "test_negative_flow_S1_v117_fault_Root1_EMPTY_INPUT"
+    },
+    {
+     "seed": "s20260716",
+     "test": "test_negative_flow_S1_v207_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260714",
+     "test": "test_negative_flow_S1_v163_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260721",
+     "test": "test_negative_flow_S1_v94_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260714",
+     "test": "test_negative_flow_S220_v62_fault_Root1_EMPTY_INPUT"
+    },
+    {
+     "seed": "s20260716",
+     "test": "test_negative_flow_S1_v127_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260715",
+     "test": "test_negative_flow_S220_v128_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260714",
+     "test": "test_negative_flow_S220_v127_fault_Root1_TYPE_MISMATCH"
+    },
+    {
+     "seed": "s20260718",
+     "test": "test_negative_flow_S1_v89_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260717",
+     "test": "test_negative_flow_S1_v115_fault_Root1_TYPE_MISMATCH"
+    },
+    {
+     "seed": "s20260721",
+     "test": "test_negative_flow_S220_v29_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260717",
+     "test": "test_negative_flow_S1_v80_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260716",
+     "test": "test_negative_flow_S1_v60_fault_Root1_TYPE_MISMATCH"
+    },
+    {
+     "seed": "s20260721",
+     "test": "test_negative_flow_S1_v200_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260717",
+     "test": "test_negative_flow_S1_v142_fault_Root1_TYPE_MISMATCH"
+    },
+    {
+     "seed": "s20260715",
+     "test": "test_negative_flow_S220_v100_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260717",
+     "test": "test_negative_flow_S220_v96_fault_Root1_EMPTY_INPUT"
+    },
+    {
+     "seed": "s20260723",
+     "test": "test_negative_flow_S1_v64_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260719",
+     "test": "test_negative_flow_S1_v212_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260718",
+     "test": "test_negative_flow_S220_v8_fault_Root1_SEMANTIC_MISMATCH"
+    },
+    {
+     "seed": "s20260715",
+     "test": "test_negative_flow_S1_v172_fault_Root1_EMPTY_INPUT"
+    },
+    {
+     "seed": "s20260720",
+     "test": "test_negative_flow_S220_v39_fault_Root1_SEMANTIC_MISMATCH"
+    },
+    {
+     "seed": "s20260721",
+     "test": "test_negative_flow_S220_v89_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260723",
+     "test": "test_negative_flow_S220_v128_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260719",
+     "test": "test_negative_flow_S220_v28_fault_Root1_SEMANTIC_MISMATCH"
+    },
+    {
+     "seed": "s20260717",
+     "test": "test_negative_flow_S220_v107_fault_Root1_EMPTY_INPUT"
+    },
+    {
+     "seed": "s20260714",
+     "test": "test_negative_flow_S220_v125_fault_Root1_SPECIAL_CHARACTERS"
+    }
+   ],
+   "flagged_total": 3440
+  },
+  "bookinfo": {
+   "clusters": [
+    {
+     "class": "negative",
+     "signature": "Root1_NULL_INPUT",
+     "count": 45,
+     "representative": {
+      "seed": "s20260714",
+      "test": "test_negative_flow_S29_v15_fault_Root1_NULL_INPUT"
+     }
+    },
+    {
+     "class": "negative",
+     "signature": "Root1_OVERFLOW",
+     "count": 45,
+     "representative": {
+      "seed": "s20260714",
+      "test": "test_negative_flow_S29_v17_fault_Root1_OVERFLOW"
+     }
+    },
+    {
+     "class": "negative",
+     "signature": "Root1_SEMANTIC_MISMATCH",
+     "count": 45,
+     "representative": {
+      "seed": "s20260714",
+      "test": "test_negative_flow_S29_v10_fault_Root1_SEMANTIC_MISMATCH"
+     }
+    },
+    {
+     "class": "negative",
+     "signature": "Root1_TYPE_MISMATCH",
+     "count": 72,
+     "representative": {
+      "seed": "s20260714",
+      "test": "test_negative_flow_S29_v11_fault_Root1_TYPE_MISMATCH"
+     }
+    }
+   ],
+   "audit_sample": [
+    {
+     "seed": "s20260716",
+     "test": "test_negative_flow_S56_v22_fault_Root1_NULL_INPUT"
+    },
+    {
+     "seed": "s20260716",
+     "test": "test_negative_flow_S56_v9_fault_Root1_TYPE_MISMATCH"
+    },
+    {
+     "seed": "s20260716",
+     "test": "test_negative_flow_S56_v17_fault_Root1_SEMANTIC_MISMATCH"
+    },
+    {
+     "seed": "s20260714",
+     "test": "test_negative_flow_S2_v13_fault_Root1_SEMANTIC_MISMATCH"
+    },
+    {
+     "seed": "s20260716",
+     "test": "test_negative_flow_S56_v15_fault_Root1_TYPE_MISMATCH"
+    },
+    {
+     "seed": "s20260714",
+     "test": "test_negative_flow_S2_v16_fault_Root1_NULL_INPUT"
+    },
+    {
+     "seed": "s20260716",
+     "test": "test_negative_flow_S56_v20_fault_Root1_TYPE_MISMATCH"
+    },
+    {
+     "seed": "s20260716",
+     "test": "test_negative_flow_S56_v18_fault_Root1_OVERFLOW"
+    },
+    {
+     "seed": "s20260716",
+     "test": "test_negative_flow_S29_v4_fault_Root1_NULL_INPUT"
+    },
+    {
+     "seed": "s20260715",
+     "test": "test_negative_flow_S29_v11_fault_Root1_TYPE_MISMATCH"
+    },
+    {
+     "seed": "s20260715",
+     "test": "test_negative_flow_S29_v7_fault_Root1_SEMANTIC_MISMATCH"
+    },
+    {
+     "seed": "s20260714",
+     "test": "test_negative_flow_S56_v19_fault_Root1_TYPE_MISMATCH"
+    },
+    {
+     "seed": "s20260714",
+     "test": "test_negative_flow_S29_v5_fault_Root1_OVERFLOW"
+    },
+    {
+     "seed": "s20260716",
+     "test": "test_negative_flow_S29_v5_fault_Root1_NULL_INPUT"
+    },
+    {
+     "seed": "s20260716",
+     "test": "test_negative_flow_S2_v11_fault_Root1_TYPE_MISMATCH"
+    },
+    {
+     "seed": "s20260715",
+     "test": "test_negative_flow_S29_v4_fault_Root1_TYPE_MISMATCH"
+    },
+    {
+     "seed": "s20260715",
+     "test": "test_negative_flow_S56_v5_fault_Root1_TYPE_MISMATCH"
+    },
+    {
+     "seed": "s20260716",
+     "test": "test_negative_flow_S56_v5_fault_Root1_NULL_INPUT"
+    },
+    {
+     "seed": "s20260715",
+     "test": "test_negative_flow_S56_v3_fault_Root1_TYPE_MISMATCH"
+    },
+    {
+     "seed": "s20260714",
+     "test": "test_negative_flow_S2_v7_fault_Root1_TYPE_MISMATCH"
+    }
+   ],
+   "flagged_total": 207
+  },
+  "boutique": {
+   "clusters": [
+    {
+     "class": "negative",
+     "signature": "Root1_EMPTY_INPUT",
+     "count": 108,
+     "representative": {
+      "seed": "s20260714",
+      "test": "test_negative_flow_S134_v17_fault_Root1_EMPTY_INPUT"
+     }
+    },
+    {
+     "class": "negative",
+     "signature": "Root1_NULL_INPUT",
+     "count": 18,
+     "representative": {
+      "seed": "s20260714",
+      "test": "test_negative_flow_S134_v32_fault_Root1_NULL_INPUT"
+     }
+    },
+    {
+     "class": "negative",
+     "signature": "Root1_OVERFLOW",
+     "count": 72,
+     "representative": {
+      "seed": "s20260714",
+      "test": "test_negative_flow_S134_v10_fault_Root1_OVERFLOW"
+     }
+    },
+    {
+     "class": "negative",
+     "signature": "Root1_SEMANTIC_MISMATCH",
+     "count": 108,
+     "representative": {
+      "seed": "s20260714",
+      "test": "test_negative_flow_S134_v13_fault_Root1_SEMANTIC_MISMATCH"
+     }
+    },
+    {
+     "class": "negative",
+     "signature": "Root1_SPECIAL_CHARACTERS",
+     "count": 324,
+     "representative": {
+      "seed": "s20260714",
+      "test": "test_negative_flow_S134_v11_fault_Root1_SPECIAL_CHARACTERS"
+     }
+    },
+    {
+     "class": "negative",
+     "signature": "Root1_TYPE_MISMATCH",
+     "count": 126,
+     "representative": {
+      "seed": "s20260714",
+      "test": "test_negative_flow_S134_v22_fault_Root1_TYPE_MISMATCH"
+     }
+    },
+    {
+     "class": "positive",
+     "signature": "positive-flow-failure",
+     "count": 32,
+     "representative": {
+      "seed": "s20260714",
+      "test": "test_positive_flow_S220_v43"
+     }
+    }
+   ],
+   "audit_sample": [
+    {
+     "seed": "s20260714",
+     "test": "test_negative_flow_S220_v41_fault_Root1_SEMANTIC_MISMATCH"
+    },
+    {
+     "seed": "s20260715",
+     "test": "test_negative_flow_S45_v2_fault_Root1_NULL_INPUT"
+    },
+    {
+     "seed": "s20260715",
+     "test": "test_negative_flow_S177_v21_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260715",
+     "test": "test_negative_flow_S134_v3_fault_Root1_OVERFLOW"
+    },
+    {
+     "seed": "s20260715",
+     "test": "test_negative_flow_S45_v14_fault_Root1_SEMANTIC_MISMATCH"
+    },
+    {
+     "seed": "s20260716",
+     "test": "test_negative_flow_S177_v18_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260715",
+     "test": "test_negative_flow_S2_v37_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260716",
+     "test": "test_negative_flow_S134_v23_fault_Root1_OVERFLOW"
+    },
+    {
+     "seed": "s20260716",
+     "test": "test_negative_flow_S177_v25_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260715",
+     "test": "test_negative_flow_S134_v12_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260714",
+     "test": "test_negative_flow_S2_v30_fault_Root1_TYPE_MISMATCH"
+    },
+    {
+     "seed": "s20260714",
+     "test": "test_negative_flow_S220_v35_fault_Root1_EMPTY_INPUT"
+    },
+    {
+     "seed": "s20260716",
+     "test": "test_negative_flow_S2_v3_fault_Root1_TYPE_MISMATCH"
+    },
+    {
+     "seed": "s20260716",
+     "test": "test_negative_flow_S220_v21_fault_Root1_SEMANTIC_MISMATCH"
+    },
+    {
+     "seed": "s20260716",
+     "test": "test_negative_flow_S134_v18_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260714",
+     "test": "test_negative_flow_S88_v13_fault_Root1_SEMANTIC_MISMATCH"
+    },
+    {
+     "seed": "s20260714",
+     "test": "test_negative_flow_S45_v32_fault_Root1_NULL_INPUT"
+    },
+    {
+     "seed": "s20260716",
+     "test": "test_negative_flow_S88_v2_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260716",
+     "test": "test_negative_flow_S134_v21_fault_Root1_SEMANTIC_MISMATCH"
+    },
+    {
+     "seed": "s20260716",
+     "test": "test_negative_flow_S220_v26_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260714",
+     "test": "test_negative_flow_S45_v42_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260714",
+     "test": "test_negative_flow_S88_v40_fault_Root1_OVERFLOW"
+    },
+    {
+     "seed": "s20260714",
+     "test": "test_negative_flow_S177_v6_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260716",
+     "test": "test_negative_flow_S177_v3_fault_Root1_TYPE_MISMATCH"
+    },
+    {
+     "seed": "s20260714",
+     "test": "test_negative_flow_S220_v28_fault_Root1_EMPTY_INPUT"
+    },
+    {
+     "seed": "s20260716",
+     "test": "test_negative_flow_S134_v3_fault_Root1_TYPE_MISMATCH"
+    },
+    {
+     "seed": "s20260714",
+     "test": "test_negative_flow_S177_v42_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260714",
+     "test": "test_negative_flow_S177_v17_fault_Root1_EMPTY_INPUT"
+    },
+    {
+     "seed": "s20260715",
+     "test": "test_negative_flow_S220_v34_fault_Root1_SEMANTIC_MISMATCH"
+    },
+    {
+     "seed": "s20260716",
+     "test": "test_negative_flow_S2_v9_fault_Root1_TYPE_MISMATCH"
+    },
+    {
+     "seed": "s20260716",
+     "test": "test_negative_flow_S88_v27_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260714",
+     "test": "test_negative_flow_S88_v17_fault_Root1_EMPTY_INPUT"
+    },
+    {
+     "seed": "s20260715",
+     "test": "test_negative_flow_S177_v4_fault_Root1_SEMANTIC_MISMATCH"
+    },
+    {
+     "seed": "s20260714",
+     "test": "test_negative_flow_S134_v40_fault_Root1_OVERFLOW"
+    },
+    {
+     "seed": "s20260716",
+     "test": "test_negative_flow_S177_v15_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260714",
+     "test": "test_negative_flow_S177_v19_fault_Root1_SEMANTIC_MISMATCH"
+    },
+    {
+     "seed": "s20260714",
+     "test": "test_negative_flow_S220_v31_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260715",
+     "test": "test_negative_flow_S177_v3_fault_Root1_OVERFLOW"
+    },
+    {
+     "seed": "s20260715",
+     "test": "test_negative_flow_S134_v16_fault_Root1_EMPTY_INPUT"
+    },
+    {
+     "seed": "s20260714",
+     "test": "test_negative_flow_S220_v25_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260716",
+     "test": "test_negative_flow_S134_v41_fault_Root1_SEMANTIC_MISMATCH"
+    },
+    {
+     "seed": "s20260714",
+     "test": "test_negative_flow_S2_v40_fault_Root1_OVERFLOW"
+    },
+    {
+     "seed": "s20260716",
+     "test": "test_negative_flow_S177_v24_fault_Root1_SEMANTIC_MISMATCH"
+    },
+    {
+     "seed": "s20260714",
+     "test": "test_negative_flow_S220_v7_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260715",
+     "test": "test_positive_flow_S88_v43"
+    },
+    {
+     "seed": "s20260714",
+     "test": "test_negative_flow_S88_v37_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260715",
+     "test": "test_negative_flow_S45_v23_fault_Root1_SEMANTIC_MISMATCH"
+    },
+    {
+     "seed": "s20260715",
+     "test": "test_negative_flow_S177_v41_fault_Root1_SEMANTIC_MISMATCH"
+    },
+    {
+     "seed": "s20260714",
+     "test": "test_negative_flow_S134_v24_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260716",
+     "test": "test_negative_flow_S134_v31_fault_Root1_EMPTY_INPUT"
+    },
+    {
+     "seed": "s20260716",
+     "test": "test_negative_flow_S220_v9_fault_Root1_TYPE_MISMATCH"
+    },
+    {
+     "seed": "s20260714",
+     "test": "test_negative_flow_S2_v27_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260714",
+     "test": "test_negative_flow_S2_v37_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260714",
+     "test": "test_negative_flow_S177_v30_fault_Root1_TYPE_MISMATCH"
+    },
+    {
+     "seed": "s20260715",
+     "test": "test_negative_flow_S220_v12_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260714",
+     "test": "test_negative_flow_S220_v3_fault_Root1_EMPTY_INPUT"
+    },
+    {
+     "seed": "s20260715",
+     "test": "test_negative_flow_S134_v1_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260714",
+     "test": "test_negative_flow_S45_v15_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260715",
+     "test": "test_negative_flow_S177_v7_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260715",
+     "test": "test_negative_flow_S177_v31_fault_Root1_SEMANTIC_MISMATCH"
+    },
+    {
+     "seed": "s20260716",
+     "test": "test_negative_flow_S88_v31_fault_Root1_EMPTY_INPUT"
+    },
+    {
+     "seed": "s20260716",
+     "test": "test_negative_flow_S2_v22_fault_Root1_TYPE_MISMATCH"
+    },
+    {
+     "seed": "s20260715",
+     "test": "test_negative_flow_S2_v11_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260715",
+     "test": "test_negative_flow_S2_v32_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260715",
+     "test": "test_negative_flow_S2_v24_fault_Root1_OVERFLOW"
+    },
+    {
+     "seed": "s20260716",
+     "test": "test_negative_flow_S88_v7_fault_Root1_TYPE_MISMATCH"
+    },
+    {
+     "seed": "s20260714",
+     "test": "test_negative_flow_S134_v1_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260715",
+     "test": "test_negative_flow_S2_v21_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260716",
+     "test": "test_negative_flow_S45_v30_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260714",
+     "test": "test_negative_flow_S2_v8_fault_Root1_TYPE_MISMATCH"
+    },
+    {
+     "seed": "s20260716",
+     "test": "test_negative_flow_S220_v34_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260715",
+     "test": "test_negative_flow_S2_v13_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260715",
+     "test": "test_negative_flow_S45_v37_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260714",
+     "test": "test_negative_flow_S220_v40_fault_Root1_OVERFLOW"
+    },
+    {
+     "seed": "s20260714",
+     "test": "test_negative_flow_S45_v2_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260716",
+     "test": "test_negative_flow_S45_v14_fault_Root1_SPECIAL_CHARACTERS"
+    },
+    {
+     "seed": "s20260715",
+     "test": "test_negative_flow_S45_v5_fault_Root1_TYPE_MISMATCH"
+    },
+    {
+     "seed": "s20260714",
+     "test": "test_negative_flow_S177_v4_fault_Root1_SPECIAL_CHARACTERS"
+    }
+   ],
+   "flagged_total": 788
+  }
+ },
+ "note": "test-level failures are PIPELINE OUTCOMES; genuine-vs-benign adjudication is RATER-GATED (Step 5); NO yield statistic here. TT leg (TT-omnibus): 0 flagged events, included by reference."
+}

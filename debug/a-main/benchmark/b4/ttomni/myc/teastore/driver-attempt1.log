@@ -1,0 +1,43 @@
+18:24:24 === MYC driver start: teastore x 10 seeds (wave pin = main_track HEAD at leg start) ===
+18:24:29 PF 8083 dead - restarting (teastore/svc/teastore-persistence)
+18:24:39 seed 20260714 pre-probe: health=200 ramAvailGi=18
+18:24:39 seed 20260714 START
+18:24:40 seed 20260714 EXIT rc=
+18:24:40 seed 20260714 evidence copied -> debug/a-main/benchmark/b4/ttomni/myc/teastore/s20260714
+18:24:40 seed 20260715 pre-probe: health=200 ramAvailGi=18
+18:24:40 seed 20260715 START
+18:24:41 seed 20260715 EXIT rc=
+18:24:41 seed 20260715 evidence copied -> debug/a-main/benchmark/b4/ttomni/myc/teastore/s20260715
+18:24:41 seed 20260716 pre-probe: health=200 ramAvailGi=18
+18:24:41 seed 20260716 START
+18:24:42 seed 20260716 EXIT rc=
+18:24:42 seed 20260716 evidence copied -> debug/a-main/benchmark/b4/ttomni/myc/teastore/s20260716
+18:24:42 seed 20260717 pre-probe: health=200 ramAvailGi=18
+18:24:42 seed 20260717 START
+18:24:42 seed 20260717 EXIT rc=
+18:24:42 seed 20260717 evidence copied -> debug/a-main/benchmark/b4/ttomni/myc/teastore/s20260717
+18:24:43 seed 20260718 pre-probe: health=200 ramAvailGi=18
+18:24:43 seed 20260718 START
+18:24:43 seed 20260718 EXIT rc=
+18:24:43 seed 20260718 evidence copied -> debug/a-main/benchmark/b4/ttomni/myc/teastore/s20260718
+18:24:44 seed 20260719 pre-probe: health=200 ramAvailGi=18
+18:24:44 seed 20260719 START
+18:24:44 seed 20260719 EXIT rc=
+18:24:44 seed 20260719 evidence copied -> debug/a-main/benchmark/b4/ttomni/myc/teastore/s20260719
+18:24:44 seed 20260720 pre-probe: health=200 ramAvailGi=18
+18:24:44 seed 20260720 START
+18:24:45 seed 20260720 EXIT rc=
+18:24:45 seed 20260720 evidence copied -> debug/a-main/benchmark/b4/ttomni/myc/teastore/s20260720
+18:24:45 seed 20260721 pre-probe: health=200 ramAvailGi=18
+18:24:45 seed 20260721 START
+18:24:46 seed 20260721 EXIT rc=
+18:24:46 seed 20260721 evidence copied -> debug/a-main/benchmark/b4/ttomni/myc/teastore/s20260721
+18:24:46 seed 20260722 pre-probe: health=200 ramAvailGi=18
+18:24:46 seed 20260722 START
+18:24:47 seed 20260722 EXIT rc=
+18:24:47 seed 20260722 evidence copied -> debug/a-main/benchmark/b4/ttomni/myc/teastore/s20260722
+18:24:47 seed 20260723 pre-probe: health=200 ramAvailGi=18
+18:24:47 seed 20260723 START
+18:24:47 seed 20260723 EXIT rc=
+18:24:47 seed 20260723 evidence copied -> debug/a-main/benchmark/b4/ttomni/myc/teastore/s20260723
+18:24:47 === MYC driver DONE: teastore ===

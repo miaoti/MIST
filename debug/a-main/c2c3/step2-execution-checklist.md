@@ -132,8 +132,7 @@ Sources consolidated: plan v2 §5, `c2-freeze.md` rev 2, `e-sut-applicability-ma
       ~30 s gRPC reconnect-backoff datum); **flagd list RE-FROZEN vs deployed 2.2.0** (15 flags,
       13 3a-eligible; survey block governs the 3a vendor-flag quota). Recovery runbook (measured):
       a replaced kafka pod wedges both rdkafka clients → rollout-restart checkout+accounting+fraud.
-☐ 2.4 Boutique deploy (light). Rider: gRPC method-scoped Istio abort on `/hipstershop.CartService/EmptyCart`
-      (HTTP/2 path match) live check.
+◐ 2.4 Boutique deploy — **DEPLOYED (MYC 2026-07-16: deploy.sh verbatim, istio-injection, loadgenerator→0, 11 Running, smoke 200; M-yield 3-seed leg run).** Rider STILL OPEN: gRPC method-scoped Istio abort on `/hipstershop.CartService/EmptyCart` (HTTP/2 path match) live check.
 ☑ 2.5 Bookinfo: **DISCHARGED (tenancy Phase B, 2026-07-10c)** — the 0/0 state was SCALED not gone; scaled up + reviews→v3 VS ASSERTED (never re-applied; samples re-apply would have destroyed the pin), FP/TP captures done, scaled back to 0.
 ☐ 2.6 Post-reboot runbook items stay in force: re-create mist:mist RabbitMQ user + warm-up POST
       before any SS run; repo .sh files are CRLF → run CRLF-stripped copies; minikube stays stopped.
@@ -248,8 +247,9 @@ Sources consolidated: plan v2 §5, `c2-freeze.md` rev 2, `e-sut-applicability-ma
   floor ≥4 runnable tools. AutoRestTest LLM key + model pinned. ONE pinned TT topology (lean-traced
   G1). Machine spec + exclusivity per "No Time to Rest Yet".
 
-## Step 4 — M-yield (1 h × 10 seeds spec-rich tier; 1 h × 3 thin; LLM-off disclosed)
-◐ **TT LEG EXECUTED (TT-omnibus 2026-07-15, `RESULT-tt-omnibus.md`):** 10 seeds × 1 h, LLM-off,
+## Step 4 — M-yield (1 h × 10 seeds spec-rich tier; 1 h × 3 thin; LLM-off disclosed) — ✔ COMPLETE
+✔ **ALL 6 SUTs EXECUTED at pinned budgets (TT @ TT-omnibus + the 5-SUT M-YIELD-COMPLETION window 2026-07-16, `RESULT-myield-completion.md`): 29+10 seeds, 5145+~2700 tests, 26 clusters + reps + 10% audit (`CLUSTERING-myc.json`); NO yield statistic (rater-gated). CROSS-SUT FINDING: observe arms at the enhancer FINAL ROUND — budget-capped spec-rich runs never reach it (SS 0 DI records/10 armed seeds; TT same class) = a tool-behavior datum, not a defect. Enablement: TeaStore/OTel confs generated from the E1 specs (+1 authored / 4 captured seed traces; DI descoped, five source-verified reasons); 2.4 Boutique → ◐ (deployed via deploy.sh verbatim + loadgen-0; abort-rider open).**
+◐ (superseded detail) **TT LEG EXECUTED (TT-omnibus 2026-07-15, `RESULT-tt-omnibus.md`):** 10 seeds × 1 h, LLM-off,
   canonical registry armed; 1 natural-complete (2707/2707) + 9 killed-at-budget; **flagged events = 0**
   (DI observe 0 across seeds — hooked steps never covered the 2 registry triples in-budget; injected-fault
   detection 0/10 on the complete seed; killed seeds' Allure outcomes lost to per-seed wipes — disclosed);

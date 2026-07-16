@@ -1,0 +1,15 @@
+05:05:34 === MYC driver start: boutique x 3 seeds (wave pin = main_track HEAD at leg start) ===
+05:05:38 PF 8081 dead - restarting (boutique/svc/frontend)
+05:05:48 seed 20260714 pre-probe: health=200 ramAvailGi=20
+05:05:48 seed 20260714 START
+05:21:08 seed 20260714 EXIT rc=
+05:21:08 seed 20260714 evidence copied -> debug/a-main/benchmark/b4/ttomni/myc/boutique/s20260714
+05:21:09 seed 20260715 pre-probe: health=200 ramAvailGi=21
+05:21:09 seed 20260715 START
+05:36:28 seed 20260715 EXIT rc=
+05:36:29 seed 20260715 evidence copied -> debug/a-main/benchmark/b4/ttomni/myc/boutique/s20260715
+05:36:29 seed 20260716 pre-probe: health=200 ramAvailGi=20
+05:36:29 seed 20260716 START
+05:51:48 seed 20260716 EXIT rc=
+05:51:49 seed 20260716 evidence copied -> debug/a-main/benchmark/b4/ttomni/myc/boutique/s20260716
+05:51:49 === MYC driver DONE: boutique ===

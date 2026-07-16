@@ -1,0 +1,1 @@
+{"number":"mist-628e61ae31a9","country":"$(cat /etc/passwd)","city":"FALLBACK_city_14","street":"mist-92c783ebab3d","postcode":"FALLBACK_postcode_12"}

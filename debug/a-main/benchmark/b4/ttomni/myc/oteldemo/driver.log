@@ -1,0 +1,15 @@
+18:34:49 === MYC driver start: oteldemo x 3 seeds (wave pin = main_track HEAD at leg start) ===
+18:34:54 PF 8085 dead - restarting (otel-demo/svc/frontend-proxy)
+18:35:04 seed 20260714 pre-probe: health=200 ramAvailGi=21
+18:35:04 seed 20260714 START
+18:35:14 seed 20260714 EXIT rc=
+18:35:15 seed 20260714 evidence copied -> debug/a-main/benchmark/b4/ttomni/myc/oteldemo/s20260714
+18:35:15 seed 20260715 pre-probe: health=200 ramAvailGi=21
+18:35:15 seed 20260715 START
+18:35:25 seed 20260715 EXIT rc=
+18:35:25 seed 20260715 evidence copied -> debug/a-main/benchmark/b4/ttomni/myc/oteldemo/s20260715
+18:35:25 seed 20260716 pre-probe: health=200 ramAvailGi=20
+18:35:25 seed 20260716 START
+18:35:36 seed 20260716 EXIT rc=
+18:35:36 seed 20260716 evidence copied -> debug/a-main/benchmark/b4/ttomni/myc/oteldemo/s20260716
+18:35:36 === MYC driver DONE: oteldemo ===

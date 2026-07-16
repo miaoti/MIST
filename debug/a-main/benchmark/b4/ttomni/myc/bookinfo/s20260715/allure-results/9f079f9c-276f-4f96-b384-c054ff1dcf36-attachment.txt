@@ -1,0 +1,1 @@
+{"id": 0, "ratings": {"Reviewer1": 5, "Reviewer2": 4}}

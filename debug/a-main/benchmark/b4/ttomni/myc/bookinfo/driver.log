@@ -1,0 +1,15 @@
+04:58:54 === MYC driver start: bookinfo x 3 seeds (wave pin = main_track HEAD at leg start) ===
+04:58:58 PF 8080 dead - restarting (default/svc/productpage)
+04:59:09 seed 20260714 pre-probe: health=200 ramAvailGi=20
+04:59:09 seed 20260714 START
+04:59:17 seed 20260714 EXIT rc=
+04:59:17 seed 20260714 evidence copied -> debug/a-main/benchmark/b4/ttomni/myc/bookinfo/s20260714
+04:59:17 seed 20260715 pre-probe: health=200 ramAvailGi=21
+04:59:17 seed 20260715 START
+04:59:24 seed 20260715 EXIT rc=
+04:59:24 seed 20260715 evidence copied -> debug/a-main/benchmark/b4/ttomni/myc/bookinfo/s20260715
+04:59:25 seed 20260716 pre-probe: health=200 ramAvailGi=21
+04:59:25 seed 20260716 START
+04:59:32 seed 20260716 EXIT rc=
+04:59:33 seed 20260716 evidence copied -> debug/a-main/benchmark/b4/ttomni/myc/bookinfo/s20260716
+04:59:33 === MYC driver DONE: bookinfo ===
