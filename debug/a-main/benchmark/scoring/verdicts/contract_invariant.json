@@ -1,0 +1,33 @@
+{
+ "arm": "contract_invariant",
+ "verdict_source": "LIVE cells (flagship pair): the frozen response-contract comparator's banked E2 run-of-record lines (b4/e2/e2-run-stdout.txt, 5/5 uniform control=false fault=false; ack facts logged: http 200, body status 1) - a contract-conformance verdict measured on the running SUT. All other cases: not_evaluable - the committed capture sidecars persist response payloads as NULL (2026-07-16 survey; no machine ack to validate). Single-response semantics only (AGORA-class); never a lifecycle oracle.",
+ "spike_correction": "A2 spike input claim 'ack transcripts live in the committed capture sidecars' was WRONG (all response payloads null) - corrected here.",
+ "cases": {
+  "bookinfo-ratings-benign-001": "not_evaluable",
+  "oteldemo-checkout-control-001": "not_evaluable",
+  "oteldemo-checkout-eventual-benign-001": "not_evaluable",
+  "oteldemo-checkout-eventual-benign-002": "not_evaluable",
+  "oteldemo-checkout-eventual-benign-003": "not_evaluable",
+  "oteldemo-checkout-lost-001": "not_evaluable",
+  "sockshop-shipping-control-001": "not_evaluable",
+  "sockshop-shipping-swallowed-enqueue-001": "not_evaluable",
+  "teastore-order-control-001": "not_evaluable",
+  "teastore-order-depdown-specified-001": "not_evaluable",
+  "teastore-order-maintenance-masked-001": "not_evaluable",
+  "teastore-order-meshsever-control-001": "not_evaluable",
+  "teastore-order-meshsever-masked-001": "not_evaluable",
+  "teastore-orderitems-meshsever-control-001": "not_evaluable",
+  "teastore-orderitems-meshsever-masked-001": "not_evaluable",
+  "TT-adminbasic-contacts-control-001": "not_evaluable",
+  "TT-adminbasic-contacts-lostwrite-001": "not_evaluable",
+  "TT-adminroute-control-001": "not_evaluable",
+  "TT-adminroute-lostwrite-001": "not_evaluable",
+  "TT-cancel-refund-clean-001": "no_flag",
+  "TT-cancel-refund-fabricatedack-001": "no_flag",
+  "TT-cancel-refund-natural-001": "not_evaluable",
+  "TT-contacts-dedupe-benign-001": "not_evaluable",
+  "TT-contacts-noop-modify-benign-001": "not_evaluable",
+  "TT-createaccount-agreement-001": "not_evaluable",
+  "TT-createaccount-clean-001": "not_evaluable"
+ }
+}

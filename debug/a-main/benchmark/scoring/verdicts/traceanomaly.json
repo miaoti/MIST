@@ -1,0 +1,32 @@
+{
+ "arm": "traceanomaly",
+ "verdict_source": "NOT CLEARED (actual check 2026-07-16, github.com/NetManAIOps/TraceAnomaly): (1) NO visible LICENSE (all-rights-reserved default - unusable in an open benchmark arm); (2) Python==3.6 unmaintained stack; (3) input contract = a NORMAL-TRACE TRAINING CORPUS (train.zip vectors) - the benchmark's per-case committed volumes (1-5 traces/leg) are structurally below any VAE/Bayesian-net training regime. The pre-registered CONSTRUCTION-BLINDNESS branch fires: the method class answers production anomaly detection over trace populations, not per-case test oracles (research/02 positioning); all cells not_evaluable BY THE METHOD'S OWN INPUT CONTRACT, not by our omission.",
+ "cases": {
+  "bookinfo-ratings-benign-001": "not_evaluable",
+  "oteldemo-checkout-control-001": "not_evaluable",
+  "oteldemo-checkout-eventual-benign-001": "not_evaluable",
+  "oteldemo-checkout-eventual-benign-002": "not_evaluable",
+  "oteldemo-checkout-eventual-benign-003": "not_evaluable",
+  "oteldemo-checkout-lost-001": "not_evaluable",
+  "sockshop-shipping-control-001": "not_evaluable",
+  "sockshop-shipping-swallowed-enqueue-001": "not_evaluable",
+  "teastore-order-control-001": "not_evaluable",
+  "teastore-order-depdown-specified-001": "not_evaluable",
+  "teastore-order-maintenance-masked-001": "not_evaluable",
+  "teastore-order-meshsever-control-001": "not_evaluable",
+  "teastore-order-meshsever-masked-001": "not_evaluable",
+  "teastore-orderitems-meshsever-control-001": "not_evaluable",
+  "teastore-orderitems-meshsever-masked-001": "not_evaluable",
+  "TT-adminbasic-contacts-control-001": "not_evaluable",
+  "TT-adminbasic-contacts-lostwrite-001": "not_evaluable",
+  "TT-adminroute-control-001": "not_evaluable",
+  "TT-adminroute-lostwrite-001": "not_evaluable",
+  "TT-cancel-refund-clean-001": "not_evaluable",
+  "TT-cancel-refund-fabricatedack-001": "not_evaluable",
+  "TT-cancel-refund-natural-001": "not_evaluable",
+  "TT-contacts-dedupe-benign-001": "not_evaluable",
+  "TT-contacts-noop-modify-benign-001": "not_evaluable",
+  "TT-createaccount-agreement-001": "not_evaluable",
+  "TT-createaccount-clean-001": "not_evaluable"
+ }
+}

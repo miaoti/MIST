@@ -22,8 +22,14 @@ invariants (those require read-back semantics, i.e. the compared mechanism itsel
 2. **Blind-authoring holds by construction:** the invariant spec = the OpenAPI
    success-response schemas, authored upstream of every outcome (E1 clean-room discipline;
    shipped specs predate the corpus) — request/spec side only, zero outcome contamination.
-3. **Inputs exist:** ack transcripts live in the committed capture sidecars (A8-mapped);
-   specs 6/6 on disk.
+3. ~~**Inputs exist:** ack transcripts live in the committed capture sidecars (A8-mapped);
+   specs 6/6 on disk.~~ **CORRECTED at the Phase-B run (2026-07-16): this input claim was
+   WRONG** — the committed capture sidecars persist response payloads as NULL across the
+   corpus (surveyed at run time); the only machine ack evidence of record = the flagship
+   pair's banked LIVE run lines (`e2-run-stdout.txt`: http 200 body status 1 + the frozen
+   response-contract comparator's 5/5 conformance verdicts). The arm's measured cells are
+   therefore: flagship pair no_flag (live) + 24 not_evaluable (enumerated, disclosed) —
+   the GO stood on the corrected basis (see `build_contract_invariant_verdicts.py`).
 4. **Authoring cost ≈ 0 per endpoint** (the invariants ARE the specs; the runner is a
    small validation script) — record THIS as the arm's `authoring-cost` cell: the
    automation-gap datum cuts BOTH ways (cheap to author, blind to the class).

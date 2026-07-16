@@ -285,13 +285,23 @@ Sources consolidated: plan v2 §5, `c2-freeze.md` rev 2, `e-sut-applicability-ma
   workload scripts versioned in the benchmark; write-path fraction reported.
 ☐ **C3-results ≥3-cold-review at this step's acceptance gate (plan §6 — B-MAJOR).**
 
-## Step 6 — E2 comparator frontier (5 arms; +1 wk if TraceAnomaly cleared)
-☐ Arms: naive span-error · Tracetest span-error · Tracetest span-PRESENCE (per-endpoint
-  authoring-cost recorded — the automation-gap datum, symmetric with OUR triples cost) ·
-  TraceAnomaly (as cleared: competitor or construction-blindness demo) · contract-invariant.
-  Matched recall on the trace-visible subset; recall per visibility class;
-  trace-invisible-by-construction = its own N-vs-0 row; NOT_EVALUABLE its own bucket.
-☐ **E2-results ≥3-cold-review at this step's acceptance gate (plan §6 — B-MAJOR).**
+## Step 6 — E2 comparator frontier — ✔ AT THE OFFLINE SCOPE (completion-set Phase B 2026-07-16, `b4/e2/RESULT-e2-frontier.md`)
+✔ **The completed 6-arm × 4-visibility-class matched-recall table (`benchmark/scoring/
+  matched-recall-table.json`, the A6 single mechanical path):** naive span-error (0
+  positives + 2 FP) · tracetest_presence SURROGATE (labeled: span-assertion-semantics,
+  live tool NOT run; REAL Tracetest specs AUTHORED-never-executed for the authoring-cost
+  cell — symmetric with the per-case `mist_authoring` minutes) · db-span-presence (the
+  1/1 invisible fabricated-ack CATCH = specification-locality measured) ·
+  contract-invariant (LIVE flagship cells 5/5 conforming = the by-construction MISS;
+  24 n_e — sidecar response payloads NULL corpus-wide, disclosed) · TraceAnomaly NOT
+  CLEARED (no visible license + py3.6 + training-corpus input contract ⇒ the
+  pre-registered construction-blindness branch) · + the MIST column (A5 census,
+  provenance_class per cell). Per-visibility recall + N-vs-0 (MIST 2/2, shape arms 0,
+  db-locality 1/1) + NOT_EVALUABLE buckets all in the artifact; measured-vs-stamped
+  0 mismatches; flagship cross-check EXACT incl. cross-trace-generation. LIVE-tool
+  cells (2.5.5) declared out-of-scope-disclosed.
+☐ **E2-results ≥3-cold-review at this step's acceptance gate (plan §6 — B-MAJOR)** —
+  runs at the completion-set wave close (with Phase C), per the confirmed rev-2 DoD.
 
 ## Step 7 — E5 ablations (TT ×5 seeds; 3–4 d) — ✔ EXECUTED at the pinned one-SUT-pair scope
 ✔ **(TT-omnibus 2026-07-15, `RESULT-tt-omnibus.md`):** exact-4 OAT × 5 reps on the cancel-refund

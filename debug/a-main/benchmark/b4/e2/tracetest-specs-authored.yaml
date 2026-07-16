@@ -1,0 +1,66 @@
+# Phase B leg 3 (completion-set wave): REAL Tracetest test specs, authored OFFLINE
+# for the authoring-cost cell (the automation-gap datum, symmetric with our triples cost).
+#
+# STATUS: AUTHORED-NEVER-EXECUTED. The live tool was NOT run (2.5.5 Tracetest Agent was
+# never installed on the cluster - declared out of scope, completion-set plan S0(c));
+# the measured presence cells come from the SURROGATE (frozen trace_score.py existence
+# semantics) over the committed traces. This file exists to make the authoring cost REAL
+# rather than estimated: it is the artifact a Tracetest user would have to write.
+#
+# AUTHORING-COST RECORD (honest basis): mechanical transcription of the FROZEN per-case
+# selector table (trace_score.py T8, whose original authoring cost is the banked ~12 min
+# for the 4-case table) into Tracetest's selector/assertion format - single sitting,
+# marginal minutes-per-case on top of knowing WHICH span to assert (the knowledge that
+# actually costs: the DB-granularity insight is what catches the fabricated-ack, and it
+# must be pre-specified per endpoint by a human who knows the write path).
+#
+# Format per Tracetest test spec (type: Test, specs: selector -> assertions).
+---
+type: Test
+spec:
+  id: tt-cancel-refund-presence
+  name: "cancel-refund: inside-payment drawback span present (service-map presence)"
+  trigger:
+    type: http
+    httpRequest:
+      method: GET
+      url: "${var:HOST}/api/v1/cancelservice/cancel/${var:ORDER_ID}/${var:LOGIN_ID}"
+  specs:
+    - selector: span[serviceName="ts-inside-payment-service" kind="server"] contains "drawback"
+      name: "drawback server span exists"
+      assertions:
+        - attr:tracetest.selected_spans.count >= 1
+---
+type: Test
+spec:
+  id: tt-cancel-refund-db-insert
+  name: "cancel-refund: the drawback Money INSERT db-client span present (DB-granularity)"
+  trigger:
+    type: http
+    httpRequest:
+      method: GET
+      url: "${var:HOST}/api/v1/cancelservice/cancel/${var:ORDER_ID}/${var:LOGIN_ID}"
+  specs:
+    - selector: span[serviceName="ts-inside-payment-service" tracetest.span.type="database"] contains "insert"
+      name: "inside_money INSERT span exists (the pre-specified durable write)"
+      assertions:
+        - attr:tracetest.selected_spans.count >= 1
+---
+type: Test
+spec:
+  id: tt-cancel-refund-span-errors
+  name: "cancel-refund: no error spans (naive span-error)"
+  trigger:
+    type: http
+    httpRequest:
+      method: GET
+      url: "${var:HOST}/api/v1/cancelservice/cancel/${var:ORDER_ID}/${var:LOGIN_ID}"
+  specs:
+    - selector: span[serviceName="ts-cancel-service"]
+      name: "entry ok"
+      assertions:
+        - attr:http.status_code = 200
+    - selector: span[] contains "error"
+      name: "no error-status spans anywhere"
+      assertions:
+        - attr:tracetest.selected_spans.count = 0

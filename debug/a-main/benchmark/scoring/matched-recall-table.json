@@ -120,6 +120,83 @@
     "TT-createaccount-clean-001": "capture-concordant"
    }
   },
+  "contract_invariant": {
+   "verdict_source": "LIVE cells (flagship pair): the frozen response-contract comparator's banked E2 run-of-record lines (b4/e2/e2-run-stdout.txt, 5/5 uniform control=false fault=false; ack facts logged: http 200, body status 1) - a contract-conformance verdict measured on the running SUT. All other cases: not_evaluable - the committed capture sidecars persist response payloads as NULL (2026-07-16 survey; no machine ack to validate). Single-response semantics only (AGORA-class); never a lifecycle oracle.",
+   "cells": {
+    "error-span-visible": {
+     "positives": 1,
+     "evaluable_positives": 0,
+     "flagged_positives": 0,
+     "negatives": 2,
+     "flagged_negatives": 0,
+     "not_evaluable": 3,
+     "flagged_positive_ids": [],
+     "flagged_negative_ids": [],
+     "not_evaluable_ids": [
+      "bookinfo-ratings-benign-001",
+      "sockshop-shipping-control-001",
+      "sockshop-shipping-swallowed-enqueue-001"
+     ]
+    },
+    "span-presence-visible": {
+     "positives": 3,
+     "evaluable_positives": 0,
+     "flagged_positives": 0,
+     "negatives": 6,
+     "flagged_negatives": 0,
+     "not_evaluable": 9,
+     "flagged_positive_ids": [],
+     "flagged_negative_ids": [],
+     "not_evaluable_ids": [
+      "oteldemo-checkout-control-001",
+      "oteldemo-checkout-eventual-benign-001",
+      "oteldemo-checkout-eventual-benign-002",
+      "oteldemo-checkout-eventual-benign-003",
+      "oteldemo-checkout-lost-001",
+      "TT-adminbasic-contacts-control-001",
+      "TT-adminbasic-contacts-lostwrite-001",
+      "TT-adminroute-control-001",
+      "TT-adminroute-lostwrite-001"
+     ]
+    },
+    "trace-invisible-by-construction": {
+     "positives": 2,
+     "evaluable_positives": 1,
+     "flagged_positives": 0,
+     "negatives": 2,
+     "flagged_negatives": 0,
+     "not_evaluable": 2,
+     "flagged_positive_ids": [],
+     "flagged_negative_ids": [],
+     "not_evaluable_ids": [
+      "TT-createaccount-agreement-001",
+      "TT-createaccount-clean-001"
+     ]
+    },
+    "trace-uninstrumented": {
+     "positives": 5,
+     "evaluable_positives": 0,
+     "flagged_positives": 0,
+     "negatives": 5,
+     "flagged_negatives": 0,
+     "not_evaluable": 10,
+     "flagged_positive_ids": [],
+     "flagged_negative_ids": [],
+     "not_evaluable_ids": [
+      "teastore-order-control-001",
+      "teastore-order-depdown-specified-001",
+      "teastore-order-maintenance-masked-001",
+      "teastore-order-meshsever-control-001",
+      "teastore-order-meshsever-masked-001",
+      "teastore-orderitems-meshsever-control-001",
+      "teastore-orderitems-meshsever-masked-001",
+      "TT-cancel-refund-natural-001",
+      "TT-contacts-dedupe-benign-001",
+      "TT-contacts-noop-modify-benign-001"
+     ]
+    }
+   }
+  },
   "db_span_presence": {
    "verdict_source": "frozen DB-CLIENT-granularity existence assertion (specification-locality arm; only cases with a frozen db_presence selector emit a verdict - others not_applicable, recorded as not_evaluable here)",
    "cells": {
@@ -241,6 +318,85 @@
      "flagged_positive_ids": [],
      "flagged_negative_ids": [],
      "not_evaluable_ids": [
+      "TT-createaccount-agreement-001",
+      "TT-createaccount-clean-001"
+     ]
+    },
+    "trace-uninstrumented": {
+     "positives": 5,
+     "evaluable_positives": 0,
+     "flagged_positives": 0,
+     "negatives": 5,
+     "flagged_negatives": 0,
+     "not_evaluable": 10,
+     "flagged_positive_ids": [],
+     "flagged_negative_ids": [],
+     "not_evaluable_ids": [
+      "teastore-order-control-001",
+      "teastore-order-depdown-specified-001",
+      "teastore-order-maintenance-masked-001",
+      "teastore-order-meshsever-control-001",
+      "teastore-order-meshsever-masked-001",
+      "teastore-orderitems-meshsever-control-001",
+      "teastore-orderitems-meshsever-masked-001",
+      "TT-cancel-refund-natural-001",
+      "TT-contacts-dedupe-benign-001",
+      "TT-contacts-noop-modify-benign-001"
+     ]
+    }
+   }
+  },
+  "traceanomaly": {
+   "verdict_source": "NOT CLEARED (actual check 2026-07-16, github.com/NetManAIOps/TraceAnomaly): (1) NO visible LICENSE (all-rights-reserved default - unusable in an open benchmark arm); (2) Python==3.6 unmaintained stack; (3) input contract = a NORMAL-TRACE TRAINING CORPUS (train.zip vectors) - the benchmark's per-case committed volumes (1-5 traces/leg) are structurally below any VAE/Bayesian-net training regime. The pre-registered CONSTRUCTION-BLINDNESS branch fires: the method class answers production anomaly detection over trace populations, not per-case test oracles (research/02 positioning); all cells not_evaluable BY THE METHOD'S OWN INPUT CONTRACT, not by our omission.",
+   "cells": {
+    "error-span-visible": {
+     "positives": 1,
+     "evaluable_positives": 0,
+     "flagged_positives": 0,
+     "negatives": 2,
+     "flagged_negatives": 0,
+     "not_evaluable": 3,
+     "flagged_positive_ids": [],
+     "flagged_negative_ids": [],
+     "not_evaluable_ids": [
+      "bookinfo-ratings-benign-001",
+      "sockshop-shipping-control-001",
+      "sockshop-shipping-swallowed-enqueue-001"
+     ]
+    },
+    "span-presence-visible": {
+     "positives": 3,
+     "evaluable_positives": 0,
+     "flagged_positives": 0,
+     "negatives": 6,
+     "flagged_negatives": 0,
+     "not_evaluable": 9,
+     "flagged_positive_ids": [],
+     "flagged_negative_ids": [],
+     "not_evaluable_ids": [
+      "oteldemo-checkout-control-001",
+      "oteldemo-checkout-eventual-benign-001",
+      "oteldemo-checkout-eventual-benign-002",
+      "oteldemo-checkout-eventual-benign-003",
+      "oteldemo-checkout-lost-001",
+      "TT-adminbasic-contacts-control-001",
+      "TT-adminbasic-contacts-lostwrite-001",
+      "TT-adminroute-control-001",
+      "TT-adminroute-lostwrite-001"
+     ]
+    },
+    "trace-invisible-by-construction": {
+     "positives": 2,
+     "evaluable_positives": 0,
+     "flagged_positives": 0,
+     "negatives": 2,
+     "flagged_negatives": 0,
+     "not_evaluable": 4,
+     "flagged_positive_ids": [],
+     "flagged_negative_ids": [],
+     "not_evaluable_ids": [
+      "TT-cancel-refund-clean-001",
+      "TT-cancel-refund-fabricatedack-001",
       "TT-createaccount-agreement-001",
       "TT-createaccount-clean-001"
      ]
