@@ -154,3 +154,8 @@ debug/b-smartfetch/REVIEW*.md
 
 # personal Chinese progress "memoir" — self-only, explicitly not for git (see its own header)
 debug/a-main/进展全景-给自己读.md
+
+# MYC driver's transient per-seed props (profile + appended override block; regenerated per run)
+# NOTE: 6 bookinfo/boutique instances were already tracked in 27c199b and STAY tracked
+# (no-deletion rule; faithful run-condition provenance) — this rule stops future churn.
+evaluation/suts/**/myc-props-s*.properties

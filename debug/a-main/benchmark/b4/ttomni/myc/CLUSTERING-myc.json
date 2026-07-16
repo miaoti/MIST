@@ -1,6 +1,6 @@
 {
  "schema": "myc-clustering/1",
- "convention": "endpoint x fault-signature x SUT; 1 representative/cluster + 10% audit (seed 20260714)",
+ "convention": "endpoint x fault-signature x SUT; 1 representative/cluster (drawn from seed 20260714) + 10% audit sampled ACROSS seeds (sampling seed 20260714; relabeled post-review - audit samples are cross-seed, e.g. teastore's is s20260715)",
  "suts": {
   "teastore": {
    "clusters": [

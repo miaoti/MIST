@@ -248,7 +248,7 @@ Sources consolidated: plan v2 §5, `c2-freeze.md` rev 2, `e-sut-applicability-ma
   G1). Machine spec + exclusivity per "No Time to Rest Yet".
 
 ## Step 4 — M-yield (1 h × 10 seeds spec-rich tier; 1 h × 3 thin; LLM-off disclosed) — ✔ COMPLETE
-✔ **ALL 6 SUTs EXECUTED at pinned budgets (TT @ TT-omnibus + the 5-SUT M-YIELD-COMPLETION window 2026-07-16, `RESULT-myield-completion.md`): 29+10 seeds, 5145+~2700 tests, 26 clusters + reps + 10% audit (`CLUSTERING-myc.json`); NO yield statistic (rater-gated). CROSS-SUT FINDING: observe arms at the enhancer FINAL ROUND — budget-capped spec-rich runs never reach it (SS 0 DI records/10 armed seeds; TT same class) = a tool-behavior datum, not a defect. Enablement: TeaStore/OTel confs generated from the E1 specs (+1 authored / 4 captured seed traces; DI descoped, five source-verified reasons); 2.4 Boutique → ◐ (deployed via deploy.sh verbatim + loadgen-0; abort-rider open).**
+✔ **ALL 6 SUTs EXECUTED at pinned budgets (TT @ TT-omnibus + the 5-SUT M-YIELD-COMPLETION window 2026-07-16, `RESULT-myield-completion.md`; 3-cold review FOLDED 2026-07-16 — 6 blocking, all text/disclosure-layer, numbers unchanged): 29+10 seeds, 5145+~2700 tests, 26 clusters + reps + CROSS-SEED 10% audit (`CLUSTERING-myc.json`); NO yield statistic (rater-gated). CROSS-SUT FINDING (post-review CORRECTED mechanism — "budget-capped runs never reach the final round" was FALSE): observe arms ONLY at the enhancer FINAL ROUND, and the ARMED stretch is STARVED under 1 h budgets — SS REACHED+ARMED 10/10 yet 0 DI records (100% of 3440 writes 500'd at the type-naive tier ⇒ nothing durable to observe; kill lands mid-final-round before `maybeEndObserve`; jaeger-off tier cap = defect tier unreachable by construction); TT 4/10 armed w/ triple-coverage miss + 6/10 never reached = a tool-behavior datum, not a defect. Enablement: TeaStore/OTel confs generated from the E1 specs (+1 authored / 4 captured seed traces; DI descoped, five source-verified reasons); 2.4 Boutique → ◐ (deployed via deploy.sh verbatim + loadgen-0; abort-rider open). Disclosed deviations (RESULT disclosures 4/7): SS binding-smoke non-pass ⇒ ran DI-enabled-but-unclaimed; plan-§2 oracle-key disable not implemented (inert by construction).**
 ◐ (superseded detail) **TT LEG EXECUTED (TT-omnibus 2026-07-15, `RESULT-tt-omnibus.md`):** 10 seeds × 1 h, LLM-off,
   canonical registry armed; 1 natural-complete (2707/2707) + 9 killed-at-budget; **flagged events = 0**
   (DI observe 0 across seeds — hooked steps never covered the 2 registry triples in-budget; injected-fault
@@ -310,10 +310,15 @@ Sources consolidated: plan v2 §5, `c2-freeze.md` rev 2, `e-sut-applicability-ma
 
 ## Standing constraints (never forget)
 - Single box; 26 GB WSL for TT; tenancy schedule; never build while a graph is deployed; docker-exec
-  recovery runbook; disk prune per wave; kind cluster "mist" **(footer refreshed 2026-07-15,
-  TT-omnibus C-12 rider): ALL tenants at 0 (trainticket incl. infra sts, otel-demo, teastore;
-  PVCs + helm releases persist; snapshots in /home/miaot/gate1-logs/ttomni/), minikube stopped;
-  revival = `b4/runners/ttomni/revive-stage.sh` (TT full-graph) / per-SUT snapshots.**
+  recovery runbook; disk prune per wave; kind cluster "mist" **(footer refreshed 2026-07-16,
+  MYC close): ALL tenants at 0 — trainticket (incl. infra sts), otel-demo (lone
+  otel-collector-agent DaemonSet pod = known negligible residual), teastore, sock-shop,
+  bookinfo (lives in `default` ns — no bookinfo ns exists), boutique (ns PRESERVED, all
+  deployments 0); PVCs + helm releases persist; snapshots in /home/miaot/gate1-logs/ttomni/;
+  minikube stopped; revival = `b4/runners/ttomni/revive-stage.sh` (TT full-graph) /
+  `b4/runners/ttomni/myc-revive.sh` (teastore|oteldemo|sockshop|bookinfo per-SUT; SS needs
+  the rabbit `mist:mist` user + warm-up POST) / boutique = the committed `deploy.sh`
+  VERBATIM + loadgenerator→0.**
 - All MIST-repo changes on `main_track`; no Co-Authored-By; no file deletion; FILE_INDEX + memory sync.
 - Frozen docs change only via disclosed amendments (`c2-freeze.md` §6).
 - Paper honesty riders: lead with the study; two-denominator S1; tell-free floor; MIST vs arm-3
