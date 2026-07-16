@@ -1,0 +1,636 @@
+{
+ "schema": "mist-column-census/1",
+ "generated_by": "build_mist_column_census.py (completion-set wave A5)",
+ "note": "Verdict provenance + the 8 not_applicable adjudications are filled by the wave; no silent pending may survive (plan 3.5).",
+ "tally": {
+  "not_applicable": 8,
+  "no_flag": 11,
+  "flag": 7
+ },
+ "adjudication_tally": {
+  "structural": 3,
+  "structural-by-convention": 1,
+  "bindable-pending-eval": 4
+ },
+ "cases": [
+  {
+   "case_id": "bookinfo-ratings-benign-001",
+   "file": "bookinfo-ratings-benign-001.json",
+   "sut": {
+    "name": "bookinfo",
+    "repo": "github.com/istio/istio (samples/bookinfo)",
+    "branch": "",
+    "commit": "",
+    "deploy": "kind cluster 'mist', ns default; istio-1.30 bookinfo samples, all sidecar-injected; reviews VS pinned to subset v3 (v3 always calls ratings; asserted read-only pre-capture); entry via istio ingressgateway. Leg = ratings-v1 scale (control up / benign leg 0).",
+    "replay_script": "debug/a-main/benchmark/b4/capture-specs/bookinfo-productpage.yaml",
+    "health_precondition": null
+   },
+   "label": "negative",
+   "fault_class": "swallowed_downstream_error",
+   "mist_readback_oracle": "not_applicable",
+   "oracle_mode": "paired",
+   "mist_commit": "7d69de9",
+   "capture_status": "captured",
+   "readback_shape": "degraded-present",
+   "adjudication": {
+    "class": "structural",
+    "reason": "read-path degradation case: no write is intended and no durable read-back exists (readback.modality=none-durable; the discriminator is the trace) - the read-back oracle has no target by construction"
+   },
+   "provenance_run": null
+  },
+  {
+   "case_id": "oteldemo-checkout-control-001",
+   "file": "oteldemo-checkout-control-001.json",
+   "sut": {
+    "name": "oteldemo",
+    "repo": "github.com/open-telemetry/opentelemetry-demo",
+    "branch": "",
+    "commit": "app 2.2.0 / helm chart 0.40.9 (pinned at install)",
+    "image_digest": "sha256:6d0183a38947840837321f7c90d4e01eb70a4dc4e74c150749e62302a15b3eb0",
+    "deploy": "kind cluster 'mist', ns otel-demo; chart open-telemetry/opentelemetry-demo 0.40.9 (app 2.2.0), 21 workloads; pinned values /home/miaot/gate1-logs/tenancy-window/otel/otel-values.yaml (load-generator/llm/product-reviews disabled; grafana/prometheus/opensearch off; collector traces -> bundled jaeger untouched). Digest above = checkout; accounting sha256:1c5ec157..., kafka sha256:5bd713c7.... Natively OTel-instrumented; jaeger query API /jaeger/ui/api/*. frontend-proxy PF localhost:8085. Leg = kafka scale (this control = up).",
+    "replay_script": "debug/a-main/benchmark/b4/capture-specs/oteldemo-checkout-flow.yaml",
+    "health_precondition": null
+   },
+   "label": "negative",
+   "fault_class": "none",
+   "mist_readback_oracle": "no_flag",
+   "oracle_mode": "paired",
+   "mist_commit": "7d69de9",
+   "capture_status": "captured",
+   "readback_shape": "present-landed",
+   "adjudication": null,
+   "provenance_run": "2.75-A OTel control leg (no_flag)"
+  },
+  {
+   "case_id": "oteldemo-checkout-eventual-benign-001",
+   "file": "oteldemo-checkout-eventual-benign-001.json",
+   "sut": {
+    "name": "oteldemo",
+    "repo": "github.com/open-telemetry/opentelemetry-demo",
+    "branch": "",
+    "commit": "app 2.2.0 / helm chart 0.40.9 (pinned at install)",
+    "image_digest": "sha256:6d0183a38947840837321f7c90d4e01eb70a4dc4e74c150749e62302a15b3eb0",
+    "deploy": "kind cluster 'mist', ns otel-demo; chart open-telemetry/opentelemetry-demo 0.40.9 (app 2.2.0). Natively OTel-instrumented. frontend-proxy PF localhost:8085. This case is a NATURAL by-product of the S3 wild-hunt counted window (NO fault injected; flagd at frozen 15-off defaults, load-generator OFF) — the write w120 that was absent-at-cap and present at the >=T+5min re-probe (bounded eventual consistency on the async kafka->accounting path).",
+    "replay_script": "debug/a-main/benchmark/b4/runners/s3/oteldemo.sh",
+    "health_precondition": null
+   },
+   "label": "negative",
+   "fault_class": "none",
+   "mist_readback_oracle": "no_flag",
+   "oracle_mode": "observe",
+   "mist_commit": "10eb19e",
+   "capture_status": "captured",
+   "readback_shape": "eventual-present",
+   "adjudication": null,
+   "provenance_run": "S3 w120 natural observation + R1d-B source-verified observe abstention (TIMEOUT_ABSENT=WARN-only => no_flag)"
+  },
+  {
+   "case_id": "oteldemo-checkout-eventual-benign-002",
+   "file": "oteldemo-checkout-eventual-benign-002.json",
+   "sut": {
+    "name": "oteldemo",
+    "repo": "github.com/open-telemetry/opentelemetry-demo",
+    "branch": "",
+    "commit": "app 2.2.0 / helm chart 0.40.9 (pinned at install)",
+    "image_digest": "sha256:6d0183a38947840837321f7c90d4e01eb70a4dc4e74c150749e62302a15b3eb0",
+    "deploy": "kind cluster 'mist', ns otel-demo; chart open-telemetry/opentelemetry-demo 0.40.9 (app 2.2.0). Natively OTel-instrumented. frontend-proxy PF localhost:8085. This case is an INDUCED bounded-eventual-consistency benign (NOT natural): the accounting CONSUMER deployment was scaled to 0 replicas so the checkout->kafka 'orders' message BUFFERS durably while accounting cannot consume; the order is acked (200, orderId) and the accounting.shipping row stays ABSENT past MIST's ~25s read-back cap; accounting is then scaled back to 1, the consumer drains the backlog, and the row LANDS (PRESENT at the re-probe). Kafka pod is NEVER touched (no rdkafka wedge). Capture log: debug/a-main/benchmark/b4/captures/oteldemo-checkout-eventual-induced/r1d-run-1784003126.log (benign #1, marker r1dev1-1784003126).",
+    "replay_script": "debug/a-main/benchmark/b4/runners/r1/r1d-otel-eventual.sh",
+    "health_precondition": null
+   },
+   "label": "negative",
+   "fault_class": "none",
+   "mist_readback_oracle": "no_flag",
+   "oracle_mode": "observe",
+   "mist_commit": "7d69de9",
+   "capture_status": "captured",
+   "readback_shape": "eventual-present",
+   "adjudication": null,
+   "provenance_run": "R1d induced capture (observe abstention => no_flag; DataIntegrityObserveCheck L58-73)"
+  },
+  {
+   "case_id": "oteldemo-checkout-eventual-benign-003",
+   "file": "oteldemo-checkout-eventual-benign-003.json",
+   "sut": {
+    "name": "oteldemo",
+    "repo": "github.com/open-telemetry/opentelemetry-demo",
+    "branch": "",
+    "commit": "app 2.2.0 / helm chart 0.40.9 (pinned at install)",
+    "image_digest": "sha256:6d0183a38947840837321f7c90d4e01eb70a4dc4e74c150749e62302a15b3eb0",
+    "deploy": "kind cluster 'mist', ns otel-demo; chart open-telemetry/opentelemetry-demo 0.40.9 (app 2.2.0). Natively OTel-instrumented. frontend-proxy PF localhost:8085. This case is an INDUCED bounded-eventual-consistency benign (NOT natural): the accounting CONSUMER deployment was scaled to 0 replicas so the checkout->kafka 'orders' message BUFFERS durably while accounting cannot consume; the order is acked (200, orderId) and the accounting.shipping row stays ABSENT past MIST's ~25s read-back cap; accounting is then scaled back to 1, the consumer drains the backlog, and the row LANDS (PRESENT at the re-probe). Kafka pod is NEVER touched (no rdkafka wedge). Capture log: debug/a-main/benchmark/b4/captures/oteldemo-checkout-eventual-induced/r1d-run-1784003126.log (benign #2, marker r1dev2-1784003126).",
+    "replay_script": "debug/a-main/benchmark/b4/runners/r1/r1d-otel-eventual.sh",
+    "health_precondition": null
+   },
+   "label": "negative",
+   "fault_class": "none",
+   "mist_readback_oracle": "no_flag",
+   "oracle_mode": "observe",
+   "mist_commit": "7d69de9",
+   "capture_status": "captured",
+   "readback_shape": "eventual-present",
+   "adjudication": null,
+   "provenance_run": "R1d induced capture (observe abstention => no_flag)"
+  },
+  {
+   "case_id": "oteldemo-checkout-lost-001",
+   "file": "oteldemo-checkout-lost-001.json",
+   "sut": {
+    "name": "oteldemo",
+    "repo": "github.com/open-telemetry/opentelemetry-demo",
+    "branch": "",
+    "commit": "app 2.2.0 / helm chart 0.40.9 (pinned at install)",
+    "image_digest": "sha256:6d0183a38947840837321f7c90d4e01eb70a4dc4e74c150749e62302a15b3eb0",
+    "deploy": "kind cluster 'mist', ns otel-demo; chart open-telemetry/opentelemetry-demo 0.40.9 (app 2.2.0), 21 workloads; pinned values /home/miaot/gate1-logs/tenancy-window/otel/otel-values.yaml (load-generator/llm/product-reviews disabled for capture hygiene + RAM; grafana/prometheus/opensearch off; collector logs+metrics pipelines -> debug only, traces -> bundled jaeger UNTOUCHED). Digest above = checkout (the swallowing service); accounting sha256:1c5ec157..., kafka sha256:5bd713c7.... Natively OTel-instrumented; jaeger v2.17 memory storage, query API /jaeger/ui/api/*. frontend-proxy PF localhost:8085, jaeger PF localhost:16687. Leg = kafka deployment scale (control up / fault 0).",
+    "replay_script": "debug/a-main/benchmark/b4/capture-specs/oteldemo-checkout-flow.yaml",
+    "health_precondition": null
+   },
+   "label": "positive",
+   "fault_class": "acknowledged_lost_write",
+   "mist_readback_oracle": "flag",
+   "oracle_mode": "paired",
+   "mist_commit": "7d69de9",
+   "capture_status": "captured",
+   "readback_shape": null,
+   "adjudication": null,
+   "provenance_run": "2.75-A OTel leg (paired FIRE 5/5; the flagship async loss, oracle_mode=paired)"
+  },
+  {
+   "case_id": "sockshop-shipping-control-001",
+   "file": "sockshop-shipping-control-001.json",
+   "sut": {
+    "name": "sockshop",
+    "repo": "github.com/microservices-demo/shipping",
+    "branch": "master",
+    "commit": "",
+    "deploy": "kind cluster 'mist', ns sock-shop (July topology, istio-injected Java legs); javaagent 1.33.6 on orders/shipping/queue-master (768Mi limits). Leg = rabbitmq scale (control up / TP leg 0).",
+    "replay_script": "debug/a-main/benchmark/b4/capture-specs/sockshop-order-flow.yaml",
+    "health_precondition": null
+   },
+   "label": "negative",
+   "fault_class": "none",
+   "mist_readback_oracle": "not_applicable",
+   "oracle_mode": "paired",
+   "mist_commit": "7d69de9",
+   "capture_status": "captured",
+   "readback_shape": "present-landed",
+   "adjudication": {
+    "class": "structural",
+    "reason": "read-back surface non-discriminating by design: order.shipment is written at order creation regardless of enqueue outcome and queue-master persists nothing (G3-prereg async question resolved NEGATIVE) - the documented applicability boundary of the oracle"
+   },
+   "provenance_run": null
+  },
+  {
+   "case_id": "sockshop-shipping-swallowed-enqueue-001",
+   "file": "sockshop-shipping-swallowed-enqueue-001.json",
+   "sut": {
+    "name": "sockshop",
+    "repo": "github.com/microservices-demo/shipping",
+    "branch": "master",
+    "commit": "",
+    "deploy": "kind cluster 'mist', ns sock-shop (July topology, istio-injected Java legs); javaagent 1.33.6 on orders/shipping/queue-master (768Mi limits). Leg = rabbitmq scale (control up / TP leg 0).",
+    "replay_script": "debug/a-main/benchmark/b4/capture-specs/sockshop-order-flow.yaml",
+    "health_precondition": null
+   },
+   "label": "positive",
+   "fault_class": "swallowed_downstream_error",
+   "mist_readback_oracle": "not_applicable",
+   "oracle_mode": "paired",
+   "mist_commit": "7d69de9",
+   "capture_status": "captured",
+   "readback_shape": null,
+   "adjudication": {
+    "class": "structural",
+    "reason": "same site as its control twin: the only durable field is written regardless of the swallowed enqueue; trace-only discriminator (rateability: trace-required-not-blind-rateable per MANIFEST-r2)"
+   },
+   "provenance_run": null
+  },
+  {
+   "case_id": "teastore-order-control-001",
+   "file": "teastore-order-control-001.json",
+   "sut": {
+    "name": "teastore",
+    "repo": "github.com/DescartesResearch/TeaStore",
+    "branch": "",
+    "commit": "v1.4.2 (release tag; images pinned :1.4.2)",
+    "image_digest": "sha256:ac6b0fe9aeca04ee31fea20caed0b49af2ddf709c28a2cf1f4b9b041af05279b",
+    "deploy": "kind cluster 'mist', ns teastore; TeaStore v1.4.2, 7 deployments (webui/auth/persistence/recommender/image/registry/db), images pinned :1.4.2 (persistence digest above; webui sha256:d0e490bd025167fefaf84d43f978c3c6d14fad9bf3cba9bc49ef902a0d106078); manifest /home/miaot/gate1-logs/tenancy-window/teastore/teastore-clusterip.yaml; webui PF localhost:8082, persistence PF localhost:8083. Kieker-only build - NO OTel/Jaeger wiring (trace-uninstrumented as-deployed). Leg = persistence MAINTENANCE flag (this control = off).",
+    "replay_script": "debug/a-main/benchmark/b4/capture-specs/teastore-order-flow.yaml",
+    "health_precondition": null
+   },
+   "label": "negative",
+   "fault_class": "none",
+   "mist_readback_oracle": "no_flag",
+   "oracle_mode": "paired",
+   "mist_commit": "7d69de9",
+   "capture_status": "captured",
+   "readback_shape": "present-landed",
+   "adjudication": null,
+   "provenance_run": "2.75-A TeaStore control leg (no_flag)"
+  },
+  {
+   "case_id": "teastore-order-depdown-specified-001",
+   "file": "teastore-order-depdown-specified-001.json",
+   "sut": {
+    "name": "teastore",
+    "repo": "github.com/DescartesResearch/TeaStore",
+    "branch": "",
+    "commit": "v1.4.2 (release tag; images pinned :1.4.2)",
+    "image_digest": "sha256:ac6b0fe9aeca04ee31fea20caed0b49af2ddf709c28a2cf1f4b9b041af05279b",
+    "deploy": "SPECIFIED against the same pinned deploy as the captured TeaStore pair (kind 'mist', ns teastore, v1.4.2, persistence digest above) — with ONE deploy-shape PRECONDITION for capture soundness stated in the notes (PVC-backed database).",
+    "replay_script": "debug/a-main/benchmark/b4/capture-specs/teastore-order-flow.yaml",
+    "health_precondition": "PVC-backed teastore-db (see notes: capture is UNSOUND on the as-deployed no-PVC shape)"
+   },
+   "label": "positive",
+   "fault_class": "acknowledged_lost_write",
+   "mist_readback_oracle": "not_applicable",
+   "oracle_mode": "paired",
+   "mist_commit": "7d69de9",
+   "capture_status": "specified",
+   "readback_shape": null,
+   "adjudication": {
+    "class": "structural-by-convention",
+    "reason": "capture_status=specified: a design-target case never captured (freeze rev-2.1 R2/R3 - oracle_expectation is a design target, never tallied as measured); no run exists to carry an oracle verdict, and capturing it = a new capture out of wave scope (positive-side widening CLOSED)"
+   },
+   "provenance_run": null
+  },
+  {
+   "case_id": "teastore-order-maintenance-masked-001",
+   "file": "teastore-order-maintenance-masked-001.json",
+   "sut": {
+    "name": "teastore",
+    "repo": "github.com/DescartesResearch/TeaStore",
+    "branch": "",
+    "commit": "v1.4.2 (release tag; images pinned :1.4.2)",
+    "image_digest": "sha256:ac6b0fe9aeca04ee31fea20caed0b49af2ddf709c28a2cf1f4b9b041af05279b",
+    "deploy": "kind cluster 'mist', ns teastore; TeaStore v1.4.2, 7 deployments (webui/auth/persistence/recommender/image/registry/db), images pinned :1.4.2 (persistence digest above; webui sha256:d0e490bd025167fefaf84d43f978c3c6d14fad9bf3cba9bc49ef902a0d106078); manifest /home/miaot/gate1-logs/tenancy-window/teastore/teastore-clusterip.yaml; webui PF localhost:8082, persistence PF localhost:8083. Kieker-only build - NO OTel/Jaeger wiring (trace-uninstrumented as-deployed). Leg = persistence MAINTENANCE flag (control off / fault on).",
+    "replay_script": "debug/a-main/benchmark/b4/capture-specs/teastore-order-flow.yaml",
+    "health_precondition": null
+   },
+   "label": "positive",
+   "fault_class": "acknowledged_lost_write",
+   "mist_readback_oracle": "flag",
+   "oracle_mode": "paired",
+   "mist_commit": "7d69de9",
+   "capture_status": "captured",
+   "readback_shape": null,
+   "adjudication": null,
+   "provenance_run": "2.75-A TeaStore leg (freeze 2.75-A row: paired FIRE 5/5 ground-truth-verified)"
+  },
+  {
+   "case_id": "teastore-order-meshsever-control-001",
+   "file": "teastore-order-meshsever-control-001.json",
+   "sut": {
+    "name": "teastore",
+    "repo": "github.com/DescartesResearch/TeaStore",
+    "branch": "",
+    "commit": "v1.4.2 (release tag; images pinned :1.4.2)",
+    "image_digest": "sha256:ac6b0fe9aeca04ee31fea20caed0b49af2ddf709c28a2cf1f4b9b041af05279b",
+    "deploy": "kind cluster 'mist', ns teastore; TeaStore v1.4.2. DEPLOY-SHAPE PARITY: this control ran with the SAME temporary Istio sidecars on webui+auth as its fault twin (2/2 verified; removed after the pair) and NO VirtualService — the pair's only variable is the VS. App trace-uninstrumented; the temporary sidecars exported nothing (A-7 probe measured). webui PF localhost:8082.",
+    "replay_script": "debug/a-main/benchmark/b4/capture-specs/teastore-order-meshsever-flow.yaml",
+    "health_precondition": null
+   },
+   "label": "negative",
+   "fault_class": "none",
+   "mist_readback_oracle": "not_applicable",
+   "oracle_mode": "paired",
+   "mist_commit": "7d69de9",
+   "capture_status": "captured",
+   "readback_shape": "present-landed",
+   "adjudication": {
+    "class": "bindable-pending-eval",
+    "branch": "same window as its masked twin (control leg first)"
+   },
+   "provenance_run": null
+  },
+  {
+   "case_id": "teastore-order-meshsever-masked-001",
+   "file": "teastore-order-meshsever-masked-001.json",
+   "sut": {
+    "name": "teastore",
+    "repo": "github.com/DescartesResearch/TeaStore",
+    "branch": "",
+    "commit": "v1.4.2 (release tag; images pinned :1.4.2)",
+    "image_digest": "sha256:ac6b0fe9aeca04ee31fea20caed0b49af2ddf709c28a2cf1f4b9b041af05279b",
+    "deploy": "kind cluster 'mist', ns teastore; TeaStore v1.4.2 (persistence digest above; webui sha256:d0e490bd...); DEPLOY-SHAPE PARITY DISCLOSURE: BOTH legs of this pair ran with Istio sidecars TEMPORARILY on webui+auth (per-deployment pod-template labels; injected before the pair, verified 2/2, removed + verified 1/1 after — the only variable between legs is the VirtualService). App remains trace-uninstrumented (Kieker-only); the temporary sidecars measurably exported NOTHING (A-7 probe: zero traces in the istio-system jaeger for either service). webui PF localhost:8082, persistence PF localhost:8083. Leg = the VS (control absent / fault applied).",
+    "replay_script": "debug/a-main/benchmark/b4/capture-specs/teastore-order-meshsever-flow.yaml",
+    "health_precondition": null
+   },
+   "label": "positive",
+   "fault_class": "acknowledged_lost_write",
+   "mist_readback_oracle": "not_applicable",
+   "oracle_mode": "paired",
+   "mist_commit": "7d69de9",
+   "capture_status": "captured",
+   "readback_shape": null,
+   "adjudication": {
+    "class": "bindable-pending-eval",
+    "branch": "RUN at the Phase-C TeaStore short window (plan 3.5 A5(iii)): 2.75-A-style read-back binding over the committed runner b4/runners/3a/item2-meshsever.sh, control-first, ground truth = direct reads never MIST; window fails => restamp not_evaluable-with-reason, disclosed"
+   },
+   "provenance_run": null
+  },
+  {
+   "case_id": "teastore-orderitems-meshsever-control-001",
+   "file": "teastore-orderitems-meshsever-control-001.json",
+   "sut": {
+    "name": "teastore",
+    "repo": "github.com/DescartesResearch/TeaStore",
+    "branch": "",
+    "commit": "v1.4.2 (release tag; images pinned :1.4.2)",
+    "image_digest": "sha256:ac6b0fe9aeca04ee31fea20caed0b49af2ddf709c28a2cf1f4b9b041af05279b",
+    "deploy": "kind cluster 'mist', ns teastore; TeaStore v1.4.2 (persistence digest above). DEPLOY-SHAPE PARITY: sidecars TEMPORARILY on webui+auth (parity with the fault twin), NO VirtualService on this leg. App trace-uninstrumented (Kieker-only). webui PF localhost:8082, persistence PF localhost:8083.",
+    "replay_script": "debug/a-main/benchmark/b4/capture-specs/teastore-orderitems-meshsever-flow.yaml",
+    "health_precondition": null
+   },
+   "label": "negative",
+   "fault_class": "none",
+   "mist_readback_oracle": "not_applicable",
+   "oracle_mode": "paired",
+   "mist_commit": "7d69de9",
+   "capture_status": "captured",
+   "readback_shape": "present-landed",
+   "adjudication": {
+    "class": "bindable-pending-eval",
+    "branch": "same window as its masked twin (control leg first)"
+   },
+   "provenance_run": null
+  },
+  {
+   "case_id": "teastore-orderitems-meshsever-masked-001",
+   "file": "teastore-orderitems-meshsever-masked-001.json",
+   "sut": {
+    "name": "teastore",
+    "repo": "github.com/DescartesResearch/TeaStore",
+    "branch": "",
+    "commit": "v1.4.2 (release tag; images pinned :1.4.2)",
+    "image_digest": "sha256:ac6b0fe9aeca04ee31fea20caed0b49af2ddf709c28a2cf1f4b9b041af05279b",
+    "deploy": "kind cluster 'mist', ns teastore; TeaStore v1.4.2 (persistence digest above). DEPLOY-SHAPE PARITY DISCLOSURE: BOTH legs of this pair ran with Istio sidecars TEMPORARILY on webui+auth (per-deployment pod-template labels; injected before the pair, verified, removed + verified 1/1 after — the only variable between legs is the VirtualService). App remains trace-uninstrumented (Kieker-only). webui PF localhost:8082, persistence PF localhost:8083. Leg = the VS (control absent / fault applied on the /rest/orderitems prefix only).",
+    "replay_script": "debug/a-main/benchmark/b4/capture-specs/teastore-orderitems-meshsever-flow.yaml",
+    "health_precondition": null
+   },
+   "label": "positive",
+   "fault_class": "acknowledged_lost_write",
+   "mist_readback_oracle": "not_applicable",
+   "oracle_mode": "paired",
+   "mist_commit": "7d69de9",
+   "capture_status": "captured",
+   "readback_shape": null,
+   "adjudication": {
+    "class": "bindable-pending-eval",
+    "branch": "RUN at the same window over b4/runners/r1/r1-a2-orderitems.sh (child-collection site; control-first)"
+   },
+   "provenance_run": null
+  },
+  {
+   "case_id": "TT-adminbasic-contacts-control-001",
+   "file": "TT-adminbasic-contacts-control-001.json",
+   "sut": {
+    "name": "trainticket",
+    "repo": "github.com/miaoti/train-ticket-injection",
+    "branch": "MIST-trainticket",
+    "commit": "a1767ab3",
+    "image_digest": "sha256:1c9913eaf0e153d4665f5c6cebec07c4d1c26b09a975baced568d58fdcc6eb6d",
+    "deploy": "kind cluster 'mist', ns trainticket; SAME fork ts-admin-basic-info-service:1.0.5 image as the lost-write twin, env MIST_FAULT_LOSTWRITE_ENABLED=false -> the unmodified persist path (forwards to ts-contacts-service). Same-binary twin: only the env flag differs. Restored to base 1.0.0 after capture.",
+    "replay_script": "debug/a-main/benchmark/b4/capture-specs/tt-s2-adminbasic-contacts-control.yaml",
+    "health_precondition": null
+   },
+   "label": "negative",
+   "fault_class": "none",
+   "mist_readback_oracle": "no_flag",
+   "oracle_mode": "paired",
+   "mist_commit": "7d69de9",
+   "capture_status": "captured",
+   "readback_shape": "present-landed",
+   "adjudication": null,
+   "provenance_run": "manual-G0 control record (no_flag; same disclosure as its twin)"
+  },
+  {
+   "case_id": "TT-adminbasic-contacts-lostwrite-001",
+   "file": "TT-adminbasic-contacts-lostwrite-001.json",
+   "sut": {
+    "name": "trainticket",
+    "repo": "github.com/miaoti/train-ticket-injection",
+    "branch": "MIST-trainticket",
+    "commit": "a1767ab3",
+    "image_digest": "sha256:1c9913eaf0e153d4665f5c6cebec07c4d1c26b09a975baced568d58fdcc6eb6d",
+    "deploy": "kind cluster 'mist', ns trainticket (quick_start base codewisdom/*:1.0.0); FORK ts-admin-basic-info-service:1.0.5 built from the clean a1767ab3 working tree, kind-loaded, swapped in via kubectl set image + set env MIST_FAULT_LOSTWRITE_ENABLED=true for the capture, then RESTORED to base 1.0.0 (flag env removed).",
+    "replay_script": "debug/a-main/benchmark/b4/capture-specs/tt-s1-adminbasic-contacts-lostwrite.yaml",
+    "health_precondition": null
+   },
+   "label": "positive",
+   "fault_class": "acknowledged_lost_write",
+   "mist_readback_oracle": "flag",
+   "oracle_mode": "paired",
+   "mist_commit": "7d69de9",
+   "capture_status": "captured",
+   "readback_shape": null,
+   "adjudication": null,
+   "provenance_run": "manual-G0 evidence (G1 run-3 contacts triple NOT_EVALUABLE - unhooked-scenario gap; the flag rests on the manual G0 record, disclosed)"
+  },
+  {
+   "case_id": "TT-adminroute-control-001",
+   "file": "TT-adminroute-control-001.json",
+   "sut": {
+    "name": "trainticket",
+    "repo": "github.com/miaoti/train-ticket-injection",
+    "branch": "MIST-trainticket",
+    "commit": "a1767ab3",
+    "image_digest": "sha256:cc04306a0823fc4c06efbfb073068390fe59e42d8688c7769e4e42c2c611f91c",
+    "deploy": "kind cluster 'mist', ns trainticket; ts-admin-route-service + ts-route-service are UPSTREAM base codewisdom/*:1.0.0 (image_digest pins the deployed base ts-admin-route-service; only ts-inside-payment-service is the fork). No fault flag set.",
+    "replay_script": "debug/a-main/benchmark/b4/capture-specs/tt-control-adminroute.yaml",
+    "health_precondition": null
+   },
+   "label": "negative",
+   "fault_class": "none",
+   "mist_readback_oracle": "no_flag",
+   "oracle_mode": "paired",
+   "mist_commit": "7d69de9",
+   "capture_status": "captured",
+   "readback_shape": "present-landed",
+   "adjudication": null,
+   "provenance_run": "G1 run-3 benign record (sync FP 0/2127 corpus => no_flag)"
+  },
+  {
+   "case_id": "TT-adminroute-lostwrite-001",
+   "file": "TT-adminroute-lostwrite-001.json",
+   "sut": {
+    "name": "trainticket",
+    "repo": "github.com/miaoti/train-ticket-injection",
+    "branch": "MIST-trainticket",
+    "commit": "a1767ab3",
+    "image_digest": "sha256:e5af2936b051db882ee25fe3963b266d73877fc6e25946a7157f8c8410e3119d",
+    "deploy": "kind cluster 'mist', ns trainticket (quick_start base codewisdom/*:1.0.0); FORK ts-admin-route-service:1.0.5 built from the clean a1767ab3 working tree, kind-loaded, swapped in via kubectl set image + set env MIST_FAULT_LOSTWRITE_ENABLED=true for the capture, then RESTORED to base 1.0.0 (flag env removed).",
+    "replay_script": "debug/a-main/benchmark/b4/capture-specs/tt-s1-adminroute-lostwrite.yaml",
+    "health_precondition": null
+   },
+   "label": "positive",
+   "fault_class": "acknowledged_lost_write",
+   "mist_readback_oracle": "flag",
+   "oracle_mode": "paired",
+   "mist_commit": "7d69de9",
+   "capture_status": "captured",
+   "readback_shape": null,
+   "adjudication": null,
+   "provenance_run": "G1 run-3 (prep/gate1-run3-report.json: FIRE, strong stratum)"
+  },
+  {
+   "case_id": "TT-cancel-refund-clean-001",
+   "file": "TT-cancel-refund-clean-001.json",
+   "sut": {
+    "name": "trainticket",
+    "repo": "github.com/miaoti/train-ticket-injection",
+    "branch": "MIST-trainticket",
+    "commit": "a1767ab3",
+    "image_digest": "sha256:81186b71c1e4a3be56a3f6f8670d45ccfc04f68956e864cced27920ac1bf50d4",
+    "deploy": "kind cluster 'mist', ns trainticket; hack/deploy quick_start = codewisdom/*:1.0.0 + fork ts-inside-payment-service:1.0.5 (drawbackFaultMode=none)",
+    "replay_script": "debug/a-main/benchmark/b4/capture-specs/tt-cancel-refund.yaml",
+    "health_precondition": null
+   },
+   "label": "negative",
+   "fault_class": "none",
+   "mist_readback_oracle": "no_flag",
+   "oracle_mode": "paired",
+   "mist_commit": "7d69de9",
+   "capture_status": "captured",
+   "readback_shape": "present-landed",
+   "adjudication": null,
+   "provenance_run": "G3 h2h control + TT-omnibus control (OBSERVED_PRESENT 5/5 => no_flag)"
+  },
+  {
+   "case_id": "TT-cancel-refund-fabricatedack-001",
+   "file": "TT-cancel-refund-fabricatedack-001.json",
+   "sut": {
+    "name": "trainticket",
+    "repo": "github.com/miaoti/train-ticket-injection",
+    "branch": "MIST-trainticket",
+    "commit": "a1767ab3",
+    "image_digest": "sha256:81186b71c1e4a3be56a3f6f8670d45ccfc04f68956e864cced27920ac1bf50d4",
+    "deploy": "kind cluster 'mist', ns trainticket; hack/deploy quick_start = codewisdom/*:1.0.0 + fork ts-inside-payment-service:1.0.5 (runtime drawback faultmode toggle)",
+    "replay_script": "debug/a-main/benchmark/b4/capture-specs/tt-cancel-refund.yaml",
+    "health_precondition": null
+   },
+   "label": "positive",
+   "fault_class": "acknowledged_lost_write",
+   "mist_readback_oracle": "flag",
+   "oracle_mode": "paired",
+   "mist_commit": "7d69de9",
+   "capture_status": "captured",
+   "readback_shape": null,
+   "adjudication": null,
+   "provenance_run": "G3 head-to-head cells + TT-omnibus leg-1/paired rerun (paired FIRE 5/5 live provenance; observe OBSERVED_COMPLETE_ABSENT 5/5)"
+  },
+  {
+   "case_id": "TT-cancel-refund-natural-001",
+   "file": "TT-cancel-refund-natural-001.json",
+   "sut": {
+    "name": "trainticket",
+    "repo": "github.com/miaoti/train-ticket-injection",
+    "branch": "MIST-trainticket",
+    "commit": "a1767ab3",
+    "image_digest": "sha256:81186b71c1e4a3be56a3f6f8670d45ccfc04f68956e864cced27920ac1bf50d4",
+    "deploy": "kind cluster 'mist', ns trainticket; hack/deploy quick_start = codewisdom/*:1.0.0 + fork ts-inside-payment-service:1.0.5 (runtime drawback faultmode toggle)",
+    "replay_script": "debug/a-main/benchmark/b4/capture-specs/tt-cancel-refund.yaml",
+    "health_precondition": null
+   },
+   "label": "positive",
+   "fault_class": "acknowledged_lost_write",
+   "mist_readback_oracle": "flag",
+   "oracle_mode": "paired",
+   "mist_commit": "7d69de9",
+   "capture_status": "captured",
+   "readback_shape": null,
+   "adjudication": null,
+   "provenance_run": "G3 TT natural cancel-refund defect record (flag)"
+  },
+  {
+   "case_id": "TT-contacts-dedupe-benign-001",
+   "file": "TT-contacts-dedupe-benign-001.json",
+   "sut": {
+    "name": "trainticket",
+    "repo": "github.com/miaoti/train-ticket-injection",
+    "branch": "MIST-trainticket",
+    "commit": "a1767ab3",
+    "image_digest": "sha256:ac8cf32a0053d453c4a02b6a5293473d483d6aa0c62a7d7c4b90258999ed529f",
+    "deploy": "kind cluster 'mist', ns trainticket; ts-contacts-service is UPSTREAM base codewisdom/ts-contacts-service:1.0.0 (image_digest pins the deployed base). No fault injected; the trigger is a duplicate create.",
+    "replay_script": "debug/a-main/benchmark/b4/capture-specs/tt-benign-contacts-dedupe.yaml",
+    "health_precondition": null
+   },
+   "label": "negative",
+   "fault_class": "acknowledged_lost_write",
+   "mist_readback_oracle": "no_flag",
+   "oracle_mode": "paired",
+   "mist_commit": "7d69de9",
+   "capture_status": "captured",
+   "readback_shape": "reject-no-delta",
+   "adjudication": null,
+   "provenance_run": "R1 T2 re-capture (legacy trap re-captured under the T2 cadence; no_flag)"
+  },
+  {
+   "case_id": "TT-contacts-noop-modify-benign-001",
+   "file": "TT-contacts-noop-modify-benign-001.json",
+   "sut": {
+    "name": "trainticket",
+    "repo": "github.com/miaoti/train-ticket-injection",
+    "branch": "MIST-trainticket",
+    "commit": "a1767ab3",
+    "image_digest": "sha256:ac8cf32a0053d453c4a02b6a5293473d483d6aa0c62a7d7c4b90258999ed529f",
+    "deploy": "kind cluster 'mist', ns trainticket; ts-contacts-service = UPSTREAM base codewisdom/ts-contacts-service:1.0.0 (no fork, no rollout, no fault flag anywhere).",
+    "replay_script": "debug/a-main/benchmark/b4/capture-specs/tt-s2-contacts-noop-modify.yaml",
+    "health_precondition": null
+   },
+   "label": "negative",
+   "fault_class": "acknowledged_lost_write",
+   "mist_readback_oracle": "no_flag",
+   "oracle_mode": "paired",
+   "mist_commit": "7d69de9",
+   "capture_status": "captured",
+   "readback_shape": "reject-no-delta",
+   "adjudication": null,
+   "provenance_run": "R1 T2 re-capture (no_flag)"
+  },
+  {
+   "case_id": "TT-createaccount-agreement-001",
+   "file": "TT-createaccount-agreement-001.json",
+   "sut": {
+    "name": "trainticket",
+    "repo": "github.com/miaoti/train-ticket-injection",
+    "branch": "MIST-trainticket",
+    "commit": "a1767ab3",
+    "image_digest": "sha256:81186b71c1e4a3be56a3f6f8670d45ccfc04f68956e864cced27920ac1bf50d4",
+    "deploy": "kind cluster 'mist', ns trainticket; hack/deploy quick_start = codewisdom/*:1.0.0 + fork ts-inside-payment-service:1.0.5 (runtime createAccount faultmode toggle)",
+    "replay_script": "debug/a-main/benchmark/b4/capture-specs/tt-createaccount.yaml",
+    "health_precondition": null
+   },
+   "label": "positive",
+   "fault_class": "acknowledged_lost_write",
+   "mist_readback_oracle": "flag",
+   "oracle_mode": "paired",
+   "mist_commit": "7d69de9",
+   "capture_status": "captured",
+   "readback_shape": null,
+   "adjudication": null,
+   "provenance_run": "case-file capture-of-record notes + the corpus-wide mist_commit pin (no dedicated oracle run beyond the capture wave)"
+  },
+  {
+   "case_id": "TT-createaccount-clean-001",
+   "file": "TT-createaccount-clean-001.json",
+   "sut": {
+    "name": "trainticket",
+    "repo": "github.com/miaoti/train-ticket-injection",
+    "branch": "MIST-trainticket",
+    "commit": "a1767ab3",
+    "image_digest": "sha256:81186b71c1e4a3be56a3f6f8670d45ccfc04f68956e864cced27920ac1bf50d4",
+    "deploy": "kind cluster 'mist', ns trainticket; hack/deploy quick_start = codewisdom/*:1.0.0 + fork ts-inside-payment-service:1.0.5 (createAccountFaultMode=none)",
+    "replay_script": "debug/a-main/benchmark/b4/capture-specs/tt-createaccount.yaml",
+    "health_precondition": null
+   },
+   "label": "negative",
+   "fault_class": "none",
+   "mist_readback_oracle": "no_flag",
+   "oracle_mode": "paired",
+   "mist_commit": "7d69de9",
+   "capture_status": "captured",
+   "readback_shape": "present-landed",
+   "adjudication": null,
+   "provenance_run": "case-file capture-of-record notes + the corpus-wide mist_commit pin (no dedicated oracle run beyond the capture wave)"
+  }
+ ]
+}
