@@ -1,0 +1,98 @@
+{
+ "schema": "calibration-rehearsal/1",
+ "generated_by": "b4/rehearse_calibration.py (completion-set wave A3-iv)",
+ "note": "REHEARSAL ONLY - no assignment, no seal. Demand of record (R1d): target 50 w/ benign share ~40-43; the structural shortfall is the corpus's disclosed finding, quantified here per seal-time branch.",
+ "target": 50,
+ "benign_skew_floor": 2.0,
+ "pools": {
+  "('tt-collection-truncation-gated', 'negative')": [
+   "TT-adminbasic-contacts-control-001",
+   "TT-adminroute-control-001",
+   "TT-cancel-refund-clean-001",
+   "TT-createaccount-clean-001"
+  ],
+  "('tt-collection-truncation-gated', 'positive')": [
+   "TT-adminbasic-contacts-lostwrite-001",
+   "TT-adminroute-lostwrite-001",
+   "TT-cancel-refund-fabricatedack-001",
+   "TT-cancel-refund-natural-001",
+   "TT-createaccount-agreement-001"
+  ],
+  "('ok', 'negative')": [
+   "TT-contacts-dedupe-benign-001",
+   "TT-contacts-noop-modify-benign-001",
+   "bookinfo-ratings-benign-001",
+   "oteldemo-checkout-control-001",
+   "oteldemo-checkout-eventual-benign-001",
+   "oteldemo-checkout-eventual-benign-002",
+   "oteldemo-checkout-eventual-benign-003",
+   "sockshop-shipping-control-001",
+   "teastore-order-control-001",
+   "teastore-order-meshsever-control-001",
+   "teastore-orderitems-meshsever-control-001"
+  ],
+  "('async-no-bound-calibration-ineligible', 'positive')": [
+   "oteldemo-checkout-lost-001"
+  ],
+  "('trace-required-not-blind-rateable', 'positive')": [
+   "sockshop-shipping-swallowed-enqueue-001"
+  ],
+  "('ok', 'positive')": [
+   "teastore-order-maintenance-masked-001",
+   "teastore-order-meshsever-masked-001",
+   "teastore-orderitems-meshsever-masked-001"
+  ]
+ },
+ "scenarios": [
+  {
+   "scenario": "S0-ok-only (current sealed rateability)",
+   "note": "no seal-time branches taken",
+   "benign": 11,
+   "genuine": 3,
+   "genuine_held_for_skew": [],
+   "units": 14,
+   "target": 50,
+   "shortfall": 36,
+   "skew_ok_as_drawn": true
+  },
+  {
+   "scenario": "S1-ok + truncation-branch-(a) re-capture",
+   "note": "A3(ii) branch (a): +9 units IF the USER elects the TT re-capture window",
+   "benign": 15,
+   "genuine": 7,
+   "genuine_held_for_skew": [
+    "TT-createaccount-agreement-001"
+   ],
+   "units": 22,
+   "target": 50,
+   "shortfall": 28,
+   "skew_ok_as_drawn": false
+  },
+  {
+   "scenario": "S2-ok + SS-include",
+   "note": "A3(iii-a) branch (b): +1 genuine w/ white-box tell cost",
+   "benign": 11,
+   "genuine": 4,
+   "genuine_held_for_skew": [],
+   "units": 15,
+   "target": 50,
+   "shortfall": 35,
+   "skew_ok_as_drawn": true
+  }
+ ],
+ "entry_gate_dry_run": {
+  "same_harness_manifest (schema uniform + deterministic_all)": true,
+  "corpus_content_hash_present": true,
+  "capture_status_captured_by_construction": "25/25 (the specified case has no sidecar row)",
+  "disjointness_calibration_vs_eligibility": true,
+  "disjointness_vs_S3_confirmed": "|S3|=0 - vacuous",
+  "disjointness_vs_myield_audit": "M-yield audit = generated-test level, never corpus cases - disjoint by type",
+  "opaque_id_guard": "render-time mechanical guard (E1+R2 hardening) - enforced at cut",
+  "USER-PENDING (not machine-checkable now)": [
+   "IRB determination received BEFORE first contact",
+   "blindness-screen + debrief records per rater",
+   "rubric version sealed + corpus hash frozen at seal",
+   "worked examples authored on real calibration cases"
+  ]
+ }
+}
