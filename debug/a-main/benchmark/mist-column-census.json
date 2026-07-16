@@ -32,6 +32,10 @@
    "mist_commit": "7d69de9",
    "capture_status": "captured",
    "readback_shape": "degraded-present",
+   "trace_visibility": "error-span-visible",
+   "ack_content_visibility": "success-shaped-clean",
+   "naive_span_error_oracle": "flag",
+   "mist_trace_shape_oracle": "not_applicable",
    "adjudication": {
     "class": "structural",
     "reason": "read-path degradation case: no write is intended and no durable read-back exists (readback.modality=none-durable; the discriminator is the trace) - the read-back oracle has no target by construction"
@@ -58,6 +62,10 @@
    "mist_commit": "7d69de9",
    "capture_status": "captured",
    "readback_shape": "present-landed",
+   "trace_visibility": "span-presence-visible",
+   "ack_content_visibility": "success-shaped-clean",
+   "naive_span_error_oracle": "no_flag",
+   "mist_trace_shape_oracle": "not_applicable",
    "adjudication": null,
    "provenance_run": "2.75-A OTel control leg (no_flag)"
   },
@@ -81,6 +89,10 @@
    "mist_commit": "10eb19e",
    "capture_status": "captured",
    "readback_shape": "eventual-present",
+   "trace_visibility": "span-presence-visible",
+   "ack_content_visibility": "success-shaped-clean",
+   "naive_span_error_oracle": "no_flag",
+   "mist_trace_shape_oracle": "not_applicable",
    "adjudication": null,
    "provenance_run": "S3 w120 natural observation + R1d-B source-verified observe abstention (TIMEOUT_ABSENT=WARN-only => no_flag)"
   },
@@ -104,6 +116,10 @@
    "mist_commit": "7d69de9",
    "capture_status": "captured",
    "readback_shape": "eventual-present",
+   "trace_visibility": "span-presence-visible",
+   "ack_content_visibility": "success-shaped-clean",
+   "naive_span_error_oracle": "no_flag",
+   "mist_trace_shape_oracle": "not_applicable",
    "adjudication": null,
    "provenance_run": "R1d induced capture (observe abstention => no_flag; DataIntegrityObserveCheck L58-73)"
   },
@@ -127,6 +143,10 @@
    "mist_commit": "7d69de9",
    "capture_status": "captured",
    "readback_shape": "eventual-present",
+   "trace_visibility": "span-presence-visible",
+   "ack_content_visibility": "success-shaped-clean",
+   "naive_span_error_oracle": "no_flag",
+   "mist_trace_shape_oracle": "not_applicable",
    "adjudication": null,
    "provenance_run": "R1d induced capture (observe abstention => no_flag)"
   },
@@ -150,6 +170,10 @@
    "mist_commit": "7d69de9",
    "capture_status": "captured",
    "readback_shape": null,
+   "trace_visibility": "span-presence-visible",
+   "ack_content_visibility": "success-shaped-clean",
+   "naive_span_error_oracle": "no_flag",
+   "mist_trace_shape_oracle": "not_applicable",
    "adjudication": null,
    "provenance_run": "2.75-A OTel leg (paired FIRE 5/5; the flagship async loss, oracle_mode=paired)"
   },
@@ -172,6 +196,10 @@
    "mist_commit": "7d69de9",
    "capture_status": "captured",
    "readback_shape": "present-landed",
+   "trace_visibility": "error-span-visible",
+   "ack_content_visibility": "success-shaped-clean",
+   "naive_span_error_oracle": "flag",
+   "mist_trace_shape_oracle": "not_applicable",
    "adjudication": {
     "class": "structural",
     "reason": "read-back surface non-discriminating by design: order.shipment is written at order creation regardless of enqueue outcome and queue-master persists nothing (G3-prereg async question resolved NEGATIVE) - the documented applicability boundary of the oracle"
@@ -197,6 +225,10 @@
    "mist_commit": "7d69de9",
    "capture_status": "captured",
    "readback_shape": null,
+   "trace_visibility": "error-span-visible",
+   "ack_content_visibility": "success-shaped-clean",
+   "naive_span_error_oracle": "no_flag",
+   "mist_trace_shape_oracle": "not_applicable",
    "adjudication": {
     "class": "structural",
     "reason": "same site as its control twin: the only durable field is written regardless of the swallowed enqueue; trace-only discriminator (rateability: trace-required-not-blind-rateable per MANIFEST-r2)"
@@ -223,6 +255,10 @@
    "mist_commit": "7d69de9",
    "capture_status": "captured",
    "readback_shape": "present-landed",
+   "trace_visibility": "trace-uninstrumented",
+   "ack_content_visibility": "success-shaped-clean",
+   "naive_span_error_oracle": "not_applicable",
+   "mist_trace_shape_oracle": "not_applicable",
    "adjudication": null,
    "provenance_run": "2.75-A TeaStore control leg (no_flag)"
   },
@@ -246,6 +282,10 @@
    "mist_commit": "7d69de9",
    "capture_status": "specified",
    "readback_shape": null,
+   "trace_visibility": "trace-uninstrumented",
+   "ack_content_visibility": "success-shaped-clean",
+   "naive_span_error_oracle": "not_applicable",
+   "mist_trace_shape_oracle": "not_applicable",
    "adjudication": {
     "class": "structural-by-convention",
     "reason": "capture_status=specified: a design-target case never captured (freeze rev-2.1 R2/R3 - oracle_expectation is a design target, never tallied as measured); no run exists to carry an oracle verdict, and capturing it = a new capture out of wave scope (positive-side widening CLOSED)"
@@ -272,6 +312,10 @@
    "mist_commit": "7d69de9",
    "capture_status": "captured",
    "readback_shape": null,
+   "trace_visibility": "trace-uninstrumented",
+   "ack_content_visibility": "success-shaped-clean",
+   "naive_span_error_oracle": "not_applicable",
+   "mist_trace_shape_oracle": "not_applicable",
    "adjudication": null,
    "provenance_run": "2.75-A TeaStore leg (freeze 2.75-A row: paired FIRE 5/5 ground-truth-verified)"
   },
@@ -295,6 +339,10 @@
    "mist_commit": "7d69de9",
    "capture_status": "captured",
    "readback_shape": "present-landed",
+   "trace_visibility": "trace-uninstrumented",
+   "ack_content_visibility": "success-shaped-clean",
+   "naive_span_error_oracle": "not_applicable",
+   "mist_trace_shape_oracle": "not_applicable",
    "adjudication": {
     "class": "bindable-pending-eval",
     "branch": "same window as its masked twin (control leg first)"
@@ -321,6 +369,10 @@
    "mist_commit": "7d69de9",
    "capture_status": "captured",
    "readback_shape": null,
+   "trace_visibility": "trace-uninstrumented",
+   "ack_content_visibility": "success-shaped-clean",
+   "naive_span_error_oracle": "not_applicable",
+   "mist_trace_shape_oracle": "not_applicable",
    "adjudication": {
     "class": "bindable-pending-eval",
     "branch": "RUN at the Phase-C TeaStore short window (plan 3.5 A5(iii)): 2.75-A-style read-back binding over the committed runner b4/runners/3a/item2-meshsever.sh, control-first, ground truth = direct reads never MIST; window fails => restamp not_evaluable-with-reason, disclosed"
@@ -347,6 +399,10 @@
    "mist_commit": "7d69de9",
    "capture_status": "captured",
    "readback_shape": "present-landed",
+   "trace_visibility": "trace-uninstrumented",
+   "ack_content_visibility": "success-shaped-clean",
+   "naive_span_error_oracle": "not_applicable",
+   "mist_trace_shape_oracle": "not_applicable",
    "adjudication": {
     "class": "bindable-pending-eval",
     "branch": "same window as its masked twin (control leg first)"
@@ -373,6 +429,10 @@
    "mist_commit": "7d69de9",
    "capture_status": "captured",
    "readback_shape": null,
+   "trace_visibility": "trace-uninstrumented",
+   "ack_content_visibility": "success-shaped-clean",
+   "naive_span_error_oracle": "not_applicable",
+   "mist_trace_shape_oracle": "not_applicable",
    "adjudication": {
     "class": "bindable-pending-eval",
     "branch": "RUN at the same window over b4/runners/r1/r1-a2-orderitems.sh (child-collection site; control-first)"
@@ -399,6 +459,10 @@
    "mist_commit": "7d69de9",
    "capture_status": "captured",
    "readback_shape": "present-landed",
+   "trace_visibility": "span-presence-visible",
+   "ack_content_visibility": "success-shaped-clean",
+   "naive_span_error_oracle": "no_flag",
+   "mist_trace_shape_oracle": "not_applicable",
    "adjudication": null,
    "provenance_run": "manual-G0 control record (no_flag; same disclosure as its twin)"
   },
@@ -422,6 +486,10 @@
    "mist_commit": "7d69de9",
    "capture_status": "captured",
    "readback_shape": null,
+   "trace_visibility": "span-presence-visible",
+   "ack_content_visibility": "success-shaped-clean",
+   "naive_span_error_oracle": "no_flag",
+   "mist_trace_shape_oracle": "not_applicable",
    "adjudication": null,
    "provenance_run": "manual-G0 evidence (G1 run-3 contacts triple NOT_EVALUABLE - unhooked-scenario gap; the flag rests on the manual G0 record, disclosed)"
   },
@@ -445,6 +513,10 @@
    "mist_commit": "7d69de9",
    "capture_status": "captured",
    "readback_shape": "present-landed",
+   "trace_visibility": "span-presence-visible",
+   "ack_content_visibility": "success-shaped-clean",
+   "naive_span_error_oracle": "no_flag",
+   "mist_trace_shape_oracle": "not_applicable",
    "adjudication": null,
    "provenance_run": "G1 run-3 benign record (sync FP 0/2127 corpus => no_flag)"
   },
@@ -468,6 +540,10 @@
    "mist_commit": "7d69de9",
    "capture_status": "captured",
    "readback_shape": null,
+   "trace_visibility": "span-presence-visible",
+   "ack_content_visibility": "success-shaped-clean",
+   "naive_span_error_oracle": "no_flag",
+   "mist_trace_shape_oracle": "not_applicable",
    "adjudication": null,
    "provenance_run": "G1 run-3 (prep/gate1-run3-report.json: FIRE, strong stratum)"
   },
@@ -491,6 +567,10 @@
    "mist_commit": "7d69de9",
    "capture_status": "captured",
    "readback_shape": "present-landed",
+   "trace_visibility": "trace-invisible-by-construction",
+   "ack_content_visibility": "success-shaped-clean",
+   "naive_span_error_oracle": "no_flag",
+   "mist_trace_shape_oracle": "not_applicable",
    "adjudication": null,
    "provenance_run": "G3 h2h control + TT-omnibus control (OBSERVED_PRESENT 5/5 => no_flag)"
   },
@@ -514,6 +594,10 @@
    "mist_commit": "7d69de9",
    "capture_status": "captured",
    "readback_shape": null,
+   "trace_visibility": "trace-invisible-by-construction",
+   "ack_content_visibility": "success-shaped-clean",
+   "naive_span_error_oracle": "no_flag",
+   "mist_trace_shape_oracle": "not_applicable",
    "adjudication": null,
    "provenance_run": "G3 head-to-head cells + TT-omnibus leg-1/paired rerun (paired FIRE 5/5 live provenance; observe OBSERVED_COMPLETE_ABSENT 5/5)"
   },
@@ -537,6 +621,10 @@
    "mist_commit": "7d69de9",
    "capture_status": "captured",
    "readback_shape": null,
+   "trace_visibility": "trace-uninstrumented",
+   "ack_content_visibility": "sentinel-in-body",
+   "naive_span_error_oracle": "not_applicable",
+   "mist_trace_shape_oracle": "not_applicable",
    "adjudication": null,
    "provenance_run": "G3 TT natural cancel-refund defect record (flag)"
   },
@@ -560,6 +648,10 @@
    "mist_commit": "7d69de9",
    "capture_status": "captured",
    "readback_shape": "reject-no-delta",
+   "trace_visibility": "trace-uninstrumented",
+   "ack_content_visibility": "status-field-tells",
+   "naive_span_error_oracle": "not_applicable",
+   "mist_trace_shape_oracle": "not_applicable",
    "adjudication": null,
    "provenance_run": "R1 T2 re-capture (legacy trap re-captured under the T2 cadence; no_flag)"
   },
@@ -583,6 +675,10 @@
    "mist_commit": "7d69de9",
    "capture_status": "captured",
    "readback_shape": "reject-no-delta",
+   "trace_visibility": "trace-uninstrumented",
+   "ack_content_visibility": "success-shaped-clean",
+   "naive_span_error_oracle": "not_applicable",
+   "mist_trace_shape_oracle": "not_applicable",
    "adjudication": null,
    "provenance_run": "R1 T2 re-capture (no_flag)"
   },
@@ -606,6 +702,10 @@
    "mist_commit": "7d69de9",
    "capture_status": "captured",
    "readback_shape": null,
+   "trace_visibility": "trace-invisible-by-construction",
+   "ack_content_visibility": "success-shaped-clean",
+   "naive_span_error_oracle": "no_flag",
+   "mist_trace_shape_oracle": "not_applicable",
    "adjudication": null,
    "provenance_run": "case-file capture-of-record notes + the corpus-wide mist_commit pin (no dedicated oracle run beyond the capture wave)"
   },
@@ -629,6 +729,10 @@
    "mist_commit": "7d69de9",
    "capture_status": "captured",
    "readback_shape": "present-landed",
+   "trace_visibility": "trace-invisible-by-construction",
+   "ack_content_visibility": "success-shaped-clean",
+   "naive_span_error_oracle": "no_flag",
+   "mist_trace_shape_oracle": "not_applicable",
    "adjudication": null,
    "provenance_run": "case-file capture-of-record notes + the corpus-wide mist_commit pin (no dedicated oracle run beyond the capture wave)"
   }

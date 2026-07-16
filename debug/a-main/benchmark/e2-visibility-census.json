@@ -1,0 +1,227 @@
+{
+ "schema": "e2-visibility-census/1",
+ "generated_by": "build_mist_column_census.py (completion-set wave A7)",
+ "derivation": "per-case trace_visibility stamps authored at capture time from capture evidence + spec (upstream of every comparator run - no circularity); this census only aggregates them",
+ "class_semantics": {
+  "error-span-visible": "fault leg carries an error span - the naive span-error class CAN see it",
+  "span-presence-visible": "no error span, but a span present/absent delta exists - presence-class arms CAN see it",
+  "trace-invisible-by-construction": "fault and control traces are shape-identical - NO trace-consuming arm can see it (the E2 N-vs-0 row)",
+  "trace-uninstrumented": "the capture has no usable trace (SUT tier uninstrumented) - NOT_EVALUABLE for trace-consuming arms"
+ },
+ "tally": {
+  "error-span-visible": 3,
+  "span-presence-visible": 9,
+  "trace-uninstrumented": 10,
+  "trace-invisible-by-construction": 4
+ },
+ "cases": [
+  {
+   "case_id": "bookinfo-ratings-benign-001",
+   "label": "negative",
+   "trace_visibility": "error-span-visible",
+   "naive_span_error_oracle": "flag",
+   "mist_trace_shape_oracle": "not_applicable",
+   "mist_readback_oracle": "not_applicable"
+  },
+  {
+   "case_id": "oteldemo-checkout-control-001",
+   "label": "negative",
+   "trace_visibility": "span-presence-visible",
+   "naive_span_error_oracle": "no_flag",
+   "mist_trace_shape_oracle": "not_applicable",
+   "mist_readback_oracle": "no_flag"
+  },
+  {
+   "case_id": "oteldemo-checkout-eventual-benign-001",
+   "label": "negative",
+   "trace_visibility": "span-presence-visible",
+   "naive_span_error_oracle": "no_flag",
+   "mist_trace_shape_oracle": "not_applicable",
+   "mist_readback_oracle": "no_flag"
+  },
+  {
+   "case_id": "oteldemo-checkout-eventual-benign-002",
+   "label": "negative",
+   "trace_visibility": "span-presence-visible",
+   "naive_span_error_oracle": "no_flag",
+   "mist_trace_shape_oracle": "not_applicable",
+   "mist_readback_oracle": "no_flag"
+  },
+  {
+   "case_id": "oteldemo-checkout-eventual-benign-003",
+   "label": "negative",
+   "trace_visibility": "span-presence-visible",
+   "naive_span_error_oracle": "no_flag",
+   "mist_trace_shape_oracle": "not_applicable",
+   "mist_readback_oracle": "no_flag"
+  },
+  {
+   "case_id": "oteldemo-checkout-lost-001",
+   "label": "positive",
+   "trace_visibility": "span-presence-visible",
+   "naive_span_error_oracle": "no_flag",
+   "mist_trace_shape_oracle": "not_applicable",
+   "mist_readback_oracle": "flag"
+  },
+  {
+   "case_id": "sockshop-shipping-control-001",
+   "label": "negative",
+   "trace_visibility": "error-span-visible",
+   "naive_span_error_oracle": "flag",
+   "mist_trace_shape_oracle": "not_applicable",
+   "mist_readback_oracle": "not_applicable"
+  },
+  {
+   "case_id": "sockshop-shipping-swallowed-enqueue-001",
+   "label": "positive",
+   "trace_visibility": "error-span-visible",
+   "naive_span_error_oracle": "no_flag",
+   "mist_trace_shape_oracle": "not_applicable",
+   "mist_readback_oracle": "not_applicable"
+  },
+  {
+   "case_id": "teastore-order-control-001",
+   "label": "negative",
+   "trace_visibility": "trace-uninstrumented",
+   "naive_span_error_oracle": "not_applicable",
+   "mist_trace_shape_oracle": "not_applicable",
+   "mist_readback_oracle": "no_flag"
+  },
+  {
+   "case_id": "teastore-order-depdown-specified-001",
+   "label": "positive",
+   "trace_visibility": "trace-uninstrumented",
+   "naive_span_error_oracle": "not_applicable",
+   "mist_trace_shape_oracle": "not_applicable",
+   "mist_readback_oracle": "not_applicable"
+  },
+  {
+   "case_id": "teastore-order-maintenance-masked-001",
+   "label": "positive",
+   "trace_visibility": "trace-uninstrumented",
+   "naive_span_error_oracle": "not_applicable",
+   "mist_trace_shape_oracle": "not_applicable",
+   "mist_readback_oracle": "flag"
+  },
+  {
+   "case_id": "teastore-order-meshsever-control-001",
+   "label": "negative",
+   "trace_visibility": "trace-uninstrumented",
+   "naive_span_error_oracle": "not_applicable",
+   "mist_trace_shape_oracle": "not_applicable",
+   "mist_readback_oracle": "not_applicable"
+  },
+  {
+   "case_id": "teastore-order-meshsever-masked-001",
+   "label": "positive",
+   "trace_visibility": "trace-uninstrumented",
+   "naive_span_error_oracle": "not_applicable",
+   "mist_trace_shape_oracle": "not_applicable",
+   "mist_readback_oracle": "not_applicable"
+  },
+  {
+   "case_id": "teastore-orderitems-meshsever-control-001",
+   "label": "negative",
+   "trace_visibility": "trace-uninstrumented",
+   "naive_span_error_oracle": "not_applicable",
+   "mist_trace_shape_oracle": "not_applicable",
+   "mist_readback_oracle": "not_applicable"
+  },
+  {
+   "case_id": "teastore-orderitems-meshsever-masked-001",
+   "label": "positive",
+   "trace_visibility": "trace-uninstrumented",
+   "naive_span_error_oracle": "not_applicable",
+   "mist_trace_shape_oracle": "not_applicable",
+   "mist_readback_oracle": "not_applicable"
+  },
+  {
+   "case_id": "TT-adminbasic-contacts-control-001",
+   "label": "negative",
+   "trace_visibility": "span-presence-visible",
+   "naive_span_error_oracle": "no_flag",
+   "mist_trace_shape_oracle": "not_applicable",
+   "mist_readback_oracle": "no_flag"
+  },
+  {
+   "case_id": "TT-adminbasic-contacts-lostwrite-001",
+   "label": "positive",
+   "trace_visibility": "span-presence-visible",
+   "naive_span_error_oracle": "no_flag",
+   "mist_trace_shape_oracle": "not_applicable",
+   "mist_readback_oracle": "flag"
+  },
+  {
+   "case_id": "TT-adminroute-control-001",
+   "label": "negative",
+   "trace_visibility": "span-presence-visible",
+   "naive_span_error_oracle": "no_flag",
+   "mist_trace_shape_oracle": "not_applicable",
+   "mist_readback_oracle": "no_flag"
+  },
+  {
+   "case_id": "TT-adminroute-lostwrite-001",
+   "label": "positive",
+   "trace_visibility": "span-presence-visible",
+   "naive_span_error_oracle": "no_flag",
+   "mist_trace_shape_oracle": "not_applicable",
+   "mist_readback_oracle": "flag"
+  },
+  {
+   "case_id": "TT-cancel-refund-clean-001",
+   "label": "negative",
+   "trace_visibility": "trace-invisible-by-construction",
+   "naive_span_error_oracle": "no_flag",
+   "mist_trace_shape_oracle": "not_applicable",
+   "mist_readback_oracle": "no_flag"
+  },
+  {
+   "case_id": "TT-cancel-refund-fabricatedack-001",
+   "label": "positive",
+   "trace_visibility": "trace-invisible-by-construction",
+   "naive_span_error_oracle": "no_flag",
+   "mist_trace_shape_oracle": "not_applicable",
+   "mist_readback_oracle": "flag"
+  },
+  {
+   "case_id": "TT-cancel-refund-natural-001",
+   "label": "positive",
+   "trace_visibility": "trace-uninstrumented",
+   "naive_span_error_oracle": "not_applicable",
+   "mist_trace_shape_oracle": "not_applicable",
+   "mist_readback_oracle": "flag"
+  },
+  {
+   "case_id": "TT-contacts-dedupe-benign-001",
+   "label": "negative",
+   "trace_visibility": "trace-uninstrumented",
+   "naive_span_error_oracle": "not_applicable",
+   "mist_trace_shape_oracle": "not_applicable",
+   "mist_readback_oracle": "no_flag"
+  },
+  {
+   "case_id": "TT-contacts-noop-modify-benign-001",
+   "label": "negative",
+   "trace_visibility": "trace-uninstrumented",
+   "naive_span_error_oracle": "not_applicable",
+   "mist_trace_shape_oracle": "not_applicable",
+   "mist_readback_oracle": "no_flag"
+  },
+  {
+   "case_id": "TT-createaccount-agreement-001",
+   "label": "positive",
+   "trace_visibility": "trace-invisible-by-construction",
+   "naive_span_error_oracle": "no_flag",
+   "mist_trace_shape_oracle": "not_applicable",
+   "mist_readback_oracle": "flag"
+  },
+  {
+   "case_id": "TT-createaccount-clean-001",
+   "label": "negative",
+   "trace_visibility": "trace-invisible-by-construction",
+   "naive_span_error_oracle": "no_flag",
+   "mist_trace_shape_oracle": "not_applicable",
+   "mist_readback_oracle": "no_flag"
+  }
+ ]
+}

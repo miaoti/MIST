@@ -14,6 +14,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent
 CASES = ROOT / "cases"
 OUT = ROOT / "mist-column-census.json"
+OUT_VIS = ROOT / "e2-visibility-census.json"
 
 
 # A5 adjudications of the 8 not_applicable cases (completion-set wave, 2026-07-16;
@@ -120,6 +121,10 @@ def main():
                                default=get(c, "provenance", "mist_commit")),
             "capture_status": get(c, "capture_status"),
             "readback_shape": get(c, "readback_shape"),
+            "trace_visibility": None,
+            "ack_content_visibility": None,
+            "naive_span_error_oracle": None,
+            "mist_trace_shape_oracle": None,
             "adjudication": None,
             "provenance_run": None,
         })
@@ -140,12 +145,13 @@ def main():
         return None
 
     for row in rows:
-        if row["mist_readback_oracle"] is None or row["mist_commit"] is None:
-            c = json.loads((CASES / row["file"]).read_text(encoding="utf-8"))
-            for k in ("mist_readback_oracle", "oracle_mode", "mist_commit",
-                      "capture_status", "readback_shape", "label", "fault_class"):
-                if row.get(k) is None:
-                    row[k] = deep_find(c, k)
+        c = json.loads((CASES / row["file"]).read_text(encoding="utf-8"))
+        for k in ("mist_readback_oracle", "oracle_mode", "mist_commit",
+                  "capture_status", "readback_shape", "label", "fault_class",
+                  "trace_visibility", "ack_content_visibility",
+                  "naive_span_error_oracle", "mist_trace_shape_oracle"):
+            if row.get(k) is None:
+                row[k] = deep_find(c, k)
 
     generic = ("case-file capture-of-record notes + the corpus-wide mist_commit pin "
                "(no dedicated oracle run beyond the capture wave)")
@@ -180,6 +186,45 @@ def main():
     OUT.write_text(json.dumps(census, indent=1, ensure_ascii=False) + "\n",
                    encoding="utf-8")
     print(f"wrote {OUT.name}: {len(rows)} cases; tally={tally}; adj={adj_tally}")
+
+    # A7: the E2 trace-visibility census — aggregated FROM the per-case
+    # trace_visibility stamps authored at capture time (derivation upstream of
+    # any comparator run: no circularity). trace-invisible-by-construction =
+    # the E2 table's N-vs-0 row; trace-uninstrumented = NOT_EVALUABLE for
+    # trace-consuming arms.
+    vis_tally = {}
+    missing = []
+    for r in rows:
+        v = r["trace_visibility"] or "MISSING"
+        vis_tally[v] = vis_tally.get(v, 0) + 1
+        if v == "MISSING":
+            missing.append(r["case_id"])
+    if missing:
+        print(f"FATAL: cases without trace_visibility: {missing}", file=sys.stderr)
+        return 1
+    vis = {
+        "schema": "e2-visibility-census/1",
+        "generated_by": "build_mist_column_census.py (completion-set wave A7)",
+        "derivation": ("per-case trace_visibility stamps authored at capture time "
+                       "from capture evidence + spec (upstream of every comparator "
+                       "run - no circularity); this census only aggregates them"),
+        "class_semantics": {
+            "error-span-visible": "fault leg carries an error span - the naive span-error class CAN see it",
+            "span-presence-visible": "no error span, but a span present/absent delta exists - presence-class arms CAN see it",
+            "trace-invisible-by-construction": "fault and control traces are shape-identical - NO trace-consuming arm can see it (the E2 N-vs-0 row)",
+            "trace-uninstrumented": "the capture has no usable trace (SUT tier uninstrumented) - NOT_EVALUABLE for trace-consuming arms",
+        },
+        "tally": vis_tally,
+        "cases": [{"case_id": r["case_id"], "label": r["label"],
+                   "trace_visibility": r["trace_visibility"],
+                   "naive_span_error_oracle": r["naive_span_error_oracle"],
+                   "mist_trace_shape_oracle": r["mist_trace_shape_oracle"],
+                   "mist_readback_oracle": r["mist_readback_oracle"]}
+                  for r in rows],
+    }
+    OUT_VIS.write_text(json.dumps(vis, indent=1, ensure_ascii=False) + "\n",
+                       encoding="utf-8")
+    print(f"wrote {OUT_VIS.name}: vis_tally={vis_tally}")
     return 0
 
 
