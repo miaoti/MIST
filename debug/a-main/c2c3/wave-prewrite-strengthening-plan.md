@@ -86,8 +86,10 @@ correction of record (B): new sites ≤ 2 (F8/F14); ~+7 = CASE-RUNS — the user
   hardened harness → validator + tell-audit dry-run.
 - **Yield honesty:** up to ~7 fault cases + ~7 controls (case-run denominator); sites
   8 → at most ~10 per the survey ceiling arithmetic; every shortfall pre-disclosed.
-- MIST column for new cases: bindable sites get a read-back leg IN the capture window
-  (2.75-A style, existing binding classes); non-bindable → principled n_a, adjudicated.
+- MIST column for new cases: routed by the CLASS SPLIT above (lost-class AND bindable →
+  a 2.75-A-style read-back leg IN the capture window; corrupted-class → the
+  out-of-scope-by-design n_a REGARDLESS of bindability; lost-class non-bindable →
+  principled n_a, adjudicated).
 
 ### L3 — TT re-capture: per-endpoint read-backs for the 9 truncation-gated cases
 - Per case: re-run the case's write + an ACTING-RECORD-SCOPED read-back (membership by
