@@ -73,6 +73,22 @@ Schemathesis's stateful phase (which reached POST /checkout and still missed by 
 blindness). Disclosed as a situation-dependent addition if a reviewer specifically demands
 a producer-consumer-inference tool.
 
+## FRAMING OF RECORD (A2, per the publishability review — 2026-07-17)
+
+The 3-cold publishability review + the lift-plan review converge on the framing:
+- **HEADLINE real-tool claim = SCHEMATHESIS's structural ORACLE-BLINDNESS** (run unmodified,
+  its stateful phase REACHES the write endpoints, yet its conformance-only oracle set
+  CANNOT see the durable loss — a by-construction miss, to be made rigorous with a
+  control-vs-fault differential in the A1 leg). This is the strongest, cleanest, non-strawman
+  real-tool evidence in the materials.
+- **DEMOTED to a hedged secondary note = EVOMASTER's REACHABILITY BARRIER.** Its 4
+  NOT_INTERPRETABLE/tool-not-runnable cells are NOT a co-equal "measured barrier": the
+  disclosed no-auth config hands a hostile reviewer "you set the baseline up to fail". Kept
+  as a secondary observation (spec-only black-box struggles to reach stateful write baselines),
+  NOT the headline.
+- The paper leads with this + the pre-registered NULLS as thesis (S3 0/1514; presence-defuser
+  0/≥8), not as back-half caveats — recorded for the drafting stage (gated).
+
 ## The multi-tool synthesis (the anti-strawman result, honestly)
 
 Two real, widely-cited black-box REST tools, neither detects the masked-2xx class, for
