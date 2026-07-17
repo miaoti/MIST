@@ -45,6 +45,27 @@ the miss is by-construction, demonstrated by the differential, not asserted from
   secondary, per A2). The prelude is DISCLOSED tool config (symmetric with MIST's stimulus
   authoring-cost); SEPARATE table, never merged.
 
+
+### A1 EXECUTION NOTE (2026-07-17, dated — the load-bearing fair-reach question resolved)
+**Verified:** the earlier Schemathesis-OTel /checkout was a GARBAGE-BODY POST
+(`{"address":{},"email":""}`), NOT a genuine acked-2xx order — reviewer-A/B-N6 confirmed.
+ROOT CAUSE (offline spec check): the committed specs carry NO request-body EXAMPLES for the
+write ops, so a black-box tool has nothing spec-provided to build a valid write → random
+garbage bodies → never enters the acked-2xx regime.
+**FAIR RESOLUTION (pinned):** enrich a SEPARATE tool-facing spec copy with GENERAL valid
+write-body EXAMPLES (a valid order / checkout — standard OpenAPI practice, the same info any
+API provider ships; DISCLOSED as fair tool config, NOT the test-specific masked request =
+not hand-feeding). The committed E2 comparator specs stay FROZEN (examples live in the
+tool-config copy). The tool still generates + DECIDES with its OWN oracle. Then: genuine
+acked-2xx reach → control-vs-fault identical tool output → MIST catches + direct-read ground
+truth. If even WITH valid examples the tool can't reach a genuine 2xx (multi-step stateful
+chaining still defeats it), THAT is the honestly-sharpened barrier (a request-VALIDITY +
+state-chaining wall, not a config artifact) — framed carefully, not as "we starved it".
+**Candidate genuine-reach paths (try in order):** TeaStore persistence POST /rest/orders
+(DIRECT-body, unauthenticated REST — the likeliest genuine-2xx reach) > OTel /checkout
+(needs cart prelude) > TT cancel (needs booked-order prelude). Pick the ones that reach
+fairly; disclose the rest.
+
 ### A2 — FRAMING FIXES (zero new experiment; endorsed by B+C; do FIRST, immediately)
 - **Promote Schemathesis's clean stateful-reach-yet-oracle-blind miss to the HEADLINE
   real-tool claim; DEMOTE EvoMaster's reachability-barrier to a hedged secondary note**
