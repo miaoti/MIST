@@ -1,7 +1,6 @@
-# Wave A-VENUE LIFT — close the unanimous publishability gap for a research-track A — rev 1
+# Wave A-VENUE LIFT — HALTED at 3-cold review (premise over-read; question back to user) — rev 1
 
-**Date:** 2026-07-17 · Owner: main_track · Status: **rev 1 — awaiting 3-cold review
-(ALL-ACCEPT + confirmation ⇒ execute; /goal).**
+**Date:** 2026-07-17 · Owner: main_track · Status: **HALTED. 3-cold = A REJECT / B accept-w-revisions / C REJECT. C found (source-verified) the plan's premise over-read the user's '只能投A会' into 'research-novelty-track ONLY', foreclosing the empirical/benchmark-track A (ISSTA/FSE/ICSE) that IS an A-venue, IS weak-accept-achievable per the publishability review, and IS the project's own committed primary A-path (README §139/§328). A found the research-novelty goal likely unachievable by engineering (Cast cap). A4 re-runs the already-CLOSED null Gate-3 (g3-result.md 'NOT MET… nothing in the wild' + S3 0/1514). WAVE DOES NOT EXECUTE AS WRITTEN — the interpretation question is with the user (recon REVIEW-LIFT-PLAN-RECONCILIATION.md). A2 framing fixes = safe under either reading.**
 **Trigger:** USER 2026-07-17 — "只能投A会" (A-venue research track ONLY; benchmark/B-venue
 fallback REJECTED). The publishability review (3-cold UNANIMOUS, `REVIEW-PUBLISHABILITY-
 RECONCILIATION.md`) put current materials at **weak-reject research / weak-accept benchmark**;
