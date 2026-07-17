@@ -1,10 +1,10 @@
-# Wave PRE-WRITE STRENGTHENING (PWS) — the user-elected 4-leg menu before any write-up — rev 2
+# Wave PRE-WRITE STRENGTHENING (PWS) — the user-elected 4-leg menu before any write-up — rev 2.2
 
 **Date:** 2026-07-16 · Owner: main_track · Status: **rev 2 — rev-1 3-cold = A MAJOR-REVISION-2B ·
 B REJECT-AS-WRITTEN-2B · C ACCEPT-W-FIXES-4B; ALL 8 blocking folded per
 `REVIEW-PWS-PLAN-RECONCILIATION.md` (headline: the CORRUPTED-write class split — 6/7 faults
 incl. both new-site candidates are present-but-wrong, OUTSIDE MIST's lost-only scope).
-Gate = confirmation pass ⇒ execute (/goal pre-authorization).**
+Gate = confirmation pass ⇒ execute (/goal pre-authorization). Confirmation status: A' FAIL→A'' CONFIRM (rev 2.1 routing fix b858e0e); B'/C' FAIL on secondaries → rev 2.2 folds (F8 C-A4 clause; the honest budget recompute; freeze pre-registration row + index refresh landed) → B''/C'' re-verify gates execution.**
 **Trigger:** USER 2026-07-16 — "把你说的这些点都做了" over the strengthening menu, under the
 standing gate "NO write-up of any kind until ALL experiments incl. the rater study are
 done". This wave = menu items 1-4; the rater study stays user-side.
@@ -57,7 +57,10 @@ correction of record (B): new sites ≤ 2 (F8/F14); ~+7 = CASE-RUNS — the user
   non-fable model) whose ONLY inputs = `f-corpus-spec.md` + the clean Apache-2.0
   `FudanSELab/train-ticket` base source in-repo; it never fetches the upstream fault repo
   or any re-host; per-fault input artifact recorded; modified files carry Apache-2.0 §4
-  change notices. The orchestrator (me) reviews diffs for conduct only.
+  change notices. The orchestrator (me) reviews diffs for conduct only. **F8's C-A4
+  ARTIFACT ADJUDICATION happens AT AUTHORING and is recorded in-case** (f-corpus-spec
+  §7.4 verbatim — does F8's write target constitute a distinct durable artifact or an
+  occupied-site variant; the new-site claim stands or falls on that recorded call).
 - **CLASS SPLIT (rev-2, the convergent A/B blocking fold):** per-fault EXPECTED CLASS
   stamped from the survey — LOST vs CORRUPTED-present (6/7 incl. F8/F14 are corrupted).
   The corrupted class is IN-CORPUS (the survey §1 eligibility = "lost OR corrupted") but
@@ -141,8 +144,15 @@ correction of record (B): new sites ≤ 2 (F8/F14); ~+7 = CASE-RUNS — the user
 
 ## §3 Budgets + stop rules
 
-- W1/W2/W3 ≈ ½ day combined. W4 ≈ 1 day. L2 implementation (off-window) ≈ 1-2 days +
-  W5 ≈ 1 day. Whole wave ≈ **3-5 days**; per-leg >1.5× ⇒ pause+disclose.
+- **Budget recompute (rev 2.2, the C' honesty fold — the rev-2 EvoMaster folds grew its
+  wall-clock ~7×):** EvoMaster raw = TeaStore 2 h + SS 2 h + OTel 2 h (fault+control
+  runs) + **TT 8 h** (2 runs × 2 seeds × 2 h). W1/W2/W3 ≈ **1 day combined** (revive +
+  2 runs + restore + teardown each). **W4 ≈ 2 days, SPLIT: W4a = revive → L3 re-captures
+  → Tracetest (install+instrument+runs) → verify; W4b = EvoMaster-TT 8 h (fabricatedack
+  ON only for the budgets, OFF+verify after)** — one revival if the graph holds across
+  the split (within-window checkpoints decide; else re-revive, disclosed). L2
+  implementation (off-window) ≈ 1-2 days + W5 ≈ 1 day. **Whole wave ≈ 5-7 days**;
+  per-leg >1.5× ⇒ pause+disclose.
 - Licenses (recorded): EvoMaster **LGPL-3.0** (run + cite; never vendor the JAR);
   Tracetest **MIT**. Both = version-pinned RUNS; outputs = our evidence.
 - Stop rules: B-m6 (class-aware) fail ×2 ⇒ swap/disclose (never force a fault in-class); EvoMaster
