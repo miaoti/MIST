@@ -3,8 +3,10 @@
 **Date:** 2026-07-16 · Owner: main_track · Status: **rev 3.1 — START-READY: the rev-2
 3-cold (A 2B / B 2B / C 5B, zero REJECT) folded per `REVIEW-DRAFTPLAN-RECONCILIATION.md`;
 confirmation pass A' CONFIRM · B' CONFIRM · C' FAIL→C'' CONFIRM on the one-line S1-pair fix
-(c174259). DRAFTING STARTS ONLY ON THE USER'S EXPLICIT GO (§4 Step 0) — START-READY is the
-terminal pre-consent state.** Rev-1 history: deferred by the user pending the
+(c174259). DRAFTING STARTS ONLY ON THE USER'S EXPLICIT GO (§4 Step 0). **USER GATE 2026-07-16(b),
+SUPERSEDING the sequencing: NO WRITE-UP OF ANY KIND until ALL experiments INCLUDING the
+rater study (Step 5) are complete — the earliest consent point is post-rater-completion;
+START-READY is parked until then.** Rev-1 history: deferred by the user pending the
 completion set; the "experiment surface fully complete" overstatement corrected (it was
 Step-4-scoped).
 
