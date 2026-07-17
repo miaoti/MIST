@@ -80,6 +80,21 @@ spec-enrichment, no forcing black-box tools to reach, no strawman. Sites: the ex
 MIST-reached captures (cancel-refund flagship, teastore order, oteldemo checkout) provide the
 common executions; the comparator ORACLES run on them.
 
+
+**A1 SCOPE COLLAPSE (following the user insight to its conclusion):** BOTH axes are ALREADY
+MEASURED — Axis-1 (generation gap) by PWS L1 (EvoMaster/Schemathesis can't reach); Axis-2
+(oracle gap) by the E2 matched-recall table (comparator oracles run on MIST's reached
+captures + MIST catches). The E2 comparator oracles ARE faithful implementations of the
+tools' oracle logic (conformance/trace-error), and the PWS Schemathesis LIVE run CONFIRMS
+surrogate==real (its real checks flagged only conformance, never data-integrity). So A1's
+remaining work is NOT a multi-day experiment — it is (1) FRAMING the two axes cleanly, and
+(2) a VALIDATION NOTE that the surrogate oracles == the real tools' oracle logic (citing the
+PWS Schemathesis live evidence), optionally (3) a small confirmatory pass running one real
+tool's oracle checks on one MIST-reached execution. This closes the reviewers' "surrogate
+not real" gap without the strawman/reach fight. A1 downgrades from ~2-3 live-days to a
+~½-day framing+validation task.
+
+
 ### A2 — FRAMING FIXES (zero new experiment; endorsed by B+C; do FIRST, immediately)
 - **Promote Schemathesis's clean stateful-reach-yet-oracle-blind miss to the HEADLINE
   real-tool claim; DEMOTE EvoMaster's reachability-barrier to a hedged secondary note**
