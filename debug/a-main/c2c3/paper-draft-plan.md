@@ -1,10 +1,10 @@
-# PAPER DRAFT PLAN (a-main, A-venue empirical/benchmark track) — rev 3
+# PAPER DRAFT PLAN (a-main, A-venue empirical/benchmark track) — rev 3.1 (START-READY)
 
-**Date:** 2026-07-16 · Owner: main_track · Status: **rev 3 — rev-2 3-cold = A ACC-W-FIX-2B ·
-B ACC-W-FIX-2B (all 18 P-rows artifact-verified, 16 exact) · C ACC-W-FIX-5B; ALL folded per
-`REVIEW-DRAFTPLAN-RECONCILIATION.md`; gate = a confirmation pass ⇒ START-READY. DRAFTING
-ITSELF REMAINS BEHIND THE EXPLICIT USER-CONSENT GATE (user 2026-07-16) — no review outcome
-starts it.** Rev-1 history: deferred by the user pending the
+**Date:** 2026-07-16 · Owner: main_track · Status: **rev 3.1 — START-READY: the rev-2
+3-cold (A 2B / B 2B / C 5B, zero REJECT) folded per `REVIEW-DRAFTPLAN-RECONCILIATION.md`;
+confirmation pass A' CONFIRM · B' CONFIRM · C' FAIL→C'' CONFIRM on the one-line S1-pair fix
+(c174259). DRAFTING STARTS ONLY ON THE USER'S EXPLICIT GO (§4 Step 0) — START-READY is the
+terminal pre-consent state.** Rev-1 history: deferred by the user pending the
 completion set; the "experiment surface fully complete" overstatement corrected (it was
 Step-4-scoped).
 
