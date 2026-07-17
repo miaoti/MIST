@@ -17,7 +17,31 @@ correction of record (B): new sites ≤ 2 (F8/F14); ~+7 = CASE-RUNS — the user
 
 ## §1 The four legs
 
-### L1 — EvoMaster REAL-TOOL detection arm (kills the strawman/no-real-tool objections)
+### L1 — REAL-TOOL detection arm (MULTI-TOOL; kills the strawman/no-real-tool objections)
+
+**DATED AMENDMENT (2026-07-17, USER-DIRECTED — inherits this section's already-reviewed
+protocol; ADDITIVE evidence, no claim change):** after EvoMaster's 3-site result came back
+a consistent REACHABILITY BARRIER (spec-only black-box can't reach the acked-2xx write
+baseline behind multi-step stateful sequences; `RESULT-pws-l1-evomaster.md`), the user
+directed KEEPING EvoMaster as-is AND ADDING other real tools so the barrier is shown to be
+a PROPERTY OF THE TOOL CLASS (spec-only black-box), not an EvoMaster quirk. Added tools,
+SAME protocol (per-site reachability datum + control/fault where a toggle exists +
+SEPARATE table, never merged into matched-recall + honest verdict incl. NOT_INTERPRETABLE
+/ tool-not-runnable):
+- **Schemathesis** (MIT, property-based black-box OpenAPI): cheap confirmation the barrier
+  is class-wide. Runs per SUT (short, not a 60-min budget tool).
+- **RESTler** (MS, black-box but STATEFUL producer-consumer sequencing) — the
+  HIGH-VALUE addition IF FEASIBLE: if even RESTler's inferred sequences can't reach the
+  acked-2xx write, the barrier is very strong; if it DOES reach and misses the masked
+  loss, that is the clean "real tool runs and misses" cell. Feasibility-gated (heavy
+  .NET+grammar-compile setup); tool-not-runnable-disclosed if setup fights >½ day.
+No auth/white-box special-casing for ANY tool (user direction; the barrier is state
+chaining, not auth) — situation-dependent single-SUT auth demo stays available if a
+reviewer presses.
+
+---
+
+### L1(orig) — EvoMaster REAL-TOOL detection arm (kills the strawman/no-real-tool objections)
 - **Tool:** EvoMaster (open-source), BLACK-BOX mode; version + JAR sha PINNED at Phase 0
   (latest stable release), recorded in the RESULT.
 - **Design (honesty rail first):** EvoMaster generates its OWN tests — these cells are a
