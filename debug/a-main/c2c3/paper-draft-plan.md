@@ -131,7 +131,9 @@ cell stamped `[RATER-GATED: Step 5]`. The draft must read coherently WITH the pl
 - No SmartFetch contribution claims (separate paper; no-double-claim).
 - Rater/IRB/E6/venue = USER-side; the draft references them as pending, never executes.
 - **The checklist-footer paper honesty riders, VERBATIM (C-B3): lead with the study;
-  two-denominator S1 (per-request AND per-endpoint); tell-free floor; MIST vs arm-3
+  two-denominator S1 (distinct-site AND case-run — the Step-3a S1 pair; the
+  per-request/per-endpoint pair belongs to the Step-5 M-prevalence obligation, a separate
+  rider); tell-free floor; MIST vs arm-3
   authoring-cost symmetry; Gate-4 wording "3 frontier trace comparators +
   contract-invariant arm".**
 - NO scoped-"first" phrasing in the DRAFT VOICE — internal-provenance firsts (P7) live in
