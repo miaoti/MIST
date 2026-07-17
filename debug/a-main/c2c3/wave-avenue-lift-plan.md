@@ -46,25 +46,39 @@ the miss is by-construction, demonstrated by the differential, not asserted from
   authoring-cost); SEPARATE table, never merged.
 
 
-### A1 EXECUTION NOTE (2026-07-17, dated — the load-bearing fair-reach question resolved)
-**Verified:** the earlier Schemathesis-OTel /checkout was a GARBAGE-BODY POST
-(`{"address":{},"email":""}`), NOT a genuine acked-2xx order — reviewer-A/B-N6 confirmed.
-ROOT CAUSE (offline spec check): the committed specs carry NO request-body EXAMPLES for the
-write ops, so a black-box tool has nothing spec-provided to build a valid write → random
-garbage bodies → never enters the acked-2xx regime.
-**FAIR RESOLUTION (pinned):** enrich a SEPARATE tool-facing spec copy with GENERAL valid
-write-body EXAMPLES (a valid order / checkout — standard OpenAPI practice, the same info any
-API provider ships; DISCLOSED as fair tool config, NOT the test-specific masked request =
-not hand-feeding). The committed E2 comparator specs stay FROZEN (examples live in the
-tool-config copy). The tool still generates + DECIDES with its OWN oracle. Then: genuine
-acked-2xx reach → control-vs-fault identical tool output → MIST catches + direct-read ground
-truth. If even WITH valid examples the tool can't reach a genuine 2xx (multi-step stateful
-chaining still defeats it), THAT is the honestly-sharpened barrier (a request-VALIDITY +
-state-chaining wall, not a config artifact) — framed carefully, not as "we starved it".
-**Candidate genuine-reach paths (try in order):** TeaStore persistence POST /rest/orders
-(DIRECT-body, unauthenticated REST — the likeliest genuine-2xx reach) > OTel /checkout
-(needs cart prelude) > TT cancel (needs booked-order prelude). Pick the ones that reach
-fairly; disclose the rest.
+### A1 REFRAMED — TWO-AXIS comparison (USER insight 2026-07-17: "MIST itself generates the test cases — why not use that?")
+The earlier "make EvoMaster/Schemathesis REACH the acked-2xx write" fight CONFLATED two
+axes and was the wrong battle (specs carry no write examples ⇒ black-box tools emit garbage
+bodies; the earlier Schemathesis /checkout was a garbage-body POST, not a genuine 2xx). The
+user's insight SEPARATES them into two independently-fair comparisons:
+
+**Axis 1 — GENERATION (reach):** black-box spec-only tools CANNOT construct the valid
+multi-step stateful write request → never enter the acked-2xx regime (EvoMaster 0-11% 2xx,
+Schemathesis garbage-body checkout). MIST's STIMULUS-driven generation DOES reach it (the
+2.75-A / flagship captures). This is a REAL finding about GENERATION capability — the honest,
+correctly-framed version of the "reachability barrier" (a request-validity + state-chaining
+wall, NOT "we starved the tool with no auth"). It SUPPORTS MIST's generation contribution.
+
+**Axis 2 — ORACLE (detect), the fair oracle-level head-to-head:** HOLD THE EXECUTION CONSTANT
+using MIST's own reaching generation (a real masked-2xx-write execution MIST produced), then
+apply each comparator's ORACLE to the SAME execution/trace and show it MISSES while MIST's
+read-back differential CATCHES. This is the STANDARD fair oracle comparison (fixed
+test-suite, vary the oracle) — and **E2's matched-recall table ALREADY does it with the
+frozen comparator oracles** (naive-span / presence / contract, run on MIST's captured
+traces). The reviewers' complaint = those are SURROGATE oracle implementations, not the real
+tools' oracles. **A1's concrete work = run the REAL tools' ORACLE LOGIC (Schemathesis's
+conformance checks; a contract/schema validator; where feasible EvoMaster's fault taxonomy)
+on the SAME MIST-reached executions, showing they pass (miss) on the acked-2xx masked-loss
+trace — upgrading the surrogate cells to live-tool-oracle cells WITHOUT the strawman/reach
+problems.** Control-vs-fault differential per site makes "miss" non-vacuous; N is not the
+basis (by-construction oracle-gap is). Two-denominator honesty stands (MIST reaches N;
+comparator oracles evaluable on the trace-visible subset).
+
+**Net:** MIST wins on BOTH axes, each measured fairly and separately — generation (reaches
+what tools can't) + oracle (catches what conformance/trace oracles structurally can't). No
+spec-enrichment, no forcing black-box tools to reach, no strawman. Sites: the existing
+MIST-reached captures (cancel-refund flagship, teastore order, oteldemo checkout) provide the
+common executions; the comparator ORACLES run on them.
 
 ### A2 — FRAMING FIXES (zero new experiment; endorsed by B+C; do FIRST, immediately)
 - **Promote Schemathesis's clean stateful-reach-yet-oracle-blind miss to the HEADLINE
