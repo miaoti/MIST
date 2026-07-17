@@ -162,3 +162,12 @@ evaluation/suts/**/myc-props-s*.properties
 
 # EvoMaster JAR (LGPL-3.0; version-pinned RUN tool, never vendored in git — sha recorded in the RESULT)
 tools/evomaster/*.jar
+
+# A-venue-wave transient tool outputs (EvoMaster/Schemathesis run scratch)
+em.yaml
+.schemathesis/
+debug/a-main/benchmark/b4/pws/evomaster/*.log
+debug/a-main/benchmark/b4/pws/evomaster/*.err
+debug/a-main/benchmark/b4/pws/evomaster/*.pid
+debug/a-main/benchmark/b4/pws/evomaster/statistics.csv
+debug/a-main/benchmark/b4/pws/*.winpid
