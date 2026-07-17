@@ -4,14 +4,15 @@
  "rails": [
   "per-visibility-class cells only - NO pooled headline recall is emitted",
   "NOT_EVALUABLE leaves the denominator and lands in its own bucket",
-  "the trace-invisible-by-construction row is the N-vs-0 row: 2 positives no trace-consuming arm can see by construction",
+  "the trace-invisible-by-construction row is the N-vs-0 row: 3 positives no trace-consuming arm can see by construction",
   "MIST cells carry provenance_class (live-run vs capture-concordant); capture-concordant cells must never be pooled into a headline (self-concordance rule)",
   "matched-recall framing only - never 'discrimination' (the natural-discriminator question was S3's, closed 0/1514)"
  ],
  "n_vs_0_row": {
   "class": "trace-invisible-by-construction",
-  "positives": 2,
+  "positives": 3,
   "positive_ids": [
+   "TT-cancel-refund-asyncrefund-f1-001",
    "TT-cancel-refund-fabricatedack-001",
    "TT-createaccount-agreement-001"
   ]
@@ -19,8 +20,8 @@
  "visibility_tally": {
   "error-span-visible": 3,
   "span-presence-visible": 9,
-  "trace-uninstrumented": 11,
-  "trace-invisible-by-construction": 4
+  "trace-uninstrumented": 12,
+  "trace-invisible-by-construction": 5
  },
  "arms": {
   "mist_readback": {
@@ -57,13 +58,14 @@
      "not_evaluable_ids": []
     },
     "trace-invisible-by-construction": {
-     "positives": 2,
-     "evaluable_positives": 2,
-     "flagged_positives": 2,
+     "positives": 3,
+     "evaluable_positives": 3,
+     "flagged_positives": 3,
      "negatives": 2,
      "flagged_negatives": 0,
      "not_evaluable": 0,
      "flagged_positive_ids": [
+      "TT-cancel-refund-asyncrefund-f1-001",
       "TT-cancel-refund-fabricatedack-001",
       "TT-createaccount-agreement-001"
      ],
@@ -71,12 +73,12 @@
      "not_evaluable_ids": []
     },
     "trace-uninstrumented": {
-     "positives": 6,
+     "positives": 7,
      "evaluable_positives": 4,
      "flagged_positives": 4,
      "negatives": 5,
      "flagged_negatives": 0,
-     "not_evaluable": 2,
+     "not_evaluable": 3,
      "flagged_positive_ids": [
       "teastore-order-maintenance-masked-001",
       "teastore-order-meshsever-masked-001",
@@ -86,7 +88,8 @@
      "flagged_negative_ids": [],
      "not_evaluable_ids": [
       "oteldemo-checkout-kafkaqueue-lost-001",
-      "teastore-order-depdown-specified-001"
+      "teastore-order-depdown-specified-001",
+      "TT-user-selection-corrupt-f8-001"
      ]
     }
    },
@@ -111,13 +114,15 @@
     "TT-adminbasic-contacts-lostwrite-001": "live-run",
     "TT-adminroute-control-001": "live-run",
     "TT-adminroute-lostwrite-001": "live-run",
+    "TT-cancel-refund-asyncrefund-f1-001": "capture-concordant",
     "TT-cancel-refund-clean-001": "live-run",
     "TT-cancel-refund-fabricatedack-001": "live-run",
     "TT-cancel-refund-natural-001": "live-run",
     "TT-contacts-dedupe-benign-001": "capture-concordant",
     "TT-contacts-noop-modify-benign-001": "capture-concordant",
     "TT-createaccount-agreement-001": "capture-concordant",
-    "TT-createaccount-clean-001": "capture-concordant"
+    "TT-createaccount-clean-001": "capture-concordant",
+    "TT-user-selection-corrupt-f8-001": "structural"
    }
   },
   "contract_invariant": {
@@ -160,26 +165,27 @@
      ]
     },
     "trace-invisible-by-construction": {
-     "positives": 2,
+     "positives": 3,
      "evaluable_positives": 1,
      "flagged_positives": 0,
      "negatives": 2,
      "flagged_negatives": 0,
-     "not_evaluable": 2,
+     "not_evaluable": 3,
      "flagged_positive_ids": [],
      "flagged_negative_ids": [],
      "not_evaluable_ids": [
+      "TT-cancel-refund-asyncrefund-f1-001",
       "TT-createaccount-agreement-001",
       "TT-createaccount-clean-001"
      ]
     },
     "trace-uninstrumented": {
-     "positives": 6,
+     "positives": 7,
      "evaluable_positives": 0,
      "flagged_positives": 0,
      "negatives": 5,
      "flagged_negatives": 0,
-     "not_evaluable": 11,
+     "not_evaluable": 12,
      "flagged_positive_ids": [],
      "flagged_negative_ids": [],
      "not_evaluable_ids": [
@@ -193,7 +199,8 @@
       "teastore-orderitems-meshsever-masked-001",
       "TT-cancel-refund-natural-001",
       "TT-contacts-dedupe-benign-001",
-      "TT-contacts-noop-modify-benign-001"
+      "TT-contacts-noop-modify-benign-001",
+      "TT-user-selection-corrupt-f8-001"
      ]
     }
    }
@@ -238,28 +245,29 @@
      ]
     },
     "trace-invisible-by-construction": {
-     "positives": 2,
+     "positives": 3,
      "evaluable_positives": 1,
      "flagged_positives": 1,
      "negatives": 2,
      "flagged_negatives": 0,
-     "not_evaluable": 2,
+     "not_evaluable": 3,
      "flagged_positive_ids": [
       "TT-cancel-refund-fabricatedack-001"
      ],
      "flagged_negative_ids": [],
      "not_evaluable_ids": [
+      "TT-cancel-refund-asyncrefund-f1-001",
       "TT-createaccount-agreement-001",
       "TT-createaccount-clean-001"
      ]
     },
     "trace-uninstrumented": {
-     "positives": 6,
+     "positives": 7,
      "evaluable_positives": 0,
      "flagged_positives": 0,
      "negatives": 5,
      "flagged_negatives": 0,
-     "not_evaluable": 11,
+     "not_evaluable": 12,
      "flagged_positive_ids": [],
      "flagged_negative_ids": [],
      "not_evaluable_ids": [
@@ -273,7 +281,8 @@
       "teastore-orderitems-meshsever-masked-001",
       "TT-cancel-refund-natural-001",
       "TT-contacts-dedupe-benign-001",
-      "TT-contacts-noop-modify-benign-001"
+      "TT-contacts-noop-modify-benign-001",
+      "TT-user-selection-corrupt-f8-001"
      ]
     }
    }
@@ -311,26 +320,27 @@
      ]
     },
     "trace-invisible-by-construction": {
-     "positives": 2,
+     "positives": 3,
      "evaluable_positives": 1,
      "flagged_positives": 0,
      "negatives": 2,
      "flagged_negatives": 0,
-     "not_evaluable": 2,
+     "not_evaluable": 3,
      "flagged_positive_ids": [],
      "flagged_negative_ids": [],
      "not_evaluable_ids": [
+      "TT-cancel-refund-asyncrefund-f1-001",
       "TT-createaccount-agreement-001",
       "TT-createaccount-clean-001"
      ]
     },
     "trace-uninstrumented": {
-     "positives": 6,
+     "positives": 7,
      "evaluable_positives": 0,
      "flagged_positives": 0,
      "negatives": 5,
      "flagged_negatives": 0,
-     "not_evaluable": 11,
+     "not_evaluable": 12,
      "flagged_positive_ids": [],
      "flagged_negative_ids": [],
      "not_evaluable_ids": [
@@ -344,7 +354,8 @@
       "teastore-orderitems-meshsever-masked-001",
       "TT-cancel-refund-natural-001",
       "TT-contacts-dedupe-benign-001",
-      "TT-contacts-noop-modify-benign-001"
+      "TT-contacts-noop-modify-benign-001",
+      "TT-user-selection-corrupt-f8-001"
      ]
     }
    }
@@ -389,15 +400,16 @@
      ]
     },
     "trace-invisible-by-construction": {
-     "positives": 2,
+     "positives": 3,
      "evaluable_positives": 0,
      "flagged_positives": 0,
      "negatives": 2,
      "flagged_negatives": 0,
-     "not_evaluable": 4,
+     "not_evaluable": 5,
      "flagged_positive_ids": [],
      "flagged_negative_ids": [],
      "not_evaluable_ids": [
+      "TT-cancel-refund-asyncrefund-f1-001",
       "TT-cancel-refund-clean-001",
       "TT-cancel-refund-fabricatedack-001",
       "TT-createaccount-agreement-001",
@@ -405,12 +417,12 @@
      ]
     },
     "trace-uninstrumented": {
-     "positives": 6,
+     "positives": 7,
      "evaluable_positives": 0,
      "flagged_positives": 0,
      "negatives": 5,
      "flagged_negatives": 0,
-     "not_evaluable": 11,
+     "not_evaluable": 12,
      "flagged_positive_ids": [],
      "flagged_negative_ids": [],
      "not_evaluable_ids": [
@@ -424,7 +436,8 @@
       "teastore-orderitems-meshsever-masked-001",
       "TT-cancel-refund-natural-001",
       "TT-contacts-dedupe-benign-001",
-      "TT-contacts-noop-modify-benign-001"
+      "TT-contacts-noop-modify-benign-001",
+      "TT-user-selection-corrupt-f8-001"
      ]
     }
    }
@@ -467,26 +480,27 @@
      ]
     },
     "trace-invisible-by-construction": {
-     "positives": 2,
+     "positives": 3,
      "evaluable_positives": 1,
      "flagged_positives": 0,
      "negatives": 2,
      "flagged_negatives": 0,
-     "not_evaluable": 2,
+     "not_evaluable": 3,
      "flagged_positive_ids": [],
      "flagged_negative_ids": [],
      "not_evaluable_ids": [
+      "TT-cancel-refund-asyncrefund-f1-001",
       "TT-createaccount-agreement-001",
       "TT-createaccount-clean-001"
      ]
     },
     "trace-uninstrumented": {
-     "positives": 6,
+     "positives": 7,
      "evaluable_positives": 0,
      "flagged_positives": 0,
      "negatives": 5,
      "flagged_negatives": 0,
-     "not_evaluable": 11,
+     "not_evaluable": 12,
      "flagged_positive_ids": [],
      "flagged_negative_ids": [],
      "not_evaluable_ids": [
@@ -500,7 +514,8 @@
       "teastore-orderitems-meshsever-masked-001",
       "TT-cancel-refund-natural-001",
       "TT-contacts-dedupe-benign-001",
-      "TT-contacts-noop-modify-benign-001"
+      "TT-contacts-noop-modify-benign-001",
+      "TT-user-selection-corrupt-f8-001"
      ]
     }
    }

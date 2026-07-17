@@ -62,6 +62,16 @@
    ]
   },
   {
+   "case_id": "TT-cancel-refund-asyncrefund-f1-001",
+   "trace_visibility": "trace-invisible-by-construction",
+   "bundles": [
+    {
+     "kind": "none-committed",
+     "detail": "no committed trace bundle - NOT_EVALUABLE for trace-consuming arms, disclosed"
+    }
+   ]
+  },
+  {
    "case_id": "TT-cancel-refund-clean-001",
    "trace_visibility": "trace-invisible-by-construction",
    "bundles": [
@@ -141,6 +151,16 @@
   {
    "case_id": "TT-createaccount-clean-001",
    "trace_visibility": "trace-invisible-by-construction",
+   "bundles": [
+    {
+     "kind": "none-committed",
+     "detail": "no committed trace bundle - NOT_EVALUABLE for trace-consuming arms, disclosed"
+    }
+   ]
+  },
+  {
+   "case_id": "TT-user-selection-corrupt-f8-001",
+   "trace_visibility": "trace-uninstrumented",
    "bundles": [
     {
      "kind": "none-committed",

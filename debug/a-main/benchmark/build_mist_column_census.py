@@ -47,6 +47,13 @@ ADJUDICATIONS = {
                    "verdict, and capturing it = a new capture out of wave scope "
                    "(positive-side widening CLOSED)"),
     },
+    "TT-user-selection-corrupt-f8-001": {
+        "class": "structural",
+        "reason": ("CORRUPTED-present (documentType persisted wrong, not lost) - "
+                   "out-of-scope-by-design: MIST detects lost/absent not "
+                   "present-but-wrong (lost-not-corrupted rail); the benchmark is "
+                   "broader than the tool (A3 F-corpus, live B-m6 PASS)"),
+    },
     "oteldemo-checkout-kafkaqueue-lost-001": {
         "class": "barred-by-stop-rule",
         "reason": ("a MIST leg requires another flag-on window, barred by the "
@@ -79,6 +86,7 @@ PROVENANCE = {
     "TT-adminbasic-contacts-control-001": "manual-G0 control record (no_flag; same disclosure as its twin)",
     "TT-contacts-dedupe-benign-001": "R1 T2 re-capture (legacy trap re-captured under the T2 cadence; no_flag)",
     "TT-contacts-noop-modify-benign-001": "R1 T2 re-capture (no_flag)",
+    "TT-cancel-refund-asyncrefund-f1-001": "A3 F-corpus live B-m6 PASS 2026-07-17 (control refund 50->130 lands, fault 50->50 lost, both ack {1,Success}; MIST value-delta FIRE; upstream FudanSELab F1 async-refund-sequencing, cancel-refund site mechanism-variant)",
     "teastore-order-meshsever-masked-001": "completion-set Phase-C A5(iii) window (2026-07-16): TeaStoreMeshseverHeadToHead paired FIRE 4/4 under the mesh-sever VS producer (b4/cset/teastore-order-meshsever-run.report.json; ground truth = direct reads, fault order rows ABSENT)",
     "teastore-order-meshsever-control-001": "same window, control leg (4/4 present, no false fire)",
     "teastore-orderitems-meshsever-masked-001": "completion-set Phase-C A5(iii) window: chained child-collection read-back FIRE 4/4 (b4/cset/teastore-orderitems-meshsever-run.report.json; ground truth: fault parents PRESENT w/ items=0)",

@@ -3,12 +3,12 @@
  "generated_by": "build_mist_column_census.py (completion-set wave A5)",
  "note": "Verdict provenance + the 8 not_applicable adjudications are filled by the wave; no silent pending may survive (plan 3.5).",
  "tally": {
-  "not_applicable": 5,
+  "not_applicable": 6,
   "no_flag": 13,
-  "flag": 9
+  "flag": 10
  },
  "adjudication_tally": {
-  "structural": 3,
+  "structural": 4,
   "barred-by-stop-rule": 1,
   "structural-by-convention": 1
  },
@@ -566,6 +566,33 @@
    "provenance_run": "G1 run-3 (prep/gate1-run3-report.json: FIRE, strong stratum)"
   },
   {
+   "case_id": "TT-cancel-refund-asyncrefund-f1-001",
+   "file": "TT-cancel-refund-asyncrefund-f1-001.json",
+   "sut": {
+    "name": "trainticket",
+    "repo": "github.com/miaoti/train-ticket-injection",
+    "branch": "MIST-trainticket",
+    "commit": "a1767ab3",
+    "image_digest": "sha256:81186b71c1e4a3be56a3f6f8670d45ccfc04f68956e864cced27920ac1bf50d4",
+    "deploy": "kind cluster 'mist', ns trainticket; hack/deploy quick_start = codewisdom/*:1.0.0 + fork ts-inside-payment-service:1.0.5 (runtime drawback faultmode toggle)",
+    "replay_script": "debug/a-main/benchmark/b4/capture-specs/tt-cancel-refund.yaml",
+    "health_precondition": null
+   },
+   "label": "positive",
+   "fault_class": "acknowledged_lost_write",
+   "mist_readback_oracle": "flag",
+   "oracle_mode": "paired",
+   "mist_commit": "99d8918",
+   "capture_status": "captured",
+   "readback_shape": null,
+   "trace_visibility": "trace-invisible-by-construction",
+   "ack_content_visibility": "success-shaped-clean",
+   "naive_span_error_oracle": "not_applicable",
+   "mist_trace_shape_oracle": "not_applicable",
+   "adjudication": null,
+   "provenance_run": "A3 F-corpus live B-m6 PASS 2026-07-17 (control refund 50->130 lands, fault 50->50 lost, both ack {1,Success}; MIST value-delta FIRE; upstream FudanSELab F1 async-refund-sequencing, cancel-refund site mechanism-variant)"
+  },
+  {
    "case_id": "TT-cancel-refund-clean-001",
    "file": "TT-cancel-refund-clean-001.json",
    "sut": {
@@ -753,6 +780,36 @@
    "mist_trace_shape_oracle": "not_applicable",
    "adjudication": null,
    "provenance_run": "case-file capture-of-record notes + the corpus-wide mist_commit pin (no dedicated oracle run beyond the capture wave)"
+  },
+  {
+   "case_id": "TT-user-selection-corrupt-f8-001",
+   "file": "TT-user-selection-corrupt-f8-001.json",
+   "sut": {
+    "name": "trainticket",
+    "repo": "github.com/miaoti/train-ticket-injection",
+    "branch": "MIST-trainticket",
+    "commit": "a1767ab3",
+    "image_digest": "sha256:81186b71c1e4a3be56a3f6f8670d45ccfc04f68956e864cced27920ac1bf50d4",
+    "deploy": "kind cluster 'mist', ns trainticket; hack/deploy quick_start = codewisdom/*:1.0.0 + fork ts-inside-payment-service:1.0.5 (runtime drawback faultmode toggle)",
+    "replay_script": "debug/a-main/benchmark/b4/capture-specs/tt-cancel-refund.yaml",
+    "health_precondition": null
+   },
+   "label": "positive",
+   "fault_class": "acknowledged_lost_write",
+   "mist_readback_oracle": "not_applicable",
+   "oracle_mode": "paired",
+   "mist_commit": "99d8918",
+   "capture_status": "captured",
+   "readback_shape": null,
+   "trace_visibility": "trace-uninstrumented",
+   "ack_content_visibility": "success-shaped-clean",
+   "naive_span_error_oracle": "not_applicable",
+   "mist_trace_shape_oracle": "not_applicable",
+   "adjudication": {
+    "class": "structural",
+    "reason": "CORRUPTED-present (documentType persisted wrong, not lost) - out-of-scope-by-design: MIST detects lost/absent not present-but-wrong (lost-not-corrupted rail); the benchmark is broader than the tool (A3 F-corpus, live B-m6 PASS)"
+   },
+   "provenance_run": null
   }
  ]
 }
