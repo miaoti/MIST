@@ -1,10 +1,10 @@
-# PAPER DRAFT PLAN (a-main, A-venue empirical/benchmark track) — rev 2
+# PAPER DRAFT PLAN (a-main, A-venue empirical/benchmark track) — rev 3
 
-**Date:** 2026-07-16 · Owner: main_track · Status: **rev 2 — the COMPLETION SET CLOSED
-(086cf68), so THIS PLAN'S REVIEW RE-ENTERS per its own rev-1 hold terms; the claim map is
-refreshed to the post-wave evidence state. DRAFTING ITSELF REMAINS BEHIND THE EXPLICIT
-USER-CONSENT GATE (user 2026-07-16) — an ALL-ACCEPT review of this plan makes the draft
-START-READY, it does NOT start it.** Rev-1 history: deferred by the user pending the
+**Date:** 2026-07-16 · Owner: main_track · Status: **rev 3 — rev-2 3-cold = A ACC-W-FIX-2B ·
+B ACC-W-FIX-2B (all 18 P-rows artifact-verified, 16 exact) · C ACC-W-FIX-5B; ALL folded per
+`REVIEW-DRAFTPLAN-RECONCILIATION.md`; gate = a confirmation pass ⇒ START-READY. DRAFTING
+ITSELF REMAINS BEHIND THE EXPLICIT USER-CONSENT GATE (user 2026-07-16) — no review outcome
+starts it.** Rev-1 history: deferred by the user pending the
 completion set; the "experiment surface fully complete" overstatement corrected (it was
 Step-4-scoped).
 
@@ -33,23 +33,24 @@ as BLOCKING.
 
 | # | Paper claim (honest form) | Provenance |
 |---|---|---|
-| P1 | Corpus: **27 cases (12 pos / 15 neg)**, schema-validated, 6 SUTs, provenance classes + `readback_shape` census (9 present-landed / 3 eventual-present / 2 reject-no-delta / 1 degraded-present; positives omit the field) — the 27th = the additive kafka S1 stochastic case | freeze §5 + R1d row + the Phase-C row (2026-07-16); `benchmark/cases/**` validator-green 27/27 |
+| P1 | Corpus: **27 cases (12 pos / 15 neg)**, schema-validated, **5 SUTs** (bookinfo/oteldemo/sockshop/teastore/trainticket; Boutique appears in the M-yield experiment set only), provenance classes + `readback_shape` census (9 present-landed / 3 eventual-present / 2 reject-no-delta / 1 degraded-present; positives omit the field) — the 27th = the additive kafka S1 stochastic case | freeze §5 + R1d row + the Phase-C row (2026-07-16); `benchmark/cases/**` validator-green 27/27 |
 | P2 | 8 distinct positive SITES (TT4/TS2/OTel1/SS1; ~13 w/ F-corpus) — the disclosed positive-side widening CLOSE after 3 rejected attempts | freeze §5; R1b/R1c rows |
 | P3 | STRUCTURAL SCARCITY datum 1: wild-hunt 0 CONFIRMED / N=1514 / K=5 (≤0.20% one-sided; pre-registered) — scarcity IS the finding; NO natural discriminator exists in this regime | S3 rows (2026-07-12/13); `RESULT-s3.md`; per-window commits 10eb19e/5802fa8/0fbe00f, classifier byte-identical |
 | P4 | STRUCTURAL SCARCITY datum 2: write-acked-absent presence-defuser floor 0/≥8 — a clean-ack empty read-back IS a masked loss (structural, not effort) | R1d row; `RESULT-r1d.md` + `r1d-phase0-findings.md` |
 | P5 | MIST read-back enablement: paired FIRE 5/5 ground-truth-verified on BOTH corpus SUT legs (2.75-A) | freeze 2.75-A row; commits + capture logs |
-| P6 | **The COMPLETED E2 matched-recall table: 6 arms × 4 visibility classes through the single scoring harness** — MIST 9/9 evaluable positives + 0/15 FP; naive 0 positives + 2 FP; Tracetest-presence SURROGATE (labeled; live tool never run) 4 positives + 1 FP + invisible-MISS; db-locality 1/1 invisible CATCH (specification-locality measured); contract-invariant live flagship cells (by-construction MISS measured ×5); TraceAnomaly construction-blindness (not-cleared by actual check); measured-vs-stamped 0 mismatches; matched-recall framing ONLY (never "discrimination"); no pooled recall exists in the artifact | `benchmark/scoring/matched-recall-table.json` + `RESULT-e2-frontier.md` (post-Phase-C refresh) + TT-omnibus row + E2 row (5942bab) |
+| P6 | **The COMPLETED E2 matched-recall table: 6 arms × 4 visibility classes through the single scoring harness** — MIST 9/9 evaluable positives (**8 live-run + 1 capture-concordant** [`TT-createaccount-agreement-001`] — the self-concordance rail forbids pooling the concordant cell into any live headline); negatives 0 flags among all 15 (**13 evaluable**, 2 structurally n_e); naive 0 positives + 2 FP; Tracetest-presence SURROGATE (labeled; live tool never run) 4 positives + 1 FP + invisible-MISS; db-locality 1/1 invisible CATCH (specification-locality measured); contract-invariant live flagship cells (by-construction MISS measured ×5); TraceAnomaly construction-blindness (not-cleared by actual check); measured-vs-stamped 0 mismatches; matched-recall framing ONLY (never "discrimination"); no pooled recall exists in the artifact | `benchmark/scoring/matched-recall-table.json` + `RESULT-e2-frontier.md` (post-Phase-C refresh) + TT-omnibus row + E2 row (5942bab) |
 | P7 | Trace-gated tier: the first CONTROLLED pre-registered either-way measurement in the c2c3 record — observe fault 5/5 OBSERVED_COMPLETE_ABSENT + control clean; NEVER "first in any run of record" (G1 2026-07-02 fired it 126×, disclosed) | TT-omnibus row; leg-1 report |
 | P8 | E5 ablation: exact-4 OAT × 5 reps uniform; A2 (trace gate) = the ONLY verdict-tier-moving axis (C1 vs C2 contrast) | TT-omnibus row leg-3; `b4/ttomni/leg3/` |
 | P9 | M-yield: 6-SUT set, 29+10 seeds, 5145+~2700 tests, 26 clusters + reps + cross-seed 10% audit; NO yield statistic (rater-gated); flags on TT complete seed = 0 (S3 prior held) | MYC row (2026-07-16) + `RESULT-myield-completion.md` |
 | P10 | The observe-starvation finding (CORRECTED mechanism — the paper text uses ONLY this form): observe arms ONLY at the enhancer final round; budget-capped runs DO reach it (SS 10/10 armed) but the armed stretch is STARVED (SS all-3440-writes-500 at the type-naive tier + mid-round kill + jaeger-off tier cap; TT 4/10 armed w/ triple-coverage miss) | MYC row; RESULT finding section; MistRunner L1730/1757-58 |
-| P11 | Oracle-FP measurement: sync FP 0/2127 acked (interval [0,0], gate histogram 100% observed) + FP-vs-timeout curve (500ms→12.98%, 1s→0.14%, ≥2s→0.0) + packaged SS FP corpus 0/1200 | G1 row (gate1-result.md, run-3 report JSON); freeze §5 packaged-FP |
+| P11 | Oracle-FP measurement: sync FP 0/2127 acked (interval [0,0], gate histogram 100% observed) + FP-vs-timeout curve (500ms→12.98%, 1s→0.14%, ≥2s→0.0) + packaged SS FP corpus 0/1200 | G1 row (gate1-result.md, run-3 report JSON); SS FP corpus = `prep/g3-sut2-fp-probe-result.md` + `g3-result.md` P5 (packaged-FP exemption: freeze §6 R1 row) |
 | P12 | Authoring-cost symmetry: `mist_authoring` table (TeaStore ~25 min / OTel ~15 / SS ~5 / BI+Boutique 0) vs comparator per-endpoint authoring cost (E2 arm-3 obligation) | MYC row enablement table; E2 prereg |
 | P13 | Scope/Limitations of record: detects acknowledged-but-LOST (absence), NOT acknowledged-but-CORRUPTED; observe-mode CORRECTLY ABSTAINS on eventual-consistency (TIMEOUT_ABSENT = WARN-only; the naive at-cap comparator is what FPs); single-box; induced-vs-natural mix; TT-only exception text | R1c-A + R1d-B rows (source-verified, memory-pinned) |
 | P14 | Rater-study DESIGN + its disclosed shortfalls (calibration ≪50, binding=benign; S2 floor ≥35 unmet w/ earned-exhaustion documentation; rateability census 14 ok / 9 truncation-gated / 1 trace-only / 1 async-ineligible) | R1d + E1+R2 rows; `MANIFEST-r2.json` |
 | P15 | Benchmark release engineering: neutralized rater-sidecars rev 3 (0-leak, hardened BANNED_STRINGS + opaque-id guard), clean-room OpenAPI specs + coverage gate, license audit incl. OpenAPI-provenance heterogeneity | E1+R2 rows (7404873/d4a6c96 + corrections) |
 | P16 | **The C1×C2 integration layer (the benchmark-consumes-the-tool machinery):** the 27-case MIST-column census (flag 9 / no_flag 13 / principled-n_a 5, ZERO silent pending, per-cell provenance incl. live-run vs capture-concordant [self-concordance rule]); the scoring harness as THE single mechanical path; the visibility census (two uninstrumented senses); the existence-verified bundle map; release staging w/ the reproduction census (**26/27 executable-reproducible**) | completion-set Phase A+C rows (96cbbaa→086cf68); `benchmark/{mist-column-census,e2-visibility-census,case-trace-arm-map}.json` + `scoring/` + `release-staging/` |
 | P17 | **The kafka stochastic S1 measurement:** vendor-flag permanent production loss — control 10/10 landed vs fault 19/20 LOST at the T+5min binding re-probe (rate 0.95, Wilson95 [0.764, 0.991]); wedge-past-flag-off reproduced + healed by the pinned recovery-restart; post-recovery permanence re-probe; SECOND attempt of record (the first STOPPED at probe). Frame as a measured vendor-fault characterization + corpus case, never a SUT-defect-rate claim | Phase-C row (34b2f8d); `b4/cset/kafka-s1/` + the case file |
+| P19 | G3 banked supporting evidence — the SS-shipping head-to-head (4972d3b) + the Rider-2 survey (86.25%): SUPPORTING-ONLY disposition (own records, cited where sections 6/8 need them; NEVER headline claims; the survey's executable-breadth variant stays rejected-LOW-ROI) | [[g3-headtohead-result]]; `g3-result.md` |
 | P18 | Seal-prep decision surface (rater-study §): the calibration rehearsal quantifies the structural shortfall in EVERY branch (S0=14/36, S1[+TT-re-capture]=22/28, S2=15/35); the TT per-endpoint rendering EVIDENCE-BLOCKED finding; the ack-text tell VACUOUS for the current packet (measured: zero rendered ack payloads in the rateable-ok 14) — all USER-decision inputs, reported as design/disclosure, never as executed rating | A3 staging (d089062 + the wave-close addendum); `b4/rater-sidecars-staging/` |
 
 **Rater-gated numbers (κ, genuine-vs-benign yield, M-prevalence, calibration outcomes) appear
@@ -67,13 +68,16 @@ cell stamped `[RATER-GATED: Step 5]`. The draft must read coherently WITH the pl
 3. **MIST's oracle semantics (the mechanism section)** — paired (differential value-delta;
    trace-gate-independent) vs observe (trace-gated defect tier; WARN-only abstention);
    lost-not-corrupted scope (P13); the metamorphic read-back formulation.
-4. **The benchmark (C2)** — P1/P2/P4/P14/P15: schema, provenance classes, shape census,
+4. **The benchmark (C2)** — P1/P2/P4/P14/P15/P16 (the integration layer = the benchmark's tool-consumption machinery)/P17 (the stochastic S1 case as corpus material): schema, provenance classes, shape census,
    neutralization pipeline, license audit, packaged-FP corpora, the 8-site disclosure,
    counting conventions (distinct-site definition, two-denominator S1).
 5. **Study design (C3)** — rater protocol + calibration/floor shortfalls AS DISCLOSED
-   findings about the fault class's supply (P4/P14); IRB = pending user-side (stated).
-6. **Experiments (executed record)** — E2 matched-recall (P6); trace-tier controlled
-   measurement (P7); E5 (P8); M-yield (P9/P10/P12); FP measurement (P11); S3 (P3).
+   findings about the fault class's supply (P4/P14) + the seal-decision surface P18
+   (reported as design/disclosure, never as executed rating); IRB = pending user-side (stated).
+6. **Experiments (executed record)** — E2 matched-recall (P6, fed by P16's harness);
+   read-back enablement (P5); trace-tier controlled measurement (P7); E5 (P8); M-yield
+   (P9/P10/P12); FP measurement (P11); S3 (P3); the kafka stochastic S1 measurement (P17);
+   G3 supporting evidence where needed (P19).
 7. **Results + placeholders** — the executed cells + `[RATER-GATED]` shells.
 8. **Threats / Scope / Limitations** — P13 + single-box + induced-provenance + the
    self-concordance rule (never pool self-concordant read-back cells into headline recall)
@@ -95,14 +99,21 @@ cell stamped `[RATER-GATED: Step 5]`. The draft must read coherently WITH the pl
 
 ## §4 Process (the /goal review discipline)
 
-1. THIS PLAN → 3-cold review (independent axes: PC-realism/claim-honesty; evidence-fidelity
-   of the claim map; structure/feasibility) → reconcile → ALL-ACCEPT gate (confirmation pass
-   if heavily revised — R1d precedent).
+0. **USER CONSENT (HARD GATE, operative here not just in the header): NO drafting wave
+   starts without the user's explicit go — an ALL-CONFIRM on this plan parks it at
+   START-READY and nothing more. This gate binds every future session including /goal
+   auto-execution.**
+1. THIS PLAN → 3-cold review → reconcile → confirmation pass (heavy revision, R1d
+   precedent) → ALL-CONFIRM = START-READY (see step 0).
 2. Drafting in 3 waves, each ending in a wave review: W1 = skeleton + Intro + Background +
    Mechanism (sections 1-3); W2 = Benchmark + Study design + Experiments (4-6); W3 = Results
    + Threats + Related + Abstract polish (7-10 + abstract).
 3. Full-draft 3-cold review at the end (the DoD gate) → fold → the draft-of-record.
 4. Every wave commits on `main_track`; reviews local-only; FILE_INDEX/memory sync per wave.
+5. **SUBMISSION GATE (distinct from start-ready): a draft carrying `[RATER-GATED]`
+   placeholders is submittable-SHAPED, NOT submittable — SUBMISSION additionally requires
+   the Step-5 rater cells filled, a pre-submission 3-cold re-review of the FILLED draft,
+   and the user's venue election.**
 
 ## §5 Hard rails (memory-pinned; a reviewer finding ANY of these violated = BLOCKING)
 
@@ -119,8 +130,19 @@ cell stamped `[RATER-GATED: Step 5]`. The draft must read coherently WITH the pl
   detection primacy; the claim is the combination (accessibility + benchmark + measured FP).
 - No SmartFetch contribution claims (separate paper; no-double-claim).
 - Rater/IRB/E6/venue = USER-side; the draft references them as pending, never executes.
+- **The checklist-footer paper honesty riders, VERBATIM (C-B3): lead with the study;
+  two-denominator S1 (per-request AND per-endpoint); tell-free floor; MIST vs arm-3
+  authoring-cost symmetry; Gate-4 wording "3 frontier trace comparators +
+  contract-invariant arm".**
+- NO scoped-"first" phrasing in the DRAFT VOICE — internal-provenance firsts (P7) live in
+  provenance notes only, never in claims the paper makes for itself.
 
 ## §6 NOT in scope
 
-New experiments or captures; any MIST tool code; rater contact; kafka S1; the
-contract-invariant arm run; E6 packaging execution; LaTeX/venue formatting; SmartFetch.
+New experiments or captures (kafka S1 = CLOSED-CAPTURED at completion-set Phase C — no
+new kafka work; the contract-invariant arm = MEASURED at Phase B); any MIST tool/oracle
+code; rater contact; IRB; **the seal decisions themselves (USER-side: the S3-BENIGN-01
+re-cut swap [CASE-Q47 staged], the TT re-capture-vs-keep-excluded branch, the SS
+keep-vs-exclude, the ack-text check on any re-captured renders)**; E6 packaging
+execution / fork-publication (USER); LaTeX/venue formatting (venue = USER); SmartFetch
+(parallel track; no-double-claim).
