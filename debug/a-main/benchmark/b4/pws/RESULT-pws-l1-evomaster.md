@@ -1,7 +1,6 @@
 # RESULT — PWS L1: the MULTI-TOOL real-tool arm (EvoMaster + Schemathesis; RESTler disclosed) — RESULT OF RECORD
 
-**Date:** 2026-07-17 · Status: EXECUTED (3 sites live-measured; TT determined-same, a
-confirmatory 4th cell rides along in W4). **User disposition (2026-07-17):** KEEP the arm;
+**Date:** 2026-07-17 · Status: EXECUTED — ALL 4 EvoMaster sites live-measured (TT's 4th cell confirmed the barrier: reached /cancel, stalled before the booked-order baseline) + Schemathesis 2 sites. **User disposition (2026-07-17):** KEEP the arm;
 document exactly what happened and why; ACCEPT this state — the barrier is plausibly
 MIST's advantage; do NOT special-case EvoMaster with auth config; stay situation-dependent.
 
@@ -14,7 +13,7 @@ MIST's advantage; do NOT special-case EvoMaster with auth config; stay situation
 | **TeaStore** order (cartAction confirm; masked = maintenance ON) | **1/9 (11%)** | YES — 22 tests/run vs `/webui/cartAction` | **NOT_INTERPRETABLE (leaning-miss)** | session-gated webui: `confirm` returns a success-shaped **302** (flagged in `_faults`), never a 200; control-vs-fault output **byte-identical** (40 tests, 22 write-tests, 16 potential faults, 11% each) ⇒ the masked loss is INVISIBLE to the tool, but the acked-**2xx** regime the oracle targets was never entered |
 | **SockShop** shipping (order POST; masked = source-inherent swallow) | — | run aborted | **TOOL-NOT-RUNNABLE (SUT-unstable-under-load)** | EvoMaster's request storm (~2.5M evaluated calls/hr) **crashed the single-process Node front-end** — restartCount climbed to 2 across two attempts, each crash killing the port-forward and failing EvoMaster's connectivity probe (`Failed to connect API with TCP`). NO SUT hardening was applied (committed shape stands) |
 | **OTel** checkout (/api/checkout; masked = accounting scale-0; kafka flag BARRED) | **0/6 (0%)** | reached-but-erroring | **NOT_INTERPRETABLE** | `/api/checkout` requires a **populated cart for the same userId** (a prior `/api/cart` AddItem call) — a multi-step STATEFUL sequence black-box generation does not construct with random userIds; 0 acked-2xx ⇒ the precondition never held. Fault run skipped-by-determination (disclosed: a 0% baseline determines the cell) |
-| **TT** cancel-refund (confirmatory, W4 ride-along) | determined | — | expected NOT_INTERPRETABLE | the cancel endpoint needs a **real booked order** (a full ticket-booking flow) to cancel; black-box random `orderId`/`loginId` cannot produce one |
+| **TT** cancel-refund (4th site, MEASURED 2026-07-17) | stalled-before-baseline | YES — reached `/cancelservice/cancel` + `/orderservice/order` (735 covered targets) | **NOT_INTERPRETABLE (confirmed)** | reached the endpoint but STALLED on the heavy slow TT graph (5.9% budget in ~50min) and cannot establish the acked-2xx baseline: cancelling needs a REAL booked order (full search→book→pay→confirm flow) black-box random ids cannot assemble. Killed as a determined-confirmatory result |
 
 ## Why — the one mechanism, stated precisely
 

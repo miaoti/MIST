@@ -1,0 +1,8 @@
+{
+ "site": "trainticket cancel-refund (/cancelservice/cancel; masked = fabricatedack; the 4th confirmatory site)",
+ "tool": "EvoMaster v6.1.1 (black-box, seed 42, 40m budget — KILLED at ~50min wall, 5.9% search budget)",
+ "reached_cancel_endpoint": true,
+ "covered_targets": 735,
+ "verdict": "NOT_INTERPRETABLE (determined-barrier + confirmed by partial run)",
+ "reason": "EvoMaster REACHED /cancelservice/cancel + /orderservice/order (735 covered targets) but STALLED on the heavy slow TT Spring-Boot graph (5.9% search budget in ~50 min wall — each request slow) and, by construction, cannot establish the acked-2xx WRITE baseline the masked fault hides: cancelling needs a REAL BOOKED ORDER produced by the full multi-step booking flow (search->book->pay->confirm) that black-box random orderId/loginId cannot assemble. The 4th site confirms the same REACHABILITY BARRIER as TeaStore/OTel: endpoint reached, acked-2xx write state unreachable. Killed to avoid wasting hours on a determined-confirmatory result."
+}
