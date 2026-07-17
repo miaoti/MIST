@@ -1,48 +1,49 @@
-# Wave A-VENUE LIFT — HALTED at 3-cold review (premise over-read; question back to user) — rev 1
+# Wave A-VENUE STRENGTHEN (empirical/benchmark-basis FULL main-track paper) — rev 2
 
-**Date:** 2026-07-17 · Owner: main_track · Status: **HALTED. 3-cold = A REJECT / B accept-w-revisions / C REJECT. C found (source-verified) the plan's premise over-read the user's '只能投A会' into 'research-novelty-track ONLY', foreclosing the empirical/benchmark-track A (ISSTA/FSE/ICSE) that IS an A-venue, IS weak-accept-achievable per the publishability review, and IS the project's own committed primary A-path (README §139/§328). A found the research-novelty goal likely unachievable by engineering (Cast cap). A4 re-runs the already-CLOSED null Gate-3 (g3-result.md 'NOT MET… nothing in the wild' + S3 0/1514). WAVE DOES NOT EXECUTE AS WRITTEN — the interpretation question is with the user (recon REVIEW-LIFT-PLAN-RECONCILIATION.md). A2 framing fixes = safe under either reading.**
-**Trigger:** USER 2026-07-17 — "只能投A会" (A-venue research track ONLY; benchmark/B-venue
-fallback REJECTED). The publishability review (3-cold UNANIMOUS, `REVIEW-PUBLISHABILITY-
-RECONCILIATION.md`) put current materials at **weak-reject research / weak-accept benchmark**;
-this wave operationalizes the reviewers' UNANIMOUS fix so the research-track bar is
-credibly contested.
+**Date:** 2026-07-17 · Owner: main_track · Status: **rev 2 — GOAL CLARIFIED BY USER
+(2026-07-17): "full paper, main track" at an A-venue (ISSTA/FSE/ICSE), contribution basis =
+EMPIRICAL/BENCHMARK (the README §9 committed primary A-path), NOT mechanism-novelty. rev-1
+3-cold (A REJECT / B accept-w-rev / C REJECT) folded: the research-novelty framing is
+DROPPED (my over-read of "只能投A会"); A4 Gate-3 re-run DROPPED (already a closed null:
+g3-result.md "NOT MET… nothing in the wild" + S3 0/1514); A1 REFRAMED per B (structural
+oracle-blindness + control-vs-fault differential, NOT a fed/underpowered N=5 "systematically
+misses"). Awaiting a 3-cold re-review of rev 2 before the cluster legs; A2 framing = safe
+now.**
 
-## §0 The honest ceiling (stated so the plan is not oversold)
-Cast caps the MECHANISM novelty (it already detects masked-2xx, 89 dev-confirmed). The
-engineering package below lifts weak-reject → **borderline research** (a real, fightable
-improvement) but NOT clear-accept — the research case rests on accessibility + the
-open benchmark + a MEASURED demonstration that a conformance/trace oracle STRUCTURALLY
-misses what MIST's read-back catches. The ONLY clear-accept uncapper is **Gate-3** (a real
-acked-but-lost defect a competent LIVE oracle misses), which S3's 0/1514 says is scarce —
-included as a HIGH-VARIANCE upside leg, honestly bounded.
+## §0 The honest positioning (recalibrated)
+A full main-track submission draws BOTH novelty-lens and empirical-lens reviewers, so on
+current materials it is **BORDERLINE** (empirical-lens weak-accept; novelty-lens weak-reject
+— Cast caps the mechanism). This wave does NOT chase novelty (unreachable) or re-hunt a
+real bug (G3+S3 both null). It STRENGTHENS the empirical/benchmark case + fixes the framing
+so the empirical through-line dominates — pushing borderline → the accept side of borderline.
+The honest deliverable target = **a defensible full empirical/benchmark main-track paper**,
+not a guaranteed accept.
 
 ## §1 The four legs (risk/leverage-ordered)
 
-### A1 — THE FAIR, POWERED, NON-STRAWMAN HEAD-TO-HEAD (the unanimous #1 fix; highest leverage)
-The gap all three reviewers named: no fair head-to-head where a real tool REACHES the
-acked-2xx write and is MEASURED to miss the masked loss. Convert "tools can't run / we tie
-/ cells n_e" into "real tool, fairly configured, reaches the write, measurably misses."
-- **Design:** on each eligible site, DRIVE a real black-box tool to the acked-2xx WRITE
-  success state (with legitimate config — auth tokens, a scripted state-setup prelude that
-  is DISCLOSED tool configuration, NOT a MIST advantage), run it FAULT-ACTIVE, and MEASURE
-  (N≥5) that it (a) acks 2xx and (b) does NOT surface the durable loss its oracle set can't
-  see. Then run MIST on the SAME site → catches it. The cell becomes a MEASURED miss, not
-  a NOT_INTERPRETABLE.
-- **Sites (pick the ones a tool can be fairly driven to the acked-2xx write):**
-  (i) **OTel checkout** — Schemathesis's STATEFUL phase already REACHES POST /checkout
-  (the review's clean cell); add a cart-populate prelude so checkout acks 2xx with a real
-  order, run fault-active (accounting scale-0), measure the miss. THIS IS THE HEADLINE CELL.
-  (ii) a 2nd site for power — SockShop orders or TeaStore order with a scripted
-  login+cart prelude feeding the tool a valid session, fault-active, measured miss.
-- **Tool set:** Schemathesis (clean, reached statefully — PROMOTE to headline) + EvoMaster
-  WITH auth/state config (revisiting the earlier no-auth call — the review flagged the
-  auth-skip as the liability "you set the baseline up to fail"; a fairly-configured
-  EvoMaster that reaches+misses removes that line). Both = REAL tools, fairly driven.
-- **Rails:** the state-setup prelude is DISCLOSED tool configuration (a fair-comparison
-  input, symmetric with MIST's own stimulus authoring — reported in the authoring-cost
-  table); the fault-active masking is the SAME committed fault; ground truth = direct
-  reads; SEPARATE table (never merged into matched-recall); N≥5 per cell for a measured
-  (not anecdotal) miss.
+### A1 — THE STRUCTURAL ORACLE-BLINDNESS HEAD-TO-HEAD (B-reframed; the empirical spine)
+The rigorous form of the reviewers' fix — NOT "we ran a tool N times and it missed"
+(fed-prelude tautology / underpowered: 0/5 → 95% CI upper ~0.6, A-B1/B-B1/B-B2), BUT:
+**the real-tool CLASS structurally lacks a durable read-back oracle, so a CONTROL-vs-FAULT
+run pair produces IDENTICAL tool output even where the tool REACHES the acked-2xx write** —
+the miss is by-construction, demonstrated by the differential, not asserted from a small N.
+- **The claim = structural + differential**, not statistical: for each cell, show (a) the
+  tool REACHES the write (autonomously where it can — Schemathesis's stateful phase reached
+  POST /checkout; via a DISCLOSED tool-standard state prelude where needed — e.g. a booked
+  order for TT cancel — with the tool's OWN oracle still deciding detection, never a
+  MIST-authored check), and (b) control-leg tool output == fault-leg tool output (the tool
+  cannot distinguish landed from masked-lost), while (c) MIST on the SAME site catches it +
+  ground-truth direct-reads confirm the loss.
+- **Cells (B's recommendation — the two documented-blocked 2nd sites are OUT):**
+  (i) **OTel checkout** — Schemathesis stateful REACHES /checkout; run control-vs-fault
+  (accounting scale-0), show identical tool verdicts. (ii) **TT cancel-refund** — MIST's
+  5/5 flagship; a DISCLOSED booked-order prelude drives the tool to the cancel write;
+  control(clean) vs fault(fabricatedack), identical tool output. (TeaStore 302-not-2xx =
+  off-thesis; SockShop crashed-under-load — both excluded, disclosed.)
+- **Tools:** Schemathesis (its own stateful reach — the clean headline) + optionally
+  EvoMaster-with-auth ONLY if it reaches fairly (else its NOT_INTERPRETABLE stays a hedged
+  secondary, per A2). The prelude is DISCLOSED tool config (symmetric with MIST's stimulus
+  authoring-cost); SEPARATE table, never merged.
 
 ### A2 — FRAMING FIXES (zero new experiment; endorsed by B+C; do FIRST, immediately)
 - **Promote Schemathesis's clean stateful-reach-yet-oracle-blind miss to the HEADLINE
@@ -64,19 +65,12 @@ read-back bodies → case files (corrupted → MIST n_a out-of-scope-by-design; 
 adjudication) → neutralize + validate + integration-chain regen. Additive; corpus 27 → up
 to ~34; NOT headline-load-bearing (size helps #1/#2, not the research bar).
 
-### A4 — GATE-3 real-bug hunt (the HIGH-VARIANCE uncapper; honestly bounded)
-A fresh, pre-registered wild-hunt for a NATURAL acked-but-lost-write defect on the live
-SUTs that a competently-configured LIVE oracle (from A1) also misses — the one thing that
-uncaps to clear-accept research. S3 prior = 0/1514 (scarce); this leg is time-boxed and
-STOP-discloses if 0 (the scarcity itself already a finding). NOT relied upon; pure upside.
+### A4 — GATE-3 real-bug hunt — DROPPED (rev 2)
+Re-running an already-CLOSED null gate (g3-result.md 2026-07-08 RESULT-of-record: NOT MET, nothing in the wild; + S3 0/1514) at ~1-2d vs the project's ~4-6wk precedent, no new method = not funded. The scarcity is ALREADY a stated finding; the empirical/benchmark paper does not depend on a wild bug.
 
 ## §2 Order + budgets
-A2 (framing, ~½ day, no cluster) → A1 (the head-to-head, ~2-3 d, live) → A3 (L2 build-out,
-~2-3 d, live) → A4 (Gate-3 hunt, time-boxed ~1-2 d, live). A1 is the load-bearing lift;
-if A1's fair head-to-head cannot be achieved on ≥2 sites (tools genuinely can't be driven
-to the acked-2xx write even with fair config), that is itself a STOP+surface (it would mean
-the reachability barrier is real+fair, re-validating the current framing — but the review
-says try the config first).
+A2 (framing, ~½ day, no cluster; DO FIRST) → A1 (the oracle-blindness head-to-head, ~2-3 d, live) → A3 (L2 build-out, ~2-3 d, live). A4 DROPPED. A1 is the load-bearing empirical strengthening;
+if A1's control-vs-fault differential can't be established on ≥2 sites (the tool genuinely can't reach the write even with disclosed fair config), STOP+surface — the Schemathesis-OTel cell alone + the honest disclosure still stands as the real-tool evidence.
 
 ## §3 DoD
 1. A2: framing fixes landed in the RESULTs + paper-draft-plan (Schemathesis headline,
@@ -86,12 +80,11 @@ says try the config first).
    authoring-cost symmetry recorded; RESULT + freeze row.
 3. A3: L2 faults built + B-m6-verified + captured + case-authored (or per-fault
    swap/disclose); integration-chain regen; freeze row.
-4. A4: the hunt executed + result (a landed bug = the uncapper; else the disclosed 0).
-5. Post-DoD: a FRESH 3-cold publishability re-review — does the lifted package clear the
-   research-track bar (or reach honest borderline)? + RESULT + freeze + memory.
+4. Post-DoD: a FRESH 3-cold publishability re-review — does the strengthened package sit
+   on the ACCEPT side of borderline for a full empirical/benchmark main-track paper? + RESULT + freeze + memory.
 - **The write-up gate stays: NO draft until ALL experiments incl. the rater study done
   (user 2026-07-16(b)).**
 
 ## §4 NOT in scope
 The rater study (user-side); the write-up; any MIST oracle-semantics change; SmartFetch;
-dropping to a non-A venue (user: A-only).
+re-hunting Gate-3 (closed null); chasing mechanism-novelty (Cast-capped); dropping to a non-A venue (user: A full main-track).
