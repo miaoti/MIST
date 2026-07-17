@@ -1,0 +1,8 @@
+{
+ "site": "sockshop-shipping (order POST; masked = source-inherent swallow, always on)",
+ "tool": "EvoMaster v6.1.1 (black-box, seed 42, 60m budget)",
+ "verdict": "TOOL-NOT-RUNNABLE (SUT-unstable-under-load; disclosed per the plan stop rule)",
+ "reason": "EvoMaster's black-box request storm (2.5M evaluated calls/hour class) repeatedly CRASHED the SockShop single-process Node front-end: restartCount climbed to 2 within ~8 min across two attempts, each crash killing the port-forward and failing EvoMaster's SUT-connectivity probe (it exited with 'Failed to connect API with TCP'). NO SUT modification was made to harden it (the committed shape stands). Disposition: an interpretable detection cell cannot be obtained here — a real tool-vs-SUT LOAD incompatibility datum, NOT a MIST-advantage claim. MIST's own SockShop coverage stands on the 2.75-A/head-to-head captures + the corpus case.",
+ "attempts": 2,
+ "front_end_restarts": 2
+}

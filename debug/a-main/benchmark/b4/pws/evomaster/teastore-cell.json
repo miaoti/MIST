@@ -1,0 +1,20 @@
+{
+ "site": "teastore-order (cartAction confirm; masked = maintenance ON)",
+ "tool": "EvoMaster v6.1.1 (LGPL-3.0, black-box, seed 42, 60m each; sha 7aa06eb6)",
+ "control_run": {
+  "tests": 40,
+  "write_endpoint_tests": 22,
+  "potential_faults": 16,
+  "acked_2xx_endpoints": "1/9 (11%)"
+ },
+ "fault_run": {
+  "tests": 40,
+  "write_endpoint_tests": 22,
+  "potential_faults": 16,
+  "acked_2xx_endpoints": "1/9 (11%)"
+ },
+ "write_endpoint_reached": true,
+ "acked_2xx_baseline_established": false,
+ "verdict": "NOT_INTERPRETABLE (leaning-miss)",
+ "reason": "EvoMaster REACHED the masked-write endpoint (22 tests/run against /webui/cartAction) and ran to completion, and the masked loss produced ZERO change in its output (control vs fault byte-comparable: 40 tests, 22 write-tests, 16 potential faults, 1/9=11% 2xx in BOTH) — the masked write is invisible to the tool. BUT the acked-2xx SUCCESS baseline the masked-2xx oracle targets was NOT black-box-reachable: the session-gated webui confirm returns a 302 (flagged in _faults) not a 200 in EITHER run, so EvoMaster never entered the exact acked-2xx regime. Per the rev-2 reachability rule this is NOT a clean real-tool miss but NOT_INTERPRETABLE-leaning-miss, with the auth/session-config limitation disclosed (EvoMaster's own startup warning recommends auth setup; not configured here — a candidate refinement, NOT a tool patch)."
+}

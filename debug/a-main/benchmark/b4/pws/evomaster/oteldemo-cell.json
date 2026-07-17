@@ -1,0 +1,11 @@
+{
+ "site": "oteldemo-checkout (/api/checkout; masked = accounting dependency_scale_zero; kafka flag BARRED)",
+ "tool": "EvoMaster v6.1.1 (black-box, seed 42, 60m)",
+ "control_run": {
+  "acked_2xx_endpoints": "0/6 (0%)",
+  "potential_faults": 6
+ },
+ "fault_run": "NOT RUN — determined by the control's 0% acked-2xx baseline (disclosed; running it cannot be more interpretable, and the rev-2 reachability rule makes a miss-without-baseline NOT_INTERPRETABLE regardless)",
+ "verdict": "NOT_INTERPRETABLE",
+ "reason": "EvoMaster black-box established acked-2xx on 0/6 endpoints: /api/checkout requires a POPULATED CART for the same userId (a prior /api/cart AddItem call), a multi-step STATEFUL sequence that spec-only black-box generation does not construct with random userIds. The masked-write precondition (an acked-2xx checkout) was never reached, so detection is NOT_INTERPRETABLE."
+}
