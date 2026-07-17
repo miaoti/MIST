@@ -159,3 +159,6 @@ debug/a-main/进展全景-给自己读.md
 # NOTE: 6 bookinfo/boutique instances were already tracked in 27c199b and STAY tracked
 # (no-deletion rule; faithful run-condition provenance) — this rule stops future churn.
 evaluation/suts/**/myc-props-s*.properties
+
+# EvoMaster JAR (LGPL-3.0; version-pinned RUN tool, never vendored in git — sha recorded in the RESULT)
+tools/evomaster/*.jar
