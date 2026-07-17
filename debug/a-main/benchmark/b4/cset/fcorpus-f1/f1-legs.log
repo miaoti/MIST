@@ -1,0 +1,2 @@
+LEG=CTRL mode=none buyer=84d16af0-2826-4f66-89d7-f2e769200d3a orderId=8a719171-b61a-4135-96d3-862697c28087 cancel_ack={"status":1,"msg":"Success.","data":"test not null"} bal_before=50.00 bal_after=130.00
+LEG=FLT mode=lost buyer=be709225-5dd6-45c9-b93a-a395b4bbcdac orderId=17a7bbe6-8fdd-4498-9bce-68447ee0798c cancel_ack={"status":1,"msg":"Success.","data":"test not null"} bal_before=50.00 bal_after=50.00
