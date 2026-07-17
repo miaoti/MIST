@@ -1,0 +1,503 @@
+Schemathesis v4.23.0
+━━━━━━━━━━━━━━━━━━━━
+
+ 🕛  Loading specification from                                                
+     C:\Users\miaot\Github\MIST\evaluation\suts\oteldemo\openapi\oteldemo-swag… 🕛  Loading specification from                                                
+     C:\Users\miaot\Github\MIST\evaluation\suts\oteldemo\openapi\oteldemo-swag…
+ ✅  Loaded specification from                                                 
+ C:\Users\miaot\Github\MIST\evaluation\suts\oteldemo\openapi\oteldemo-swagger. 
+ yaml (in 0.10s)                                                               
+
+     Base URL:         http://localhost:8085                                   
+     Specification:    Open API 2.0                                            
+     Operations:       6 selected / 6 total                                    
+
+ 🕛  Probing API capabilities 🕛  Probing API capabilities
+ ✅  API capabilities:                                                         
+
+     Supports NULL byte in headers:                            ✘               
+     Accepts backslash and control characters in URL paths:    ✓               
+
+     Examples
+
+     0:00:00 ------------------------------------------------------- 100% (6/6)
+
+
+     ⏭  6 skipped     Examples
+
+     0:00:00 ------------------------------------------------------- 100% (6/6)
+
+
+     ⏭  6 skipped
+ ⏭   Examples (in 0.12s)                                                       
+                                                                               
+     ⏭  6 skipped                                                              
+
+ 🕛  Coverage
+
+     0:00:00 --------------------------------------------------------- 0% (0/6)
+
+   ⠋ 0:00:00  POST /cart
+
+           Coverage
+
+     0:00:00 ------------------------------------------------------- 100% (6/6)
+
+
+     ❌ 6 failed     Coverage
+
+     0:00:00 ------------------------------------------------------- 100% (6/6)
+
+
+     ❌ 6 failed
+ ❌  Coverage (in 0.32s)                                                       
+                                                                               
+     ❌ 6 failed                                                               
+
+ 🕛  Fuzzing
+
+     0:00:00 --------- ---------------------------------------------- 17% (1/6)
+
+   ⠋ 0:00:00  POST /checkout
+
+     ❌ 1 failed     Fuzzing
+
+     0:00:00 ------------------------------------------------------- 100% (6/6)
+
+
+     ❌ 6 failed     Fuzzing
+
+     0:00:00 ------------------------------------------------------- 100% (6/6)
+
+
+     ❌ 6 failed
+ ❌  Fuzzing (in 0.28s)                                                        
+                                                                               
+     ❌ 6 failed                                                               
+
+ 🕛  Stateful
+
+     0:00:00   0 scenarios  •  0 covered / 5 selected / 5 total (5 inferred)
+
+       🕐  Stateful
+
+     0:00:00   0 scenarios  •  0 covered / 5 selected / 5 total (5 inferred)
+
+       🕑  Stateful
+
+     0:00:00   4 scenarios  •  0 covered / 5 selected / 5 total (5 inferred)
+
+     ✅ 2 passed  ❌ 2 failed 🕒  Stateful
+
+     0:00:00   8 scenarios  •  0 covered / 5 selected / 5 total (5 inferred)
+
+     ✅ 4 passed  ❌ 4 failed 🕓  Stateful
+
+     0:00:00  10 scenarios  •  0 covered / 5 selected / 5 total (5 inferred)
+
+     ✅ 6 passed  ❌ 4 failed 🕔  Stateful
+
+     0:00:00  12 scenarios  •  0 covered / 5 selected / 5 total (5 inferred)
+
+     ✅ 8 passed  ❌ 4 failed 🕕  Stateful
+
+     0:00:00  15 scenarios  •  0 covered / 5 selected / 5 total (5 inferred)
+
+     ✅ 10 passed  ❌ 5 failed 🕖  Stateful
+
+     0:00:00  17 scenarios  •  0 covered / 5 selected / 5 total (5 inferred)
+
+     ✅ 12 passed  ❌ 5 failed 🕘  Stateful
+
+     0:00:01  20 scenarios  •  0 covered / 5 selected / 5 total (5 inferred)
+
+     ✅ 15 passed  ❌ 5 failed 🕙  Stateful
+
+     0:00:01  23 scenarios  •  0 covered / 5 selected / 5 total (5 inferred)
+
+     ✅ 18 passed  ❌ 5 failed 🕚  Stateful
+
+     0:00:01  27 scenarios  •  0 covered / 5 selected / 5 total (5 inferred)
+
+     ✅ 22 passed  ❌ 5 failed 🕛  Stateful
+
+     0:00:01  27 scenarios  •  0 covered / 5 selected / 5 total (5 inferred)
+
+     ✅ 22 passed  ❌ 5 failed 🕐  Stateful
+
+     0:00:01  30 scenarios  •  0 covered / 5 selected / 5 total (5 inferred)
+
+     ✅ 25 passed  ❌ 5 failed 🕒  Stateful
+
+     0:00:01  33 scenarios  •  0 covered / 5 selected / 5 total (5 inferred)
+
+     ✅ 28 passed  ❌ 5 failed 🕓  Stateful
+
+     0:00:01  35 scenarios  •  0 covered / 5 selected / 5 total (5 inferred)
+
+     ✅ 30 passed  ❌ 5 failed 🕔  Stateful
+
+     0:00:01  38 scenarios  •  0 covered / 5 selected / 5 total (5 inferred)
+
+     ✅ 33 passed  ❌ 5 failed 🕕  Stateful
+
+     0:00:01  39 scenarios  •  0 covered / 5 selected / 5 total (5 inferred)
+
+     ✅ 34 passed  ❌ 5 failed 🕖  Stateful
+
+     0:00:02  43 scenarios  •  0 covered / 5 selected / 5 total (5 inferred)
+
+     ✅ 38 passed  ❌ 5 failed 🕗  Stateful
+
+     0:00:02  45 scenarios  •  0 covered / 5 selected / 5 total (5 inferred)
+
+     ✅ 40 passed  ❌ 5 failed 🕘  Stateful
+
+     0:00:02  51 scenarios  •  0 covered / 5 selected / 5 total (5 inferred)
+
+     ✅ 45 passed  ❌ 6 failed 🕚  Stateful
+
+     0:00:02  52 scenarios  •  0 covered / 5 selected / 5 total (5 inferred)
+
+     ✅ 46 passed  ❌ 6 failed 🕛  Stateful
+
+     0:00:02  54 scenarios  •  0 covered / 5 selected / 5 total (5 inferred)
+
+     ✅ 48 passed  ❌ 6 failed 🕐  Stateful
+
+     0:00:02  55 scenarios  •  0 covered / 5 selected / 5 total (5 inferred)
+
+     ✅ 49 passed  ❌ 6 failed 🕑  Stateful
+
+     0:00:02  58 scenarios  •  0 covered / 5 selected / 5 total (5 inferred)
+
+     ✅ 52 passed  ❌ 6 failed 🕓  Stateful
+
+     0:00:02  60 scenarios  •  0 covered / 5 selected / 5 total (5 inferred)
+
+     ✅ 54 passed  ❌ 6 failed 🕔  Stateful
+
+     0:00:03  64 scenarios  •  0 covered / 5 selected / 5 total (5 inferred)
+
+     ✅ 58 passed  ❌ 6 failed 🕕  Stateful
+
+     0:00:03  65 scenarios  •  0 covered / 5 selected / 5 total (5 inferred)
+
+     ✅ 59 passed  ❌ 6 failed 🕖  Stateful
+
+     0:00:03  67 scenarios  •  0 covered / 5 selected / 5 total (5 inferred)
+
+     ✅ 61 passed  ❌ 6 failed 🕗  Stateful
+
+     0:00:03  69 scenarios  •  0 covered / 5 selected / 5 total (5 inferred)
+
+     ✅ 63 passed  ❌ 6 failed 🕙  Stateful
+
+     0:00:03  72 scenarios  •  0 covered / 5 selected / 5 total (5 inferred)
+
+     ✅ 66 passed  ❌ 6 failed 🕚  Stateful
+
+     0:00:03  73 scenarios  •  0 covered / 5 selected / 5 total (5 inferred)
+
+     ✅ 67 passed  ❌ 6 failed 🕛  Stateful
+
+     0:00:03  74 scenarios  •  0 covered / 5 selected / 5 total (5 inferred)
+
+     ✅ 68 passed  ❌ 6 failed 🕐  Stateful
+
+     0:00:03  75 scenarios  •  0 covered / 5 selected / 5 total (5 inferred)
+
+     ✅ 69 passed  ❌ 6 failed 🕑  Stateful
+
+     0:00:03  76 scenarios  •  0 covered / 5 selected / 5 total (5 inferred)
+
+     ✅ 70 passed  ❌ 6 failed 🕒  Stateful
+
+     0:00:04  77 scenarios  •  0 covered / 5 selected / 5 total (5 inferred)
+
+     ✅ 71 passed  ❌ 6 failed 🕓  Stateful
+
+     0:00:04  78 scenarios  •  0 covered / 5 selected / 5 total (5 inferred)
+
+     ✅ 72 passed  ❌ 6 failed 🕔  Stateful
+
+     0:00:04  79 scenarios  •  0 covered / 5 selected / 5 total (5 inferred)
+
+     ✅ 73 passed  ❌ 6 failed 🕕  Stateful
+
+     0:00:04  80 scenarios  •  0 covered / 5 selected / 5 total (5 inferred)
+
+     ✅ 74 passed  ❌ 6 failed 🕗  Stateful
+
+     0:00:04  82 scenarios  •  0 covered / 5 selected / 5 total (5 inferred)
+
+     ✅ 76 passed  ❌ 6 failed 🕘  Stateful
+
+     0:00:04  83 scenarios  •  0 covered / 5 selected / 5 total (5 inferred)
+
+     ✅ 77 passed  ❌ 6 failed 🕙  Stateful
+
+     0:00:04  84 scenarios  •  0 covered / 5 selected / 5 total (5 inferred)
+
+     ✅ 78 passed  ❌ 6 failed 🕚  Stateful
+
+     0:00:04  85 scenarios  •  0 covered / 5 selected / 5 total (5 inferred)
+
+     ✅ 79 passed  ❌ 6 failed 🕛  Stateful
+
+     0:00:04  86 scenarios  •  0 covered / 5 selected / 5 total (5 inferred)
+
+     ✅ 80 passed  ❌ 6 failed 🕑  Stateful
+
+     0:00:05  87 scenarios  •  0 covered / 5 selected / 5 total (5 inferred)
+
+     ✅ 81 passed  ❌ 6 failed 🕒  Stateful
+
+     0:00:05  88 scenarios  •  0 covered / 5 selected / 5 total (5 inferred)
+
+     ✅ 82 passed  ❌ 6 failed 🕓  Stateful
+
+     0:00:05  89 scenarios  •  0 covered / 5 selected / 5 total (5 inferred)
+
+     ✅ 83 passed  ❌ 6 failed 🕔  Stateful
+
+     0:00:05  90 scenarios  •  0 covered / 5 selected / 5 total (5 inferred)
+
+     ✅ 84 passed  ❌ 6 failed 🕕  Stateful
+
+     0:00:05  91 scenarios  •  0 covered / 5 selected / 5 total (5 inferred)
+
+     ✅ 85 passed  ❌ 6 failed
+ ❌  Stateful (in 5.58s)                                                       
+
+     Scenarios:    91                                                          
+     API Links:    0 covered / 5 selected / 5 total (5 inferred)               
+
+     ✅ 85 passed  ❌ 6 failed                                                 
+
+=================================== FAILURES ===================================
+__________________________________ GET /cart ___________________________________
+1. Test Case ID: 3WnXe7
+
+- Undocumented Content-Type
+
+    Received: text/html; charset=utf-8
+    Documented: application/json
+
+[200] OK:
+
+    `<!DOCTYPE html><html><head><meta charSet="utf-8" data-next-head=""/><meta name="viewport" content="width=device-width" data-next-head=""/><title data-next-head="">Otel Demo - Cart</title><link rel="preconnect" href="https://fonts.googleapis.com"/><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous"/><link rel="preload" href="/_next/static/chunks/934d601f457cf676.css" as="style"/><link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700; // Output truncated...`
+
+Reproduce with:
+
+    curl -X GET 'http://localhost:8085/cart?sessionId=%5BFiltered%5D&x-schemathesis-unknown-property=42'
+    
+    st replay 3WnXe7
+
+______________________________ GET /products/{id} ______________________________
+1. Test Case ID: cHgjZO
+
+- Undocumented Content-Type
+
+    Received: text/html; charset=utf-8
+    Documented: application/json
+
+[404] Not Found:
+
+    `<!DOCTYPE html><html><head><meta charSet="utf-8" data-next-head=""/><meta name="viewport" content="width=device-width" data-next-head=""/><title data-next-head="">404: This page could not be found</title><link rel="preconnect" href="https://fonts.googleapis.com"/><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous"/><link rel="preload" href="/_next/static/chunks/934d601f457cf676.css" as="style"/><link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0 // Output truncated...`
+
+Reproduce with:
+
+    curl -X GET http://localhost:8085/products/0
+    
+    st replay cHgjZO
+
+_____________________________ GET /recommendations _____________________________
+1. Test Case ID: aSfMnh
+
+- Undocumented Content-Type
+
+    Received: text/html; charset=utf-8
+    Documented: application/json
+
+- Undocumented HTTP status code
+
+    Received: 404
+    Documented: 200
+
+[404] Not Found:
+
+    `<!DOCTYPE html><html><head><meta charSet="utf-8" data-next-head=""/><meta name="viewport" content="width=device-width" data-next-head=""/><title data-next-head="">404: This page could not be found</title><link rel="preconnect" href="https://fonts.googleapis.com"/><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous"/><link rel="preload" href="/_next/static/chunks/934d601f457cf676.css" as="style"/><link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0 // Output truncated...`
+
+Reproduce with:
+
+    curl -X GET 'http://localhost:8085/recommendations?sessionId=%5BFiltered%5D&x-schemathesis-unknown-property=42'
+    
+    st replay aSfMnh
+
+________________________________ GET /shipping _________________________________
+1. Test Case ID: 3fKRV9
+
+- Undocumented Content-Type
+
+    Received: text/html; charset=utf-8
+    Documented: application/json
+
+- Undocumented HTTP status code
+
+    Received: 404
+    Documented: 200
+
+[404] Not Found:
+
+    `<!DOCTYPE html><html><head><meta charSet="utf-8" data-next-head=""/><meta name="viewport" content="width=device-width" data-next-head=""/><title data-next-head="">404: This page could not be found</title><link rel="preconnect" href="https://fonts.googleapis.com"/><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous"/><link rel="preload" href="/_next/static/chunks/934d601f457cf676.css" as="style"/><link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0 // Output truncated...`
+
+Reproduce with:
+
+    curl -X GET 'http://localhost:8085/shipping?itemList=&x-schemathesis-unknown-property=42'
+    
+    st replay 3fKRV9
+
+__________________________________ POST /cart __________________________________
+1. Test Case ID: g4ss3n
+
+- Undocumented Content-Type
+
+    Received: text/html; charset=utf-8
+    Documented: application/json
+
+[200] OK:
+
+    `<!DOCTYPE html><html><head><meta charSet="utf-8" data-next-head=""/><meta name="viewport" content="width=device-width" data-next-head=""/><title data-next-head="">Otel Demo - Cart</title><link rel="preconnect" href="https://fonts.googleapis.com"/><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous"/><link rel="preload" href="/_next/static/chunks/934d601f457cf676.css" as="style"/><link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700; // Output truncated...`
+
+Reproduce with:
+
+    curl -X POST -H 'Content-Type: application/json' -d '{"item": {"productId": "", "quantity": 0}}' http://localhost:8085/cart
+    
+    st replay g4ss3n
+
+________________________________ POST /checkout ________________________________
+1. Test Case ID: HL6Wir
+
+- Undocumented Content-Type
+
+    Received: text/html; charset=utf-8
+    Documented: application/json
+
+- Undocumented HTTP status code
+
+    Received: 404
+    Documented: 200
+
+[404] Not Found:
+
+    `<!DOCTYPE html><html><head><meta charSet="utf-8" data-next-head=""/><meta name="viewport" content="width=device-width" data-next-head=""/><title data-next-head="">404: This page could not be found</title><link rel="preconnect" href="https://fonts.googleapis.com"/><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous"/><link rel="preload" href="/_next/static/chunks/934d601f457cf676.css" as="style"/><link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0 // Output truncated...`
+
+Reproduce with:
+
+    curl -X POST -H 'Content-Type: application/json' -d '{"address": {}, "email": ""}' http://localhost:8085/checkout
+    
+    st replay HL6Wir
+
+________________________________ Stateful tests ________________________________
+1. Test Case ID: BsrcXs
+
+- API accepted schema-violating request
+
+    Invalid data should have been rejected
+    Expected: 400, 401, 403, 404, 405, 406, 409, 422, 428, 5xx
+    Invalid component: in body
+      - violates `description`, `required` at /properties/item (was productId, quantity)
+      - violates `type` at /properties/userId (was string, became number)
+
+[200] OK:
+
+    `<!DOCTYPE html><html><head><meta charSet="utf-8" data-next-head=""/><meta name="viewport" content="width=device-width" data-next-head=""/><title data-next-head="">Otel Demo - Cart</title><link rel="preconnect" href="https://fonts.googleapis.com"/><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous"/><link rel="preload" href="/_next/static/chunks/934d601f457cf676.css" as="style"/><link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700; // Output truncated...`
+
+Reproduce with:
+
+    curl -X POST -H 'Content-Type: application/json' -d '{"item": {"\u00de\u00a0\u00dc\ud9d1\uddb7\u00e0\u00c5": [{}], "productId": "z"}, "userId": 6.257239374107566e+16}' http://localhost:8085/cart
+    
+    st replay BsrcXs
+
+_________________________________ TRACE /cart __________________________________
+1. Test Case ID: P3MnQo
+
+- Unsupported methods
+
+    Unsupported method TRACE returned 200, expected 405 Method Not Allowed
+
+    Return 405 for methods not listed in the OpenAPI spec
+
+[200] OK:
+
+    `<!DOCTYPE html><html><head><meta charSet="utf-8" data-next-head=""/><meta name="viewport" content="width=device-width" data-next-head=""/><title data-next-head="">Otel Demo - Cart</title><link rel="preconnect" href="https://fonts.googleapis.com"/><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous"/><link rel="preload" href="/_next/static/chunks/934d601f457cf676.css" as="style"/><link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700; // Output truncated...`
+
+Reproduce with:
+
+    curl -X TRACE -H 'Content-Type: application/json' -d '{"userId": "", "item": {"productId": "", "quantity": 0}}' http://localhost:8085/cart
+    
+    st replay P3MnQo
+
+_______________________________ TRACE /checkout ________________________________
+1. Test Case ID: 7v0lFg
+
+- Unsupported methods
+
+    Unsupported method TRACE returned 404, expected 405 Method Not Allowed
+
+    Return 405 for methods not listed in the OpenAPI spec
+
+[404] Not Found:
+
+    `<!DOCTYPE html><html><head><meta charSet="utf-8" data-next-head=""/><meta name="viewport" content="width=device-width" data-next-head=""/><title data-next-head="">404: This page could not be found</title><link rel="preconnect" href="https://fonts.googleapis.com"/><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous"/><link rel="preload" href="/_next/static/chunks/934d601f457cf676.css" as="style"/><link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0 // Output truncated...`
+
+Reproduce with:
+
+    curl -X TRACE -H 'Content-Type: application/json' -d '{"userId": "", "userCurrency": "", "email": "", "address": {"streetAddress": "", "city": "", "state": "", "country": "", "zipCode": ""}, "creditCard": {"creditCardNumber": "", "creditCardCvv": 0, "creditCardExpirationYear": 0, "creditCardExpirationMonth": 0}}' 'http://localhost:8085/checkout?currencyCode='
+    
+    st replay 7v0lFg
+
+_____________________________ TRACE /products/{id} _____________________________
+1. Test Case ID: YmOC1r
+
+- Unsupported methods
+
+    Unsupported method TRACE returned 404, expected 405 Method Not Allowed
+
+    Return 405 for methods not listed in the OpenAPI spec
+
+[404] Not Found:
+
+    `<!DOCTYPE html><html><head><meta charSet="utf-8" data-next-head=""/><meta name="viewport" content="width=device-width" data-next-head=""/><title data-next-head="">404: This page could not be found</title><link rel="preconnect" href="https://fonts.googleapis.com"/><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous"/><link rel="preload" href="/_next/static/chunks/934d601f457cf676.css" as="style"/><link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0 // Output truncated...`
+
+Reproduce with:
+
+    curl -X TRACE 'http://localhost:8085/products/0?currencyCode='
+    
+    st replay YmOC1r
+
+=================================== SUMMARY ====================================
+
+API Operations:
+  Selected: 6/6
+  Tested: 6
+
+Test Phases:
+  ⏭  Examples
+  ❌ Coverage
+  ❌ Fuzzing
+  ❌ Stateful
+
+Failures:
+  ❌ API accepted schema-violating request: 1
+  ❌ Undocumented Content-Type: 6
+  ❌ Undocumented HTTP status code: 3
+  ❌ Unsupported methods: 3
+
+Test cases:
+  338 generated, 10 found 13 unique failures
+
+Seed: 82298283866678913174689787408577125335
+
+============================= 13 failures in 6.38s =============================

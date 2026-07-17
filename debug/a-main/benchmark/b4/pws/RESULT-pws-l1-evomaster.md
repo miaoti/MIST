@@ -1,4 +1,4 @@
-# RESULT — PWS L1: the EvoMaster real-tool arm — RESULT OF RECORD
+# RESULT — PWS L1: the MULTI-TOOL real-tool arm (EvoMaster + Schemathesis; RESTler disclosed) — RESULT OF RECORD
 
 **Date:** 2026-07-17 · Status: EXECUTED (3 sites live-measured; TT determined-same, a
 confirmatory 4th cell rides along in W4). **User disposition (2026-07-17):** KEEP the arm;
@@ -53,6 +53,44 @@ accessibility gap MIST's approach closes — NOT as a merged recall cell.
    instability under load is about that SUT, reported as tool-not-runnable-there.
 4. **Determinism:** fixed seed 42; the TeaStore control≡fault byte-identity is a
    determinism-backed invisibility datum, not a sampling fluke.
+
+## Schemathesis (the 2nd real tool; user-directed 2026-07-17 — "加入其他真的tool")
+
+**Tool:** Schemathesis v4.23.0 (MIT, property-based black-box OpenAPI tester, incl. a
+STATEFUL phase via OpenAPI links). Same protocol; separate cells (`schemathesis/*-cell.json`).
+
+| site | run | verdict | why |
+|---|---|---|---|
+| **TeaStore** | 206 cases; 6 server-error ops; 25 unique failures, ALL LOUD (501/500/status-conformance) | **BY-CONSTRUCTION MISS (oracle blindness)** | exercised the write endpoints but its check set is conformance-only (status/schema/content-type/500s) — NO read-back oracle ⇒ cannot see an acked-but-lost write by construction |
+| **OTel** | 338 cases; 85 passed / 6 failed; STATEFUL phase REACHED POST /checkout (even flagged a schema-violating-request-accepted gap there); 13 unique failures ALL response-side conformance | **BY-CONSTRUCTION MISS — even with STATEFUL testing** | a stateful-capable black-box tool reached the write endpoint statefully and STILL missed the masked class, because the oracle for acked-but-lost writes does not exist in the tool |
+
+## RESTler — CONSIDERED, NOT RUN (disclosed, situation-dependent)
+
+RESTler (MS; black-box with producer-consumer STATEFUL sequencing) was the high-value 3rd
+candidate. NOT RUN: no .NET SDK on the box + RESTler needs clone+build+grammar-compile
+(a multi-hour Windows setup, exceeding the plan's ½-day tool-setup stop rule), AND its
+unique angle — a stateful tool reaching the write baseline — is ALREADY covered by
+Schemathesis's stateful phase (which reached POST /checkout and still missed by oracle
+blindness). Disclosed as a situation-dependent addition if a reviewer specifically demands
+a producer-consumer-inference tool.
+
+## The multi-tool synthesis (the anti-strawman result, honestly)
+
+Two real, widely-cited black-box REST tools, neither detects the masked-2xx class, for
+TWO COMPLEMENTARY and FUNDAMENTAL reasons:
+1. **EvoMaster — a REACHABILITY barrier:** spec-only black-box generation cannot establish
+   the acked-2xx WRITE baseline behind multi-step stateful sequences (0-11% acked-2xx;
+   TeaStore reached-but-invisible, OTel/TT unreachable, SockShop crashed the SUT).
+2. **Schemathesis — a STRUCTURAL ORACLE blindness:** even reaching the write endpoint
+   (statefully), a conformance-only oracle set (status/schema/content-type/500s) cannot
+   see an acknowledged-but-lost durable write.
+
+Together these are not an EvoMaster quirk — they are properties of the TOOL CLASS
+(spec-only black-box + conformance oracle). MIST closes BOTH: it is stimulus-driven (it
+REACHES the acked-2xx write state the fuzzers cannot) AND it carries a read-back
+differential oracle (it SEES the masked loss the conformance oracles cannot). This is the
+paper's accessibility+oracle delta, measured against real tools — reported as a SEPARATE
+real-tool applicability section, NEVER merged into the matched-recall table.
 
 ## Evidence
 

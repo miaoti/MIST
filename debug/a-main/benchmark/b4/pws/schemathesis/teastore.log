@@ -1,0 +1,494 @@
+Schemathesis v4.23.0
+━━━━━━━━━━━━━━━━━━━━
+
+ 🕛  Loading specification from                                                
+     C:\Users\miaot\Github\MIST\evaluation\suts\teastore\openapi\teastore-swag… 🕐  Loading specification from                                                
+     C:\Users\miaot\Github\MIST\evaluation\suts\teastore\openapi\teastore-swag… 🕑  Loading specification from                                                
+     C:\Users\miaot\Github\MIST\evaluation\suts\teastore\openapi\teastore-swag… 🕑  Loading specification from                                                
+     C:\Users\miaot\Github\MIST\evaluation\suts\teastore\openapi\teastore-swag…
+ ✅  Loaded specification from                                                 
+ C:\Users\miaot\Github\MIST\evaluation\suts\teastore\openapi\teastore-swagger. 
+ yaml (in 0.24s)                                                               
+
+     Base URL:         http://localhost:8082                                   
+     Specification:    Open API 2.0                                            
+     Operations:       9 selected / 9 total                                    
+
+ 🕛  Probing API capabilities 🕛  Probing API capabilities
+ ✅  API capabilities:                                                         
+
+     Supports NULL byte in headers:                            ✘               
+     Accepts backslash and control characters in URL paths:    ✘               
+
+     Examples
+
+     0:00:00 ------------------------------------------------------- 100% (9/9)
+
+
+     ⏭  9 skipped
+ ⏭   Examples (in 0.11s)                                                       
+                                                                               
+     ⏭  9 skipped                                                              
+
+ 🕛  Coverage
+
+     0:00:00 --------------------------------------------------------- 0% (0/9)
+
+   ⠋ 0:00:00  POST /tools.descartes.teastore.webui/cartAction
+
+       🕑  Coverage
+
+     0:00:00 --------------------------------------------------------- 0% (0/9)
+
+   ⠸ 0:00:00  POST /tools.descartes.teastore.webui/cartAction
+
+       🕓  Coverage
+
+     0:00:00 --------------------------------------------------------- 0% (0/9)
+
+   ⠴ 0:00:00  POST /tools.descartes.teastore.webui/cartAction
+
+       🕔  Coverage
+
+     0:00:00 --------------------------------------------------------- 0% (0/9)
+
+   ⠧ 0:00:00  POST /tools.descartes.teastore.webui/cartAction
+
+       🕕  Coverage
+
+     0:00:00 ------ ------------------------------------------------- 11% (1/9)
+
+   ⠇ 0:00:00  POST /tools.descartes.teastore.webui/loginAction
+
+     ❌ 1 failed 🕖  Coverage
+
+     0:00:00 ------------------------------- ------------------------ 56% (5/9)
+
+   ⠏ 0:00:00  GET /tools.descartes.teastore.persistence/rest/products
+
+     ❌ 5 failed     Coverage
+
+     0:00:01 ------------------------------------------------------- 100% (9/9)
+
+
+     ❌ 9 failed     Coverage
+
+     0:00:01 ------------------------------------------------------- 100% (9/9)
+
+
+     ❌ 9 failed
+ ❌  Coverage (in 1.11s)                                                       
+                                                                               
+     ❌ 9 failed                                                               
+
+ 🕛  Fuzzing
+
+     0:00:00 ------ ------------------------------------------------- 11% (1/9)
+
+   ⠋ 0:00:00  POST /tools.descartes.teastore.webui/loginAction
+
+     ❌ 1 failed 🕐  Fuzzing
+
+     0:00:00 ------ ------------------------------------------------- 11% (1/9)
+
+   ⠙ 0:00:00  POST /tools.descartes.teastore.webui/loginAction
+
+     ❌ 1 failed     Fuzzing
+
+     0:00:00 ------------------------------------------------------- 100% (9/9)
+
+
+     ✅ 1 passed  ❌ 8 failed     Fuzzing
+
+     0:00:00 ------------------------------------------------------- 100% (9/9)
+
+
+     ✅ 1 passed  ❌ 8 failed
+ ❌  Fuzzing (in 0.41s)                                                        
+                                                                               
+     ✅ 1 passed  ❌ 8 failed                                                  
+
+ 🕛  Stateful
+
+     0:00:00   0 scenarios  •  0 covered / 2 selected / 2 total (2 inferred)
+
+       🕛  Stateful
+
+     0:00:00   1 scenarios  •  0 covered / 2 selected / 2 total (2 inferred)
+
+     ❌ 1 failed 🕑  Stateful
+
+     0:00:00   1 scenarios  •  0 covered / 2 selected / 2 total (2 inferred)
+
+     ❌ 1 failed 🕒  Stateful
+
+     0:00:00   2 scenarios  •  0 covered / 2 selected / 2 total (2 inferred)
+
+     ✅ 1 passed  ❌ 1 failed 🕓  Stateful
+
+     0:00:00   9 scenarios  •  0 covered / 2 selected / 2 total (2 inferred)
+
+     ✅ 8 passed  ❌ 1 failed 🕔  Stateful
+
+     0:00:00  14 scenarios  •  0 covered / 2 selected / 2 total (2 inferred)
+
+     ✅ 13 passed  ❌ 1 failed 🕕  Stateful
+
+     0:00:00  22 scenarios  •  0 covered / 2 selected / 2 total (2 inferred)
+
+     ✅ 21 passed  ❌ 1 failed 🕖  Stateful
+
+     0:00:00  27 scenarios  •  0 covered / 2 selected / 2 total (2 inferred)
+
+     ✅ 26 passed  ❌ 1 failed 🕗  Stateful
+
+     0:00:01  35 scenarios  •  0 covered / 2 selected / 2 total (2 inferred)
+
+     ✅ 34 passed  ❌ 1 failed 🕘  Stateful
+
+     0:00:01  43 scenarios  •  0 covered / 2 selected / 2 total (2 inferred)
+
+     ✅ 42 passed  ❌ 1 failed
+ ❌  Stateful (in 1.12s)                                                       
+
+     Scenarios:    43                                                          
+     API Links:    0 covered / 2 selected / 2 total (2 inferred)               
+
+     ✅ 42 passed  ❌ 1 failed                                                 
+
+=================================== FAILURES ===================================
+____ GET /tools.descartes.teastore.persistence/rest/orderitems/order/{oid} _____
+1. Test Case ID: baOAwd
+
+- Undocumented Content-Type
+
+    Received: text/html;charset=utf-8
+    Documented: application/json
+
+- Undocumented HTTP status code
+
+    Received: 404
+    Documented: 200
+
+[404] Not Found:
+
+    `<!doctype html><html lang="en"><head><title>HTTP Status 404 – Not Found</title><style type="text/css">body {font-family:Tahoma,Arial,sans-serif;} h1, h2, h3, b {color:white;background-color:#525D76;} h1 {font-size:22px;} h2 {font-size:16px;} h3 {font-size:14px;} p {font-size:12px;} a {color:black;} .line {height:1px;background-color:#525D76;border:none;}</style></head><body><h1>HTTP Status 404 – Not Found</h1><hr class="line" /><p><b>Type</b> Status Report</p><p><b>Message</b> The requested resource [&#47;t // Output truncated...`
+
+Reproduce with:
+
+    curl -X GET http://localhost:8082/tools.descartes.teastore.persistence/rest/orderitems/order/1
+    
+    st replay baOAwd
+
+____________ GET /tools.descartes.teastore.persistence/rest/orders _____________
+1. Test Case ID: gQI5rw
+
+- Undocumented Content-Type
+
+    Received: text/html;charset=utf-8
+    Documented: application/json
+
+- Undocumented HTTP status code
+
+    Received: 404
+    Documented: 200
+
+[404] Not Found:
+
+    `<!doctype html><html lang="en"><head><title>HTTP Status 404 – Not Found</title><style type="text/css">body {font-family:Tahoma,Arial,sans-serif;} h1, h2, h3, b {color:white;background-color:#525D76;} h1 {font-size:22px;} h2 {font-size:16px;} h3 {font-size:14px;} p {font-size:12px;} a {color:black;} .line {height:1px;background-color:#525D76;border:none;}</style></head><body><h1>HTTP Status 404 – Not Found</h1><hr class="line" /><p><b>Type</b> Status Report</p><p><b>Message</b> The requested resource [&#47;t // Output truncated...`
+
+Reproduce with:
+
+    curl -X GET 'http://localhost:8082/tools.descartes.teastore.persistence/rest/orders?start=0&x-schemathesis-unknown-property=42'
+    
+    st replay gQI5rw
+
+_______ GET /tools.descartes.teastore.persistence/rest/orders/user/{uid} _______
+1. Test Case ID: D5GB2p
+
+- Undocumented Content-Type
+
+    Received: text/html;charset=utf-8
+    Documented: application/json
+
+- Undocumented HTTP status code
+
+    Received: 404
+    Documented: 200
+
+[404] Not Found:
+
+    `<!doctype html><html lang="en"><head><title>HTTP Status 404 – Not Found</title><style type="text/css">body {font-family:Tahoma,Arial,sans-serif;} h1, h2, h3, b {color:white;background-color:#525D76;} h1 {font-size:22px;} h2 {font-size:16px;} h3 {font-size:14px;} p {font-size:12px;} a {color:black;} .line {height:1px;background-color:#525D76;border:none;}</style></head><body><h1>HTTP Status 404 – Not Found</h1><hr class="line" /><p><b>Type</b> Status Report</p><p><b>Message</b> The requested resource [&#47;t // Output truncated...`
+
+Reproduce with:
+
+    curl -X GET http://localhost:8082/tools.descartes.teastore.persistence/rest/orders/user/1
+    
+    st replay D5GB2p
+
+___________ GET /tools.descartes.teastore.persistence/rest/products ____________
+1. Test Case ID: XCTrQD
+
+- Undocumented Content-Type
+
+    Received: text/html;charset=utf-8
+    Documented: application/json
+
+- Undocumented HTTP status code
+
+    Received: 404
+    Documented: 200
+
+[404] Not Found:
+
+    `<!doctype html><html lang="en"><head><title>HTTP Status 404 – Not Found</title><style type="text/css">body {font-family:Tahoma,Arial,sans-serif;} h1, h2, h3, b {color:white;background-color:#525D76;} h1 {font-size:22px;} h2 {font-size:16px;} h3 {font-size:14px;} p {font-size:12px;} a {color:black;} .line {height:1px;background-color:#525D76;border:none;}</style></head><body><h1>HTTP Status 404 – Not Found</h1><hr class="line" /><p><b>Type</b> Status Report</p><p><b>Message</b> The requested resource [&#47;t // Output truncated...`
+
+Reproduce with:
+
+    curl -X GET 'http://localhost:8082/tools.descartes.teastore.persistence/rest/products?category=-9223372036854775808&max=-2147483648'
+    
+    st replay XCTrQD
+
+________ GET /tools.descartes.teastore.persistence/rest/products/{pid} _________
+1. Test Case ID: vIukMO
+
+- Undocumented Content-Type
+
+    Received: text/html;charset=utf-8
+    Documented: application/json
+
+[404] Not Found:
+
+    `<!doctype html><html lang="en"><head><title>HTTP Status 404 – Not Found</title><style type="text/css">body {font-family:Tahoma,Arial,sans-serif;} h1, h2, h3, b {color:white;background-color:#525D76;} h1 {font-size:22px;} h2 {font-size:16px;} h3 {font-size:14px;} p {font-size:12px;} a {color:black;} .line {height:1px;background-color:#525D76;border:none;}</style></head><body><h1>HTTP Status 404 – Not Found</h1><hr class="line" /><p><b>Type</b> Status Report</p><p><b>Message</b> The requested resource [&#47;t // Output truncated...`
+
+Reproduce with:
+
+    curl -X GET http://localhost:8082/tools.descartes.teastore.persistence/rest/products/1
+    
+    st replay vIukMO
+
+____________ POST /tools.descartes.teastore.persistence/rest/orders ____________
+1. Test Case ID: aQgEIR
+
+- Undocumented Content-Type
+
+    Received: text/html;charset=utf-8
+    Documented: application/json
+
+- Undocumented HTTP status code
+
+    Received: 404
+    Documented: 200, 500
+
+[404] Not Found:
+
+    `<!doctype html><html lang="en"><head><title>HTTP Status 404 – Not Found</title><style type="text/css">body {font-family:Tahoma,Arial,sans-serif;} h1, h2, h3, b {color:white;background-color:#525D76;} h1 {font-size:22px;} h2 {font-size:16px;} h3 {font-size:14px;} p {font-size:12px;} a {color:black;} .line {height:1px;background-color:#525D76;border:none;}</style></head><body><h1>HTTP Status 404 – Not Found</h1><hr class="line" /><p><b>Type</b> Status Report</p><p><b>Message</b> The requested resource [&#47;t // Output truncated...`
+
+Reproduce with:
+
+    curl -X POST -H 'Content-Type: application/json' -d '{"id": 0, "time": "", "totalPriceInCents": 0, "addressName": "", "address1": "", "address2": "", "creditCardCompany": "", "creditCardNumber": "", "creditCardExpiryDate": ""}' http://localhost:8082/tools.descartes.teastore.persistence/rest/orders
+    
+    st replay aQgEIR
+
+_______________ POST /tools.descartes.teastore.webui/cartAction ________________
+1. Test Case ID: 0MqjUT
+
+- Missing Content-Type header
+
+    The following media types are documented in the schema:
+    - `text/html`
+
+[200] OK:
+
+    <EMPTY>
+
+Reproduce with:
+
+    curl -X POST -H 'Content-Type: application/x-www-form-urlencoded' http://localhost:8082/tools.descartes.teastore.webui/cartAction
+    
+    st replay 0MqjUT
+
+_______________ POST /tools.descartes.teastore.webui/loginAction _______________
+1. Test Case ID: nGzukB
+
+- API accepted schema-violating request
+
+    Invalid data should have been rejected
+    Expected: 400, 401, 403, 404, 405, 406, 409, 422, 428, 5xx
+    Invalid component: in body - violates `additionalProperties`
+
+[200] OK:
+
+    `<!DOCTYPE html>
+
+    <html lang="en">
+    <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="/tools.descartes.teastore.webui/images/icon.ico" >
+    <title>TeaStore Home</title>
+
+    <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css" type="text/css" />
+    <link rel="StyleSheet" href="/tools.descartes.teastore.webui/teastore.c // Output truncated...`
+
+Reproduce with:
+
+    curl -X POST -H 'Content-Type: application/x-www-form-urlencoded' -d '' http://localhost:8082/tools.descartes.teastore.webui/loginAction
+    
+    st replay nGzukB
+
+___ QUERY /tools.descartes.teastore.persistence/rest/orderitems/order/{oid} ____
+1. Test Case ID: 5w05GW
+
+- Server error
+
+- Unsupported methods
+
+    Unsupported method QUERY returned 501, expected 405 Method Not Allowed
+
+    Return 405 for methods not listed in the OpenAPI spec
+
+[501] Not Implemented:
+
+    `<!doctype html><html lang="en"><head><title>HTTP Status 501 – Not Implemented</title><style type="text/css">body {font-family:Tahoma,Arial,sans-serif;} h1, h2, h3, b {color:white;background-color:#525D76;} h1 {font-size:22px;} h2 {font-size:16px;} h3 {font-size:14px;} p {font-size:12px;} a {color:black;} .line {height:1px;background-color:#525D76;border:none;}</style></head><body><h1>HTTP Status 501 – Not Implemented</h1><hr class="line" /><p><b>Type</b> Status Report</p><p><b>Message</b> Method [QUERY] is  // Output truncated...`
+
+Reproduce with:
+
+    curl -X QUERY http://localhost:8082/tools.descartes.teastore.persistence/rest/orderitems/order/-9223372036854775808
+    
+    st replay 5w05GW
+
+______ QUERY /tools.descartes.teastore.persistence/rest/orders/user/{uid} ______
+1. Test Case ID: 6vqRpC
+
+- Server error
+
+- Unsupported methods
+
+    Unsupported method QUERY returned 501, expected 405 Method Not Allowed
+
+    Return 405 for methods not listed in the OpenAPI spec
+
+[501] Not Implemented:
+
+    `<!doctype html><html lang="en"><head><title>HTTP Status 501 – Not Implemented</title><style type="text/css">body {font-family:Tahoma,Arial,sans-serif;} h1, h2, h3, b {color:white;background-color:#525D76;} h1 {font-size:22px;} h2 {font-size:16px;} h3 {font-size:14px;} p {font-size:12px;} a {color:black;} .line {height:1px;background-color:#525D76;border:none;}</style></head><body><h1>HTTP Status 501 – Not Implemented</h1><hr class="line" /><p><b>Type</b> Status Report</p><p><b>Message</b> Method [QUERY] is  // Output truncated...`
+
+Reproduce with:
+
+    curl -X QUERY http://localhost:8082/tools.descartes.teastore.persistence/rest/orders/user/-9223372036854775808
+    
+    st replay 6vqRpC
+
+_______ QUERY /tools.descartes.teastore.persistence/rest/products/{pid} ________
+1. Test Case ID: Mf0rQ1
+
+- Server error
+
+- Unsupported methods
+
+    Unsupported method QUERY returned 501, expected 405 Method Not Allowed
+
+    Return 405 for methods not listed in the OpenAPI spec
+
+[501] Not Implemented:
+
+    `<!doctype html><html lang="en"><head><title>HTTP Status 501 – Not Implemented</title><style type="text/css">body {font-family:Tahoma,Arial,sans-serif;} h1, h2, h3, b {color:white;background-color:#525D76;} h1 {font-size:22px;} h2 {font-size:16px;} h3 {font-size:14px;} p {font-size:12px;} a {color:black;} .line {height:1px;background-color:#525D76;border:none;}</style></head><body><h1>HTTP Status 501 – Not Implemented</h1><hr class="line" /><p><b>Type</b> Status Report</p><p><b>Message</b> Method [QUERY] is  // Output truncated...`
+
+Reproduce with:
+
+    curl -X QUERY http://localhost:8082/tools.descartes.teastore.persistence/rest/products/-9223372036854775808
+    
+    st replay Mf0rQ1
+
+_______________ QUERY /tools.descartes.teastore.webui/cartAction _______________
+1. Test Case ID: W6s4Hr
+
+- Server error
+
+- Unsupported methods
+
+    Unsupported method QUERY returned 501, expected 405 Method Not Allowed
+
+    Return 405 for methods not listed in the OpenAPI spec
+
+[501] Not Implemented:
+
+    <EMPTY>
+
+Reproduce with:
+
+    curl -X QUERY -H 'Content-Type: application/x-www-form-urlencoded' -d 'addToCart=&address1=&address2=&cardnumber=&cardtype=&expirydate=&firstname=&lastname=&productid=0' 'http://localhost:8082/tools.descartes.teastore.webui/cartAction?confirm='
+    
+    st replay W6s4Hr
+
+______________ QUERY /tools.descartes.teastore.webui/loginAction _______________
+1. Test Case ID: ou9Ifa
+
+- Server error
+
+- Unsupported methods
+
+    Unsupported method QUERY returned 501, expected 405 Method Not Allowed
+
+    Return 405 for methods not listed in the OpenAPI spec
+
+[501] Not Implemented:
+
+    <EMPTY>
+
+Reproduce with:
+
+    curl -X QUERY -H 'Content-Type: application/x-www-form-urlencoded' -d 'logout=&password=&referer=&signin=&username=' http://localhost:8082/tools.descartes.teastore.webui/loginAction
+    
+    st replay ou9Ifa
+
+________________ QUERY /tools.descartes.teastore.webui/profile _________________
+1. Test Case ID: NyZLpC
+
+- Server error
+
+- Unsupported methods
+
+    Unsupported method QUERY returned 501, expected 405 Method Not Allowed
+
+    Return 405 for methods not listed in the OpenAPI spec
+
+[501] Not Implemented:
+
+    <EMPTY>
+
+Reproduce with:
+
+    curl -X QUERY http://localhost:8082/tools.descartes.teastore.webui/profile
+    
+    st replay NyZLpC
+
+=================================== SUMMARY ====================================
+
+API Operations:
+  Selected: 9/9
+  Tested: 9
+
+Test Phases:
+  ⏭  Examples
+  ❌ Coverage
+  ❌ Fuzzing
+  ❌ Stateful
+
+Failures:
+  ❌ Server error: 6
+  ❌ API accepted schema-violating request: 1
+  ❌ Missing Content-Type header: 1
+  ❌ Undocumented Content-Type: 6
+  ❌ Undocumented HTTP status code: 5
+  ❌ Unsupported methods: 6
+
+Test cases:
+  206 generated, 14 found 25 unique failures
+
+Seed: 58384787686160523111021398874574402824
+
+============================= 25 failures in 2.86s =============================

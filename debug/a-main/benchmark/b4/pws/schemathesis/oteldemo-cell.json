@@ -1,0 +1,15 @@
+{
+ "site": "oteldemo-checkout (/api/checkout)",
+ "tool": "Schemathesis v4.23.0 (MIT, property-based black-box, STATEFUL phase via OpenAPI links, --max-examples 20/op)",
+ "run": {
+  "cases_generated": 338,
+  "checks_passed": 85,
+  "checks_failed": 6,
+  "unique_failures": 13,
+  "failure_taxonomy": "ALL response-side conformance: 6 Undocumented-Content-Type + 3 Undocumented-HTTP-status + 1 API-accepted-schema-violating-request (a REQUEST-validation gap on POST /checkout) + others. ZERO data-integrity/durable-loss findings."
+ },
+ "stateful_phase": true,
+ "reached_checkout": true,
+ "verdict": "BY-CONSTRUCTION MISS (structural oracle blindness) — even with STATEFUL testing",
+ "reason": "Schemathesis's STATEFUL phase (OpenAPI-links sequencing) REACHED POST /checkout and even flagged a request-validation gap there — but its entire check set is RESPONSE-SIDE CONFORMANCE (status_code / schema / content_type / server_error). It has NO durable read-back / data-integrity oracle, so an acknowledged-but-lost write is invisible to it BY CONSTRUCTION even when it reaches and exercises the write endpoint statefully. This is the STRONGER half of the multi-tool finding: it partly preempts the RESTler question — a stateful-capable black-box tool STILL misses the masked class, not for reachability but because the oracle for acked-but-lost writes does not exist in the tool. The exact gap MIST's read-back differential oracle fills."
+}

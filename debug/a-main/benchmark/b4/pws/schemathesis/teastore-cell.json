@@ -1,0 +1,13 @@
+{
+ "site": "teastore-order (cartAction confirm)",
+ "tool": "Schemathesis v4.23.0 (MIT, property-based black-box, seed recorded, --max-examples 30/op)",
+ "run": {
+  "cases_generated": 206,
+  "operations_with_server_error": 6,
+  "unique_failures": 25,
+  "failure_taxonomy": "ALL LOUD: 501 Not-Implemented / 500 server-error / status-code-conformance (e.g. QUERY method -> 501 expected 405). ZERO data-integrity findings."
+ },
+ "write_endpoint_exercised": true,
+ "verdict": "BY-CONSTRUCTION MISS (structural oracle blindness)",
+ "reason": "Schemathesis exercised the write endpoints (cartAction, /rest/orders) across 206 generated cases but its ORACLE SET is conformance-only (status codes, schema, server-500s) — it has NO durable read-back / data-integrity check, so it CANNOT detect an acknowledged-but-lost write BY CONSTRUCTION, even where it reaches the endpoint. Its 25 failures are all LOUD (501/500 conformance), none the masked class. Complements EvoMaster's reachability barrier: EvoMaster can't REACH the acked-2xx write baseline (stateful chaining); Schemathesis reaches endpoints but is STRUCTURALLY BLIND to the masked loss (no read-back oracle) — two real tools, two distinct reasons, both miss the class."
+}
