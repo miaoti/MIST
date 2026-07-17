@@ -1,14 +1,19 @@
-# Wave PRE-WRITE STRENGTHENING (PWS) — the user-elected 4-leg menu before any write-up — rev 1
+# Wave PRE-WRITE STRENGTHENING (PWS) — the user-elected 4-leg menu before any write-up — rev 2
 
-**Date:** 2026-07-16 · Owner: main_track · Status: **rev 1 — awaiting 3-cold review
-(ALL-ACCEPT + confirmation ⇒ execute; /goal).**
+**Date:** 2026-07-16 · Owner: main_track · Status: **rev 2 — rev-1 3-cold = A MAJOR-REVISION-2B ·
+B REJECT-AS-WRITTEN-2B · C ACCEPT-W-FIXES-4B; ALL 8 blocking folded per
+`REVIEW-PWS-PLAN-RECONCILIATION.md` (headline: the CORRUPTED-write class split — 6/7 faults
+incl. both new-site candidates are present-but-wrong, OUTSIDE MIST's lost-only scope).
+Gate = confirmation pass ⇒ execute (/goal pre-authorization).**
 **Trigger:** USER 2026-07-16 — "把你说的这些点都做了" over the strengthening menu, under the
 standing gate "NO write-up of any kind until ALL experiments incl. the rater study are
 done". This wave = menu items 1-4; the rater study stays user-side.
 **Recorded adjudication (f-corpus-spec §6):** the R1 stop-and-replan is resolved as the
 survey-recommended **option 2** — accept the <20-distinct-sites finding, report BOTH
 denominators (distinct-site AND case-run); the F-corpus is built for case-run depth +
-mechanism coverage + upstream grounding, never sold as reaching ≥20 sites.
+mechanism coverage + upstream grounding, never sold as reaching ≥20 sites. **Sites
+correction of record (B): new sites ≤ 2 (F8/F14); ~+7 = CASE-RUNS — the user-facing
+'+5 位点' menu framing was an overclaim, corrected.**
 
 ## §1 The four legs
 
@@ -28,13 +33,18 @@ mechanism coverage + upstream grounding, never sold as reaching ≥20 sites.
   (iii) SockShop shipping (source-inherent swallow — always on);
   (iv) OTel checkout (accounting `dependency_scale_zero` — **the kafka flag is BARRED**,
   the cset no-third-attempt rule stands).
-- **Protocol per site:** budget 30 min black-box, fixed seed, spec = the committed one,
-  base.url = the PF; afterwards restore the fault to OFF and verify (toggle-verify /
-  scale-back). **Adjudication rule (pinned now):** the tool "detects" iff any generated
-  test FAILS with a reason implicating the masked write (its failure taxonomy: 5xx,
-  schema violation, timeout). Expected by construction: masked-2xx produces none of
-  these — but the cell is then a MEASURED real-tool miss, not an argued one. Any
-  UNEXPECTED detection = a finding, reported.
+- **Protocol per site (rev-2 re-pinned):** black-box budgets scaled to spec size —
+  **60 min** TeaStore (9 ops) / OTel (6) / SockShop (26); **120 min TT (265 ops)**, plus a
+  SECOND seed on TT only; fixed seeds recorded; spec = the committed one; base.url = the
+  PF. **Per site TWO runs: the FAULT-ACTIVE run + a CLEAN-SUT CONTROL run** (same
+  budget/seed, fault OFF — the tool's FP/noise baseline). **MANDATORY REACHABILITY
+  datum:** from the tool's own logs/generated tests, count requests hitting the target
+  site's entry endpoint — a miss WITHOUT reachability = `NOT_INTERPRETABLE` (disclosed,
+  never sold as a real-tool miss). Afterwards restore the fault OFF + verify.
+  **Adjudication rule (pinned):** the tool "detects" iff any generated test FAILS with a
+  reason implicating the masked write (its taxonomy: 5xx, schema violation, timeout).
+  Expected by construction: masked-2xx produces none — the cell is then a MEASURED
+  real-tool miss WITH reachability evidence. Any unexpected detection = a finding.
 - Output: per-site rows (tool version, budget, #tests, #faults-it-did-find [loud ones are
   fine and expected], masked-site verdict) + logs banked.
 
@@ -48,9 +58,27 @@ mechanism coverage + upstream grounding, never sold as reaching ≥20 sites.
   `FudanSELab/train-ticket` base source in-repo; it never fetches the upstream fault repo
   or any re-host; per-fault input artifact recorded; modified files carry Apache-2.0 §4
   change notices. The orchestrator (me) reviews diffs for conduct only.
-- **Per-fault pipeline:** implement in the fork branch → build + set-image the touched
-  service(s) → **B-m6 LIVE IN-CLASS VERIFICATION GATE** (masked-2xx acked-but-lost
-  demonstrated live; 2 attempts then swap/disclose) → capture fault+control legs
+- **CLASS SPLIT (rev-2, the convergent A/B blocking fold):** per-fault EXPECTED CLASS
+  stamped from the survey — LOST vs CORRUPTED-present (6/7 incl. F8/F14 are corrupted).
+  The corrupted class is IN-CORPUS (the survey §1 eligibility = "lost OR corrupted") but
+  OUT of MIST's lost-only oracle scope: an ADDITIVE `fault_class` schema amendment
+  (disclosed) admits it; **MIST column routing = lost-class bindable → 2.75-A read-back
+  leg; corrupted-class → principled n_a "out-of-scope-by-design"** (the Scope line;
+  MIST's correct abstention is NEVER scored a miss — the twice-pinned lost-not-corrupted
+  memory fact). The paper gains the anti-self-serving datum: the benchmark is BROADER
+  than the tool.
+- **TOGGLE + BUILD DISCIPLINE (rev-2):** ONE fork image carries ALL implemented faults
+  behind INDIVIDUAL runtime toggles, DEFAULT OFF (the `drawbackFaultMode` precedent);
+  pre-build COLLISION ANALYSIS for the shared `drawBack` method (F1/F13 vs the
+  fabricatedack injector — orthogonal toggles verified in code review BEFORE building);
+  builds OFF-window; ONE set-image cycle; W5 = per-fault toggle windows on that deploy.
+  **Post-build fabricatedack REGRESSION** (the paired FIRE must reproduce) before any
+  F-corpus capture counts — the flagship case's reproducibility is protected by the
+  default-OFF invariant + this regression.
+- **Per-fault pipeline:** implement in the fork branch (isolated actor) → [one batched
+  build + set-image] → **B-m6 LIVE IN-CLASS VERIFICATION GATE, class-aware (rev-2):**
+  acked-2xx + the durable state WRONG-or-ABSENT by direct read, matching the fault's
+  DESCRIBED class (2 attempts then swap/disclose) → capture fault+control legs
   (control-first, T2 cadence, per-run marker salt, 800 ms pacing) with **machine-read
   read-back files persisted per leg** (the A3(ii) lesson: never sidecar-null again;
   mysql reads via kubectl-exec script FILES) → case files (schema-valid; occupied ones
@@ -80,8 +108,10 @@ mechanism coverage + upstream grounding, never sold as reaching ≥20 sites.
   flagship pair (presence / db-insert / span-error).
 - Fold: the flagship pair's `tracetest_presence_surrogate` cells get REAL-TOOL siblings
   (a new arm `tracetest_live` in the A6 harness — the surrogate arm + label stay for the
-  other cases; nothing relabeled retroactively); RESULT discloses agreement/disagreement
-  surrogate-vs-live.
+  other cases; nothing relabeled retroactively). **Disagreement disposition PRE-COMMITTED
+  (rev-2): if live disagrees with the surrogate, investigate selector/semconv drift
+  FIRST; the LIVE cell enters the table, the surrogate cell keeps its label, and the
+  disagreement is a REPORTED finding — never silently reconciled.**
 - Uninstall/scale-down tracetest at window end; instrumentation restored (0 JTO carriers).
 
 ## §2 Windows + order (single-tenant discipline)
@@ -91,9 +121,16 @@ mechanism coverage + upstream grounding, never sold as reaching ≥20 sites.
 - **W2 SockShop (short):** L1-(iii). Revive (rabbit user + warm-up) → run → down.
 - **W3 OTel (short):** L1-(iv) with accounting scale-0 during the budget → scale-back →
   canary → down. Kafka flag untouched.
-- **W4 TT MEGA-WINDOW (long; one full-graph revival serves):** L4 install+instrument+runs
-  → L1-(i) EvoMaster (fabricatedack ON for its budget, then OFF+verify) → L3 the 9
-  re-captures → teardown-verify between sub-legs (zero fault residue).
+- **W4 TT MEGA-WINDOW (rev-2 internal order re-pinned; 5/9 L3 targets share
+  ts-inside-payment-service with the fabricatedack toggle ⇒ L3-FIRST is BINDING):**
+  revive → **L3 the 9 re-captures FIRST on the clean graph** → per-transition VERIFY
+  (toggle state none; fork faults OFF; zero fault residue — the TT-omnibus
+  per-transition discipline) → L4 Tracetest (RAM-GATE before install — its self-hosted
+  stack needs PostgreSQL+MongoDB+NATS; run on the LEAN keep-set per post-reboot-lean
+  precedent; trace-export FLUSH GATE before scoring each run) → verify → L1-(i)
+  EvoMaster (fabricatedack ON for its budget only, then OFF+verify) → teardown-verify.
+  **WITHIN-WINDOW RAM + nacos doubleWrite checkpoints BETWEEN EVERY sub-leg** (TT-omnibus
+  lesson #6) — for W5 too.
 - **W5 TT F-CORPUS WINDOW(S):** L2's per-fault set-image cycles (builds happen OFF-window;
   never build while a graph is deployed — build first, then deploy windows). W5 may split
   into W5a/W5b by fault batches; full-graph revival reused.
@@ -104,7 +141,9 @@ mechanism coverage + upstream grounding, never sold as reaching ≥20 sites.
 
 - W1/W2/W3 ≈ ½ day combined. W4 ≈ 1 day. L2 implementation (off-window) ≈ 1-2 days +
   W5 ≈ 1 day. Whole wave ≈ **3-5 days**; per-leg >1.5× ⇒ pause+disclose.
-- Stop rules: B-m6 fail ×2 ⇒ swap/disclose (never force a fault in-class); EvoMaster
+- Licenses (recorded): EvoMaster **LGPL-3.0** (run + cite; never vendor the JAR);
+  Tracetest **MIT**. Both = version-pinned RUNS; outputs = our evidence.
+- Stop rules: B-m6 (class-aware) fail ×2 ⇒ swap/disclose (never force a fault in-class); EvoMaster
   crash/incompat on a SUT ⇒ that site = tool-not-runnable, disclosed (never hand-patch
   the tool); Tracetest install fights >½ day ⇒ L4 closes as install-blocked-disclosed
   (the surrogate cells stand, labels unchanged); wedge beyond runbook ⇒ STOP+surface;
