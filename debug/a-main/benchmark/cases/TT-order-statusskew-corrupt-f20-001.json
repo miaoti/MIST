@@ -17,19 +17,19 @@
   "target": {
     "entry_endpoint": {
       "method": "GET",
-      "path": "/api/v1/cancelservice/cancel/{orderId}/{loginId}",
-      "service": "ts-cancel-service"
+      "path": "/api/v1/orderservice/order/status/{orderId}/{status}",
+      "service": "ts-order-service"
     },
     "dependency": {
-      "service": "ts-inside-payment-service",
-      "kind": "downstream_service"
+      "service": "ts-order-service",
+      "kind": "persistence"
     },
     "readback": {
       "modality": "api-get",
-      "locator": "GET /api/v1/inside_pay_service/inside_payment/account [row userId==buyer; value=balance]",
-      "expect_without_fault": "count-delta-positive",
-      "expect_with_fault": "count-delta-zero",
-      "mist_bindable": true
+      "locator": "POST /api/v1/orderservice/order/query [field status; without-fault==requested 1; with-fault==(requested+1) mod 7 = 2, a valid-but-wrong code]",
+      "expect_without_fault": "present",
+      "expect_with_fault": "present-wrong-value",
+      "mist_bindable": false
     }
   },
   "fault": {
@@ -46,10 +46,10 @@
   },
   "negative_control": {
     "present": true,
-    "replay_script": "tt-cancel-refund.yaml @ drawbackFaultMode=none (TT-cancel-refund-clean-001)"
+    "replay_script": "cancelfam-driver.sh f20 CTRL leg (statusskewfaultmode=none): persists 1 as requested (fcorpus-f20/legs.log)"
   },
   "stimulus": {
-    "script": "debug/a-main/benchmark/b4/capture-specs/tt-cancel-refund.yaml",
+    "script": "debug/a-main/benchmark/b4/runners/fcorpus/cancelfam-driver.sh (f20 legs: admin order create + modifyOrder status 1 + read-back)",
     "write_path": true,
     "workload_class": "authored-scenario",
     "workload_variant": null

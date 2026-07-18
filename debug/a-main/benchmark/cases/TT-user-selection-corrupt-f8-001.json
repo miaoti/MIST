@@ -16,20 +16,20 @@
   },
   "target": {
     "entry_endpoint": {
-      "method": "GET",
-      "path": "/api/v1/cancelservice/cancel/{orderId}/{loginId}",
-      "service": "ts-cancel-service"
+      "method": "POST",
+      "path": "/api/v1/userservice/users/register",
+      "service": "ts-user-service"
     },
     "dependency": {
-      "service": "ts-inside-payment-service",
-      "kind": "downstream_service"
+      "service": "ts-user-service",
+      "kind": "persistence"
     },
     "readback": {
       "modality": "api-get",
-      "locator": "GET /api/v1/inside_pay_service/inside_payment/account [row userId==buyer; value=balance]",
-      "expect_without_fault": "count-delta-positive",
-      "expect_with_fault": "count-delta-zero",
-      "mist_bindable": true
+      "locator": "GET /api/v1/userservice/users/id/{userId} [field documentType; without-fault==submitted 1; with-fault==default-wrong 0, row PRESENT]",
+      "expect_without_fault": "present",
+      "expect_with_fault": "present-wrong-value",
+      "mist_bindable": false
     }
   },
   "fault": {
@@ -46,10 +46,10 @@
   },
   "negative_control": {
     "present": true,
-    "replay_script": "tt-cancel-refund.yaml @ drawbackFaultMode=none (TT-cancel-refund-clean-001)"
+    "replay_script": "same flow @ selectionfaultmode=none: control persists documentType=1 (fcorpus-f8/B-m6-RESULT.md)"
   },
   "stimulus": {
-    "script": "debug/a-main/benchmark/b4/capture-specs/tt-cancel-refund.yaml",
+    "script": "debug/a-main/benchmark/b4/cset/fcorpus-f8/B-m6-RESULT.md (register + read-by-id flow; admin-bearer toggle)",
     "write_path": true,
     "workload_class": "authored-scenario",
     "workload_variant": null

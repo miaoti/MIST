@@ -12,15 +12,26 @@ live arm — runs against it** (10 examples/op, seed 7, ops restricted to the tw
 The lost leg's checkout response is the GENUINE acknowledged-but-LOST 200 (orderId + tracking +
 cost, order durably absent, MIST read-back FIRE on that very execution).
 
-## Result: MEASURED MISS, zero leg discrimination
+## CORRECTION (v1 was vacuous; corrected same day)
+The first run keyed the replay at `/api/cart|/api/checkout` while `st --url` targets
+spec-RELATIVE paths under `basePath: /api` — every request 404'd and **no recorded 200 was ever
+judged** (caught cold by sufficiency-reviewer 2 from the logs). The replay keying was corrected
+(spec-relative ops) and the experiment re-run; everything below is the CORRECTED run, in which
+the logs show the recorded acks served and judged (`[200] OK` exchanges present in both legs).
+
+## Result (corrected run): MEASURED MISS, zero leg discrimination
 - Failure-title sets IDENTICAL on control vs lost (`leg_invariant: true`): no check the real tool
-  has separates the lost leg from the landed leg.
-- **Zero failures attach to any recorded 200 ack** (grep-verified): the acked-but-lost checkout
-  response PASSES every response check (status/content-type/schema/server-error). All reported
-  failures are auxiliary-probe harness edges (replay 404s outside the recorded exchanges;
-  http.server's 501 to the TRACE probe) — none data-integrity, none leg-discriminating.
+  has separates the acknowledged-but-LOST leg from the landed leg.
+- **Response-side checks PASS on every recorded 200 ack** (server-error / undocumented-status /
+  content-type / response-schema — no response-conformance failure cites a 200): the genuine
+  acked-but-lost checkout ack is conformance-clean to the real tool.
+- The one failure kind citing a 200 is `API accepted schema-violating request` — a REQUEST-side
+  validity check (the replay answers the recorded ack regardless of the generated body; the PWS
+  LIVE run flagged the same gap against the live SUT). Identical on both legs; not a response
+  oracle; no data-integrity signal. Remaining titles are auxiliary probe edges (a 404 on an
+  unrecorded probe path; http.server's 501 to TRACE), leg-invariant.
 - Zero data-integrity/durable-state findings — the tool has no such check to run (consistent with
-  the PWS live arm's failure taxonomy: conformance-only).
+  the PWS live arm's taxonomy: conformance-only).
 
 ## What this closes
 The E2 surrogate==real claim is no longer a grep argument: the REAL tool's oracle CODE, executed

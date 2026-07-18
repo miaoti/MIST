@@ -30,7 +30,7 @@ The standard fair oracle comparison: HOLD THE EXECUTION CONSTANT (use MIST's rea
 generation), VARY THE ORACLE. Measured in the E2 matched-recall table
 (`scoring/matched-recall-table.json`, `RESULT-e2-frontier.md`): the comparator oracles run
 on MIST's reached captures MISS while MIST's read-back differential CATCHES —
-MIST 9/9 evaluable positives + 0/15 FP; naive-span 0 positives; presence 4 (loud-visible
+MIST 10/10 evaluable positives + 0/13 measured FP (0 flags on all 15 negatives); naive-span 0 positives; presence 4 (loud-visible
 only) + the invisible-by-construction MISS; db-locality the 1/1 specification-locality
 catch; contract by-construction MISS.
 

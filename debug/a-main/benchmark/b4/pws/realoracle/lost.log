@@ -6,7 +6,7 @@ Schemathesis v4.23.0
      C:\Users\miaot\Github\MIST\evaluation\suts\oteldemo\openapi\oteldemo-swag…
  ✅  Loaded specification from                                                 
  C:\Users\miaot\Github\MIST\evaluation\suts\oteldemo\openapi\oteldemo-swagger. 
- yaml (in 0.09s)                                                               
+ yaml (in 0.10s)                                                               
 
      Base URL:         http://127.0.0.1:8771                                   
      Specification:    Open API 2.0                                            
@@ -24,44 +24,67 @@ Schemathesis v4.23.0
 
 
      ⏭  3 skipped
- ⏭   Examples (in 0.11s)                                                       
+ ⏭   Examples (in 0.12s)                                                       
                                                                                
      ⏭  3 skipped                                                              
 
  🕛  Coverage
 
+     0:00:00 ------------------ ------------------------------------- 33% (1/3)
+
+   ⠋ 0:00:00  POST /checkout
+
+     ❌ 1 failed     Coverage
+
+     0:00:00 ------------------------------------------------------- 100% (3/3)
+
+
+     ❌ 3 failed     Coverage
+
+     0:00:00 ------------------------------------------------------- 100% (3/3)
+
+
+     ❌ 3 failed
+ ❌  Coverage (in 0.25s)                                                       
+                                                                               
+     ❌ 3 failed                                                               
+
+ 🕛  Fuzzing
+
+     0:00:00 --------------------------------------------------------- 0% (0/3)
+
+   ⠋ 0:00:00  POST /cart
+
+       🕐  Fuzzing
+
+     0:00:00 ------------------ ------------------------------------- 33% (1/3)
+
+   ⠙ 0:00:00  POST /checkout
+
+     ❌ 1 failed 🕑  Fuzzing
+
      0:00:00 ------------------------------------- ------------------ 67% (2/3)
 
-   ⠋ 0:00:00  GET /cart
+   ⠹ 0:00:00  GET /cart
 
-     ❌ 2 failed     Coverage
+     ✅ 1 passed  ❌ 1 failed     Fuzzing
 
      0:00:00 ------------------------------------------------------- 100% (3/3)
 
 
-     ❌ 3 failed
- ❌  Coverage (in 0.23s)                                                       
+     ✅ 1 passed  ❌ 2 failed     Fuzzing
+
+     0:00:00 ------------------------------------------------------- 100% (3/3)
+
+
+     ✅ 1 passed  ❌ 2 failed
+ ❌  Fuzzing (in 0.46s)                                                        
                                                                                
-     ❌ 3 failed                                                               
-
-     Fuzzing
-
-     0:00:00 ------------------------------------------------------- 100% (3/3)
-
-
-     ❌ 3 failed     Fuzzing
-
-     0:00:00 ------------------------------------------------------- 100% (3/3)
-
-
-     ❌ 3 failed
- ❌  Fuzzing (in 0.20s)                                                        
-                                                                               
-     ❌ 3 failed                                                               
+     ✅ 1 passed  ❌ 2 failed                                                  
 
 =================================== FAILURES ===================================
 __________________________________ GET /cart ___________________________________
-1. Test Case ID: knozp3
+1. Test Case ID: RREDrM
 
 - Undocumented HTTP status code
 
@@ -76,46 +99,29 @@ Reproduce with:
 
     curl -X GET 'http://127.0.0.1:8771/cart?sessionId=%5BFiltered%5D&x-schemathesis-unknown-property=42'
     
-    st replay knozp3
+    st replay RREDrM
 
 __________________________________ POST /cart __________________________________
-1. Test Case ID: 6Q1qrk
+1. Test Case ID: cMSIRH
 
-- Undocumented HTTP status code
+- API accepted schema-violating request
 
-    Received: 404
-    Documented: 200
+    Invalid data should have been rejected
+    Expected: 400, 401, 403, 404, 405, 406, 409, 422, 428, 5xx
+    Invalid component: in body - invalid syntax: random bytes
 
-[404] Not Found:
+[200] OK:
 
-    `{"error":"not recorded"}`
-
-Reproduce with:
-
-    curl -X POST -H 'Content-Type: application/json' -d '{"item": {"productId": "", "quantity": 0}}' http://127.0.0.1:8771/cart
-    
-    st replay 6Q1qrk
-
-________________________________ POST /checkout ________________________________
-1. Test Case ID: JNNlqf
-
-- Undocumented HTTP status code
-
-    Received: 404
-    Documented: 200
-
-[404] Not Found:
-
-    `{"error":"not recorded"}`
+    `{"userId":"61a993c9-eeda-47a1-b7a3-d9a6c038882e","items":[{"productId":"0PUK6V6EV0","quantity":1}]}`
 
 Reproduce with:
 
-    curl -X POST -H 'Content-Type: application/json' -d '{"address": {}, "email": ""}' http://127.0.0.1:8771/checkout
+    curl -X POST -H 'Content-Type: application/json' -d $'\x00' http://127.0.0.1:8771/cart
     
-    st replay JNNlqf
+    st replay cMSIRH
 
 _________________________________ TRACE /cart __________________________________
-1. Test Case ID: 4HiZa6
+1. Test Case ID: oFmMOv
 
 - Server error
 
@@ -145,10 +151,10 @@ Reproduce with:
 
     curl -X TRACE -H 'Content-Type: application/json' -d '{"userId": "", "item": {"productId": "", "quantity": 0}}' http://127.0.0.1:8771/cart
     
-    st replay 4HiZa6
+    st replay oFmMOv
 
 _______________________________ TRACE /checkout ________________________________
-1. Test Case ID: X9ii9A
+1. Test Case ID: P9PrH2
 
 - Server error
 
@@ -178,7 +184,7 @@ Reproduce with:
 
     curl -X TRACE -H 'Content-Type: application/json' -d '{"userId": "", "userCurrency": "", "email": "", "address": {"streetAddress": "", "city": "", "state": "", "country": "", "zipCode": ""}, "creditCard": {"creditCardNumber": "", "creditCardCvv": 0, "creditCardExpirationYear": 0, "creditCardExpirationMonth": 0}}' 'http://127.0.0.1:8771/checkout?currencyCode='
     
-    st replay X9ii9A
+    st replay P9PrH2
 
 =================================== SUMMARY ====================================
 
@@ -194,12 +200,13 @@ Test Phases:
 
 Failures:
   ❌ Server error: 2
-  ❌ Undocumented HTTP status code: 3
+  ❌ API accepted schema-violating request: 1
+  ❌ Undocumented HTTP status code: 1
   ❌ Unsupported methods: 2
 
 Test cases:
-  6 generated, 5 found 7 unique failures
+  16 generated, 4 found 6 unique failures
 
 Seed: 7
 
-============================= 7 failures in 0.61s ==============================
+============================= 6 failures in 0.91s ==============================

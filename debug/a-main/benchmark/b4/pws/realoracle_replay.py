@@ -37,6 +37,11 @@ def load_replay(leg):
             rsp = next((x for x in recs[i + 1:] if x["kind"] == "response"), None)
             if rsp:
                 op = r["path"].split("?")[0]
+                # spec basePath is /api and `st --url` targets spec-RELATIVE paths
+                # (/cart, /checkout) - key the replay at the spec-relative op (the
+                # v1 run keyed /api/cart and 404'd everything = vacuous; corrected)
+                if op.startswith("/api/"):
+                    op = op[4:]
                 replay[(r["method"], op)] = (rsp["status"], rsp.get("body") or "")
     return replay
 

@@ -113,12 +113,12 @@
   {
    "group": "cases",
    "path": "debug/a-main/benchmark/cases/TT-basic-price-corrupt-f14-001.json",
-   "sha256": "add86cc2571cf9ade276cc1fd32c5ce314b53f95c5b66f0d4788db6599af8c3f"
+   "sha256": "c2cb6f6e73d4bf278c46557b282fac5136ffff8b4146609adb406c7ee21bdd20"
   },
   {
    "group": "cases",
    "path": "debug/a-main/benchmark/cases/TT-cancel-refund-asyncrefund-f1-001.json",
-   "sha256": "c2a7446bc7381991551b9d7987055cfa46a29e15b489af9b931360fbd0585759"
+   "sha256": "5242aec23d59e99e4bc7a1b7a5a752188f7729d4d8da0aded6daf2fefcf0e79a"
   },
   {
    "group": "cases",
@@ -138,7 +138,7 @@
   {
    "group": "cases",
    "path": "debug/a-main/benchmark/cases/TT-cancel-status-recheck-corrupt-f11-001.json",
-   "sha256": "57a0d9e49a93ac5bf26117378317a9526db8400085226acf1650c0f37a3cc037"
+   "sha256": "6f0e20203cdbe530a23a19d8ff51c666d168090c66e88e6a8203a5fe324abd06"
   },
   {
    "group": "cases",
@@ -163,22 +163,22 @@
   {
    "group": "cases",
    "path": "debug/a-main/benchmark/cases/TT-order-contact-corrupt-f10-001.json",
-   "sha256": "a8e4677219d9492c99f43420341f5b86698d1ff8317e3daca389597fe59a2e29"
+   "sha256": "66f35fb3aadd8da4ba9a05c929accf1107a0ae30723ac3397e1845c379ad1616"
   },
   {
    "group": "cases",
    "path": "debug/a-main/benchmark/cases/TT-order-statusskew-corrupt-f20-001.json",
-   "sha256": "d9badc634c70904cbb810a9c98f6c613020f5b88ecda773a1e0be6aea74c90c3"
+   "sha256": "6d5e462e9d8b89fe24d0f28cfcd6bd5ca67cf6cdbae0c024dfcb23a85c839090"
   },
   {
    "group": "cases",
    "path": "debug/a-main/benchmark/cases/TT-user-selection-corrupt-f8-001.json",
-   "sha256": "443a3c314bbd522ffd743a64d8d7c0612689a9ecc0191e03fed1e9b737f4f2d2"
+   "sha256": "b80e28472c9f65366be4b2f71ed618c3e9cd797f5dff0bcbcdb06b463b953cf3"
   },
   {
    "group": "schema",
    "path": "debug/a-main/benchmark/schema/fault-case.schema.json",
-   "sha256": "0c40dd9789ddcf297f936ac8f6645dba9063e62b4e5a83bfa6d635e59976c5e0"
+   "sha256": "c07ae9493aba9a71bc96a2b7f2f74b0389c59aff607400a53572af0def189566"
   },
   {
    "group": "censuses",
@@ -197,6 +197,11 @@
   },
   {
    "group": "scoring",
+   "path": "debug/a-main/benchmark/scoring/build_trivial_arm_verdicts.py",
+   "sha256": "8ecab7cf66337ba9c2a9cccde9a22f9b0d7d17194d30f9bfd30bd6494c610c42"
+  },
+  {
+   "group": "scoring",
    "path": "debug/a-main/benchmark/scoring/score_arms.py",
    "sha256": "10afb0e813017a0575542b65891043913d239ebd03e4a1ae03eb959814e97703"
   },
@@ -208,7 +213,7 @@
   {
    "group": "scoring",
    "path": "debug/a-main/benchmark/scoring/matched-recall-table.json",
-   "sha256": "016f17c627c07356a34ab0859b263b4a3cefeb78c2e79471426d1e60078d7ec7"
+   "sha256": "6342688fa1536d996724dfb967072b0ad8af2d3838c69db543f6770dd4c08bb0"
   },
   {
    "group": "specs",

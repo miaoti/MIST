@@ -21,15 +21,15 @@
       "service": "ts-cancel-service"
     },
     "dependency": {
-      "service": "ts-inside-payment-service",
+      "service": "ts-order-service",
       "kind": "downstream_service"
     },
     "readback": {
       "modality": "api-get",
-      "locator": "GET /api/v1/inside_pay_service/inside_payment/account [row userId==buyer; value=balance]",
-      "expect_without_fault": "count-delta-positive",
-      "expect_with_fault": "count-delta-zero",
-      "mist_bindable": true
+      "locator": "POST /api/v1/orderservice/order/query [field status; without-fault==4 CANCEL always; with-fault INTERMITTENT==3 CHANGE on skipped-recheck (alternating), else 4]",
+      "expect_without_fault": "present",
+      "expect_with_fault": "present-wrong-value",
+      "mist_bindable": false
     }
   },
   "fault": {
@@ -46,10 +46,10 @@
   },
   "negative_control": {
     "present": true,
-    "replay_script": "tt-cancel-refund.yaml @ drawbackFaultMode=none (TT-cancel-refund-clean-001)"
+    "replay_script": "cancelfam-driver.sh f11 CTRL leg (seqrecheckfaultmode=none): both orders persist status 4 (fcorpus-f11/legs.log)"
   },
   "stimulus": {
-    "script": "debug/a-main/benchmark/b4/capture-specs/tt-cancel-refund.yaml",
+    "script": "debug/a-main/benchmark/b4/runners/fcorpus/cancelfam-driver.sh (f11 legs: 2 PAID orders, 2 cancels, status read-back)",
     "write_path": true,
     "workload_class": "authored-scenario",
     "workload_variant": null

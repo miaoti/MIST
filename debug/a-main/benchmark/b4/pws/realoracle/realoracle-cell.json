@@ -8,25 +8,28 @@
       "leg": "control",
       "exit": 1,
       "failure_titles": [
+        "API accepted schema-violating request",
         "Server error",
         "Undocumented HTTP status code",
         "Unsupported methods"
       ],
-      "summary_line": "\u274c 1 failed; \u274c 3 failed; \u274c 3 failed; \u274c 3 failed; \u274c 3 failed; \u274c 3 failed; \u274c 3 failed"
+      "summary_line": "\u274c 3 failed; \u274c 3 failed; \u274c 3 failed; \u274c 1 failed; \u274c 1 failed; \u2705 1 passed  \u274c 2 failed; \u2705 1 passed  \u274c 2 failed; \u2705 1 passed  \u274c 2 failed"
     },
     "lost": {
       "leg": "lost",
       "exit": 1,
       "failure_titles": [
+        "API accepted schema-violating request",
         "Server error",
         "Undocumented HTTP status code",
         "Unsupported methods"
       ],
-      "summary_line": "\u274c 2 failed; \u274c 3 failed; \u274c 3 failed; \u274c 3 failed; \u274c 3 failed; \u274c 3 failed"
+      "summary_line": "\u274c 1 failed; \u274c 3 failed; \u274c 3 failed; \u274c 3 failed; \u274c 1 failed; \u2705 1 passed  \u274c 1 failed; \u2705 1 passed  \u274c 2 failed; \u2705 1 passed  \u274c 2 failed; \u2705 1 passed  \u274c 2 failed"
     }
   },
   "leg_invariant": true,
   "verdict": "MEASURED MISS: the real tool's full oracle suite produces IDENTICAL findings on the acknowledged-but-lost leg and the control leg (zero leg-discriminating flags; zero data-integrity findings) - on the very executions where MIST's read-back FIREs. surrogate==real closed by execution.",
-  "failure_attribution": "every failure title attaches to AUXILIARY harness probes, none to the recorded acks: 'Undocumented HTTP status code' = replay-server 404 on generated probes outside the recorded exchanges; 'Server error'+'Unsupported methods' = http.server's automatic 501 to the TRACE method probe (expected 405). ZERO failures attach to any 200 response - the acknowledged-but-lost checkout ack passed EVERY response check the tool has (grep-verified in lost.log: no failure cites a 200).",
-  "leg_discrimination": "NONE - identical failure-title sets on control and lost (leg_invariant=true); no check separates the leg whose order was durably LOST from the leg whose order landed."
+  "correction": "v1 (2026-07-18 morning) was VACUOUS: the replay keyed ops at /api/cart|/api/checkout while `st --url` targets spec-RELATIVE paths (/cart, /checkout) under basePath:/api - every request 404'd, no recorded 200 was ever judged (caught by the sufficiency-review cold reviewer 2). CORRECTED same day: replay keys stripped to spec-relative; the logs now show the recorded 200 acks served and judged.",
+  "failure_attribution": "response-side checks (server-error / undocumented-status / content-type / response-schema) PASS on every recorded 200 ack - no response-conformance failure cites a 200. The single failure kind citing a 200 is 'API accepted schema-violating request' - a REQUEST-side validity check (replay answers the recorded ack regardless of the generated request body; the PWS LIVE run flagged the same gap on the live SUT), identical on both legs, not a response oracle, no data-integrity signal. Remaining titles are auxiliary probe edges (404 on an unrecorded probe path, http.server 501 to TRACE), leg-invariant.",
+  "leg_discrimination": "NONE - identical failure-title sets (leg_invariant=true); no check separates the acknowledged-but-LOST leg from the landed leg; the lost leg's genuine 200 ack passes every response-side check."
 }

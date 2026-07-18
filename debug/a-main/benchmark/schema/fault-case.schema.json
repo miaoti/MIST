@@ -82,7 +82,7 @@
             "modality": { "type": "string", "enum": ["api-get", "sql-probe", "broker-count", "trace-span-presence", "none-durable"] },
             "locator": { "type": ["string", "null"], "description": "endpoint path | SQL | queue name | span selector | null." },
             "expect_without_fault": { "type": "string", "enum": ["present", "landed", "count-delta-positive", "span-present"] },
-            "expect_with_fault": { "type": "string", "enum": ["absent", "not-landed", "count-delta-zero", "span-absent"] },
+            "expect_with_fault": { "type": "string", "enum": ["absent", "not-landed", "count-delta-zero", "span-absent", "present-wrong-value"] },
             "mist_bindable": { "type": "boolean", "description": "Can MIST's oracle bind this modality? sql-probe / none-durable may be false." }
           }
         }

@@ -46,10 +46,10 @@
   },
   "negative_control": {
     "present": true,
-    "replay_script": "tt-cancel-refund.yaml @ drawbackFaultMode=none (TT-cancel-refund-clean-001)"
+    "replay_script": "runners/fcorpus/f1-driver.sh CTRL leg (asyncrefundfaultmode=none): control refund LANDS 50->130 (fcorpus-f1/f1-legs.log)"
   },
   "stimulus": {
-    "script": "debug/a-main/benchmark/b4/capture-specs/tt-cancel-refund.yaml",
+    "script": "debug/a-main/benchmark/b4/runners/fcorpus/f1-driver.sh",
     "write_path": true,
     "workload_class": "authored-scenario",
     "workload_variant": null
