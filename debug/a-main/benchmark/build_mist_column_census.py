@@ -47,6 +47,30 @@ ADJUDICATIONS = {
                    "verdict, and capturing it = a new capture out of wave scope "
                    "(positive-side widening CLOSED)"),
     },
+    "TT-order-contact-corrupt-f10-001": {
+        "class": "structural",
+        "reason": ("CORRUPTED-present (order persists rotated contact documentNumber, "
+                   "not lost) - out-of-scope-by-design (lost-not-corrupted rail); "
+                   "A3 F-corpus, live B-m6 PASS via the real booking flow"),
+    },
+    "TT-cancel-status-recheck-corrupt-f11-001": {
+        "class": "structural",
+        "reason": ("CORRUPTED-present INTERMITTENT (cancel persists CHANGE instead of "
+                   "CANCEL on skipped-recheck invocations) - out-of-scope-by-design; "
+                   "A3 F-corpus, live B-m6 PASS"),
+    },
+    "TT-basic-price-corrupt-f14-001": {
+        "class": "structural",
+        "reason": ("CORRUPTED-present (order persists first-class-rate price for a "
+                   "second-class booking; search surface truthful) - out-of-scope-"
+                   "by-design; A3 F-corpus NEW-SITE #2, live B-m6 PASS"),
+    },
+    "TT-order-statusskew-corrupt-f20-001": {
+        "class": "structural",
+        "reason": ("CORRUPTED-present (modifyOrder persists (status+1) mod 7, a valid-"
+                   "but-wrong code) - out-of-scope-by-design; A3 F-corpus, live "
+                   "B-m6 PASS"),
+    },
     "TT-user-selection-corrupt-f8-001": {
         "class": "structural",
         "reason": ("CORRUPTED-present (documentType persisted wrong, not lost) - "

@@ -1,0 +1,2 @@
+F13 LEG=CTRL mode=none order=c5cb4c95-ebe1-4c19-b549-9a7ac9efa095 ack={"status":1,"msg":"Success.","data":"test not null"} bal=50.00->130.00 status=4
+F13 LEG=FLT mode=corrupt order=cad76274-4071-4ac2-9ec6-10db0ec4d7c7 ack={"status":1,"msg":"Success.","data":"test not null"} bal=50.00->130.00 status=4

@@ -20,7 +20,7 @@
  "visibility_tally": {
   "error-span-visible": 3,
   "span-presence-visible": 9,
-  "trace-uninstrumented": 12,
+  "trace-uninstrumented": 16,
   "trace-invisible-by-construction": 5
  },
  "arms": {
@@ -73,12 +73,12 @@
      "not_evaluable_ids": []
     },
     "trace-uninstrumented": {
-     "positives": 7,
+     "positives": 11,
      "evaluable_positives": 4,
      "flagged_positives": 4,
      "negatives": 5,
      "flagged_negatives": 0,
-     "not_evaluable": 3,
+     "not_evaluable": 7,
      "flagged_positive_ids": [
       "teastore-order-maintenance-masked-001",
       "teastore-order-meshsever-masked-001",
@@ -89,6 +89,10 @@
      "not_evaluable_ids": [
       "oteldemo-checkout-kafkaqueue-lost-001",
       "teastore-order-depdown-specified-001",
+      "TT-basic-price-corrupt-f14-001",
+      "TT-cancel-status-recheck-corrupt-f11-001",
+      "TT-order-contact-corrupt-f10-001",
+      "TT-order-statusskew-corrupt-f20-001",
       "TT-user-selection-corrupt-f8-001"
      ]
     }
@@ -114,14 +118,18 @@
     "TT-adminbasic-contacts-lostwrite-001": "live-run",
     "TT-adminroute-control-001": "live-run",
     "TT-adminroute-lostwrite-001": "live-run",
+    "TT-basic-price-corrupt-f14-001": "structural",
     "TT-cancel-refund-asyncrefund-f1-001": "capture-concordant",
     "TT-cancel-refund-clean-001": "live-run",
     "TT-cancel-refund-fabricatedack-001": "live-run",
     "TT-cancel-refund-natural-001": "live-run",
+    "TT-cancel-status-recheck-corrupt-f11-001": "structural",
     "TT-contacts-dedupe-benign-001": "capture-concordant",
     "TT-contacts-noop-modify-benign-001": "capture-concordant",
     "TT-createaccount-agreement-001": "capture-concordant",
     "TT-createaccount-clean-001": "capture-concordant",
+    "TT-order-contact-corrupt-f10-001": "structural",
+    "TT-order-statusskew-corrupt-f20-001": "structural",
     "TT-user-selection-corrupt-f8-001": "structural"
    }
   },
@@ -180,12 +188,12 @@
      ]
     },
     "trace-uninstrumented": {
-     "positives": 7,
+     "positives": 11,
      "evaluable_positives": 0,
      "flagged_positives": 0,
      "negatives": 5,
      "flagged_negatives": 0,
-     "not_evaluable": 12,
+     "not_evaluable": 16,
      "flagged_positive_ids": [],
      "flagged_negative_ids": [],
      "not_evaluable_ids": [
@@ -197,9 +205,13 @@
       "teastore-order-meshsever-masked-001",
       "teastore-orderitems-meshsever-control-001",
       "teastore-orderitems-meshsever-masked-001",
+      "TT-basic-price-corrupt-f14-001",
       "TT-cancel-refund-natural-001",
+      "TT-cancel-status-recheck-corrupt-f11-001",
       "TT-contacts-dedupe-benign-001",
       "TT-contacts-noop-modify-benign-001",
+      "TT-order-contact-corrupt-f10-001",
+      "TT-order-statusskew-corrupt-f20-001",
       "TT-user-selection-corrupt-f8-001"
      ]
     }
@@ -262,12 +274,12 @@
      ]
     },
     "trace-uninstrumented": {
-     "positives": 7,
+     "positives": 11,
      "evaluable_positives": 0,
      "flagged_positives": 0,
      "negatives": 5,
      "flagged_negatives": 0,
-     "not_evaluable": 12,
+     "not_evaluable": 16,
      "flagged_positive_ids": [],
      "flagged_negative_ids": [],
      "not_evaluable_ids": [
@@ -279,9 +291,13 @@
       "teastore-order-meshsever-masked-001",
       "teastore-orderitems-meshsever-control-001",
       "teastore-orderitems-meshsever-masked-001",
+      "TT-basic-price-corrupt-f14-001",
       "TT-cancel-refund-natural-001",
+      "TT-cancel-status-recheck-corrupt-f11-001",
       "TT-contacts-dedupe-benign-001",
       "TT-contacts-noop-modify-benign-001",
+      "TT-order-contact-corrupt-f10-001",
+      "TT-order-statusskew-corrupt-f20-001",
       "TT-user-selection-corrupt-f8-001"
      ]
     }
@@ -335,12 +351,12 @@
      ]
     },
     "trace-uninstrumented": {
-     "positives": 7,
+     "positives": 11,
      "evaluable_positives": 0,
      "flagged_positives": 0,
      "negatives": 5,
      "flagged_negatives": 0,
-     "not_evaluable": 12,
+     "not_evaluable": 16,
      "flagged_positive_ids": [],
      "flagged_negative_ids": [],
      "not_evaluable_ids": [
@@ -352,9 +368,13 @@
       "teastore-order-meshsever-masked-001",
       "teastore-orderitems-meshsever-control-001",
       "teastore-orderitems-meshsever-masked-001",
+      "TT-basic-price-corrupt-f14-001",
       "TT-cancel-refund-natural-001",
+      "TT-cancel-status-recheck-corrupt-f11-001",
       "TT-contacts-dedupe-benign-001",
       "TT-contacts-noop-modify-benign-001",
+      "TT-order-contact-corrupt-f10-001",
+      "TT-order-statusskew-corrupt-f20-001",
       "TT-user-selection-corrupt-f8-001"
      ]
     }
@@ -417,12 +437,12 @@
      ]
     },
     "trace-uninstrumented": {
-     "positives": 7,
+     "positives": 11,
      "evaluable_positives": 0,
      "flagged_positives": 0,
      "negatives": 5,
      "flagged_negatives": 0,
-     "not_evaluable": 12,
+     "not_evaluable": 16,
      "flagged_positive_ids": [],
      "flagged_negative_ids": [],
      "not_evaluable_ids": [
@@ -434,9 +454,13 @@
       "teastore-order-meshsever-masked-001",
       "teastore-orderitems-meshsever-control-001",
       "teastore-orderitems-meshsever-masked-001",
+      "TT-basic-price-corrupt-f14-001",
       "TT-cancel-refund-natural-001",
+      "TT-cancel-status-recheck-corrupt-f11-001",
       "TT-contacts-dedupe-benign-001",
       "TT-contacts-noop-modify-benign-001",
+      "TT-order-contact-corrupt-f10-001",
+      "TT-order-statusskew-corrupt-f20-001",
       "TT-user-selection-corrupt-f8-001"
      ]
     }
@@ -495,12 +519,12 @@
      ]
     },
     "trace-uninstrumented": {
-     "positives": 7,
+     "positives": 11,
      "evaluable_positives": 0,
      "flagged_positives": 0,
      "negatives": 5,
      "flagged_negatives": 0,
-     "not_evaluable": 12,
+     "not_evaluable": 16,
      "flagged_positive_ids": [],
      "flagged_negative_ids": [],
      "not_evaluable_ids": [
@@ -512,9 +536,13 @@
       "teastore-order-meshsever-masked-001",
       "teastore-orderitems-meshsever-control-001",
       "teastore-orderitems-meshsever-masked-001",
+      "TT-basic-price-corrupt-f14-001",
       "TT-cancel-refund-natural-001",
+      "TT-cancel-status-recheck-corrupt-f11-001",
       "TT-contacts-dedupe-benign-001",
       "TT-contacts-noop-modify-benign-001",
+      "TT-order-contact-corrupt-f10-001",
+      "TT-order-statusskew-corrupt-f20-001",
       "TT-user-selection-corrupt-f8-001"
      ]
     }

@@ -1,0 +1,99 @@
+{
+  "case_id": "TT-cancel-status-recheck-corrupt-f11-001",
+  "schema_version": "2.0.0",
+  "stratum": 1,
+  "capture_status": "captured",
+  "fault_class": "acknowledged_lost_write",
+  "sut": {
+    "name": "trainticket",
+    "repo": "github.com/miaoti/train-ticket-injection",
+    "branch": "MIST-trainticket",
+    "commit": "a1767ab3",
+    "image_digest": "sha256:81186b71c1e4a3be56a3f6f8670d45ccfc04f68956e864cced27920ac1bf50d4",
+    "deploy": "kind cluster 'mist', ns trainticket; hack/deploy quick_start = codewisdom/*:1.0.0 + fork ts-inside-payment-service:1.0.5 (runtime drawback faultmode toggle)",
+    "replay_script": "debug/a-main/benchmark/b4/capture-specs/tt-cancel-refund.yaml",
+    "health_precondition": null
+  },
+  "target": {
+    "entry_endpoint": {
+      "method": "GET",
+      "path": "/api/v1/cancelservice/cancel/{orderId}/{loginId}",
+      "service": "ts-cancel-service"
+    },
+    "dependency": {
+      "service": "ts-inside-payment-service",
+      "kind": "downstream_service"
+    },
+    "readback": {
+      "modality": "api-get",
+      "locator": "GET /api/v1/inside_pay_service/inside_payment/account [row userId==buyer; value=balance]",
+      "expect_without_fault": "count-delta-positive",
+      "expect_with_fault": "count-delta-zero",
+      "mist_bindable": true
+    }
+  },
+  "fault": {
+    "mechanism": "flag",
+    "injection_method": "sut_injector",
+    "config": {
+      "toggle": "GET /api/v1/cancelservice/cancel/test/seqrecheckfaultmode/corrupt (admin bearer)",
+      "faultMode": "cancelSeqRecheckFaultMode=corrupt",
+      "note": "cancellation writes run in an unexpected sequence with a fallible recheck: a wrong status (CHANGE=3) is written first and a recheck repairs it to CANCEL=4 on only ~half the invocations (alternating static counter) - the persisted status is INTERMITTENTLY wrong while cancel acks success every time. Fork fcorpus-build. Upstream F11."
+    },
+    "injected_by": "runtime toggle (admin bearer)",
+    "target_service": "ts-cancel-service",
+    "provenance_class": "by-injection"
+  },
+  "negative_control": {
+    "present": true,
+    "replay_script": "tt-cancel-refund.yaml @ drawbackFaultMode=none (TT-cancel-refund-clean-001)"
+  },
+  "stimulus": {
+    "script": "debug/a-main/benchmark/b4/capture-specs/tt-cancel-refund.yaml",
+    "write_path": true,
+    "workload_class": "authored-scenario",
+    "workload_variant": null
+  },
+  "oracle_eval": {
+    "ack_content_visibility": "success-shaped-clean",
+    "trace_visibility": "trace-uninstrumented",
+    "write_shape": "whole",
+    "oracle_mode": "paired",
+    "config_provenance": {
+      "mist_commit": "e9e5997"
+    },
+    "comparator_configs": []
+  },
+  "ground_truth": {
+    "label": "positive",
+    "rationale": "CORRUPTED-present, INTERMITTENT (the only intermittent case in the corpus): under fault 2 consecutive cancels both ack {1,Success.} but persist status 4 then 3 (CHANGE) - the skipped-recheck invocation leaves the wrong status durable; control persists 4/4. MIST OUT OF SCOPE by design (value present, wrong) -> not_applicable.",
+    "source": "by_construction",
+    "version": 1,
+    "doc_citation": "FudanSELab MSFaultEmpiricalStudy (clean-room per f-corpus-spec)"
+  },
+  "oracle_expectation": {
+    "status_code_oracle": "no_flag",
+    "schema_oracle": "no_flag",
+    "body_marker_oracle": "no_flag",
+    "naive_span_error_oracle": "not_applicable",
+    "tracetest_presence_oracle": "not_applicable",
+    "mist_readback_oracle": "not_applicable",
+    "mist_trace_shape_oracle": "not_applicable"
+  },
+  "provenance": {
+    "control_trace": null,
+    "fault_trace": null,
+    "readback_response": "debug/a-main/benchmark/b4/cset/fcorpus-f11/B-m6-RESULT.md",
+    "notes": "LIVE-CAPTURED 2026-07-18 (A3): control 2 cancels -> both status 4 (CANCEL); fault 2 cancels -> status 4 then 3 (CHANGE, recheck skipped), all four acks {1,Success.}. B-m6 PASS. Deterministic alternation under the static counter (even repairs, odd leaves wrong). OCCUPIED site (cancel-refund constellation), mechanism/floor credit only. MIST n_a out-of-scope-by-design."
+  },
+  "license": {
+    "case_code": "Apache-2.0",
+    "case_data": "CC-BY-4.0",
+    "upstream_sut": "Apache-2.0",
+    "sources": [
+      "ts-cancel-service CancelServiceImpl.cancelOrder",
+      "ts-inside-payment-service InsidePaymentServiceImpl.drawBack (fabricatedack branch)"
+    ]
+  },
+  "adjudication": null
+}

@@ -112,6 +112,11 @@
   },
   {
    "group": "cases",
+   "path": "debug/a-main/benchmark/cases/TT-basic-price-corrupt-f14-001.json",
+   "sha256": "1d63ef50a1ac35baca1c1162443ae53dbd444e7a79abb922fc1036a7b2ad546f"
+  },
+  {
+   "group": "cases",
    "path": "debug/a-main/benchmark/cases/TT-cancel-refund-asyncrefund-f1-001.json",
    "sha256": "c2a7446bc7381991551b9d7987055cfa46a29e15b489af9b931360fbd0585759"
   },
@@ -129,6 +134,11 @@
    "group": "cases",
    "path": "debug/a-main/benchmark/cases/TT-cancel-refund-natural-001.json",
    "sha256": "370a6c2338acfb2c7633ed7cb89819efa025fd61ba2006e7467b9de75aa062d6"
+  },
+  {
+   "group": "cases",
+   "path": "debug/a-main/benchmark/cases/TT-cancel-status-recheck-corrupt-f11-001.json",
+   "sha256": "a5b33b22548596068497e12614f279aaee906fe69662eace8ec6f7bdf60e9f33"
   },
   {
    "group": "cases",
@@ -152,6 +162,16 @@
   },
   {
    "group": "cases",
+   "path": "debug/a-main/benchmark/cases/TT-order-contact-corrupt-f10-001.json",
+   "sha256": "64fc3c28884014b2db6597294e2de340560f6e0e76c832ebed85c84930d93fab"
+  },
+  {
+   "group": "cases",
+   "path": "debug/a-main/benchmark/cases/TT-order-statusskew-corrupt-f20-001.json",
+   "sha256": "006575d7184d9ca6ecdcc270c4c486ed2ea0570a3952f04ad5089893cb27b4f3"
+  },
+  {
+   "group": "cases",
    "path": "debug/a-main/benchmark/cases/TT-user-selection-corrupt-f8-001.json",
    "sha256": "af5a8954a027a92819aa82ece7b0ba2d48aac254fdb75702dcd1596f26dcebd3"
   },
@@ -163,17 +183,17 @@
   {
    "group": "censuses",
    "path": "debug/a-main/benchmark/mist-column-census.json",
-   "sha256": "b0f334b930965ca0dccd2997be1f67cda0436890bc2a9f201fa17678ca6ed1d2"
+   "sha256": "abe75083fdadd61b7fc5dcbeedfa76901ce146d6c1db3a891709a118e450c763"
   },
   {
    "group": "censuses",
    "path": "debug/a-main/benchmark/e2-visibility-census.json",
-   "sha256": "fa1c03025d67ca8c83ac76aae9895d1c3a82ccf002fc1f00b6a24f6469fd1d88"
+   "sha256": "a99d9e00c47255667713de829e709b9a4a6772233e7b01d20adc9ab8e09df2d6"
   },
   {
    "group": "censuses",
    "path": "debug/a-main/benchmark/case-trace-arm-map.json",
-   "sha256": "311fa158bc1ee9a0c2d389a6decd9ece34b5425d05a408150c4c51fd6d90e274"
+   "sha256": "13ac688993b8a8b17196bb633552e300284781c9f4a20187d1cfa65ed09f1b3f"
   },
   {
    "group": "scoring",
@@ -188,7 +208,7 @@
   {
    "group": "scoring",
    "path": "debug/a-main/benchmark/scoring/matched-recall-table.json",
-   "sha256": "51ac1a3e8a8c8976247a4bbd8e5e4d80c93e726e976b7e2d5f46cfb6c3e6ce9c"
+   "sha256": "a0f3a59b12cdf847135f17f0c568129bf63afecdcf0838b0b3d4dd7b119bc856"
   },
   {
    "group": "specs",
@@ -222,7 +242,7 @@
   }
  ],
  "reproduction_census_tally": {
-  "executable-reproduction (replay script committed + mechanized injection)": 16,
+  "executable-reproduction (replay script committed + mechanized injection)": 20,
   "executable-reproduction (no injection; stimulus replay)": 12,
   "specified-design-target (no capture to reproduce)": 1
  }

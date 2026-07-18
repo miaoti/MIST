@@ -11,7 +11,7 @@
  "tally": {
   "error-span-visible": 3,
   "span-presence-visible": 9,
-  "trace-uninstrumented": 12,
+  "trace-uninstrumented": 16,
   "trace-invisible-by-construction": 5
  },
  "cases": [
@@ -176,6 +176,14 @@
    "mist_readback_oracle": "flag"
   },
   {
+   "case_id": "TT-basic-price-corrupt-f14-001",
+   "label": "positive",
+   "trace_visibility": "trace-uninstrumented",
+   "naive_span_error_oracle": "not_applicable",
+   "mist_trace_shape_oracle": "not_applicable",
+   "mist_readback_oracle": "not_applicable"
+  },
+  {
    "case_id": "TT-cancel-refund-asyncrefund-f1-001",
    "label": "positive",
    "trace_visibility": "trace-invisible-by-construction",
@@ -208,6 +216,14 @@
    "mist_readback_oracle": "flag"
   },
   {
+   "case_id": "TT-cancel-status-recheck-corrupt-f11-001",
+   "label": "positive",
+   "trace_visibility": "trace-uninstrumented",
+   "naive_span_error_oracle": "not_applicable",
+   "mist_trace_shape_oracle": "not_applicable",
+   "mist_readback_oracle": "not_applicable"
+  },
+  {
    "case_id": "TT-contacts-dedupe-benign-001",
    "label": "negative",
    "trace_visibility": "trace-uninstrumented",
@@ -238,6 +254,22 @@
    "naive_span_error_oracle": "no_flag",
    "mist_trace_shape_oracle": "not_applicable",
    "mist_readback_oracle": "no_flag"
+  },
+  {
+   "case_id": "TT-order-contact-corrupt-f10-001",
+   "label": "positive",
+   "trace_visibility": "trace-uninstrumented",
+   "naive_span_error_oracle": "not_applicable",
+   "mist_trace_shape_oracle": "not_applicable",
+   "mist_readback_oracle": "not_applicable"
+  },
+  {
+   "case_id": "TT-order-statusskew-corrupt-f20-001",
+   "label": "positive",
+   "trace_visibility": "trace-uninstrumented",
+   "naive_span_error_oracle": "not_applicable",
+   "mist_trace_shape_oracle": "not_applicable",
+   "mist_readback_oracle": "not_applicable"
   },
   {
    "case_id": "TT-user-selection-corrupt-f8-001",

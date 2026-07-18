@@ -1,0 +1,2 @@
+F11 LEG=CTRL mode=none o1=0e1b1c69-6ea3-4187-b8a4-c9cbb134a56e ack1={"status":1,"msg":"Success.","data":"test not null"} status1=4 | o2=3cd5f085-218c-4476-b81a-01417fdcaffc ack2={"status":1,"msg":"Success.","data":"test not null"} status2=4
+F11 LEG=FLT mode=corrupt o1=a3dd2e3e-9e47-4d6a-aaf7-55d49be5ae46 ack1={"status":1,"msg":"Success.","data":"test not null"} status1=4 | o2=ecc29b7c-8471-4a22-af03-88550b657683 ack2={"status":1,"msg":"Success.","data":"test not null"} status2=3

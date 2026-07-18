@@ -62,6 +62,16 @@
    ]
   },
   {
+   "case_id": "TT-basic-price-corrupt-f14-001",
+   "trace_visibility": "trace-uninstrumented",
+   "bundles": [
+    {
+     "kind": "none-committed",
+     "detail": "no committed trace bundle - NOT_EVALUABLE for trace-consuming arms, disclosed"
+    }
+   ]
+  },
+  {
    "case_id": "TT-cancel-refund-asyncrefund-f1-001",
    "trace_visibility": "trace-invisible-by-construction",
    "bundles": [
@@ -119,6 +129,16 @@
    ]
   },
   {
+   "case_id": "TT-cancel-status-recheck-corrupt-f11-001",
+   "trace_visibility": "trace-uninstrumented",
+   "bundles": [
+    {
+     "kind": "none-committed",
+     "detail": "no committed trace bundle - NOT_EVALUABLE for trace-consuming arms, disclosed"
+    }
+   ]
+  },
+  {
    "case_id": "TT-contacts-dedupe-benign-001",
    "trace_visibility": "trace-uninstrumented",
    "bundles": [
@@ -151,6 +171,26 @@
   {
    "case_id": "TT-createaccount-clean-001",
    "trace_visibility": "trace-invisible-by-construction",
+   "bundles": [
+    {
+     "kind": "none-committed",
+     "detail": "no committed trace bundle - NOT_EVALUABLE for trace-consuming arms, disclosed"
+    }
+   ]
+  },
+  {
+   "case_id": "TT-order-contact-corrupt-f10-001",
+   "trace_visibility": "trace-uninstrumented",
+   "bundles": [
+    {
+     "kind": "none-committed",
+     "detail": "no committed trace bundle - NOT_EVALUABLE for trace-consuming arms, disclosed"
+    }
+   ]
+  },
+  {
+   "case_id": "TT-order-statusskew-corrupt-f20-001",
+   "trace_visibility": "trace-uninstrumented",
    "bundles": [
     {
      "kind": "none-committed",

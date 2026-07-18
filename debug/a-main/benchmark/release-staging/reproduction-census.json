@@ -1,7 +1,7 @@
 {
  "schema": "reproduction-census/1",
  "tally": {
-  "executable-reproduction (replay script committed + mechanized injection)": 16,
+  "executable-reproduction (replay script committed + mechanized injection)": 20,
   "executable-reproduction (no injection; stimulus replay)": 12,
   "specified-design-target (no capture to reproduce)": 1
  },
@@ -167,6 +167,14 @@
    "reproduction_status": "executable-reproduction (replay script committed + mechanized injection)"
   },
   {
+   "case_id": "TT-basic-price-corrupt-f14-001",
+   "capture_status": "captured",
+   "injection_method": "sut_injector",
+   "replay_script": "debug/a-main/benchmark/b4/capture-specs/tt-cancel-refund.yaml",
+   "replay_script_exists": true,
+   "reproduction_status": "executable-reproduction (replay script committed + mechanized injection)"
+  },
+  {
    "case_id": "TT-cancel-refund-asyncrefund-f1-001",
    "capture_status": "captured",
    "injection_method": "sut_injector",
@@ -192,6 +200,14 @@
   },
   {
    "case_id": "TT-cancel-refund-natural-001",
+   "capture_status": "captured",
+   "injection_method": "sut_injector",
+   "replay_script": "debug/a-main/benchmark/b4/capture-specs/tt-cancel-refund.yaml",
+   "replay_script_exists": true,
+   "reproduction_status": "executable-reproduction (replay script committed + mechanized injection)"
+  },
+  {
+   "case_id": "TT-cancel-status-recheck-corrupt-f11-001",
    "capture_status": "captured",
    "injection_method": "sut_injector",
    "replay_script": "debug/a-main/benchmark/b4/capture-specs/tt-cancel-refund.yaml",
@@ -229,6 +245,22 @@
    "replay_script": "debug/a-main/benchmark/b4/capture-specs/tt-createaccount.yaml",
    "replay_script_exists": true,
    "reproduction_status": "executable-reproduction (no injection; stimulus replay)"
+  },
+  {
+   "case_id": "TT-order-contact-corrupt-f10-001",
+   "capture_status": "captured",
+   "injection_method": "sut_injector",
+   "replay_script": "debug/a-main/benchmark/b4/capture-specs/tt-cancel-refund.yaml",
+   "replay_script_exists": true,
+   "reproduction_status": "executable-reproduction (replay script committed + mechanized injection)"
+  },
+  {
+   "case_id": "TT-order-statusskew-corrupt-f20-001",
+   "capture_status": "captured",
+   "injection_method": "sut_injector",
+   "replay_script": "debug/a-main/benchmark/b4/capture-specs/tt-cancel-refund.yaml",
+   "replay_script_exists": true,
+   "reproduction_status": "executable-reproduction (replay script committed + mechanized injection)"
   },
   {
    "case_id": "TT-user-selection-corrupt-f8-001",
