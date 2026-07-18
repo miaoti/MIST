@@ -84,13 +84,13 @@ Sources consolidated: plan v2 §5, `c2-freeze.md` rev 2, `e-sut-applicability-ma
         hostPath+JTO, per-leg Jaeger v2 exports, frozen pre-committed scorer trace_score.py). N-vs-0
         comparator cells MEASURED (fabricated-ack: naive+presence ran-and-missed, N=2/N=1) + breadth
         presence-catches MEASURED (flag, traced-control baselines) + DB-granularity disclosure MEASURED
-        (fault 0 vs control 2/6/3 DB spans). mist_trace_shape = Branch-B traced-but-not-run → 2.5/E2.
+        (fault 0 vs control 2/6/3 DB spans). mist_trace_shape = Branch-B traced-but-not-run → RUN 2026-07-18 (the tsarm wave; structural sub-invariant, see the EXECUTED row).
         Runbook hardened: N≥4 consecutive probes (ribbon round-robin); fresh-ids for hardcoded-id specs.
         THIS partially discharges 2.5.1 (TT write-path javaagent mechanics de-risked; runbook+agent-pin+
         scorer = the 2.5.1/2.5.2 deliverables); instrumentation torn down (pilot framing, T10).**
         NEXT (no decision): step-2 SUT deploys (TeaStore/OTel-Demo; tenancy window = ASK USER before
         TT-down); FP/TP pair capture (bookinfo redeploy + SS window + queue-master consume spans);
-        mist_trace_shape run at 2.5/E2.
+        mist_trace_shape run at 2.5/E2 → EXECUTED 2026-07-18 (offline arm over the 13 traced captures).
 ☑ 1.95.3 rater-materials 3-cold-review **DONE** (rev 3, `REVIEW-RATER-RECONCILIATION.md`, commit
         3aae75a). IRB/exemption filing + compensation (U1/U2) = USER (arranging). RATERS START only at
         the step-5 corpus gate — by construction, matching the recruitment lead.
@@ -286,7 +286,7 @@ Sources consolidated: plan v2 §5, `c2-freeze.md` rev 2, `e-sut-applicability-ma
 ☐ **C3-results ≥3-cold-review at this step's acceptance gate (plan §6 — B-MAJOR).**
 
 ## Step 6 — E2 comparator frontier — ✔ AT THE OFFLINE SCOPE (completion-set Phase B 2026-07-16, `b4/e2/RESULT-e2-frontier.md`)
-✔ **The completed 6-arm × 4-visibility-class matched-recall table (`benchmark/scoring/
+✔ **The completed matched-recall table — arm lineage 6 canonical → +3 trivial baselines (sufficiency fold) → +mist_trace_shape = 10 arms — × 4 visibility classes (`benchmark/scoring/
   matched-recall-table.json`, the A6 single mechanical path):** naive span-error (0
   positives + 2 FP) · tracetest_presence SURROGATE (labeled: span-assertion-semantics,
   live tool NOT run; REAL Tracetest specs AUTHORED-never-executed for the authoring-cost
@@ -337,3 +337,20 @@ Sources consolidated: plan v2 §5, `c2-freeze.md` rev 2, `e-sut-applicability-ma
 - Frozen docs change only via disclosed amendments (`c2-freeze.md` §6).
 - Paper honesty riders: lead with the study; two-denominator S1; tell-free floor; MIST vs arm-3
   authoring-cost symmetry; Gate-4 wording "3 frontier trace comparators + contract-invariant arm".
+
+- [x] **TSARM EXECUTED (2026-07-18, commits 77376ad + the tsarm fold; USER-authorized MIST tool
+  code — the standing no-tool-code gate lifted by the user for this wave):** the
+  `mist_trace_shape` STRUCTURAL SUB-INVARIANT arm — `OfflineTraceShapeEvaluator` (real
+  `TraceShapeOracle` code, hidden-downstream-only config disclosed) over the 13 traced corpus
+  captures → the 10th arm: **0/6 evaluable masked-loss positives flagged** (trace-invisibility
+  confirmed via MIST's own second oracle — an INTERNAL CONTROL on the same traces
+  `naive_span_error` consumes, never independent evidence); WARN-tier abstains on
+  sockshop-control where naive-span FPs; sole flag = the **bookinfo structural-only FP**
+  (pre-registered semantic no_flag case; measured-vs-stamped reconciliation 12/13 consistent +
+  1/13 disclosed divergence). PLUS the DI-runtime wiring: flag-gated reporting-only
+  `traceShapeNote` at the trace-complete OBSERVED_* gate (default-off; verdict flow
+  byte-identical; note computed AFTER the decisive R4fix re-read; hidden-downstream-filtered) —
+  the MYC "TraceShapeOracle unwired/inert" disclosure SUPERSEDED. Tests: 4+4 new (evaluator +
+  note) + DI/pairing suites 34+33 green. 3-cold verify folded (A CLEAN w/ 2 flag-ON fixes
+  applied; B FIX-NEEDED disclosures folded incl. the table-note of record; C GAPS folded:
+  this row + P20 + freeze rows + FILE_INDEX + the two-oracle naming rail).

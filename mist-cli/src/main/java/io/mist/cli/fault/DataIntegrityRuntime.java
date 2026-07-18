@@ -124,8 +124,9 @@ public final class DataIntegrityRuntime {
          * gate, this carries the oracle's outcome over that same completed trace
          * ("HIDDEN_DOWNSTREAM_FAILURE pass" or the failing detail). REPORTING
          * ONLY — it never moves the gate or the verdict tier. {@code null} when
-         * the flag is off (the default; legacy records byte-identical) or no
-         * completed trace was evaluated.
+         * the flag is off (the default; the VERDICT FLOW is byte-identical —
+         * serialized records additively gain this null field) or no completed
+         * trace was evaluated.
          */
         public final String traceShapeNote;
 
@@ -766,9 +767,6 @@ public final class DataIntegrityRuntime {
                         return;
                     }
                     if (traceComplete(s.http, traceId, s.traceSettleMs)) {
-                        // A-venue wave: with the trace confirmed complete, run the
-                        // Trace Shape Oracle over it (flag-gated, reporting-only).
-                        traceShapeNote = traceShapeNote(s.http, traceId, triple.writeEndpoint);
                         // R4fix: absence was sampled BEFORE the settle window;
                         // re-read once so a write landing during the settle is
                         // not labeled a high-confidence loss.
@@ -793,9 +791,14 @@ public final class DataIntegrityRuntime {
                         if (v == XVerdict.PRESENT) {
                             present = true;
                             gate = QuiescenceGate.OBSERVED_PRESENT;
+                            // A-venue wave: reporting-only Trace Shape Oracle note,
+                            // computed AFTER the decisive re-read (review A-1: the
+                            // note fetch must never add latency ahead of it).
+                            traceShapeNote = traceShapeNote(s.http, traceId, triple.writeEndpoint);
                             break;
                         }
                         gate = QuiescenceGate.OBSERVED_COMPLETE_ABSENT;
+                        traceShapeNote = traceShapeNote(s.http, traceId, triple.writeEndpoint);
                     } else {
                         gate = QuiescenceGate.TIMEOUT_ABSENT;
                     }
@@ -880,6 +883,12 @@ public final class DataIntegrityRuntime {
                 io.mist.core.oracle.shape.TraceShapeVerdict v = oracle.evaluate(model, rootApiKey);
                 n++;
                 for (io.mist.core.oracle.shape.TraceShapeVerdict.InvariantOutcome o : v.getOutcomes()) {
+                    // Review A-2: the note reports the hidden-downstream invariant ONLY
+                    // (parity with the offline arm); other invariants keep their existing
+                    // generated-test reporting channel.
+                    if (!io.mist.core.oracle.shape.invariant.HiddenDownstreamFailureInvariant.KIND.equals(o.kind)) {
+                        continue;
+                    }
                     if (!o.passed) {
                         if (fails.length() > 0) fails.append("; ");
                         fails.append(o.kind).append('[').append(o.severity).append("]: ").append(o.detail);

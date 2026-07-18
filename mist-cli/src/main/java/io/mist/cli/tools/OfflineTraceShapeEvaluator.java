@@ -46,9 +46,13 @@ public final class OfflineTraceShapeEvaluator {
             System.exit(2);
         }
         String raw = new String(Files.readAllBytes(Paths.get(args[0])), StandardCharsets.UTF_8);
-        String rootApiKey = args[1];
+        JSONObject out = evaluate(new JSONObject(raw), args[1]);
+        out.put("file", args[0]);
+        System.out.println(out.toString(2));
+    }
 
-        JSONObject parsed = new JSONObject(raw);
+    /** The measurement path, extracted for direct unit testing (review A). */
+    static JSONObject evaluate(JSONObject parsed, String rootApiKey) {
         JSONArray traces = parsed.optJSONArray("data");
         if (traces == null) {
             traces = new JSONArray();
@@ -82,11 +86,10 @@ public final class OfflineTraceShapeEvaluator {
         }
 
         JSONObject out = new JSONObject();
-        out.put("file", args[0]);
         out.put("root_api_key", rootApiKey);
         out.put("traces_evaluated", evaluated);
         out.put("verdict", anyErrorFail ? "flag" : "no_flag");
         out.put("outcomes", outcomes);
-        System.out.println(out.toString(2));
+        return out;
     }
 }

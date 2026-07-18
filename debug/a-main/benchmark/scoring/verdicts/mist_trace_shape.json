@@ -1,6 +1,6 @@
 {
   "arm": "mist_trace_shape",
-  "verdict_source": "MIST TraceShapeOracle (io.mist.cli.tools.OfflineTraceShapeEvaluator, the same oracle code the generated tests wire) executed offline over the case's captured trace of record; ONLY the structural intent-agnostic HIDDEN_DOWNSTREAM_FAILURE invariant enabled (the 4 learned invariants need a learned store the captures do not carry); flag iff ERROR-severity failure (WARN non-blocking, the runtime rule)",
+  "verdict_source": "MIST TraceShapeOracle (io.mist.cli.tools.OfflineTraceShapeEvaluator, the same oracle code the generated tests wire) executed offline over the case's captured trace of record; ONLY the structural intent-agnostic HIDDEN_DOWNSTREAM_FAILURE invariant enabled (the 4 learned invariants need a learned store the captures do not carry); flag iff ERROR-severity failure (WARN non-blocking, the runtime rule) | TABLE-NOTE OF RECORD (review tsarm-B): structural sub-invariant ONLY, an internal control on the same traces naive_span_error consumes; sole corpus flag = the bookinfo structural-only FP (the corpus's pre-registered semantic no_flag case); never MIST's full trace-shape oracle, never pooled with the read-back column",
   "cases": {
     "bookinfo-ratings-benign-001": "flag",
     "oteldemo-checkout-control-001": "no_flag",
