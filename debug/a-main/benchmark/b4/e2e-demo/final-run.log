@@ -1,0 +1,39 @@
+deployment.apps/ts-admin-route-service env updated
+Waiting for deployment "ts-admin-route-service" rollout to finish: 1 old replicas are pending termination...
+Waiting for deployment "ts-admin-route-service" rollout to finish: 1 old replicas are pending termination...
+deployment "ts-admin-route-service" successfully rolled out
+RESET-OFF-DONE
+ERROR StatusConsoleListener Unable to rename file C:\Users\miaot\Github\MIST\logs\mist.log to C:\Users\miaot\Github\MIST\logs\mist_2026-07-18T17:37:53.123.log: java.nio.file.InvalidPathException Illegal char <:> at index 50: C:\Users\miaot\Github\MIST\logs\mist_2026-07-18T17:37:53.123.log
+WARN  MstConfig: unknown property 'mst.oracle.dataintegrity.failonlost' (typo?). Strict mode = false
+?? EXECUTING: Root 1: ts-admin-route-service POST /api/v1/adminrouteservice/adminroute [expect 200] (dependency analysis passed)
+? Root 1: ts-admin-route-service POST /api/v1/adminrouteservice/adminroute [expect 200] - SUCCESS
+=== SCENARIO RESULT ===
+Scenario: test_positive_flow_S15_v1
+Total Steps: 1
+Successful: 1
+Failed: 0
+Login Status: SUCCESS
+? Scenario PASSED: All 1 steps completed successfully
+>> exec: bash /mnt/c/Users/miaot/Github/MIST/debug/a-main/benchmark/b4/runners/fcorpus/e2e-demo-flip.sh
+   deployment.apps/ts-admin-route-service env updated
+   Waiting for deployment "ts-admin-route-service" rollout to finish: 1 old replicas are pending termination...
+   Waiting for deployment "ts-admin-route-service" rollout to finish: 1 old replicas are pending termination...
+   deployment "ts-admin-route-service" successfully rolled out
+   -javaagent:/otel/opentelemetry-javaagent.jar -Dmist.fault.lostwrite.enabled=true
+   FLIP-ON-DONE
+>> exec rc=0
+?? EXECUTING: Root 1: ts-admin-route-service POST /api/v1/adminrouteservice/adminroute [expect 200] (dependency analysis passed)
+? Root 1: ts-admin-route-service POST /api/v1/adminrouteservice/adminroute [expect 200] - FAILED: ACKED-BUT-LOST WRITE [adminroute-create] Flow_Scenario_15.test_positive_flow_S15_v1#1 — client got HTTP 200 (acked) but the durable write is ABSENT from the read-back (observation-gated: the step's own trace is complete)
+?? Step wrapper failed for Root 1: ts-admin-route-service POST /api/v1/adminrouteservice/adminroute [expect 200]: Root 1: ts-admin-route-service POST /api/v1/adminrouteservice/adminroute [expect 200] failed: Expected vs actual status code mismatch (Status Code Mismatch)
+=== SCENARIO RESULT ===
+Scenario: test_positive_flow_S15_v1
+Total Steps: 1
+Successful: 0
+Failed: 1
+Login Status: SUCCESS
+=== TinyObserveRunner summary ===
+tests run=2 failures=1
+FAILURE: test_positive_flow_S15_v1(tt_e2e_allure_demo.TtE2eAllureDemo_1784410269399_phaseB.Flow_Scenario_15) :: Scenario FAILED: 1 out of 1 steps failed. In microservice testing, all workflow steps must succeed for end-to-end validation.
+data-integrity records: 2
+DI[adminroute-create] acked=true ackHttp=200 gate=OBSERVED_PRESENT readbackContainedX=true
+DI[adminroute-create] acked=true ackHttp=200 gate=OBSERVED_COMPLETE_ABSENT readbackContainedX=false

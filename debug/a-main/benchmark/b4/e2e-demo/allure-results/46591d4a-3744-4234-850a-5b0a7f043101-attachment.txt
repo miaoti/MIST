@@ -1,0 +1,1 @@
+{"status":1,"msg":"Save and Modify success","data":{"id":"e3f4e3e6-1594-4511-8b0e-d81d9fe311bf","stations":["corpus-w199-967b87db59c8","corpus-w79-84f55f91d102"],"distances":[0,935],"startStation":"corpus-w199-967b87db59c8","endStation":"corpus-w79-84f55f91d102"}}

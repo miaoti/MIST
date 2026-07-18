@@ -1,0 +1,10 @@
+═══════════════════════════════════════════════════════════════════════
+🔎 ROOT CAUSE (grounded in this test's actual response + trace)
+═══════════════════════════════════════════════════════════════════════
+
+The trace shows NO swallowed downstream server error (no http>=500 / otel=ERROR
+span). So this is a CLIENT-FACING failure — the endpoint itself rejected the
+request (status/validation), not a hidden backend fault.
+
+Actual client response — HTTP 200 (the concrete rejection reason):
+{"status":1,"msg":"create and modify success","data":null}

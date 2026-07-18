@@ -1,0 +1,6 @@
+{
+  "rootApiKey": "POST /api/v1/adminrouteservice/adminroute",
+  "passed": true,
+  "outcomes": [
+  ]
+}

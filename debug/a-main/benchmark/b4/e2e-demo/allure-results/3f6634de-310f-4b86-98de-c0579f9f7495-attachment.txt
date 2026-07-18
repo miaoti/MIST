@@ -1,0 +1,160 @@
+🔍 Jaeger Query Debug Info:
+Target Service: ts-admin-route-service
+Method: POST
+Path: /api/v1/adminrouteservice/adminroute
+Operation: POST /api/v1/adminrouteservice/adminroute
+Request Start (μs): 1784414274451000
+Search Window: 1784414264451000 to 1784414304451000 (μs)
+Time Window: 40 seconds
+🔎 Lookup: marker-first exact-ID (W3C traceparent), then broad time-window + target-service
+⏱️ Test Separation: 2-second delay enforced between executions for unique traces
+🔄 Trace Propagation: 3-second delay after execution for Jaeger indexing
+🔄 Retry Strategy: Multiple attempts to find current execution trace
+
+🎯 Marker-first query: http://localhost:30005/jaeger/api/traces/4009d0cbe8764fa5a5bf1e0ce3de57d6
+⚠️ Marker query exhausted; falling back to time-window heuristic
+Query 1: http://localhost:30005/jaeger/api/traces?limit=200&start=1784414264451000&end=1784414304451000
+Response Status: 400
+HTTP Error: 400
+
+Query 2: http://localhost:30005/jaeger/api/traces?limit=50&service=ts-admin-route-service&operation=POST+%2Fapi%2Fv1%2Fadminrouteservice%2Fadminroute&start=1784414264451000&end=1784414304451000
+Response Status: 200
+Response Body Length: 56
+Traces Found: 0
+No traces found in response
+Query 2 failed, trying next...
+
+Query 3: http://localhost:30005/jaeger/api/traces?limit=50&service=ts-admin-route-service&operation=POST&start=1784414264451000&end=1784414304451000
+Response Status: 200
+Response Body Length: 56
+Traces Found: 0
+No traces found in response
+Query 3 failed, trying next...
+
+Query 4: http://localhost:30005/jaeger/api/traces?limit=100&service=ts-admin-route-service&start=1784414264451000&end=1784414304451000
+Response Status: 200
+Response Body Length: 2263
+Traces Found: 1
+Analyzing 1 traces for API calls...
+Trace 0: score=0, APIs=0, hasTarget=false, timeDiff=N/A, spans=1
+  Operations: NacosWatch$$Lambda.run
+
+Selected trace -1 with score -1 (no API calls found)
+
+⚠️ This query found traces but no API calls. Continuing to next strategy...
+Query 4 failed, trying next...
+
+Query 5: http://localhost:30005/jaeger/api/traces?limit=200&lookback=10m
+Response Status: 400
+HTTP Error: 400
+
+
+🔄 RETRY 1: Searching again for current execution trace...
+Query 1: http://localhost:30005/jaeger/api/traces?limit=200&start=1784414264451000&end=1784414304451000
+Response Status: 400
+HTTP Error: 400
+
+Query 2: http://localhost:30005/jaeger/api/traces?limit=50&service=ts-admin-route-service&operation=POST+%2Fapi%2Fv1%2Fadminrouteservice%2Fadminroute&start=1784414264451000&end=1784414304451000
+Response Status: 200
+Response Body Length: 6129
+Traces Found: 1
+Analyzing 1 traces for API calls...
+Trace 0: score=2515, APIs=3, hasTarget=true, timeDiff=3313000μs, spans=4
+  Operations: POST, POST, POST /api/v1/adminrouteserv..., AdminRouteController.addRoute
+
+Selected trace 0 with score 2515 (matched but not current - possibly previous execution)
+
+🔄 Fetching complete trace for ID: 4009d0cbe8764fa5a5bf1e0ce3de57d6
+✅ Complete trace fetched with 4 spans
+✅ Updated global best trace (score: 2515, timeDiff: 3.313s)
+⏭️ Continuing to search for more recent trace...
+Query 2 failed, trying next...
+
+Query 3: http://localhost:30005/jaeger/api/traces?limit=50&service=ts-admin-route-service&operation=POST&start=1784414264451000&end=1784414304451000
+Response Status: 200
+Response Body Length: 6129
+Traces Found: 1
+Analyzing 1 traces for API calls...
+Trace 0: score=2515, APIs=3, hasTarget=true, timeDiff=3313000μs, spans=4
+  Operations: POST /api/v1/adminrouteserv..., AdminRouteController.addRoute, POST, POST
+
+Selected trace 0 with score 2515 (matched but not current - possibly previous execution)
+⏭️ Continuing to search for more recent trace...
+Query 3 failed, trying next...
+
+Query 4: http://localhost:30005/jaeger/api/traces?limit=100&service=ts-admin-route-service&start=1784414264451000&end=1784414304451000
+Response Status: 200
+Response Body Length: 17976
+Traces Found: 4
+Analyzing 4 traces for API calls...
+Trace 0: score=10, APIs=2, hasTarget=false, timeDiff=N/A, spans=3
+  Operations: GET /api/v1/adminrouteservi..., AdminRouteController.getAll..., GET
+Trace 1: score=2515, APIs=3, hasTarget=true, timeDiff=3313000μs, spans=4
+  Operations: POST /api/v1/adminrouteserv..., AdminRouteController.addRoute, POST, POST
+Trace 2: score=10, APIs=2, hasTarget=false, timeDiff=N/A, spans=3
+  Operations: GET /api/v1/adminrouteservi..., AdminRouteController.getAll..., GET
+Trace 3: score=0, APIs=0, hasTarget=false, timeDiff=N/A, spans=1
+  Operations: NacosWatch$$Lambda.run
+
+Selected trace 1 with score 2515 (matched but not current - possibly previous execution)
+⏭️ Continuing to search for more recent trace...
+Query 4 failed, trying next...
+
+Query 5: http://localhost:30005/jaeger/api/traces?limit=200&lookback=10m
+Response Status: 400
+HTTP Error: 400
+
+
+🔄 RETRY 2: Searching again for current execution trace...
+Query 1: http://localhost:30005/jaeger/api/traces?limit=200&start=1784414264451000&end=1784414304451000
+Response Status: 400
+HTTP Error: 400
+
+Query 2: http://localhost:30005/jaeger/api/traces?limit=50&service=ts-admin-route-service&operation=POST+%2Fapi%2Fv1%2Fadminrouteservice%2Fadminroute&start=1784414264451000&end=1784414304451000
+Response Status: 200
+Response Body Length: 6129
+Traces Found: 1
+Analyzing 1 traces for API calls...
+Trace 0: score=2515, APIs=3, hasTarget=true, timeDiff=3313000μs, spans=4
+  Operations: POST /api/v1/adminrouteserv..., AdminRouteController.addRoute, POST, POST
+
+Selected trace 0 with score 2515 (matched but not current - possibly previous execution)
+⏭️ Continuing to search for more recent trace...
+Query 2 failed, trying next...
+
+Query 3: http://localhost:30005/jaeger/api/traces?limit=50&service=ts-admin-route-service&operation=POST&start=1784414264451000&end=1784414304451000
+Response Status: 200
+Response Body Length: 6129
+Traces Found: 1
+Analyzing 1 traces for API calls...
+Trace 0: score=2515, APIs=3, hasTarget=true, timeDiff=3313000μs, spans=4
+  Operations: POST /api/v1/adminrouteserv..., AdminRouteController.addRoute, POST, POST
+
+Selected trace 0 with score 2515 (matched but not current - possibly previous execution)
+⏭️ Continuing to search for more recent trace...
+Query 3 failed, trying next...
+
+Query 4: http://localhost:30005/jaeger/api/traces?limit=100&service=ts-admin-route-service&start=1784414264451000&end=1784414304451000
+Response Status: 200
+Response Body Length: 17976
+Traces Found: 4
+Analyzing 4 traces for API calls...
+Trace 0: score=10, APIs=2, hasTarget=false, timeDiff=N/A, spans=3
+  Operations: AdminRouteController.getAll..., GET, GET /api/v1/adminrouteservi...
+Trace 1: score=2515, APIs=3, hasTarget=true, timeDiff=3313000μs, spans=4
+  Operations: AdminRouteController.addRoute, POST, POST, POST /api/v1/adminrouteserv...
+Trace 2: score=10, APIs=2, hasTarget=false, timeDiff=N/A, spans=3
+  Operations: GET, GET /api/v1/adminrouteservi..., AdminRouteController.getAll...
+Trace 3: score=0, APIs=0, hasTarget=false, timeDiff=N/A, spans=1
+  Operations: NacosWatch$$Lambda.run
+
+Selected trace 1 with score 2515 (matched but not current - possibly previous execution)
+⏭️ Continuing to search for more recent trace...
+Query 4 failed, trying next...
+
+Query 5: http://localhost:30005/jaeger/api/traces?limit=200&lookback=10m
+Response Status: 400
+HTTP Error: 400
+
+
+✅ Using best trace found (score: 2515, timeDiff: 3.313s)

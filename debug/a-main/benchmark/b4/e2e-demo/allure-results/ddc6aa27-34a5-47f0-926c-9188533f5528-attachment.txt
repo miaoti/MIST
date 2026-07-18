@@ -1,0 +1,21 @@
+VERDICT: ACKED-BUT-LOST (observation-gated defect)
+The acknowledgement told the client the operation succeeded, but the durable state the operation promises never appeared on the read-back, and the step's own trace is complete — the write is lost, not late.
+
+WHAT THE CLIENT SAW:
+  HTTP 200  (body status 1)  — acknowledged ✅
+
+WHAT THE READ-BACK SHOWS:
+  triple        : adminroute-create
+  step          : Flow_Scenario_15.test_positive_flow_S15_v1#1
+  isolation key : {startStation=corpus-w322-fdbad31aec43, endStation=corpus-w145-b4eac627dca1}
+  polls         : 19 over 13557 ms
+  last read HTTP: 200
+  gate          : OBSERVED_COMPLETE_ABSENT
+
+BASELINE (before the write, first 500 chars):
+  {"status":1,"msg":"Success","data":[{"id":"0b23bd3e-876a-4af3-b920-c50a90c90b04","stations":["shanghai","nanjing","shijiazhuang","taiyuan"],"distances":[0,350,1000,1300],"startStation":"shanghai","endStation":"taiyuan"},{"id":"9fc9c261-3263-4bfa-82f8-bb44e06b2f52","stations":["nanjing","xuzhou","jinan","beijing"],"distances":[0,500,700,1200],"startStation":"nanjing","endStation":"beijing"},{"id":"d693a2c5-ef87-4a3c-bef8-600b43f62c68","stations":["taiyuan","shijiazhuang","nanjing","shanghai"],"di…
+
+LAST READ-BACK (first 500 chars):
+  {"status":1,"msg":"Success","data":[{"id":"0b23bd3e-876a-4af3-b920-c50a90c90b04","stations":["shanghai","nanjing","shijiazhuang","taiyuan"],"distances":[0,350,1000,1300],"startStation":"shanghai","endStation":"taiyuan"},{"id":"9fc9c261-3263-4bfa-82f8-bb44e06b2f52","stations":["nanjing","xuzhou","jinan","beijing"],"distances":[0,500,700,1200],"startStation":"nanjing","endStation":"beijing"},{"id":"d693a2c5-ef87-4a3c-bef8-600b43f62c68","stations":["taiyuan","shijiazhuang","nanjing","shanghai"],"di…
+
+TRACE BACKEND: http://localhost:30005/jaeger/api

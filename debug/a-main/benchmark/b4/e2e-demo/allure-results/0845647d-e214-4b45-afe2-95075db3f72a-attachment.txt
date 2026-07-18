@@ -1,0 +1,1 @@
+{"endStation":"corpus-w79-84f55f91d102","loginId":"lo4292","stationList":"corpus-w199-967b87db59c8,corpus-w79-84f55f91d102","distanceList":"0,935","startStation":"corpus-w199-967b87db59c8"}

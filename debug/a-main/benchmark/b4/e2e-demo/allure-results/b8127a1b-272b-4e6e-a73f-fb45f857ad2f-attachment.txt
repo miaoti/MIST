@@ -1,0 +1,19 @@
+----------------------------------------------------------------------------------------
+                           🔗 MICROSERVICE API CALL TRACE                           
+----------------------------------------------------------------------------------------
+Trace ID: 4009d0cbe8764fa5a5bf1e0ce3de57d6
+Jaeger UI: http://localhost:30005/jaeger/trace/4009d0cbe8764fa5a5bf1e0ce3de57d6
+────────────────────────────────────────────────────────────────────────────────────────
+🌐 API CALL HIERARCHY (Parent → Child Relationships)
+────────────────────────────────────────────────────────────────────────────────────────
+ℹ️  The external caller's own entry span is not captured, so this request's downstream
+    calls appear below as separate top-level entries — they are SIBLINGS OF ONE REQUEST,
+    not independent calls. Each line's callee is the service it called (see the ──▶ / ↳).
+────────────────────────────────────────────────────────────────────────────────────────
+[1] ✅ admin-route POST 200(397.0ms)
+    ↳ /api/v1/adminrouteservice/adminroute
+[2] ✅ admin-route POST 200(8.2ms)
+    ↳ http://10.244.0.227:12345/api/v1/stationservice/stations/idlist
+[3] ✅ admin-route POST 200(21.9ms)
+    ↳ http://10.244.0.223:11178/api/v1/routeservice/routes
+████████████████████████████████████████████████████████████████████████████████████████

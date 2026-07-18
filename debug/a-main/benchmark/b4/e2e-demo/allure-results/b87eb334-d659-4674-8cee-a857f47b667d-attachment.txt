@@ -1,0 +1,17 @@
+🔍 Jaeger Query Debug Info:
+Target Service: ts-admin-route-service
+Method: POST
+Path: /api/v1/adminrouteservice/adminroute
+Operation: POST /api/v1/adminrouteservice/adminroute
+Request Start (μs): 1784414440650000
+Search Window: 1784414430650000 to 1784414470650000 (μs)
+Time Window: 40 seconds
+🔎 Lookup: marker-first exact-ID (W3C traceparent), then broad time-window + target-service
+⏱️ Test Separation: 2-second delay enforced between executions for unique traces
+🔄 Trace Propagation: 3-second delay after execution for Jaeger indexing
+🔄 Retry Strategy: Multiple attempts to find current execution trace
+
+🎯 Marker-first query: http://localhost:30005/jaeger/api/traces/1f5539c7e9ce47da9d67a351bf365a5e
+✅ Marker match at attempt 1 (3 spans)
+
+✅ Using best trace found (score: 2147483647, timeDiff: 9.223372036854775E12s)
