@@ -1,0 +1,98 @@
+{
+  "bookinfo-ratings-benign-001": {
+    "trace": "debug/a-main/benchmark/b4/captures/bookinfo-ratings-benign-traced/trace-fault.json",
+    "root_api_key": "GET /productpage",
+    "traces_evaluated": 1,
+    "failed_outcomes": [
+      {
+        "severity": "ERROR",
+        "trace_id": "994c4aa14a71d97a4d4256c1ab425535",
+        "kind": "HIDDEN_DOWNSTREAM_FAILURE",
+        "passed": false,
+        "trace_index": 0,
+        "message": "reviews.default ??? ratings.default.svc.cluster.local:9080/* (http=503 otel=ERROR)"
+      }
+    ]
+  },
+  "oteldemo-checkout-control-001": {
+    "trace": "debug/a-main/benchmark/b4/captures/oteldemo-checkout-control/trace-control.json",
+    "root_api_key": "POST /api/checkout",
+    "traces_evaluated": 2,
+    "failed_outcomes": []
+  },
+  "oteldemo-checkout-lost-001": {
+    "trace": "debug/a-main/benchmark/b4/captures/oteldemo-checkout-lost/trace-fault.json",
+    "root_api_key": "POST /api/checkout",
+    "traces_evaluated": 1,
+    "failed_outcomes": []
+  },
+  "sockshop-shipping-control-001": {
+    "trace": "debug/a-main/benchmark/b4/captures/sockshop-shipping-control-traced/trace-control.json",
+    "root_api_key": "POST /orders",
+    "traces_evaluated": 2,
+    "failed_outcomes": [
+      {
+        "severity": "WARN",
+        "trace_id": "a03b0fb7a82793b763014e69ac4a5743",
+        "kind": "HIDDEN_DOWNSTREAM_FAILURE",
+        "passed": false,
+        "trace_index": 1,
+        "message": "queue-master ??? POST (http=0 otel=ERROR)"
+      }
+    ]
+  },
+  "sockshop-shipping-swallowed-enqueue-001": {
+    "trace": "debug/a-main/benchmark/b4/captures/sockshop-shipping-swallowed-traced/trace-fault.json",
+    "root_api_key": "POST /orders",
+    "traces_evaluated": 2,
+    "failed_outcomes": []
+  },
+  "TT-adminbasic-contacts-control-001": {
+    "trace": "debug/a-main/benchmark/b4/captures/tt-s2-adminbasic-contacts-control-traced/trace-control.json",
+    "root_api_key": "POST /api/v1/adminbasicservice/adminbasic/contacts",
+    "traces_evaluated": 1,
+    "failed_outcomes": []
+  },
+  "TT-adminbasic-contacts-lostwrite-001": {
+    "trace": "debug/a-main/benchmark/b4/captures/tt-s1-adminbasic-contacts-lostwrite-traced/trace-fault.json",
+    "root_api_key": "POST /api/v1/adminbasicservice/adminbasic/contacts",
+    "traces_evaluated": 1,
+    "failed_outcomes": []
+  },
+  "TT-adminroute-control-001": {
+    "trace": "debug/a-main/benchmark/b4/captures/tt-ctl-adminroute-create-traced/trace-control.json",
+    "root_api_key": "POST /api/v1/adminrouteservice/adminroute",
+    "traces_evaluated": 1,
+    "failed_outcomes": []
+  },
+  "TT-adminroute-lostwrite-001": {
+    "trace": "debug/a-main/benchmark/b4/captures/tt-s1-adminroute-lostwrite-traced/trace-fault.json",
+    "root_api_key": "POST /api/v1/adminrouteservice/adminroute",
+    "traces_evaluated": 1,
+    "failed_outcomes": []
+  },
+  "TT-cancel-refund-clean-001": {
+    "trace": "debug/a-main/benchmark/b4/captures/tt-s2-cancel-clean-traced/trace-control.json",
+    "root_api_key": "GET /api/v1/cancelservice/cancel/{orderId}/{loginId}",
+    "traces_evaluated": 1,
+    "failed_outcomes": []
+  },
+  "TT-cancel-refund-fabricatedack-001": {
+    "trace": "debug/a-main/benchmark/b4/captures/tt-s1-cancel-fabricatedack-traced/trace-fault.json",
+    "root_api_key": "GET /api/v1/cancelservice/cancel/{orderId}/{loginId}",
+    "traces_evaluated": 9,
+    "failed_outcomes": []
+  },
+  "TT-createaccount-agreement-001": {
+    "trace": "debug/a-main/benchmark/b4/captures/tt-s1-createaccount-agreement-traced/trace-fault.json",
+    "root_api_key": "POST /api/v1/inside_pay_service/inside_payment/account",
+    "traces_evaluated": 1,
+    "failed_outcomes": []
+  },
+  "TT-createaccount-clean-001": {
+    "trace": "debug/a-main/benchmark/b4/captures/tt-s2-createaccount-clean-traced/trace-control.json",
+    "root_api_key": "POST /api/v1/inside_pay_service/inside_payment/account",
+    "traces_evaluated": 1,
+    "failed_outcomes": []
+  }
+}

@@ -359,6 +359,80 @@
     }
    }
   },
+  "mist_trace_shape": {
+   "verdict_source": "MIST TraceShapeOracle (io.mist.cli.tools.OfflineTraceShapeEvaluator, the same oracle code the generated tests wire) executed offline over the case's captured trace of record; ONLY the structural intent-agnostic HIDDEN_DOWNSTREAM_FAILURE invariant enabled (the 4 learned invariants need a learned store the captures do not carry); flag iff ERROR-severity failure (WARN non-blocking, the runtime rule)",
+   "cells": {
+    "error-span-visible": {
+     "positives": 1,
+     "evaluable_positives": 1,
+     "flagged_positives": 0,
+     "negatives": 2,
+     "flagged_negatives": 1,
+     "not_evaluable": 0,
+     "flagged_positive_ids": [],
+     "flagged_negative_ids": [
+      "bookinfo-ratings-benign-001"
+     ],
+     "not_evaluable_ids": []
+    },
+    "span-presence-visible": {
+     "positives": 3,
+     "evaluable_positives": 3,
+     "flagged_positives": 0,
+     "negatives": 6,
+     "flagged_negatives": 0,
+     "not_evaluable": 3,
+     "flagged_positive_ids": [],
+     "flagged_negative_ids": [],
+     "not_evaluable_ids": [
+      "oteldemo-checkout-eventual-benign-001",
+      "oteldemo-checkout-eventual-benign-002",
+      "oteldemo-checkout-eventual-benign-003"
+     ]
+    },
+    "trace-invisible-by-construction": {
+     "positives": 3,
+     "evaluable_positives": 2,
+     "flagged_positives": 0,
+     "negatives": 2,
+     "flagged_negatives": 0,
+     "not_evaluable": 1,
+     "flagged_positive_ids": [],
+     "flagged_negative_ids": [],
+     "not_evaluable_ids": [
+      "TT-cancel-refund-asyncrefund-f1-001"
+     ]
+    },
+    "trace-uninstrumented": {
+     "positives": 11,
+     "evaluable_positives": 0,
+     "flagged_positives": 0,
+     "negatives": 5,
+     "flagged_negatives": 0,
+     "not_evaluable": 16,
+     "flagged_positive_ids": [],
+     "flagged_negative_ids": [],
+     "not_evaluable_ids": [
+      "oteldemo-checkout-kafkaqueue-lost-001",
+      "teastore-order-control-001",
+      "teastore-order-depdown-specified-001",
+      "teastore-order-maintenance-masked-001",
+      "teastore-order-meshsever-control-001",
+      "teastore-order-meshsever-masked-001",
+      "teastore-orderitems-meshsever-control-001",
+      "teastore-orderitems-meshsever-masked-001",
+      "TT-basic-price-corrupt-f14-001",
+      "TT-cancel-refund-natural-001",
+      "TT-cancel-status-recheck-corrupt-f11-001",
+      "TT-contacts-dedupe-benign-001",
+      "TT-contacts-noop-modify-benign-001",
+      "TT-order-contact-corrupt-f10-001",
+      "TT-order-statusskew-corrupt-f20-001",
+      "TT-user-selection-corrupt-f8-001"
+     ]
+    }
+   }
+  },
   "naive_span_error": {
    "verdict_source": "frozen trace_score.py naive_span_error (any error span in the per-case scope; mechanical, no exclusions)",
    "cells": {

@@ -117,6 +117,17 @@ public final class DataIntegrityRuntime {
          * records, which fall back to the positional join.
          */
         public final String correlationId;
+        /**
+         * A-venue wave (2026-07-18): Trace Shape Oracle wiring into the DI
+         * runtime. When {@code mst.oracle.shape.invariants.hidden_downstream_
+         * failure.enabled=true} and the step reached a trace-complete OBSERVED_*
+         * gate, this carries the oracle's outcome over that same completed trace
+         * ("HIDDEN_DOWNSTREAM_FAILURE pass" or the failing detail). REPORTING
+         * ONLY — it never moves the gate or the verdict tier. {@code null} when
+         * the flag is off (the default; legacy records byte-identical) or no
+         * completed trace was evaluated.
+         */
+        public final String traceShapeNote;
 
         RunRecord(String runLabel, String tripleName, String stepKey, Map<String, String> isolationKey,
                   int ackHttpStatus, Integer ackBodyStatus, boolean acked,
@@ -145,6 +156,17 @@ public final class DataIntegrityRuntime {
                   QuiescenceGate gate, int polls, long elapsedMs,
                   String baselineBody, String lastReadbackBody, String error,
                   Integer readbackHttpStatus, String correlationId) {
+            this(runLabel, tripleName, stepKey, isolationKey, ackHttpStatus, ackBodyStatus, acked,
+                    baselineContainedX, readbackContainedX, gate, polls, elapsedMs,
+                    baselineBody, lastReadbackBody, error, readbackHttpStatus, correlationId, null);
+        }
+
+        RunRecord(String runLabel, String tripleName, String stepKey, Map<String, String> isolationKey,
+                  int ackHttpStatus, Integer ackBodyStatus, boolean acked,
+                  boolean baselineContainedX, boolean readbackContainedX,
+                  QuiescenceGate gate, int polls, long elapsedMs,
+                  String baselineBody, String lastReadbackBody, String error,
+                  Integer readbackHttpStatus, String correlationId, String traceShapeNote) {
             this.runLabel = runLabel;
             this.tripleName = tripleName;
             this.stepKey = stepKey;
@@ -162,6 +184,7 @@ public final class DataIntegrityRuntime {
             this.error = error;
             this.readbackHttpStatus = readbackHttpStatus;
             this.correlationId = correlationId;
+            this.traceShapeNote = traceShapeNote;
         }
     }
 
@@ -702,6 +725,7 @@ public final class DataIntegrityRuntime {
             boolean present = false;
             String last = null;
             int lastStatus = -1;
+            String traceShapeNote = null;
             QuiescenceGate gate;
             while (true) {
                 HttpResponse readback = s.http.getSut(readbackPath(triple));
@@ -742,6 +766,9 @@ public final class DataIntegrityRuntime {
                         return;
                     }
                     if (traceComplete(s.http, traceId, s.traceSettleMs)) {
+                        // A-venue wave: with the trace confirmed complete, run the
+                        // Trace Shape Oracle over it (flag-gated, reporting-only).
+                        traceShapeNote = traceShapeNote(s.http, traceId, triple.writeEndpoint);
                         // R4fix: absence was sampled BEFORE the settle window;
                         // re-read once so a write landing during the settle is
                         // not labeled a high-confidence loss.
@@ -790,7 +817,7 @@ public final class DataIntegrityRuntime {
             s.records.add(new RunRecord(s.runLabel, triple.name, stepKey, pending.isolationKey,
                     httpStatus, bodyStatus, true, pending.baselineContainedX, present,
                     gate, polls, elapsedMs, pending.baselineBody, last, null, lastStatus,
-                    pending.correlationId));
+                    pending.correlationId, traceShapeNote));
             logger.info("DataIntegrity[{}][{}]: acked={} X-present={} gate={} polls={} in {}ms",
                     s.runLabel, triple.name, true, present, gate, polls, elapsedMs);
         } catch (RuntimeException e) {
@@ -815,6 +842,58 @@ public final class DataIntegrityRuntime {
                 httpStatus, bodyStatus, true, pending.baselineContainedX, false,
                 QuiescenceGate.NOT_APPLICABLE, polls, elapsedMs, pending.baselineBody, lastBody,
                 error, lastStatus, pending.correlationId));
+    }
+
+    /**
+     * A-venue wave: flag-gated Trace Shape Oracle evaluation over the step's
+     * completed Jaeger trace. Returns a compact note ("HIDDEN_DOWNSTREAM_FAILURE
+     * pass (n traces)" or the failing outcome detail), or {@code null} when the
+     * oracle/invariant gate is off, no trace is reachable, or anything throws —
+     * this path must NEVER perturb the DI verdict flow.
+     */
+    static String traceShapeNote(Http http, String traceId, String rootApiKey) {
+        try {
+            io.mist.core.config.MstConfig.Oracle cfg = io.mist.core.config.MstConfig.instance().oracle();
+            if (!cfg.shapeOracleEnabled() || !cfg.hiddenDownstreamFailureInvariantEnabled()) {
+                return null;
+            }
+            String base = System.getProperty("jaeger.base.url");
+            if (base == null || base.trim().isEmpty() || traceId == null || traceId.trim().isEmpty()) {
+                return null;
+            }
+            HttpResponse resp = http.getAbsolute(base.replaceAll("/$", "") + "/traces/" + traceId.trim());
+            if (resp.status / 100 != 2 || resp.body == null || resp.body.isEmpty()) {
+                return null;
+            }
+            JSONObject parsed = new JSONObject(resp.body);
+            org.json.JSONArray data = parsed.optJSONArray("data");
+            io.mist.core.oracle.shape.TraceShapeOracle oracle =
+                    new io.mist.core.oracle.shape.TraceShapeOracle(
+                            new io.mist.core.oracle.shape.ShapeInvariantStore(), cfg);
+            StringBuilder fails = new StringBuilder();
+            int n = 0;
+            for (int i = 0; data != null && i < data.length(); i++) {
+                JSONObject traceObj = data.optJSONObject(i);
+                if (traceObj == null) continue;
+                io.mist.core.oracle.shape.TraceModel model =
+                        io.mist.core.analysis.TraceShapeAdapter.toModel(traceObj, rootApiKey);
+                io.mist.core.oracle.shape.TraceShapeVerdict v = oracle.evaluate(model, rootApiKey);
+                n++;
+                for (io.mist.core.oracle.shape.TraceShapeVerdict.InvariantOutcome o : v.getOutcomes()) {
+                    if (!o.passed) {
+                        if (fails.length() > 0) fails.append("; ");
+                        fails.append(o.kind).append('[').append(o.severity).append("]: ").append(o.detail);
+                    }
+                }
+            }
+            if (n == 0) return null;
+            return fails.length() == 0
+                    ? "HIDDEN_DOWNSTREAM_FAILURE pass (" + n + " trace" + (n == 1 ? "" : "s") + ")"
+                    : fails.toString();
+        } catch (RuntimeException e) {
+            logger.debug("DataIntegrity: trace-shape note skipped ({})", e.toString());
+            return null;
+        }
     }
 
     static String readbackPath(TargetTripleRegistry.Triple triple) {

@@ -741,6 +741,7 @@ public final class PairedFaultExecutor {
         json.put("baselineBody", truncate(record.baselineBody));
         json.put("lastReadbackBody", truncate(record.lastReadbackBody));
         json.put("error", record.error == null ? JSONObject.NULL : record.error);
+        json.put("traceShapeNote", record.traceShapeNote == null ? JSONObject.NULL : record.traceShapeNote);
         return json;
     }
 
