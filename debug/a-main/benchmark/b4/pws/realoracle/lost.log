@@ -1,0 +1,205 @@
+Schemathesis v4.23.0
+━━━━━━━━━━━━━━━━━━━━
+
+ 🕛  Loading specification from                                                
+     C:\Users\miaot\Github\MIST\evaluation\suts\oteldemo\openapi\oteldemo-swag… 🕛  Loading specification from                                                
+     C:\Users\miaot\Github\MIST\evaluation\suts\oteldemo\openapi\oteldemo-swag…
+ ✅  Loaded specification from                                                 
+ C:\Users\miaot\Github\MIST\evaluation\suts\oteldemo\openapi\oteldemo-swagger. 
+ yaml (in 0.09s)                                                               
+
+     Base URL:         http://127.0.0.1:8771                                   
+     Specification:    Open API 2.0                                            
+     Operations:       3 selected / 6 total                                    
+
+ 🕛  Probing API capabilities 🕛  Probing API capabilities
+ ✅  API capabilities:                                                         
+
+     Supports NULL byte in headers:                            ✓               
+     Accepts backslash and control characters in URL paths:    ✓               
+
+     Examples
+
+     0:00:00 ------------------------------------------------------- 100% (3/3)
+
+
+     ⏭  3 skipped
+ ⏭   Examples (in 0.11s)                                                       
+                                                                               
+     ⏭  3 skipped                                                              
+
+ 🕛  Coverage
+
+     0:00:00 ------------------------------------- ------------------ 67% (2/3)
+
+   ⠋ 0:00:00  GET /cart
+
+     ❌ 2 failed     Coverage
+
+     0:00:00 ------------------------------------------------------- 100% (3/3)
+
+
+     ❌ 3 failed
+ ❌  Coverage (in 0.23s)                                                       
+                                                                               
+     ❌ 3 failed                                                               
+
+     Fuzzing
+
+     0:00:00 ------------------------------------------------------- 100% (3/3)
+
+
+     ❌ 3 failed     Fuzzing
+
+     0:00:00 ------------------------------------------------------- 100% (3/3)
+
+
+     ❌ 3 failed
+ ❌  Fuzzing (in 0.20s)                                                        
+                                                                               
+     ❌ 3 failed                                                               
+
+=================================== FAILURES ===================================
+__________________________________ GET /cart ___________________________________
+1. Test Case ID: knozp3
+
+- Undocumented HTTP status code
+
+    Received: 404
+    Documented: 200
+
+[404] Not Found:
+
+    `{"error":"not recorded"}`
+
+Reproduce with:
+
+    curl -X GET 'http://127.0.0.1:8771/cart?sessionId=%5BFiltered%5D&x-schemathesis-unknown-property=42'
+    
+    st replay knozp3
+
+__________________________________ POST /cart __________________________________
+1. Test Case ID: 6Q1qrk
+
+- Undocumented HTTP status code
+
+    Received: 404
+    Documented: 200
+
+[404] Not Found:
+
+    `{"error":"not recorded"}`
+
+Reproduce with:
+
+    curl -X POST -H 'Content-Type: application/json' -d '{"item": {"productId": "", "quantity": 0}}' http://127.0.0.1:8771/cart
+    
+    st replay 6Q1qrk
+
+________________________________ POST /checkout ________________________________
+1. Test Case ID: JNNlqf
+
+- Undocumented HTTP status code
+
+    Received: 404
+    Documented: 200
+
+[404] Not Found:
+
+    `{"error":"not recorded"}`
+
+Reproduce with:
+
+    curl -X POST -H 'Content-Type: application/json' -d '{"address": {}, "email": ""}' http://127.0.0.1:8771/checkout
+    
+    st replay JNNlqf
+
+_________________________________ TRACE /cart __________________________________
+1. Test Case ID: 4HiZa6
+
+- Server error
+
+- Unsupported methods
+
+    Unsupported method TRACE returned 501, expected 405 Method Not Allowed
+
+    Return 405 for methods not listed in the OpenAPI spec
+
+[501] Not Implemented:
+
+    `<!DOCTYPE HTML>
+    <html lang="en">
+        <head>
+            <meta charset="utf-8">
+            <title>Error response</title>
+        </head>
+        <body>
+            <h1>Error response</h1>
+            <p>Error code: 501</p>
+            <p>Message: Unsupported method ('TRACE').</p>
+            <p>Error code explanation: 501 - Server does not support this operation.</p>
+        </body>
+    </html>`
+
+Reproduce with:
+
+    curl -X TRACE -H 'Content-Type: application/json' -d '{"userId": "", "item": {"productId": "", "quantity": 0}}' http://127.0.0.1:8771/cart
+    
+    st replay 4HiZa6
+
+_______________________________ TRACE /checkout ________________________________
+1. Test Case ID: X9ii9A
+
+- Server error
+
+- Unsupported methods
+
+    Unsupported method TRACE returned 501, expected 405 Method Not Allowed
+
+    Return 405 for methods not listed in the OpenAPI spec
+
+[501] Not Implemented:
+
+    `<!DOCTYPE HTML>
+    <html lang="en">
+        <head>
+            <meta charset="utf-8">
+            <title>Error response</title>
+        </head>
+        <body>
+            <h1>Error response</h1>
+            <p>Error code: 501</p>
+            <p>Message: Unsupported method ('TRACE').</p>
+            <p>Error code explanation: 501 - Server does not support this operation.</p>
+        </body>
+    </html>`
+
+Reproduce with:
+
+    curl -X TRACE -H 'Content-Type: application/json' -d '{"userId": "", "userCurrency": "", "email": "", "address": {"streetAddress": "", "city": "", "state": "", "country": "", "zipCode": ""}, "creditCard": {"creditCardNumber": "", "creditCardCvv": 0, "creditCardExpirationYear": 0, "creditCardExpirationMonth": 0}}' 'http://127.0.0.1:8771/checkout?currencyCode='
+    
+    st replay X9ii9A
+
+=================================== SUMMARY ====================================
+
+API Operations:
+  Selected: 3/6
+  Tested: 3
+
+Test Phases:
+  ⏭  Examples
+  ❌ Coverage
+  ❌ Fuzzing
+  ⏭  Stateful (not applicable)
+
+Failures:
+  ❌ Server error: 2
+  ❌ Undocumented HTTP status code: 3
+  ❌ Unsupported methods: 2
+
+Test cases:
+  6 generated, 5 found 7 unique failures
+
+Seed: 7
+
+============================= 7 failures in 0.61s ==============================

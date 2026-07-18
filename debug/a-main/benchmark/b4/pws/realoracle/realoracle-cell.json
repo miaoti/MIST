@@ -1,0 +1,32 @@
+{
+  "experiment": "real-oracle-on-MIST-reached-execution (byte-replay of recorded acks)",
+  "tool": "Schemathesis v4.23.0, st run --checks all (the tool's ENTIRE response-oracle suite, executed)",
+  "spec": "evaluation/suts/oteldemo/openapi/oteldemo-swagger.yaml (committed clean-room E1)",
+  "input": "meshsever capture sidecars: the RECORDED cart+checkout acks of the control and lost legs (the lost leg's checkout ack is the genuine acknowledged-but-LOST 200 with orderId/tracking)",
+  "legs": {
+    "control": {
+      "leg": "control",
+      "exit": 1,
+      "failure_titles": [
+        "Server error",
+        "Undocumented HTTP status code",
+        "Unsupported methods"
+      ],
+      "summary_line": "\u274c 1 failed; \u274c 3 failed; \u274c 3 failed; \u274c 3 failed; \u274c 3 failed; \u274c 3 failed; \u274c 3 failed"
+    },
+    "lost": {
+      "leg": "lost",
+      "exit": 1,
+      "failure_titles": [
+        "Server error",
+        "Undocumented HTTP status code",
+        "Unsupported methods"
+      ],
+      "summary_line": "\u274c 2 failed; \u274c 3 failed; \u274c 3 failed; \u274c 3 failed; \u274c 3 failed; \u274c 3 failed"
+    }
+  },
+  "leg_invariant": true,
+  "verdict": "MEASURED MISS: the real tool's full oracle suite produces IDENTICAL findings on the acknowledged-but-lost leg and the control leg (zero leg-discriminating flags; zero data-integrity findings) - on the very executions where MIST's read-back FIREs. surrogate==real closed by execution.",
+  "failure_attribution": "every failure title attaches to AUXILIARY harness probes, none to the recorded acks: 'Undocumented HTTP status code' = replay-server 404 on generated probes outside the recorded exchanges; 'Server error'+'Unsupported methods' = http.server's automatic 501 to the TRACE method probe (expected 405). ZERO failures attach to any 200 response - the acknowledged-but-lost checkout ack passed EVERY response check the tool has (grep-verified in lost.log: no failure cites a 200).",
+  "leg_discrimination": "NONE - identical failure-title sets on control and lost (leg_invariant=true); no check separates the leg whose order was durably LOST from the leg whose order landed."
+}

@@ -1,5 +1,11 @@
 # RESULT — Completion-set wave PHASE C (the live windows) — RESULT OF RECORD
 
+> **[POST-A3 ERRATUM 2026-07-18 — figures below are this wave's-era snapshot.]** The corpus is
+> now **33 cases** (A3 F-corpus: +F1 lost-class live FIRE, +5 corrupted acknowledged_corrupted_write).
+> The MIST column of record: **10/10 evaluable positives FIRE (9 live-run + 1 capture-concordant),
+> 0 false flags on all 15 negatives (0/13 on the measured no_flag denominator; 2 negatives
+> principled-n_a), principled-n_a 10** — see `mist-column-census.json` + `scoring/matched-recall-table.json`.
+
 **Date:** 2026-07-16 · Status: EXECUTED (two single-tenant windows, sequential; all tenants
 back to 0). Plan: `wave-completion-set-plan.md` rev 2 (CONFIRMED 3/3). DoD gate = the
 wave's batched 3-cold review (with `RESULT-e2-frontier.md`).

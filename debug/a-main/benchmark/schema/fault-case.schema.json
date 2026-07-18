@@ -35,8 +35,8 @@
     },
     "fault_class": {
       "type": "string",
-      "enum": ["acknowledged_lost_write", "missing_compensation", "swallowed_downstream_error", "none"],
-      "description": "Surface phenomenon (NOT the verdict). none = clean control / benign."
+      "enum": ["acknowledged_lost_write", "acknowledged_corrupted_write", "missing_compensation", "swallowed_downstream_error", "none"],
+      "description": "Surface phenomenon (NOT the verdict). none = clean control / benign. acknowledged_corrupted_write = 2xx-acked write persists PRESENT-BUT-WRONG durable state (A3 F-corpus class; MIST read-back oracle = not_applicable out-of-scope-by-design)."
     },
     "readback_shape": {
       "type": "string",

@@ -579,7 +579,7 @@
     "health_precondition": null
    },
    "label": "positive",
-   "fault_class": "acknowledged_lost_write",
+   "fault_class": "acknowledged_corrupted_write",
    "mist_readback_oracle": "not_applicable",
    "oracle_mode": "paired",
    "mist_commit": "e9e5997",
@@ -717,7 +717,7 @@
     "health_precondition": null
    },
    "label": "positive",
-   "fault_class": "acknowledged_lost_write",
+   "fault_class": "acknowledged_corrupted_write",
    "mist_readback_oracle": "not_applicable",
    "oracle_mode": "paired",
    "mist_commit": "e9e5997",
@@ -855,7 +855,7 @@
     "health_precondition": null
    },
    "label": "positive",
-   "fault_class": "acknowledged_lost_write",
+   "fault_class": "acknowledged_corrupted_write",
    "mist_readback_oracle": "not_applicable",
    "oracle_mode": "paired",
    "mist_commit": "e9e5997",
@@ -885,7 +885,7 @@
     "health_precondition": null
    },
    "label": "positive",
-   "fault_class": "acknowledged_lost_write",
+   "fault_class": "acknowledged_corrupted_write",
    "mist_readback_oracle": "not_applicable",
    "oracle_mode": "paired",
    "mist_commit": "e9e5997",
@@ -915,7 +915,7 @@
     "health_precondition": null
    },
    "label": "positive",
-   "fault_class": "acknowledged_lost_write",
+   "fault_class": "acknowledged_corrupted_write",
    "mist_readback_oracle": "not_applicable",
    "oracle_mode": "paired",
    "mist_commit": "99d8918",

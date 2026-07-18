@@ -1,5 +1,11 @@
 # RESULT — E2 comparator-frontier COMPLETION (completion-set wave, Phase B) — Step 6 fold
 
+> **[POST-A3 ERRATUM 2026-07-18 — figures below are this wave's-era snapshot.]** The corpus is
+> now **33 cases** (A3 F-corpus: +F1 lost-class live FIRE, +5 corrupted acknowledged_corrupted_write).
+> The MIST column of record: **10/10 evaluable positives FIRE (9 live-run + 1 capture-concordant),
+> 0 false flags on all 15 negatives (0/13 on the measured no_flag denominator; 2 negatives
+> principled-n_a), principled-n_a 10** — see `mist-column-census.json` + `scoring/matched-recall-table.json`.
+
 **Date:** 2026-07-16 · Status: EXECUTED (fully OFFLINE — no tenant, no MIST run; the
 frozen scorer + banked live evidence only). Plan: `wave-completion-set-plan.md` rev 2
 (CONFIRMED 3/3). DoD gate = post-hoc 3-cold review at the wave close.

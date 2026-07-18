@@ -33,7 +33,7 @@ OUT = HERE / "matched-recall-table.json"
 
 LIVE_PROVENANCE_MARKERS = ("2.75-A", "G1 run-3", "TT-omnibus", "G3 head-to-head",
                            "G3 h2h", "G3 TT natural", "Phase-C A5(iii)",
-                           "completion-set Phase-C")
+                           "completion-set Phase-C", "A3 F-corpus live")
 
 
 def load_cases():
@@ -138,6 +138,7 @@ def main():
             "NOT_EVALUABLE leaves the denominator and lands in its own bucket",
             f"the {inv} row is the N-vs-0 row: {len(inv_pos)} positives no trace-consuming arm can see by construction",
             "MIST cells carry provenance_class (live-run vs capture-concordant); capture-concordant cells must never be pooled into a headline (self-concordance rule)",
+            "FP denominator convention: the headline FP figure is 0/13 on the MEASURED no_flag denominator; the corpus-level statement is 0 false flags among all 15 negatives (2 negatives are principled-n_a and cannot flag) - state both, pool neither",
             "matched-recall framing only - never 'discrimination' (the natural-discriminator question was S3's, closed 0/1514)",
         ],
         "n_vs_0_row": {"class": inv, "positives": len(inv_pos), "positive_ids": inv_pos},

@@ -6,6 +6,7 @@
   "NOT_EVALUABLE leaves the denominator and lands in its own bucket",
   "the trace-invisible-by-construction row is the N-vs-0 row: 3 positives no trace-consuming arm can see by construction",
   "MIST cells carry provenance_class (live-run vs capture-concordant); capture-concordant cells must never be pooled into a headline (self-concordance rule)",
+  "FP denominator convention: the headline FP figure is 0/13 on the MEASURED no_flag denominator; the corpus-level statement is 0 false flags among all 15 negatives (2 negatives are principled-n_a and cannot flag) - state both, pool neither",
   "matched-recall framing only - never 'discrimination' (the natural-discriminator question was S3's, closed 0/1514)"
  ],
  "n_vs_0_row": {
@@ -119,7 +120,7 @@
     "TT-adminroute-control-001": "live-run",
     "TT-adminroute-lostwrite-001": "live-run",
     "TT-basic-price-corrupt-f14-001": "structural",
-    "TT-cancel-refund-asyncrefund-f1-001": "capture-concordant",
+    "TT-cancel-refund-asyncrefund-f1-001": "live-run",
     "TT-cancel-refund-clean-001": "live-run",
     "TT-cancel-refund-fabricatedack-001": "live-run",
     "TT-cancel-refund-natural-001": "live-run",
@@ -131,6 +132,61 @@
     "TT-order-contact-corrupt-f10-001": "structural",
     "TT-order-statusskew-corrupt-f20-001": "structural",
     "TT-user-selection-corrupt-f8-001": "structural"
+   }
+  },
+  "body_marker": {
+   "verdict_source": "trivial baseline: flag iff the ack body carries an explicit failure/degradation marker (e.g. status:0 body-tell) despite the 2xx (measured-at-capture)",
+   "cells": {
+    "error-span-visible": {
+     "positives": 1,
+     "evaluable_positives": 1,
+     "flagged_positives": 0,
+     "negatives": 2,
+     "flagged_negatives": 0,
+     "not_evaluable": 0,
+     "flagged_positive_ids": [],
+     "flagged_negative_ids": [],
+     "not_evaluable_ids": []
+    },
+    "span-presence-visible": {
+     "positives": 3,
+     "evaluable_positives": 3,
+     "flagged_positives": 0,
+     "negatives": 6,
+     "flagged_negatives": 0,
+     "not_evaluable": 0,
+     "flagged_positive_ids": [],
+     "flagged_negative_ids": [],
+     "not_evaluable_ids": []
+    },
+    "trace-invisible-by-construction": {
+     "positives": 3,
+     "evaluable_positives": 3,
+     "flagged_positives": 0,
+     "negatives": 2,
+     "flagged_negatives": 0,
+     "not_evaluable": 0,
+     "flagged_positive_ids": [],
+     "flagged_negative_ids": [],
+     "not_evaluable_ids": []
+    },
+    "trace-uninstrumented": {
+     "positives": 11,
+     "evaluable_positives": 10,
+     "flagged_positives": 1,
+     "negatives": 5,
+     "flagged_negatives": 1,
+     "not_evaluable": 1,
+     "flagged_positive_ids": [
+      "TT-cancel-refund-natural-001"
+     ],
+     "flagged_negative_ids": [
+      "TT-contacts-dedupe-benign-001"
+     ],
+     "not_evaluable_ids": [
+      "teastore-order-depdown-specified-001"
+     ]
+    }
    }
   },
   "contract_invariant": {
@@ -376,6 +432,108 @@
       "TT-order-contact-corrupt-f10-001",
       "TT-order-statusskew-corrupt-f20-001",
       "TT-user-selection-corrupt-f8-001"
+     ]
+    }
+   }
+  },
+  "schema_conformance": {
+   "verdict_source": "trivial baseline: flag iff the ack body violates the response schema (case-file oracle_expectation, measured-at-capture)",
+   "cells": {
+    "error-span-visible": {
+     "positives": 1,
+     "evaluable_positives": 1,
+     "flagged_positives": 0,
+     "negatives": 2,
+     "flagged_negatives": 0,
+     "not_evaluable": 0,
+     "flagged_positive_ids": [],
+     "flagged_negative_ids": [],
+     "not_evaluable_ids": []
+    },
+    "span-presence-visible": {
+     "positives": 3,
+     "evaluable_positives": 3,
+     "flagged_positives": 0,
+     "negatives": 6,
+     "flagged_negatives": 0,
+     "not_evaluable": 0,
+     "flagged_positive_ids": [],
+     "flagged_negative_ids": [],
+     "not_evaluable_ids": []
+    },
+    "trace-invisible-by-construction": {
+     "positives": 3,
+     "evaluable_positives": 3,
+     "flagged_positives": 0,
+     "negatives": 2,
+     "flagged_negatives": 0,
+     "not_evaluable": 0,
+     "flagged_positive_ids": [],
+     "flagged_negative_ids": [],
+     "not_evaluable_ids": []
+    },
+    "trace-uninstrumented": {
+     "positives": 11,
+     "evaluable_positives": 10,
+     "flagged_positives": 0,
+     "negatives": 5,
+     "flagged_negatives": 0,
+     "not_evaluable": 1,
+     "flagged_positive_ids": [],
+     "flagged_negative_ids": [],
+     "not_evaluable_ids": [
+      "teastore-order-depdown-specified-001"
+     ]
+    }
+   }
+  },
+  "status_code": {
+   "verdict_source": "trivial baseline: flag iff the ack status code is non-2xx/unexpected (case-file oracle_expectation, measured-at-capture for captured cases)",
+   "cells": {
+    "error-span-visible": {
+     "positives": 1,
+     "evaluable_positives": 1,
+     "flagged_positives": 0,
+     "negatives": 2,
+     "flagged_negatives": 0,
+     "not_evaluable": 0,
+     "flagged_positive_ids": [],
+     "flagged_negative_ids": [],
+     "not_evaluable_ids": []
+    },
+    "span-presence-visible": {
+     "positives": 3,
+     "evaluable_positives": 3,
+     "flagged_positives": 0,
+     "negatives": 6,
+     "flagged_negatives": 0,
+     "not_evaluable": 0,
+     "flagged_positive_ids": [],
+     "flagged_negative_ids": [],
+     "not_evaluable_ids": []
+    },
+    "trace-invisible-by-construction": {
+     "positives": 3,
+     "evaluable_positives": 3,
+     "flagged_positives": 0,
+     "negatives": 2,
+     "flagged_negatives": 0,
+     "not_evaluable": 0,
+     "flagged_positive_ids": [],
+     "flagged_negative_ids": [],
+     "not_evaluable_ids": []
+    },
+    "trace-uninstrumented": {
+     "positives": 11,
+     "evaluable_positives": 10,
+     "flagged_positives": 0,
+     "negatives": 5,
+     "flagged_negatives": 0,
+     "not_evaluable": 1,
+     "flagged_positive_ids": [],
+     "flagged_negative_ids": [],
+     "not_evaluable_ids": [
+      "teastore-order-depdown-specified-001"
      ]
     }
    }

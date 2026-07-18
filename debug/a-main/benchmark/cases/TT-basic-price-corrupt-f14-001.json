@@ -3,7 +3,7 @@
   "schema_version": "2.0.0",
   "stratum": 1,
   "capture_status": "captured",
-  "fault_class": "acknowledged_lost_write",
+  "fault_class": "acknowledged_corrupted_write",
   "sut": {
     "name": "trainticket",
     "repo": "github.com/miaoti/train-ticket-injection",
@@ -84,7 +84,7 @@
     "control_trace": null,
     "fault_trace": null,
     "readback_response": "debug/a-main/benchmark/b4/cset/fcorpus-f14/B-m6-RESULT.md",
-    "notes": "LIVE-CAPTURED 2026-07-18 (A3): trip D1345 seatType=3; control search 22.5 -> order 22.5; fault search 22.5 (truthful) -> order 50.0 (wrong), both preserve acks {1,Success.}. B-m6 PASS via the REAL booking flow. NEW-SITE #2 of the F-corpus (with F8 ts-user). CORRUPTED class disclosed; MIST n_a out-of-scope-by-design."
+    "notes": "LIVE-CAPTURED 2026-07-18 (A3): trip D1345 seatType=3; control search 22.5 -> order 22.5; fault search 22.5 (truthful) -> order 50.0 (wrong), both preserve acks {1,Success.}. B-m6 PASS via the REAL booking flow. NEW-SITE #2 of the F-corpus (with F8 ts-user). fault_class=acknowledged_corrupted_write; MIST n_a out-of-scope-by-design."
   },
   "license": {
     "case_code": "Apache-2.0",

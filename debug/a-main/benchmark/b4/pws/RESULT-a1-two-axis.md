@@ -1,5 +1,11 @@
 # RESULT — A1 the TWO-AXIS real-tool comparison (the fair head-to-head, resolved) — RESULT OF RECORD
 
+> **[POST-A3 ERRATUM 2026-07-18 — figures below are this wave's-era snapshot.]** The corpus is
+> now **33 cases** (A3 F-corpus: +F1 lost-class live FIRE, +5 corrupted acknowledged_corrupted_write).
+> The MIST column of record: **10/10 evaluable positives FIRE (9 live-run + 1 capture-concordant),
+> 0 false flags on all 15 negatives (0/13 on the measured no_flag denominator; 2 negatives
+> principled-n_a), principled-n_a 10** — see `mist-column-census.json` + `scoring/matched-recall-table.json`.
+
 **Date:** 2026-07-17 · Status: RESOLVED via the USER insight ("MIST itself generates the
 test cases — why not use that?"). The reviewers' demanded "fair, powered, non-strawman
 head-to-head" is delivered NOT by forcing black-box tools to reach the write (the wrong,
@@ -51,8 +57,10 @@ No spec-enrichment, no forcing black-box reach, no strawman, no underpowered-N c
 oracle gap is by-construction). Two-denominator honesty stands (MIST reaches N; comparator
 oracles evaluable on the trace-visible subset; NOT_EVALUABLE its own bucket).
 
-## Remaining (optional, small)
-A single confirmatory pass running one real tool's oracle checks literally on one
-MIST-reached export (belt-and-suspenders on the surrogate==real claim) — NOT load-bearing;
-the grep cross-validation above already establishes it. A1's multi-day live experiment is
+## Remaining — EXECUTED 2026-07-18 (the recheck reviewers re-classified it load-bearing)
+The confirmatory pass ran: the REAL tool's full oracle suite (`st run --checks all`, same
+binary as the live arm) executed over the RECORDED acks of the MIST-reached meshsever
+executions via byte-replay — MEASURED MISS, zero leg discrimination, zero failures attached
+to the recorded 200 acks (`RESULT-realoracle.md`, `realoracle/realoracle-cell.json`).
+surrogate==real is closed by execution, not grep. A1's multi-day live experiment stays
 CANCELLED (the user insight collapsed it to this framing+validation).
