@@ -1,8 +1,34 @@
-# DECISION OF RECORD — main-research-track submission (the informed gamble)
+# DECISION OF RECORD — two-tier submission plan (A* shot + CORE-A safety net)
 
-**Date:** 2026-07-19 · USER decision after the deep-deliberation on option (c): **"顶会" = STRICTLY
-the ISSTA/FSE/ICSE MAIN RESEARCH TRACK** (ISSRE, benchmark/dataset/artifact tracks, and journals
-are all EXCLUDED). The user accepts the ~30% odds this entails. This document is the go-forward.
+**Date:** 2026-07-19 · USER decision, in two parts:
+1. First: **"顶会" = STRICTLY the A* main research track** (benchmark/artifact tracks, journals
+   EXCLUDED), accepting ~30% odds.
+2. Then RELAXED: **A* is IDEAL, but a CORE **A** venue is an acceptable fallback if the A* shot
+   fails** ("如果顶会实在进不去可以考虑 iCORE 的 A，但最好是 A*"). Journals stay excluded.
+
+This relaxation is MATERIAL good news: it converts an all-or-nothing ~30% gamble into a **waterfall**
+with a STRONG-accept safety net that is NOT a journal. The go-forward is a two-tier plan.
+
+## The two-tier plan (the timing chains cleanly)
+### TIER 1 — the A* shot: **FSE 2027 Research, deadline Fri 2 Oct 2026**
+The only OPEN A* main-research slot with a **major-revision cushion** (first decision Jan 22 2027 →
+major-rev → final Mar 31 2027). Bet = earn a MAJOR-REVISION (top-decile rigor + honest nulls = the
+FSE major-rev profile), the real second chance without a journal wait. ~25-35% honest. If FSE slips
+or as a second A* shot: ISSTA 2027 Research (~Q1 2027, highest topical fit) / ASE 2027 (~Mar 2027).
+
+### TIER 2 — the CORE-A safety net (now acceptable): **ESEM 2027 Technical (~late Apr 2027)**
+ESEM is the **premier EMPIRICAL SE venue (CORE A)** and, per the venue research, the **single
+STRONGEST fit for this exact contribution** — it rewards empirical/measurement rigor over mechanism
+novelty, i.e. it directly counters the very critique (Cast-capped novelty) that made this borderline
+at A*; friendlier accept (~18-25%). **The timing waterfalls perfectly:** FSE's Jan-22 / Mar-31
+outcome lands BEFORE ESEM's ~late-Apr deadline, so a TIER-1 reject redirects straight into TIER 2
+with the reviewer feedback folded in. Secondary CORE-A options: ISSRE (reliability — topical
+bullseye for data-integrity; reconfirm deadline) / ICSME (maintenance angle).
+
+**Net:** take the A* shot at FSE; if it doesn't land, ESEM (CORE A) is a strong-accept home — no
+journal, still a respectable A-tier publication where this work is a GOOD fit, not a coin flip.
+
+## The honest baseline being accepted (no spin)
 
 ## The honest baseline being accepted (no spin)
 - The contribution is REAL but MODEST: an open controlled benchmark for a scarce, industrially-real
