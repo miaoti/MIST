@@ -23,7 +23,7 @@
   {
    "group": "cases",
    "path": "debug/a-main/benchmark/cases/oteldemo-checkout-eventual-benign-001.json",
-   "sha256": "7d3270c79558c5dba8372d84b134213b7ba49a5f5c44267adca2432f32abfe74"
+   "sha256": "89000ea2991a7edbba6874863ab1b7bf6083ea80600f7ede958cd4d07e2e308a"
   },
   {
    "group": "cases",
@@ -48,12 +48,12 @@
   {
    "group": "cases",
    "path": "debug/a-main/benchmark/cases/sockshop-shipping-control-001.json",
-   "sha256": "2f8fa9b72b8c9a8e975e84a8019d50601a31304bc4b8b26dcfd4008ff6771466"
+   "sha256": "6ecc94daa10735ec74d2d3971a357e6b6a6b2fe93108c65eb7f3ac15ce9072a6"
   },
   {
    "group": "cases",
    "path": "debug/a-main/benchmark/cases/sockshop-shipping-swallowed-enqueue-001.json",
-   "sha256": "12fce64bf713994450227cfefa95bc76749c9ed634573d12fb4c7f4f1e989e49"
+   "sha256": "89161a73999c3510618849b2f2c7af3abf3111d7ab1054b8ae4a5c80300c50f5"
   },
   {
    "group": "cases",
@@ -113,12 +113,12 @@
   {
    "group": "cases",
    "path": "debug/a-main/benchmark/cases/TT-basic-price-corrupt-f14-001.json",
-   "sha256": "c2cb6f6e73d4bf278c46557b282fac5136ffff8b4146609adb406c7ee21bdd20"
+   "sha256": "4cb4e4e47ebecc5760190553ded2a9d19f7114b6c0ca6948a0c3ed3fb19f0ef6"
   },
   {
    "group": "cases",
    "path": "debug/a-main/benchmark/cases/TT-cancel-refund-asyncrefund-f1-001.json",
-   "sha256": "5242aec23d59e99e4bc7a1b7a5a752188f7729d4d8da0aded6daf2fefcf0e79a"
+   "sha256": "7b126076e19d44c32bde840d4ddda5ebdaec6158e89254c4eee56994eb20bdc9"
   },
   {
    "group": "cases",
@@ -128,7 +128,7 @@
   {
    "group": "cases",
    "path": "debug/a-main/benchmark/cases/TT-cancel-refund-fabricatedack-001.json",
-   "sha256": "526f3b3acbc9ad2260d6e082b8d6c872b5defe95dbe5c04d4304ac3d34087896"
+   "sha256": "163593166ec43d7c3d18ae29c8b2c63866a3b468d475a3564cde75d5870a413e"
   },
   {
    "group": "cases",
@@ -138,7 +138,7 @@
   {
    "group": "cases",
    "path": "debug/a-main/benchmark/cases/TT-cancel-status-recheck-corrupt-f11-001.json",
-   "sha256": "6f0e20203cdbe530a23a19d8ff51c666d168090c66e88e6a8203a5fe324abd06"
+   "sha256": "e9612ceac599f46edc6ab765d21245b520a859f9205751abb8753060580fa376"
   },
   {
    "group": "cases",
@@ -163,17 +163,17 @@
   {
    "group": "cases",
    "path": "debug/a-main/benchmark/cases/TT-order-contact-corrupt-f10-001.json",
-   "sha256": "66f35fb3aadd8da4ba9a05c929accf1107a0ae30723ac3397e1845c379ad1616"
+   "sha256": "3e889dca7328f5aaa98ea882adcd136ff038ff82013a651e94982a4899269907"
   },
   {
    "group": "cases",
    "path": "debug/a-main/benchmark/cases/TT-order-statusskew-corrupt-f20-001.json",
-   "sha256": "6d5e462e9d8b89fe24d0f28cfcd6bd5ca67cf6cdbae0c024dfcb23a85c839090"
+   "sha256": "fb02676a69bc75a1f5725b98e0862c475ec115bc171a27b19baef0effa68ed4d"
   },
   {
    "group": "cases",
    "path": "debug/a-main/benchmark/cases/TT-user-selection-corrupt-f8-001.json",
-   "sha256": "b80e28472c9f65366be4b2f71ed618c3e9cd797f5dff0bcbcdb06b463b953cf3"
+   "sha256": "20f8f6ec1ed60fbbf1b0b4ce42ae056bacfdb038166ada35efa98d9c10a180c6"
   },
   {
    "group": "schema",
@@ -202,6 +202,11 @@
   },
   {
    "group": "scoring",
+   "path": "debug/a-main/benchmark/scoring/run_trace_shape_arm.py",
+   "sha256": "e50f3b55b481b0732469c54e80865835d87a05e2178fc423a453737a91c9ec9c"
+  },
+  {
+   "group": "scoring",
    "path": "debug/a-main/benchmark/scoring/score_arms.py",
    "sha256": "10afb0e813017a0575542b65891043913d239ebd03e4a1ae03eb959814e97703"
   },
@@ -213,7 +218,7 @@
   {
    "group": "scoring",
    "path": "debug/a-main/benchmark/scoring/matched-recall-table.json",
-   "sha256": "6342688fa1536d996724dfb967072b0ad8af2d3838c69db543f6770dd4c08bb0"
+   "sha256": "d0cabae24efbde4ff720bd15d0970b47924517d0a2b1dfc1f30badd2809f90ff"
   },
   {
    "group": "specs",

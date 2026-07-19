@@ -6,10 +6,10 @@
   "fault_class": "acknowledged_corrupted_write",
   "sut": {
     "name": "trainticket",
-    "repo": "github.com/miaoti/train-ticket-injection",
-    "branch": "MIST-trainticket",
-    "commit": "a1767ab3",
-    "image_digest": "sha256:81186b71c1e4a3be56a3f6f8670d45ccfc04f68956e864cced27920ac1bf50d4",
+    "repo": "train-ticket-injection (fork; fcorpus-build off MIST-trainticket a1767ab3)",
+    "branch": "fcorpus-build",
+    "commit": "4df14191",
+    "image_digest": "sha256:bab5870c7d276c97a79fe6065fa0ec965e028068a29bf23a9125c77752ab8d60",
     "deploy": "kind cluster 'mist', ns trainticket; hack/deploy quick_start = codewisdom/*:1.0.0 + fork ts-inside-payment-service:1.0.5 (runtime drawback faultmode toggle)",
     "replay_script": "debug/a-main/benchmark/b4/capture-specs/tt-cancel-refund.yaml",
     "health_precondition": null
@@ -84,15 +84,15 @@
     "control_trace": null,
     "fault_trace": null,
     "readback_response": "debug/a-main/benchmark/b4/cset/fcorpus-f14/B-m6-RESULT.md",
-    "notes": "LIVE-CAPTURED 2026-07-18 (A3): trip D1345 seatType=3; control search 22.5 -> order 22.5; fault search 22.5 (truthful) -> order 50.0 (wrong), both preserve acks {1,Success.}. B-m6 PASS via the REAL booking flow. NEW-SITE #2 of the F-corpus (with F8 ts-user). fault_class=acknowledged_corrupted_write; MIST n_a out-of-scope-by-design."
+    "notes": "LIVE-CAPTURED 2026-07-18 (A3): trip D1345 seatType=3; control search 22.5 -> order 22.5; fault search 22.5 (truthful) -> order 50.0 (wrong), both preserve acks {1,Success.}. B-m6 PASS via the REAL booking flow. NEW-SITE #2 of the F-corpus (with F8 ts-user). fault_class=acknowledged_corrupted_write; MIST n_a out-of-scope-by-design. SUT pin: fork fcorpus-build@4df14191, kind-loaded local image (docker image ID digest; no registry push) tagged codewisdom/ts-basic-service:fcorpus."
   },
   "license": {
     "case_code": "Apache-2.0",
     "case_data": "CC-BY-4.0",
     "upstream_sut": "Apache-2.0",
     "sources": [
-      "ts-cancel-service CancelServiceImpl.cancelOrder",
-      "ts-inside-payment-service InsidePaymentServiceImpl.drawBack (fabricatedack branch)"
+      "train-ticket-injection@fcorpus-build:ts-basic-service/src/main/java/fdse/microservice/service/BasicServiceImpl.java",
+      "train-ticket-injection@fcorpus-build:ts-basic-service/src/main/java/fdse/microservice/controller/BasicController.java"
     ]
   },
   "adjudication": null

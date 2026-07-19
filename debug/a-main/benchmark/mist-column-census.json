@@ -570,10 +570,10 @@
    "file": "TT-basic-price-corrupt-f14-001.json",
    "sut": {
     "name": "trainticket",
-    "repo": "github.com/miaoti/train-ticket-injection",
-    "branch": "MIST-trainticket",
-    "commit": "a1767ab3",
-    "image_digest": "sha256:81186b71c1e4a3be56a3f6f8670d45ccfc04f68956e864cced27920ac1bf50d4",
+    "repo": "train-ticket-injection (fork; fcorpus-build off MIST-trainticket a1767ab3)",
+    "branch": "fcorpus-build",
+    "commit": "4df14191",
+    "image_digest": "sha256:bab5870c7d276c97a79fe6065fa0ec965e028068a29bf23a9125c77752ab8d60",
     "deploy": "kind cluster 'mist', ns trainticket; hack/deploy quick_start = codewisdom/*:1.0.0 + fork ts-inside-payment-service:1.0.5 (runtime drawback faultmode toggle)",
     "replay_script": "debug/a-main/benchmark/b4/capture-specs/tt-cancel-refund.yaml",
     "health_precondition": null
@@ -600,10 +600,10 @@
    "file": "TT-cancel-refund-asyncrefund-f1-001.json",
    "sut": {
     "name": "trainticket",
-    "repo": "github.com/miaoti/train-ticket-injection",
-    "branch": "MIST-trainticket",
-    "commit": "a1767ab3",
-    "image_digest": "sha256:81186b71c1e4a3be56a3f6f8670d45ccfc04f68956e864cced27920ac1bf50d4",
+    "repo": "train-ticket-injection (fork; fcorpus-build off MIST-trainticket a1767ab3)",
+    "branch": "fcorpus-build",
+    "commit": "4df14191",
+    "image_digest": "sha256:c47e5df7dc63f8e6580470738c9a02f883da9810908e83e36e22e4ab79bf3ab3",
     "deploy": "kind cluster 'mist', ns trainticket; hack/deploy quick_start = codewisdom/*:1.0.0 + fork ts-inside-payment-service:1.0.5 (runtime drawback faultmode toggle)",
     "replay_script": "debug/a-main/benchmark/b4/capture-specs/tt-cancel-refund.yaml",
     "health_precondition": null
@@ -708,10 +708,10 @@
    "file": "TT-cancel-status-recheck-corrupt-f11-001.json",
    "sut": {
     "name": "trainticket",
-    "repo": "github.com/miaoti/train-ticket-injection",
-    "branch": "MIST-trainticket",
-    "commit": "a1767ab3",
-    "image_digest": "sha256:81186b71c1e4a3be56a3f6f8670d45ccfc04f68956e864cced27920ac1bf50d4",
+    "repo": "train-ticket-injection (fork; fcorpus-build off MIST-trainticket a1767ab3)",
+    "branch": "fcorpus-build",
+    "commit": "4df14191",
+    "image_digest": "sha256:c47e5df7dc63f8e6580470738c9a02f883da9810908e83e36e22e4ab79bf3ab3",
     "deploy": "kind cluster 'mist', ns trainticket; hack/deploy quick_start = codewisdom/*:1.0.0 + fork ts-inside-payment-service:1.0.5 (runtime drawback faultmode toggle)",
     "replay_script": "debug/a-main/benchmark/b4/capture-specs/tt-cancel-refund.yaml",
     "health_precondition": null
@@ -846,10 +846,10 @@
    "file": "TT-order-contact-corrupt-f10-001.json",
    "sut": {
     "name": "trainticket",
-    "repo": "github.com/miaoti/train-ticket-injection",
-    "branch": "MIST-trainticket",
-    "commit": "a1767ab3",
-    "image_digest": "sha256:81186b71c1e4a3be56a3f6f8670d45ccfc04f68956e864cced27920ac1bf50d4",
+    "repo": "train-ticket-injection (fork; fcorpus-build off MIST-trainticket a1767ab3)",
+    "branch": "fcorpus-build",
+    "commit": "4df14191",
+    "image_digest": "sha256:133f2dbc2ee1361b282221657c66186f7e99d25714824023d3bce071e2f9aed1",
     "deploy": "kind cluster 'mist', ns trainticket; hack/deploy quick_start = codewisdom/*:1.0.0 + fork ts-inside-payment-service:1.0.5 (runtime drawback faultmode toggle)",
     "replay_script": "debug/a-main/benchmark/b4/capture-specs/tt-cancel-refund.yaml",
     "health_precondition": null
@@ -876,10 +876,10 @@
    "file": "TT-order-statusskew-corrupt-f20-001.json",
    "sut": {
     "name": "trainticket",
-    "repo": "github.com/miaoti/train-ticket-injection",
-    "branch": "MIST-trainticket",
-    "commit": "a1767ab3",
-    "image_digest": "sha256:81186b71c1e4a3be56a3f6f8670d45ccfc04f68956e864cced27920ac1bf50d4",
+    "repo": "train-ticket-injection (fork; fcorpus-build off MIST-trainticket a1767ab3)",
+    "branch": "fcorpus-build",
+    "commit": "4df14191",
+    "image_digest": "sha256:e9b8805afab9677491229c946022ed7c87908665188e9b373cad45e112f5ba82",
     "deploy": "kind cluster 'mist', ns trainticket; hack/deploy quick_start = codewisdom/*:1.0.0 + fork ts-inside-payment-service:1.0.5 (runtime drawback faultmode toggle)",
     "replay_script": "debug/a-main/benchmark/b4/capture-specs/tt-cancel-refund.yaml",
     "health_precondition": null
@@ -906,10 +906,10 @@
    "file": "TT-user-selection-corrupt-f8-001.json",
    "sut": {
     "name": "trainticket",
-    "repo": "github.com/miaoti/train-ticket-injection",
-    "branch": "MIST-trainticket",
-    "commit": "a1767ab3",
-    "image_digest": "sha256:81186b71c1e4a3be56a3f6f8670d45ccfc04f68956e864cced27920ac1bf50d4",
+    "repo": "train-ticket-injection (fork; fcorpus-build off MIST-trainticket a1767ab3)",
+    "branch": "fcorpus-build",
+    "commit": "4df14191",
+    "image_digest": "sha256:34713af7a874072d25ac96972ceaddc9345c24eb4709951542ce2670b3fbf1aa",
     "deploy": "kind cluster 'mist', ns trainticket; hack/deploy quick_start = codewisdom/*:1.0.0 + fork ts-inside-payment-service:1.0.5 (runtime drawback faultmode toggle)",
     "replay_script": "debug/a-main/benchmark/b4/capture-specs/tt-cancel-refund.yaml",
     "health_precondition": null

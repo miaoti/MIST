@@ -21,3 +21,8 @@ construction value): vanilla TrainTicket already refunds 80% for never-paid and 
 cancellations via these two dead guards — i.e. the F13 fault CLASS exists natively in the SUT;
 it is unreachable as a *toggleable differential*. Recorded as ecosystem context for the natural
 cancel-refund defect case (TT-cancel-refund-natural-001).
+
+**LOG-FORM NOTE (verification round):** `legs.log` holds only the SECOND attempt's pair - the
+driver re-run truncates the log by design (`: >` per ONLY-selector), so attempt 1's raw lines were
+overwritten. Both attempts' outcomes are documented above; the preserved pair is attempt 2
+(PAID + past travel date), identical divergence-free pattern (50->130 both legs).

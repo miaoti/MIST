@@ -6,10 +6,10 @@
   "fault_class": "acknowledged_corrupted_write",
   "sut": {
     "name": "trainticket",
-    "repo": "github.com/miaoti/train-ticket-injection",
-    "branch": "MIST-trainticket",
-    "commit": "a1767ab3",
-    "image_digest": "sha256:81186b71c1e4a3be56a3f6f8670d45ccfc04f68956e864cced27920ac1bf50d4",
+    "repo": "train-ticket-injection (fork; fcorpus-build off MIST-trainticket a1767ab3)",
+    "branch": "fcorpus-build",
+    "commit": "4df14191",
+    "image_digest": "sha256:133f2dbc2ee1361b282221657c66186f7e99d25714824023d3bce071e2f9aed1",
     "deploy": "kind cluster 'mist', ns trainticket; hack/deploy quick_start = codewisdom/*:1.0.0 + fork ts-inside-payment-service:1.0.5 (runtime drawback faultmode toggle)",
     "replay_script": "debug/a-main/benchmark/b4/capture-specs/tt-cancel-refund.yaml",
     "health_precondition": null
@@ -84,15 +84,15 @@
     "control_trace": null,
     "fault_trace": null,
     "readback_response": "debug/a-main/benchmark/b4/cset/fcorpus-f10/B-m6-RESULT.md",
-    "notes": "LIVE-CAPTURED 2026-07-18 (A3): control submitted==persisted (...400); fault submitted ...430 -> order ...431 rotated, contact row untouched, both preserve acks {1,Success.}. B-m6 PASS via the REAL booking flow (contact -> trips/left -> preserve -> order read-back). OCCUPIED site (order-artifact contact fields; C-A4: creation-content field family, never a new site). fault_class=acknowledged_corrupted_write; MIST n_a out-of-scope-by-design."
+    "notes": "LIVE-CAPTURED 2026-07-18 (A3): control submitted==persisted (...400); fault submitted ...430 -> order ...431 rotated, contact row untouched, both preserve acks {1,Success.}. B-m6 PASS via the REAL booking flow (contact -> trips/left -> preserve -> order read-back). OCCUPIED site (order-artifact contact fields; C-A4: creation-content field family, never a new site). fault_class=acknowledged_corrupted_write; MIST n_a out-of-scope-by-design. SUT pin: fork fcorpus-build@4df14191, kind-loaded local image (docker image ID digest; no registry push) tagged codewisdom/ts-contacts-service:fcorpus."
   },
   "license": {
     "case_code": "Apache-2.0",
     "case_data": "CC-BY-4.0",
     "upstream_sut": "Apache-2.0",
     "sources": [
-      "ts-cancel-service CancelServiceImpl.cancelOrder",
-      "ts-inside-payment-service InsidePaymentServiceImpl.drawBack (fabricatedack branch)"
+      "train-ticket-injection@fcorpus-build:ts-contacts-service/src/main/java/contacts/service/ContactsServiceImpl.java",
+      "train-ticket-injection@fcorpus-build:ts-contacts-service/src/main/java/contacts/controller/ContactsController.java"
     ]
   },
   "adjudication": null

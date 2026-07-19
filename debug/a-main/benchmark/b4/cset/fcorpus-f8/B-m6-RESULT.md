@@ -22,3 +22,8 @@ CORRUPTED-present durable write.
 rail). The benchmark is BROADER than MIST's oracle — this case is in-corpus, MIST honestly n_a.
 
 ## B-m6 disposition: PASS (in-class verified live, paired control reference per B4).
+
+**EVIDENCE-FORM NOTE (verification round 2026-07-18):** the values above were captured via
+inline commands during the live window and transcribed here; no raw legs.log was preserved and no
+driver script is committed (unlike the sibling F-cases). Re-verification = replay the documented
+register + read-by-id flow (selectionfaultmode toggle) in a TT window.

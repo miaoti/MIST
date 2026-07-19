@@ -6,10 +6,10 @@
   "fault_class": "acknowledged_lost_write",
   "sut": {
     "name": "trainticket",
-    "repo": "github.com/miaoti/train-ticket-injection",
-    "branch": "MIST-trainticket",
-    "commit": "a1767ab3",
-    "image_digest": "sha256:81186b71c1e4a3be56a3f6f8670d45ccfc04f68956e864cced27920ac1bf50d4",
+    "repo": "train-ticket-injection (fork; fcorpus-build off MIST-trainticket a1767ab3)",
+    "branch": "fcorpus-build",
+    "commit": "4df14191",
+    "image_digest": "sha256:c47e5df7dc63f8e6580470738c9a02f883da9810908e83e36e22e4ab79bf3ab3",
     "deploy": "kind cluster 'mist', ns trainticket; hack/deploy quick_start = codewisdom/*:1.0.0 + fork ts-inside-payment-service:1.0.5 (runtime drawback faultmode toggle)",
     "replay_script": "debug/a-main/benchmark/b4/capture-specs/tt-cancel-refund.yaml",
     "health_precondition": null
@@ -84,15 +84,15 @@
     "control_trace": null,
     "fault_trace": null,
     "readback_response": "debug/a-main/benchmark/b4/cset/fcorpus-f1/f1-legs.log",
-    "notes": "LIVE-CAPTURED 2026-07-17 (A3): control 50->130 refund landed, fault 50->50 lost, both ack {1,Success}. B-m6 PASS. Occupied-site (cancel-refund) mechanism-variant CASE, NOT a new site."
+    "notes": "LIVE-CAPTURED 2026-07-17 (A3): control 50->130 refund landed, fault 50->50 lost, both ack {1,Success}. B-m6 PASS. Occupied-site (cancel-refund) mechanism-variant CASE, NOT a new site. SUT pin: fork fcorpus-build@4df14191, kind-loaded local image (docker image ID digest; no registry push) tagged codewisdom/ts-cancel-service:fcorpus."
   },
   "license": {
     "case_code": "Apache-2.0",
     "case_data": "CC-BY-4.0",
     "upstream_sut": "Apache-2.0",
     "sources": [
-      "ts-cancel-service CancelServiceImpl.cancelOrder",
-      "ts-inside-payment-service InsidePaymentServiceImpl.drawBack (fabricatedack branch)"
+      "train-ticket-injection@fcorpus-build:ts-cancel-service/src/main/java/cancel/service/CancelServiceImpl.java",
+      "train-ticket-injection@fcorpus-build:ts-cancel-service/src/main/java/cancel/controller/CancelController.java"
     ]
   },
   "adjudication": null

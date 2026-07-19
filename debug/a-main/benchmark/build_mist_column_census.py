@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
-"""A5 (completion-set wave): build the 26-case MIST-column census.
+"""A5 (completion-set wave; corpus now 33 cases): build the MIST read-back-column census.
 
 Reads every case file under benchmark/cases/ and emits
 benchmark/mist-column-census.json: per case -> label, mist_readback_oracle,
 oracle_mode, mist_commit, capture_status, readback_shape, rateability-relevant
-fields, and an adjudication slot (structural vs bindable-pending-eval) that the
-wave fills for the 8 not_applicable cases. Deterministic (sorted by case id).
+fields, and an adjudication slot (structural vs bindable-pending-eval) filled for every
+not_applicable case (10 as of the A3 F-corpus). Deterministic (sorted by case id).
 """
 import json
 import sys
