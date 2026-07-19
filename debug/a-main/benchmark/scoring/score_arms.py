@@ -90,8 +90,16 @@ def main():
         if v in ("flag", "no_flag"):
             mist_cases[cid] = v
             prov = r.get("provenance_run") or ""
-            mist_prov[cid] = ("live-run" if any(m in prov for m in LIVE_PROVENANCE_MARKERS)
-                              else "capture-concordant")
+            # A manual/G0 record whose prose NAMES a live run only to disclose it was
+            # NOT_EVALUABLE (TT-adminbasic: "G1 run-3 ... NOT_EVALUABLE; the flag rests
+            # on the manual G0 record") must NOT be auto-swept into live-run by that
+            # substring. Manual records are their own class (review final3-2 fix).
+            if "manual-G0" in prov or "manual G0" in prov:
+                mist_prov[cid] = "manual-record"
+            elif any(m in prov for m in LIVE_PROVENANCE_MARKERS):
+                mist_prov[cid] = "live-run"
+            else:
+                mist_prov[cid] = "capture-concordant"
         else:
             mist_cases[cid] = "not_evaluable"
             mist_prov[cid] = (r.get("adjudication") or {}).get("class", "not_applicable")
@@ -152,7 +160,7 @@ def main():
             "per-visibility-class cells only - NO pooled headline recall is emitted",
             "NOT_EVALUABLE leaves the denominator and lands in its own bucket",
             f"the {inv} row is the N-vs-0 row: {len(inv_pos)} positives no trace-consuming arm can see by construction",
-            "MIST cells carry provenance_class (live-run vs capture-concordant); capture-concordant cells must never be pooled into a headline (self-concordance rule)",
+            "MIST flag cells carry provenance_class in THREE kinds - live-run (8), manual-record (1, TT-adminbasic: the live G1 run-3 was NOT_EVALUABLE, the flag rests on a disclosed manual-G0 record), capture-concordant (1, TT-createaccount-agreement); neither the manual nor the concordant cell may be pooled into a live headline (self-concordance rule)",
             "Wilson 95% intervals accompany every cell (recall over evaluable positives; FP rate over evaluable negatives) - tiny denominators stay visibly tiny",
             "FP denominator convention: the headline FP figure is 0/13 on the MEASURED no_flag denominator; the corpus-level statement is 0 false flags among all 15 negatives (2 negatives are principled-n_a and cannot flag) - state both, pool neither",
             "matched-recall framing only - never 'discrimination' (the natural-discriminator question was S3's, closed 0/1514)",
