@@ -36,6 +36,18 @@ LIVE_PROVENANCE_MARKERS = ("2.75-A", "G1 run-3", "TT-omnibus", "G3 head-to-head"
                            "completion-set Phase-C", "A3 F-corpus live")
 
 
+def wilson95(k, n):
+    # Wilson score interval, z=1.96; None when the denominator is empty.
+    if n <= 0:
+        return None
+    z = 1.96
+    ph = k / n
+    den = 1 + z * z / n
+    ctr = ph + z * z / (2 * n)
+    rad = z * ((ph * (1 - ph) / n + z * z / (4 * n * n)) ** 0.5)
+    return [round((ctr - rad) / den, 4), round((ctr + rad) / den, 4)]
+
+
 def load_cases():
     cases = {}
     for f in sorted((BENCH / "cases").glob("*.json")):
@@ -117,6 +129,9 @@ def main():
                 "negatives": len(neg),
                 "flagged_negatives": len(flagged_neg),
                 "not_evaluable": len(ne),
+                "recall_wilson95": wilson95(len(flagged_pos), len(eval_pos)),
+                "fp_rate_wilson95": wilson95(len(flagged_neg),
+                                             len([c for c in neg if av.get(c, "not_evaluable") != "not_evaluable"])),
                 "flagged_positive_ids": flagged_pos,
                 "flagged_negative_ids": flagged_neg,
                 "not_evaluable_ids": ne,
@@ -138,6 +153,7 @@ def main():
             "NOT_EVALUABLE leaves the denominator and lands in its own bucket",
             f"the {inv} row is the N-vs-0 row: {len(inv_pos)} positives no trace-consuming arm can see by construction",
             "MIST cells carry provenance_class (live-run vs capture-concordant); capture-concordant cells must never be pooled into a headline (self-concordance rule)",
+            "Wilson 95% intervals accompany every cell (recall over evaluable positives; FP rate over evaluable negatives) - tiny denominators stay visibly tiny",
             "FP denominator convention: the headline FP figure is 0/13 on the MEASURED no_flag denominator; the corpus-level statement is 0 false flags among all 15 negatives (2 negatives are principled-n_a and cannot flag) - state both, pool neither",
             "matched-recall framing only - never 'discrimination' (the natural-discriminator question was S3's, closed 0/1514)",
         ],

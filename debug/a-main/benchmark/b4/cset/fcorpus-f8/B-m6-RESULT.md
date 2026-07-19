@@ -23,7 +23,9 @@ rail). The benchmark is BROADER than MIST's oracle — this case is in-corpus, M
 
 ## B-m6 disposition: PASS (in-class verified live, paired control reference per B4).
 
-**EVIDENCE-FORM NOTE (verification round 2026-07-18):** the values above were captured via
-inline commands during the live window and transcribed here; no raw legs.log was preserved and no
-driver script is committed (unlike the sibling F-cases). Re-verification = replay the documented
-register + read-by-id flow (selectionfaultmode toggle) in a TT window.
+**RE-CAPTURE CLOSURE (2026-07-18):** the evidence-form gap is CLOSED. `runners/fcorpus/f8-driver.sh`
++ preserved `legs.log` now back this case with a raw log like its siblings:
+- CTRL (faultmode=none): submitted documentType=1 -> persisted **1** (register-ack HTTP 201)
+- FLT (selectionfaultmode=corrupt): submitted documentType=1 -> persisted **0** (register-ack HTTP 201)
+Read-back is by the REGISTER-returned userId (ts-user-service row); the original inline capture read
+the auth-login id (a different store) — corrected. B-m6 PASS re-confirmed live.

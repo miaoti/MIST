@@ -49,7 +49,7 @@
     "replay_script": "same flow @ selectionfaultmode=none: control persists documentType=1 (fcorpus-f8/B-m6-RESULT.md)"
   },
   "stimulus": {
-    "script": "debug/a-main/benchmark/b4/cset/fcorpus-f8/B-m6-RESULT.md (register + read-by-id flow; admin-bearer toggle)",
+    "script": "debug/a-main/benchmark/b4/runners/fcorpus/f8-driver.sh",
     "write_path": true,
     "workload_class": "authored-scenario",
     "workload_variant": null
@@ -83,8 +83,8 @@
   "provenance": {
     "control_trace": null,
     "fault_trace": null,
-    "readback_response": "debug/a-main/benchmark/b4/cset/fcorpus-f8/B-m6-RESULT.md",
-    "notes": "LIVE-CAPTURED 2026-07-17 (A3): control documentType=1 (correct), fault documentType=0 (WRONG), both ack 2xx. B-m6 PASS. NEW DISTINCT SITE. CORRUPTED-present class (fault_class=acknowledged_corrupted_write). MIST n_a out-of-scope-by-design (lost-not-corrupted). SUT pin: fork fcorpus-build@4df14191, kind-loaded local image (docker image ID digest; no registry push) tagged codewisdom/ts-user-service:fcorpus. EVIDENCE-FORM (disclosed): the F8 B-m6 values were captured via inline commands during the window and transcribed into B-m6-RESULT.md; NO raw legs.log was preserved and no driver script is committed (unlike the sibling F-cases) - re-verification requires a TT window replaying the documented register + read-by-id flow."
+    "readback_response": "debug/a-main/benchmark/b4/cset/fcorpus-f8/legs.log",
+    "notes": "LIVE-CAPTURED 2026-07-17 (A3): control documentType=1 (correct), fault documentType=0 (WRONG), both ack 2xx. B-m6 PASS. NEW DISTINCT SITE. CORRUPTED-present class (fault_class=acknowledged_corrupted_write). MIST n_a out-of-scope-by-design (lost-not-corrupted). SUT pin: fork fcorpus-build@4df14191, kind-loaded local image (docker image ID digest; no registry push) tagged codewisdom/ts-user-service:fcorpus. RE-CAPTURED 2026-07-18 with a committed driver + preserved raw log (runners/fcorpus/f8-driver.sh, fcorpus-f8/legs.log): CTRL submitted documentType=1 -> persisted 1; FLT (selectionfaultmode=corrupt) submitted 1 -> persisted 0; both register-ack HTTP 201. Read-back by the register-returned userId (the ts-user-service row; the auth-login id is a different store - the original inline capture conflated them, now fixed). The evidence-form gap the verification round flagged is CLOSED."
   },
   "license": {
     "case_code": "Apache-2.0",

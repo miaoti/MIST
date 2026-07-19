@@ -6,6 +6,7 @@
   "NOT_EVALUABLE leaves the denominator and lands in its own bucket",
   "the trace-invisible-by-construction row is the N-vs-0 row: 3 positives no trace-consuming arm can see by construction",
   "MIST cells carry provenance_class (live-run vs capture-concordant); capture-concordant cells must never be pooled into a headline (self-concordance rule)",
+  "Wilson 95% intervals accompany every cell (recall over evaluable positives; FP rate over evaluable negatives) - tiny denominators stay visibly tiny",
   "FP denominator convention: the headline FP figure is 0/13 on the MEASURED no_flag denominator; the corpus-level statement is 0 false flags among all 15 negatives (2 negatives are principled-n_a and cannot flag) - state both, pool neither",
   "matched-recall framing only - never 'discrimination' (the natural-discriminator question was S3's, closed 0/1514)"
  ],
@@ -35,6 +36,8 @@
      "negatives": 2,
      "flagged_negatives": 0,
      "not_evaluable": 3,
+     "recall_wilson95": null,
+     "fp_rate_wilson95": null,
      "flagged_positive_ids": [],
      "flagged_negative_ids": [],
      "not_evaluable_ids": [
@@ -50,6 +53,14 @@
      "negatives": 6,
      "flagged_negatives": 0,
      "not_evaluable": 0,
+     "recall_wilson95": [
+      0.4385,
+      1.0
+     ],
+     "fp_rate_wilson95": [
+      0.0,
+      0.3903
+     ],
      "flagged_positive_ids": [
       "oteldemo-checkout-lost-001",
       "TT-adminbasic-contacts-lostwrite-001",
@@ -65,6 +76,14 @@
      "negatives": 2,
      "flagged_negatives": 0,
      "not_evaluable": 0,
+     "recall_wilson95": [
+      0.4385,
+      1.0
+     ],
+     "fp_rate_wilson95": [
+      0.0,
+      0.6576
+     ],
      "flagged_positive_ids": [
       "TT-cancel-refund-asyncrefund-f1-001",
       "TT-cancel-refund-fabricatedack-001",
@@ -80,6 +99,14 @@
      "negatives": 5,
      "flagged_negatives": 0,
      "not_evaluable": 7,
+     "recall_wilson95": [
+      0.5101,
+      1.0
+     ],
+     "fp_rate_wilson95": [
+      -0.0,
+      0.4345
+     ],
      "flagged_positive_ids": [
       "teastore-order-maintenance-masked-001",
       "teastore-order-meshsever-masked-001",
@@ -144,6 +171,14 @@
      "negatives": 2,
      "flagged_negatives": 0,
      "not_evaluable": 0,
+     "recall_wilson95": [
+      0.0,
+      0.7935
+     ],
+     "fp_rate_wilson95": [
+      0.0,
+      0.6576
+     ],
      "flagged_positive_ids": [],
      "flagged_negative_ids": [],
      "not_evaluable_ids": []
@@ -155,6 +190,14 @@
      "negatives": 6,
      "flagged_negatives": 0,
      "not_evaluable": 0,
+     "recall_wilson95": [
+      0.0,
+      0.5615
+     ],
+     "fp_rate_wilson95": [
+      0.0,
+      0.3903
+     ],
      "flagged_positive_ids": [],
      "flagged_negative_ids": [],
      "not_evaluable_ids": []
@@ -166,6 +209,14 @@
      "negatives": 2,
      "flagged_negatives": 0,
      "not_evaluable": 0,
+     "recall_wilson95": [
+      0.0,
+      0.5615
+     ],
+     "fp_rate_wilson95": [
+      0.0,
+      0.6576
+     ],
      "flagged_positive_ids": [],
      "flagged_negative_ids": [],
      "not_evaluable_ids": []
@@ -177,6 +228,14 @@
      "negatives": 5,
      "flagged_negatives": 1,
      "not_evaluable": 1,
+     "recall_wilson95": [
+      0.0179,
+      0.4042
+     ],
+     "fp_rate_wilson95": [
+      0.0362,
+      0.6245
+     ],
      "flagged_positive_ids": [
       "TT-cancel-refund-natural-001"
      ],
@@ -199,6 +258,8 @@
      "negatives": 2,
      "flagged_negatives": 0,
      "not_evaluable": 3,
+     "recall_wilson95": null,
+     "fp_rate_wilson95": null,
      "flagged_positive_ids": [],
      "flagged_negative_ids": [],
      "not_evaluable_ids": [
@@ -214,6 +275,8 @@
      "negatives": 6,
      "flagged_negatives": 0,
      "not_evaluable": 9,
+     "recall_wilson95": null,
+     "fp_rate_wilson95": null,
      "flagged_positive_ids": [],
      "flagged_negative_ids": [],
      "not_evaluable_ids": [
@@ -235,6 +298,14 @@
      "negatives": 2,
      "flagged_negatives": 0,
      "not_evaluable": 3,
+     "recall_wilson95": [
+      0.0,
+      0.7935
+     ],
+     "fp_rate_wilson95": [
+      0.0,
+      0.7935
+     ],
      "flagged_positive_ids": [],
      "flagged_negative_ids": [],
      "not_evaluable_ids": [
@@ -250,6 +321,8 @@
      "negatives": 5,
      "flagged_negatives": 0,
      "not_evaluable": 16,
+     "recall_wilson95": null,
+     "fp_rate_wilson95": null,
      "flagged_positive_ids": [],
      "flagged_negative_ids": [],
      "not_evaluable_ids": [
@@ -283,6 +356,8 @@
      "negatives": 2,
      "flagged_negatives": 0,
      "not_evaluable": 3,
+     "recall_wilson95": null,
+     "fp_rate_wilson95": null,
      "flagged_positive_ids": [],
      "flagged_negative_ids": [],
      "not_evaluable_ids": [
@@ -298,6 +373,8 @@
      "negatives": 6,
      "flagged_negatives": 0,
      "not_evaluable": 9,
+     "recall_wilson95": null,
+     "fp_rate_wilson95": null,
      "flagged_positive_ids": [],
      "flagged_negative_ids": [],
      "not_evaluable_ids": [
@@ -319,6 +396,14 @@
      "negatives": 2,
      "flagged_negatives": 0,
      "not_evaluable": 3,
+     "recall_wilson95": [
+      0.2065,
+      1.0
+     ],
+     "fp_rate_wilson95": [
+      0.0,
+      0.7935
+     ],
      "flagged_positive_ids": [
       "TT-cancel-refund-fabricatedack-001"
      ],
@@ -336,6 +421,8 @@
      "negatives": 5,
      "flagged_negatives": 0,
      "not_evaluable": 16,
+     "recall_wilson95": null,
+     "fp_rate_wilson95": null,
      "flagged_positive_ids": [],
      "flagged_negative_ids": [],
      "not_evaluable_ids": [
@@ -369,6 +456,14 @@
      "negatives": 2,
      "flagged_negatives": 1,
      "not_evaluable": 0,
+     "recall_wilson95": [
+      0.0,
+      0.7935
+     ],
+     "fp_rate_wilson95": [
+      0.0945,
+      0.9055
+     ],
      "flagged_positive_ids": [],
      "flagged_negative_ids": [
       "bookinfo-ratings-benign-001"
@@ -382,6 +477,14 @@
      "negatives": 6,
      "flagged_negatives": 0,
      "not_evaluable": 3,
+     "recall_wilson95": [
+      0.0,
+      0.5615
+     ],
+     "fp_rate_wilson95": [
+      0.0,
+      0.5615
+     ],
      "flagged_positive_ids": [],
      "flagged_negative_ids": [],
      "not_evaluable_ids": [
@@ -397,6 +500,14 @@
      "negatives": 2,
      "flagged_negatives": 0,
      "not_evaluable": 1,
+     "recall_wilson95": [
+      0.0,
+      0.6576
+     ],
+     "fp_rate_wilson95": [
+      0.0,
+      0.6576
+     ],
      "flagged_positive_ids": [],
      "flagged_negative_ids": [],
      "not_evaluable_ids": [
@@ -410,6 +521,8 @@
      "negatives": 5,
      "flagged_negatives": 0,
      "not_evaluable": 16,
+     "recall_wilson95": null,
+     "fp_rate_wilson95": null,
      "flagged_positive_ids": [],
      "flagged_negative_ids": [],
      "not_evaluable_ids": [
@@ -443,6 +556,14 @@
      "negatives": 2,
      "flagged_negatives": 2,
      "not_evaluable": 0,
+     "recall_wilson95": [
+      0.0,
+      0.7935
+     ],
+     "fp_rate_wilson95": [
+      0.3424,
+      1.0
+     ],
      "flagged_positive_ids": [],
      "flagged_negative_ids": [
       "bookinfo-ratings-benign-001",
@@ -457,6 +578,14 @@
      "negatives": 6,
      "flagged_negatives": 0,
      "not_evaluable": 3,
+     "recall_wilson95": [
+      0.0,
+      0.5615
+     ],
+     "fp_rate_wilson95": [
+      0.0,
+      0.5615
+     ],
      "flagged_positive_ids": [],
      "flagged_negative_ids": [],
      "not_evaluable_ids": [
@@ -472,6 +601,14 @@
      "negatives": 2,
      "flagged_negatives": 0,
      "not_evaluable": 3,
+     "recall_wilson95": [
+      0.0,
+      0.7935
+     ],
+     "fp_rate_wilson95": [
+      0.0,
+      0.7935
+     ],
      "flagged_positive_ids": [],
      "flagged_negative_ids": [],
      "not_evaluable_ids": [
@@ -487,6 +624,8 @@
      "negatives": 5,
      "flagged_negatives": 0,
      "not_evaluable": 16,
+     "recall_wilson95": null,
+     "fp_rate_wilson95": null,
      "flagged_positive_ids": [],
      "flagged_negative_ids": [],
      "not_evaluable_ids": [
@@ -520,6 +659,14 @@
      "negatives": 2,
      "flagged_negatives": 0,
      "not_evaluable": 0,
+     "recall_wilson95": [
+      0.0,
+      0.7935
+     ],
+     "fp_rate_wilson95": [
+      0.0,
+      0.6576
+     ],
      "flagged_positive_ids": [],
      "flagged_negative_ids": [],
      "not_evaluable_ids": []
@@ -531,6 +678,14 @@
      "negatives": 6,
      "flagged_negatives": 0,
      "not_evaluable": 0,
+     "recall_wilson95": [
+      0.0,
+      0.5615
+     ],
+     "fp_rate_wilson95": [
+      0.0,
+      0.3903
+     ],
      "flagged_positive_ids": [],
      "flagged_negative_ids": [],
      "not_evaluable_ids": []
@@ -542,6 +697,14 @@
      "negatives": 2,
      "flagged_negatives": 0,
      "not_evaluable": 0,
+     "recall_wilson95": [
+      0.0,
+      0.5615
+     ],
+     "fp_rate_wilson95": [
+      0.0,
+      0.6576
+     ],
      "flagged_positive_ids": [],
      "flagged_negative_ids": [],
      "not_evaluable_ids": []
@@ -553,6 +716,14 @@
      "negatives": 5,
      "flagged_negatives": 0,
      "not_evaluable": 1,
+     "recall_wilson95": [
+      -0.0,
+      0.2775
+     ],
+     "fp_rate_wilson95": [
+      -0.0,
+      0.4345
+     ],
      "flagged_positive_ids": [],
      "flagged_negative_ids": [],
      "not_evaluable_ids": [
@@ -571,6 +742,14 @@
      "negatives": 2,
      "flagged_negatives": 0,
      "not_evaluable": 0,
+     "recall_wilson95": [
+      0.0,
+      0.7935
+     ],
+     "fp_rate_wilson95": [
+      0.0,
+      0.6576
+     ],
      "flagged_positive_ids": [],
      "flagged_negative_ids": [],
      "not_evaluable_ids": []
@@ -582,6 +761,14 @@
      "negatives": 6,
      "flagged_negatives": 0,
      "not_evaluable": 0,
+     "recall_wilson95": [
+      0.0,
+      0.5615
+     ],
+     "fp_rate_wilson95": [
+      0.0,
+      0.3903
+     ],
      "flagged_positive_ids": [],
      "flagged_negative_ids": [],
      "not_evaluable_ids": []
@@ -593,6 +780,14 @@
      "negatives": 2,
      "flagged_negatives": 0,
      "not_evaluable": 0,
+     "recall_wilson95": [
+      0.0,
+      0.5615
+     ],
+     "fp_rate_wilson95": [
+      0.0,
+      0.6576
+     ],
      "flagged_positive_ids": [],
      "flagged_negative_ids": [],
      "not_evaluable_ids": []
@@ -604,6 +799,14 @@
      "negatives": 5,
      "flagged_negatives": 0,
      "not_evaluable": 1,
+     "recall_wilson95": [
+      -0.0,
+      0.2775
+     ],
+     "fp_rate_wilson95": [
+      -0.0,
+      0.4345
+     ],
      "flagged_positive_ids": [],
      "flagged_negative_ids": [],
      "not_evaluable_ids": [
@@ -622,6 +825,8 @@
      "negatives": 2,
      "flagged_negatives": 0,
      "not_evaluable": 3,
+     "recall_wilson95": null,
+     "fp_rate_wilson95": null,
      "flagged_positive_ids": [],
      "flagged_negative_ids": [],
      "not_evaluable_ids": [
@@ -637,6 +842,8 @@
      "negatives": 6,
      "flagged_negatives": 0,
      "not_evaluable": 9,
+     "recall_wilson95": null,
+     "fp_rate_wilson95": null,
      "flagged_positive_ids": [],
      "flagged_negative_ids": [],
      "not_evaluable_ids": [
@@ -658,6 +865,8 @@
      "negatives": 2,
      "flagged_negatives": 0,
      "not_evaluable": 5,
+     "recall_wilson95": null,
+     "fp_rate_wilson95": null,
      "flagged_positive_ids": [],
      "flagged_negative_ids": [],
      "not_evaluable_ids": [
@@ -675,6 +884,8 @@
      "negatives": 5,
      "flagged_negatives": 0,
      "not_evaluable": 16,
+     "recall_wilson95": null,
+     "fp_rate_wilson95": null,
      "flagged_positive_ids": [],
      "flagged_negative_ids": [],
      "not_evaluable_ids": [
@@ -708,6 +919,14 @@
      "negatives": 2,
      "flagged_negatives": 1,
      "not_evaluable": 0,
+     "recall_wilson95": [
+      0.2065,
+      1.0
+     ],
+     "fp_rate_wilson95": [
+      0.0945,
+      0.9055
+     ],
      "flagged_positive_ids": [
       "sockshop-shipping-swallowed-enqueue-001"
      ],
@@ -723,6 +942,14 @@
      "negatives": 6,
      "flagged_negatives": 0,
      "not_evaluable": 3,
+     "recall_wilson95": [
+      0.4385,
+      1.0
+     ],
+     "fp_rate_wilson95": [
+      0.0,
+      0.5615
+     ],
      "flagged_positive_ids": [
       "oteldemo-checkout-lost-001",
       "TT-adminbasic-contacts-lostwrite-001",
@@ -742,6 +969,14 @@
      "negatives": 2,
      "flagged_negatives": 0,
      "not_evaluable": 3,
+     "recall_wilson95": [
+      0.0,
+      0.7935
+     ],
+     "fp_rate_wilson95": [
+      0.0,
+      0.7935
+     ],
      "flagged_positive_ids": [],
      "flagged_negative_ids": [],
      "not_evaluable_ids": [
@@ -757,6 +992,8 @@
      "negatives": 5,
      "flagged_negatives": 0,
      "not_evaluable": 16,
+     "recall_wilson95": null,
+     "fp_rate_wilson95": null,
      "flagged_positive_ids": [],
      "flagged_negative_ids": [],
      "not_evaluable_ids": [

@@ -1,0 +1,142 @@
+{
+  "id": 1,
+  "traceId": "5f688cc4a9e2dee16757a601008f2bc9",
+  "spanId": "49bb1be2b328e45f",
+  "testVersion": 2,
+  "state": "AWAITING_TRACE",
+  "executionTime": 157,
+  "triggerTime": 4816,
+  "createdAt": "2026-07-19T01:26:37.447252Z",
+  "serviceTriggeredAt": "2026-07-19T01:26:37.498419Z",
+  "serviceTriggerCompletedAt": "2026-07-19T01:26:42.31472Z",
+  "obtainedTraceAt": "0001-01-01T00:00:00Z",
+  "completedAt": "1970-01-01T00:00:00Z",
+  "variableSet": {},
+  "resolvedTrigger": {
+    "type": "http",
+    "httpRequest": {
+      "url": "http://host.docker.internal:8080/api/v1/adminrouteservice/adminroute",
+      "method": "POST",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "key": "Authorization",
+          "value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGVzIjpbIlJPTEVfQURNSU4iXSwiaWQiOiJiMzUwYzQxOC02MGQ0LTQ1MjctYTgxNy1lZjBlMTVmNjFlZTYiLCJpYXQiOjE3ODQ0MjQzOTcsImV4cCI6MTc4NDQyNzk5N30.RwgiAaqjITluP3wCI140XhOlA3u1YI3KY9t-Wgrj0sk"
+        }
+      ],
+      "body": "{\"id\": \"\", \"startStation\": \"shanghai\", \"endStation\": \"taiyuan\", \"stationList\": \"shanghai,taiyuan\", \"distanceList\": \"0,1350\"}",
+      "auth": {
+        "apiKey": {},
+        "basic": {},
+        "bearer": {}
+      }
+    },
+    "grpc": {
+      "auth": {
+        "apiKey": {},
+        "basic": {},
+        "bearer": {}
+      }
+    },
+    "traceid": {},
+    "kafka": {
+      "authentication": {
+        "plain": {}
+      }
+    },
+    "playwrightEngine": {},
+    "graphql": {
+      "auth": {
+        "apiKey": {},
+        "basic": {},
+        "bearer": {}
+      },
+      "body": {}
+    }
+  },
+  "triggerResult": {
+    "type": "http",
+    "triggerResult": {
+      "http": {
+        "status": "200 ",
+        "statusCode": 200,
+        "headers": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "X-Frame-Options",
+            "value": "DENY"
+          },
+          {
+            "key": "Cache-Control",
+            "value": "no-cache, no-store, max-age=0, must-revalidate"
+          },
+          {
+            "key": "Expires",
+            "value": "0"
+          },
+          {
+            "key": "Server",
+            "value": "openresty/1.13.6.1"
+          },
+          {
+            "key": "Date",
+            "value": "Sun, 19 Jul 2026 01:26:42 GMT"
+          },
+          {
+            "key": "Connection",
+            "value": "keep-alive"
+          },
+          {
+            "key": "Vary",
+            "value": "Origin"
+          },
+          {
+            "key": "Vary",
+            "value": "Access-Control-Request-Method"
+          },
+          {
+            "key": "Vary",
+            "value": "Access-Control-Request-Headers"
+          },
+          {
+            "key": "X-Content-Type-Options",
+            "value": "nosniff"
+          },
+          {
+            "key": "X-Xss-Protection",
+            "value": "1; mode=block"
+          },
+          {
+            "key": "Pragma",
+            "value": "no-cache"
+          }
+        ],
+        "body": "{\"status\":1,\"msg\":\"Save and Modify success\",\"data\":{\"id\":\"93d472a4-1ed9-41ee-b784-9058f30cdb41\",\"stations\":[\"shanghai\",\"taiyuan\"],\"distances\":[0,1350],\"startStation\":\"shanghai\",\"endStation\":\"taiyuan\"}}"
+      },
+      "grpc": {},
+      "traceid": {},
+      "kafka": {},
+      "playwrightEngine": {},
+      "graphql": {},
+      "error": {}
+    }
+  },
+  "trace": {
+    "tree": {}
+  },
+  "result": {},
+  "linter": {},
+  "requiredGatesResult": {
+    "required": [
+      "test-specs"
+    ],
+    "failed": [],
+    "passed": true
+  }
+}

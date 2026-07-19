@@ -1,5 +1,7 @@
 # RESULT — E2 comparator-frontier COMPLETION (completion-set wave, Phase B) — Step 6 fold
 
+> **[WILSON CIs ADDED 2026-07-18]** Every matched-recall cell now carries `recall_wilson95` (flagged positives / evaluable positives) and `fp_rate_wilson95` (flagged negatives / evaluable negatives) in `scoring/matched-recall-table.json` — the small denominators stay VISIBLY small (e.g. trace-uninstrumented MIST read-back recall 4/4 = Wilson95 [0.51, 1.0]); the point estimates are unchanged, the intervals make the pilot-scale honest per reviewer demand.
+
 > **[POST-A3 ERRATUM 2026-07-18 — figures below are this wave's-era snapshot.]** The corpus is
 > now **33 cases** (A3 F-corpus: +F1 lost-class live FIRE, +5 corrupted acknowledged_corrupted_write).
 > The MIST column of record: **10/10 evaluable positives FIRE (9 live-run + 1 capture-concordant),

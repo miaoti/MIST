@@ -173,7 +173,7 @@
   {
    "group": "cases",
    "path": "debug/a-main/benchmark/cases/TT-user-selection-corrupt-f8-001.json",
-   "sha256": "20f8f6ec1ed60fbbf1b0b4ce42ae056bacfdb038166ada35efa98d9c10a180c6"
+   "sha256": "82649466bd259a1ad84a64e999090f8e47453ca50ca1a33c2b6baaabe632a07c"
   },
   {
    "group": "schema",
@@ -183,7 +183,7 @@
   {
    "group": "censuses",
    "path": "debug/a-main/benchmark/mist-column-census.json",
-   "sha256": "3b8e32237931f3e94f6381c99672aad1006dd1a5f032a5a852ce6d28cd04857c"
+   "sha256": "1d5364b975a387baee262eb30bc4626549d89a3febbc899a0b194313065d7c8d"
   },
   {
    "group": "censuses",
@@ -208,7 +208,7 @@
   {
    "group": "scoring",
    "path": "debug/a-main/benchmark/scoring/score_arms.py",
-   "sha256": "10afb0e813017a0575542b65891043913d239ebd03e4a1ae03eb959814e97703"
+   "sha256": "5164f21ba0d3fdf2c05de6b16fb5f39c74e16b8c32478dec3c5a4d6d24690c31"
   },
   {
    "group": "scoring",
@@ -218,7 +218,7 @@
   {
    "group": "scoring",
    "path": "debug/a-main/benchmark/scoring/matched-recall-table.json",
-   "sha256": "d0cabae24efbde4ff720bd15d0970b47924517d0a2b1dfc1f30badd2809f90ff"
+   "sha256": "0e59b2b6779755170ff8927e000b4a205cce449fdfdc70e5e392f61d12a88288"
   },
   {
    "group": "specs",

@@ -1,0 +1,32 @@
+# Tracetest LIVE window (2026-07-18): server + OFFICIAL postgres image, REST-API-driven
+# (no helm — the L4 blocker was the chart's dead Bitnami postgres tag; no CLI — avoids
+# CLI/server version pairing). Docker Desktop semantics: published ports (host networking
+# is a no-op) + host.docker.internal for reaching WSL-bound PFs (jaeger 16685, gateway 8080).
+services:
+  tt-postgres:
+    image: postgres:14-alpine
+    environment:
+      POSTGRES_USER: tracetest
+      POSTGRES_PASSWORD: tracetest
+      POSTGRES_DB: tracetest
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U tracetest"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+
+  tracetest:
+    image: kubeshop/tracetest:sha-3df9fae2-amd64
+    ports:
+      - "11633:11633"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    depends_on:
+      tt-postgres:
+        condition: service_healthy
+    environment:
+      TRACETEST_POSTGRES_HOST: tt-postgres
+      TRACETEST_POSTGRES_PORT: "5432"
+      TRACETEST_POSTGRES_USER: tracetest
+      TRACETEST_POSTGRES_PASSWORD: tracetest
+      TRACETEST_POSTGRES_DBNAME: tracetest
