@@ -1,0 +1,57 @@
+{
+  "bookinfo-ratings-benign-001": {
+    "label": "negative",
+    "control_spans": 9,
+    "fault_spans": 8,
+    "reasons": [
+      "missing edge: [('reviews.default', 'ratings.default')]",
+      "novel error span: [('reviews.default', 'ratings.default.svc.cluster.local:9080/*')]"
+    ]
+  },
+  "oteldemo-checkout-lost-001": {
+    "label": "positive",
+    "control_spans": 50,
+    "fault_spans": 47,
+    "reasons": [
+      "missing edge: [('accounting', 'accounting')]"
+    ]
+  },
+  "sockshop-shipping-swallowed-enqueue-001": {
+    "label": "positive",
+    "control_spans": 36,
+    "fault_spans": 32,
+    "reasons": [
+      "missing edge: [('queue-master', 'queue-master'), ('shipping', 'queue-master')]"
+    ]
+  },
+  "TT-adminbasic-contacts-lostwrite-001": {
+    "label": "positive",
+    "control_spans": 13,
+    "fault_spans": 2,
+    "reasons": [
+      "missing edge: [('ts-admin-basic-info-service', 'ts-contacts-service'), ('ts-contacts-service', 'ts-contacts-service')]"
+    ]
+  },
+  "TT-adminroute-lostwrite-001": {
+    "label": "positive",
+    "control_spans": 15,
+    "fault_spans": 3,
+    "reasons": [
+      "missing edge: [('ts-admin-route-service', 'ts-route-service'), ('ts-route-service', 'ts-route-service')]"
+    ]
+  },
+  "TT-cancel-refund-fabricatedack-001": {
+    "label": "positive",
+    "control_spans": 31,
+    "fault_spans": 32,
+    "reasons": [
+      "novel svc/op: [('ts-cancel-service', 'NacosWatch$$Lambda.run')]"
+    ]
+  },
+  "TT-createaccount-agreement-001": {
+    "label": "positive",
+    "control_spans": 9,
+    "fault_spans": 2,
+    "reasons": []
+  }
+}
