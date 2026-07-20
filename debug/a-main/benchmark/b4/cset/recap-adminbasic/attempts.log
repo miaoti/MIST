@@ -1,0 +1,6 @@
+=== adminbasic-contacts-lostwrite re-capture (N=1; :mistfault set-image) ===
+--- attempt 1 ---
+leg=CTRL fault=off ack={"status":1,"msg":"Create Success","data":null}|HTTP=200 contacts_count 37->38 delta=1
+leg=FLT fault=on ack={"status":1,"msg":"create contacts success","data":null}|HTTP=200 contacts_count 38->38 delta=0
+  GATE PASS: control PERSISTED (+1) & fault LOST (+0) = of-record
+=== result: PASS=1 ===
