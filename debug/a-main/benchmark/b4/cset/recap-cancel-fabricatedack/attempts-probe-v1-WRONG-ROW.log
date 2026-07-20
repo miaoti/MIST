@@ -1,0 +1,14 @@
+=== cancel-fabricatedack re-capture (N<=3) ===
+--- attempt 1 ---
+leg=CTRL mode=none buyer=d0b0b5fe-0e2f-4505-8639-e04b230a7f1d order=64fdfa3d-8ef2-4c2e-ab00-a5843609f38d cancel_ack={"status":1,"msg":"Success.","data":"test not null"} balance_before=50.00 balance_after=50.00
+leg=FLT mode=fabricatedack buyer=f42c5492-4029-4f5d-814d-cf2f1fb99357 order=a538a1fc-9d59-4cf3-808e-27d28c8fcd1d cancel_ack={"status":1,"msg":"Success.","data":"test not null"} balance_before=50.00 balance_after=50.00
+  gate not met (ctrl-landed=0 flt-landed=0) -> retry
+--- attempt 2 ---
+leg=CTRL mode=none buyer=1d8015a0-dcc0-435c-95ff-3b3cbc0344cd order=66a561a2-0d04-4742-8f81-747b98b9e66e cancel_ack={"status":1,"msg":"Success.","data":"test not null"} balance_before=50.00 balance_after=50.00
+leg=FLT mode=fabricatedack buyer=4e952a70-ee64-46e3-a91f-3a4b565911cf order=4107e748-97a1-4a8f-83bf-db86aabbe840 cancel_ack={"status":1,"msg":"Success.","data":"test not null"} balance_before=50.00 balance_after=50.00
+  gate not met (ctrl-landed=0 flt-landed=0) -> retry
+--- attempt 3 ---
+leg=CTRL mode=none buyer=0cc66ad0-b48b-4340-921e-f2aed6966082 order=368282ca-1366-40a9-aeec-33cef0250409 cancel_ack={"status":1,"msg":"Success.","data":"test not null"} balance_before=50.00 balance_after=50.00
+leg=FLT mode=fabricatedack buyer=d66fc464-df4d-45c9-ad90-9a13036d57f1 order=1e8136fb-5c51-4cc9-9185-7a29a6a4b403 cancel_ack={"status":1,"msg":"Success.","data":"test not null"} balance_before=50.00 balance_after=50.00
+  gate not met (ctrl-landed=0 flt-landed=0) -> retry
+=== result: PASS=0 ===

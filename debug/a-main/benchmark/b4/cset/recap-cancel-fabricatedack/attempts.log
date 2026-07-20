@@ -1,0 +1,6 @@
+=== cancel-fabricatedack re-capture (N<=3) ===
+--- attempt 1 ---
+leg=CTRL mode=none buyer=a07e49f6-8f00-4250-a67f-9a4d57a5af1c order=1c6aa5bf-3b86-4df3-87bd-68d506b68182 cancel_ack={"status":1,"msg":"Success.","data":"test not null"} refund_rows_before=0 refund_rows_after=1
+leg=FLT mode=fabricatedack buyer=ca3ac8a2-1cdc-485e-953f-be3350dcc25d order=7fb95ab4-5f91-4396-8008-dad65b12aee6 cancel_ack={"status":1,"msg":"Success.","data":"test not null"} refund_rows_before=0 refund_rows_after=0
+  GATE PASS: control refund landed & fault refund lost = of-record
+=== result: PASS=1 ===
