@@ -1,0 +1,6 @@
+=== createaccount-agreement re-capture (N<=3 cap; first passing = of record) ===
+--- attempt 1 ---
+leg=CTRL mode=none user_id=ra178452698943360411548 ack={"status":1,"msg":"Create Account Success","data":null}|HTTP=200 inside_money_rows=1
+leg=FLT mode=fabricatedack user_id=ra17845269928782154409 ack={"status":1,"msg":"Create Account Success","data":null}|HTTP=200 inside_money_rows=0
+  GATE PASS: control PRESENT (1) & fault ABSENT (0) = of-record
+=== result: PASS=1 (1=captured,2=anomaly-disclosed,0=exhausted) ===
