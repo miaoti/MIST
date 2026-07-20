@@ -20,7 +20,7 @@
   - response: HTTP 201 — body: ``
 - `t+151ms`  **POST /orders**
   - response: HTTP 201 — body: `{"id":"6a50689e04eb4f000a414b79","customerId":"6a50689ea39e9b00016cdd9e","customer":{"id":null,"firstName":"cb","lastName":"cb","username":"cb1783654558838","addresses":[],"cards":[]},"address":{"id":null,"number":"3","street":"my road","city":"London","postcode":"E2 8RS","country":"UK"},"card":{"id":null,"longNum":"5544154011345918","expires":"08/29","ccv":"958"},"items":[{"id":"6a50689ebf9479000ae1b98e","itemId":"819e1fbf-8b7e-4f6d-811f-693534916a8b","quantity":1,"unitPrice":14}],"shipment":{"id":"09dbb47d-009b-4070-8dda-abf2dd032a40","name":"6a50689ea39e9b00016cdd9e"},"date":"<time>…`
-- `t+3322ms`  observed state via `durable-state check — query the durable order document for the key submitted above`: HTTP 201 — `matching durable record present — 1 order document for the acting customer`
+- `t+3322ms`  observed state via `durable-state check — query the durable order document for the key submitted above`: HTTP 200 — `matching durable record present — 1 order document for the acting customer`
 
 ## Your task
 

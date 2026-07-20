@@ -1,11 +1,11 @@
 swagger: '2.0'
 info:
   version: 1.0.0
-  title: Service API
   termsOfService: https://istio.io/
   license:
     name: Apache 2.0
     url: http://www.apache.org/licenses/LICENSE-2.0.html
+  title: Service API
 basePath: /api/v1
 tags:
 - name: product
@@ -94,7 +94,6 @@ definitions:
       id:
         type: integer
         format: int32
-      title: Service API
       descriptionHtml:
         type: string
     required:

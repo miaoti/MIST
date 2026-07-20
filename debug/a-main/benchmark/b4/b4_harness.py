@@ -148,7 +148,11 @@ def render(case_path, sidecar_path, opaque_id, out_dir, sut_doc_note=None):
 
     ballot = (
         "case_id: %s\n"
+        "rater_id:         # your assigned opaque rater code (required — joins your ballots)\n"
+        "rubric_version: 3   # copy from the rubric header (§3)\n"
         "label:            # genuine | benign | underspecified\n"
+        "ack_carries_failure_sentinel:   # yes | no — MECHANICAL, not a judgment: does the\n"
+        "                                #   success-shaped ack carry an in-body failure sentinel?\n"
         "grounding:\n"
         "  citation:       # doc/spec/source location inside the provided bundle\n"
         "  quote_or_ref:   # the clause that grounds the label\n"

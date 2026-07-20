@@ -10,7 +10,7 @@
   - response: HTTP 200 — body: `<response redacted (carries a session token)>`
 - `t+30ms`  **POST /tools.descartes.teastore.webui/cartAction?addToCart=&productid=42**
   - response: HTTP 200 — body: `<success-shaped page rendered>`
-- `t+99ms`  **POST /tools.descartes.teastore.webui/cartAction?firstname=5820&lastname=Sample&address1=Street1&address2=City1&cardtype=visa&cardnumber=314159265359&expirydate=12%2F2029&confirm=Confirm**
+- `t+99ms`  **POST /tools.descartes.teastore.webui/cartAction?firstname=5795&lastname=Sample&address1=Street1&address2=City1&cardtype=visa&cardnumber=314159265359&expirydate=12%2F2029&confirm=Confirm**
   - response: HTTP 200 — body: `<success-shaped page rendered>`
 - `t+120131ms`  observed state via `durable-state check — query the durable order collection for the key submitted above`: HTTP 200 — `no matching durable record present`
 

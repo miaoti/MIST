@@ -76,7 +76,7 @@
    "t_rel_ms": 3229,
    "kind": "observation",
    "probe": "GET /orders (the acting customer's orders)",
-   "status": 201,
+   "status": 200,
    "body": "[{\"customerId\":\"6a5068fea39e9b00016cddad\",\"customer\":{\"firstName\":\"cb\",\"lastName\":\"cb\",\"username\":\"cb1783654654860\",\"addresses\":[],\"cards\":[]},\"address\":{\"number\":\"3\",\"street\":\"my road\",\"city\":\"London\",\"postcode\":\"E2 8RS\",\"country\":\"UK\"},\"card\":{\"longNum\":\"5544154011345918\",\"expires\":\"08/29\",\"ccv\":\"958\"},\"items\":[{\"itemId\":\"819e1fbf-8b7e-4f6d-811f-693534916a8b\",\"quantity\":1,\"unitPrice\":14}],\"shipment\":{\"name\":\"6a5068fea39e9b00016cddad\"},\"date\":\"<time>+0000\",\"total\":18.99,\"_links\":{\"self\":{\"href\":\"http://orders/orders/6a5068fe04eb4f000a414b7e\"},\"order\":{\"href\":\"http://orders/or…"
   }
  ]

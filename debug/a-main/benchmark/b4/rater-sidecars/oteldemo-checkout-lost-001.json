@@ -38,21 +38,21 @@
    "t_rel_ms": 30037,
    "kind": "observation",
    "probe": "durable-state check for the record submitted above",
-   "status": "n/a",
+   "status": 200,
    "body": "0"
   },
   {
    "t_rel_ms": 300037,
    "kind": "observation",
    "probe": "durable-state check for the record submitted above",
-   "status": "n/a",
+   "status": 200,
    "body": "0"
   },
   {
    "t_rel_ms": 900037,
    "kind": "observation",
    "probe": "durable-state check for the record submitted above",
-   "status": "n/a",
+   "status": 200,
    "body": "0"
   }
  ]

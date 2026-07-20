@@ -1,10 +1,10 @@
 swagger: '2.0'
 info:
   version: 1.4.2
-  title: Service API
   license:
     name: Apache 2.0
     url: http://www.apache.org/licenses/LICENSE-2.0.html
+  title: Service API
 basePath: /
 tags:
 - name: webui

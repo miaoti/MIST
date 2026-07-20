@@ -37,9 +37,10 @@ genuine.
 **Worked examples (the abstract patterns below do not by themselves cover the hard async/partial shapes):**
 - *genuine* — POST returns 201 with an order id; GET on that id 404s and no row exists in the service
  whose OpenAPI schema lists it as the system of record. (Contract-grounded "should persist".)
-- *genuine, error-marked ack* — cancel returns HTTP 200 with body `{1,"error"}`; the source shows the
- cancel must issue a refund write, and no refund row exists. Acked (2xx), durable write missing,
- contract-required → genuine. (Record `ack_carries_failure_sentinel: yes`.)
+- *genuine, error-marked ack* — an endpoint returns HTTP 200 whose body carries an in-envelope
+ failure sentinel (e.g. `{1,"error"}`); the source shows the call must persist a record, and a
+ scoped read shows none. Acked (2xx), durable write missing, contract-required → genuine.
+ (Record `ack_carries_failure_sentinel: yes`.)
 - *benign* — a write returns `202 Accepted` and the durable effect appears only after an async worker
  cycle the docs bound to a stated window; observed absence within that documented window is by-design.
 - *underspecified, async* — same async shape but the docs state no completion bound; absence at a finite

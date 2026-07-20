@@ -1,5 +1,9 @@
 case_id: CASE-Q12
+rater_id:         # your assigned opaque rater code (required — joins your ballots)
+rubric_version: 3   # copy from the rubric header (§3)
 label:            # genuine | benign | underspecified
+ack_carries_failure_sentinel:   # yes | no — MECHANICAL, not a judgment: does the
+                                #   success-shaped ack carry an in-body failure sentinel?
 grounding:
   citation:       # doc/spec/source location inside the provided bundle
   quote_or_ref:   # the clause that grounds the label

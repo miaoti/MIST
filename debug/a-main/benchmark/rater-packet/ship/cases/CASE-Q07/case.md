@@ -7,10 +7,10 @@
 ## What was done (in order)
 
 - `t+0ms`  **POST /api/cart?currencyCode=USD**
-  - request body: `{"item":{"productId":"0PUK6V6EV0","quantity":1},"userId":"<session uuid, internal>"}`
+  - request body: `{"item":{"productId":"0PUK6V6EV0","quantity":1},"userId":"b40a17c6-9d52-4e83-8f21-6c05a9e21b74"}`
   - response: HTTP 200 — body: `<cart accepted>`
 - `t+0ms`  **POST /api/checkout?currencyCode=USD**
-  - request body: `{"userId":"<session uuid>","userCurrency":"USD","email":"ODR-5J1Q7@Sample.test","address":{"streetAddress":"ODR-5J1Q7","state":"CA","country":"United States","city":"Mountain View","zipCode":"94043"},"creditCard":{"creditCardCvv":672,"creditCardExpirationMonth":1,"creditCardExpirationYear":2030,"creditCardNumber":"4432-8015-6152-0454"}}`
+  - request body: `{"userId":"b40a17c6-9d52-4e83-8f21-6c05a9e21b74","userCurrency":"USD","email":"ODR-5J1Q7@example.test","address":{"streetAddress":"ODR-5J1Q7","state":"CA","country":"United States","city":"Mountain View","zipCode":"94043"},"creditCard":{"creditCardCvv":672,"creditCardExpirationMonth":1,"creditCardExpirationYear":2030,"creditCardNumber":"4432-8015-6152-0454"}}`
   - response: HTTP 200 — body: `{"orderId":"3cfd32b3-7f3c-11f1-90da-96ecc7e640eb","shippingAddress":{"streetAddress":"ODR-5J1Q7","city":"Mountain View","state":"CA","country":"United States","zipCode":"94043"},"items":"<elided>"}`
 - `t+29337ms`  observed state via `durable-state check — query the durable order/accounting record for the key submitted above`: HTTP 200 — `no matching durable record present`
 - `t+58842ms`  observed state via `durable-state check — query the durable order/accounting record for the key submitted above`: HTTP 200 — `matching durable record present — order ODR-5J1Q7`

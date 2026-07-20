@@ -41,17 +41,17 @@
    "payload": "{\"userId\":\"1624af2a-31a3-4409-9689-25849379569d\",\"userCurrency\":\"USD\",\"email\":\"ODR-7X4K9@example.test\",\"address\":{\"streetAddress\":\"ODR-7X4K9\",\"state\":\"CA\",\"country\":\"United States\",\"city\":\"Mountain View\",\"zipCode\":\"94043\"},\"creditCard\":{\"creditCardCvv\":672,\"creditCardExpirationMonth\":1,\"creditCardExpirationYear\":2030,\"creditCardNumber\":\"4432-8015-6152-0454\"}}"
   },
   {
-   "t_rel_ms": 16,
-   "kind": "observation",
-   "probe": "durable-state check — query the durable order/accounting record for the key submitted above",
-   "status": 200,
-   "body": "no matching durable record present"
-  },
-  {
    "t_rel_ms": 425,
    "kind": "response",
    "status": 200,
    "body": "{\"orderId\":\"4714783e-7e9a-11f1-a92b-72c3ce69f378\",\"shippingTrackingId\":\"c3cf14f4-1fab-4bf6-8497-e54bf69dbb55\",\"shippingCost\":{\"currencyCode\":\"USD\",\"units\":8,\"nanos\":990000000},\"shippingAddress\":{\"streetAddress\":\"ODR-7X4K9\",\"city\":\"Mountain View\",\"state\":\"CA\",\"country\":\"United States\",\"zipCode\":\"94043\"},\"items\":[{\"cost\":{\"currencyCode\":\"USD\",\"units\":175,\"nanos\":0},\"item\":{\"productId\":\"0PUK6V6EV0\",\"quantity\":1,\"product\":{\"id\":\"0PUK6V6EV0\",\"name\":\"Solar System Color Imager\",\"description\":\"You have your new telescope and have observed Saturn and Jupiter. Now you're ready to take the…"
+  },
+  {
+   "t_rel_ms": 2425,
+   "kind": "observation",
+   "probe": "durable-state check — query the durable order/accounting record for the key submitted above",
+   "status": 200,
+   "body": "no matching durable record present"
   },
   {
    "t_rel_ms": 27698,

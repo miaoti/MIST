@@ -76,7 +76,7 @@
    "t_rel_ms": 3322,
    "kind": "observation",
    "probe": "durable-state check — query the durable order document for the key submitted above",
-   "status": 201,
+   "status": 200,
    "body": "matching durable record present — 1 order document for the acting customer"
   }
  ]
