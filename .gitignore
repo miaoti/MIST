@@ -171,3 +171,6 @@ debug/a-main/benchmark/b4/pws/evomaster/*.err
 debug/a-main/benchmark/b4/pws/evomaster/*.pid
 debug/a-main/benchmark/b4/pws/evomaster/statistics.csv
 debug/a-main/benchmark/b4/pws/*.winpid
+
+# rater-packet generated deliverable zips (binaries; not committed)
+debug/a-main/benchmark/rater-packet/dist/

@@ -25,7 +25,6 @@ files and entities in this bundle.
 with the target service's URL in the caller's ServiceImpl.
 
 **Assembly attestation (administrator):** extracted 2026-07-10 via `git archive <commit> <paths>`
-from the commit above; the extracted tree is upstream application source only;
-see the internal assembly record for provenance.
+from the commit above; the extracted tree is upstream application source only.
 Bundle version: `tt-bundle-1` — cases reference the bundle by this directory; any change is a new
 versioned bundle, never an edit in place.

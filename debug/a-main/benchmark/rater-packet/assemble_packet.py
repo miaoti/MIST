@@ -28,7 +28,10 @@ SHIP, ADMIN = os.path.join(ROOT, "ship"), os.path.join(ROOT, "admin")
 
 BANNED_IN_SHIP = ["MIST", "mist", "[INTERNAL]", "detector", "stratum", "wild-flag", "M-yield",
                   "calibration", "INJECTED", "fabricatedack", "lostwrite", "faultmode",
-                  "§11", "§1.95", "checklist"]
+                  "§11", "§1.95", "checklist",
+                  # readiness-review C5 hardening: tokens verified absent, banned to self-defend re-gen
+                  "oracle", "read-back", "readback", "corpus", "meshsever", "SCREEN-G", "SCREEN-B",
+                  "single-key", "street_address", "moneytype"]
 
 START_HERE = """# START HERE — rater packet
 
