@@ -1,0 +1,3 @@
+=== adminroute-lostwrite re-capture (N<=3) ===
+--- attempt 1 ---
+leg=CTRL fault=off stations=st1784527900411672a31893->st1784527900411672b6100 ack={"status":0,"msg":"some station not exists","data":["st1784527900411672b6100","st1784527900411672a31893"]}|HTTP=400 ts_route_rows=0

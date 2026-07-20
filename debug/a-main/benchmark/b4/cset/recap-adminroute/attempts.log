@@ -1,0 +1,6 @@
+=== adminroute-lostwrite re-capture (N<=3) ===
+--- attempt 1 ---
+leg=CTRL fault=off ack={"status":1,"msg":"Save and Modify success","data":{"id":"59955bf0-7551-4357-946e-c430321888b0","stations":["shanghai","taiyuan"],"distances":[0,1350],"startStation":"shanghai","endStation":"taiyuan"}}|HTTP=200 route_count 235->236 delta=1
+leg=FLT fault=on ack={"status":1,"msg":"create and modify success","data":null}|HTTP=200 route_count 236->236 delta=0
+  GATE PASS: control PRESENT (1) & fault ABSENT (0) = of-record
+=== result: PASS=1 ===

@@ -1,0 +1,6 @@
+=== adminroute-lostwrite re-capture (N<=3) ===
+--- attempt 1 ---
+leg=CTRL fault=off route_id=rr17845274769388525865 ack={"status":1,"msg":"Save and Modify success","data":{"id":"3932546f-2a54-419c-93e5-a64e75588bca","stations":["shanghai","taiyuan"],"distances":[0,1350],"startStation":"shanghai","endStation":"taiyuan"}}|HTTP=200 ts_route_rows=0
+leg=FLT fault=on route_id=rr178452763867287512264 ack={"status":1,"msg":"create and modify success","data":null}|HTTP=200 ts_route_rows=0
+  gate not met (ctrl=0 flt=0) -> retry
+--- attempt 2 ---
