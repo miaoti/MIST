@@ -126,11 +126,14 @@ def main():
     io.open(os.path.join(ADMIN, "screen-instrument.md"), "w", encoding="utf-8", newline="\n").write(find(secs, "§11"))
     io.open(os.path.join(ADMIN, "debrief.md"), "w", encoding="utf-8", newline="\n").write(find(secs, "§10"))
 
-    # docs bundle (copy; self-contained packet)
-    src_bundle = os.path.join(BENCH, "docs-bundles", "trainticket")
-    dst_bundle = os.path.join(SHIP, "docs-bundles", "trainticket")
-    if os.path.isdir(dst_bundle): shutil.rmtree(dst_bundle)
-    shutil.copytree(src_bundle, dst_bundle)
+    # docs bundles (copy ALL per-SUT bundles; self-contained packet). R1 fix: was trainticket-only.
+    src_root = os.path.join(BENCH, "docs-bundles")
+    for _sut in sorted(os.listdir(src_root)):
+        _sp = os.path.join(src_root, _sut)
+        if not os.path.isdir(_sp): continue
+        _dp = os.path.join(SHIP, "docs-bundles", _sut)
+        if os.path.isdir(_dp): shutil.rmtree(_dp)
+        shutil.copytree(_sp, _dp)
 
     # leak gate over ship/
     hits = []

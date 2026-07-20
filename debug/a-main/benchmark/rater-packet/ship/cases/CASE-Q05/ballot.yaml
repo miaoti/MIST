@@ -1,0 +1,9 @@
+case_id: CASE-Q05
+label:            # genuine | benign | underspecified
+grounding:
+  citation:       # doc/spec/source location inside the provided bundle
+  quote_or_ref:   # the clause that grounds the label
+confidence:       # high | medium | low
+rationale: |
+  # 2-4 sentences: what was promised, what was observed, why the label follows
+time_minutes:     # integer

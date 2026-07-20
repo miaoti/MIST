@@ -1,0 +1,22 @@
+# Case CASE-Q02
+
+**System:** teastore  (version set: TeaStore v1.4.2)
+
+**Reference material:** Use ONLY the provided documentation bundle: `docs-bundles/teastore/`
+
+## What was done (in order)
+
+- `t+0ms`  **POST /tools.descartes.teastore.webui/loginAction?<credentials redacted>**
+  - response: HTTP 200 — body: `<response redacted (carries a session token)>`
+- `t+42ms`  **POST /tools.descartes.teastore.webui/cartAction?addToCart=&productid=42**
+  - response: HTTP 200 — body: `<success-shaped page rendered>`
+- `t+205ms`  **POST /tools.descartes.teastore.webui/cartAction?firstname=corpus-marker&lastname=Corpus&address1=Street1&address2=City1&cardtype=visa&cardnumber=314159265359&expirydate=12%2F2029&confirm=Confirm**
+  - response: HTTP 200 — body: `<success-shaped page rendered>`
+- `t+120261ms`  observed state via `GET /tools.descartes.teastore.webui/profile (orders table) — read in a later verification pass`: HTTP 200 — `orders table: order 'corpus-marker' PRESENT`
+
+## Your task
+
+Using ONLY the reference material above, judge whether the observed outcome is a
+**genuine defect**, **by-design / benign**, or **underspecified** (the intended
+behavior is not derivable from the reference material). Record your answer in
+`ballot.yaml`.

@@ -1,0 +1,17 @@
+{
+  "note": "STAGED delta for the sealed MANIFEST-r2.json (read-only) - the TT re-capture (RESULT-tt-recapture.md) un-gated 4 TT cases. Fold at the Step-5 re-seal.",
+  "rateability_flips": {
+    "TT-createaccount-agreement-001": "ok",
+    "TT-cancel-refund-fabricatedack-001": "ok",
+    "TT-adminroute-lostwrite-001": "ok",
+    "TT-adminbasic-contacts-lostwrite-001": "ok"
+  },
+  "opaque_id_map_additions": {
+    "TT-createaccount-agreement-001": "CASE-Q48",
+    "TT-cancel-refund-fabricatedack-001": "CASE-Q49",
+    "TT-adminroute-lostwrite-001": "CASE-Q50",
+    "TT-adminbasic-contacts-lostwrite-001": "CASE-Q51"
+  },
+  "read_back_basis": "business-key-scoped MySQL (ts.inside_money/route/contacts) escaping the /account+admin-list truncation; RESULT-tt-recapture.md",
+  "positive_stratum_after": "7 = TeaStore 3 / TT 4 (2-SUT-by-construction, disclosed)"
+}
