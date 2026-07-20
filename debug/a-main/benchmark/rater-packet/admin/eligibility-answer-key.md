@@ -22,9 +22,10 @@ acknowledgement** (the request was refused, not accepted). The observed durable 
 matching order record — which is exactly consistent with a rejected create. Because the operation
 was never acknowledged as a success (HTTP 400 / status:0, reason stated), the absence is by-design,
 not a lost write: a lost write requires a **success** acknowledgement (2xx) whose durable effect is
-then missing. Correct label: benign/by-design. `ack_carries_failure_sentinel` = **no / not-a-success-
-ack** (there is no success-shaped ack). A `genuine` label = fail (misreads a rejected request as a
-lost write); `underspecified` = fail (the rejection reason is stated and the norm is derivable).
+then missing. Correct label: benign/by-design. `ack_carries_failure_sentinel` = **n/a** (the ack is a 400, not a
+2xx success — the field applies only to a success-shaped ack). A `genuine` label = fail (misreads a
+rejected request as a lost write); `underspecified` = fail (the rejection reason is stated and the
+norm is derivable).
 
 ## Spec-reading Q1 — correct answer: **ts-user-service**
 `UserServiceImpl.saveUser` (ts-user-service) persists the User entity via `userRepository.save(user)`

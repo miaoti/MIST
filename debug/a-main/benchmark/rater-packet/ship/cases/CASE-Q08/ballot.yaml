@@ -2,8 +2,9 @@ case_id: CASE-Q08
 rater_id:         # your assigned opaque rater code (required — joins your ballots)
 rubric_version: 3   # copy from the rubric header (§3)
 label:            # genuine | benign | underspecified
-ack_carries_failure_sentinel:   # yes | no — MECHANICAL, not a judgment: does the
-                                #   success-shaped ack carry an in-body failure sentinel?
+ack_carries_failure_sentinel:   # yes | no | n/a — MECHANICAL, not a judgment: does a
+                                #   2xx-success ack carry an in-body failure sentinel?
+                                #   n/a if the ack is NOT a 2xx success (e.g. an HTTP 4xx).
 grounding:          # REQUIRED for genuine/benign
   citation:       # doc/spec/source location inside the provided bundle
   quote_or_ref:   # the clause that grounds the label

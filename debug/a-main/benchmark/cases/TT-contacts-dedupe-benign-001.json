@@ -56,7 +56,7 @@
     "rationale": "Designed duplicate-rejection, not a lost write: the second create returns HTTP 2xx with a TrainTicket envelope carrying status:0 ('Contacts already exists') and by design persists nothing new. The surface phenomenon matches accept-then-drop (2xx + no count delta on read-back), which is why this is the canonical benign trap for the acknowledged-lost-write class on this SUT - but the response body explicitly signals non-acceptance (status:0), so a correct acknowledgement rule must exclude it. Grounded in the Gate-1 G0 evidence (prep/sut-fault-injection-capability.md section 9; PairedFaultExecutor ACCEPT_THEN_DROP_DISCLOSURE: TrainTicket's only by-design drop soft-rejects with status:0).",
     "source": "natural",
     "version": 1,
-    "doc_citation": "prep/sut-fault-injection-capability.md section 9 (ACCEPT_THEN_DROP_DISCLOSURE)"
+    "doc_citation": "RATER-BUNDLE clause: ts-contacts-service ContactsServiceImpl.create — the duplicate-reject path returns status:0 'Contacts already exists' and persists nothing new (rater-reproducible in the trainticket bundle). Original label provenance: prep/sut-fault-injection-capability.md section 9 (ACCEPT_THEN_DROP_DISCLOSURE)."
   },
   "oracle_expectation": {
     "status_code_oracle": "no_flag",

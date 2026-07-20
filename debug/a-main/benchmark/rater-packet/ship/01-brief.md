@@ -22,8 +22,9 @@ that system. **Do not consult the upstream or live repository, web search, or an
 live code may differ from the pinned version each case is bound to, which would make labels
 irreproducible. The pinned bundle is the sole source of the norm.
 
-**Time + pay.** ~15–45 minutes per case. The set is capped at **≈ 90 cases**; at the stated pace that is
-**~22–68 hours**. You are paid **`[USER DECISION U1 — RATE]`** on a **per-hour** basis for the estimated
+**Time + pay.** ~15–45 minutes per case. You will rate roughly **18 cases** (your administrator
+confirms the exact set, and may include a short warm-up set first; they will tell you the total). You
+are paid **`[USER DECISION U1 — RATE]`** on a **per-hour** basis for the estimated
 hours **regardless of the labels you produce** — there is no "right answer" we are steering toward, and
 compensation does not depend on which labels you record.
 

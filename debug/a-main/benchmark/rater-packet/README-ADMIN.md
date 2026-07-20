@@ -27,8 +27,8 @@ script's leak gate re-scans every ship/ file for internal/tooling vocabulary on 
    verbatim, then the close-out attestation. (The failure rule in the same file is admin-only.)
 
 ## Contents
-- `ship/01-brief.md` (§1) · `ship/02-consent.md` (§2; FILL U1) · `ship/03-rubric.md` (§3,
-  rubric_version 3) · `ship/04-ballot.md` (§4)
+- `ship/00-START-HERE.md` (rater orientation / reading order) · `ship/01-brief.md` (§1) ·
+  `ship/02-consent.md` (§2; FILL U1) · `ship/03-rubric.md` (§3, rubric_version 3) · `ship/04-ballot.md` (§4)
 - `ship/eligibility/instructions.md` + `spec-answers.yaml` (the 2 spec-reading answers) +
   `SCREEN-1/` + `SCREEN-2/` (rendered practice cases: SCREEN-1 order-create-lost → genuine,
   SCREEN-2 order-create-rejected → benign; both grounded in `ts-order-service`)

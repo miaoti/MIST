@@ -16,7 +16,7 @@
 > standing, grades, funding, advising, authorship, or letters**. `[If compensation is course credit: an
 > equivalent alternative assignment is available — U1.]`
 >
-> I understand the study's **full purpose will be explained to me at close** (a short debrief, §10), and
+> I understand the study's **full purpose will be explained to me at close** (a short debrief), and
 > that I may withdraw my labels after that debrief. I consent to my anonymized labels and rationales
 > being released as part of an open research artifact.
 

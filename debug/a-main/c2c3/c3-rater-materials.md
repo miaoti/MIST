@@ -81,8 +81,9 @@ that system. **Do not consult the upstream or live repository, web search, or an
 live code may differ from the pinned version each case is bound to, which would make labels
 irreproducible. The pinned bundle is the sole source of the norm.
 
-**Time + pay.** ~15–45 minutes per case. The set is capped at **≈ 90 cases**; at the stated pace that is
-**~22–68 hours**. You are paid **`[USER DECISION U1 — RATE]`** on a **per-hour** basis for the estimated
+**Time + pay.** ~15–45 minutes per case. You will rate roughly **18 cases** (your administrator
+confirms the exact set, and may include a short warm-up set first; they will tell you the total). You
+are paid **`[USER DECISION U1 — RATE]`** on a **per-hour** basis for the estimated
 hours **regardless of the labels you produce** — there is no "right answer" we are steering toward, and
 compensation does not depend on which labels you record.
 
@@ -109,7 +110,7 @@ from the bundle alone; do not consult tools, traces, other people, or the web.
 > standing, grades, funding, advising, authorship, or letters**. `[If compensation is course credit: an
 > equivalent alternative assignment is available — U1.]`
 >
-> I understand the study's **full purpose will be explained to me at close** (a short debrief, §10), and
+> I understand the study's **full purpose will be explained to me at close** (a short debrief), and
 > that I may withdraw my labels after that debrief. I consent to my anonymized labels and rationales
 > being released as part of an open research artifact.
 
@@ -151,6 +152,9 @@ genuine.
   sequence, the response(s), and the observed durable state.
 - **Sole source of the NORM (what SHOULD have happened):** the provided pinned docs, OpenAPI/spec, and
   source code — nothing else.
+- **The observed transcript is the deployed system's ACTUAL output.** Ground the NORM in the bundle;
+  do not down-weight a case because an observed response `msg`/`data` string differs cosmetically from
+  a source literal — judge whether the *durable effect* the bundle promises is present or absent.
 - **Inadmissible:** distributed traces, any external tool output, the live/upstream repository or any
   other version, and any runtime behavior beyond what the case presents.
 
@@ -177,9 +181,11 @@ rater_id: <your assigned opaque rater code>          # required — the analysis
 rubric_version: 3                                    # copy from the rubric packet header (§3)
 case_id: <opaque id — you cannot decode any grouping from it>
 label: genuine | benign | underspecified
-ack_carries_failure_sentinel: yes | no               # MECHANICAL, not a judgment: does the success
+ack_carries_failure_sentinel: yes | no | n/a         # MECHANICAL, not a judgment: does a 2xx-SUCCESS
                                                      # response body carry a failure marker (-1,
                                                      # {1,"error"}, a negative id)? read it off the body.
+                                                     # n/a = the ack is NOT a 2xx success (nothing was
+                                                     # acknowledged as done — e.g. an HTTP 4xx/5xx).
 grounding:                       # REQUIRED for genuine/benign
   citation: <doc-url+version | spec-path+operation | source-file:symbol — INSIDE the provided bundle>
   quote_or_ref: <the clause/signature that grounds the label>

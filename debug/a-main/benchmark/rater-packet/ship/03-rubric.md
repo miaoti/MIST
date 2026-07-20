@@ -31,6 +31,9 @@ genuine.
  sequence, the response(s), and the observed durable state.
 - **Sole source of the NORM (what SHOULD have happened):** the provided pinned docs, OpenAPI/spec, and
  source code — nothing else.
+- **The observed transcript is the deployed system's ACTUAL output.** Ground the NORM in the bundle;
+ do not down-weight a case because an observed response `msg`/`data` string differs cosmetically from
+ a source literal — judge whether the *durable effect* the bundle promises is present or absent.
 - **Inadmissible:** distributed traces, any external tool output, the live/upstream repository or any
  other version, and any runtime behavior beyond what the case presents.
 
