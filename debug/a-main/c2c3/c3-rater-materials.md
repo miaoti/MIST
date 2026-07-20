@@ -95,7 +95,7 @@ from the bundle alone; do not consult tools, traces, other people, or the web.
 > I understand this is a paid labeling study on open-source microservice systems, run within my academic
 > group. I will label each case using only the provided version-pinned documentation, specification, and
 > source bundle for that system. **I attest that I am not a member of the group's microservice
-> fault/oracle/testing tooling project, and that I have not seen or discussed that tool, its hypothesis,
+> software-testing tooling project, and that I have not seen or discussed that tool, its hypothesis,
 > or its results** (screening, §9/§11). I will not discuss the cases or my labels with any other rater,
 > or with anyone in the group, until notified that the study has closed.
 >
@@ -114,7 +114,7 @@ from the bundle alone; do not consult tools, traces, other people, or the web.
 > being released as part of an open research artifact.
 
 *(Administered by a non-author where available; the recruiter is not the students' direct advisor —
-if unavoidable, disclosed in the IRB filing, §7.)*
+if unavoidable, disclosed in the IRB filing.)*
 
 ---
 
@@ -151,16 +151,17 @@ genuine.
   sequence, the response(s), and the observed durable state.
 - **Sole source of the NORM (what SHOULD have happened):** the provided pinned docs, OpenAPI/spec, and
   source code — nothing else.
-- **Inadmissible:** distributed traces, any tool/oracle output, the live/upstream repository or any
+- **Inadmissible:** distributed traces, any external tool output, the live/upstream repository or any
   other version, and any runtime behavior beyond what the case presents.
 
 **Worked examples (calibration-only; to be AUTHORED on real calibration cases and reviewed before
 labeling — the abstract patterns below do not by themselves cover the hard async/partial shapes):**
 - *genuine* — POST returns 201 with an order id; GET on that id 404s and no row exists in the service
   whose OpenAPI schema lists it as the system of record. (Contract-grounded "should persist".)
-- *genuine, error-marked ack* — cancel returns HTTP 200 with body `{1,"error"}`; the source shows the
-  cancel must issue a refund write, and no refund row exists. Acked (2xx), durable write missing,
-  contract-required → genuine. (Record `ack_carries_failure_sentinel: yes`.)
+- *genuine, error-marked ack* — an endpoint returns HTTP 200 whose body carries an in-envelope
+  failure sentinel (e.g. `{1,"error"}`); the source shows the call must persist a record, and a
+  scoped read shows none. Acked (2xx), durable write missing, contract-required → genuine.
+  (Record `ack_carries_failure_sentinel: yes`.)
 - *benign* — a write returns `202 Accepted` and the durable effect appears only after an async worker
   cycle the docs bound to a stated window; observed absence within that documented window is by-design.
 - *underspecified, async* — same async shape but the docs state no completion bound; absence at a finite

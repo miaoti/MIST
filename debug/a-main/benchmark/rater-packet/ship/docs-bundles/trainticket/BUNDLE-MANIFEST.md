@@ -14,7 +14,10 @@
 bundle — controllers show the HTTP endpoints, `*ServiceImpl` classes show what each operation is
 supposed to do (what it persists, what it returns), `ts-common` entities show the data model. Judge
 the case's observed transcript against that norm per the rubric. **Use only this bundle** — no web
-search, no other repositories, no chat tools (per your brief).
+search, no other repositories, no chat tools (per your brief). The included `README.md` is the
+upstream project's own readme, reproduced only as context; **ignore its "git clone", wiki, and deploy
+instructions** — do NOT clone or visit the upstream repository. Ground labels only in the source
+files and entities in this bundle.
 
 **Navigation hints:** an endpoint like `POST /api/v1/contactservice/contacts` maps to
 `ts-contacts-service/.../controller/ContactsController.java` → the called method in

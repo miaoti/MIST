@@ -1,6 +1,6 @@
 # TrainTicket documentation bundle — pinned reference (rater-facing)
 
-**System:** TrainTicket (FudanSELab), an open-source railway-ticketing microservice benchmark.
+**System:** TrainTicket (FudanSELab), an open-source railway-ticketing microservice application.
 **Source of record:** `github.com/FudanSELab/train-ticket` @ commit
 `5526e505be15a5232f558e0d3699abb1b90beeb2` (the release-1.0.0 lineage matching the deployed
 `codewisdom/*:1.0.0` images). Every file below is an UNMODIFIED extraction from that public commit.
@@ -14,7 +14,10 @@
 bundle — controllers show the HTTP endpoints, `*ServiceImpl` classes show what each operation is
 supposed to do (what it persists, what it returns), `ts-common` entities show the data model. Judge
 the case's observed transcript against that norm per the rubric. **Use only this bundle** — no web
-search, no other repositories, no chat tools (per your brief).
+search, no other repositories, no chat tools (per your brief). The included `README.md` is the
+upstream project's own readme, reproduced only as context; **ignore its "git clone", wiki, and deploy
+instructions** — do NOT clone or visit the upstream repository. Ground labels only in the source
+files and entities in this bundle.
 
 **Navigation hints:** an endpoint like `POST /api/v1/contactservice/contacts` maps to
 `ts-contacts-service/.../controller/ContactsController.java` → the called method in

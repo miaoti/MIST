@@ -9,7 +9,8 @@ so it cannot drift from the frozen protocol text. Layout (per the hand-over mani
     ship/                      EVERYTHING a rater may see
       01-brief.md              §1   02-consent.md §2   03-rubric.md §3   04-ballot.md §4
       eligibility/instructions.md   §9 + the 2-question spec-reading check
-      eligibility/SCREEN-G1/ SCREEN-B1/   (B4-rendered cases; copied, not re-rendered here)
+      eligibility/spec-answers.yaml   fillable sheet for the 2 spec-reading answers
+      eligibility/SCREEN-1/ SCREEN-2/   (B4-rendered cases; copied, not re-rendered here)
       docs-bundles/trainticket/  pinned upstream source bundle
     admin/                     INTERNAL-only
       screen-instrument.md     §11 (administered BEFORE assignment)
@@ -29,6 +30,25 @@ BANNED_IN_SHIP = ["MIST", "mist", "[INTERNAL]", "detector", "stratum", "wild-fla
                   "calibration", "INJECTED", "fabricatedack", "lostwrite", "faultmode",
                   "§11", "§1.95", "checklist"]
 
+START_HERE = """# START HERE — rater packet
+
+Thank you for taking part. Work through this packet in order:
+
+1. **`01-brief.md`** — what the task is and what you are being asked to do.
+2. **`02-consent.md`** — the consent form (your administrator confirms the compensation details).
+3. **`03-rubric.md`** — the labelling rubric (genuine / benign / underspecified). This is the core of
+   the task; read it carefully. **`04-ballot.md`** shows the exact fields you record for each case.
+4. **`docs-bundles/`** — the ONLY reference sources you may use, one folder per system. Each case uses
+   exactly one system's bundle.
+5. **`eligibility/`** — do the short eligibility exercise (`instructions.md`): two practice cases
+   (`SCREEN-1/`, `SCREEN-2/`) and two spec-reading questions (`spec-answers.yaml`). Return the two
+   practice ballots + `spec-answers.yaml` to your administrator.
+
+After you pass the eligibility exercise and are assigned, you will receive the rating cases — same
+`case.md` + `ballot.yaml` format as the practice cases. Use ONLY the materials in this packet: no web
+search, no other repositories, no discussing cases with anyone.
+"""
+
 ELIG_INSTRUCTIONS = """## Eligibility exercise (about 20 minutes, unpaid — stated up front)
 
 Before the paid work begins, this short exercise confirms the study is a good fit. It has two parts.
@@ -36,16 +56,18 @@ It is done once, on your own, using ONLY the materials in this packet (the rubri
 and the `docs-bundles/` reference sources). No web search, no other repositories, no discussing it
 with anyone.
 
-**Part 1 — two practice cases.** The folders `SCREEN-G1/` and `SCREEN-B1/` each contain a `case.md`
+**Part 1 — two practice cases.** The folders `SCREEN-1/` and `SCREEN-2/` each contain a `case.md`
 (what was done to the system and what was observed) and a `ballot.yaml`. Judge each case exactly as
 described in the rubric — derive the intended behavior from the documentation bundle, compare it to
-what the case shows, and record your label + grounding citation + confidence + rationale in the
-ballot. Expect roughly 5–10 minutes per case.
+what the case shows, and fill in the `ballot.yaml` (same fields as a study ballot). Expect roughly
+5–10 minutes per case.
 
-**Part 2 — two spec-reading questions.** Below. Answer them from the documentation bundle alone.
+**Part 2 — two spec-reading questions.** Below. Answer them from the documentation bundle alone, and
+record each answer in `spec-answers.yaml`.
 
-Return your two completed ballots and your two answers to the study administrator. You will not see
-these two cases again during the study.
+Return your two completed practice ballots (`SCREEN-1/ballot.yaml`, `SCREEN-2/ballot.yaml`) and
+`spec-answers.yaml` to the study administrator. You will not see these two practice cases again
+during the study.
 """
 
 SPEC_CHECK = """
@@ -59,7 +81,15 @@ entity**? Name the service and cite the class + method that persists it.
 `getToken` (the login flow). Does a successful call to this method **create or modify any durable
 record**? Answer yes/no and justify in one sentence from the source.
 
-Record your answers in the eligibility ballot alongside your labels for the two practice cases.
+Record each answer in `spec-answers.yaml` (the fields are provided there).
+"""
+
+SPEC_ANSWERS_SHEET = """# Spec-reading answers (eligibility Part 2) — fill in and return with your two practice ballots.
+q1_system_of_record:            # name the service that is the system of record for the User entity
+q1_citation:                    # class + method that persists it (inside the provided bundle)
+q2_persists_durable_record:     # yes | no — does TokenServiceImpl.getToken create/modify a durable record?
+q2_justification:               # one sentence from the source
+time_minutes:                   # integer
 """
 
 
@@ -114,6 +144,7 @@ def main():
     }
     for fn, body in ship_files.items():
         io.open(os.path.join(SHIP, fn), "w", encoding="utf-8", newline="\n").write(strip_ship_tag(body))
+    io.open(os.path.join(SHIP, "00-START-HERE.md"), "w", encoding="utf-8", newline="\n").write(START_HERE)
 
     # SHIP-rendering decision (disclosed): §9's frozen text is an ADMINISTRATOR protocol description
     # (it cross-references internal sections and the stratum structure, which §0 forbids showing a
@@ -122,6 +153,7 @@ def main():
     elig = ELIG_INSTRUCTIONS + SPEC_CHECK
     io.open(os.path.join(ADMIN, "eligibility-protocol-sec9.md"), "w", encoding="utf-8", newline="\n").write(find(secs, "§9"))
     io.open(os.path.join(SHIP, "eligibility", "instructions.md"), "w", encoding="utf-8", newline="\n").write(elig)
+    io.open(os.path.join(SHIP, "eligibility", "spec-answers.yaml"), "w", encoding="utf-8", newline="\n").write(SPEC_ANSWERS_SHEET)
 
     io.open(os.path.join(ADMIN, "screen-instrument.md"), "w", encoding="utf-8", newline="\n").write(find(secs, "§11"))
     io.open(os.path.join(ADMIN, "debrief.md"), "w", encoding="utf-8", newline="\n").write(find(secs, "§10"))

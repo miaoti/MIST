@@ -21,7 +21,7 @@
 > being released as part of an open research artifact.
 
 *(Administered by a non-author where available; the recruiter is not the students' direct advisor —
-if unavoidable, disclosed in the IRB filing, §7.)*
+if unavoidable, disclosed in the IRB filing.)*
 
 ---
 

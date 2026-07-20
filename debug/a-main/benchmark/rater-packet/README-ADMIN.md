@@ -29,11 +29,37 @@ script's leak gate re-scans every ship/ file for internal/tooling vocabulary on 
 ## Contents
 - `ship/01-brief.md` (§1) · `ship/02-consent.md` (§2; FILL U1) · `ship/03-rubric.md` (§3,
   rubric_version 3) · `ship/04-ballot.md` (§4)
-- `ship/eligibility/instructions.md` + `SCREEN-G1/` + `SCREEN-B1/` (rendered practice cases)
-- `ship/docs-bundles/trainticket/` — pinned upstream source bundle (`BUNDLE-MANIFEST.md` inside;
-  149 Java files extracted from the public FudanSELab commit `5526e505…`; mechanically leak-scanned)
+- `ship/eligibility/instructions.md` + `spec-answers.yaml` (the 2 spec-reading answers) +
+  `SCREEN-1/` + `SCREEN-2/` (rendered practice cases: SCREEN-1 order-create-lost → genuine,
+  SCREEN-2 order-create-rejected → benign; both grounded in `ts-order-service`)
+- `ship/docs-bundles/{trainticket,teastore,oteldemo,sockshop,bookinfo}/` — the pinned per-SUT
+  reference bundles (trainticket = full upstream source, `BUNDLE-MANIFEST.md` inside, 149 Java files
+  from FudanSELab commit `5526e505…`; the other four = pinned `*-openapi.yaml` skeleton + `BEHAVIOR.md`
+  + `README.md`). Self-contained; all mechanically leak-scanned.
+- `ship/cases/CASE-Q01..Q18/` — the **measurement instrument** (phase 2; see below)
 - `admin/screen-instrument.md` (§11) · `admin/debrief.md` (§10) ·
-  `admin/eligibility-answer-key.md` · `admin/eligibility-protocol-sec9.md` (the frozen §9 text)
+  `admin/eligibility-answer-key.md` · `admin/eligibility-protocol-sec9.md` (the frozen §9 text) ·
+  `admin/opaque-id-map.json` (the sealed opaque→true-case-id + label map — NEVER in a rater's copy)
+
+## Phased delivery (do NOT zip all of `ship/` at once)
+The packet is delivered in two phases, matching step 4→5 above:
+- **Phase 1 — eligibility packet (at recruitment):** `01-brief`, `02-consent`, `03-rubric`,
+  `04-ballot`, `eligibility/`, and `docs-bundles/`. This is what a candidate receives to consent +
+  sit the eligibility exercise.
+- **Phase 2 — measurement packet (after a candidate passes):** the `cases/CASE-Q01..Q18/` folders
+  (same `case.md`+`ballot.yaml` format) + the assignment email (§5 independence text). Shipping the
+  measurement cases with the eligibility packet would expose the instrument before assignment —
+  keep them separate.
+The 18-case `cases/` set is the **M-yield measurement instrument** (7 genuine / 11 benign), NOT the
+§6 calibration round; do not size/skew-check it against the calibration-round minima.
+
+## Regeneration vs rendered artifacts
+`assemble_packet.py` regenerates the SCAFFOLDING (`01`–`04`, `eligibility/instructions.md`,
+`eligibility/spec-answers.yaml`) from the frozen source and copies `docs-bundles/` from
+`debug/a-main/benchmark/docs-bundles/` — never hand-edit those in `ship/`; change the source and
+re-run (the script's leak gate re-scans on each run). The `cases/CASE-Qxx/` and `eligibility/SCREEN-*/`
+folders are rendered by the B4 harness from the case + sidecar sources (blind opaque ids, banned-string
+gate) and are NOT touched by `assemble_packet.py`.
 
 ## Disclosed rendering transforms (frozen source unchanged; applied by the script)
 - §2 consent: internal section refs "(screening, §9/§11)" → "(the screening)"; the reviewed

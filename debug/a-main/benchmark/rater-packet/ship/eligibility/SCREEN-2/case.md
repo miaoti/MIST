@@ -14,7 +14,7 @@
   - response: HTTP 200 — body: `<response redacted (carries a session token)>`
 - `t+274ms`  **POST /api/v1/orderservice/order**
   - request body: `{"accountId":"8b1e60d4-3a72-49cf-a1d6-05e8f2b93c17","status":1,"price":"95.0","boughtDate":"2026-02-05 14:20:00","travelDate":"2027-10-18","travelTime":"2027-10-18 07:00:00","from":"Wu Han","to":"Chang Sha","trainNumber":"","coachNumber":2,"seatClass":2,"seatNumber":"2B","contactsName":"S Buyer","documentType":1,"contactsDocumentNumber":"S3390014477"}`
-  - response: HTTP 400 — body: `{"status":0,"msg":"Order create failed.","data":null}`
+  - response: HTTP 400 — body: `{"status":0,"msg":"Order creation rejected: invalid request (trainNumber is empty).","data":null}`
 - `t+3110ms`  observed state via `durable-state check — query the durable order records for the account submitted above`: HTTP 200 — `no matching durable record present`
 
 ## Your task

@@ -1,26 +1,30 @@
 # [INTERNAL] Eligibility screen — answer key (administrator only; never shown to a candidate)
 
 Pass rule (§9): BOTH practice cases labeled correctly AND BOTH spec-reading questions correct.
-Grade the ballots against this key; record pass/fail per candidate with the §11 screen outcome.
+Grade the ballots against this key; record pass/fail per candidate with the screen outcome.
 
-## Practice case SCREEN-G1 — correct label: **genuine**
-A paid order is cancelled; the cancel returns HTTP 200 `{status:1,msg:"Success."}` (clean success
-acknowledgement). The norm (bundle: `ts-cancel-service/.../CancelServiceImpl.java` — cancelOrder
-calls drawback; `ts-inside-payment-service/.../InsidePaymentServiceImpl.java` — drawBack persists a
-refund Money record) requires the buyer's balance to rise by the refund. The observed durable state
-shows the acting user's balance UNCHANGED at 50.00 → an acknowledged write whose durable effect is
-absent = genuine defect. Acceptable groundings: cancelOrder→drawback flow, drawBack's persist, or
-the account-balance read-back contract. A `benign` or `underspecified` label = fail (the norm is
-derivable from the bundle; the transcript presents the durable state).
+## Practice case SCREEN-1 — correct label: **genuine**
+An order is created: `POST /api/v1/orderservice/order` returns HTTP 200 `{status:1,msg:"Success",
+data:{id:…}}` (clean success acknowledgement, an order id echoed). The norm (bundle:
+`ts-order-service/.../controller/OrderController.java` → `.../service/OrderServiceImpl.java` — the
+create path persists the Order via `orderRepository.save(order)`) requires a successful order
+creation to durably record the order. The observed durable state shows **no matching order record**
+for the account submitted. An acknowledged (2xx-success) create whose durable order row is absent =
+genuine defect. Acceptable groundings: OrderServiceImpl.create's `orderRepository.save`, the
+OrderController create endpoint, or the Order entity as the system of record. `ack_carries_failure_
+sentinel` = **no** (the success body carries no failure marker). A `benign` or `underspecified`
+label = fail (the norm is derivable from the bundle; the transcript presents the durable state).
 
-## Practice case SCREEN-B1 — correct label: **benign**
-The FIRST contact create succeeds (201, `{status:1,"Create contacts success"}`). The SECOND,
-identical create returns 201 with `{status:0,msg:"Contacts already exists"}` and the read-back shows
-exactly ONE contact. The norm (bundle: `ts-contacts-service/.../ContactsServiceImpl.java` — the
-create path checks accountId+documentType+documentNumber and rejects duplicates with status 0)
-makes this designed duplicate-rejection: the write was REFUSED (body says status:0), not silently
-lost. Correct label: benign/by-design. A `genuine` label = fail (misreads a signalled rejection as a
-lost write).
+## Practice case SCREEN-2 — correct label: **benign**
+An order create `POST /api/v1/orderservice/order` returns HTTP 400 `{status:0,msg:"Order creation
+rejected: invalid request (trainNumber is empty)","data":null}` — a **non-2xx, error-marked
+acknowledgement** (the request was refused, not accepted). The observed durable state shows no
+matching order record — which is exactly consistent with a rejected create. Because the operation
+was never acknowledged as a success (HTTP 400 / status:0, reason stated), the absence is by-design,
+not a lost write: a lost write requires a **success** acknowledgement (2xx) whose durable effect is
+then missing. Correct label: benign/by-design. `ack_carries_failure_sentinel` = **no / not-a-success-
+ack** (there is no success-shaped ack). A `genuine` label = fail (misreads a rejected request as a
+lost write); `underspecified` = fail (the rejection reason is stated and the norm is derivable).
 
 ## Spec-reading Q1 — correct answer: **ts-user-service**
 `UserServiceImpl.saveUser` (ts-user-service) persists the User entity via `userRepository.save(user)`

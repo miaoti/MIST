@@ -1,0 +1,6 @@
+# Spec-reading answers (eligibility Part 2) — fill in and return with your two practice ballots.
+q1_system_of_record:            # name the service that is the system of record for the User entity
+q1_citation:                    # class + method that persists it (inside the provided bundle)
+q2_persists_durable_record:     # yes | no — does TokenServiceImpl.getToken create/modify a durable record?
+q2_justification:               # one sentence from the source
+time_minutes:                   # integer
