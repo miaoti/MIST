@@ -37,6 +37,8 @@ BANNED_STRINGS = [
     "meshsever", "mesh-sever", "severed", "teardown", "post-vs", "post-drain",
     "envoyfilter", "virtualservice", "scaled", "scale to", "toggle", "drain",
     "maintenance", "read-back cap", "readback cap", "epoch_ms",
+    # (3) rev2-recapture fault-mechanism tokens (R2 leak-gate fix; drawBack stays ALLOWED — legit refund method)
+    "faultmode", "createfaultmode", "drawbackfaultmode", "corrupt", "skew",
 ]
 # Sidecar keys that would smuggle absolute time.
 ABSOLUTE_TIME_KEYS = re.compile(r"epoch|timestamp|generatedat|walltime|date", re.I)

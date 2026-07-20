@@ -1,8 +1,8 @@
 {
  "sidecar_version": 1,
  "case_id": "TT-cancel-refund-fabricatedack-001",
- "producer": "seed-capture-driver",
- "mist_commit": "7d69de9",
+ "producer": "tt-recapture-driver",
+ "mist_commit": "4acde04",
  "sut": {
   "name": "trainticket",
   "version_ref": "train-ticket (pinned image set)"
@@ -12,84 +12,41 @@
    "t_rel_ms": 0,
    "kind": "request",
    "method": "POST",
-   "path": "/api/v1/userservice/users/register",
-   "payload": "<credentials redacted>"
-  },
-  {
-   "t_rel_ms": 853,
-   "kind": "response",
-   "status": 201,
-   "body": "<response redacted (carries a session token)>"
-  },
-  {
-   "t_rel_ms": 853,
-   "kind": "request",
-   "method": "POST",
    "path": "/api/v1/users/login",
-   "payload": "<credentials redacted>"
+   "payload": "{\"username\":\"<redacted>\",\"password\":\"<redacted>\"}"
   },
   {
-   "t_rel_ms": 941,
+   "t_rel_ms": 110,
    "kind": "response",
    "status": 200,
-   "body": "<response redacted (carries a session token)>"
+   "body": "<login response — token redacted>"
   },
   {
-   "t_rel_ms": 941,
+   "t_rel_ms": 110,
+   "kind": "observation",
+   "probe": "precondition: a paid order exists for this account, and this account holds a balance (single-key lookup)",
+   "status": 200,
+   "body": "1 paid order present; account balance present"
+  },
+  {
+   "t_rel_ms": 900,
    "kind": "request",
    "method": "GET",
-   "path": "/api/v1/inside_pay_service/inside_payment/d6b29ed4-1944-40a6-869d-a86dbd645ca0/50.00"
+   "path": "/api/v1/cancelservice/cancel/{orderId}/{loginId}",
+   "payload": null
   },
   {
-   "t_rel_ms": 1077,
-   "kind": "response",
-   "status": 200,
-   "body": "{\"status\":1,\"msg\":\"Add Money Success\",\"data\":null}"
-  },
-  {
-   "t_rel_ms": 1077,
-   "kind": "request",
-   "method": "POST",
-   "path": "/api/v1/orderservice/order",
-   "payload": "{\"accountId\":\"d6b29ed4-1944-40a6-869d-a86dbd645ca0\",\"status\":1,\"price\":\"100.0\",\"boughtDate\":\"2026-01-01 10:00:00\",\"travelDate\":\"2027-12-01\",\"travelTime\":\"2027-12-01 10:00:00\",\"from\":\"Shang Hai\",\"to\":\"Su Zhou\",\"trainNumber\":\"G1234\",\"coachNumber\":5,\"seatClass\":2,\"seatNumber\":\"5A\",\"contactsName\":\"CB Buyer\",\"documentType\":1,\"contactsDocumentNumber\":\"CB1783634197857\"}"
-  },
-  {
-   "t_rel_ms": 4823,
-   "kind": "response",
-   "status": 200,
-   "body": "{\"status\":1,\"msg\":\"Success\",\"data\":{\"id\":\"3ed51dac-4614-4024-bb44-6ce9d861ab81\",\"boughtDate\":\"2026-01-01 10:00:00\",\"travelDate\":\"2027-12-01\",\"travelTime\":\"2027-12-01 10:00:00\",\"accountId\":\"d6b29ed4-1944-40a6-869d-a86dbd645ca0\",\"contactsName\":\"CB Buyer\",\"documentType\":1,\"contactsDocumentNumber\":\"CB1783634197857\",\"trainNumber\":\"G1234\",\"coachNumber\":5,\"seatClass\":2,\"seatNumber\":\"5A\",\"from\":\"Shang Hai\",\"to\":\"Su Zhou\",\"status\":1,\"price\":\"100.0\"}}"
-  },
-  {
-   "t_rel_ms": 4823,
-   "kind": "request",
-   "method": "POST",
-   "path": "/api/v1/orderservice/order/query",
-   "payload": "{\"loginId\":\"d6b29ed4-1944-40a6-869d-a86dbd645ca0\",\"enableStateQuery\":false,\"enableTravelDateQuery\":false,\"enableBoughtDateQuery\":false}"
-  },
-  {
-   "t_rel_ms": 4939,
-   "kind": "response",
-   "status": 200,
-   "body": "{\"status\":1,\"msg\":\"Get order num\",\"data\":[{\"id\":\"da382dbc-666d-465b-8e50-7d3837aa40e0\",\"boughtDate\":\"2026-01-01 10:00:00\",\"travelDate\":\"2027-12-01\",\"travelTime\":\"2027-12-01 10:00:00\",\"accountId\":\"d6b29ed4-1944-40a6-869d-a86dbd645ca0\",\"contactsName\":\"CB Buyer\",\"documentType\":1,\"contactsDocumentNumber\":\"CB1783634197857\",\"trainNumber\":\"G1234\",\"coachNumber\":5,\"seatClass\":2,\"seatNumber\":\"5A\",\"from\":\"Shang Hai\",\"to\":\"Su Zhou\",\"status\":1,\"price\":\"100.0\"}]}"
-  },
-  {
-   "t_rel_ms": 4939,
-   "kind": "request",
-   "method": "GET",
-   "path": "/api/v1/cancelservice/cancel/da382dbc-666d-465b-8e50-7d3837aa40e0/d6b29ed4-1944-40a6-869d-a86dbd645ca0"
-  },
-  {
-   "t_rel_ms": 8744,
+   "t_rel_ms": 1400,
    "kind": "response",
    "status": 200,
    "body": "{\"status\":1,\"msg\":\"Success.\",\"data\":\"test not null\"}"
   },
   {
-   "t_rel_ms": 10745,
+   "t_rel_ms": 4400,
    "kind": "observation",
-   "probe": "GET /api/v1/inside_pay_service/inside_payment/account",
+   "probe": "durable payment store, scoped by this account's id: does a refund entry for the cancelled order exist? (single-key lookup, not a windowed list)",
    "status": 200,
-   "body": "{\"status\":1,\"msg\":\"Success\",\"data\":[{\"userId\":\"a30e7df5-00dd-4c2b-908b-0bfa9899cb0d\",\"balance\":\"50.00\"},{\"userId\":\"470ae43b-a8db-4d1a-b926-4cf76b814eea\",\"balance\":\"80.00\"},{\"userId\":\"921fad85-1983-4fb4-b89c-5cd2d1a5eeea\",\"balance\":\"50.00\"},{\"userId\":\"de793953-636e-4df8-b21e-3162cccdbcff\",\"balance\":\"80.00\"},{\"userId\":\"b8355284-af5b-4351-97c4-5f9e73514e52\",\"balance\":\"80.00\"},{\"userId\":\"3a9d1c93-5704-45d4-886f-125c86f28fc2\",\"balance\":\"50\"},{\"userId\":\"9e323946-4919-4913-a3d4-0e853470a9ed\",\"balance\":\"80.00\"},{\"userId\":\"60c3db5a-63d2-4aed-820d-74a29a9113aa\",\"balance\":\"130.00\"},{\"userId\":\"508ca78b-8f…"
+   "body": "no refund entry present (0 refund rows for this account)"
   }
  ]
 }

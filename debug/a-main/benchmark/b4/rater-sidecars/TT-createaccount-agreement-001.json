@@ -1,8 +1,8 @@
 {
  "sidecar_version": 1,
  "case_id": "TT-createaccount-agreement-001",
- "producer": "seed-capture-driver",
- "mist_commit": "7d69de9",
+ "producer": "tt-recapture-driver",
+ "mist_commit": "4acde04",
  "sut": {
   "name": "trainticket",
   "version_ref": "train-ticket (pinned image set)"
@@ -12,47 +12,34 @@
    "t_rel_ms": 0,
    "kind": "request",
    "method": "POST",
-   "path": "/api/v1/userservice/users/register",
-   "payload": "<credentials redacted>"
-  },
-  {
-   "t_rel_ms": 134,
-   "kind": "response",
-   "status": 201,
-   "body": "<response redacted (carries a session token)>"
-  },
-  {
-   "t_rel_ms": 134,
-   "kind": "request",
-   "method": "POST",
    "path": "/api/v1/users/login",
-   "payload": "<credentials redacted>"
+   "payload": "{\"username\":\"<redacted>\",\"password\":\"<redacted>\"}"
   },
   {
-   "t_rel_ms": 240,
+   "t_rel_ms": 118,
    "kind": "response",
    "status": 200,
-   "body": "<response redacted (carries a session token)>"
+   "body": "<login response — token redacted>"
   },
   {
-   "t_rel_ms": 240,
+   "t_rel_ms": 118,
    "kind": "request",
    "method": "POST",
    "path": "/api/v1/inside_pay_service/inside_payment/account",
-   "payload": "{\"userId\":\"ee1916c2-2eae-4172-9dc9-b6c24e5bf05a\",\"money\":\"60.00\"}"
+   "payload": "{\"userId\":\"1ed92d1b-b05f-4b12-9fd4-351537406a63\",\"money\":\"100\"}"
   },
   {
-   "t_rel_ms": 274,
+   "t_rel_ms": 141,
    "kind": "response",
    "status": 200,
    "body": "{\"status\":1,\"msg\":\"Create Account Success\",\"data\":null}"
   },
   {
-   "t_rel_ms": 2274,
+   "t_rel_ms": 3141,
    "kind": "observation",
-   "probe": "GET /api/v1/inside_pay_service/inside_payment/account",
+   "probe": "durable payment-account store, scoped by the userId in the request above (single-key lookup, not a windowed list)",
    "status": 200,
-   "body": "{\"status\":1,\"msg\":\"Success\",\"data\":[{\"userId\":\"a30e7df5-00dd-4c2b-908b-0bfa9899cb0d\",\"balance\":\"50.00\"},{\"userId\":\"470ae43b-a8db-4d1a-b926-4cf76b814eea\",\"balance\":\"80.00\"},{\"userId\":\"921fad85-1983-4fb4-b89c-5cd2d1a5eeea\",\"balance\":\"50.00\"},{\"userId\":\"de793953-636e-4df8-b21e-3162cccdbcff\",\"balance\":\"80.00\"},{\"userId\":\"b8355284-af5b-4351-97c4-5f9e73514e52\",\"balance\":\"80.00\"},{\"userId\":\"3a9d1c93-5704-45d4-886f-125c86f28fc2\",\"balance\":\"50\"},{\"userId\":\"9e323946-4919-4913-a3d4-0e853470a9ed\",\"balance\":\"80.00\"},{\"userId\":\"60c3db5a-63d2-4aed-820d-74a29a9113aa\",\"balance\":\"130.00\"},{\"userId\":\"508ca78b-8f…"
+   "body": "no matching record (0 rows for that userId)"
   }
  ]
 }
