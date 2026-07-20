@@ -51,7 +51,11 @@ The packet is delivered in two phases, matching step 4→5 above:
   measurement cases with the eligibility packet would expose the instrument before assignment —
   keep them separate.
 The 18-case `cases/` set is the **M-yield measurement instrument** (7 genuine / 11 benign), NOT the
-§6 calibration round; do not size/skew-check it against the calibration-round minima.
+§6 calibration round; do not size/skew-check it against the calibration-round minima. By construction
+every one of the 18 has a norm derivable from its bundle, so the set contains **no *underspecified*
+exemplar** — this is a disclosed characteristic, not a defect (the *underspecified* label stays
+available to raters, and its reliability is exercised in the §6 calibration round + S3, not here). Do
+NOT reveal this label distribution to raters.
 
 ## Regeneration vs rendered artifacts
 `assemble_packet.py` regenerates the SCAFFOLDING (`01`–`04`, `eligibility/instructions.md`,
