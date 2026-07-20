@@ -26,7 +26,7 @@
    "kind": "request",
    "method": "POST",
    "path": "/api/v1/adminbasicservice/adminbasic/contacts",
-   "payload": "{\"id\":\"4c7a2f9e-8b31-4e05-a6d2-1f8c9b0e7a53\",\"accountId\":\"9a8b7c6d-5e4f-4a3b-9c2d-1e0f9a8b7c6d\",\"name\":\"Corpus Breadth Contact\",\"documentType\":1,\"documentNumber\":\"BR-R3\",\"phoneNumber\":\"13800000001\"}"
+   "payload": "{\"id\":\"4c7a2f9e-8b31-4e05-a6d2-1f8c9b0e7a53\",\"accountId\":\"9a8b7c6d-5e4f-4a3b-9c2d-1e0f9a8b7c6d\",\"name\":\"Sample Contact A\",\"documentType\":1,\"documentNumber\":\"BR-R3\",\"phoneNumber\":\"13800000001\"}"
   },
   {
    "t_rel_ms": 362,

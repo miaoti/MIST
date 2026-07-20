@@ -1,23 +1,23 @@
 swagger: "2.0"
 info:
   description: "Authored-by-us OpenAPI description of the DescartesResearch TeaStore\
-    \ v1.4.2 write and read-back surface exercised by the MIST C2 benchmark. TeaStore\
-    \ ships NO OpenAPI/Swagger document upstream; this spec is a CLEAN-ROOM\
+    \ v1.4.2 write and [redacted] surface exercised by the [redacted] [redacted] [redacted]. TeaStore\
+    \ ships NO OpenAPI/Swagger document upstream; this spec is a [redacted]\
     \ representation written from (a) the TeaStore v1.4.2 source (the webui\
     \ form-action servlets and the persistence JAX-RS REST endpoints) and (b) our\
-    \ own corpus capture specs — NO upstream OpenAPI text is copied (there is none\
+    \ own [redacted] capture specs — NO upstream OpenAPI text is copied (there is none\
     \ to copy). It covers the browser-facing webui form actions (login, cart/order\
     \ placement, profile) that mutate and display a customer's orders, plus the\
     \ internal persistence REST resources (orders, order-items, products) used as\
-    \ the durable read-back surface. Each operation is tagged with the owning\
+    \ the durable [redacted] surface. Each operation is tagged with the owning\
     \ service (webui or persistence). Request shapes: the webui actions are\
     \ HTML-form (application/x-www-form-urlencoded) servlet actions; the persistence\
     \ layer is JSON JAX-RS. Provenance of the exact paths and request fields:\
-    \ the MIST corpus TeaStore cases (target.entry_endpoint / target.readback) and\
+    \ the [redacted] [redacted] TeaStore cases ([redacted][redacted] / [redacted][redacted]) and\
     \ the capture flow specs, both authored-by-us; the upstream source tree is cited\
-    \ in externalDocs. Two-actor clean-room per the benchmark freeze §6 R1 (X5)."
+    \ in externalDocs. [redacted] [redacted] per the [redacted] [redacted] [redacted] [redacted] ([redacted])."
   version: "1.4.2"
-  title: "TeaStore WebUI + Persistence API (MIST-authored)"
+  title: "Service API"
   license:
     name: "Apache 2.0"
     url: "http://www.apache.org/licenses/LICENSE-2.0.html"
@@ -30,8 +30,8 @@ tags:
     \ /tools.descartes.teastore.webui."
 - name: "persistence"
   description: "Internal TeaStore persistence service (JAX-RS/JSON). The durable\
-    \ store of record for orders, order-items and products; used by MIST as the\
-    \ read-back surface. Deployed context path\
+    \ store of record for orders, order-items and products; used by [redacted] as the\
+    \ [redacted] surface. Deployed context path\
     \ /tools.descartes.teastore.persistence."
 externalDocs:
   description: "DescartesResearch/TeaStore v1.4.2 source (webui form-action servlets\
@@ -98,12 +98,12 @@ paths:
         \ product to the session cart; updateCartQuantities updates line quantities;\
         \ proceedtoCheckout shows the order form; and confirm (invoked as\
         \ ?confirm=Confirm with the order-form fields) PLACES THE ORDER — the write\
-        \ path the MIST corpus exercises. On confirm the servlet calls the auth\
+        \ path the [redacted] [redacted] exercises. On confirm the servlet calls the auth\
         \ service placeOrder, which writes the order then its order-items to the\
         \ persistence service, and renders the order-confirmed page (302 -> 200).\
-        \ The corpus marks a placed order by a globally-unique token carried in a\
-        \ human order-form field (address1 for the persistence read-back;\
-        \ firstname for the profile read-back). Source: TeaStore webui\
+        \ The [redacted] marks a placed order by a globally-unique token carried in a\
+        \ human order-form field (address1 for the persistence [redacted];\
+        \ firstname for the profile [redacted]). Source: TeaStore webui\
         \ CartActionServlet + auth placeOrder (order-then-items loop)."
       operationId: "cartAction"
       consumes:
@@ -114,7 +114,7 @@ paths:
       - name: "confirm"
         in: "query"
         description: "When set to 'Confirm', places the order using the order-form\
-          \ fields below (the corpus write path: POST cartAction?confirm=Confirm)."
+          \ fields below (the [redacted] write path: POST cartAction?confirm=Confirm)."
         required: false
         type: "string"
       - name: "addToCart"
@@ -131,7 +131,7 @@ paths:
       - name: "firstname"
         in: "formData"
         description: "Order-form customer first name. Displayed in the profile\
-          \ order history; used by the corpus profile read-back as the per-order\
+          \ order history; used by the [redacted] profile [redacted] as the per-order\
           \ marker."
         required: false
         type: "string"
@@ -143,7 +143,7 @@ paths:
       - name: "address1"
         in: "formData"
         description: "Order-form address line 1. Persisted on the order; used by the\
-          \ corpus persistence read-back as the per-order membership marker."
+          \ [redacted] persistence [redacted] as the per-order [redacted]."
         required: false
         type: "string"
       - name: "address2"
@@ -179,8 +179,8 @@ paths:
       summary: "Customer profile with order history"
       description: "Renders the logged-in customer's profile page, including the\
         \ Orders table (the browser-facing durable record of placed orders). The\
-        \ MIST corpus uses this table (per-order firstname marker) as the\
-        \ user-facing read-back for a placed order. Source: TeaStore webui\
+        \ [redacted] [redacted] uses this table (per-order firstname marker) as the\
+        \ user-facing [redacted] for a placed order. Source: TeaStore webui\
         \ ProfileServlet (reads the session user's orders from persistence)."
       operationId: "getProfile"
       produces:
@@ -195,10 +195,7 @@ paths:
       tags:
       - "persistence"
       summary: "List orders"
-      description: "Returns the durable order collection (JSON). The MIST corpus\
-        \ read-back identifies a placed order by MEMBERSHIP of its unique marker\
-        \ (address1) in this collection. Source: TeaStore persistence\
-        \ OrderEndpoint (JAX-RS GET /rest/orders)."
+      description: "See BEHAVIOR.md for this endpoint's durable contract."
       operationId: "listOrders"
       produces:
       - "application/json"
@@ -255,7 +252,7 @@ paths:
       - "persistence"
       summary: "List a user's orders"
       description: "Returns the durable orders belonging to one user (JSON). Used by\
-        \ the corpus as the per-user read-back for a placed order. Source: TeaStore\
+        \ the [redacted] as the per-user [redacted] for a placed order. Source: TeaStore\
         \ persistence OrderEndpoint (JAX-RS GET /rest/orders/user/{uid})."
       operationId: "listOrdersForUser"
       produces:
@@ -280,9 +277,9 @@ paths:
       - "persistence"
       summary: "List an order's line items"
       description: "Returns the child order-item collection of one order (JSON). The\
-        \ MIST corpus uses this as the read-back for the CHILD collection of a\
+        \ [redacted] [redacted] uses this as the [redacted] for the CHILD collection of a\
         \ placed order: a present parent order with an empty item collection is the\
-        \ partial-aggregate loss the corpus captures. Source: TeaStore persistence\
+        \ [redacted] loss the [redacted] captures. Source: TeaStore persistence\
         \ OrderItemEndpoint (JAX-RS GET /rest/orderitems/order/{oid})."
       operationId: "listOrderItemsForOrder"
       produces:
@@ -306,9 +303,7 @@ paths:
       tags:
       - "persistence"
       summary: "List products"
-      description: "Returns catalogue products (JSON). The corpus cart flow adds a\
-        \ product (e.g. id 42) sourced from this catalogue. Source: TeaStore\
-        \ persistence ProductEndpoint (JAX-RS GET /rest/products)."
+      description: "See BEHAVIOR.md for this endpoint's durable contract."
       operationId: "listProducts"
       produces:
       - "application/json"
@@ -366,7 +361,7 @@ definitions:
   Order:
     type: "object"
     description: "A persisted customer order (persistence layer). The parent record\
-      \ whose presence/absence and child item collection the MIST read-back checks."
+      \ whose presence/absence and child item collection the [redacted] [redacted] checks."
     properties:
       id:
         type: "integer"
@@ -386,11 +381,10 @@ definitions:
       addressName:
         type: "string"
         description: "Recipient name on the order (first/last name from the order\
-          \ form; carries the profile read-back marker)."
+          \ form; carries the profile [redacted] marker)."
       address1:
         type: "string"
-        description: "Address line 1 on the order (carries the persistence read-back\
-          \ membership marker)."
+        description: "See BEHAVIOR.md for this endpoint's durable contract."
       address2:
         type: "string"
         description: "Address line 2 on the order."
@@ -409,7 +403,7 @@ definitions:
   OrderItem:
     type: "object"
     description: "A line item of an order (persistence layer). The child records\
-      \ whose collection the partial-aggregate read-back checks."
+      \ whose collection the [redacted] [redacted] checks."
     properties:
       id:
         type: "integer"

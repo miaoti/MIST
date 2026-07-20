@@ -39,33 +39,33 @@
    "kind": "request",
    "method": "POST",
    "path": "/api/v1/contactservice/contacts",
-   "payload": "{\"accountId\":\"460fb741-d516-407a-8a96-6cf6c7e825c0\",\"name\":\"Corpus Contact\",\"documentType\":1,\"documentNumber\":\"NM20260710\",\"phoneNumber\":\"13900000000\"}"
+   "payload": "{\"accountId\":\"460fb741-d516-407a-8a96-6cf6c7e825c0\",\"name\":\"Sample Contact\",\"documentType\":1,\"documentNumber\":\"NM20260710\",\"phoneNumber\":\"13900000000\"}"
   },
   {
    "t_rel_ms": 1211,
    "kind": "response",
    "status": 201,
-   "body": "{\"status\":1,\"msg\":\"Create contacts success\",\"data\":{\"id\":\"20627a10-bdab-4d8c-9627-a5ef11986442\",\"accountId\":\"460fb741-d516-407a-8a96-6cf6c7e825c0\",\"name\":\"Corpus Contact\",\"documentType\":1,\"documentNumber\":\"NM20260710\",\"phoneNumber\":\"13900000000\"}}"
+   "body": "{\"status\":1,\"msg\":\"Create contacts success\",\"data\":{\"id\":\"20627a10-bdab-4d8c-9627-a5ef11986442\",\"accountId\":\"460fb741-d516-407a-8a96-6cf6c7e825c0\",\"name\":\"Sample Contact\",\"documentType\":1,\"documentNumber\":\"NM20260710\",\"phoneNumber\":\"13900000000\"}}"
   },
   {
    "t_rel_ms": 1212,
    "kind": "request",
    "method": "PUT",
    "path": "/api/v1/contactservice/contacts",
-   "payload": "{\"id\":\"20627a10-bdab-4d8c-9627-a5ef11986442\",\"accountId\":\"460fb741-d516-407a-8a96-6cf6c7e825c0\",\"name\":\"Corpus Contact\",\"documentType\":1,\"documentNumber\":\"NM20260710\",\"phoneNumber\":\"13900000000\"}"
+   "payload": "{\"id\":\"20627a10-bdab-4d8c-9627-a5ef11986442\",\"accountId\":\"460fb741-d516-407a-8a96-6cf6c7e825c0\",\"name\":\"Sample Contact\",\"documentType\":1,\"documentNumber\":\"NM20260710\",\"phoneNumber\":\"13900000000\"}"
   },
   {
    "t_rel_ms": 1280,
    "kind": "response",
    "status": 200,
-   "body": "{\"status\":1,\"msg\":\"Modify success\",\"data\":{\"id\":\"20627a10-bdab-4d8c-9627-a5ef11986442\",\"accountId\":\"460fb741-d516-407a-8a96-6cf6c7e825c0\",\"name\":\"Corpus Contact\",\"documentType\":1,\"documentNumber\":\"NM20260710\",\"phoneNumber\":\"13900000000\"}}"
+   "body": "{\"status\":1,\"msg\":\"Modify success\",\"data\":{\"id\":\"20627a10-bdab-4d8c-9627-a5ef11986442\",\"accountId\":\"460fb741-d516-407a-8a96-6cf6c7e825c0\",\"name\":\"Sample Contact\",\"documentType\":1,\"documentNumber\":\"NM20260710\",\"phoneNumber\":\"13900000000\"}}"
   },
   {
    "t_rel_ms": 2781,
    "kind": "observation",
    "probe": "GET /api/v1/contactservice/contacts/account/{accountId}",
    "status": 200,
-   "body": "{\"status\":1,\"msg\":\"Success\",\"data\":[{\"id\":\"20627a10-bdab-4d8c-9627-a5ef11986442\",\"accountId\":\"460fb741-d516-407a-8a96-6cf6c7e825c0\",\"name\":\"Corpus Contact\",\"documentType\":1,\"documentNumber\":\"NM20260710\",\"phoneNumber\":\"13900000000\"}]}"
+   "body": "{\"status\":1,\"msg\":\"Success\",\"data\":[{\"id\":\"20627a10-bdab-4d8c-9627-a5ef11986442\",\"accountId\":\"460fb741-d516-407a-8a96-6cf6c7e825c0\",\"name\":\"Sample Contact\",\"documentType\":1,\"documentNumber\":\"NM20260710\",\"phoneNumber\":\"13900000000\"}]}"
   }
  ]
 }

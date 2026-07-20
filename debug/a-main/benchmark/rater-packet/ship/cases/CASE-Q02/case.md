@@ -1,18 +1,18 @@
 # Case CASE-Q02
 
-**System:** teastore  (version set: TeaStore v1.4.2)
+**System:** trainticket  (version set: train-ticket (pinned image set))
 
-**Reference material:** Use ONLY the provided documentation bundle: `docs-bundles/teastore/`
+**Reference material:** Use ONLY the provided documentation bundle: `docs-bundles/trainticket/`
 
 ## What was done (in order)
 
-- `t+0ms`  **POST /tools.descartes.teastore.webui/loginAction?<credentials redacted>**
-  - response: HTTP 200 — body: `<response redacted (carries a session token)>`
-- `t+42ms`  **POST /tools.descartes.teastore.webui/cartAction?addToCart=&productid=42**
-  - response: HTTP 200 — body: `<success-shaped page rendered>`
-- `t+205ms`  **POST /tools.descartes.teastore.webui/cartAction?firstname=corpus-marker&lastname=Corpus&address1=Street1&address2=City1&cardtype=visa&cardnumber=314159265359&expirydate=12%2F2029&confirm=Confirm**
-  - response: HTTP 200 — body: `<success-shaped page rendered>`
-- `t+120261ms`  observed state via `GET /tools.descartes.teastore.webui/profile (orders table) — read in a later verification pass`: HTTP 200 — `orders table: order 'corpus-marker' PRESENT`
+- `t+0ms`  **POST /api/v1/users/login**
+  - request body: `{"username":"<redacted>","password":"<redacted>"}`
+  - response: HTTP 200 — body: `<login response — token redacted>`
+- `t+110ms`  observed state via `precondition: a paid order exists for this account, and this account holds a balance`: HTTP 200 — `1 paid order present; account balance present`
+- `t+900ms`  **GET /api/v1/cancelservice/cancel/{orderId}/{loginId}**
+  - response: HTTP 200 — body: `{"status":1,"msg":"Success.","data":"test not null"}`
+- `t+4400ms`  observed state via `durable payment store, scoped by this account's id: does a refund entry for the cancelled order exist?`: HTTP 200 — `no refund entry present (0 refund rows for this account)`
 
 ## Your task
 

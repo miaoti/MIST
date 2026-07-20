@@ -2,7 +2,7 @@
 > I understand this is a paid labeling study on open-source microservice systems, run within my academic
 > group. I will label each case using only the provided version-pinned documentation, specification, and
 > source bundle for that system. **I attest that I am not a member of the group's microservice
-> fault/oracle/testing tooling project, and that I have not seen or discussed that tool, its hypothesis,
+> software-testing tooling project, and that I have not seen or discussed that tool, its hypothesis,
 > or its results** (the screening). I will not discuss the cases or my labels with any other rater,
 > or with anyone in the group, until notified that the study has closed.
 >

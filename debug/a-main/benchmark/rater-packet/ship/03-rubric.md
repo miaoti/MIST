@@ -31,7 +31,7 @@ genuine.
  sequence, the response(s), and the observed durable state.
 - **Sole source of the NORM (what SHOULD have happened):** the provided pinned docs, OpenAPI/spec, and
  source code — nothing else.
-- **Inadmissible:** distributed traces, any tool/oracle output, the live/upstream repository or any
+- **Inadmissible:** distributed traces, any external tool output, the live/upstream repository or any
  other version, and any runtime behavior beyond what the case presents.
 
 **Worked examples (the abstract patterns below do not by themselves cover the hard async/partial shapes):**

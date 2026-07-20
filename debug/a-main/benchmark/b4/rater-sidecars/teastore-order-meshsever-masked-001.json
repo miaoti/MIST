@@ -36,7 +36,7 @@
    "t_rel_ms": 144,
    "kind": "request",
    "method": "POST",
-   "path": "/tools.descartes.teastore.webui/cartAction?firstname=corpus-marker&lastname=Corpus&address1=Street1&address2=City1&cardtype=visa&cardnumber=314159265359&expirydate=12%2F2029&confirm=Confirm"
+   "path": "/tools.descartes.teastore.webui/cartAction?firstname=order-9f3c1a&lastname=Sample&address1=Street1&address2=City1&cardtype=visa&cardnumber=314159265359&expirydate=12%2F2029&confirm=Confirm"
   },
   {
    "t_rel_ms": 181,
@@ -49,7 +49,7 @@
    "kind": "observation",
    "probe": "GET /tools.descartes.teastore.webui/profile (orders table) — read in a later verification pass",
    "status": 200,
-   "body": "orders table: order 'corpus-marker' ABSENT"
+   "body": "durable order collection: ABSENT"
   }
  ]
 }

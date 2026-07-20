@@ -37,7 +37,7 @@
   {
    "t_rel_ms": 3118,
    "kind": "observation",
-   "probe": "durable route store, scoped by the start/end stations in the request above (single-key lookup, not a windowed list): did the route collection gain the submitted route?",
+   "probe": "durable route store, scoped by the start/end stations in the request above: did the route collection gain the submitted route?",
    "status": 200,
    "body": "route collection count unchanged (the submitted route is not present)"
   }

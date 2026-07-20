@@ -1,4 +1,4 @@
-# Sock Shop — durable-behavior notes (per corpus-touched endpoint)
+# Sock Shop — durable-behavior notes (per endpoint)
 
 **Sole source of truth:** this note + the committed `sockshop-openapi.yaml` for this pinned version.
 

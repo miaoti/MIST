@@ -37,7 +37,7 @@
   {
    "t_rel_ms": 3141,
    "kind": "observation",
-   "probe": "durable payment-account store, scoped by the userId in the request above (single-key lookup, not a windowed list)",
+   "probe": "durable payment-account store, scoped by the userId in the request above",
    "status": 200,
    "body": "no matching record (0 rows for that userId)"
   }

@@ -1,19 +1,24 @@
 # Case CASE-Q11
 
-**System:** oteldemo  (version set: opentelemetry-demo app 2.2.0 / chart 0.40.9)
+**System:** trainticket  (version set: train-ticket (pinned image set))
 
-**Reference material:** Use ONLY the provided documentation bundle: `docs-bundles/oteldemo/`
+**Reference material:** Use ONLY the provided documentation bundle: `docs-bundles/trainticket/`
 
 ## What was done (in order)
 
-- `t+0ms`  **POST /api/cart?currencyCode=USD**
-  - request body: `{"item":{"productId":"0PUK6V6EV0","quantity":1},"userId":"<session uuid, internal>"}`
-  - response: HTTP 200 — body: `<cart accepted>`
-- `t+0ms`  **POST /api/checkout?currencyCode=USD**
-  - request body: `{"userId":"<session uuid>","userCurrency":"USD","email":"r1dev2-1784003126@corpus.test","address":{"streetAddress":"r1dev2-1784003126","state":"CA","country":"United States","city":"Mountain View","zipCode":"94043"},"creditCard":{"creditCardCvv":672,"creditCardExpirationMonth":1,"creditCardExpirationYear":2030,"creditCardNumber":"4432-8015-6152-0454"}}`
-  - response: HTTP 200 — body: `{"orderId":"3cfd32b3-7f3c-11f1-90da-96ecc7e640eb","shippingAddress":{"streetAddress":"r1dev2-1784003126","city":"Mountain View","state":"CA","country":"United States","zipCode":"94043"},"items":"<elided>"}`
-- `t+29337ms`  observed state via `SQL SELECT street_address FROM accounting.shipping WHERE street_address='r1dev2-1784003126'`: HTTP 200 — `[]`
-- `t+58842ms`  observed state via `SQL SELECT street_address FROM accounting.shipping WHERE street_address='r1dev2-1784003126'`: HTTP 200 — `[{"street_address":"r1dev2-1784003126"}]`
+- `t+0ms`  **POST /api/v1/userservice/users/register**
+  - request body: `<credentials redacted>`
+  - response: HTTP 201 — body: `<response redacted (carries a session token)>`
+- `t+1053ms`  **POST /api/v1/users/login**
+  - request body: `<credentials redacted>`
+  - response: HTTP 200 — body: `<response redacted (carries a session token)>`
+- `t+1177ms`  **POST /api/v1/contactservice/contacts**
+  - request body: `{"accountId":"460fb741-d516-407a-8a96-6cf6c7e825c0","name":"Sample Contact","documentType":1,"documentNumber":"NM20260710","phoneNumber":"13900000000"}`
+  - response: HTTP 201 — body: `{"status":1,"msg":"Create contacts success","data":{"id":"20627a10-bdab-4d8c-9627-a5ef11986442","accountId":"460fb741-d516-407a-8a96-6cf6c7e825c0","name":"Sample Contact","documentType":1,"documentNumber":"NM20260710","phoneNumber":"13900000000"}}`
+- `t+1212ms`  **PUT /api/v1/contactservice/contacts**
+  - request body: `{"id":"20627a10-bdab-4d8c-9627-a5ef11986442","accountId":"460fb741-d516-407a-8a96-6cf6c7e825c0","name":"Sample Contact","documentType":1,"documentNumber":"NM20260710","phoneNumber":"13900000000"}`
+  - response: HTTP 200 — body: `{"status":1,"msg":"Modify success","data":{"id":"20627a10-bdab-4d8c-9627-a5ef11986442","accountId":"460fb741-d516-407a-8a96-6cf6c7e825c0","name":"Sample Contact","documentType":1,"documentNumber":"NM20260710","phoneNumber":"13900000000"}}`
+- `t+2781ms`  observed state via `GET /api/v1/contactservice/contacts/account/{accountId}`: HTTP 200 — `{"status":1,"msg":"Success","data":[{"id":"20627a10-bdab-4d8c-9627-a5ef11986442","accountId":"460fb741-d516-407a-8a96-6cf6c7e825c0","name":"Sample Contact","documentType":1,"documentNumber":"NM20260710","phoneNumber":"13900000000"}]}`
 
 ## Your task
 

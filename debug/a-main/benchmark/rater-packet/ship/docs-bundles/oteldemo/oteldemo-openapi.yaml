@@ -1,27 +1,27 @@
 swagger: "2.0"
 info:
   description: "Authored-by-us OpenAPI description of the OpenTelemetry Demo (app\
-    \ 2.2.0) frontend HTTP API exercised by the MIST C2 benchmark. The OTel Demo is\
+    \ 2.2.0) frontend HTTP API exercised by the [redacted] [redacted] [redacted]. The OTel Demo is\
     \ gRPC-native and ships NO REST/OpenAPI document upstream; its browser-facing\
     \ surface is the frontend's /api/* gateway, which proxies to the gRPC services\
-    \ declared in pb/demo.proto. This spec is a CLEAN-ROOM representation authored\
-    \ from (a) that gateway + the demo.proto contract and (b) our own corpus capture\
+    \ declared in pb/demo.proto. This spec is a [redacted] representation authored\
+    \ from (a) that gateway + the demo.proto contract and (b) our own [redacted] capture\
     \ specs — NO upstream OpenAPI text is copied (there is none). It covers the cart\
     \ and checkout WRITE paths plus the product/recommendation/shipping reads.\
-    \ IMPORTANT read-back note: the checkout write is ASYNCHRONOUS — PlaceOrder\
+    \ IMPORTANT [redacted] note: the checkout write is ASYNCHRONOUS — PlaceOrder\
     \ acknowledges synchronously (200 with an OrderResult) and emits the order to\
     \ Kafka; the accounting service later consumes it and writes a durable row to\
     \ the accounting.shipping table (Postgres). There is NO frontend API GET for\
-    \ that durable row, so MIST's checkout read-back is a direct SQL probe of\
-    \ accounting.shipping keyed on the request-derived street_address marker (see\
-    \ the /api/checkout externalDocs note). This spec does NOT fabricate a GET for\
+    \ that durable row, so [redacted]'s checkout [redacted] is a direct SQL probe of\
+    \ accounting.shipping keyed on the request-derived [redacted] marker (see\
+    \ the /api/checkout externalDocs note). This spec does NOT [redacted] a GET for\
     \ it. Each operation is tagged with the owning gRPC service. Provenance of the\
-    \ exact paths and request fields: the MIST corpus OTel cases\
-    \ (target.entry_endpoint / target.readback) and the capture flow specs, both\
-    \ authored-by-us; the upstream source tree is cited in externalDocs. Two-actor\
-    \ clean-room per the benchmark freeze §6 R1 (X5)."
+    \ exact paths and request fields: the [redacted] [redacted] OTel cases\
+    \ ([redacted][redacted] / [redacted][redacted]) and the capture flow specs, both\
+    \ authored-by-us; the upstream source tree is cited in externalDocs. [redacted]\
+    \ [redacted] per the [redacted] [redacted] [redacted] [redacted] ([redacted])."
   version: "2.2.0"
-  title: "OpenTelemetry Demo Frontend API (MIST-authored)"
+  title: "Service API"
   license:
     name: "Apache 2.0"
     url: "http://www.apache.org/licenses/LICENSE-2.0.html"
@@ -79,7 +79,7 @@ paths:
       - "cart"
       summary: "Add an item to the cart"
       description: "Adds a product line to a session's cart. Source: frontend\
-        \ /api/cart gateway -> CartService.AddItem (demo.proto). The corpus checkout\
+        \ /api/cart gateway -> CartService.AddItem (demo.proto). The [redacted] checkout\
         \ flow adds a product (e.g. 0PUK6V6EV0) to a fresh session before placing\
         \ the order."
       operationId: "addCartItem"
@@ -109,8 +109,8 @@ paths:
         \ shipping, EMPTIES the cart, emits the order to Kafka, and returns an\
         \ OrderResult synchronously (200). The durable order record is written\
         \ ASYNCHRONOUSLY by the accounting service that consumes the Kafka order\
-        \ event — it is NOT returned by this call and has NO frontend GET. The MIST\
-        \ corpus carries a globally-unique marker in address.streetAddress and reads\
+        \ event — it is NOT returned by this call and has NO frontend GET. The [redacted]\
+        \ [redacted] carries a globally-unique marker in address.streetAddress and reads\
         \ the durable record back by SQL on accounting.shipping (see externalDocs).\
         \ Source: frontend /api/checkout gateway -> CheckoutService.PlaceOrder\
         \ (demo.proto)."
@@ -129,7 +129,7 @@ paths:
         in: "body"
         required: true
         description: "The checkout request: session id, contact email, shipping\
-          \ address (streetAddress carries the corpus read-back marker), currency\
+          \ address (streetAddress carries the [redacted] [redacted] marker), currency\
           \ and payment card."
         schema:
           $ref: "#/definitions/PlaceOrderRequest"
@@ -141,10 +141,7 @@ paths:
           schema:
             $ref: "#/definitions/OrderResult"
       externalDocs:
-        description: "Durable read-back is NOT an API GET: the accounting service\
-          \ consumes the Kafka order event and writes accounting.shipping; MIST\
-          \ reads it by SQL — SELECT street_address FROM accounting.shipping WHERE\
-          \ street_address='<request-derived marker>'."
+        description: "See BEHAVIOR.md for this endpoint's durable contract."
         url: "https://github.com/open-telemetry/opentelemetry-demo"
   /products/{id}:
     get:
@@ -290,7 +287,7 @@ definitions:
   Address:
     type: "object"
     description: "A shipping address (demo.proto Address). streetAddress carries the\
-      \ corpus read-back marker."
+      \ [redacted] [redacted] marker."
     properties:
       streetAddress:
         type: "string"

@@ -1,4 +1,4 @@
-# TeaStore — durable-behavior notes (per corpus-touched endpoint)
+# TeaStore — durable-behavior notes (per endpoint)
 
 **Sole source of truth:** this note + the committed `teastore-openapi.yaml` for this pinned version.
 

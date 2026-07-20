@@ -26,7 +26,7 @@
    "kind": "request",
    "method": "POST",
    "path": "/api/checkout?currencyCode=USD",
-   "payload": "{\"userId\":\"<session uuid>\",\"userCurrency\":\"USD\",\"email\":\"r1dev2-1784003126@corpus.test\",\"address\":{\"streetAddress\":\"r1dev2-1784003126\",\"state\":\"CA\",\"country\":\"United States\",\"city\":\"Mountain View\",\"zipCode\":\"94043\"},\"creditCard\":{\"creditCardCvv\":672,\"creditCardExpirationMonth\":1,\"creditCardExpirationYear\":2030,\"creditCardNumber\":\"4432-8015-6152-0454\"}}"
+   "payload": "{\"userId\":\"<session uuid>\",\"userCurrency\":\"USD\",\"email\":\"r1dev2-1784003126@Sample.test\",\"address\":{\"streetAddress\":\"r1dev2-1784003126\",\"state\":\"CA\",\"country\":\"United States\",\"city\":\"Mountain View\",\"zipCode\":\"94043\"},\"creditCard\":{\"creditCardCvv\":672,\"creditCardExpirationMonth\":1,\"creditCardExpirationYear\":2030,\"creditCardNumber\":\"4432-8015-6152-0454\"}}"
   },
   {
    "t_rel_ms": 0,
@@ -37,16 +37,16 @@
   {
    "t_rel_ms": 29337,
    "kind": "observation",
-   "probe": "SQL SELECT street_address FROM accounting.shipping WHERE street_address='r1dev2-1784003126'",
+   "probe": "durable-state check for the record submitted above",
    "status": 200,
    "body": "[]"
   },
   {
    "t_rel_ms": 58842,
    "kind": "observation",
-   "probe": "SQL SELECT street_address FROM accounting.shipping WHERE street_address='r1dev2-1784003126'",
+   "probe": "durable-state check for the record submitted above",
    "status": 200,
-   "body": "[{\"street_address\":\"r1dev2-1784003126\"}]"
+   "body": "[{\"the request marker field\":\"r1dev2-1784003126\"}]"
   }
  ]
 }

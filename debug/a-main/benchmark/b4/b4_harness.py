@@ -39,6 +39,9 @@ BANNED_STRINGS = [
     "maintenance", "read-back cap", "readback cap", "epoch_ms",
     # (3) rev2-recapture fault-mechanism tokens (R2 leak-gate fix; drawBack stays ALLOWED — legit refund method)
     "faultmode", "createfaultmode", "drawbackfaultmode", "corrupt", "skew",
+    # (4) blinding-audit SEV-2/SEV-4: curation markers + decode tells
+    "corpus", "breadth", "windowed list", "single-key lookup", "not a windowed",
+    "sql select", "accounting.shipping", "moneytype", "street_address",
 ]
 # Sidecar keys that would smuggle absolute time.
 ABSOLUTE_TIME_KEYS = re.compile(r"epoch|timestamp|generatedat|walltime|date", re.I)

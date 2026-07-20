@@ -1,22 +1,26 @@
 # Case CASE-Q18
 
-**System:** oteldemo  (version set: opentelemetry-demo app 2.2.0 / chart 0.40.9)
+**System:** sockshop  (version set: microservices-demo (Sock Shop))
 
-**Reference material:** Use ONLY the provided documentation bundle: `docs-bundles/oteldemo/`
+**Reference material:** Use ONLY the provided documentation bundle: `docs-bundles/sockshop/`
 
 ## What was done (in order)
 
-- `t+0ms`  **GET /api/products/0PUK6V6EV0**
-  - response: HTTP 200 — body: `<product json elided>`
-- `t+5ms`  **POST /api/cart?currencyCode=USD**
-  - request body: `{"item":{"productId":"0PUK6V6EV0","quantity":1},"userId":"1624af2a-31a3-4409-9689-25849379569d"}`
-  - response: HTTP 200 — body: `{"userId":"1624af2a-31a3-4409-9689-25849379569d","items":[{"productId":"0PUK6V6EV0","quantity":1}]}`
-- `t+16ms`  **POST /api/checkout?currencyCode=USD**
-  - request body: `{"userId":"1624af2a-31a3-4409-9689-25849379569d","userCurrency":"USD","email":"corpus-w121-3b5f90840d2c@example.test","address":{"streetAddress":"corpus-w121-3b5f90840d2c","state":"CA","country":"United States","city":"Mountain View","zipCode":"94043"},"creditCard":{"creditCardCvv":672,"creditCardExpirationMonth":1,"creditCardExpirationYear":2030,"creditCardNumber":"4432-8015-6152-0454"}}`
-- `t+16ms`  observed state via `SQL SELECT street_address FROM accounting.shipping WHERE street_address='corpus-w121-3b5f90840d2c'`: HTTP 200 — `[]`
-  - response: HTTP 200 — body: `{"orderId":"4714783e-7e9a-11f1-a92b-72c3ce69f378","shippingTrackingId":"c3cf14f4-1fab-4bf6-8497-e54bf69dbb55","shippingCost":{"currencyCode":"USD","units":8,"nanos":990000000},"shippingAddress":{"streetAddress":"corpus-w121-3b5f90840d2c","city":"Mountain View","state":"CA","country":"United States","zipCode":"94043"},"items":[{"cost":{"currencyCode":"USD","units":175,"nanos":0},"item":{"productId":"0PUK6V6EV0","quantity":1,"product":{"id":"0PUK6V6EV0","name":"Solar System Color Imager","description":"You have your new telescope and have observed Saturn and Jupiter. Now you're ready to take the…`
-- `t+27698ms`  observed state via `SQL SELECT street_address FROM accounting.shipping WHERE street_address='corpus-w121-3b5f90840d2c'`: HTTP 200 — `[]`
-- `t+328116ms`  observed state via `SQL SELECT street_address FROM accounting.shipping WHERE street_address='corpus-w121-3b5f90840d2c'`: HTTP 200 — `[{"street_address":"corpus-w121-3b5f90840d2c"}]`
+- `t+0ms`  **POST /register**
+  - request body: `<credentials redacted>`
+  - response: HTTP 200 — body: `<response redacted (carries a session token)>`
+- `t+28ms`  **POST /addresses**
+  - request body: `{"street":"my road","number":"3","country":"UK","city":"London","postcode":"E2 8RS"}`
+  - response: HTTP 200 — body: `{"id":"6a50689ea39e9b00016cdd9f"}`
+- `t+78ms`  **POST /cards**
+  - request body: `{"longNum":"5544154011345918","expires":"08/29","ccv":"958"}`
+  - response: HTTP 200 — body: `{"id":"6a50689ea39e9b00016cdda0"}`
+- `t+126ms`  **POST /cart**
+  - request body: `{"id":"819e1fbf-8b7e-4f6d-811f-693534916a8b"}`
+  - response: HTTP 201 — body: ``
+- `t+151ms`  **POST /orders**
+  - response: HTTP 201 — body: `{"id":"6a50689e04eb4f000a414b79","customerId":"6a50689ea39e9b00016cdd9e","customer":{"id":null,"firstName":"cb","lastName":"cb","username":"cb1783654558838","addresses":[],"cards":[]},"address":{"id":null,"number":"3","street":"my road","city":"London","postcode":"E2 8RS","country":"UK"},"card":{"id":null,"longNum":"5544154011345918","expires":"08/29","ccv":"958"},"items":[{"id":"6a50689ebf9479000ae1b98e","itemId":"819e1fbf-8b7e-4f6d-811f-693534916a8b","quantity":1,"unitPrice":14}],"shipment":{"id":"09dbb47d-009b-4070-8dda-abf2dd032a40","name":"6a50689ea39e9b00016cdd9e"},"date":"<time>…`
+- `t+3322ms`  observed state via `GET /orders (the acting customer's orders)`: HTTP 201 — `[{"customerId":"6a50689ea39e9b00016cdd9e","customer":{"firstName":"cb","lastName":"cb","username":"cb1783654558838","addresses":[],"cards":[]},"address":{"number":"3","street":"my road","city":"London","postcode":"E2 8RS","country":"UK"},"card":{"longNum":"5544154011345918","expires":"08/29","ccv":"958"},"items":[{"itemId":"819e1fbf-8b7e-4f6d-811f-693534916a8b","quantity":1,"unitPrice":14}],"shipment":{"name":"6a50689ea39e9b00016cdd9e"},"date":"<time>+0000","total":18.99,"_links":{"self":{"href":"http://orders/orders/6a50689e04eb4f000a414b79"},"order":{"href":"http://orders/or…`
 
 ## Your task
 
