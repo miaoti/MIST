@@ -6,13 +6,19 @@
 
 ## What was done (in order)
 
-- `t+0ms`  **POST /api/v1/users/login**
-  - request body: `{"username":"<redacted>","password":"<redacted>"}`
-  - response: HTTP 200 — body: `<login response — token redacted>`
-- `t+110ms`  observed state via `precondition: a paid order exists for this account, and this account holds a balance`: HTTP 200 — `1 paid order present; account balance present`
-- `t+900ms`  **GET /api/v1/cancelservice/cancel/{orderId}/{loginId}**
-  - response: HTTP 200 — body: `{"status":1,"msg":"Success.","data":"test not null"}`
-- `t+4400ms`  observed state via `durable payment store, scoped by this account's id: does a refund entry for the cancelled order exist?`: HTTP 200 — `no refund entry present (0 refund rows for this account)`
+- `t+0ms`  **POST /api/v1/userservice/users/register**
+  - request body: `<credentials redacted>`
+  - response: HTTP 201 — body: `<response redacted (carries a session token)>`
+- `t+1053ms`  **POST /api/v1/users/login**
+  - request body: `<credentials redacted>`
+  - response: HTTP 200 — body: `<response redacted (carries a session token)>`
+- `t+1177ms`  **POST /api/v1/contactservice/contacts**
+  - request body: `{"accountId":"460fb741-d516-407a-8a96-6cf6c7e825c0","name":"Sample Contact","documentType":1,"documentNumber":"NM20260710","phoneNumber":"13900000000"}`
+  - response: HTTP 201 — body: `{"status":1,"msg":"Create contacts success","data":{"id":"20627a10-bdab-4d8c-9627-a5ef11986442","accountId":"460fb741-d516-407a-8a96-6cf6c7e825c0","name":"Sample Contact","documentType":1,"documentNumber":"NM20260710","phoneNumber":"13900000000"}}`
+- `t+1212ms`  **PUT /api/v1/contactservice/contacts**
+  - request body: `{"id":"20627a10-bdab-4d8c-9627-a5ef11986442","accountId":"460fb741-d516-407a-8a96-6cf6c7e825c0","name":"Sample Contact","documentType":1,"documentNumber":"NM20260710","phoneNumber":"13900000000"}`
+  - response: HTTP 200 — body: `{"status":1,"msg":"Modify success","data":{"id":"20627a10-bdab-4d8c-9627-a5ef11986442","accountId":"460fb741-d516-407a-8a96-6cf6c7e825c0","name":"Sample Contact","documentType":1,"documentNumber":"NM20260710","phoneNumber":"13900000000"}}`
+- `t+2781ms`  observed state via `durable-state check — query the durable contact records for the key submitted above`: HTTP 200 — `matching durable record present — 1 contact record`
 
 ## Your task
 

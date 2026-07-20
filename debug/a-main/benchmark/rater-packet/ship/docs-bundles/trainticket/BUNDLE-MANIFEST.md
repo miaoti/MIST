@@ -1,6 +1,6 @@
 # TrainTicket documentation bundle — pinned reference (rater-facing)
 
-**System:** TrainTicket (FudanSELab), an open-source railway-ticketing microservice benchmark.
+**System:** TrainTicket (FudanSELab), an open-source railway-ticketing microservice application.
 **Source of record:** `github.com/FudanSELab/train-ticket` @ commit
 `5526e505be15a5232f558e0d3699abb1b90beeb2` (the release-1.0.0 lineage matching the deployed
 `codewisdom/*:1.0.0` images). Every file below is an UNMODIFIED extraction from that public commit.

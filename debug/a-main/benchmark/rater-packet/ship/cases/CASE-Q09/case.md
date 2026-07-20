@@ -1,24 +1,19 @@
 # Case CASE-Q09
 
-**System:** trainticket  (version set: train-ticket (pinned image set))
+**System:** oteldemo  (version set: opentelemetry-demo app 2.2.0 / chart 0.40.9)
 
-**Reference material:** Use ONLY the provided documentation bundle: `docs-bundles/trainticket/`
+**Reference material:** Use ONLY the provided documentation bundle: `docs-bundles/oteldemo/`
 
 ## What was done (in order)
 
-- `t+0ms`  **POST /api/v1/userservice/users/register**
-  - request body: `<credentials redacted>`
-  - response: HTTP 201 — body: `<response redacted (carries a session token)>`
-- `t+253ms`  **POST /api/v1/users/login**
-  - request body: `<credentials redacted>`
-  - response: HTTP 200 — body: `<response redacted (carries a session token)>`
-- `t+345ms`  **POST /api/v1/contactservice/contacts**
-  - request body: `{"accountId":"887401ce-c39f-48b5-b84f-a016856b7807","name":"CB Contact","documentType":1,"documentNumber":"D12345678","phoneNumber":"13800000000"}`
-  - response: HTTP 201 — body: `{"status":1,"msg":"Create contacts success","data":{"id":"86ca8bf6-c1b4-4641-a8f0-41baf3fc1689","accountId":"887401ce-c39f-48b5-b84f-a016856b7807","name":"CB Contact","documentType":1,"documentNumber":"D12345678","phoneNumber":"13800000000"}}`
-- `t+436ms`  **POST /api/v1/contactservice/contacts**
-  - request body: `{"accountId":"887401ce-c39f-48b5-b84f-a016856b7807","name":"CB Contact","documentType":1,"documentNumber":"D12345678","phoneNumber":"13800000000"}`
-  - response: HTTP 201 — body: `{"status":0,"msg":"Contacts already exists","data":null}`
-- `t+2034ms`  observed state via `GET /api/v1/contactservice/contacts/account/{accountId}`: HTTP 200 — `{"status":1,"msg":"Success","data":[{"id":"86ca8bf6-c1b4-4641-a8f0-41baf3fc1689","accountId":"887401ce-c39f-48b5-b84f-a016856b7807","name":"CB Contact","documentType":1,"documentNumber":"D12345678","phoneNumber":"13800000000"}]}`
+- `t+0ms`  **POST /api/cart?currencyCode=USD**
+  - request body: `{"item":{"productId":"0PUK6V6EV0","quantity":1},"userId":"<session uuid, internal>"}`
+  - response: HTTP 200 — body: `<cart accepted>`
+- `t+0ms`  **POST /api/checkout?currencyCode=USD**
+  - request body: `{"userId":"<session uuid>","userCurrency":"USD","email":"ODR-2M8P3@Sample.test","address":{"streetAddress":"ODR-2M8P3","state":"CA","country":"United States","city":"Mountain View","zipCode":"94043"},"creditCard":{"creditCardCvv":672,"creditCardExpirationMonth":1,"creditCardExpirationYear":2030,"creditCardNumber":"4432-8015-6152-0454"}}`
+  - response: HTTP 200 — body: `{"orderId":"17158d51-7f3c-11f1-90da-96ecc7e640eb","shippingAddress":{"streetAddress":"ODR-2M8P3","city":"Mountain View","state":"CA","country":"United States","zipCode":"94043"},"items":"<elided>"}`
+- `t+30402ms`  observed state via `durable-state check — query the durable order/accounting record for the key submitted above`: HTTP 200 — `no matching durable record present`
+- `t+58214ms`  observed state via `durable-state check — query the durable order/accounting record for the key submitted above`: HTTP 200 — `matching durable record present — order ODR-2M8P3`
 
 ## Your task
 

@@ -37,9 +37,9 @@
   {
    "t_rel_ms": 3141,
    "kind": "observation",
-   "probe": "durable payment-account store, scoped by the userId in the request above",
+   "probe": "durable-state check — query the durable payment-account record for the key submitted above",
    "status": 200,
-   "body": "no matching record (0 rows for that userId)"
+   "body": "no matching durable record present"
   }
  ]
 }

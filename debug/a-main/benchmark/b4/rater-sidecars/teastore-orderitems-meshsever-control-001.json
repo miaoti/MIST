@@ -36,7 +36,7 @@
    "t_rel_ms": 111,
    "kind": "request",
    "method": "POST",
-   "path": "/tools.descartes.teastore.webui/cartAction?firstname=order-9f3c1a&lastname=Sample&address1=Street1&address2=City1&cardtype=visa&cardnumber=314159265359&expirydate=12%2F2029&confirm=Confirm"
+   "path": "/tools.descartes.teastore.webui/cartAction?firstname=8134&lastname=Sample&address1=Street1&address2=City1&cardtype=visa&cardnumber=314159265359&expirydate=12%2F2029&confirm=Confirm"
   },
   {
    "t_rel_ms": 154,
@@ -47,16 +47,16 @@
   {
    "t_rel_ms": 120154,
    "kind": "observation",
-   "probe": "GET /tools.descartes.teastore.persistence/rest/orderitems/order/{orderId} (line items) — read in a later verification pass",
+   "probe": "durable-state check — query the durable order line-items for the key submitted above",
    "status": 200,
-   "body": "line items: 1 item(s)"
+   "body": "matching durable record present — order line-items: 1 item present"
   },
   {
    "t_rel_ms": 120670,
    "kind": "observation",
-   "probe": "GET /tools.descartes.teastore.persistence/rest/orders/user/{id} (parent order) — read in a later verification pass",
+   "probe": "durable-state check — query the durable parent order record for the key submitted above",
    "status": 200,
-   "body": "parent order 'order-9f3c1a': PRESENT"
+   "body": "matching durable record present — parent order present"
   }
  ]
 }

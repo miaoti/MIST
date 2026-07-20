@@ -26,27 +26,27 @@
    "kind": "request",
    "method": "POST",
    "path": "/api/checkout?currencyCode=USD",
-   "payload": "{\"userId\":\"<session uuid>\",\"userCurrency\":\"USD\",\"email\":\"r1dev1-1784003126@Sample.test\",\"address\":{\"streetAddress\":\"r1dev1-1784003126\",\"state\":\"CA\",\"country\":\"United States\",\"city\":\"Mountain View\",\"zipCode\":\"94043\"},\"creditCard\":{\"creditCardCvv\":672,\"creditCardExpirationMonth\":1,\"creditCardExpirationYear\":2030,\"creditCardNumber\":\"4432-8015-6152-0454\"}}"
+   "payload": "{\"userId\":\"<session uuid>\",\"userCurrency\":\"USD\",\"email\":\"ODR-2M8P3@Sample.test\",\"address\":{\"streetAddress\":\"ODR-2M8P3\",\"state\":\"CA\",\"country\":\"United States\",\"city\":\"Mountain View\",\"zipCode\":\"94043\"},\"creditCard\":{\"creditCardCvv\":672,\"creditCardExpirationMonth\":1,\"creditCardExpirationYear\":2030,\"creditCardNumber\":\"4432-8015-6152-0454\"}}"
   },
   {
    "t_rel_ms": 0,
    "kind": "response",
    "status": 200,
-   "body": "{\"orderId\":\"17158d51-7f3c-11f1-90da-96ecc7e640eb\",\"shippingAddress\":{\"streetAddress\":\"r1dev1-1784003126\",\"city\":\"Mountain View\",\"state\":\"CA\",\"country\":\"United States\",\"zipCode\":\"94043\"},\"items\":\"<elided>\"}"
+   "body": "{\"orderId\":\"17158d51-7f3c-11f1-90da-96ecc7e640eb\",\"shippingAddress\":{\"streetAddress\":\"ODR-2M8P3\",\"city\":\"Mountain View\",\"state\":\"CA\",\"country\":\"United States\",\"zipCode\":\"94043\"},\"items\":\"<elided>\"}"
   },
   {
    "t_rel_ms": 30402,
    "kind": "observation",
-   "probe": "durable-state check for the record submitted above",
+   "probe": "durable-state check — query the durable order/accounting record for the key submitted above",
    "status": 200,
-   "body": "[]"
+   "body": "no matching durable record present"
   },
   {
    "t_rel_ms": 58214,
    "kind": "observation",
-   "probe": "durable-state check for the record submitted above",
+   "probe": "durable-state check — query the durable order/accounting record for the key submitted above",
    "status": 200,
-   "body": "[{\"the request marker field\":\"r1dev1-1784003126\"}]"
+   "body": "matching durable record present — order ODR-2M8P3"
   }
  ]
 }

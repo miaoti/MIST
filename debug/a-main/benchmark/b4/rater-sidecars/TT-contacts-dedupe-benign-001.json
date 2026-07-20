@@ -63,9 +63,9 @@
   {
    "t_rel_ms": 2034,
    "kind": "observation",
-   "probe": "GET /api/v1/contactservice/contacts/account/{accountId}",
+   "probe": "durable-state check — query the durable contact records for the key submitted above",
    "status": 200,
-   "body": "{\"status\":1,\"msg\":\"Success\",\"data\":[{\"id\":\"86ca8bf6-c1b4-4641-a8f0-41baf3fc1689\",\"accountId\":\"887401ce-c39f-48b5-b84f-a016856b7807\",\"name\":\"CB Contact\",\"documentType\":1,\"documentNumber\":\"D12345678\",\"phoneNumber\":\"13800000000\"}]}"
+   "body": "matching durable record present — 1 contact: [{\"name\":\"CB Contact\",\"documentNumber\":\"D12345678\",\"documentType\":1,\"phoneNumber\":\"13800000000\"}]"
   }
  ]
 }

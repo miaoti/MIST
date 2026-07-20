@@ -1,248 +1,194 @@
-swagger: "2.0"
+swagger: '2.0'
 info:
-  description: "This is the API of the Istio BookInfo sample application."
-  version: "1.0.0"
-  title: "BookInfo API"
-  termsOfService: "https://istio.io/"
+  version: 1.0.0
+  title: Service API
+  termsOfService: https://istio.io/
   license:
-    name: "Apache 2.0"
-    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
-basePath: "/api/v1"
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+basePath: /api/v1
 tags:
-- name: "product"
-  description: "Information about a product (in this case a book)"
-- name: "review"
-  description: "Review information for a product"
-- name: "rating"
-  description: "Rating information for a product"
-externalDocs:
-  description: "Learn more about the Istio BookInfo application"
-  url: "https://istio.io/docs/samples/bookinfo.html"
+- name: product
+- name: review
+- name: rating
 paths:
   /products:
     get:
       tags:
-      - "product"
-      summary: "List all products"
-      description: "List all products available in the application with a minimum amount of information."
-      operationId: "getProducts"
+      - product
+      operationId: getProducts
       consumes:
-      - "application/json"
+      - application/json
       produces:
-      - "application/json"
+      - application/json
       responses:
         200:
-          description: "successful operation"
           schema:
-            type: "array"
+            type: array
             items:
-              $ref: "#/definitions/Product"
+              $ref: '#/definitions/Product'
   /products/{id}:
     get:
       tags:
-      - "product"
-      summary: "Get individual product"
-      description: "Get detailed information about an individual product with the given id."
-      operationId: "getProduct"
+      - product
+      operationId: getProduct
       consumes:
-      - "application/json"
+      - application/json
       produces:
-      - "application/json"
+      - application/json
       parameters:
-      - name: "id"
-        in: "path"
-        description: "Product id"
+      - name: id
+        in: path
         required: true
-        type: "integer"
-        format: "int32"
+        type: integer
+        format: int32
       responses:
         200:
-          description: "successful operation"
           schema:
-            $ref: "#/definitions/ProductDetails"
-        400:
-          description: "Invalid product id"
+            $ref: '#/definitions/ProductDetails'
+        400: {}
   /products/{id}/reviews:
     get:
       tags:
-      - "review"
-      summary: "Get reviews for a product"
-      description: "Get reviews for a product, including review text and possibly ratings information."
-      operationId: "getProductReviews"
+      - review
+      operationId: getProductReviews
       consumes:
-      - "application/json"
+      - application/json
       produces:
-      - "application/json"
+      - application/json
       parameters:
-      - name: "id"
-        in: "path"
-        description: "Product id"
+      - name: id
+        in: path
         required: true
-        type: "integer"
-        format: "int32"
+        type: integer
+        format: int32
       responses:
         200:
-          description: "successful operation"
           schema:
-            $ref: "#/definitions/ProductReviews"
-        400:
-          description: "Invalid product id"
+            $ref: '#/definitions/ProductReviews'
+        400: {}
   /products/{id}/ratings:
     get:
       tags:
-      - "rating"
-      summary: "Get ratings for a product"
-      description: "Get ratings for a product, including stars and their color."
-      operationId: "getProductRatings"
+      - rating
+      operationId: getProductRatings
       consumes:
-      - "application/json"
+      - application/json
       produces:
-      - "application/json"
+      - application/json
       parameters:
-      - name: "id"
-        in: "path"
-        description: "Product id"
+      - name: id
+        in: path
         required: true
-        type: "integer"
-        format: "int32"
+        type: integer
+        format: int32
       responses:
         200:
-          description: "successful operation"
           schema:
-            $ref: "#/definitions/ProductRatings"
-        400:
-          description: "Invalid product id"
-
-
+            $ref: '#/definitions/ProductRatings'
+        400: {}
 definitions:
   Product:
-    type: "object"
-    description: "Basic information about a product"
+    type: object
     properties:
       id:
-        type: "integer"
-        format: "int32"
-        description: "Product id"
-      title:
-        type: "string"
-        description: "Title of the book"
+        type: integer
+        format: int32
+      title: Service API
       descriptionHtml:
-        type: "string"
-        description: "Description of the book - may contain HTML tags"
+        type: string
     required:
-    - "id"
-    - "title"
-    - "descriptionHtml"
+    - id
+    - title
+    - descriptionHtml
   ProductDetails:
-    type: "object"
-    description: "Detailed information about a product"
+    type: object
     properties:
       id:
-        type: "integer"
-        format: "int32"
-        description: "Product id"
+        type: integer
+        format: int32
       publisher:
-        type: "string"
-        description: "Publisher of the book"
+        type: string
       language:
-        type: "string"
-        description: "Language of the book"
+        type: string
       author:
-        type: "string"
-        description: "Author of the book"
+        type: string
       ISBN-10:
-        type: "string"
-        description: "ISBN-10 of the book"
+        type: string
       ISBN-13:
-        type: "string"
-        description: "ISBN-13 of the book"
+        type: string
       year:
-        type: "integer"
-        format: "int32"
-        description: "Year the book was first published in"
+        type: integer
+        format: int32
       type:
-        type: "string"
+        type: string
         enum:
-          - "paperback"
-          - "hardcover"
-        description: "Type of the book"
+        - paperback
+        - hardcover
       pages:
-        type: "integer"
-        format: "int32"
-        description: "Number of pages of the book"
+        type: integer
+        format: int32
     required:
-    - "id"
-    - "publisher"
-    - "language"
-    - "author"
-    - "ISBN-10"
-    - "ISBN-13"
-    - "year"
-    - "type"
-    - "pages"
+    - id
+    - publisher
+    - language
+    - author
+    - ISBN-10
+    - ISBN-13
+    - year
+    - type
+    - pages
   ProductReviews:
-    type: "object"
-    description: "Object containing reviews for a product"
+    type: object
     properties:
       id:
-        type: "integer"
-        format: "int32"
-        description: "Product id"
+        type: integer
+        format: int32
       reviews:
-        type: "array"
-        description: "List of reviews"
+        type: array
         items:
-          $ref: "#/definitions/Review"
+          $ref: '#/definitions/Review'
     required:
-    - "id"
-    - "reviews"
+    - id
+    - reviews
   Review:
-    type: "object"
-    description: "Review of a product"
+    type: object
     properties:
       reviewer:
-        type: "string"
-        description: "Name of the reviewer"
+        type: string
       text:
-        type: "string"
-        description: "Review text"
+        type: string
       rating:
-        $ref: "#/definitions/Rating"
+        $ref: '#/definitions/Rating'
     required:
-    - "reviewer"
-    - "text"
+    - reviewer
+    - text
   Rating:
-    type: "object"
-    description: "Rating of a product"
+    type: object
     properties:
       stars:
-        type: "integer"
-        format: "int32"
+        type: integer
+        format: int32
         minimum: 1
         maximum: 5
-        description: "Number of stars"
       color:
-        type: "string"
+        type: string
         enum:
-          - "red"
-          - "black"
-        description: "Color in which stars should be displayed"
+        - red
+        - black
     required:
-    - "stars"
-    - "color"
+    - stars
+    - color
   ProductRatings:
-    type: "object"
-    description: "Object containing ratings of a product"
+    type: object
     properties:
       id:
-        type: "integer"
-        format: "int32"
-        description: "Product id"
+        type: integer
+        format: int32
       ratings:
-        type: "object"
-        description: "A hashmap where keys are reviewer names, values are number of stars"
-        additionalProperties: 
-          type: "string"
+        type: object
+        additionalProperties:
+          type: string
     required:
-    - "id"
-    - "ratings"
+    - id
+    - ratings

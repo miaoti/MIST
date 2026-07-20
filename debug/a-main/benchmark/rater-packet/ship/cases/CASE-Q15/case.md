@@ -1,18 +1,24 @@
 # Case CASE-Q15
 
-**System:** teastore  (version set: TeaStore v1.4.2)
+**System:** trainticket  (version set: train-ticket (pinned image set))
 
-**Reference material:** Use ONLY the provided documentation bundle: `docs-bundles/teastore/`
+**Reference material:** Use ONLY the provided documentation bundle: `docs-bundles/trainticket/`
 
 ## What was done (in order)
 
-- `t+0ms`  **POST /tools.descartes.teastore.webui/loginAction?<credentials redacted>**
+- `t+0ms`  **POST /api/v1/userservice/users/register**
+  - request body: `<credentials redacted>`
+  - response: HTTP 201 — body: `<response redacted (carries a session token)>`
+- `t+253ms`  **POST /api/v1/users/login**
+  - request body: `<credentials redacted>`
   - response: HTTP 200 — body: `<response redacted (carries a session token)>`
-- `t+44ms`  **POST /tools.descartes.teastore.webui/cartAction?addToCart=&productid=42**
-  - response: HTTP 200 — body: `<success-shaped page rendered>`
-- `t+144ms`  **POST /tools.descartes.teastore.webui/cartAction?firstname=order-9f3c1a&lastname=Sample&address1=Street1&address2=City1&cardtype=visa&cardnumber=314159265359&expirydate=12%2F2029&confirm=Confirm**
-  - response: HTTP 200 — body: `<success-shaped page rendered>`
-- `t+120181ms`  observed state via `GET /tools.descartes.teastore.webui/profile (orders table) — read in a later verification pass`: HTTP 200 — `durable order collection: ABSENT`
+- `t+345ms`  **POST /api/v1/contactservice/contacts**
+  - request body: `{"accountId":"887401ce-c39f-48b5-b84f-a016856b7807","name":"CB Contact","documentType":1,"documentNumber":"D12345678","phoneNumber":"13800000000"}`
+  - response: HTTP 201 — body: `{"status":1,"msg":"Create contacts success","data":{"id":"86ca8bf6-c1b4-4641-a8f0-41baf3fc1689","accountId":"887401ce-c39f-48b5-b84f-a016856b7807","name":"CB Contact","documentType":1,"documentNumber":"D12345678","phoneNumber":"13800000000"}}`
+- `t+436ms`  **POST /api/v1/contactservice/contacts**
+  - request body: `{"accountId":"887401ce-c39f-48b5-b84f-a016856b7807","name":"CB Contact","documentType":1,"documentNumber":"D12345678","phoneNumber":"13800000000"}`
+  - response: HTTP 201 — body: `{"status":0,"msg":"Contacts already exists","data":null}`
+- `t+2034ms`  observed state via `durable-state check — query the durable contact records for the key submitted above`: HTTP 200 — `matching durable record present — 1 contact: [{"name":"CB Contact","documentNumber":"D12345678","documentType":1,"phoneNumber":"13800000000"}]`
 
 ## Your task
 

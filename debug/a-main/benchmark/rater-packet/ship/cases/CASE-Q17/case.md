@@ -1,18 +1,18 @@
 # Case CASE-Q17
 
-**System:** teastore  (version set: TeaStore v1.4.2)
+**System:** trainticket  (version set: train-ticket (pinned image set))
 
-**Reference material:** Use ONLY the provided documentation bundle: `docs-bundles/teastore/`
+**Reference material:** Use ONLY the provided documentation bundle: `docs-bundles/trainticket/`
 
 ## What was done (in order)
 
-- `t+0ms`  **POST /tools.descartes.teastore.webui/loginAction?<credentials redacted>**
-  - response: HTTP 200 — body: `<response redacted (carries a session token)>`
-- `t+30ms`  **POST /tools.descartes.teastore.webui/cartAction?addToCart=&productid=42**
-  - response: HTTP 200 — body: `<success-shaped page rendered>`
-- `t+99ms`  **POST /tools.descartes.teastore.webui/cartAction?firstname=order-9f3c1a&lastname=Sample&address1=Street1&address2=City1&cardtype=visa&cardnumber=314159265359&expirydate=12%2F2029&confirm=Confirm**
-  - response: HTTP 200 — body: `<success-shaped page rendered>`
-- `t+120131ms`  observed state via `GET /tools.descartes.teastore.webui/profile (orders table) — read in a later verification pass`: HTTP 200 — `durable order collection: ABSENT`
+- `t+0ms`  **POST /api/v1/users/login**
+  - request body: `{"username":"<redacted>","password":"<redacted>"}`
+  - response: HTTP 200 — body: `<login response — token redacted>`
+- `t+110ms`  observed state via `context — before the cancel: this account has 1 paid order and a positive balance`: HTTP 200 — `1 paid order present; account balance present`
+- `t+900ms`  **GET /api/v1/cancelservice/cancel/{orderId}/{loginId}**
+  - response: HTTP 200 — body: `{"status":1,"msg":"Success.","data":"test not null"}`
+- `t+4400ms`  observed state via `durable-state check — query the durable refund records for the key submitted above`: HTTP 200 — `no matching durable record present`
 
 ## Your task
 

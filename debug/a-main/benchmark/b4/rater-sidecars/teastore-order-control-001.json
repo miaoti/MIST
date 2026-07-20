@@ -36,7 +36,7 @@
    "t_rel_ms": 141,
    "kind": "request",
    "method": "POST",
-   "path": "/tools.descartes.teastore.webui/cartAction?firstname=order-9f3c1a&lastname=Sample&address1=Street1&address2=City1&cardtype=visa&cardnumber=314159265359&expirydate=12%2F2029&confirm=Confirm"
+   "path": "/tools.descartes.teastore.webui/cartAction?firstname=4413&lastname=Sample&address1=Street1&address2=City1&cardtype=visa&cardnumber=314159265359&expirydate=12%2F2029&confirm=Confirm"
   },
   {
    "t_rel_ms": 185,
@@ -47,9 +47,9 @@
   {
    "t_rel_ms": 120185,
    "kind": "observation",
-   "probe": "GET /tools.descartes.teastore.webui/profile (orders table) — read in a later verification pass",
+   "probe": "durable-state check — query the durable order collection for the key submitted above",
    "status": 200,
-   "body": "durable order collection: PRESENT"
+   "body": "matching durable record present — the order for the acting user"
   }
  ]
 }

@@ -24,7 +24,7 @@
   {
    "t_rel_ms": 110,
    "kind": "observation",
-   "probe": "precondition: a paid order exists for this account, and this account holds a balance",
+   "probe": "context — before the cancel: this account has 1 paid order and a positive balance",
    "status": 200,
    "body": "1 paid order present; account balance present"
   },
@@ -44,9 +44,9 @@
   {
    "t_rel_ms": 4400,
    "kind": "observation",
-   "probe": "durable payment store, scoped by this account's id: does a refund entry for the cancelled order exist?",
+   "probe": "durable-state check — query the durable refund records for the key submitted above",
    "status": 200,
-   "body": "no refund entry present (0 refund rows for this account)"
+   "body": "no matching durable record present"
   }
  ]
 }

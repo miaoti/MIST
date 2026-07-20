@@ -1,456 +1,306 @@
-swagger: "2.0"
+swagger: '2.0'
 info:
-  description: "Authored-by-us OpenAPI description of the DescartesResearch TeaStore\
-    \ v1.4.2 write and [redacted] surface exercised by the [redacted] [redacted] [redacted]. TeaStore\
-    \ ships NO OpenAPI/Swagger document upstream; this spec is a [redacted]\
-    \ representation written from (a) the TeaStore v1.4.2 source (the webui\
-    \ form-action servlets and the persistence JAX-RS REST endpoints) and (b) our\
-    \ own [redacted] capture specs — NO upstream OpenAPI text is copied (there is none\
-    \ to copy). It covers the browser-facing webui form actions (login, cart/order\
-    \ placement, profile) that mutate and display a customer's orders, plus the\
-    \ internal persistence REST resources (orders, order-items, products) used as\
-    \ the durable [redacted] surface. Each operation is tagged with the owning\
-    \ service (webui or persistence). Request shapes: the webui actions are\
-    \ HTML-form (application/x-www-form-urlencoded) servlet actions; the persistence\
-    \ layer is JSON JAX-RS. Provenance of the exact paths and request fields:\
-    \ the [redacted] [redacted] TeaStore cases ([redacted][redacted] / [redacted][redacted]) and\
-    \ the capture flow specs, both authored-by-us; the upstream source tree is cited\
-    \ in externalDocs. [redacted] [redacted] per the [redacted] [redacted] [redacted] [redacted] ([redacted])."
-  version: "1.4.2"
-  title: "Service API"
+  version: 1.4.2
+  title: Service API
   license:
-    name: "Apache 2.0"
-    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
-basePath: "/"
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+basePath: /
 tags:
-- name: "webui"
-  description: "Browser-facing TeaStore WebUI form actions (Java servlets). These\
-    \ handle login, cart mutation and order placement, and render the customer's\
-    \ profile order history. Deployed context path\
-    \ /tools.descartes.teastore.webui."
-- name: "persistence"
-  description: "Internal TeaStore persistence service (JAX-RS/JSON). The durable\
-    \ store of record for orders, order-items and products; used by [redacted] as the\
-    \ [redacted] surface. Deployed context path\
-    \ /tools.descartes.teastore.persistence."
-externalDocs:
-  description: "DescartesResearch/TeaStore v1.4.2 source (webui form-action servlets\
-    \ services/tools.descartes.teastore.webui; persistence JAX-RS endpoints\
-    \ services/tools.descartes.teastore.persistence/…/rest). Paths and request\
-    \ fields authored from this source; no upstream OpenAPI exists."
-  url: "https://github.com/DescartesResearch/TeaStore"
+- name: webui
+- name: persistence
 paths:
   /tools.descartes.teastore.webui/loginAction:
     post:
       tags:
-      - "webui"
-      summary: "Log in or log out a customer"
-      description: "WebUI login form action. On sign-in the servlet validates the\
-        \ credentials against the auth service and, on success, establishes the\
-        \ session cookie used by every subsequent cart/order action; on logout it\
-        \ clears the session. Returns a 302 redirect to the referring page (the\
-        \ browser then GETs the redirect target, 200). Source: TeaStore webui\
-        \ LoginActionServlet (form fields username/password/signin|logout/referer)."
-      operationId: "loginAction"
+      - webui
+      operationId: loginAction
       consumes:
-      - "application/x-www-form-urlencoded"
+      - application/x-www-form-urlencoded
       produces:
-      - "text/html"
+      - text/html
       parameters:
-      - name: "username"
-        in: "formData"
-        description: "Customer login name (required for sign-in)."
+      - name: username
+        in: formData
         required: false
-        type: "string"
-      - name: "password"
-        in: "formData"
-        description: "Customer password (required for sign-in)."
+        type: string
+      - name: password
+        in: formData
         required: false
-        type: "string"
-      - name: "signin"
-        in: "formData"
-        description: "Present when the sign-in button was used."
+        type: string
+      - name: signin
+        in: formData
         required: false
-        type: "string"
-      - name: "logout"
-        in: "formData"
-        description: "Present when the logout button was used."
+        type: string
+      - name: logout
+        in: formData
         required: false
-        type: "string"
-      - name: "referer"
-        in: "formData"
-        description: "Page to redirect back to after the action."
+        type: string
+      - name: referer
+        in: formData
         required: false
-        type: "string"
+        type: string
       responses:
-        "302":
-          description: "Redirect back to the referring page; session cookie set on\
-            \ successful sign-in."
-        "200":
-          description: "Login page re-rendered (e.g. on invalid credentials)."
+        '302': {}
+        '200': {}
   /tools.descartes.teastore.webui/cartAction:
     post:
       tags:
-      - "webui"
-      summary: "Mutate the cart or place the order"
-      description: "WebUI cart form action. A single servlet endpoint that dispatches\
-        \ on which form control is present: addToCart (+ productid) adds a catalogue\
-        \ product to the session cart; updateCartQuantities updates line quantities;\
-        \ proceedtoCheckout shows the order form; and confirm (invoked as\
-        \ ?confirm=Confirm with the order-form fields) PLACES THE ORDER — the write\
-        \ path the [redacted] [redacted] exercises. On confirm the servlet calls the auth\
-        \ service placeOrder, which writes the order then its order-items to the\
-        \ persistence service, and renders the order-confirmed page (302 -> 200).\
-        \ The [redacted] marks a placed order by a globally-unique token carried in a\
-        \ human order-form field (address1 for the persistence [redacted];\
-        \ firstname for the profile [redacted]). Source: TeaStore webui\
-        \ CartActionServlet + auth placeOrder (order-then-items loop)."
-      operationId: "cartAction"
+      - webui
+      operationId: cartAction
       consumes:
-      - "application/x-www-form-urlencoded"
+      - application/x-www-form-urlencoded
       produces:
-      - "text/html"
+      - text/html
       parameters:
-      - name: "confirm"
-        in: "query"
-        description: "When set to 'Confirm', places the order using the order-form\
-          \ fields below (the [redacted] write path: POST cartAction?confirm=Confirm)."
+      - name: confirm
+        in: query
         required: false
-        type: "string"
-      - name: "addToCart"
-        in: "formData"
-        description: "Present to add a product to the cart (with productid)."
+        type: string
+      - name: addToCart
+        in: formData
         required: false
-        type: "string"
-      - name: "productid"
-        in: "formData"
-        description: "Catalogue product id to add to the cart (with addToCart)."
+        type: string
+      - name: productid
+        in: formData
         required: false
-        type: "integer"
-        format: "int64"
-      - name: "firstname"
-        in: "formData"
-        description: "Order-form customer first name. Displayed in the profile\
-          \ order history; used by the [redacted] profile [redacted] as the per-order\
-          \ marker."
+        type: integer
+        format: int64
+      - name: firstname
+        in: formData
         required: false
-        type: "string"
-      - name: "lastname"
-        in: "formData"
-        description: "Order-form customer last name."
+        type: string
+      - name: lastname
+        in: formData
         required: false
-        type: "string"
-      - name: "address1"
-        in: "formData"
-        description: "Order-form address line 1. Persisted on the order; used by the\
-          \ [redacted] persistence [redacted] as the per-order [redacted]."
+        type: string
+      - name: address1
+        in: formData
         required: false
-        type: "string"
-      - name: "address2"
-        in: "formData"
-        description: "Order-form address line 2."
+        type: string
+      - name: address2
+        in: formData
         required: false
-        type: "string"
-      - name: "cardtype"
-        in: "formData"
-        description: "Order-form payment card type."
+        type: string
+      - name: cardtype
+        in: formData
         required: false
-        type: "string"
-      - name: "cardnumber"
-        in: "formData"
-        description: "Order-form payment card number."
+        type: string
+      - name: cardnumber
+        in: formData
         required: false
-        type: "string"
-      - name: "expirydate"
-        in: "formData"
-        description: "Order-form payment card expiry."
+        type: string
+      - name: expirydate
+        in: formData
         required: false
-        type: "string"
+        type: string
       responses:
-        "302":
-          description: "Redirect to the resulting page (order-confirmed page on a\
-            \ successful confirm; cart page on addToCart/update)."
-        "200":
-          description: "Resulting page rendered after the redirect."
+        '302': {}
+        '200': {}
   /tools.descartes.teastore.webui/profile:
     get:
       tags:
-      - "webui"
-      summary: "Customer profile with order history"
-      description: "Renders the logged-in customer's profile page, including the\
-        \ Orders table (the browser-facing durable record of placed orders). The\
-        \ [redacted] [redacted] uses this table (per-order firstname marker) as the\
-        \ user-facing [redacted] for a placed order. Source: TeaStore webui\
-        \ ProfileServlet (reads the session user's orders from persistence)."
-      operationId: "getProfile"
+      - webui
+      operationId: getProfile
       produces:
-      - "text/html"
+      - text/html
       responses:
-        "200":
-          description: "Profile page with the customer's order history table."
-        "302":
-          description: "Redirect to login when there is no authenticated session."
+        '200': {}
+        '302': {}
   /tools.descartes.teastore.persistence/rest/orders:
     get:
       tags:
-      - "persistence"
-      summary: "List orders"
-      description: "See BEHAVIOR.md for this endpoint's durable contract."
-      operationId: "listOrders"
+      - persistence
+      operationId: listOrders
       produces:
-      - "application/json"
+      - application/json
       parameters:
-      - name: "start"
-        in: "query"
-        description: "Index of the first order to return (paging; -1 for all)."
+      - name: start
+        in: query
         required: false
-        type: "integer"
-        format: "int32"
-      - name: "max"
-        in: "query"
-        description: "Maximum number of orders to return (paging; -1 for all)."
+        type: integer
+        format: int32
+      - name: max
+        in: query
         required: false
-        type: "integer"
-        format: "int32"
+        type: integer
+        format: int32
       responses:
-        "200":
-          description: "The order collection."
+        '200':
           schema:
-            type: "array"
+            type: array
             items:
-              $ref: "#/definitions/Order"
+              $ref: '#/definitions/Order'
     post:
       tags:
-      - "persistence"
-      summary: "Create an order"
-      description: "Persists a new order row. Called by the auth service placeOrder\
-        \ during order confirmation, before the per-item creates. Returns the\
-        \ created order. Source: TeaStore persistence OrderEndpoint (JAX-RS POST\
-        \ /rest/orders) backed by OrderRepository.createEntity."
-      operationId: "createOrder"
+      - persistence
+      operationId: createOrder
       consumes:
-      - "application/json"
+      - application/json
       produces:
-      - "application/json"
+      - application/json
       parameters:
-      - name: "body"
-        in: "body"
+      - name: body
+        in: body
         required: false
-        description: "The order to persist."
         schema:
-          $ref: "#/definitions/Order"
+          $ref: '#/definitions/Order'
       responses:
-        "200":
-          description: "Order created."
+        '200':
           schema:
-            $ref: "#/definitions/Order"
-        "500":
-          description: "Persistence error (e.g. backing database unavailable)."
+            $ref: '#/definitions/Order'
+        '500': {}
   /tools.descartes.teastore.persistence/rest/orders/user/{uid}:
     get:
       tags:
-      - "persistence"
-      summary: "List a user's orders"
-      description: "Returns the durable orders belonging to one user (JSON). Used by\
-        \ the [redacted] as the per-user [redacted] for a placed order. Source: TeaStore\
-        \ persistence OrderEndpoint (JAX-RS GET /rest/orders/user/{uid})."
-      operationId: "listOrdersForUser"
+      - persistence
+      operationId: listOrdersForUser
       produces:
-      - "application/json"
+      - application/json
       parameters:
-      - name: "uid"
-        in: "path"
-        description: "User id whose orders to return."
+      - name: uid
+        in: path
         required: true
-        type: "integer"
-        format: "int64"
+        type: integer
+        format: int64
       responses:
-        "200":
-          description: "The user's order collection."
+        '200':
           schema:
-            type: "array"
+            type: array
             items:
-              $ref: "#/definitions/Order"
+              $ref: '#/definitions/Order'
   /tools.descartes.teastore.persistence/rest/orderitems/order/{oid}:
     get:
       tags:
-      - "persistence"
-      summary: "List an order's line items"
-      description: "Returns the child order-item collection of one order (JSON). The\
-        \ [redacted] [redacted] uses this as the [redacted] for the CHILD collection of a\
-        \ placed order: a present parent order with an empty item collection is the\
-        \ [redacted] loss the [redacted] captures. Source: TeaStore persistence\
-        \ OrderItemEndpoint (JAX-RS GET /rest/orderitems/order/{oid})."
-      operationId: "listOrderItemsForOrder"
+      - persistence
+      operationId: listOrderItemsForOrder
       produces:
-      - "application/json"
+      - application/json
       parameters:
-      - name: "oid"
-        in: "path"
-        description: "Order id whose line items to return."
+      - name: oid
+        in: path
         required: true
-        type: "integer"
-        format: "int64"
+        type: integer
+        format: int64
       responses:
-        "200":
-          description: "The order's line-item collection (empty array if none)."
+        '200':
           schema:
-            type: "array"
+            type: array
             items:
-              $ref: "#/definitions/OrderItem"
+              $ref: '#/definitions/OrderItem'
   /tools.descartes.teastore.persistence/rest/products:
     get:
       tags:
-      - "persistence"
-      summary: "List products"
-      description: "See BEHAVIOR.md for this endpoint's durable contract."
-      operationId: "listProducts"
+      - persistence
+      operationId: listProducts
       produces:
-      - "application/json"
+      - application/json
       parameters:
-      - name: "category"
-        in: "query"
-        description: "Category id to filter by (optional)."
+      - name: category
+        in: query
         required: false
-        type: "integer"
-        format: "int64"
-      - name: "start"
-        in: "query"
-        description: "Index of the first product to return (paging; -1 for all)."
+        type: integer
+        format: int64
+      - name: start
+        in: query
         required: false
-        type: "integer"
-        format: "int32"
-      - name: "max"
-        in: "query"
-        description: "Maximum number of products to return (paging; -1 for all)."
+        type: integer
+        format: int32
+      - name: max
+        in: query
         required: false
-        type: "integer"
-        format: "int32"
+        type: integer
+        format: int32
       responses:
-        "200":
-          description: "The product collection."
+        '200':
           schema:
-            type: "array"
+            type: array
             items:
-              $ref: "#/definitions/Product"
+              $ref: '#/definitions/Product'
   /tools.descartes.teastore.persistence/rest/products/{pid}:
     get:
       tags:
-      - "persistence"
-      summary: "Get a product"
-      description: "Returns one catalogue product by id (JSON). Source: TeaStore\
-        \ persistence ProductEndpoint (JAX-RS GET /rest/products/{pid})."
-      operationId: "getProduct"
+      - persistence
+      operationId: getProduct
       produces:
-      - "application/json"
+      - application/json
       parameters:
-      - name: "pid"
-        in: "path"
-        description: "Product id."
+      - name: pid
+        in: path
         required: true
-        type: "integer"
-        format: "int64"
+        type: integer
+        format: int64
       responses:
-        "200":
-          description: "The product."
+        '200':
           schema:
-            $ref: "#/definitions/Product"
-        "404":
-          description: "No product with that id."
+            $ref: '#/definitions/Product'
+        '404': {}
 definitions:
   Order:
-    type: "object"
-    description: "A persisted customer order (persistence layer). The parent record\
-      \ whose presence/absence and child item collection the [redacted] [redacted] checks."
+    type: object
     properties:
       id:
-        type: "integer"
-        format: "int64"
-        description: "Order id."
+        type: integer
+        format: int64
       userId:
-        type: "integer"
-        format: "int64"
-        description: "Id of the customer who placed the order."
+        type: integer
+        format: int64
       time:
-        type: "string"
-        description: "Order timestamp as recorded by the store."
+        type: string
       totalPriceInCents:
-        type: "integer"
-        format: "int64"
-        description: "Order total in cents."
+        type: integer
+        format: int64
       addressName:
-        type: "string"
-        description: "Recipient name on the order (first/last name from the order\
-          \ form; carries the profile [redacted] marker)."
+        type: string
       address1:
-        type: "string"
-        description: "See BEHAVIOR.md for this endpoint's durable contract."
+        type: string
       address2:
-        type: "string"
-        description: "Address line 2 on the order."
+        type: string
       creditCardCompany:
-        type: "string"
-        description: "Payment card type."
+        type: string
       creditCardNumber:
-        type: "string"
-        description: "Payment card number."
+        type: string
       creditCardExpiryDate:
-        type: "string"
-        description: "Payment card expiry."
+        type: string
     required:
-    - "id"
-    - "userId"
+    - id
+    - userId
   OrderItem:
-    type: "object"
-    description: "A line item of an order (persistence layer). The child records\
-      \ whose collection the [redacted] [redacted] checks."
+    type: object
     properties:
       id:
-        type: "integer"
-        format: "int64"
-        description: "Order-item id."
+        type: integer
+        format: int64
       productId:
-        type: "integer"
-        format: "int64"
-        description: "Catalogue product id of this line."
+        type: integer
+        format: int64
       orderId:
-        type: "integer"
-        format: "int64"
-        description: "Parent order id."
+        type: integer
+        format: int64
       quantity:
-        type: "integer"
-        format: "int32"
-        description: "Quantity ordered on this line."
+        type: integer
+        format: int32
       unitPriceInCents:
-        type: "integer"
-        format: "int64"
-        description: "Unit price in cents at order time."
+        type: integer
+        format: int64
     required:
-    - "id"
-    - "orderId"
-    - "productId"
+    - id
+    - orderId
+    - productId
   Product:
-    type: "object"
-    description: "A catalogue product (persistence layer)."
+    type: object
     properties:
       id:
-        type: "integer"
-        format: "int64"
-        description: "Product id."
+        type: integer
+        format: int64
       categoryId:
-        type: "integer"
-        format: "int64"
-        description: "Category the product belongs to."
+        type: integer
+        format: int64
       name:
-        type: "string"
-        description: "Product name."
-      description:
-        type: "string"
-        description: "Product description."
+        type: string
       listPriceInCents:
-        type: "integer"
-        format: "int64"
-        description: "List price in cents."
+        type: integer
+        format: int64
     required:
-    - "id"
-    - "name"
+    - id
+    - name

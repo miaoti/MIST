@@ -1,13 +1,18 @@
 # Case CASE-Q12
 
-**System:** bookinfo  (version set: Istio Bookinfo sample)
+**System:** teastore  (version set: TeaStore v1.4.2)
 
-**Reference material:** Use ONLY the provided documentation bundle: `docs-bundles/bookinfo/`
+**Reference material:** Use ONLY the provided documentation bundle: `docs-bundles/teastore/`
 
 ## What was done (in order)
 
-- `t+0ms`  **GET /productpage**
-  - response: HTTP 200 — body: `page rendered: product and reviews content shown; ratings panel displays the message "Ratings service is currently unavailable"`
+- `t+0ms`  **POST /tools.descartes.teastore.webui/loginAction?<credentials redacted>**
+  - response: HTTP 200 — body: `<response redacted (carries a session token)>`
+- `t+42ms`  **POST /tools.descartes.teastore.webui/cartAction?addToCart=&productid=42**
+  - response: HTTP 200 — body: `<success-shaped page rendered>`
+- `t+205ms`  **POST /tools.descartes.teastore.webui/cartAction?firstname=6191&lastname=Sample&address1=Street1&address2=City1&cardtype=visa&cardnumber=314159265359&expirydate=12%2F2029&confirm=Confirm**
+  - response: HTTP 200 — body: `<success-shaped page rendered>`
+- `t+120261ms`  observed state via `durable-state check — query the durable order collection for the key submitted above`: HTTP 200 — `matching durable record present — the order for the acting user`
 
 ## Your task
 

@@ -37,9 +37,9 @@
   {
    "t_rel_ms": 30039,
    "kind": "observation",
-   "probe": "durable-state check for the record submitted above",
+   "probe": "durable-state check — query the durable order/accounting record for the key submitted above",
    "status": "n/a",
-   "body": "1"
+   "body": "matching durable record present — the checkout's order record"
   }
  ]
 }

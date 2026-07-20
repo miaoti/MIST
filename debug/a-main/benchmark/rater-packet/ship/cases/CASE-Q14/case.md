@@ -1,19 +1,18 @@
 # Case CASE-Q14
 
-**System:** oteldemo  (version set: opentelemetry-demo app 2.2.0 / chart 0.40.9)
+**System:** trainticket  (version set: train-ticket (pinned image set))
 
-**Reference material:** Use ONLY the provided documentation bundle: `docs-bundles/oteldemo/`
+**Reference material:** Use ONLY the provided documentation bundle: `docs-bundles/trainticket/`
 
 ## What was done (in order)
 
-- `t+0ms`  **POST /api/cart?currencyCode=USD**
-  - request body: `{"item":{"productId":"0PUK6V6EV0","quantity":1},"userId":"<session uuid, internal>"}`
-  - response: HTTP 200 — body: `<cart accepted>`
-- `t+0ms`  **POST /api/checkout?currencyCode=USD**
-  - request body: `{"userId":"<session uuid>","userCurrency":"USD","email":"r1dev2-1784003126@Sample.test","address":{"streetAddress":"r1dev2-1784003126","state":"CA","country":"United States","city":"Mountain View","zipCode":"94043"},"creditCard":{"creditCardCvv":672,"creditCardExpirationMonth":1,"creditCardExpirationYear":2030,"creditCardNumber":"4432-8015-6152-0454"}}`
-  - response: HTTP 200 — body: `{"orderId":"3cfd32b3-7f3c-11f1-90da-96ecc7e640eb","shippingAddress":{"streetAddress":"r1dev2-1784003126","city":"Mountain View","state":"CA","country":"United States","zipCode":"94043"},"items":"<elided>"}`
-- `t+29337ms`  observed state via `durable-state check for the record submitted above`: HTTP 200 — `[]`
-- `t+58842ms`  observed state via `durable-state check for the record submitted above`: HTTP 200 — `[{"the request marker field":"r1dev2-1784003126"}]`
+- `t+0ms`  **POST /api/v1/users/login**
+  - request body: `{"username":"<redacted>","password":"<redacted>"}`
+  - response: HTTP 200 — body: `<login response — token redacted>`
+- `t+118ms`  **POST /api/v1/inside_pay_service/inside_payment/account**
+  - request body: `{"userId":"1ed92d1b-b05f-4b12-9fd4-351537406a63","money":"100"}`
+  - response: HTTP 200 — body: `{"status":1,"msg":"Create Account Success","data":null}`
+- `t+3141ms`  observed state via `durable-state check — query the durable payment-account record for the key submitted above`: HTTP 200 — `no matching durable record present`
 
 ## Your task
 

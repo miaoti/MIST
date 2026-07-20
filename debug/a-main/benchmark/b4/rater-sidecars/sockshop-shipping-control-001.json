@@ -75,9 +75,9 @@
   {
    "t_rel_ms": 3322,
    "kind": "observation",
-   "probe": "GET /orders (the acting customer's orders)",
+   "probe": "durable-state check — query the durable order document for the key submitted above",
    "status": 201,
-   "body": "[{\"customerId\":\"6a50689ea39e9b00016cdd9e\",\"customer\":{\"firstName\":\"cb\",\"lastName\":\"cb\",\"username\":\"cb1783654558838\",\"addresses\":[],\"cards\":[]},\"address\":{\"number\":\"3\",\"street\":\"my road\",\"city\":\"London\",\"postcode\":\"E2 8RS\",\"country\":\"UK\"},\"card\":{\"longNum\":\"5544154011345918\",\"expires\":\"08/29\",\"ccv\":\"958\"},\"items\":[{\"itemId\":\"819e1fbf-8b7e-4f6d-811f-693534916a8b\",\"quantity\":1,\"unitPrice\":14}],\"shipment\":{\"name\":\"6a50689ea39e9b00016cdd9e\"},\"date\":\"<time>+0000\",\"total\":18.99,\"_links\":{\"self\":{\"href\":\"http://orders/orders/6a50689e04eb4f000a414b79\"},\"order\":{\"href\":\"http://orders/or…"
+   "body": "matching durable record present — 1 order document for the acting customer"
   }
  ]
 }

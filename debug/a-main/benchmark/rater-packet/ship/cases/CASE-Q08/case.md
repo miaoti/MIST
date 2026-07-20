@@ -1,19 +1,18 @@
 # Case CASE-Q08
 
-**System:** teastore  (version set: TeaStore v1.4.2)
+**System:** trainticket  (version set: train-ticket (pinned image set))
 
-**Reference material:** Use ONLY the provided documentation bundle: `docs-bundles/teastore/`
+**Reference material:** Use ONLY the provided documentation bundle: `docs-bundles/trainticket/`
 
 ## What was done (in order)
 
-- `t+0ms`  **POST /tools.descartes.teastore.webui/loginAction?<credentials redacted>**
-  - response: HTTP 200 — body: `<response redacted (carries a session token)>`
-- `t+35ms`  **POST /tools.descartes.teastore.webui/cartAction?addToCart=&productid=42**
-  - response: HTTP 200 — body: `<success-shaped page rendered>`
-- `t+105ms`  **POST /tools.descartes.teastore.webui/cartAction?firstname=order-9f3c1a&lastname=Sample&address1=Street1&address2=City1&cardtype=visa&cardnumber=314159265359&expirydate=12%2F2029&confirm=Confirm**
-  - response: HTTP 200 — body: `<success-shaped page rendered>`
-- `t+120145ms`  observed state via `GET /tools.descartes.teastore.persistence/rest/orderitems/order/{orderId} (line items) — read in a later verification pass`: HTTP 200 — `line items: 0 item(s)`
-- `t+120661ms`  observed state via `GET /tools.descartes.teastore.persistence/rest/orders/user/{id} (parent order) — read in a later verification pass`: HTTP 200 — `parent order 'order-9f3c1a': PRESENT`
+- `t+0ms`  **POST /api/v1/users/login**
+  - request body: `{"username":"<redacted>","password":"<redacted>"}`
+  - response: HTTP 200 — body: `<login response — token redacted>`
+- `t+95ms`  **POST /api/v1/adminrouteservice/adminroute**
+  - request body: `{"id":"placeholder","startStation":"shanghai","endStation":"taiyuan","stationList":"shanghai,taiyuan","distanceList":"0,1350"}`
+  - response: HTTP 200 — body: `{"status":1,"msg":"create and modify success","data":null}`
+- `t+3118ms`  observed state via `durable-state check — query the durable route records for the key submitted above`: HTTP 200 — `no matching durable record present`
 
 ## Your task
 

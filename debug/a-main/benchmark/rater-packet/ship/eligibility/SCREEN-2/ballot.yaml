@@ -1,4 +1,4 @@
-case_id: SCREEN-B1
+case_id: SCREEN-2
 label:            # genuine | benign | underspecified
 grounding:
   citation:       # doc/spec/source location inside the provided bundle

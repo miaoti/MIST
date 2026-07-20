@@ -26,7 +26,7 @@
    "kind": "request",
    "method": "POST",
    "path": "/api/v1/adminbasicservice/adminbasic/contacts",
-   "payload": "{\"id\":\"b4b250ee-02a5-4e99-839c-41e50d97dd28\",\"accountId\":\"199c5365-6458-415d-9599-10dc907606b3\",\"name\":\"Rater Contact\",\"documentType\":1,\"documentNumber\":\"DN-A1\",\"phoneNumber\":\"13800000000\"}"
+   "payload": "{\"id\":\"b4b250ee-02a5-4e99-839c-41e50d97dd28\",\"accountId\":\"199c5365-6458-415d-9599-10dc907606b3\",\"name\":\"J. Almeida\",\"documentType\":1,\"documentNumber\":\"DN-A1\",\"phoneNumber\":\"13800000000\"}"
   },
   {
    "t_rel_ms": 109,
@@ -37,9 +37,9 @@
   {
    "t_rel_ms": 3109,
    "kind": "observation",
-   "probe": "durable contact store, scoped by the contact id in the request above: did the contact collection gain the submitted contact?",
+   "probe": "durable-state check — query the durable contact records for the key submitted above",
    "status": 200,
-   "body": "contact collection count unchanged (the submitted contact is not present)"
+   "body": "no matching durable record present"
   }
  ]
 }

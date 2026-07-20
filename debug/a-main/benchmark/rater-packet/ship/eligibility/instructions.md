@@ -5,7 +5,7 @@ It is done once, on your own, using ONLY the materials in this packet (the rubri
 and the `docs-bundles/` reference sources). No web search, no other repositories, no discussing it
 with anyone.
 
-**Part 1 — two practice cases.** The folders `SCREEN-G1/` and `SCREEN-B1/` each contain a `case.md`
+**Part 1 — two practice cases.** The folders `SCREEN-1/` and `SCREEN-2/` each contain a `case.md`
 (what was done to the system and what was observed) and a `ballot.yaml`. Judge each case exactly as
 described in the rubric — derive the intended behavior from the documentation bundle, compare it to
 what the case shows, and record your label + grounding citation + confidence + rationale in the
