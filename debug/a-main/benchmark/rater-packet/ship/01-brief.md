@@ -6,7 +6,7 @@ documentation.
 
 **Who we're looking for.** Software engineers with microservice literacy: comfortable reading
 OpenAPI/REST specs, synchronous REST + asynchronous messaging + eventual consistency, and reading
-application source (Java and Go). A short screening task (§9) confirms fit.
+application source (Java and Go). A short screening task (in `eligibility/`) confirms fit.
 
 **The task, per case.** You are given (a) the system and its exact version, (b) the sequence of API
 requests performed, (c) the system's response(s), and (d) the resulting observed durable state. Using
