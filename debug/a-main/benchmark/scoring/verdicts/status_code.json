@@ -12,7 +12,7 @@
     "sockshop-shipping-control-001": "no_flag",
     "sockshop-shipping-swallowed-enqueue-001": "no_flag",
     "teastore-order-control-001": "no_flag",
-    "teastore-order-depdown-specified-001": "not_evaluable",
+    "teastore-order-depdown-specified-001": "no_flag",
     "teastore-order-maintenance-masked-001": "no_flag",
     "teastore-order-meshsever-control-001": "no_flag",
     "teastore-order-meshsever-masked-001": "no_flag",
@@ -22,18 +22,12 @@
     "TT-adminbasic-contacts-lostwrite-001": "no_flag",
     "TT-adminroute-control-001": "no_flag",
     "TT-adminroute-lostwrite-001": "no_flag",
-    "TT-basic-price-corrupt-f14-001": "no_flag",
-    "TT-cancel-refund-asyncrefund-f1-001": "no_flag",
     "TT-cancel-refund-clean-001": "no_flag",
     "TT-cancel-refund-fabricatedack-001": "no_flag",
     "TT-cancel-refund-natural-001": "no_flag",
-    "TT-cancel-status-recheck-corrupt-f11-001": "no_flag",
     "TT-contacts-dedupe-benign-001": "no_flag",
     "TT-contacts-noop-modify-benign-001": "no_flag",
     "TT-createaccount-agreement-001": "no_flag",
-    "TT-createaccount-clean-001": "no_flag",
-    "TT-order-contact-corrupt-f10-001": "no_flag",
-    "TT-order-statusskew-corrupt-f20-001": "no_flag",
-    "TT-user-selection-corrupt-f8-001": "no_flag"
+    "TT-createaccount-clean-001": "no_flag"
   }
 }
