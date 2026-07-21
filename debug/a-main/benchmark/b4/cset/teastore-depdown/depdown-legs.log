@@ -1,0 +1,29 @@
+# teastore-order-depdown-specified-001 -> CAPTURED (live 2026-07-20, PVC-backed teastore-db)
+# Cluster: kind 'mist', ns teastore; teastore-db patched with a local-path PVC (teastore-db-data, 2Gi)
+#          mounted at /var/lib/mysql (the fix for the freeze's "no-PVC wipe destroys absence evidence").
+# Read-back surface: GET /rest/orders (persistence JPA over the durable DB) — the canonical TeaStore
+#                    durable read-back (same surface as the meshsever/maintenance captures).
+# Journey: login(userNN)->category(read)->addToCart(product 42)->cartAction confirm (marker in address1).
+# Fault mechanism (design): dependency_scale_zero — teastore-db scaled to 0 (verified 0 pods) during the
+#                    order confirm; persistence.OrderRepository.createEntity cannot reach the DB.
+#
+# RESULT: the webui MASKS the persistence DB-down as a SUCCESSFUL order — confirm returns HTTP 302
+#         (the order-confirmed redirect, byte-identical to a healthy confirm) with NO error page, while
+#         the order is NEVER durably recorded. Acknowledged-but-LOST.
+#
+# CONTROL (db UP): confirm 302 -> /rest/orders PRESENT.
+#   cwctrl1784607837 : present (count 1) — durable across ALL 2 db-down cycles below (PVC preserved it)
+#   dzctrl1784608713 : present (count 1) — fresh contemporaneous control
+# FAULT (db verified 0 pods at confirm): confirm 302 (acked) -> /rest/orders ABSENT. N=6 over 2 cycles:
+#   cycle-1: dz...603a=0  dz...603b=0  dz...603c=0
+#   cycle-2: dz...679d=0  dz...679e=0  dz...679f=0
+#   total /rest/orders rows unchanged (190) across the fault confirms -> no fault order persisted.
+#
+# DISCLOSED CAPTURABILITY NUANCE (honest): the LOSS is deterministic ONLY under a buffer-drop protocol.
+#   Naive scale-db-to-0 then scale-back shows PARTIAL persistence (~50%): persistence's JPA connection
+#   pool BUFFERS the failed write and FLUSHES it to the DB on reconnect when the DB returns (measured:
+#   F3, Q2, Q3 persisted this way). The clean acked-but-LOST requires force-deleting the persistence pod
+#   WHILE the DB is still down (dropping the buffered write) BEFORE restoring the DB. Under that protocol
+#   the loss is 6/6. The ACK (302 masked) is invariant either way; only durable persistence varies.
+#   -> reported as acknowledged-but-lost UNDER the disclosed protocol; the pool-reconnect-flush path is
+#      itself a documented downstream-eventual behavior (out of the masked-loss claim).
