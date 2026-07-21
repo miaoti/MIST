@@ -1,0 +1,13 @@
+{
+ "arm": "eanom_control_differ",
+ "verdict_source": "E-ANOM: OUR unsupervised control-vs-fault structural trace differ (learn-normal-from-control; scoring/run_anomaly_arm.py; result-of-record b4/RESULT-eanom.md). Requires BOTH a paired control leg AND distributed traces -> evaluable 7/27 (6 traced positives + the 1 traced benign pair); everything else not_evaluable by the method's own input contract. Measured quality grading (RESULT-eanom): adminroute+adminbasic STRONG (span collapse 15->3 / 13->2), oteldemo-lost+sockshop-swallowed WEAK (1-2 missing edges of 22/12 - a tuned detector's threshold may not fire), fabricatedack NOISE-only (edge structure IDENTICAL; flagged on a background NacosWatch lambda op - the call-happens-data-lost variety has no missing edge), createaccount MISS; bookinfo benign = FP (1/1 evaluable negatives). Folded into the headline as the honest trace competitor per the 2026-07-21 expand-review mandate.",
+ "cases": {
+  "bookinfo-ratings-benign-001": "flag",
+  "oteldemo-checkout-lost-001": "flag",
+  "sockshop-shipping-swallowed-enqueue-001": "flag",
+  "TT-adminbasic-contacts-lostwrite-001": "flag",
+  "TT-adminroute-lostwrite-001": "flag",
+  "TT-cancel-refund-fabricatedack-001": "flag",
+  "TT-createaccount-agreement-001": "no_flag"
+ }
+}

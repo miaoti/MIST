@@ -153,17 +153,32 @@ def main():
 
     inv = "trace-invisible-by-construction"
     inv_pos = [c for c in labels if visclass.get(c) == inv and labels[c] == "positive"]
+    # provenance split COMPUTED from the census classification (the static "live-run (8)"
+    # prose went stale when the corpus moved 33->27; expand-review C caught it)
+    split = {}
+    for cid, v in mist_cases.items():
+        if v == "flag":
+            split[mist_prov[cid]] = split.get(mist_prov[cid], 0) + 1
+    split_txt = " + ".join(f"{split.get(k, 0)} {k}" for k in
+                           ("live-run", "manual-record", "capture-concordant"))
+    # positives scope COMPUTED: foreground the principled not-evaluable positives so the
+    # headline recall always reads "of the evaluable", never as a rigged perfect score
+    ne_pos = sorted(c for c in labels if labels[c] == "positive"
+                    and mist_cases.get(c, "not_evaluable") == "not_evaluable")
+    npos = sum(1 for c in labels if labels[c] == "positive")
     out = {
         "schema": "matched-recall-table/1",
         "generated_by": "scoring/score_arms.py (completion-set wave A6)",
         "rails": [
             "per-visibility-class cells only - NO pooled headline recall is emitted",
             "NOT_EVALUABLE leaves the denominator and lands in its own bucket",
+            f"POSITIVES SCOPE (foregrounded): {npos} positives total; MIST evaluable = {npos - len(ne_pos)}; the {len(ne_pos)} principled not-evaluable positives are {ne_pos} - any 'x/x' MIST recall means x of the EVALUABLE positives and MUST be stated with this scope",
             f"the {inv} row is the N-vs-0 row: {len(inv_pos)} positives no trace-consuming arm can see by construction",
-            "MIST flag cells carry provenance_class in THREE kinds - live-run (8), manual-record (1, TT-adminbasic: the live G1 run-3 was NOT_EVALUABLE, the flag rests on a disclosed manual-G0 record), capture-concordant (1, TT-createaccount-agreement); neither the manual nor the concordant cell may be pooled into a live headline (self-concordance rule)",
+            f"MIST flag cells carry provenance_class - {split_txt} (manual-record = TT-adminbasic: the live G1 run-3 was NOT_EVALUABLE, the flag rests on a disclosed manual-G0 record; capture-concordant flags rest on the capture-of-record, not a separate live MIST oracle run); neither the manual nor the concordant cells may be pooled into a live headline (self-concordance rule)",
             "Wilson 95% intervals accompany every cell (recall over evaluable positives; FP rate over evaluable negatives) - tiny denominators stay visibly tiny",
             "FP denominator convention: the headline FP figure is 0/13 on the MEASURED no_flag denominator; the corpus-level statement is 0 false flags among all 15 negatives (2 negatives are principled-n_a and cannot flag) - state both, pool neither",
             "matched-recall framing only - never 'discrimination' (the natural-discriminator question was S3's, closed 0/1514)",
+            "OPERATING-POINT framing (2026-07-21 expand-review mandate): eanom_control_differ is a first-class arm - never claim a trace differ 'cannot see' masked loss (E-ANOM catches 5/6 traced positives); the defended claim is the operating point (black-box, no instrumentation, no paired control leg, single-execution, durable-state not trace-proxy) plus the 0-FP profile, NOT unique detection",
         ],
         "n_vs_0_row": {"class": inv, "positives": len(inv_pos), "positive_ids": inv_pos},
         "visibility_tally": vis["tally"],

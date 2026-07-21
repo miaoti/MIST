@@ -2,6 +2,8 @@
 """E-ANOM (plan rev 2, 3-cold ACCEPT-WITH-CHANGES): a REAL unsupervised trace-anomaly
 detector, executed offline over the corpus's paired traces, to replace the
 `traceanomaly` arm's argued `not_evaluable 33/33` with a MEASURED result.
+[2026-07-21: corpus-of-record is now 27; the measured verdicts ship as the first-class
+arm `eanom_control_differ` via build_eanom_arm.py — see RESULT-eanom.md's superseding note.]
 
 Paradigm (the honest, defensible core of the trace-anomaly family): LEARN-NORMAL-FROM-
 CONTROL, DETECT-DEVIATION. For each case that has BOTH a control-leg and a fault-leg

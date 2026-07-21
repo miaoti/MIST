@@ -4,6 +4,16 @@
 into the headline matched-recall table pending a USER positioning decision. Harness:
 `scoring/run_anomaly_arm.py`; raw `scoring/verdicts/traceanomaly.detail.json`.
 
+> **[2026-07-21 SUPERSEDING UPDATE — the positioning decision LANDED and E-ANOM IS NOW FOLDED IN.]**
+> Three cold expand-reviews (`REVIEW-expand-{A,B,C}`, unanimous EXPANSION-NOT-THE-LEVER) mandated
+> folding E-ANOM into the headline as the honest trace competitor; the user approved the reframe
+> (2026-07-21). It now ships as the first-class arm **`eanom_control_differ`**
+> (`scoring/build_eanom_arm.py` → `verdicts/eanom_control_differ.json`; 5/6 traced positives
+> flagged [2 STRONG / 2 WEAK / 1 NOISE], createaccount MISS, bookinfo FP = 1/1 evaluable
+> negatives). Corpus figures below are the 33-era snapshot — the benchmark-of-record is now 27
+> (E-ANOM not_evaluable on 20/27). Headline framing = the OPERATING POINT + 0-FP profile
+> (the "not folded" clause above is superseded).
+
 ## What was expected vs what happened
 The plan (and reviewer-2's capture audit) predicted a CLEAN MEASURED NULL — a trace-anomaly
 detector flags 0/6 trace-evaluable positives (masked losses leave the trace structurally normal) +

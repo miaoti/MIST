@@ -1,5 +1,10 @@
 # RESULT — MIST Trace Shape Oracle (structural sub-invariant): wired + MEASURED over the corpus
 
+> **[2026-07-21 CURRENT-STATE POINTER]** Corpus figures below are the 33-era snapshot; the
+> benchmark-of-record is now **27** (F-corpus retired, depdown captured) and the table was
+> re-scored (`bd362d0`): this arm reads 0/6 evaluable positives + 1 FP over the 27. See the
+> freeze 2026-07-21 row.
+
 > **Post-review rev 2 (tsarm A/B/C fold, same day).** This arm runs ONLY MIST's structural
 > `HIDDEN_DOWNSTREAM_FAILURE` sub-invariant (1 of the oracle's 6 invariants — the four learned
 > invariants need a learned store the offline captures do not carry, and target-attribution needs

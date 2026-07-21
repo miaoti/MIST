@@ -1,5 +1,15 @@
 # RESULT — E2 comparator-frontier COMPLETION (completion-set wave, Phase B) — Step 6 fold
 
+> **[2026-07-21 CURRENT-STATE POINTER — figures below are era snapshots; the state of record moved.]**
+> The benchmark-of-record is **27 cases (12 pos / 15 neg)** — the 6 F-corpus cases retired to
+> `cases/excluded-fcorpus/`, depdown CAPTURED (PVC-backed) with `mist_readback_oracle=flag`
+> (capture-concordant). E2 re-scored over the 27 (`bd362d0`): MIST read-back **10/10 evaluable
+> positives + 0 FP**; provenance split **7 live-run + 1 manual-record + 2 capture-concordant**
+> (the "9 live + 1 concordant" below is the 33-era figure). **E-ANOM is now a first-class arm**
+> (`eanom_control_differ`, 5/6 traced positives + 1/1 FP on its evaluable negative — the
+> 2026-07-21 expand-review mandate); the headline framing is the OPERATING POINT + 0-FP profile,
+> never unique detection. See the freeze 2026-07-21 row + `scoring/matched-recall-table.json` rails.
+
 > **[WILSON CIs ADDED 2026-07-18]** Every matched-recall cell now carries `recall_wilson95` (flagged positives / evaluable positives) and `fp_rate_wilson95` (flagged negatives / evaluable negatives) in `scoring/matched-recall-table.json` — the small denominators stay VISIBLY small (e.g. trace-uninstrumented MIST read-back recall 4/4 = Wilson95 [0.51, 1.0]); the point estimates are unchanged, the intervals make the pilot-scale honest per reviewer demand.
 
 > **[POST-A3 ERRATUM 2026-07-18 — figures below are this wave's-era snapshot.]** The corpus is

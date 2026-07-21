@@ -4,11 +4,13 @@
  "rails": [
   "per-visibility-class cells only - NO pooled headline recall is emitted",
   "NOT_EVALUABLE leaves the denominator and lands in its own bucket",
+  "POSITIVES SCOPE (foregrounded): 12 positives total; MIST evaluable = 10; the 2 principled not-evaluable positives are ['oteldemo-checkout-kafkaqueue-lost-001', 'sockshop-shipping-swallowed-enqueue-001'] - any 'x/x' MIST recall means x of the EVALUABLE positives and MUST be stated with this scope",
   "the trace-invisible-by-construction row is the N-vs-0 row: 2 positives no trace-consuming arm can see by construction",
-  "MIST flag cells carry provenance_class in THREE kinds - live-run (8), manual-record (1, TT-adminbasic: the live G1 run-3 was NOT_EVALUABLE, the flag rests on a disclosed manual-G0 record), capture-concordant (1, TT-createaccount-agreement); neither the manual nor the concordant cell may be pooled into a live headline (self-concordance rule)",
+  "MIST flag cells carry provenance_class - 7 live-run + 1 manual-record + 2 capture-concordant (manual-record = TT-adminbasic: the live G1 run-3 was NOT_EVALUABLE, the flag rests on a disclosed manual-G0 record; capture-concordant flags rest on the capture-of-record, not a separate live MIST oracle run); neither the manual nor the concordant cells may be pooled into a live headline (self-concordance rule)",
   "Wilson 95% intervals accompany every cell (recall over evaluable positives; FP rate over evaluable negatives) - tiny denominators stay visibly tiny",
   "FP denominator convention: the headline FP figure is 0/13 on the MEASURED no_flag denominator; the corpus-level statement is 0 false flags among all 15 negatives (2 negatives are principled-n_a and cannot flag) - state both, pool neither",
-  "matched-recall framing only - never 'discrimination' (the natural-discriminator question was S3's, closed 0/1514)"
+  "matched-recall framing only - never 'discrimination' (the natural-discriminator question was S3's, closed 0/1514)",
+  "OPERATING-POINT framing (2026-07-21 expand-review mandate): eanom_control_differ is a first-class arm - never claim a trace differ 'cannot see' masked loss (E-ANOM catches 5/6 traced positives); the defended claim is the operating point (black-box, no instrumentation, no paired control leg, single-execution, durable-state not trace-proxy) plus the 0-FP profile, NOT unique detection"
  ],
  "n_vs_0_row": {
   "class": "trace-invisible-by-construction",
@@ -389,6 +391,109 @@
      "flagged_negative_ids": [],
      "not_evaluable_ids": [
       "TT-createaccount-agreement-001",
+      "TT-createaccount-clean-001"
+     ]
+    },
+    "trace-uninstrumented": {
+     "positives": 6,
+     "evaluable_positives": 0,
+     "flagged_positives": 0,
+     "negatives": 5,
+     "flagged_negatives": 0,
+     "not_evaluable": 11,
+     "recall_wilson95": null,
+     "fp_rate_wilson95": null,
+     "flagged_positive_ids": [],
+     "flagged_negative_ids": [],
+     "not_evaluable_ids": [
+      "oteldemo-checkout-kafkaqueue-lost-001",
+      "teastore-order-control-001",
+      "teastore-order-depdown-specified-001",
+      "teastore-order-maintenance-masked-001",
+      "teastore-order-meshsever-control-001",
+      "teastore-order-meshsever-masked-001",
+      "teastore-orderitems-meshsever-control-001",
+      "teastore-orderitems-meshsever-masked-001",
+      "TT-cancel-refund-natural-001",
+      "TT-contacts-dedupe-benign-001",
+      "TT-contacts-noop-modify-benign-001"
+     ]
+    }
+   }
+  },
+  "eanom_control_differ": {
+   "verdict_source": "E-ANOM: OUR unsupervised control-vs-fault structural trace differ (learn-normal-from-control; scoring/run_anomaly_arm.py; result-of-record b4/RESULT-eanom.md). Requires BOTH a paired control leg AND distributed traces -> evaluable 7/27 (6 traced positives + the 1 traced benign pair); everything else not_evaluable by the method's own input contract. Measured quality grading (RESULT-eanom): adminroute+adminbasic STRONG (span collapse 15->3 / 13->2), oteldemo-lost+sockshop-swallowed WEAK (1-2 missing edges of 22/12 - a tuned detector's threshold may not fire), fabricatedack NOISE-only (edge structure IDENTICAL; flagged on a background NacosWatch lambda op - the call-happens-data-lost variety has no missing edge), createaccount MISS; bookinfo benign = FP (1/1 evaluable negatives). Folded into the headline as the honest trace competitor per the 2026-07-21 expand-review mandate.",
+   "cells": {
+    "error-span-visible": {
+     "positives": 1,
+     "evaluable_positives": 1,
+     "flagged_positives": 1,
+     "negatives": 2,
+     "flagged_negatives": 1,
+     "not_evaluable": 1,
+     "recall_wilson95": [
+      0.2065,
+      1.0
+     ],
+     "fp_rate_wilson95": [
+      0.2065,
+      1.0
+     ],
+     "flagged_positive_ids": [
+      "sockshop-shipping-swallowed-enqueue-001"
+     ],
+     "flagged_negative_ids": [
+      "bookinfo-ratings-benign-001"
+     ],
+     "not_evaluable_ids": [
+      "sockshop-shipping-control-001"
+     ]
+    },
+    "span-presence-visible": {
+     "positives": 3,
+     "evaluable_positives": 3,
+     "flagged_positives": 3,
+     "negatives": 6,
+     "flagged_negatives": 0,
+     "not_evaluable": 6,
+     "recall_wilson95": [
+      0.4385,
+      1.0
+     ],
+     "fp_rate_wilson95": null,
+     "flagged_positive_ids": [
+      "oteldemo-checkout-lost-001",
+      "TT-adminbasic-contacts-lostwrite-001",
+      "TT-adminroute-lostwrite-001"
+     ],
+     "flagged_negative_ids": [],
+     "not_evaluable_ids": [
+      "oteldemo-checkout-control-001",
+      "oteldemo-checkout-eventual-benign-001",
+      "oteldemo-checkout-eventual-benign-002",
+      "oteldemo-checkout-eventual-benign-003",
+      "TT-adminbasic-contacts-control-001",
+      "TT-adminroute-control-001"
+     ]
+    },
+    "trace-invisible-by-construction": {
+     "positives": 2,
+     "evaluable_positives": 2,
+     "flagged_positives": 1,
+     "negatives": 2,
+     "flagged_negatives": 0,
+     "not_evaluable": 2,
+     "recall_wilson95": [
+      0.0945,
+      0.9055
+     ],
+     "fp_rate_wilson95": null,
+     "flagged_positive_ids": [
+      "TT-cancel-refund-fabricatedack-001"
+     ],
+     "flagged_negative_ids": [],
+     "not_evaluable_ids": [
+      "TT-cancel-refund-clean-001",
       "TT-createaccount-clean-001"
      ]
     },
