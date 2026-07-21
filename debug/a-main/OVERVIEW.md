@@ -29,16 +29,21 @@ what is in progress, and the honest limits. Concrete examples are called out as 
 Key terms: **acknowledged-but-lost write** = the server answers `200 "Success"` but the state change never
 persisted. **read-back** = a follow-up GET that re-reads the state. **fire** = the oracle flags a problem.
 
-**Status (as of 2026-07-14).**
+**Status (as of 2026-07-20).**
 - **Gate work (through 2026-07-08; §1–§5):** G1 **PASS**, G2 **accepted**, both G3 head-to-heads done — but
   G3 as written is **re-scoped** (the clean B2 wins are on constructed faults, the natural cells tie; §3, §6.1).
-- **Benchmark phase (2026-07-08 → 07-14; §6):** corpus **26 cases (11 positive / 15 negative) across 5
-  systems**, validator-green; B2 read-back **enabled + fired** on 2 new SUTs (2.75-A); flagship cell
-  **run-backed** (E2); wild-hunt = **scarcity** (0 / 1514, S3). **8 distinct positive sites.**
-- **Owed:** the **C3 rater study** (materials ready; blocked on IRB + compensation), a full-corpus B2 recall
-  table, and — the open bet — a **natural (zero-injection) discriminator**, which S3 showed the wild does not
-  readily supply.
-- **Not started:** the **paper draft** (the biggest distance to submission).
+- **Benchmark phase (2026-07-08 → 07-20; §6):** corpus **27 cases (12 positive / 15 negative) across 5
+  systems**, validator-green, **8 distinct positive sites**. The **6-arm × 4-visibility matched-recall table**
+  is run + independently reproduced; B2's column is fully populated — **flag 9 / no_flag 13 / principled n/a 5
+  → 9/9 evaluable positives flagged, 0/15 false positives**. Flagship cell trace-tier **controlled**
+  (TT-omnibus, paired fire 5/5 vs baseline miss 5/5); **M-yield 6-SUT set banked** (no yield number —
+  rater-gated); wild-hunt = **scarcity** (0 / 1514, S3); construct validity cold-reviewed
+  (`PROVENANCE-LEDGER.md`).
+- **Experiment side essentially complete; the binding gate is now the write-up freeze.** Per the user
+  (2026-07-16): *no paper draft of any kind* until **all** experiments **including the C3 rater study** are
+  done. The draft plan is START-READY but frozen behind that gate.
+- **Owed (mostly user-side):** the **C3 rater study** (materials ready; blocked on IRB + compensation) — the
+  critical path now; the **PWS L1** EvoMaster decision (§6.3); seal decisions; E6 fork-publication; venue.
 
 ---
 
@@ -186,7 +191,7 @@ precisely what B2 reads back.**
 
 ---
 
-## 6. 2026-07-08 → 07-14 — the pivot to an open benchmark + an oracle study
+## 6. 2026-07-08 → 07-20 — the pivot to an open benchmark + an oracle study
 
 ### 6.1 Why the pivot (2026-07-08)
 
@@ -225,12 +230,17 @@ separates:
 | 07-11 | **E2** — flagship cell run-backed | upgrade TT `cancel→refund` clean win from manual curl to a harness run on a **traced** deploy | B2 **fire 5/5**, baseline **miss 5/5**; claim = *specification-locality* (a capability datum, not the headline) |
 | 07-13 | **S3 wild-hunt** — zero-injection observation | settle the open bet: does a natural discriminator exist in the wild? | **0 confirmed losses / 1514 acked writes / 5 endpoints / 3 systems** (≤ 0.20%) = the pre-registered **scarcity** finding |
 | 07-13 | **R1 / R1b / R1c / R1d** — corpus completion | fill the corpus to its floors | **8 positive sites** (3 widenings rejected as padding); boundary **B2 = LOST not CORRUPTED**; benign-power shortfall disclosed |
+| 07-14 | **E1 / R2** — clean-room comparator specs + neutralized rater sidecars; close R1d | give the study a fair opponent + blind case materials | 2 clean-room OpenAPI specs (TeaStore/OTel); 25 leak-free sidecars; +2 induced-benign → corpus **26** |
+| 07-16 | **TT-omnibus + M-yield** (STEP 4) | a *controlled* trace-tier measurement for the flagship; run B2 across 6 systems | TT-omnibus: observe 5/5 `OBSERVED_COMPLETE_ABSENT`, paired **fire 5/5** vs baseline **miss 5/5** (E2's live B2 cell); M-yield 6-SUT set, 0 paused (**no yield stat — rater-gated**) |
+| 07-16 | **Completion Set** (Phase A/B/C) | build the scoring skeleton end-to-end in one wave | the **6-arm × 4-visibility matched-recall table** (measured = stamped, 0 mismatch); B2 column **9 flag / 13 no_flag / 5 n/a → 9/9 pos, 0 FP**; kafka 2nd capture (19/20 lost, permanent) → **corpus 27** |
+| 07-17 | **PWS L1** — real EvoMaster as an anti-strawman comparator | preempt "your baseline is a strawman" | a **reachability barrier**: black-box EvoMaster can't reach the acked-2xx write baseline on stateful SUTs (0–11% acked-2xx; one front-end crash) — honest, and it *supports* MIST's stimulus. **User decision owed** |
+| 07-20 | **Provenance audit** — ledger + 3-way cold review | answer, case by case, "why is each a real bug" | `PROVENANCE-LEDGER.md`: 2 axes + 4-tier spectrum + 26-case ledger + F1–F14; cold review reproduced the **4-injected / 7-native** split, caught the 149-file base-source error |
 
 > **Talking point (why "scarcity" is a result, not a failure).** S3 finding 0 wild losses in 1514 writes is
 > *why* the benchmark's positives are injected: naturally-occurring masked losses are rare, so injected
 > ground truth is the honest way to populate the hazard — and the scarcity number itself is a contribution.
 
-### 6.4 The corpus today (2026-07-14) — 26 cases, JSON-verified
+### 6.4 The corpus today (2026-07-20) — 27 cases, JSON-verified
 
 **Composition (real counts from the case files):**
 
@@ -238,14 +248,15 @@ separates:
 |---|---|---|---|
 | TrainTicket | 5 | 6 | 11 |
 | TeaStore | 4 | 3 | 7 |
-| OTel-Demo | 1 | 4 | 5 |
+| OTel-Demo | 2 | 4 | 6 |
 | Sock Shop | 1 | 1 | 2 |
 | Bookinfo | 0 | 1 | 1 |
-| **Total** | **11** | **15** | **26** |
+| **Total** | **12** | **15** | **27** |
 
-**The 11 positives** = **6 natural-mechanism** (unmodified image + an operational trigger; the image's *own*
-swallow) **+ 5 TrainTicket fork-flag constructions**. By fault mechanism: flag ×6, dependency-down ×3,
-mesh-sever ×2. They occupy **8 distinct sites**:
+**The 12 positives** = **7 image-native** (6 natural + 1 vendor-flag; unmodified image + an operational
+trigger, the image's *own* swallow) **+ 5 TrainTicket fork-flag constructions**. By fault mechanism: flag ×7,
+dependency-down ×3, mesh-sever ×2. They still occupy **8 distinct sites** (the 2 OTel positives are two
+capture windows of the *same* checkout→kafka site):
 
 | System | positive sites | source |
 |---|---|---|
@@ -257,6 +268,14 @@ mesh-sever ×2. They occupy **8 distinct sites**:
 **The 15 negatives** = **9 clean control legs** + **6 designed benign traps**: Bookinfo ratings-down →
 graceful degrade; OTel checkout eventual-consistency ×3 (order lands after a delay); TT contacts dedupe-reject;
 TT contacts no-op modify.
+
+**B2's measured column (Completion Set, 07-16).** Every case was scored through the single harness path, and
+the whole 6-arm × 4-visibility matched-recall table was independently reproduced (measured = stamped, 0
+mismatch). B2's column: **flag 9 / no_flag 13 / principled n/a 5** (zero silent pending) → **9/9 evaluable
+positives flagged, 0/15 false positives**. The n/a cells are declared, not hidden (e.g. a TT collection
+truncated past the marker, a Sock Shop loss visible only in a trace, an async-ineligible case). This is a
+*measured* recall on the corpus — not a wild-yield claim, which stays rater-gated (M-yield reports **no**
+yield number until C3 confirms).
 
 > **Example (a positive).** TeaStore, `POST` order with the vendor maintenance flag on → **HTTP 201, body
 > `-1`**, order never persists, absent from the user's order history → label **positive** (acknowledged-but-
@@ -292,27 +311,38 @@ leak lets the frozen comparator's `MSG_CONTAINS` also catch it → **G3 tie**. O
 fully-clean `{1,"Success."}` is caught by B2 alone (durable balance 50→50 vs the control's 50→130) →
 the **clean win**. Both cases honestly carry `source=by_construction`.
 
-> **Provenance for all 26 cases** — source lines, the natural↔constructed **4-tier spectrum**, the one
-> *specified-not-captured* outlier, the orthogonal `source` (masking) vs `provenance_class` (trigger)
-> axes, and 8 audit findings — is in **`benchmark/PROVENANCE-LEDGER.md`** (2026-07-14).
+> **Provenance for all 26 audited cases** — source lines, the natural↔constructed **4-tier spectrum**, the
+> orthogonal `source` (masking) vs `provenance_class` (trigger) axes, and findings **F1–F14** — is in
+> **`benchmark/PROVENANCE-LEDGER.md`** (2026-07-14, cold-reviewed 2026-07-20). The 27th case (the OTel kafka
+> re-capture) shares provenance with the existing checkout→kafka positive, so the ledger's 26-case analysis
+> carries over unchanged. **Update 2026-07-20:** F3's formerly-specified case (`teastore-order-depdown`) was
+> **captured live** on a PVC-backed db (fault absent N=6/6), so **all 27 cases are now captured** — the
+> "captured + specified" split no longer applies (all 12 positives captured).
 
 **Rater study (C3) — materials ready.** A leak-gated hand-over packet is assembled; raters found; blocked
 only on user-side IRB + compensation blanks. The rating corpus is delivered from the corpus track.
 
-### 6.5 Now (2026-07-14) — state, honest limits, what's owed
+### 6.5 Now (2026-07-20) — state, honest limits, what's owed
 
-- **Banked:** corpus 26 cases / 5 systems (validator-green); B2 read-back enabled + fired on 2 new SUTs
-  (2.75-A); flagship cell run-backed (E2); the S3 scarcity result.
-- **Owed:** the **C3 rater study** (materials ready, blocked on IRB + compensation); a **full-corpus B2 recall
-  table**; and — the open bet — a **natural (zero-injection) discriminator**, which S3 showed the wild does
-  not readily supply.
-- **Not started:** the **paper draft** — the single biggest distance to submission.
+- **Banked:** corpus **27 cases / 5 systems** (validator-green); the **6-arm × 4-visibility matched-recall
+  table** run + independently reproduced, B2 column **9/9 evaluable positives, 0/15 FP**; flagship cell
+  trace-tier **controlled** (TT-omnibus); **M-yield 6-SUT set** (no yield number — rater-gated); B2 read-back
+  enabled + fired on 2 new SUTs (2.75-A); the S3 scarcity result; a cold-reviewed provenance evidence base
+  (`PROVENANCE-LEDGER.md`). **All committed + pushed to `origin/main_track`.**
+- **The binding gate is the write-up freeze** (user, 2026-07-16): *no paper draft of any kind* until **all**
+  experiments **including the C3 rater study** are done. So the experiment side is essentially complete, and
+  the critical path is now user-side.
+- **Owed (mostly user-side):** the **C3 rater study** (materials ready, blocked on IRB + compensation) — the
+  critical path; the **PWS L1** EvoMaster decision; **seal decisions** (CASE-Q47 swap, TT re-capture vs
+  keep-excluded, Sock Shop exclude, ack-text check); **E6** fork-publication; **venue**. The paper draft is
+  START-READY (plan only) but frozen behind the gate.
 - **Disclosed limits** (managed by honesty, not by more injection — padding was reviewed and rejected):
-  corpus size (26); every positive needs an operational trigger to reach the hazard (6 then surface via the
-  image's *own* natural swallow, 5 via a TrainTicket fork flag) — none is a purely wild loss (that is the S3
-  result); and the benign-power calibration shortfall.
+  corpus size (27); every positive needs an operational trigger to reach the hazard (7 surface via the image's
+  *own* native swallow, 5 via a TrainTicket fork flag) — none is a purely wild loss (that is the S3 result);
+  the benign-power calibration shortfall; and B2's scope boundary — it detects **LOST** (absent), not
+  **CORRUPTED** (present-but-wrong).
 
-*One-sentence takeaway (2026-07-08 → 07-14):* **the spine moved from "B2 wins a head-to-head" to "an open, human-
-labeled benchmark for acknowledged-but-lost writes + an honest oracle-evaluation on it" — with S3's scarcity
-result justifying the injected positives and the natural-discrimination win kept as a bonus the wild does
-not readily supply.**
+*One-sentence takeaway (2026-07-08 → 07-20):* **the spine moved from "B2 wins a head-to-head" to "an open, human-
+labeled benchmark for acknowledged-but-lost writes + an honest oracle-evaluation on it" — the experiments are
+now essentially done (a reproduced matched-recall table with B2 at 9/9 positives, 0 FP), S3's scarcity result
+justifies the injected positives, and the one gate left before writing is the human rater study.**
