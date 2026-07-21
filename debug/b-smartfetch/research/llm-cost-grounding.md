@@ -53,13 +53,15 @@ from older docs. Latency = the logger's own `Response Time` field
 | 1778039778981 | 05-05 22:56 | 20260505-225616 | 7,871 | 0 | DeepSeek healthy; = the "22:56 run" whose HTTP/2 stall is cited in `LLMService.java:113-116` (max 193 s in the mined data) |
 
 Post-D4 DeepSeek sessions also mined: 20260508-152629 (6,283 calls, 0 fail),
-20260513-134405 (1,173, 0), 20260513-180446 (252, 1).
+20260513-134405 (1,173, 0), 20260513-180446 (252, 0; one truncated final block — not a
+third failing session).
 
 ---
 
-## 2. Headline: the per-call latency assumption is CONFIRMED for DeepSeek
+## 2. Headline: the 2-4 s/call assumption is confirmed for DeepSeek (May-2026 measurement; G2 re-confirms currency)
 
-**deepseek-chat, successful calls only, n = 15,626** (May 2026, this box, WSL→hosted API):
+**deepseek-chat, successful calls only, n = 15,626** (May 2026, this box, WSL→hosted API;
+n = 29,157 − 13,528 failed − 3 truncated blocks without a timed response row):
 
 | p50 | p90 | p95 | p99 | max | mean |
 |---:|---:|---:|---:|---:|---:|
@@ -77,11 +79,12 @@ costs if DeepSeek is dead (§4):
 |---:|---:|---:|---:|---:|
 | 5.43 s | 18.7 s | 24.6 s | 49.1 s | **8.60 s** |
 
-i.e. **2-5× the DeepSeek band**, with a documented contention mode on top (§5 F5).
+i.e. **3-5× the DeepSeek band** (matched-statistic ratios 3.05-5.33×), with a documented
+contention mode on top (§5 F5).
 
 Token/dollar grounding: DeepSeek-era mean prompt ≈ 1,545 chars + response ≈ 235 chars
 ≈ **~450 tokens/call** (chars/4). At the data-derived call counts (§3) a scoped run is
-~0.1-0.4 M tokens, the ~148-run matrix ~15-60 M tokens — at DeepSeek's per-M rates that is
+~0.1-0.4 M tokens, the ~148-run matrix ~15-53 M tokens — at DeepSeek's per-M rates that is
 **tens of dollars total**, an order below the plan's "low hundreds" (which came from a
 2-8 M-token/run guess ≈ 3-5k tokens/call; measured is ~450). The plan's $ risk is
 conservative by ~5-20×; latency remains the only real cost axis, as §9-A.4a says.
@@ -99,36 +102,60 @@ both the LLM-off choice in run22/MYC and the sprint's scoped-unit rule.
 
 Code-verified cold-start chain (current tree, post-audit-F38): per parameter with an empty
 registry — 1 apiDiscovery (`SmartInputFetcher.java:600`) + per whitelisted suggested
-service (≤3): 1 endpointSelection, +1 forced on a deterministic NO_GOOD_MATCH (no retry),
-≤3 attempts only on *transient* failures (`:4165-4190`), then 1 directValueExtraction
-(+1 semanticFieldMatching fallback) per fill. **Typical cold cost 3-6 calls/parameter ✓**
-(the plan's band); worst case ~10-11 only in a transient-failure storm. Warm/registry-hit
-fills are 1-2 calls ✓. Two run-level multipliers the estimate must keep: the diverse-value
-cache is cleared per scenario (`resetValueRotation`, F26) so extraction repeats per
-scenario; discovery persists within the run once it succeeds (registry mappings, so the
-burst is one-time).
+service (≤3, `:3803` subList cap): 1 endpointSelection, +1 forced on a deterministic
+NO_GOOD_MATCH (no retry), ≤3 attempts only on *transient* failures (`:4165-4190`), then
+1 directValueExtraction (+1 semanticFieldMatching fallback) per fill. Terminology: the
+**2-4 figure below is discovery-only**; the plan's **3-6 = discovery + the first fill's
+extraction** — same chain, two slices. **Typical cold cost 3-6 calls/parameter ✓**
+(the plan's band); worst case ~12 (1 + 3 services × 3 transient + extraction; a
+pathological transient-then-NO_GOOD_MATCH path reaches ~15) only in a failure storm.
+Warm/registry-hit fills are 1-2 calls ✓. Two run-level multipliers the estimate must
+keep: the diverse-value cache is cleared per scenario (`resetValueRotation`, F26) so
+extraction repeats per scenario; discovery persists within the run once it succeeds
+(registry mappings, so the burst is one-time).
 
-Scoped cold-A1 TT unit (57 registry params; ≈5 scenarios × ~10 variants ≈ 50 tests):
-discovery burst ≈ 57 × (2-4) ≈ **115-230 calls** (one-time) + extraction/generation
-≈ 150-550 (scenario-repeated fills + generation fallbacks at percentage=1.0) →
-**~250-800 calls/run, center ~400-500** — inside the plan's 0.4-2.4k band but in its
-**lower half**; the 2.4k upper edge would require a retry storm (§4), not normal operation.
-(A G2 measured count >1.2k should therefore trigger *investigation*, not just re-sizing.)
+Scoped cold-A1 TT unit (≈5 scenarios × ~10 variants ≈ 50 tests):
+- discovery burst ≈ 57 params × (2-4) ≈ **115-230 calls** (one-time; uses the FULL
+  registry param count, which over-counts for a subset-of-ops run — a deliberately
+  conservative choice);
+- extraction/generation ≈ **150-550**, derived as: ~5 scenarios × ~10-25 distinct
+  param-fills each × 1-2 calls (per-scenario cache reset forces re-fills) ≈ 50-250
+  extraction, plus ~100-300 generation-fallback calls for producer-miss params
+  (percentage=1.0 routes ALL params through the smart path first);
+- total → **~250-800 calls/run, center ~400-500**.
+
+Cross-check against the measured warm ratio: 0.34-0.36 calls/input × ~500-750 input
+values in a 50-test run ≈ 170-270 warm-profile calls + the 115-230 cold burst ≈ 285-500 —
+lands on the same center, so the warm-run measurement and the cold-start code walk agree.
+This is inside the plan's 0.4-2.4k band but in its **lower half**; the 2.4k upper edge
+would require a failure storm (§4), not normal operation. (A G2 measured count >1.2k
+should therefore trigger *investigation*, not just re-sizing.) Scope caveat: call-count
+grounding is TT-only (the plan's cost-reference SUT). Per-call *latency* is API-bound and
+transfers across SUTs; call *counts* do not automatically — SockShop's empty registry
+(zero ApiMappings) makes it an all-discovery profile that deserves its own count check in
+the G2 smoke.
 
 ---
 
 ## 4. The two operational failure modes the envelope must price
 
 **(a) Auth/config fast-fail storm — the measured worst case.** Session 20260505-122355:
-**13,033/13,033 calls failed** at a constant ~320 ms (p50 320, p99 498, max 1,055 ms) over
-**9.95 h** — a session-level rejection (the pattern `LLMService.java:653-659` warns about:
-missing/invalid key → "thousands of silent 401s"), not load-dependent throttling
-(zero successes; failures are fast and flat). The old fork had no cascade → every fill fell
-to template/placeholder values. **This session IS D4 run 1778001841606** — the inventory's
-"suspicious `llm: 0`" run with `FALLBACK_loginId_11` pool entries and the vacuous 100%
-upper bound now has its mechanism. Aggregate-level consequence: the naive "DeepSeek
-fail_rate 46.4%" in `aggregate.json` is **entirely** this session + a 495-call sibling
-(22:36); healthy sessions run at ~0-2%.
+**13,033/13,033 calls failed** over **9.95 h**; pooled across it and its 495-call sibling
+(22:36) the failure latency is constant ~320 ms (p50 320, p99 498, max 1,055 ms — the max
+is the sibling's; 122355's own max is 1,040). The logs carry no HTTP status or error text,
+so the mechanism is *inferred, not observed*: a fast-flat-100% session-level rejection
+(zero successes) fits a key/config-level refusal — the failure mode the code itself
+documents ("thousands of silent 401s", warning comment `LLMService.java:420-424`) — and
+does not fit load-dependent throttling. Note the guard asymmetry: `warnMissingKeyOnce`
+(`:653-659`) fires only on an **empty** key; a present-but-invalid key is **fully
+silent** — which is how a 10-hour all-fail session happens. The old fork had no cascade →
+every fill fell to template/placeholder values. **This session provides the run-level
+mechanism for D4 run 1778001841606's `llm: 0`** — complementing (not replacing) the
+inventory §4.3 miner-bug caveat: the dead API explains the `FALLBACK_loginId_11`
+placeholder entries; the miner mis-scoring those pool draws is what made the 100% upper
+bound vacuous; the run's `unk: 0` favors the dead-API cause. Aggregate-level consequence:
+the naive "DeepSeek fail_rate 46.4%" in `aggregate.json` is **entirely** these two
+sessions; every other DeepSeek session mined is 0-fail.
 - *Current-code consequence is different but worse for validity:* the per-call cascade
   would silently serve every one of those calls from Ollama — the run completes, 1.5-4×
   slower, and the "DeepSeek arm" cells would actually measure qwen2.5 behavior with
@@ -144,11 +171,13 @@ but inside the envelope's slack.
 ## 5. Envelope recompute and findings for G1/PROTOCOL
 
 **Envelope arithmetic** (LLM term = calls × effective latency; non-LLM term for a ~50-test
-scoped unit bracketed 5-25 min from: run22's amortized 1.56 s/test
-(`paper/tool-demo/REVIEW_ISSTA_2026.md:211` — 15,036 tests / ~6.5 h, LLM-off), the MYC
-1-h-wall-budget legs (LLM-off, larger suites, DI on) and the 30-min E5 caps; where the
-sprint unit sits in that bracket depends mainly on the DI-oracle mode the sprint elects —
-a knob §9-A.4a should pin):
+scoped unit bracketed 5-25 min from: run22's amortized 1.56 s/test — 15,036 tests / ~6.5 h
+per `paper/tool-demo/REVIEW_ISSTA_2026.md:211`; its LLM-OFF status is asserted by
+`PAPER-PLAN.md` §9-A.4a (R4-3 caveat) while REVIEW:212's "default DeepSeek" refers to the
+config default, not usage — the MYC legs are the independently verified LLM-off precedent
+(`myield-driver.ps1`, 1-h wall budget, larger suites, DI on) plus the 30-min E5 caps;
+where the sprint unit sits in that bracket depends mainly on the DI-oracle mode the
+sprint elects — a knob §9-A.4a should pin):
 
 | Scenario | calls | eff. latency | LLM min | + non-LLM | verdict vs ≤75 min / 2 h cap |
 |---|---:|---:|---:|---:|---|
@@ -158,52 +187,72 @@ a knob §9-A.4a should pin):
 | All-Ollama (dead key, silent) | 500 | ~8.9 s | 74 | 79-99 | **busts 75; inside 2 h** |
 | All-Ollama + high-calls | 800 | ~8.9 s | 119 | 124-144 | **busts 2 h → discard-and-rerun** |
 
-Fallback-share tolerance: at 500 calls the 75-min target survives up to f≈0.7 fallback
-share; at 800 calls only f≲1/3. The binding product is calls × effective-latency — which
-is exactly what the G2 cost criterion already measures. **Bottom line: for a healthy
-DeepSeek backend the ≤75-min envelope is comfortably plausible at the data-derived call
-counts; the envelope's real threats are operational (dead-key silent fallback, retry
-storms), not the latency assumption.** The ≥8 runs/day floor needs only ~3.3-5.3 h/day of
-run time at the healthy center — inside the 7-11 h/day capacity model even with a-main
-contention.
+(~8.9 s = ~0.3 s primary fast-fail + 8.6 s qwen mean; ≈ the D4-era qwen mean 8.95 s.)
 
-**Findings to absorb (F1 blocking-for-PROTOCOL; F2-F6 scoped riders):**
+Fallback-share tolerance (against a **60-min LLM sub-budget**, i.e. 75 min minus a mid
+non-LLM term): at 500 calls the sub-budget survives up to f≈0.74 fallback share; at 800
+calls only f≲1/3 — and at high f the *total* still straddles 75 min, so treat f as a
+health signal, not headroom. The binding product is calls × effective-latency — which
+is exactly what the G2 cost criterion already measures. **Bottom line: at the healthy-
+DeepSeek center the ≤75-min envelope holds with ~2× margin; the p95 × 800-call corner
+straddles the 75-min line (well inside 2 h) and is precisely what G2's cost criterion
+exists to measure; the envelope's real threats are operational (dead-key silent fallback,
+failure storms), not the latency assumption.** The ≥8 runs/day floor needs only
+~3.3-5.3 h/day of run time at the healthy center — inside the 7-11 h/day capacity model
+even with a-main contention.
+
+**Findings (all advisory inputs to the USER's G1/PROTOCOL decisions — this memo
+recommends, it does not amend the plan; F1 is the one we recommend treating as
+required-before-banking):**
 
 - **F1 — `LLMCallCache` seeded-read confound (not in the plan; plan has zero mentions).**
   Current code: *every seeded run reads the LLM response cache by default*
   (`LLMService.cacheReadEnabled()`, `LLMService.java:321-330`: explicit
   `mist.llm.cache.read` else `random.seed != null` → read), writes by default
-  (`:301-308`), key = (model, backend, prompts, temperature, maxTokens) —
-  **the seed is NOT in the key**, and the seed gate pins temperature for all seeded runs
-  (`applySeedGate`, `:186`), so *different seeds and different arms produce identical keys
-  for identical prompts*. All sprint runs are seeded ⇒ by default r2+ rounds AND
-  sibling seeds AND sibling arms replay each other's LLM responses at ~0 ms from
-  `.mist/llm-call-cache.json`. That (i) manufactures exactly the cache-warming r1→r2 gain
-  the RQ3a scope statement forbids, (ii) collapses cross-seed variance on the LLM axis,
-  (iii) leaks values across arms through a shared file. This is not hypothetical: the
-  Windows working dir's `.mist/llm-call-cache.json` holds **7,315 entries, last written
-  2026-07-15**. → PROTOCOL must pin `mist.llm.cache.read=false` for every banked run,
-  decide `mist.llm.cache.write` (recommend false, or per-run isolated `.mist/` dirs), and
-  extend B4's between-r-round invalidation to name `.mist/` explicitly. Cost consequence:
-  with read pinned false, *every* seeded run pays full LLM latency — the §5 table already
-  assumes this (it must).
+  (`cacheWriteEnabled()`, `:338-343`), key = (model, backend, prompts, temperature,
+  maxTokens) — **the seed is NOT in the key** (it IS sent to the backend,
+  `:397-400`, so the cache actively defeats the intended per-seed variation), and the
+  seed gate pins temperature for all seeded runs (`applySeedGate` call at `:186`), so
+  *different seeds and different arms produce identical keys for identical prompts*.
+  All sprint runs are seeded ⇒ by default r2+ rounds AND sibling seeds AND sibling arms
+  replay each other's LLM responses at ~0 ms from `.mist/llm-call-cache.json`. That
+  (i) manufactures exactly the cache-warming r1→r2 gain the RQ3a scope statement forbids,
+  (ii) collapses cross-seed variance on the LLM axis, (iii) leaks values across arms
+  through a shared file. Not hypothetical twice over: the Windows working dir's
+  `.mist/llm-call-cache.json` holds **7,315 entries, last written 2026-07-15**, and every
+  real `.properties` in the tree — including the MYC leg configs
+  (`ttomni-myield-s*.properties`) and the demo profiles — sets `mist.llm.cache.read=auto`
+  + `write=true`, so the seeded-read behavior is live in every existing config. B4's
+  §9-A.4a invalidation language ("value caches + the verified pool") does not name the
+  LLM-response cache. → **Recommendation**: PROTOCOL pins `mist.llm.cache.read=false` for
+  every banked run, decides `mist.llm.cache.write` (we suggest false, or per-run isolated
+  `.mist/` dirs), and extends B4's between-r-round invalidation to name `.mist/`
+  explicitly. Cost consequence: with read pinned false, *every* seeded run pays full LLM
+  latency — the §5 table already assumes this (it must).
 - **F2 — fallback-served calls are invisible in the comm log.** `logRequest` records the
   *primary* model name once; an Ollama-served result is logged under the same context
   (`LLMService.java:198-266`). E4's token/cost accounting needs a per-call `served_by`
   field (or at minimum count the `"[LLM] Ollama fallback succeeded"` mist.log lines
   per run) — otherwise a degraded run's cells are indistinguishable from healthy ones.
-- **F3 — DeepSeek preflight + fail-fast abort.** The 9.95-h all-fail session is the
-  precedent: a dead key today would not fail the run, it would silently re-platform it
-  onto qwen (§4a). Add to the run harness: N-call preflight before each banked run +
-  abort/flag when primary-failure share crosses a threshold early. Cheap rider on E4/E8;
-  G2's smoke should demonstrate it firing (kill the key deliberately).
+- **F3 — DeepSeek preflight + dead-key fail-fast (scoped to stay non-censoring).** The
+  9.95-h all-fail session is the precedent, and the guard gap makes it current: a
+  present-but-invalid key is fully silent (§4a) and today's cascade would silently
+  re-platform the whole run onto qwen. Recommended harness rider (E4/E8): an N-call
+  preflight before each banked run, plus an abort **triggered only by the dead-key
+  signature** (fast-flat ~100% primary-failure over the opening calls) — **never** by
+  transient-failure/retry storms, which are part of the very cost signal RQ3a reports
+  (F6 measures them); a share-threshold abort as such would risk censoring exactly the
+  runs the non-censoring rule (Round-4 B-R4-A2) protects. A dead-key abort is
+  discard-and-rerun (B-R4-A3-compliant), not mid-run truncation. G2's smoke should
+  demonstrate it firing (kill the key deliberately).
 - **F4 — $ estimate correction (good news).** Measured ~450 tokens/call vs the plan's
   implied 3-5k: sprint total ≈ tens of $, not low hundreds. Keep the E4 per-run token
   accounting as the precise source.
 - **F5 — one-JVM-at-a-time for overnight batches.** The only two same-night concurrent
   sessions in the archive (04-27 22:34 + 22:48, both ~50 h span) show qwen p50 ≈ 12.0-12.2 s
-  vs 4.9-6.7 s in every solo session that month — local-model latency roughly doubles
-  under co-residency (strong precedent, not a controlled experiment). Hosted-primary runs
+  vs 4.9-6.7 s in every comparable (>8k-call, full-suite) solo session that month —
+  local-model latency roughly doubles under co-residency (strong precedent, not a
+  controlled experiment; smaller same-month sessions run 2.8-3.1 s). Hosted-primary runs
   mostly decouple, but fallback stretches do not. The per-run-banked scheduler should be
   explicitly serial (one MIST JVM + one Ollama consumer at a time).
 - **F6 — G2 checks the measured call count against the §3 center (250-800).** Keep the
@@ -216,10 +265,12 @@ contention.
 ## 6. What this memo does NOT settle (G2 remains a hard gate)
 
 1. No timed LLM-on run of the **current** code exists (June-17 WSL run: LLM service up,
-   `smart.input.fetch.enabled=false`) — the May data is old-fork call *structure*
-   (post-audit deltas are modest and mostly reduce calls: F38 retry cap, F29/F30 dead
-   prompts, no-fabrication drops), so G2's first cold-A1 timing is still the first
-   end-to-end measurement of *this* pipeline, on *this* box, under a-main contention.
+   `smart.input.fetch.enabled=false`) — the May data is old-fork call *structure*, and the
+   post-audit call-count deltas are **unquantified in both directions** (F38 retry cap,
+   F29/F30 dead prompts and no-fabrication drops reduce calls; quarantine re-tries and
+   discovery-fallback-on-all-failing can add them) — G2's first cold-A1 timing is still
+   the first end-to-end measurement of *this* pipeline, on *this* box, under a-main
+   contention, and its call-count check (F6) is what bounds these deltas.
 2. Latency snapshot is 2026-05 (2.5 months old, n=15.6k). A 10-minute re-confirmation
    (~20 live calls) fits naturally into the G2 smoke; not done here (spends the user's
    key autonomously for marginal n).
@@ -230,3 +281,19 @@ contention.
 5. The 837 MB log archive is user-local and unversioned (`Github\Rest\logs\`) — it is now
    load-bearing evidence for the paper's cost story and should be preserved (user-side
    call whether to snapshot it; not copied into the repo autonomously).
+
+---
+
+## Review of record
+
+Three independent cold reviews (2026-07-21, non-fable subagents, blind to each other):
+A = data-integrity recompute (every §1-§3 number re-derived from the committed artifacts
+and a raw-log spot-check), B = code-citation soundness (every file:line re-read; F1
+adversarially tested, incl. a search for any existing mechanism that would already
+neutralize it — none found; live configs set `read=auto`), C = inferential validity +
+plan consistency (envelope arithmetic recomputed exactly; F3 reconciled against the
+non-censoring rule). Verdicts: **3 × ACCEPT-W-FIX, zero BLOCKING**; all fixes folded in
+this revision (failure-latency pooling scope, run22 LLM-off re-cite, §3 derivations +
+warm-ratio cross-check, F1 register + strengtheners, F3 non-censoring scoping, mechanism
+hedges, token upper bound, F5 comparability scope). Review files are local-only
+(`debug/b-smartfetch/REVIEW-COSTGROUND-{A,B,C}.md`, gitignored per track rule).
