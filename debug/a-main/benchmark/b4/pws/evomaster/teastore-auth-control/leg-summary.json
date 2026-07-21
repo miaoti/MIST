@@ -1,0 +1,7 @@
+{
+  "leg": "control", "maintenance": "false",
+  "orders_baseline": 191, "orders_after": 191, "orders_delta": 0,
+  "gate": "control needs delta>=1 else NOT_INTERPRETABLE-well-configured",
+  "collection": "collect_leg.sh (wrapper externally killed mid-leg; java survived and completed; budget integrity checked from run.log timestamps)",
+  "note": "cookie redacted; auth = operator-provisioned login user21 + seeded cart (plan rev 2)"
+}

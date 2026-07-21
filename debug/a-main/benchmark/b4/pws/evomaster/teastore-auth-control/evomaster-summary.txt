@@ -1,0 +1,6 @@
+[2K* Covered targets: 74
+[2K* Covered targets: 74
+[2K* Covered targets: 74
+* Evaluated tests: 1592718
+* Evaluated actions: 3042883
+* Potential faults: 17

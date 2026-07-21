@@ -1,0 +1,27 @@
+{
+  "cell": "evomaster-auth-teastore",
+  "plan": "b4/PLAN-live-tool-h2h.md rev 2 (3-cold CONFIRM A'/B'/C')",
+  "tool": "EvoMaster v6.1.1 black-box (tools/evomaster/evomaster-v6.1.1.jar, sha256 7aa06eb6...772a)",
+  "label_of_record": "black-box + operator-provisioned auth + seeded cart (NEVER plain black-box; reverses the 2026-07-17 no-auth-special-casing rail under explicit user approval 2026-07-21)",
+  "sut": "TeaStore (kind 'mist', PVC-backed db), FULL E1 spec (9 endpoints parsed), bbTargetUrl webui PF, seed 42, 60m budget",
+  "verdict": "NOT_INTERPRETABLE-well-configured (the pre-registered control-gate branch)",
+  "gate": "control-leg /rest/orders delta >= 1 REQUIRED; measured delta = 0 (191 -> 191) => fault leg NOT RUN per the pre-registered stop rule (no retry-shopping)",
+  "control_leg": {
+    "maintenance": "false (verified pre+post)",
+    "budget_s": 3601,
+    "evaluated_actions": 3042883,
+    "evaluated_tests": 1592718,
+    "covered_targets": 139,
+    "tool_reported_potential_faults": 17,
+    "fault_census": "404-family 23 / 200-schema-mismatch 10 / 500 2 / 302 1 assertions in the generated fault suite - all noise-class (hiddenAccessible probes, schema mismatches on HTML, 2 5xx); ZERO durable orders",
+    "acked_2xx_endpoints": "2/9 (22%)"
+  },
+  "diagnosis_of_record": {
+    "session_alive_after_full_run": "the prep cookie still returns HTTP 200 logged-in profile AFTER the entire 60m run - not cookie expiry, not tool-logout",
+    "pipeline_proven_live": "a manual full-form confirm through the SAME cookie immediately lands a durable order (191 -> 192) - auth, session, cart, and persistence all worked end-to-end",
+    "root_cause": "in 3,042,883 evaluated actions the tool never COMPOSED the semantically-valid confirm action: it mutates cartAction's action-discriminator params as data fields (e.g. addToCart='D_3IpK' garbage + mixed form fields), never emitting the confirm-shaped submission the business flow requires",
+    "finding": "the reachability barrier survives auth AND state provisioning - it is ACTION-SEMANTICS COMPOSITION, a tool-class property one level deeper than PWS L1's spec-only barrier; reconciles with (and strengthens) the L1 'barrier is a tool-class property' framing"
+  },
+  "reporting_rail": "SEPARATE detection table only - never merged into matched-recall; the MISS cell stays VACUOUS-and-disclosed (no acked baseline from the tool's own traffic); MIST's corpus cell sits alongside as context, never pooled",
+  "artifacts": "teastore-auth-control/{run.log, prep.txt(cookie redacted in reports), leg-summary.json, evomaster-summary.txt, tests/ (42 generated tests + statistics.csv)}"
+}
