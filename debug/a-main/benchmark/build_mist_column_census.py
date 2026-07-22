@@ -110,6 +110,19 @@ PROVENANCE = {
     "teastore-order-meshsever-control-001": "same window, control leg (4/4 present, no false fire)",
     "teastore-orderitems-meshsever-masked-001": "completion-set Phase-C A5(iii) window: chained child-collection read-back FIRE 4/4 (b4/cset/teastore-orderitems-meshsever-run.report.json; ground truth: fault parents PRESENT w/ items=0)",
     "teastore-orderitems-meshsever-control-001": "same window, control leg (4/4 present w/ items>=1, no false fire)",
+    # RECLASSIFIED capture-concordant -> live-run 2026-07-21 (user-directed; the depdown-lesson de-risk
+    # of the LAST concordant flag). The MIST read-back oracle was ALREADY run live on this cell in the
+    # G3 head-to-head (AccountCreateAgreement: real PairedFaultExecutor+DataIntegrityRuntime); it was
+    # only RELOCATED to g3 to avoid double-counting the agreement/comparator claim - the read-back FIRE
+    # itself is a live paired-oracle run of this cell's oracle (same membership binding: userId in /account).
+    "TT-createaccount-agreement-001": ("G3 head-to-head AGREEMENT anchor - AccountCreateAgreement real MIST "
+        "PairedFaultExecutor+DataIntegrityRuntime paired FIRE 5/5 live (verbatim: 'fault run acknowledged X "
+        "http 200 body status 1 but X absent from its own read-back 20-poll TIMEOUT_ABSENT; control's X "
+        "persisted -> acknowledged-but-lost write', correlatorUnique=true; g3-comparator-tt/runs/"
+        "agreement-run2-v105.log + agreement-reps.txt reps 2-5) + 2026-07-20 MySQL business-key re-capture "
+        "(b4/cset/RESULT-tt-recapture.md: control present / fault absent). Same membership binding (userId "
+        "in GET /account) as this cell. RECLASSIFIED capture-concordant->live-run 2026-07-21 (user-directed; "
+        "run originally relocated to g3, verified against primary logs before reclassifying)"),
 }
 
 

@@ -6,9 +6,11 @@
 > oracle REFUTED its 2026-07-20 curl capture 2026-07-21: NO_FIRE — loud-500 loss NOT masked-2xx;
 > 3-cold-reviewed; user-directed retire; `b4/RESULT-depdown-live.md`). E2 over the 26: MIST
 > read-back **9/9 evaluable positives + 0 FP** (UNCHANGED by the retirement — depdown was never one
-> of the flags; the bd362d0 "10/10 / depdown-flag" fold was reverted); provenance split **7
-> live-run + 1 manual-record + 1 capture-concordant** (the "9 live + 1 concordant" below is the
-> 33-era figure). **E-ANOM is now a first-class arm**
+> of the flags; the bd362d0 "10/10 / depdown-flag" fold was reverted); provenance split **8
+> live-run + 1 manual-record + 0 capture-concordant** (2026-07-21: the last concordant flag
+> `TT-createaccount-agreement` was reclassified concordant→live-run, verified against the G3
+> head-to-head raw agreement logs [FIRE 5/5] + the 2026-07-20 recap — ZERO capture-concordant flags
+> remain; the "9 live + 1 concordant" below is the 33-era figure). **E-ANOM is now a first-class arm**
 > (`eanom_control_differ`, 5/6 traced positives + 1/1 FP on its evaluable negative — the
 > 2026-07-21 expand-review mandate); the headline framing is the OPERATING POINT + 0-FP profile,
 > never unique detection. See the freeze 2026-07-21 row + `scoring/matched-recall-table.json` rails.

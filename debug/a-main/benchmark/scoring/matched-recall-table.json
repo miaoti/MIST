@@ -6,7 +6,7 @@
   "NOT_EVALUABLE leaves the denominator and lands in its own bucket",
   "POSITIVES SCOPE (foregrounded): 11 positives total; MIST evaluable = 9; the 2 principled not-evaluable positives are ['oteldemo-checkout-kafkaqueue-lost-001', 'sockshop-shipping-swallowed-enqueue-001'] - any 'x/x' MIST recall means x of the EVALUABLE positives and MUST be stated with this scope",
   "the trace-invisible-by-construction row is the N-vs-0 row: 2 positives no trace-consuming arm can see by construction",
-  "MIST flag cells carry provenance_class - 7 live-run + 1 manual-record + 1 capture-concordant (manual-record = TT-adminbasic: the live G1 run-3 was NOT_EVALUABLE, the flag rests on a disclosed manual-G0 record; capture-concordant flags rest on the capture-of-record, not a separate live MIST oracle run); neither the manual nor the concordant cells may be pooled into a live headline (self-concordance rule)",
+  "MIST flag cells carry provenance_class - 8 live-run + 1 manual-record + 0 capture-concordant (manual-record = TT-adminbasic: the live G1 run-3 was NOT_EVALUABLE, the flag rests on a disclosed manual-G0 record; capture-concordant flags rest on the capture-of-record, not a separate live MIST oracle run); neither the manual nor the concordant cells may be pooled into a live headline (self-concordance rule)",
   "Wilson 95% intervals accompany every cell (recall over evaluable positives; FP rate over evaluable negatives) - tiny denominators stay visibly tiny",
   "FP denominator convention: the headline FP figure is 0/13 on the MEASURED no_flag denominator; the corpus-level statement is 0 false flags among all 15 negatives (2 negatives are principled-n_a and cannot flag) - state both, pool neither",
   "matched-recall framing only - never 'discrimination' (the natural-discriminator question was S3's, closed 0/1514)",
@@ -144,7 +144,7 @@
     "TT-cancel-refund-natural-001": "live-run",
     "TT-contacts-dedupe-benign-001": "capture-concordant",
     "TT-contacts-noop-modify-benign-001": "capture-concordant",
-    "TT-createaccount-agreement-001": "capture-concordant",
+    "TT-createaccount-agreement-001": "live-run",
     "TT-createaccount-clean-001": "capture-concordant"
    }
   },

@@ -694,7 +694,7 @@
    "naive_span_error_oracle": "no_flag",
    "mist_trace_shape_oracle": "not_applicable",
    "adjudication": null,
-   "provenance_run": "case-file capture-of-record notes + the corpus-wide mist_commit pin (no dedicated oracle run beyond the capture wave)"
+   "provenance_run": "G3 head-to-head AGREEMENT anchor - AccountCreateAgreement real MIST PairedFaultExecutor+DataIntegrityRuntime paired FIRE 5/5 live (verbatim: 'fault run acknowledged X http 200 body status 1 but X absent from its own read-back 20-poll TIMEOUT_ABSENT; control's X persisted -> acknowledged-but-lost write', correlatorUnique=true; g3-comparator-tt/runs/agreement-run2-v105.log + agreement-reps.txt reps 2-5) + 2026-07-20 MySQL business-key re-capture (b4/cset/RESULT-tt-recapture.md: control present / fault absent). Same membership binding (userId in GET /account) as this cell. RECLASSIFIED capture-concordant->live-run 2026-07-21 (user-directed; run originally relocated to g3, verified against primary logs before reclassifying)"
   },
   {
    "case_id": "TT-createaccount-clean-001",
