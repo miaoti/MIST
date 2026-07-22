@@ -145,7 +145,7 @@
     "TT-contacts-dedupe-benign-001": "capture-concordant",
     "TT-contacts-noop-modify-benign-001": "capture-concordant",
     "TT-createaccount-agreement-001": "live-run",
-    "TT-createaccount-clean-001": "capture-concordant"
+    "TT-createaccount-clean-001": "live-run"
    }
   },
   "body_marker": {
