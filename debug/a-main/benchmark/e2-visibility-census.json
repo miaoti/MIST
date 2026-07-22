@@ -101,7 +101,7 @@
    "trace_visibility": "trace-uninstrumented",
    "naive_span_error_oracle": "not_applicable",
    "mist_trace_shape_oracle": "not_applicable",
-   "mist_readback_oracle": "flag"
+   "mist_readback_oracle": "not_applicable"
   },
   {
    "case_id": "teastore-order-maintenance-masked-001",

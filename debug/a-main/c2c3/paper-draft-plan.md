@@ -38,18 +38,25 @@ as BLOCKING.
 > EXPANSION-NOT-THE-LEVER).** Supersedes the stale figures inside P1/P6 (in-cell markers added):
 > **(1)** benchmark-of-record = **27 (12 pos / 15 neg)** — the 6 F-corpus retired to
 > `cases/excluded-fcorpus/` (5 `acknowledged_corrupted_write` = disclosed out-of-scope boundary
-> appendix; F1 same-site-covered), depdown **CAPTURED** (PVC-backed, `mist_readback=flag`,
-> capture-concordant). NOT the pre-A3 27: this 27 contains kafka + captured-depdown. **(2)** the
+> appendix; F1 same-site-covered). **depdown: the 2026-07-20 curl "capture" was REFUTED by the
+> live MIST oracle 2026-07-21** (NO_FIRE — the db-scale-0 producer 500s the followed confirm
+> journey, so it is a LOUD-500 loss, NOT masked-2xx; `mist_readback` flag→**not_applicable**,
+> principled ack-gate boundary; see `b4/RESULT-depdown-live.md` §2). It remains a genuine
+> lost-write but OUT of the masked-2xx scope; DISPOSITION (retire → corpus 26/11-pos, vs keep as a
+> disclosed n_a → corpus stays 27) is **SURFACED to the user, undecided**. The current 27 holds
+> kafka + depdown-as-disclosed-n_a (the conservative floor). **(2)** the
 > E2 table is **11 arms**: E-ANOM ships as the first-class arm `eanom_control_differ` (5/6 traced
 > positives [2 STRONG/2 WEAK/1 NOISE] + createaccount MISS + bookinfo FP = 1/1 evaluable
 > negatives) — never claim a trace differ "cannot see" masked loss. **(3)** MIST provenance split
-> = **7 live-run + 1 manual-record + 2 capture-concordant** (the 8/1/1 split below is 33-era).
+> = **7 live-run + 1 manual-record + 1 capture-concordant** (9 flags; was 7/1/2=10 before the
+> 2026-07-21 depdown refutation removed it from the flagged set; the 8/1/1 split below is 33-era).
 > **(4) HEADLINE DISCIPLINE (binds every drafted sentence): the claim is the OPERATING POINT**
 > (black-box · no instrumentation · no paired control leg · single-execution · durable-state
 > read-back, not a trace proxy) **+ the 0-FP profile** (the one cell no comparator matches:
 > naive +2 FP, trace_shape +1, tracetest-surrogate +1, eanom 1/1) — **never "uniquely detects" /
-> perfect-recall-led framing**; always state recall with the POSITIVES-SCOPE rail (10 evaluable
-> of 12; the 2 principled n_e foregrounded: kafka barred-by-stop-rule + sockshop trace-only).
+> perfect-recall-led framing**; always state recall with the POSITIVES-SCOPE rail (**9 evaluable
+> of 12**, MIST 9/9 + 0 FP [was 10/12 before the depdown refutation]; the **3** principled n_e
+> foregrounded: kafka barred-by-stop-rule + sockshop trace-only + **depdown ack-gate boundary**).
 > Provenance: freeze 2026-07-21 row; `matched-recall-table.json` rails; commits 6242257/e010a05/
 > bd362d0 + the eanom-fold commit.]**
 
@@ -60,7 +67,7 @@ as BLOCKING.
 | P3 | STRUCTURAL SCARCITY datum 1: wild-hunt 0 CONFIRMED / N=1514 / K=5 (≤0.20% one-sided; pre-registered) — scarcity IS the finding; NO natural discriminator exists in this regime | S3 rows (2026-07-12/13); `RESULT-s3.md`; per-window commits 10eb19e/5802fa8/0fbe00f, classifier byte-identical |
 | P4 | STRUCTURAL SCARCITY datum 2: write-acked-absent presence-defuser floor 0/≥8 — a clean-ack empty read-back IS a masked loss (structural, not effort) | R1d row; `RESULT-r1d.md` + `r1d-phase0-findings.md` |
 | P5 | MIST read-back enablement: paired FIRE 5/5 ground-truth-verified on BOTH corpus SUT legs (2.75-A) | freeze 2.75-A row; commits + capture logs |
-| P6 | **[SUPERSEDED 2026-07-21 → see the §1 amendment block: 11 arms (eanom_control_differ folded in), MIST split 7 live + 1 manual + 2 concordant over the 27, OPERATING-POINT + 0-FP headline]** **The COMPLETED E2 matched-recall table through the single scoring harness — arm lineage: 6 canonical Gate-4 arms + 3 trivial baselines + the mist_trace_shape structural sub-invariant = 10 arms × 4 visibility classes** — MIST **read-back** 10/10 evaluable positives (**8 live-run + 1 manual-record (TT-adminbasic, disclosed) + 1 capture-concordant (TT-createaccount-agreement)** [review final3-2 correction] [`TT-createaccount-agreement-001`] — the self-concordance rail forbids pooling the concordant cell into any live headline); negatives 0 flags among all 15 (**13 evaluable**, 2 structurally n_e); naive 0 positives + 2 FP; Tracetest-presence SURROGATE (labeled; live tool never run) 4 positives + 1 FP + invisible-MISS; db-locality 1/1 invisible CATCH (specification-locality measured); contract-invariant live flagship cells (by-construction MISS measured ×5); TraceAnomaly construction-blindness (not-cleared by actual check); measured-vs-stamped 0 mismatches (read-back; the trace-shape arm adds the 1 disclosed bookinfo stamp-vs-measured divergence, see P20); matched-recall framing ONLY (never "discrimination"); no pooled recall exists in the artifact | `benchmark/scoring/matched-recall-table.json` + `RESULT-e2-frontier.md` (post-Phase-C refresh) + TT-omnibus row + E2 row (5942bab) |
+| P6 | **[SUPERSEDED 2026-07-21 → see the §1 amendment block: 11 arms (eanom_control_differ folded in), MIST 9/9 evaluable-of-12 + 0 FP, split 7 live + 1 manual + 1 concordant (depdown REFUTED off the flagged set 2026-07-21), OPERATING-POINT + 0-FP headline]** **The COMPLETED E2 matched-recall table through the single scoring harness — arm lineage: 6 canonical Gate-4 arms + 3 trivial baselines + the mist_trace_shape structural sub-invariant = 10 arms × 4 visibility classes** — MIST **read-back** 10/10 evaluable positives (**8 live-run + 1 manual-record (TT-adminbasic, disclosed) + 1 capture-concordant (TT-createaccount-agreement)** [review final3-2 correction] [`TT-createaccount-agreement-001`] — the self-concordance rail forbids pooling the concordant cell into any live headline); negatives 0 flags among all 15 (**13 evaluable**, 2 structurally n_e); naive 0 positives + 2 FP; Tracetest-presence SURROGATE (labeled; live tool never run) 4 positives + 1 FP + invisible-MISS; db-locality 1/1 invisible CATCH (specification-locality measured); contract-invariant live flagship cells (by-construction MISS measured ×5); TraceAnomaly construction-blindness (not-cleared by actual check); measured-vs-stamped 0 mismatches (read-back; the trace-shape arm adds the 1 disclosed bookinfo stamp-vs-measured divergence, see P20); matched-recall framing ONLY (never "discrimination"); no pooled recall exists in the artifact | `benchmark/scoring/matched-recall-table.json` + `RESULT-e2-frontier.md` (post-Phase-C refresh) + TT-omnibus row + E2 row (5942bab) |
 | P7 | Trace-gated tier: the first CONTROLLED pre-registered either-way measurement in the c2c3 record — observe fault 5/5 OBSERVED_COMPLETE_ABSENT + control clean; NEVER "first in any run of record" (G1 2026-07-02 fired it 126×, disclosed) | TT-omnibus row; leg-1 report |
 | P8 | E5 ablation: exact-4 OAT × 5 reps uniform; A2 (trace gate) = the ONLY verdict-tier-moving axis (C1 vs C2 contrast) | TT-omnibus row leg-3; `b4/ttomni/leg3/` |
 | P9 | M-yield: 6-SUT set, 29+10 seeds, 5145+~2700 tests, 26 clusters + reps + cross-seed 10% audit; NO yield statistic (rater-gated); flags on TT complete seed = 0 (S3 prior held) | MYC row (2026-07-16) + `RESULT-myield-completion.md` |

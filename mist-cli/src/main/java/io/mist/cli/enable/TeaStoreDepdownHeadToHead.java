@@ -80,11 +80,34 @@ public final class TeaStoreDepdownHeadToHead {
             try {
                 // (2) dependency down, VERIFIED (0 db pods) before the write
                 dbDown();
-                // (3) the masked write rides the db-down window
-                confirm = post(s, webui + "/cartAction",
+                // (3) the masked write rides the db-down window.
+                // Attempt-1 fix (disclosed): 90 s read timeout (the confirm under db-down can
+                // exceed the journey's 12 s; attempt 1 died SocketTimeoutException pre-verdict).
+                // Attempt-3 fix (disclosed): the ACK handed to the oracle is the write POST's
+                // OWN response (first hop, no redirect-follow) — attempt 2 conflated the write
+                // ack with the post-redirect PAGE READ (which 500s under the down dependency)
+                // and recorded "ack 500". The oracle judges the faithful first-hop ack by ITS
+                // OWN frozen rule (DataIntegrityRuntime L700: acked = 2xx) — nothing is
+                // manufactured; a 302 is expected to read as not-acked. The followed chain is
+                // logged as JOURNEY CONTEXT only, never into the Ack.
+                confirm = request("POST", webui + "/cartAction",
                         "firstname=Mist&lastname=Order&address1=" + enc(marker)
                                 + "&address2=CorpusCity&cardtype=volvo&cardnumber=314159265"
-                                + "&expirydate=" + enc("12/2030") + "&confirm=Confirm");
+                                + "&expirydate=" + enc("12/2030") + "&confirm=Confirm",
+                        s, 90000);
+                System.out.println("  [depdown] fault confirm WRITE-OWN response: HTTP "
+                        + confirm.status + " location=" + confirm.location);
+                if (confirm.status >= 300 && confirm.status < 400 && confirm.location != null) {
+                    try {
+                        Resp page = request("GET",
+                                absolutize(webui + "/cartAction", confirm.location), null, s, 90000);
+                        System.out.println("  [depdown] journey-context ONLY - followed page: HTTP "
+                                + page.status);
+                    } catch (Exception e) {
+                        System.out.println("  [depdown] journey-context ONLY - followed page threw: "
+                                + e);
+                    }
+                }
             } finally {
                 // (4) BUFFER-DROP restore, ALWAYS, and BEFORE the oracle polls the read-back
                 bufferDropRestore();
@@ -167,11 +190,15 @@ public final class TeaStoreDepdownHeadToHead {
         // private; duplication confined to this driver and disclosed in the RESULT) ----
 
         private Resp post(Session s, String url, String form) throws Exception {
+            return post(s, url, form, timeoutMs);
+        }
+
+        private Resp post(Session s, String url, String form, int readTimeoutMs) throws Exception {
             String target = url;
             Resp r = null;
             for (int hop = 0; hop < 6; hop++) {
                 r = request(hop == 0 ? "POST" : "GET", target,
-                        hop == 0 ? form : null, s);
+                        hop == 0 ? form : null, s, readTimeoutMs);
                 if (r.status == 301 || r.status == 302 || r.status == 303 || r.status == 307) {
                     if (r.location == null) {
                         break;
@@ -184,7 +211,7 @@ public final class TeaStoreDepdownHeadToHead {
             return r;
         }
 
-        private Resp request(String method, String url, String body, Session s)
+        private Resp request(String method, String url, String body, Session s, int readTimeoutMs)
                 throws IOException {
             HttpURLConnection c = null;
             try {
@@ -192,7 +219,7 @@ public final class TeaStoreDepdownHeadToHead {
                 c.setRequestMethod(method);
                 c.setInstanceFollowRedirects(false);
                 c.setConnectTimeout(timeoutMs);
-                c.setReadTimeout(timeoutMs);
+                c.setReadTimeout(readTimeoutMs);
                 if (s != null && !s.cookies.isEmpty()) {
                     c.setRequestProperty("Cookie", s.cookieHeader());
                 }

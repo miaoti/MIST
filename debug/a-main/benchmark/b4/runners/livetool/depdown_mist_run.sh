@@ -32,10 +32,13 @@ for i in $(seq 1 12); do
   sleep 15
 done
 
+# persistence read-back rides kubectl PROXY (apiserver re-resolves endpoints per request → survives
+# the fault legs' persistence-pod force-delete; a pod-pinned PF would 502 after the buffer-drop).
+PROXYBASE=http://localhost:8001/api/v1/namespaces/teastore/services/teastore-persistence:8080/proxy/tools.descartes.teastore.persistence
 CP="mist-cli/target/classes;$(cat mist-cli/cp.txt)"
 LAUNCH=(java -cp "$CP"
   -Dts.webui=http://localhost:8091/tools.descartes.teastore.webui
-  -Dts.persistence=http://localhost:8092/tools.descartes.teastore.persistence
+  -Dts.persistence="$PROXYBASE"
   -Dts.triple=evaluation/suts/teastore/triples/teastore-order-triple.yaml
   -Dts.probes=4
   -Dts.report="$REPORT"
@@ -50,17 +53,17 @@ echo "[runner] java exit=$RC" | tee -a "$LOG"
 {
   echo "# ground truth (DIRECT /rest/orders reads, never MIST) $(date -u +%FT%TZ)"
   echo "# method: markers parsed from the report JSON; per marker:"
-  echo "#   wsl curl -s http://localhost:8092/tools.descartes.teastore.persistence/rest/orders | grep -oc <marker>"
+  echo "#   wsl curl -s http://localhost:8001/api/v1/namespaces/teastore/services/teastore-persistence:8080/proxy/tools.descartes.teastore.persistence/rest/orders | grep -oc <marker>"
   python - "$REPORT" <<'PY'
 import json,subprocess,sys
 rep=json.load(open(sys.argv[1],encoding="utf-8"))
 def rd(m):
     r=subprocess.run(["wsl","bash","-c",
-        f"curl -s http://localhost:8092/tools.descartes.teastore.persistence/rest/orders | grep -oc {m}"],
+        f"curl -s http://localhost:8001/api/v1/namespaces/teastore/services/teastore-persistence:8080/proxy/tools.descartes.teastore.persistence/rest/orders | grep -oc {m}"],
         capture_output=True,text=True)
     return (r.stdout or "0").strip()
 rows=subprocess.run(["wsl","bash","-c",
-    "curl -s http://localhost:8092/tools.descartes.teastore.persistence/rest/orders | grep -o '\"id\"' | wc -l"],
+    "curl -s http://localhost:8001/api/v1/namespaces/teastore/services/teastore-persistence:8080/proxy/tools.descartes.teastore.persistence/rest/orders | grep -o '\"id\"' | wc -l"],
     capture_output=True,text=True).stdout.strip()
 print(f"total order rows: {rows}")
 for i,p in enumerate(rep.get("pairs",[])):

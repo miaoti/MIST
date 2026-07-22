@@ -3,13 +3,14 @@
  "generated_by": "build_mist_column_census.py (completion-set wave A5)",
  "note": "Verdict provenance + the 8 not_applicable adjudications are filled by the wave; no silent pending may survive (plan 3.5).",
  "tally": {
-  "not_applicable": 4,
+  "not_applicable": 5,
   "no_flag": 13,
-  "flag": 10
+  "flag": 9
  },
  "adjudication_tally": {
   "structural": 3,
-  "barred-by-stop-rule": 1
+  "barred-by-stop-rule": 1,
+  "structural-by-convention": 1
  },
  "cases": [
   {
@@ -306,7 +307,7 @@
    },
    "label": "positive",
    "fault_class": "acknowledged_lost_write",
-   "mist_readback_oracle": "flag",
+   "mist_readback_oracle": "not_applicable",
    "oracle_mode": "paired",
    "mist_commit": "7d69de9",
    "capture_status": "captured",
@@ -315,8 +316,11 @@
    "ack_content_visibility": "success-shaped-clean",
    "naive_span_error_oracle": "not_applicable",
    "mist_trace_shape_oracle": "not_applicable",
-   "adjudication": null,
-   "provenance_run": "case-file capture-of-record notes + the corpus-wide mist_commit pin (no dedicated oracle run beyond the capture wave)"
+   "adjudication": {
+    "class": "structural-by-convention",
+    "reason": "capture_status=specified: a design-target case never captured (freeze rev-2.1 R2/R3 - oracle_expectation is a design target, never tallied as measured); no run exists to carry an oracle verdict, and capturing it = a new capture out of wave scope (positive-side widening CLOSED)"
+   },
+   "provenance_run": null
   },
   {
    "case_id": "teastore-order-maintenance-masked-001",

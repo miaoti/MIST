@@ -1,0 +1,6 @@
+# ground truth (DIRECT /rest/orders reads, never MIST) 2026-07-22T02:59:00Z
+# method: markers parsed from the report JSON; per marker:
+#   wsl curl -s http://localhost:8001/api/v1/namespaces/teastore/services/teastore-persistence:8080/proxy/tools.descartes.teastore.persistence/rest/orders | grep -oc <marker>
+total order rows: 204
+pair0 control marker mist-control-p0-4c9dc595-a83c-4c0e-aba0-f195374c6983 -> present-count 1
+pair0 fault   marker mist-fault-p0-c299fd0f-69ba-4e4e-81a9-a47750b8756a -> present-count 0
