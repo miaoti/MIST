@@ -52,7 +52,7 @@ it says:**
 | This PREREG+RESULT | `b4/RESULT-depdown-live.md` | the protocol pinned pre-run; then the measured outcome + every disclosure | hand-authored; §1 committed BEFORE the run (commit hash in git history precedes the run log's timestamps) |
 | The driver | `mist-cli/src/main/java/io/mist/cli/enable/TeaStoreDepdownHeadToHead.java` | the exact choreography incl. the buffer-drop; discloses the HTTP-helper duplication (TeaStoreHttpStimulus's members are private) | compiled via `mvn -q -pl mist-cli -am compile -DskipTests`; oracle classes untouched (git diff shows ONLY this new file under mist-cli) |
 | Run report (MIST's own verdicts) | `b4/cset/teastore-depdown/teastore-order-depdown-run.report.json` | per-pair acks, polls, gates, markers, FIRE reasons | written by `PairedFaultExecutor.writeReport` at the end of the java run below — MIST's own executor emits it, not a hand-built file |
-| Run log | `b4/cset/teastore-depdown/mist-run.log` | the full driver+oracle stdout (kubectl exits, db-pod-0 verifications, restore confirmations) **+ the runner's own echoed launch line** | `bash b4/runners/livetool/depdown_mist_run.sh` → `java -cp "mist-cli/target/classes;$(cat mist-cli/cp.txt)" -Dts.webui=http://localhost:8091/tools.descartes.teastore.webui -Dts.persistence=http://localhost:8092/tools.descartes.teastore.persistence -Dts.triple=evaluation/suts/teastore/triples/teastore-order-triple.yaml -Dts.probes=4 -Dts.report=<report path> io.mist.cli.enable.TeaStoreDepdownHeadToHead` (the runner echoes the resolved line verbatim into this log before executing) |
+| Run logs (one per attempt — there is NO bare `mist-run.log`) | `b4/cset/teastore-depdown/mist-run.attempt{1-crashed,2-write-ack-conflated,3-writeownack-NOFIRE}.log` | the full driver+oracle stdout per attempt (kubectl exits, db-pod-0 verifications, restore confirmations) **+ each runner's own echoed launch line**; attempt 3 is the run-of-record | `bash b4/runners/livetool/depdown_mist_run.sh` → `java -cp "mist-cli/target/classes;$(cat mist-cli/cp.txt)" -Dts.webui=http://localhost:8091/tools.descartes.teastore.webui -Dts.persistence=<PF 8092 in attempts 1-2; kubectl-proxy 8001 base in attempt 3> -Dts.triple=evaluation/suts/teastore/triples/teastore-order-triple.yaml -Dts.probes=4 -Dts.report=<report path> io.mist.cli.enable.TeaStoreDepdownHeadToHead` (the runner echoes the resolved line verbatim into each log before executing) |
 | Ground truth | `b4/cset/teastore-depdown/ground-truth-depdown.txt` | DIRECT `/rest/orders` marker reads (never MIST) + row counts | the runner post-pass: markers parsed from the report JSON, then per marker `wsl curl -s http://localhost:8092/.../rest/orders \| grep -oc <marker>`; the file records each command + its output |
 | Runner | `b4/runners/livetool/depdown_mist_run.sh` | classpath build, bring-up reuse, launch line, ground-truth collection — the single reproduction entry point | committed pre-run; re-running it end-to-end reproduces the wave (bring-up → java → ground truth) |
 | The ORIGINAL capture (preserved, UNTOUCHED) | `b4/cset/teastore-depdown/depdown-legs.log` + `depdown_capture.sh` + `ts_journey.sh` | the 2026-07-20 curl capture N=6 + the buffer-drop nuance discovery — stays the capture-of-record | produced 2026-07-20 by `wsl bash /tmp/depdown_capture.sh <ctrl> <m1> <m2> <m3>` (curl journeys + kubectl scale/rollout choreography; the committed script IS the how); NOT a MIST run — exactly why this wave exists |
@@ -97,6 +97,33 @@ requires 2xx per `DataIntegrityRuntime` L700, `acked = httpStatus/100 == 2`). Th
 DB-down producer "UNSOUND-for-capture"; this run confirms it on a mechanism deeper than the
 snapshot-wipe worry — even PVC-backed and buffer-drop-clean, it never produces a 2xx ack.
 
+**Ack-convention robustness (post-review clarification, 3-cold reviewer A/C).** The NO_FIRE is
+robust to how the driver forms the ack, because there is **no 2xx anywhere in depdown's response
+chain under either faithful convention**: the confirm's first-hop is 302, and the followed page
+(the maintenance-consistent convention — `TeaStoreHttpStimulus.placeOrder` follows redirects and
+acks on the terminal page, which is a 200 for the maintenance FIRE) is 500. Both are non-2xx →
+not-acked → the same verdict. The **operative gate in the run-of-record (attempt 3)** was the
+**write-own 302** (`ackHttpStatus=302, acked=false`); the followed **500** is corroborating
+user-experience context (it defeats any "MIST missed a real mask" reading — the user is shown an
+error, so there is no acknowledged success to have been masked), NOT the verdict driver. Note the
+two legs of the differential pair are ack-formed differently by construction — the control leg
+delegates to `TeaStoreHttpStimulus` (follows redirects, acks 200) while the fault leg uses the
+first-hop 302 — which is why attempt 3 privileged the first-hop; but attempt 2's followed-page ack
+(500) was the precedent-consistent convention and gave the **same** not-acked answer. Attempt 2's
+genuine defect was therefore NOT "ack conflation" but the **transport-dead read-back** (its
+pod-pinned 8092 PF died with the force-deleted persistence pod → read-back HTTP 0 / 0 rows); the
+ideal single run would be attempt 2's followed-page ack + attempt 3's kubectl-proxy read-back. The
+filename `mist-run.attempt2-write-ack-conflated.log` retains its as-committed label; this note is
+the corrected characterization of record.
+
+**Ground-truth scope (post-review, reviewer A).** `ground-truth-depdown.txt` directly verifies the
+loss for **pair 0 only** (the report JSON serializes one representative pair's markers): control
+marker present-count 1, fault marker present-count 0, +204 total rows intact via the PVC. Pairs
+1–3 loss is inferred from the identical per-probe choreography (all 4 logged `teastore-db pods: 0
+(fault state VERIFIED)` → `302` → followed `500`). Non-load-bearing: the verdict rests on
+not-2xx-acked, which the log confirms 4/4, and `PairedFaultExecutor.verdict()` checks `!acked`
+before ever consulting the read-back.
+
 ### Three attempts — ALL preserved, each with HOW it was produced (per the user directive)
 
 | attempt | file (preserved) | what it holds | outcome | HOW produced (exact) — and why it is preserved not deleted |
@@ -121,21 +148,40 @@ evaluable positives 10/10 → **9/9** (still 0 misses among evaluable, 0 FP); pr
 flagged set). This is the conservative floor and is honest regardless of the corpus-composition
 call below.
 
-### SURFACED TO THE USER (not decided unilaterally — corpus composition is the user's call)
+### DISPOSITION — RESOLVED 2026-07-21: RETIRE (user-directed "可以退役")
 
-1. **Case disposition.** depdown is now shown to be a loud-500 loss, i.e. OUT of the masked-2xx
-   scope (like the retired corrupted-write F-corpus). Options: **(a)** retire it to
-   `cases/excluded-fcorpus/` (or a new `excluded-out-of-mask/`) → corpus **27→26 (11 pos)**, a
-   fully clean "11 captured, no exceptions" headline (the user's stated preference shape); **(b)**
-   keep it in-corpus as a DISCLOSED out-of-mask positive with `mist_readback_oracle=not_applicable`
-   (corpus stays 27, one principled-n_a cell carries the ack-gate boundary as an illustrative
-   limitation). The factual correction above is compatible with either.
-2. **Corpus-class question.** Is a 302-redirect-masked loss whose post-redirect page 500s inside
-   the "masked-2xx" class definition at all? This run says no (the class is 2xx-ack-gated). If the
-   user wants a genuine dependency-down MASKED case, it would need a producer that keeps the
-   confirm journey 2xx (e.g. a write-only outage with the read path up) — a new capture, not this
-   one.
+After the finding + the 3-cold review were surfaced, the user directed **retire** (option a).
+`teastore-order-depdown-specified-001.json` was `git mv`'d to `cases/excluded-out-of-mask/`
+(distinct from `excluded-fcorpus/`: that dir = corrupted-not-lost / same-site-covered; this dir =
+loud-not-masked, the ack-gate boundary) with a README carrying the full reason. Result:
+**benchmark-of-record 27 → 26 (11 pos / 15 neg)**; all derived artifacts regenerated over 26.
+**MIST read-back is UNCHANGED at 9/9 evaluable + 0 FP** (depdown was already n_a, never one of the
+9 flags), so the headline does not move; the corpus loses one positive that was mislabeled, and
+depdown becomes a boundary appendix demonstrating MIST correctly ABSTAINS on loud failures. The
+corpus-class question is settled: a 302-redirect loss whose post-redirect page 500s is NOT in the
+2xx-ack-gated masked class; a genuine masked dependency failure would need a read-path-up producer
+(a new capture, not this one).
 
 **The 2026-07-20 capture evidence (`depdown-legs.log`, `depdown_capture.sh`, `ts_journey.sh`) is
 PRESERVED UNTOUCHED** — it remains the capture-of-record for what the curl legs measured; this
 RESULT records that the live oracle refuted its "acked" reading.
+
+### 3-COLD RESULT REVIEW (the PREREG §1 DoD) — CLOSED, all ACCEPT-WITH-FIXES
+
+Three independent cold reviewers (opus, read-only) ran in parallel; all **ACCEPT-WITH-FIXES**, none
+REJECT, the refutation independently confirmed sound:
+- **A (oracle semantics):** NO_FIRE faithful + robust to the ack convention; `not_applicable` is
+  correct (NOT a miss) — the followed-500 means there is no acknowledged success to have masked;
+  maintenance-200-vs-depdown-500 code-corroborated. Fixes folded: the ack-convention framing above;
+  the ground-truth p0-only note; retiring the case resolves A's "one-sided correction" flag (the
+  now-falsified comparator/`ground_truth`/`ack_content_visibility` cells leave with the case rather
+  than needing per-cell reconciliation).
+- **B (corpus arithmetic):** every count independently re-derived, **zero errors** (census 9/13/5→
+  9/13/4 on retirement, MIST 9/9 + 0 FP, "restores Phase-C exactly" diff-verified, no foreign files
+  swept). Fixes folded: builder docstring/note + the orphaned depdown adjudication removed; the
+  stale "10/10" in `paper-draft-plan.md` §5 and the `RESULT-e2-frontier.md` current-state pointer
+  synced; the eanom/synthesis "10/10" references synced.
+- **C (honesty/reframe):** high-integrity self-correction; verified the 2026-07-20 capture scripts
+  never followed the redirect (the over-claim is real); all 3 attempts + how-produced preserved;
+  disposition fairly surfaced; historical evidence untouched. Fixes folded: the §1 run-log pointer
+  above; the operative-gate-is-the-302 clarification above.

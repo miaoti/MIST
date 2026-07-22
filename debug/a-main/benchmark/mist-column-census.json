@@ -1,16 +1,15 @@
 {
  "schema": "mist-column-census/1",
  "generated_by": "build_mist_column_census.py (completion-set wave A5)",
- "note": "Verdict provenance + the 8 not_applicable adjudications are filled by the wave; no silent pending may survive (plan 3.5).",
+ "note": "Verdict provenance + every not_applicable adjudication are filled by the wave; no silent pending may survive (plan 3.5).",
  "tally": {
-  "not_applicable": 5,
+  "not_applicable": 4,
   "no_flag": 13,
   "flag": 9
  },
  "adjudication_tally": {
   "structural": 3,
-  "barred-by-stop-rule": 1,
-  "structural-by-convention": 1
+  "barred-by-stop-rule": 1
  },
  "cases": [
   {
@@ -291,36 +290,6 @@
    "mist_trace_shape_oracle": "not_applicable",
    "adjudication": null,
    "provenance_run": "2.75-A TeaStore control leg (no_flag)"
-  },
-  {
-   "case_id": "teastore-order-depdown-specified-001",
-   "file": "teastore-order-depdown-specified-001.json",
-   "sut": {
-    "name": "teastore",
-    "repo": "github.com/DescartesResearch/TeaStore",
-    "branch": "",
-    "commit": "v1.4.2 (release tag; images pinned :1.4.2)",
-    "image_digest": "sha256:ac6b0fe9aeca04ee31fea20caed0b49af2ddf709c28a2cf1f4b9b041af05279b",
-    "deploy": "SPECIFIED against the same pinned deploy as the captured TeaStore pair (kind 'mist', ns teastore, v1.4.2, persistence digest above) — with ONE deploy-shape PRECONDITION for capture soundness stated in the notes (PVC-backed database).",
-    "replay_script": "debug/a-main/benchmark/b4/capture-specs/teastore-order-flow.yaml",
-    "health_precondition": "PVC-backed teastore-db (see notes: capture is UNSOUND on the as-deployed no-PVC shape)"
-   },
-   "label": "positive",
-   "fault_class": "acknowledged_lost_write",
-   "mist_readback_oracle": "not_applicable",
-   "oracle_mode": "paired",
-   "mist_commit": "7d69de9",
-   "capture_status": "captured",
-   "readback_shape": null,
-   "trace_visibility": "trace-uninstrumented",
-   "ack_content_visibility": "success-shaped-clean",
-   "naive_span_error_oracle": "not_applicable",
-   "mist_trace_shape_oracle": "not_applicable",
-   "adjudication": {
-    "class": "structural-by-convention",
-    "reason": "capture_status=specified: a design-target case never captured (freeze rev-2.1 R2/R3 - oracle_expectation is a design target, never tallied as measured); no run exists to carry an oracle verdict, and capturing it = a new capture out of wave scope (positive-side widening CLOSED)"
-   },
-   "provenance_run": null
   },
   {
    "case_id": "teastore-order-maintenance-masked-001",

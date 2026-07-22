@@ -1,11 +1,14 @@
 # RESULT — E2 comparator-frontier COMPLETION (completion-set wave, Phase B) — Step 6 fold
 
 > **[2026-07-21 CURRENT-STATE POINTER — figures below are era snapshots; the state of record moved.]**
-> The benchmark-of-record is **27 cases (12 pos / 15 neg)** — the 6 F-corpus cases retired to
-> `cases/excluded-fcorpus/`, depdown CAPTURED (PVC-backed) with `mist_readback_oracle=flag`
-> (capture-concordant). E2 re-scored over the 27 (`bd362d0`): MIST read-back **10/10 evaluable
-> positives + 0 FP**; provenance split **7 live-run + 1 manual-record + 2 capture-concordant**
-> (the "9 live + 1 concordant" below is the 33-era figure). **E-ANOM is now a first-class arm**
+> The benchmark-of-record is **26 cases (11 pos / 15 neg)** — the 6 F-corpus cases retired to
+> `cases/excluded-fcorpus/`, AND depdown RETIRED to `cases/excluded-out-of-mask/` (the live MIST
+> oracle REFUTED its 2026-07-20 curl capture 2026-07-21: NO_FIRE — loud-500 loss NOT masked-2xx;
+> 3-cold-reviewed; user-directed retire; `b4/RESULT-depdown-live.md`). E2 over the 26: MIST
+> read-back **9/9 evaluable positives + 0 FP** (UNCHANGED by the retirement — depdown was never one
+> of the flags; the bd362d0 "10/10 / depdown-flag" fold was reverted); provenance split **7
+> live-run + 1 manual-record + 1 capture-concordant** (the "9 live + 1 concordant" below is the
+> 33-era figure). **E-ANOM is now a first-class arm**
 > (`eanom_control_differ`, 5/6 traced positives + 1/1 FP on its evaluable negative — the
 > 2026-07-21 expand-review mandate); the headline framing is the OPERATING POINT + 0-FP profile,
 > never unique detection. See the freeze 2026-07-21 row + `scoring/matched-recall-table.json` rails.

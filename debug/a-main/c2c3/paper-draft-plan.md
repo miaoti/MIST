@@ -36,15 +36,15 @@ as BLOCKING.
 > **[2026-07-21 AMENDMENT — corpus-of-record 27 + E-ANOM fold + OPERATING-POINT headline (user-
 > approved reframe; mandate = the unanimous 3-cold expand-review `REVIEW-expand-{A,B,C}`, all
 > EXPANSION-NOT-THE-LEVER).** Supersedes the stale figures inside P1/P6 (in-cell markers added):
-> **(1)** benchmark-of-record = **27 (12 pos / 15 neg)** — the 6 F-corpus retired to
+> **(1)** benchmark-of-record = **26 (11 pos / 15 neg)** — the 6 F-corpus retired to
 > `cases/excluded-fcorpus/` (5 `acknowledged_corrupted_write` = disclosed out-of-scope boundary
-> appendix; F1 same-site-covered). **depdown: the 2026-07-20 curl "capture" was REFUTED by the
-> live MIST oracle 2026-07-21** (NO_FIRE — the db-scale-0 producer 500s the followed confirm
-> journey, so it is a LOUD-500 loss, NOT masked-2xx; `mist_readback` flag→**not_applicable**,
-> principled ack-gate boundary; see `b4/RESULT-depdown-live.md` §2). It remains a genuine
-> lost-write but OUT of the masked-2xx scope; DISPOSITION (retire → corpus 26/11-pos, vs keep as a
-> disclosed n_a → corpus stays 27) is **SURFACED to the user, undecided**. The current 27 holds
-> kafka + depdown-as-disclosed-n_a (the conservative floor). **(2)** the
+> appendix; F1 same-site-covered), AND **depdown RETIRED 2026-07-21** to `cases/excluded-out-of-mask/`
+> (user-directed after the live MIST oracle REFUTED its 2026-07-20 curl "capture": NO_FIRE — the
+> db-scale-0 producer 500s the followed confirm journey, a LOUD-500 loss NOT masked-2xx; 3-cold
+> reviewed ACCEPT; `b4/RESULT-depdown-live.md` §2). depdown is a genuine lost-write but OUT of the
+> 2xx-ack-gated masked scope; it becomes a boundary appendix (MIST correctly ABSTAINS on loud
+> failures). **MIST read-back is UNCHANGED at 9/9 evaluable + 0 FP** (depdown was already n_a, never
+> one of the 9 flags) — retiring it moves no headline number. **(2)** the
 > E2 table is **11 arms**: E-ANOM ships as the first-class arm `eanom_control_differ` (5/6 traced
 > positives [2 STRONG/2 WEAK/1 NOISE] + createaccount MISS + bookinfo FP = 1/1 evaluable
 > negatives) — never claim a trace differ "cannot see" masked loss. **(3)** MIST provenance split
@@ -55,8 +55,9 @@ as BLOCKING.
 > read-back, not a trace proxy) **+ the 0-FP profile** (the one cell no comparator matches:
 > naive +2 FP, trace_shape +1, tracetest-surrogate +1, eanom 1/1) — **never "uniquely detects" /
 > perfect-recall-led framing**; always state recall with the POSITIVES-SCOPE rail (**9 evaluable
-> of 12**, MIST 9/9 + 0 FP [was 10/12 before the depdown refutation]; the **3** principled n_e
-> foregrounded: kafka barred-by-stop-rule + sockshop trace-only + **depdown ack-gate boundary**).
+> of 11**, MIST 9/9 + 0 FP [depdown retired 2026-07-21, so it is no longer among the positives at
+> all — not an n_e]; the **2** principled n_e foregrounded: kafka barred-by-stop-rule + sockshop
+> trace-only).
 > Provenance: freeze 2026-07-21 row; `matched-recall-table.json` rails; commits 6242257/e010a05/
 > bd362d0 + the eanom-fold commit.]**
 
@@ -147,7 +148,7 @@ cell stamped `[RATER-GATED: Step 5]`. The draft must read coherently WITH the pl
 
 ## §5 Hard rails (memory-pinned; a reviewer finding ANY of these violated = BLOCKING)
 0. **Two MIST oracles exist — always disambiguate:** "MIST read-back column" (the detection
-   contribution, 10/10 + 0/13) vs "the mist_trace_shape structural sub-invariant arm" (an
+   contribution, 9/9 + 0/13; was 10/10 pre-2026-07-21-depdown-retirement) vs "the mist_trace_shape structural sub-invariant arm" (an
    internal control, 0/6 + 1 disclosed structural-only FP). Unqualified "MIST column"/"MIST
    oracle" is FORBIDDEN in the draft; the two are never pooled.
 

@@ -40,11 +40,11 @@ major-revision path is the single biggest hedge against that.
 The two weeks-scale team experiments the flip agent judged highest-value (each ACHIEVABLE-IN-WEEKS,
 together ~+5-10 honest points — real but not decisive; they harden the instrument story):
 - **E-ANOM** — run ONE runnable unsupervised structural trace-anomaly detector offline over the 13
-  captured corpus traces → converts the current `traceanomaly = not_evaluable 33/33` (argued
+  captured corpus traces → converts the current `traceanomaly = not_evaluable 26/26` (argued
   construction-blindness) into a MEASURED leg-invariant miss. Closes reviewer-2's "no anomaly
   competitor actually executes" gap. NO cluster window needed (offline over committed traces).
 - **E-OBS** — run MIST's SHIPPED observe-mode oracle on the flagship positives (extend the E2E
-  Allure demo beyond adminroute) → closes "the 10/10 headline is the paired eval-harness, not what
+  Allure demo beyond adminroute) → closes "the 9/9 headline is the paired eval-harness, not what
   ships" AND answers the MYC 0-DI-over-5145 reachability question with a bounded, honest datum.
 
 ### Writing-time reframes (free, do at draft)

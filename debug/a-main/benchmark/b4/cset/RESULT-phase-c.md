@@ -1,5 +1,12 @@
 # RESULT — Completion-set wave PHASE C (the live windows) — RESULT OF RECORD
 
+> **[2026-07-21 CURRENT-STATE POINTER — figures below are era snapshots; the state of record moved.]**
+> Benchmark-of-record = **26 (11 pos / 15 neg)**: the 6 F-corpus retired + depdown RETIRED to
+> `cases/excluded-out-of-mask/` (live oracle REFUTED its capture — NO_FIRE, loud-500 not masked-2xx;
+> `b4/RESULT-depdown-live.md`; 3-cold-reviewed). MIST read-back **9/9 evaluable + 0 FP** (the
+> "10/10 (9 live + 1 concordant)" below is the 33-era figure; depdown was never one of the flags —
+> the bd362d0 10/10 fold was reverted). See the freeze 2026-07-21 rows.
+>
 > **[POST-A3 ERRATUM 2026-07-18 — figures below are this wave's-era snapshot.]** The corpus is
 > now **33 cases** (A3 F-corpus: +F1 lost-class live FIRE, +5 corrupted acknowledged_corrupted_write).
 > The MIST column of record: **10/10 evaluable positives FIRE (9 live-run + 1 capture-concordant),

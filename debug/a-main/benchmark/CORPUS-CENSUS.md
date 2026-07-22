@@ -1,5 +1,14 @@
 # Corpus census — the 33 case files: benchmark membership + rater-study membership, per case
 
+> **[2026-07-21 CORRECTION — read before the tables.]** depdown (#28,
+> `teastore-order-depdown-specified-001`) was **RETIRED** to `cases/excluded-out-of-mask/` after the
+> REAL MIST oracle returned **NO_FIRE 0/4** on it 2026-07-21 (db-scale-0 → the confirm journey 500s
+> = a LOUD-500 loss, NOT masked-2xx; the 2026-07-20 curl "capture" read the *unfollowed* 302 and was
+> refuted; 3-cold-reviewed, user-directed). **Benchmark-of-record = 26 (11 pos / 15 neg)**; the
+> "33 files / all-27-captured / 12 captured positives" figures below are 2026-07-20-era and
+> superseded. The **18-case rater-study set is UNAFFECTED** (depdown was benchmark-only, never in it).
+> MIST read-back stays **9/9 evaluable + 0 FP**. See `b4/RESULT-depdown-live.md`.
+
 > **ADMIN-ONLY. NEVER ship next to rater renders.** This file carries case labels AND the
 > `CASE-Qxx ↔ real case_id` crosswalk (the blind-id map). It is an internal audit, kept under
 > `benchmark/`, not under `rater-packet/ship/`.

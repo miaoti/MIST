@@ -17,7 +17,7 @@ ARGUED claim into a MEASURED one, hardening the instrument's evaluation without 
 scale:
 - **E-ANOM** closes reviewer-2's "no trace-anomaly competitor actually executes" (`traceanomaly` is
   `not_evaluable 33/33` today — we ARGUE construction-blindness, never ran one).
-- **E-OBS** closes "the 10/10 headline is the PAIRED eval-harness, not the SHIPPED observe oracle"
+- **E-OBS** closes "the 9/9 headline is the PAIRED eval-harness, not the SHIPPED observe oracle"
   and answers the MYC 0-DI-over-5145 reachability question with a bounded datum.
 
 Neither touches scale or the Cast novelty cap; both are honest hardening. **Reviewers: if you judge
@@ -67,7 +67,7 @@ reviewer-named gap from argued to measured. Reviewers judge if that clears the b
 
 ## E-OBS — MIST's SHIPPED observe-mode oracle on the flagship positives (BOUNDED)
 
-**Goal:** show the SHIPPED observe-mode product (not the paired eval-harness that produced the 10/10)
+**Goal:** show the SHIPPED observe-mode product (not the paired eval-harness that produced the 9/9)
 reproduces the acked-but-lost detection, and get a bounded datum on the MYC reachability question.
 
 **Design:** reuse the committed `TinyObserveRunner` (the E2E Allure demo tool) on flagship positive
@@ -93,7 +93,7 @@ the bounded cluster time is worth that.
 ## What this package explicitly does NOT do (honesty rail)
 - Does NOT add natural positives (scarcity-forbidden) or grow the discriminating-cell count.
 - Does NOT touch the Cast novelty cap.
-- Does NOT change any label, the 10/10, the 0/13 FP, or any headline number — it hardens the
+- Does NOT change any label, the 9/9, the 0/13 FP, or any headline number — it hardens the
   COMPARISON around them.
 - The honest top-venue ceiling stays ~45-50%; the biggest single lever remains the USER-side rater
   study, which this package does not substitute for.

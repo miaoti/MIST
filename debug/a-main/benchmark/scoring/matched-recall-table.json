@@ -4,7 +4,7 @@
  "rails": [
   "per-visibility-class cells only - NO pooled headline recall is emitted",
   "NOT_EVALUABLE leaves the denominator and lands in its own bucket",
-  "POSITIVES SCOPE (foregrounded): 12 positives total; MIST evaluable = 9; the 3 principled not-evaluable positives are ['oteldemo-checkout-kafkaqueue-lost-001', 'sockshop-shipping-swallowed-enqueue-001', 'teastore-order-depdown-specified-001'] - any 'x/x' MIST recall means x of the EVALUABLE positives and MUST be stated with this scope",
+  "POSITIVES SCOPE (foregrounded): 11 positives total; MIST evaluable = 9; the 2 principled not-evaluable positives are ['oteldemo-checkout-kafkaqueue-lost-001', 'sockshop-shipping-swallowed-enqueue-001'] - any 'x/x' MIST recall means x of the EVALUABLE positives and MUST be stated with this scope",
   "the trace-invisible-by-construction row is the N-vs-0 row: 2 positives no trace-consuming arm can see by construction",
   "MIST flag cells carry provenance_class - 7 live-run + 1 manual-record + 1 capture-concordant (manual-record = TT-adminbasic: the live G1 run-3 was NOT_EVALUABLE, the flag rests on a disclosed manual-G0 record; capture-concordant flags rest on the capture-of-record, not a separate live MIST oracle run); neither the manual nor the concordant cells may be pooled into a live headline (self-concordance rule)",
   "Wilson 95% intervals accompany every cell (recall over evaluable positives; FP rate over evaluable negatives) - tiny denominators stay visibly tiny",
@@ -23,7 +23,7 @@
  "visibility_tally": {
   "error-span-visible": 3,
   "span-presence-visible": 9,
-  "trace-uninstrumented": 11,
+  "trace-uninstrumented": 10,
   "trace-invisible-by-construction": 4
  },
  "arms": {
@@ -93,12 +93,12 @@
      "not_evaluable_ids": []
     },
     "trace-uninstrumented": {
-     "positives": 6,
+     "positives": 5,
      "evaluable_positives": 4,
      "flagged_positives": 4,
      "negatives": 5,
      "flagged_negatives": 0,
-     "not_evaluable": 2,
+     "not_evaluable": 1,
      "recall_wilson95": [
       0.5101,
       1.0
@@ -115,8 +115,7 @@
      ],
      "flagged_negative_ids": [],
      "not_evaluable_ids": [
-      "oteldemo-checkout-kafkaqueue-lost-001",
-      "teastore-order-depdown-specified-001"
+      "oteldemo-checkout-kafkaqueue-lost-001"
      ]
     }
    },
@@ -131,7 +130,6 @@
     "sockshop-shipping-control-001": "structural",
     "sockshop-shipping-swallowed-enqueue-001": "structural",
     "teastore-order-control-001": "live-run",
-    "teastore-order-depdown-specified-001": "structural-by-convention",
     "teastore-order-maintenance-masked-001": "live-run",
     "teastore-order-meshsever-control-001": "capture-concordant",
     "teastore-order-meshsever-masked-001": "live-run",
@@ -211,15 +209,15 @@
      "not_evaluable_ids": []
     },
     "trace-uninstrumented": {
-     "positives": 6,
-     "evaluable_positives": 6,
+     "positives": 5,
+     "evaluable_positives": 5,
      "flagged_positives": 1,
      "negatives": 5,
      "flagged_negatives": 1,
      "not_evaluable": 0,
      "recall_wilson95": [
-      0.0301,
-      0.5635
+      0.0362,
+      0.6245
      ],
      "fp_rate_wilson95": [
       0.0362,
@@ -301,12 +299,12 @@
      ]
     },
     "trace-uninstrumented": {
-     "positives": 6,
+     "positives": 5,
      "evaluable_positives": 0,
      "flagged_positives": 0,
      "negatives": 5,
      "flagged_negatives": 0,
-     "not_evaluable": 11,
+     "not_evaluable": 10,
      "recall_wilson95": null,
      "fp_rate_wilson95": null,
      "flagged_positive_ids": [],
@@ -314,7 +312,6 @@
      "not_evaluable_ids": [
       "oteldemo-checkout-kafkaqueue-lost-001",
       "teastore-order-control-001",
-      "teastore-order-depdown-specified-001",
       "teastore-order-maintenance-masked-001",
       "teastore-order-meshsever-control-001",
       "teastore-order-meshsever-masked-001",
@@ -395,12 +392,12 @@
      ]
     },
     "trace-uninstrumented": {
-     "positives": 6,
+     "positives": 5,
      "evaluable_positives": 0,
      "flagged_positives": 0,
      "negatives": 5,
      "flagged_negatives": 0,
-     "not_evaluable": 11,
+     "not_evaluable": 10,
      "recall_wilson95": null,
      "fp_rate_wilson95": null,
      "flagged_positive_ids": [],
@@ -408,7 +405,6 @@
      "not_evaluable_ids": [
       "oteldemo-checkout-kafkaqueue-lost-001",
       "teastore-order-control-001",
-      "teastore-order-depdown-specified-001",
       "teastore-order-maintenance-masked-001",
       "teastore-order-meshsever-control-001",
       "teastore-order-meshsever-masked-001",
@@ -498,12 +494,12 @@
      ]
     },
     "trace-uninstrumented": {
-     "positives": 6,
+     "positives": 5,
      "evaluable_positives": 0,
      "flagged_positives": 0,
      "negatives": 5,
      "flagged_negatives": 0,
-     "not_evaluable": 11,
+     "not_evaluable": 10,
      "recall_wilson95": null,
      "fp_rate_wilson95": null,
      "flagged_positive_ids": [],
@@ -511,7 +507,6 @@
      "not_evaluable_ids": [
       "oteldemo-checkout-kafkaqueue-lost-001",
       "teastore-order-control-001",
-      "teastore-order-depdown-specified-001",
       "teastore-order-maintenance-masked-001",
       "teastore-order-meshsever-control-001",
       "teastore-order-meshsever-masked-001",
@@ -591,12 +586,12 @@
      "not_evaluable_ids": []
     },
     "trace-uninstrumented": {
-     "positives": 6,
+     "positives": 5,
      "evaluable_positives": 0,
      "flagged_positives": 0,
      "negatives": 5,
      "flagged_negatives": 0,
-     "not_evaluable": 11,
+     "not_evaluable": 10,
      "recall_wilson95": null,
      "fp_rate_wilson95": null,
      "flagged_positive_ids": [],
@@ -604,7 +599,6 @@
      "not_evaluable_ids": [
       "oteldemo-checkout-kafkaqueue-lost-001",
       "teastore-order-control-001",
-      "teastore-order-depdown-specified-001",
       "teastore-order-maintenance-masked-001",
       "teastore-order-meshsever-control-001",
       "teastore-order-meshsever-masked-001",
@@ -688,12 +682,12 @@
      ]
     },
     "trace-uninstrumented": {
-     "positives": 6,
+     "positives": 5,
      "evaluable_positives": 0,
      "flagged_positives": 0,
      "negatives": 5,
      "flagged_negatives": 0,
-     "not_evaluable": 11,
+     "not_evaluable": 10,
      "recall_wilson95": null,
      "fp_rate_wilson95": null,
      "flagged_positive_ids": [],
@@ -701,7 +695,6 @@
      "not_evaluable_ids": [
       "oteldemo-checkout-kafkaqueue-lost-001",
       "teastore-order-control-001",
-      "teastore-order-depdown-specified-001",
       "teastore-order-maintenance-masked-001",
       "teastore-order-meshsever-control-001",
       "teastore-order-meshsever-masked-001",
@@ -775,15 +768,15 @@
      "not_evaluable_ids": []
     },
     "trace-uninstrumented": {
-     "positives": 6,
-     "evaluable_positives": 6,
+     "positives": 5,
+     "evaluable_positives": 5,
      "flagged_positives": 0,
      "negatives": 5,
      "flagged_negatives": 0,
      "not_evaluable": 0,
      "recall_wilson95": [
-      0.0,
-      0.3903
+      -0.0,
+      0.4345
      ],
      "fp_rate_wilson95": [
       -0.0,
@@ -856,15 +849,15 @@
      "not_evaluable_ids": []
     },
     "trace-uninstrumented": {
-     "positives": 6,
-     "evaluable_positives": 6,
+     "positives": 5,
+     "evaluable_positives": 5,
      "flagged_positives": 0,
      "negatives": 5,
      "flagged_negatives": 0,
      "not_evaluable": 0,
      "recall_wilson95": [
-      0.0,
-      0.3903
+      -0.0,
+      0.4345
      ],
      "fp_rate_wilson95": [
       -0.0,
@@ -938,12 +931,12 @@
      ]
     },
     "trace-uninstrumented": {
-     "positives": 6,
+     "positives": 5,
      "evaluable_positives": 0,
      "flagged_positives": 0,
      "negatives": 5,
      "flagged_negatives": 0,
-     "not_evaluable": 11,
+     "not_evaluable": 10,
      "recall_wilson95": null,
      "fp_rate_wilson95": null,
      "flagged_positive_ids": [],
@@ -951,7 +944,6 @@
      "not_evaluable_ids": [
       "oteldemo-checkout-kafkaqueue-lost-001",
       "teastore-order-control-001",
-      "teastore-order-depdown-specified-001",
       "teastore-order-maintenance-masked-001",
       "teastore-order-meshsever-control-001",
       "teastore-order-meshsever-masked-001",
@@ -1040,12 +1032,12 @@
      ]
     },
     "trace-uninstrumented": {
-     "positives": 6,
+     "positives": 5,
      "evaluable_positives": 0,
      "flagged_positives": 0,
      "negatives": 5,
      "flagged_negatives": 0,
-     "not_evaluable": 11,
+     "not_evaluable": 10,
      "recall_wilson95": null,
      "fp_rate_wilson95": null,
      "flagged_positive_ids": [],
@@ -1053,7 +1045,6 @@
      "not_evaluable_ids": [
       "oteldemo-checkout-kafkaqueue-lost-001",
       "teastore-order-control-001",
-      "teastore-order-depdown-specified-001",
       "teastore-order-maintenance-masked-001",
       "teastore-order-meshsever-control-001",
       "teastore-order-meshsever-masked-001",

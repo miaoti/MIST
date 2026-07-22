@@ -2,6 +2,16 @@
 
 **Black-box detection of acknowledged-but-lost writes in microservices.**
 
+> **[2026-07-21 CORRECTION — supersedes the "27 / 12 positives / all-captured" figures below,
+> which are 2026-07-20-era.]** The benchmark-of-record is now **26 cases (11 positive / 15
+> negative)**. `teastore-order-depdown-specified-001` was **RETIRED** (`git mv` → `benchmark/cases/
+> excluded-out-of-mask/`) after the REAL MIST oracle was run on it 2026-07-21 and returned **NO_FIRE
+> 0/4**: under `teastore-db`-scale-0 the confirm journey **500s** (loud failure), so it is NOT a
+> masked-2xx loss — the 2026-07-20 curl "capture" (which read the *unfollowed* 302) was refuted.
+> 3-cold-reviewed, user-directed retire. MIST read-back stays **9/9 evaluable + 0 FP** (depdown was
+> never one of the flags). depdown is kept as a boundary appendix (MIST correctly abstains on loud
+> failures). See `benchmark/b4/RESULT-depdown-live.md` + the freeze 2026-07-21 rows.
+
 A working report in our own codenames (B1, B2, G1–G3). It says what each codename means, what has been done,
 what is in progress, and the honest limits. Concrete examples are called out as `> Example` /
 `> Talking point` for the talk. Detailed plans/results are indexed by `EXECUTION.md`.

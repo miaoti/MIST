@@ -1,5 +1,15 @@
 # Corpus provenance ledger — case-by-case "is it a real bug / why not" audit
 
+> **[2026-07-21 CORRECTION — supersedes the "12 captured, 0 specified" headline below.]** The
+> benchmark-of-record is **26 (11 pos / 15 neg)**: `teastore-order-depdown-specified-001` was
+> **RETIRED** to `cases/excluded-out-of-mask/` after the REAL MIST oracle returned **NO_FIRE 0/4**
+> 2026-07-21 (db-scale-0 → confirm journey 500s = LOUD-500 loss, NOT masked-2xx; the 2026-07-20
+> curl "capture" read the *unfollowed* 302 and was refuted; 3-cold-reviewed, user-directed). So
+> F3/F11's "now captured → 12 captured, 0 specified" resolution is itself SUPERSEDED: depdown is
+> out of the masked-2xx scope entirely (a boundary appendix), the headline is **11 captured
+> positives** over ~8 distinct sites (depdown shared the order-confirm site, so no site is lost).
+> MIST read-back stays **9/9 evaluable + 0 FP**. See `b4/RESULT-depdown-live.md`.
+
 **Created 2026-07-14.** An audit trail that answers, for every one of the 26 cases, the two
 questions a reviewer will ask:
 

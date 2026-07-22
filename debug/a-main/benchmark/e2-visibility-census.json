@@ -11,7 +11,7 @@
  "tally": {
   "error-span-visible": 3,
   "span-presence-visible": 9,
-  "trace-uninstrumented": 11,
+  "trace-uninstrumented": 10,
   "trace-invisible-by-construction": 4
  },
  "cases": [
@@ -94,14 +94,6 @@
    "naive_span_error_oracle": "not_applicable",
    "mist_trace_shape_oracle": "not_applicable",
    "mist_readback_oracle": "no_flag"
-  },
-  {
-   "case_id": "teastore-order-depdown-specified-001",
-   "label": "positive",
-   "trace_visibility": "trace-uninstrumented",
-   "naive_span_error_oracle": "not_applicable",
-   "mist_trace_shape_oracle": "not_applicable",
-   "mist_readback_oracle": "not_applicable"
   },
   {
    "case_id": "teastore-order-maintenance-masked-001",

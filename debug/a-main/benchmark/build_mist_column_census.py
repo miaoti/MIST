@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""A5 (completion-set wave; corpus now 33 cases): build the MIST read-back-column census.
+"""A5 (completion-set wave; benchmark-of-record 26 cases as of 2026-07-21): build the MIST read-back-column census.
 
 Reads every case file under benchmark/cases/ and emits
 benchmark/mist-column-census.json: per case -> label, mist_readback_oracle,
@@ -39,14 +39,9 @@ ADJUDICATIONS = {
                    "regardless of the swallowed enqueue; trace-only discriminator "
                    "(rateability: trace-required-not-blind-rateable per MANIFEST-r2)"),
     },
-    "teastore-order-depdown-specified-001": {
-        "class": "structural-by-convention",
-        "reason": ("capture_status=specified: a design-target case never captured "
-                   "(freeze rev-2.1 R2/R3 - oracle_expectation is a design target, "
-                   "never tallied as measured); no run exists to carry an oracle "
-                   "verdict, and capturing it = a new capture out of wave scope "
-                   "(positive-side widening CLOSED)"),
-    },
+    # teastore-order-depdown-specified-001 RETIRED 2026-07-21 to cases/excluded-out-of-mask/
+    # (live MIST oracle NO_FIRE 0/4 -> LOUD-500 loss, out of the 2xx-gated masked-2xx class;
+    # b4/RESULT-depdown-live.md). No longer in the cases/*.json glob, so no adjudication entry.
     "TT-order-contact-corrupt-f10-001": {
         "class": "structural",
         "reason": ("CORRUPTED-present (order persists rotated contact documentNumber, "
@@ -202,7 +197,7 @@ def main():
     census = {
         "schema": "mist-column-census/1",
         "generated_by": "build_mist_column_census.py (completion-set wave A5)",
-        "note": ("Verdict provenance + the 8 not_applicable adjudications are "
+        "note": ("Verdict provenance + every not_applicable adjudication are "
                  "filled by the wave; no silent pending may survive (plan 3.5)."),
         "tally": tally,
         "adjudication_tally": adj_tally,
