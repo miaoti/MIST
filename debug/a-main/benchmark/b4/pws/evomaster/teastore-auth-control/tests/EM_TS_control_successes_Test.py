@@ -53,7 +53,7 @@ class EM_TS_control_successes_Test(unittest.TestCase):
     def test_0_post_on_cartAction_returns_200(self):
         
         headers = {}
-        headers["Cookie"] = "sessionBlob=%7B%22uid%22%3A523%2C%22sid%22%3A%22-812225846%22%2C%22token%22%3A%22e4c4ee3f0dac6cc5f85b1d0de06dcd8ae1b724e233b6fa540d76666f190928f74a6fada389ed51e7bf5d05f4179bf496ffc4b31fe78e18dba2825b0f6614a3d1%22%2C%22order%22%3A%7B%22id%22%3A0%2C%22userId%22%3A0%2C%22time%22%3Anull%2C%22totalPriceInCents%22%3A0%2C%22addressName%22%3Anull%2C%22address1%22%3Anull%2C%22address2%22%3Anull%2C%22creditCardCompany%22%3Anull%2C%22creditCardNumber%22%3Anull%2C%22creditCardExpiryDate%22%3Anull%7D%2C%22orderItems%22%3A%5B%7B%22id%22%3A0%2C%22productId%22%3A42%2C%22orderId%22%3A0%2C%22quantity%22%3A1%2C%22unitPriceInCents%22%3A5125%7D%5D%2C%22message%22%3Anull%7D; teastoreMessageCookie=Product_42_is_added_to_cart!"
+        headers["Cookie"] = "sessionBlob=REDACTED_EPHEMERAL_SESSION_TOKEN; teastoreMessageCookie=Product_42_is_added_to_cart!"
         headers["content-type"] = "application/x-www-form-urlencoded"
         body = ""
         headers['Accept'] = "*/*"
@@ -88,7 +88,7 @@ class EM_TS_control_successes_Test(unittest.TestCase):
     def test_2_options_on_loginAction_returns_200(self):
         
         headers = {}
-        headers["Cookie"] = "sessionBlob=%7B%22uid%22%3A523%2C%22sid%22%3A%22-812225846%22%2C%22token%22%3A%22e4c4ee3f0dac6cc5f85b1d0de06dcd8ae1b724e233b6fa540d76666f190928f74a6fada389ed51e7bf5d05f4179bf496ffc4b31fe78e18dba2825b0f6614a3d1%22%2C%22order%22%3A%7B%22id%22%3A0%2C%22userId%22%3A0%2C%22time%22%3Anull%2C%22totalPriceInCents%22%3A0%2C%22addressName%22%3Anull%2C%22address1%22%3Anull%2C%22address2%22%3Anull%2C%22creditCardCompany%22%3Anull%2C%22creditCardNumber%22%3Anull%2C%22creditCardExpiryDate%22%3Anull%7D%2C%22orderItems%22%3A%5B%7B%22id%22%3A0%2C%22productId%22%3A42%2C%22orderId%22%3A0%2C%22quantity%22%3A1%2C%22unitPriceInCents%22%3A5125%7D%5D%2C%22message%22%3Anull%7D; teastoreMessageCookie=Product_42_is_added_to_cart!"
+        headers["Cookie"] = "sessionBlob=REDACTED_EPHEMERAL_SESSION_TOKEN; teastoreMessageCookie=Product_42_is_added_to_cart!"
         headers['Accept'] = "*/*"
         res_0 = requests \
                 .options(self.baseUrlOfSut + "/tools.descartes.teastore.webui/loginAction",
@@ -105,7 +105,7 @@ class EM_TS_control_successes_Test(unittest.TestCase):
     def test_3_options_on_cartAction_returns_200(self):
         
         headers = {}
-        headers["Cookie"] = "sessionBlob=%7B%22uid%22%3A523%2C%22sid%22%3A%22-812225846%22%2C%22token%22%3A%22e4c4ee3f0dac6cc5f85b1d0de06dcd8ae1b724e233b6fa540d76666f190928f74a6fada389ed51e7bf5d05f4179bf496ffc4b31fe78e18dba2825b0f6614a3d1%22%2C%22order%22%3A%7B%22id%22%3A0%2C%22userId%22%3A0%2C%22time%22%3Anull%2C%22totalPriceInCents%22%3A0%2C%22addressName%22%3Anull%2C%22address1%22%3Anull%2C%22address2%22%3Anull%2C%22creditCardCompany%22%3Anull%2C%22creditCardNumber%22%3Anull%2C%22creditCardExpiryDate%22%3Anull%7D%2C%22orderItems%22%3A%5B%7B%22id%22%3A0%2C%22productId%22%3A42%2C%22orderId%22%3A0%2C%22quantity%22%3A1%2C%22unitPriceInCents%22%3A5125%7D%5D%2C%22message%22%3Anull%7D; teastoreMessageCookie=Product_42_is_added_to_cart!"
+        headers["Cookie"] = "sessionBlob=REDACTED_EPHEMERAL_SESSION_TOKEN; teastoreMessageCookie=Product_42_is_added_to_cart!"
         headers['Accept'] = "*/*"
         res_0 = requests \
                 .options(self.baseUrlOfSut + "/tools.descartes.teastore.webui/cartAction",
@@ -122,7 +122,7 @@ class EM_TS_control_successes_Test(unittest.TestCase):
     def test_4_options_on_profile_returns_200(self):
         
         headers = {}
-        headers["Cookie"] = "sessionBlob=%7B%22uid%22%3A523%2C%22sid%22%3A%22-812225846%22%2C%22token%22%3A%22e4c4ee3f0dac6cc5f85b1d0de06dcd8ae1b724e233b6fa540d76666f190928f74a6fada389ed51e7bf5d05f4179bf496ffc4b31fe78e18dba2825b0f6614a3d1%22%2C%22order%22%3A%7B%22id%22%3A0%2C%22userId%22%3A0%2C%22time%22%3Anull%2C%22totalPriceInCents%22%3A0%2C%22addressName%22%3Anull%2C%22address1%22%3Anull%2C%22address2%22%3Anull%2C%22creditCardCompany%22%3Anull%2C%22creditCardNumber%22%3Anull%2C%22creditCardExpiryDate%22%3Anull%7D%2C%22orderItems%22%3A%5B%7B%22id%22%3A0%2C%22productId%22%3A42%2C%22orderId%22%3A0%2C%22quantity%22%3A1%2C%22unitPriceInCents%22%3A5125%7D%5D%2C%22message%22%3Anull%7D; teastoreMessageCookie=Product_42_is_added_to_cart!"
+        headers["Cookie"] = "sessionBlob=REDACTED_EPHEMERAL_SESSION_TOKEN; teastoreMessageCookie=Product_42_is_added_to_cart!"
         headers['Accept'] = "*/*"
         res_0 = requests \
                 .options(self.baseUrlOfSut + "/tools.descartes.teastore.webui/profile",
@@ -154,7 +154,7 @@ class EM_TS_control_successes_Test(unittest.TestCase):
     def test_6_post_on_loginAction_returns_302(self):
         
         headers = {}
-        headers["Cookie"] = "sessionBlob=%7B%22uid%22%3A523%2C%22sid%22%3A%22-812225846%22%2C%22token%22%3A%22e4c4ee3f0dac6cc5f85b1d0de06dcd8ae1b724e233b6fa540d76666f190928f74a6fada389ed51e7bf5d05f4179bf496ffc4b31fe78e18dba2825b0f6614a3d1%22%2C%22order%22%3A%7B%22id%22%3A0%2C%22userId%22%3A0%2C%22time%22%3Anull%2C%22totalPriceInCents%22%3A0%2C%22addressName%22%3Anull%2C%22address1%22%3Anull%2C%22address2%22%3Anull%2C%22creditCardCompany%22%3Anull%2C%22creditCardNumber%22%3Anull%2C%22creditCardExpiryDate%22%3Anull%7D%2C%22orderItems%22%3A%5B%7B%22id%22%3A0%2C%22productId%22%3A42%2C%22orderId%22%3A0%2C%22quantity%22%3A1%2C%22unitPriceInCents%22%3A5125%7D%5D%2C%22message%22%3Anull%7D; teastoreMessageCookie=Product_42_is_added_to_cart!"
+        headers["Cookie"] = "sessionBlob=REDACTED_EPHEMERAL_SESSION_TOKEN; teastoreMessageCookie=Product_42_is_added_to_cart!"
         headers["content-type"] = "application/x-www-form-urlencoded"
         body = ""
         headers['Accept'] = "*/*"
@@ -189,7 +189,7 @@ class EM_TS_control_successes_Test(unittest.TestCase):
     def test_8_options_on_orders_returns_200(self):
         
         headers = {}
-        headers["Cookie"] = "sessionBlob=%7B%22uid%22%3A523%2C%22sid%22%3A%22-812225846%22%2C%22token%22%3A%22e4c4ee3f0dac6cc5f85b1d0de06dcd8ae1b724e233b6fa540d76666f190928f74a6fada389ed51e7bf5d05f4179bf496ffc4b31fe78e18dba2825b0f6614a3d1%22%2C%22order%22%3A%7B%22id%22%3A0%2C%22userId%22%3A0%2C%22time%22%3Anull%2C%22totalPriceInCents%22%3A0%2C%22addressName%22%3Anull%2C%22address1%22%3Anull%2C%22address2%22%3Anull%2C%22creditCardCompany%22%3Anull%2C%22creditCardNumber%22%3Anull%2C%22creditCardExpiryDate%22%3Anull%7D%2C%22orderItems%22%3A%5B%7B%22id%22%3A0%2C%22productId%22%3A42%2C%22orderId%22%3A0%2C%22quantity%22%3A1%2C%22unitPriceInCents%22%3A5125%7D%5D%2C%22message%22%3Anull%7D; teastoreMessageCookie=Product_42_is_added_to_cart!"
+        headers["Cookie"] = "sessionBlob=REDACTED_EPHEMERAL_SESSION_TOKEN; teastoreMessageCookie=Product_42_is_added_to_cart!"
         headers['Accept'] = "*/*"
         res_0 = requests \
                 .options(self.baseUrlOfSut + "/tools.descartes.teastore.persistence/rest/orders",
@@ -206,7 +206,7 @@ class EM_TS_control_successes_Test(unittest.TestCase):
     def test_9_options_on_products_returns_200(self):
         
         headers = {}
-        headers["Cookie"] = "sessionBlob=%7B%22uid%22%3A523%2C%22sid%22%3A%22-812225846%22%2C%22token%22%3A%22e4c4ee3f0dac6cc5f85b1d0de06dcd8ae1b724e233b6fa540d76666f190928f74a6fada389ed51e7bf5d05f4179bf496ffc4b31fe78e18dba2825b0f6614a3d1%22%2C%22order%22%3A%7B%22id%22%3A0%2C%22userId%22%3A0%2C%22time%22%3Anull%2C%22totalPriceInCents%22%3A0%2C%22addressName%22%3Anull%2C%22address1%22%3Anull%2C%22address2%22%3Anull%2C%22creditCardCompany%22%3Anull%2C%22creditCardNumber%22%3Anull%2C%22creditCardExpiryDate%22%3Anull%7D%2C%22orderItems%22%3A%5B%7B%22id%22%3A0%2C%22productId%22%3A42%2C%22orderId%22%3A0%2C%22quantity%22%3A1%2C%22unitPriceInCents%22%3A5125%7D%5D%2C%22message%22%3Anull%7D; teastoreMessageCookie=Product_42_is_added_to_cart!"
+        headers["Cookie"] = "sessionBlob=REDACTED_EPHEMERAL_SESSION_TOKEN; teastoreMessageCookie=Product_42_is_added_to_cart!"
         headers['Accept'] = "*/*"
         res_0 = requests \
                 .options(self.baseUrlOfSut + "/tools.descartes.teastore.persistence/rest/products",
@@ -223,7 +223,7 @@ class EM_TS_control_successes_Test(unittest.TestCase):
     def test_10_options_on_product_returns_200(self):
         
         headers = {}
-        headers["Cookie"] = "sessionBlob=%7B%22uid%22%3A523%2C%22sid%22%3A%22-812225846%22%2C%22token%22%3A%22e4c4ee3f0dac6cc5f85b1d0de06dcd8ae1b724e233b6fa540d76666f190928f74a6fada389ed51e7bf5d05f4179bf496ffc4b31fe78e18dba2825b0f6614a3d1%22%2C%22order%22%3A%7B%22id%22%3A0%2C%22userId%22%3A0%2C%22time%22%3Anull%2C%22totalPriceInCents%22%3A0%2C%22addressName%22%3Anull%2C%22address1%22%3Anull%2C%22address2%22%3Anull%2C%22creditCardCompany%22%3Anull%2C%22creditCardNumber%22%3Anull%2C%22creditCardExpiryDate%22%3Anull%7D%2C%22orderItems%22%3A%5B%7B%22id%22%3A0%2C%22productId%22%3A42%2C%22orderId%22%3A0%2C%22quantity%22%3A1%2C%22unitPriceInCents%22%3A5125%7D%5D%2C%22message%22%3Anull%7D; teastoreMessageCookie=Product_42_is_added_to_cart!"
+        headers["Cookie"] = "sessionBlob=REDACTED_EPHEMERAL_SESSION_TOKEN; teastoreMessageCookie=Product_42_is_added_to_cart!"
         headers['Accept'] = "*/*"
         res_0 = requests \
                 .options(self.baseUrlOfSut + "/tools.descartes.teastore.persistence/rest/products/218",
@@ -240,7 +240,7 @@ class EM_TS_control_successes_Test(unittest.TestCase):
     def test_11_options_on_user_returns_200(self):
         
         headers = {}
-        headers["Cookie"] = "sessionBlob=%7B%22uid%22%3A523%2C%22sid%22%3A%22-812225846%22%2C%22token%22%3A%22e4c4ee3f0dac6cc5f85b1d0de06dcd8ae1b724e233b6fa540d76666f190928f74a6fada389ed51e7bf5d05f4179bf496ffc4b31fe78e18dba2825b0f6614a3d1%22%2C%22order%22%3A%7B%22id%22%3A0%2C%22userId%22%3A0%2C%22time%22%3Anull%2C%22totalPriceInCents%22%3A0%2C%22addressName%22%3Anull%2C%22address1%22%3Anull%2C%22address2%22%3Anull%2C%22creditCardCompany%22%3Anull%2C%22creditCardNumber%22%3Anull%2C%22creditCardExpiryDate%22%3Anull%7D%2C%22orderItems%22%3A%5B%7B%22id%22%3A0%2C%22productId%22%3A42%2C%22orderId%22%3A0%2C%22quantity%22%3A1%2C%22unitPriceInCents%22%3A5125%7D%5D%2C%22message%22%3Anull%7D; teastoreMessageCookie=Product_42_is_added_to_cart!"
+        headers["Cookie"] = "sessionBlob=REDACTED_EPHEMERAL_SESSION_TOKEN; teastoreMessageCookie=Product_42_is_added_to_cart!"
         headers['Accept'] = "*/*"
         res_0 = requests \
                 .options(self.baseUrlOfSut + "/tools.descartes.teastore.persistence/rest/orders/user/439",
@@ -257,7 +257,7 @@ class EM_TS_control_successes_Test(unittest.TestCase):
     def test_12_options_on_order_returns_200(self):
         
         headers = {}
-        headers["Cookie"] = "sessionBlob=%7B%22uid%22%3A523%2C%22sid%22%3A%22-812225846%22%2C%22token%22%3A%22e4c4ee3f0dac6cc5f85b1d0de06dcd8ae1b724e233b6fa540d76666f190928f74a6fada389ed51e7bf5d05f4179bf496ffc4b31fe78e18dba2825b0f6614a3d1%22%2C%22order%22%3A%7B%22id%22%3A0%2C%22userId%22%3A0%2C%22time%22%3Anull%2C%22totalPriceInCents%22%3A0%2C%22addressName%22%3Anull%2C%22address1%22%3Anull%2C%22address2%22%3Anull%2C%22creditCardCompany%22%3Anull%2C%22creditCardNumber%22%3Anull%2C%22creditCardExpiryDate%22%3Anull%7D%2C%22orderItems%22%3A%5B%7B%22id%22%3A0%2C%22productId%22%3A42%2C%22orderId%22%3A0%2C%22quantity%22%3A1%2C%22unitPriceInCents%22%3A5125%7D%5D%2C%22message%22%3Anull%7D; teastoreMessageCookie=Product_42_is_added_to_cart!"
+        headers["Cookie"] = "sessionBlob=REDACTED_EPHEMERAL_SESSION_TOKEN; teastoreMessageCookie=Product_42_is_added_to_cart!"
         headers['Accept'] = "*/*"
         res_0 = requests \
                 .options(self.baseUrlOfSut + "/tools.descartes.teastore.persistence/rest/orderitems/order/298",

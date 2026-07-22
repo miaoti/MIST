@@ -1,0 +1,19 @@
+# Diagnosis-probe DURABLE verification (result-review A fix 1) — captured 2026-07-21
+# The two post-run diagnosis probes originally rested on operator observation. This capture
+# converts them to durable evidence via the PVC-backed database, re-read on a FRESH
+# db+persistence bring-up AFTER the wave's teardown:
+#
+#   GET /rest/orders (persistence JPA over the PVC-backed MySQL):
+#     total order rows       : 192
+#     'diagprobe1' rows      : 1     (address1 marker of the manual full-form confirm)
+#
+# What this durably proves:
+#  (1) the manual full-form confirm through the RUN'S OWN session cookie landed a durable
+#      order (191 -> 192) => auth + session + cart seeding + persistence were live end-to-end;
+#  (2) the session was necessarily ALIVE AND LOGGED-IN at probe time — TeaStore places an
+#      order only for a logged-in session, so the durable diagprobe1 row entails the
+#      session-alive claim (the separate profile-200 observation stays operator-attested,
+#      but is now corroborated by this durable entailment).
+# Sequencing note (review B's 191-vs-192 question): leg-summary.json's after=191 was measured
+# BEFORE the diagnostic confirm; the 192nd row is the diagnostic itself, placed after
+# collection — the accounting is consistent: run-attributable delta = 0.

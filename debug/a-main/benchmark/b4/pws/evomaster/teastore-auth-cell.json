@@ -13,7 +13,7 @@
     "evaluated_tests": 1592718,
     "covered_targets": 139,
     "tool_reported_potential_faults": 17,
-    "fault_census": "404-family 23 / 200-schema-mismatch 10 / 500 2 / 302 1 assertions in the generated fault suite - all noise-class (hiddenAccessible probes, schema mismatches on HTML, 2 5xx); ZERO durable orders",
+    "fault_census": "17 distinct faults by the tool's own decomposition: Fault101 schema-oracle-mismatch x8 / Fault210 accessible-undeclared-path x7 / Fault100 HTTP-5xx x1 / Fault209 leaked-stack-trace x1 - all noise-class, none order-flow-shaped; the generated fault suite's 36 status assertions (404x23/200x10/500x2/302x1) are an ASSERTION count, not a fault count (post-review B1 relabel); ZERO durable orders",
     "acked_2xx_endpoints": "2/9 (22%)"
   },
   "diagnosis_of_record": {
@@ -22,6 +22,7 @@
     "root_cause": "in 3,042,883 evaluated actions the tool never COMPOSED the semantically-valid confirm action: it mutates cartAction's action-discriminator params as data fields (e.g. addToCart='D_3IpK' garbage + mixed form fields), never emitting the confirm-shaped submission the business flow requires",
     "finding": "the reachability barrier survives auth AND state provisioning - it is ACTION-SEMANTICS COMPOSITION, a tool-class property one level deeper than PWS L1's spec-only barrier; reconciles with (and strengthens) the L1 'barrier is a tool-class property' framing"
   },
-  "reporting_rail": "SEPARATE detection table only - never merged into matched-recall; the MISS cell stays VACUOUS-and-disclosed (no acked baseline from the tool's own traffic); MIST's corpus cell sits alongside as context, never pooled",
-  "artifacts": "teastore-auth-control/{run.log, prep.txt(cookie redacted in reports), leg-summary.json, evomaster-summary.txt, tests/ (42 generated tests + statistics.csv)}"
+  "reporting_rail": "SEPARATE detection table only - never merged into matched-recall; the cell is VACUOUS/NOT-EVALUABLE, disclosed - NOT a detection-miss claim (no acked baseline from the tool's own traffic exists to miss against; post-review C3 rewording); MIST's corpus cell sits alongside as context, never pooled",
+  "scope_disclosure": "single 60-min run, single SUT (TeaStore), single seed (42); the tool-class reading rests on the MECHANISM (action-discriminator params mutated as data fields), not cross-SUT/seed replication (post-review C1)",
+  "artifacts": "teastore-auth-control/{run.log, prep.txt, leg-summary.json, evomaster-summary.txt, diagprobe-verification.txt (the PVC durable re-read artifacting the diagnosis probes), tests/ (42 generated tests + statistics.csv)}; session token redacted across ALL committed artifacts incl. the generated suites (post-review B2, 47 occurrences)"
 }

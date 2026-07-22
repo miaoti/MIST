@@ -57,7 +57,7 @@ class EM_TS_control_faults_Test(unittest.TestCase):
         # Fault101. Received A Response From API With A Structure/Data That Is Not Matching Its Schema. Type: validation.response.status.unknown Response status 500 not defined for path '/tools.descartes.teastore.webui/cartAction'.
         # Fault209. Leaked Stack Trace.
         headers = {}
-        headers["Cookie"] = "sessionBlob=%7B%22uid%22%3A523%2C%22sid%22%3A%22-812225846%22%2C%22token%22%3A%22e4c4ee3f0dac6cc5f85b1d0de06dcd8ae1b724e233b6fa540d76666f190928f74a6fada389ed51e7bf5d05f4179bf496ffc4b31fe78e18dba2825b0f6614a3d1%22%2C%22order%22%3A%7B%22id%22%3A0%2C%22userId%22%3A0%2C%22time%22%3Anull%2C%22totalPriceInCents%22%3A0%2C%22addressName%22%3Anull%2C%22address1%22%3Anull%2C%22address2%22%3Anull%2C%22creditCardCompany%22%3Anull%2C%22creditCardNumber%22%3Anull%2C%22creditCardExpiryDate%22%3Anull%7D%2C%22orderItems%22%3A%5B%7B%22id%22%3A0%2C%22productId%22%3A42%2C%22orderId%22%3A0%2C%22quantity%22%3A1%2C%22unitPriceInCents%22%3A5125%7D%5D%2C%22message%22%3Anull%7D; teastoreMessageCookie=Product_42_is_added_to_cart!"
+        headers["Cookie"] = "sessionBlob=REDACTED_EPHEMERAL_SESSION_TOKEN; teastoreMessageCookie=Product_42_is_added_to_cart!"
         headers["content-type"] = "application/x-www-form-urlencoded"
         body = "addToCart=iEnc&firstname=RSF&address1=at2E8NQv&cardtype=Q7KaEBD&expirydate=atRO6OASe2bHP"
         headers['Accept'] = "*/*"
@@ -78,7 +78,7 @@ class EM_TS_control_faults_Test(unittest.TestCase):
         # Fault100. HTTP Status 500.
         # Fault101. Received A Response From API With A Structure/Data That Is Not Matching Its Schema. Type: validation.response.status.unknown Response status 500 not defined for path '/tools.descartes.teastore.webui/cartAction'.
         headers = {}
-        headers["Cookie"] = "sessionBlob=%7B%22uid%22%3A523%2C%22sid%22%3A%22-812225846%22%2C%22token%22%3A%22e4c4ee3f0dac6cc5f85b1d0de06dcd8ae1b724e233b6fa540d76666f190928f74a6fada389ed51e7bf5d05f4179bf496ffc4b31fe78e18dba2825b0f6614a3d1%22%2C%22order%22%3A%7B%22id%22%3A0%2C%22userId%22%3A0%2C%22time%22%3Anull%2C%22totalPriceInCents%22%3A0%2C%22addressName%22%3Anull%2C%22address1%22%3Anull%2C%22address2%22%3Anull%2C%22creditCardCompany%22%3Anull%2C%22creditCardNumber%22%3Anull%2C%22creditCardExpiryDate%22%3Anull%7D%2C%22orderItems%22%3A%5B%7B%22id%22%3A0%2C%22productId%22%3A42%2C%22orderId%22%3A0%2C%22quantity%22%3A1%2C%22unitPriceInCents%22%3A5125%7D%5D%2C%22message%22%3Anull%7D; teastoreMessageCookie=Product_42_is_added_to_cart!"
+        headers["Cookie"] = "sessionBlob=REDACTED_EPHEMERAL_SESSION_TOKEN; teastoreMessageCookie=Product_42_is_added_to_cart!"
         headers["content-type"] = "application/x-www-form-urlencoded"
         body = "addToCart=YtRmSAkdPponp&productid=71&firstname=rjXu7ed1HAP5RdR&lastname=Dk0gXygvYdpmoyI&address1=7PbUpEAt&address2=&cardtype=4qPck6vn&cardnumber=lxDABWlvZBR&expirydate=NXxnQy3AAQ1A_jlD"
         headers['Accept'] = "*/*"
@@ -98,7 +98,7 @@ class EM_TS_control_faults_Test(unittest.TestCase):
         
         # Fault101. Received A Response From API With A Structure/Data That Is Not Matching Its Schema. Type: validation.response.body.unexpected No response body is expected but one was found.
         headers = {}
-        headers["Cookie"] = "sessionBlob=%7B%22uid%22%3A523%2C%22sid%22%3A%22-812225846%22%2C%22token%22%3A%22e4c4ee3f0dac6cc5f85b1d0de06dcd8ae1b724e233b6fa540d76666f190928f74a6fada389ed51e7bf5d05f4179bf496ffc4b31fe78e18dba2825b0f6614a3d1%22%2C%22order%22%3A%7B%22id%22%3A0%2C%22userId%22%3A0%2C%22time%22%3Anull%2C%22totalPriceInCents%22%3A0%2C%22addressName%22%3Anull%2C%22address1%22%3Anull%2C%22address2%22%3Anull%2C%22creditCardCompany%22%3Anull%2C%22creditCardNumber%22%3Anull%2C%22creditCardExpiryDate%22%3Anull%7D%2C%22orderItems%22%3A%5B%7B%22id%22%3A0%2C%22productId%22%3A42%2C%22orderId%22%3A0%2C%22quantity%22%3A1%2C%22unitPriceInCents%22%3A5125%7D%5D%2C%22message%22%3Anull%7D; teastoreMessageCookie=Product_42_is_added_to_cart!"
+        headers["Cookie"] = "sessionBlob=REDACTED_EPHEMERAL_SESSION_TOKEN; teastoreMessageCookie=Product_42_is_added_to_cart!"
         headers['Accept'] = "*/*"
         res_0 = requests \
                 .get(self.baseUrlOfSut + "/tools.descartes.teastore.webui/profile",
@@ -116,7 +116,7 @@ class EM_TS_control_faults_Test(unittest.TestCase):
     def test_3_get_on_loginAction_hiddenAccessible(self):
         
         headers = {}
-        headers["Cookie"] = "sessionBlob=%7B%22uid%22%3A523%2C%22sid%22%3A%22-812225846%22%2C%22token%22%3A%22e4c4ee3f0dac6cc5f85b1d0de06dcd8ae1b724e233b6fa540d76666f190928f74a6fada389ed51e7bf5d05f4179bf496ffc4b31fe78e18dba2825b0f6614a3d1%22%2C%22order%22%3A%7B%22id%22%3A0%2C%22userId%22%3A0%2C%22time%22%3Anull%2C%22totalPriceInCents%22%3A0%2C%22addressName%22%3Anull%2C%22address1%22%3Anull%2C%22address2%22%3Anull%2C%22creditCardCompany%22%3Anull%2C%22creditCardNumber%22%3Anull%2C%22creditCardExpiryDate%22%3Anull%7D%2C%22orderItems%22%3A%5B%7B%22id%22%3A0%2C%22productId%22%3A42%2C%22orderId%22%3A0%2C%22quantity%22%3A1%2C%22unitPriceInCents%22%3A5125%7D%5D%2C%22message%22%3Anull%7D; teastoreMessageCookie=Product_42_is_added_to_cart!"
+        headers["Cookie"] = "sessionBlob=REDACTED_EPHEMERAL_SESSION_TOKEN; teastoreMessageCookie=Product_42_is_added_to_cart!"
         headers['Accept'] = "*/*"
         res_0 = requests \
                 .options(self.baseUrlOfSut + "/tools.descartes.teastore.webui/loginAction",
@@ -128,7 +128,7 @@ class EM_TS_control_faults_Test(unittest.TestCase):
         
         # Fault210. Hidden Accessible Endpoint.
         headers = {}
-        headers["Cookie"] = "sessionBlob=%7B%22uid%22%3A523%2C%22sid%22%3A%22-812225846%22%2C%22token%22%3A%22e4c4ee3f0dac6cc5f85b1d0de06dcd8ae1b724e233b6fa540d76666f190928f74a6fada389ed51e7bf5d05f4179bf496ffc4b31fe78e18dba2825b0f6614a3d1%22%2C%22order%22%3A%7B%22id%22%3A0%2C%22userId%22%3A0%2C%22time%22%3Anull%2C%22totalPriceInCents%22%3A0%2C%22addressName%22%3Anull%2C%22address1%22%3Anull%2C%22address2%22%3Anull%2C%22creditCardCompany%22%3Anull%2C%22creditCardNumber%22%3Anull%2C%22creditCardExpiryDate%22%3Anull%7D%2C%22orderItems%22%3A%5B%7B%22id%22%3A0%2C%22productId%22%3A42%2C%22orderId%22%3A0%2C%22quantity%22%3A1%2C%22unitPriceInCents%22%3A5125%7D%5D%2C%22message%22%3Anull%7D; teastoreMessageCookie=Product_42_is_added_to_cart!"
+        headers["Cookie"] = "sessionBlob=REDACTED_EPHEMERAL_SESSION_TOKEN; teastoreMessageCookie=Product_42_is_added_to_cart!"
         headers['Accept'] = "*/*"
         res_1 = requests \
                 .get(self.baseUrlOfSut + "/tools.descartes.teastore.webui/loginAction",
@@ -146,7 +146,7 @@ class EM_TS_control_faults_Test(unittest.TestCase):
     def test_4_get_on_cartAction_hiddenAccessible(self):
         
         headers = {}
-        headers["Cookie"] = "sessionBlob=%7B%22uid%22%3A523%2C%22sid%22%3A%22-812225846%22%2C%22token%22%3A%22e4c4ee3f0dac6cc5f85b1d0de06dcd8ae1b724e233b6fa540d76666f190928f74a6fada389ed51e7bf5d05f4179bf496ffc4b31fe78e18dba2825b0f6614a3d1%22%2C%22order%22%3A%7B%22id%22%3A0%2C%22userId%22%3A0%2C%22time%22%3Anull%2C%22totalPriceInCents%22%3A0%2C%22addressName%22%3Anull%2C%22address1%22%3Anull%2C%22address2%22%3Anull%2C%22creditCardCompany%22%3Anull%2C%22creditCardNumber%22%3Anull%2C%22creditCardExpiryDate%22%3Anull%7D%2C%22orderItems%22%3A%5B%7B%22id%22%3A0%2C%22productId%22%3A42%2C%22orderId%22%3A0%2C%22quantity%22%3A1%2C%22unitPriceInCents%22%3A5125%7D%5D%2C%22message%22%3Anull%7D; teastoreMessageCookie=Product_42_is_added_to_cart!"
+        headers["Cookie"] = "sessionBlob=REDACTED_EPHEMERAL_SESSION_TOKEN; teastoreMessageCookie=Product_42_is_added_to_cart!"
         headers['Accept'] = "*/*"
         res_0 = requests \
                 .options(self.baseUrlOfSut + "/tools.descartes.teastore.webui/cartAction",
@@ -158,7 +158,7 @@ class EM_TS_control_faults_Test(unittest.TestCase):
         
         # Fault210. Hidden Accessible Endpoint.
         headers = {}
-        headers["Cookie"] = "sessionBlob=%7B%22uid%22%3A523%2C%22sid%22%3A%22-812225846%22%2C%22token%22%3A%22e4c4ee3f0dac6cc5f85b1d0de06dcd8ae1b724e233b6fa540d76666f190928f74a6fada389ed51e7bf5d05f4179bf496ffc4b31fe78e18dba2825b0f6614a3d1%22%2C%22order%22%3A%7B%22id%22%3A0%2C%22userId%22%3A0%2C%22time%22%3Anull%2C%22totalPriceInCents%22%3A0%2C%22addressName%22%3Anull%2C%22address1%22%3Anull%2C%22address2%22%3Anull%2C%22creditCardCompany%22%3Anull%2C%22creditCardNumber%22%3Anull%2C%22creditCardExpiryDate%22%3Anull%7D%2C%22orderItems%22%3A%5B%7B%22id%22%3A0%2C%22productId%22%3A42%2C%22orderId%22%3A0%2C%22quantity%22%3A1%2C%22unitPriceInCents%22%3A5125%7D%5D%2C%22message%22%3Anull%7D; teastoreMessageCookie=Product_42_is_added_to_cart!"
+        headers["Cookie"] = "sessionBlob=REDACTED_EPHEMERAL_SESSION_TOKEN; teastoreMessageCookie=Product_42_is_added_to_cart!"
         headers['Accept'] = "*/*"
         res_1 = requests \
                 .get(self.baseUrlOfSut + "/tools.descartes.teastore.webui/cartAction",
@@ -176,7 +176,7 @@ class EM_TS_control_faults_Test(unittest.TestCase):
     def test_5_post_on_profile_hiddenAccessible(self):
         
         headers = {}
-        headers["Cookie"] = "sessionBlob=%7B%22uid%22%3A523%2C%22sid%22%3A%22-812225846%22%2C%22token%22%3A%22e4c4ee3f0dac6cc5f85b1d0de06dcd8ae1b724e233b6fa540d76666f190928f74a6fada389ed51e7bf5d05f4179bf496ffc4b31fe78e18dba2825b0f6614a3d1%22%2C%22order%22%3A%7B%22id%22%3A0%2C%22userId%22%3A0%2C%22time%22%3Anull%2C%22totalPriceInCents%22%3A0%2C%22addressName%22%3Anull%2C%22address1%22%3Anull%2C%22address2%22%3Anull%2C%22creditCardCompany%22%3Anull%2C%22creditCardNumber%22%3Anull%2C%22creditCardExpiryDate%22%3Anull%7D%2C%22orderItems%22%3A%5B%7B%22id%22%3A0%2C%22productId%22%3A42%2C%22orderId%22%3A0%2C%22quantity%22%3A1%2C%22unitPriceInCents%22%3A5125%7D%5D%2C%22message%22%3Anull%7D; teastoreMessageCookie=Product_42_is_added_to_cart!"
+        headers["Cookie"] = "sessionBlob=REDACTED_EPHEMERAL_SESSION_TOKEN; teastoreMessageCookie=Product_42_is_added_to_cart!"
         headers['Accept'] = "*/*"
         res_0 = requests \
                 .options(self.baseUrlOfSut + "/tools.descartes.teastore.webui/profile",
@@ -188,7 +188,7 @@ class EM_TS_control_faults_Test(unittest.TestCase):
         
         # Fault210. Hidden Accessible Endpoint.
         headers = {}
-        headers["Cookie"] = "sessionBlob=%7B%22uid%22%3A523%2C%22sid%22%3A%22-812225846%22%2C%22token%22%3A%22e4c4ee3f0dac6cc5f85b1d0de06dcd8ae1b724e233b6fa540d76666f190928f74a6fada389ed51e7bf5d05f4179bf496ffc4b31fe78e18dba2825b0f6614a3d1%22%2C%22order%22%3A%7B%22id%22%3A0%2C%22userId%22%3A0%2C%22time%22%3Anull%2C%22totalPriceInCents%22%3A0%2C%22addressName%22%3Anull%2C%22address1%22%3Anull%2C%22address2%22%3Anull%2C%22creditCardCompany%22%3Anull%2C%22creditCardNumber%22%3Anull%2C%22creditCardExpiryDate%22%3Anull%7D%2C%22orderItems%22%3A%5B%7B%22id%22%3A0%2C%22productId%22%3A42%2C%22orderId%22%3A0%2C%22quantity%22%3A1%2C%22unitPriceInCents%22%3A5125%7D%5D%2C%22message%22%3Anull%7D; teastoreMessageCookie=Product_42_is_added_to_cart!"
+        headers["Cookie"] = "sessionBlob=REDACTED_EPHEMERAL_SESSION_TOKEN; teastoreMessageCookie=Product_42_is_added_to_cart!"
         headers['Accept'] = "*/*"
         res_1 = requests \
                 .post(self.baseUrlOfSut + "/tools.descartes.teastore.webui/profile",
@@ -206,7 +206,7 @@ class EM_TS_control_faults_Test(unittest.TestCase):
         
         # Fault101. Received A Response From API With A Structure/Data That Is Not Matching Its Schema. Type: validation.response.status.unknown Response status 404 not defined for path '/tools.descartes.teastore.webui/cartAction'.
         headers = {}
-        headers["Cookie"] = "sessionBlob=%7B%22uid%22%3A523%2C%22sid%22%3A%22-812225846%22%2C%22token%22%3A%22e4c4ee3f0dac6cc5f85b1d0de06dcd8ae1b724e233b6fa540d76666f190928f74a6fada389ed51e7bf5d05f4179bf496ffc4b31fe78e18dba2825b0f6614a3d1%22%2C%22order%22%3A%7B%22id%22%3A0%2C%22userId%22%3A0%2C%22time%22%3Anull%2C%22totalPriceInCents%22%3A0%2C%22addressName%22%3Anull%2C%22address1%22%3Anull%2C%22address2%22%3Anull%2C%22creditCardCompany%22%3Anull%2C%22creditCardNumber%22%3Anull%2C%22creditCardExpiryDate%22%3Anull%7D%2C%22orderItems%22%3A%5B%7B%22id%22%3A0%2C%22productId%22%3A42%2C%22orderId%22%3A0%2C%22quantity%22%3A1%2C%22unitPriceInCents%22%3A5125%7D%5D%2C%22message%22%3Anull%7D; teastoreMessageCookie=Product_42_is_added_to_cart!"
+        headers["Cookie"] = "sessionBlob=REDACTED_EPHEMERAL_SESSION_TOKEN; teastoreMessageCookie=Product_42_is_added_to_cart!"
         headers["content-type"] = "application/x-www-form-urlencoded"
         body = "addToCart=&productid=1875948039&firstname=0892I1il6mRczV&address1=y8F8ptvYm9&address2=49V55Ih1vr5lQ"
         headers['Accept'] = "*/*"
@@ -226,7 +226,7 @@ class EM_TS_control_faults_Test(unittest.TestCase):
     def test_7_post_on_products_hiddenAccessible(self):
         
         headers = {}
-        headers["Cookie"] = "sessionBlob=%7B%22uid%22%3A523%2C%22sid%22%3A%22-812225846%22%2C%22token%22%3A%22e4c4ee3f0dac6cc5f85b1d0de06dcd8ae1b724e233b6fa540d76666f190928f74a6fada389ed51e7bf5d05f4179bf496ffc4b31fe78e18dba2825b0f6614a3d1%22%2C%22order%22%3A%7B%22id%22%3A0%2C%22userId%22%3A0%2C%22time%22%3Anull%2C%22totalPriceInCents%22%3A0%2C%22addressName%22%3Anull%2C%22address1%22%3Anull%2C%22address2%22%3Anull%2C%22creditCardCompany%22%3Anull%2C%22creditCardNumber%22%3Anull%2C%22creditCardExpiryDate%22%3Anull%7D%2C%22orderItems%22%3A%5B%7B%22id%22%3A0%2C%22productId%22%3A42%2C%22orderId%22%3A0%2C%22quantity%22%3A1%2C%22unitPriceInCents%22%3A5125%7D%5D%2C%22message%22%3Anull%7D; teastoreMessageCookie=Product_42_is_added_to_cart!"
+        headers["Cookie"] = "sessionBlob=REDACTED_EPHEMERAL_SESSION_TOKEN; teastoreMessageCookie=Product_42_is_added_to_cart!"
         headers['Accept'] = "*/*"
         res_0 = requests \
                 .options(self.baseUrlOfSut + "/tools.descartes.teastore.persistence/rest/products",
@@ -238,7 +238,7 @@ class EM_TS_control_faults_Test(unittest.TestCase):
         
         # Fault210. Hidden Accessible Endpoint.
         headers = {}
-        headers["Cookie"] = "sessionBlob=%7B%22uid%22%3A523%2C%22sid%22%3A%22-812225846%22%2C%22token%22%3A%22e4c4ee3f0dac6cc5f85b1d0de06dcd8ae1b724e233b6fa540d76666f190928f74a6fada389ed51e7bf5d05f4179bf496ffc4b31fe78e18dba2825b0f6614a3d1%22%2C%22order%22%3A%7B%22id%22%3A0%2C%22userId%22%3A0%2C%22time%22%3Anull%2C%22totalPriceInCents%22%3A0%2C%22addressName%22%3Anull%2C%22address1%22%3Anull%2C%22address2%22%3Anull%2C%22creditCardCompany%22%3Anull%2C%22creditCardNumber%22%3Anull%2C%22creditCardExpiryDate%22%3Anull%7D%2C%22orderItems%22%3A%5B%7B%22id%22%3A0%2C%22productId%22%3A42%2C%22orderId%22%3A0%2C%22quantity%22%3A1%2C%22unitPriceInCents%22%3A5125%7D%5D%2C%22message%22%3Anull%7D; teastoreMessageCookie=Product_42_is_added_to_cart!"
+        headers["Cookie"] = "sessionBlob=REDACTED_EPHEMERAL_SESSION_TOKEN; teastoreMessageCookie=Product_42_is_added_to_cart!"
         headers['Accept'] = "*/*"
         res_1 = requests \
                 .post(self.baseUrlOfSut + "/tools.descartes.teastore.persistence/rest/products",
@@ -256,7 +256,7 @@ class EM_TS_control_faults_Test(unittest.TestCase):
         
         # Fault101. Received A Response From API With A Structure/Data That Is Not Matching Its Schema. Type: validation.response.status.unknown Response status 404 not defined for path '/tools.descartes.teastore.persistence/rest/products'.
         headers = {}
-        headers["Cookie"] = "sessionBlob=%7B%22uid%22%3A523%2C%22sid%22%3A%22-812225846%22%2C%22token%22%3A%22e4c4ee3f0dac6cc5f85b1d0de06dcd8ae1b724e233b6fa540d76666f190928f74a6fada389ed51e7bf5d05f4179bf496ffc4b31fe78e18dba2825b0f6614a3d1%22%2C%22order%22%3A%7B%22id%22%3A0%2C%22userId%22%3A0%2C%22time%22%3Anull%2C%22totalPriceInCents%22%3A0%2C%22addressName%22%3Anull%2C%22address1%22%3Anull%2C%22address2%22%3Anull%2C%22creditCardCompany%22%3Anull%2C%22creditCardNumber%22%3Anull%2C%22creditCardExpiryDate%22%3Anull%7D%2C%22orderItems%22%3A%5B%7B%22id%22%3A0%2C%22productId%22%3A42%2C%22orderId%22%3A0%2C%22quantity%22%3A1%2C%22unitPriceInCents%22%3A5125%7D%5D%2C%22message%22%3Anull%7D; teastoreMessageCookie=Product_42_is_added_to_cart!"
+        headers["Cookie"] = "sessionBlob=REDACTED_EPHEMERAL_SESSION_TOKEN; teastoreMessageCookie=Product_42_is_added_to_cart!"
         headers['Accept'] = "*/*"
         res_0 = requests \
                 .get(self.baseUrlOfSut + "/tools.descartes.teastore.persistence/rest/products?" + 
@@ -277,7 +277,7 @@ class EM_TS_control_faults_Test(unittest.TestCase):
         
         # Fault101. Received A Response From API With A Structure/Data That Is Not Matching Its Schema. Type: validation.response.status.unknown Response status 404 not defined for path '/tools.descartes.teastore.persistence/rest/products'.
         headers = {}
-        headers["Cookie"] = "sessionBlob=%7B%22uid%22%3A523%2C%22sid%22%3A%22-812225846%22%2C%22token%22%3A%22e4c4ee3f0dac6cc5f85b1d0de06dcd8ae1b724e233b6fa540d76666f190928f74a6fada389ed51e7bf5d05f4179bf496ffc4b31fe78e18dba2825b0f6614a3d1%22%2C%22order%22%3A%7B%22id%22%3A0%2C%22userId%22%3A0%2C%22time%22%3Anull%2C%22totalPriceInCents%22%3A0%2C%22addressName%22%3Anull%2C%22address1%22%3Anull%2C%22address2%22%3Anull%2C%22creditCardCompany%22%3Anull%2C%22creditCardNumber%22%3Anull%2C%22creditCardExpiryDate%22%3Anull%7D%2C%22orderItems%22%3A%5B%7B%22id%22%3A0%2C%22productId%22%3A42%2C%22orderId%22%3A0%2C%22quantity%22%3A1%2C%22unitPriceInCents%22%3A5125%7D%5D%2C%22message%22%3Anull%7D; teastoreMessageCookie=Product_42_is_added_to_cart!"
+        headers["Cookie"] = "sessionBlob=REDACTED_EPHEMERAL_SESSION_TOKEN; teastoreMessageCookie=Product_42_is_added_to_cart!"
         headers['Accept'] = "*/*"
         res_0 = requests \
                 .get(self.baseUrlOfSut + "/tools.descartes.teastore.persistence/rest/products?" + 
@@ -297,7 +297,7 @@ class EM_TS_control_faults_Test(unittest.TestCase):
         
         # Fault101. Received A Response From API With A Structure/Data That Is Not Matching Its Schema. Type: validation.response.status.unknown Response status 404 not defined for path '/tools.descartes.teastore.persistence/rest/orders'.
         headers = {}
-        headers["Cookie"] = "sessionBlob=%7B%22uid%22%3A523%2C%22sid%22%3A%22-812225846%22%2C%22token%22%3A%22e4c4ee3f0dac6cc5f85b1d0de06dcd8ae1b724e233b6fa540d76666f190928f74a6fada389ed51e7bf5d05f4179bf496ffc4b31fe78e18dba2825b0f6614a3d1%22%2C%22order%22%3A%7B%22id%22%3A0%2C%22userId%22%3A0%2C%22time%22%3Anull%2C%22totalPriceInCents%22%3A0%2C%22addressName%22%3Anull%2C%22address1%22%3Anull%2C%22address2%22%3Anull%2C%22creditCardCompany%22%3Anull%2C%22creditCardNumber%22%3Anull%2C%22creditCardExpiryDate%22%3Anull%7D%2C%22orderItems%22%3A%5B%7B%22id%22%3A0%2C%22productId%22%3A42%2C%22orderId%22%3A0%2C%22quantity%22%3A1%2C%22unitPriceInCents%22%3A5125%7D%5D%2C%22message%22%3Anull%7D; teastoreMessageCookie=Product_42_is_added_to_cart!"
+        headers["Cookie"] = "sessionBlob=REDACTED_EPHEMERAL_SESSION_TOKEN; teastoreMessageCookie=Product_42_is_added_to_cart!"
         headers['Accept'] = "*/*"
         res_0 = requests \
                 .get(self.baseUrlOfSut + "/tools.descartes.teastore.persistence/rest/orders?" + 
@@ -317,7 +317,7 @@ class EM_TS_control_faults_Test(unittest.TestCase):
         
         # Fault101. Received A Response From API With A Structure/Data That Is Not Matching Its Schema. Type: validation.response.status.unknown Response status 404 not defined for path '/tools.descartes.teastore.persistence/rest/orders'.
         headers = {}
-        headers["Cookie"] = "sessionBlob=%7B%22uid%22%3A523%2C%22sid%22%3A%22-812225846%22%2C%22token%22%3A%22e4c4ee3f0dac6cc5f85b1d0de06dcd8ae1b724e233b6fa540d76666f190928f74a6fada389ed51e7bf5d05f4179bf496ffc4b31fe78e18dba2825b0f6614a3d1%22%2C%22order%22%3A%7B%22id%22%3A0%2C%22userId%22%3A0%2C%22time%22%3Anull%2C%22totalPriceInCents%22%3A0%2C%22addressName%22%3Anull%2C%22address1%22%3Anull%2C%22address2%22%3Anull%2C%22creditCardCompany%22%3Anull%2C%22creditCardNumber%22%3Anull%2C%22creditCardExpiryDate%22%3Anull%7D%2C%22orderItems%22%3A%5B%7B%22id%22%3A0%2C%22productId%22%3A42%2C%22orderId%22%3A0%2C%22quantity%22%3A1%2C%22unitPriceInCents%22%3A5125%7D%5D%2C%22message%22%3Anull%7D; teastoreMessageCookie=Product_42_is_added_to_cart!"
+        headers["Cookie"] = "sessionBlob=REDACTED_EPHEMERAL_SESSION_TOKEN; teastoreMessageCookie=Product_42_is_added_to_cart!"
         headers['Accept'] = "*/*"
         res_0 = requests \
                 .get(self.baseUrlOfSut + "/tools.descartes.teastore.persistence/rest/orders?max=864",
@@ -335,7 +335,7 @@ class EM_TS_control_faults_Test(unittest.TestCase):
         
         # Fault101. Received A Response From API With A Structure/Data That Is Not Matching Its Schema. Type: validation.response.status.unknown Response status 404 not defined for path '/tools.descartes.teastore.persistence/rest/products'.
         headers = {}
-        headers["Cookie"] = "sessionBlob=%7B%22uid%22%3A523%2C%22sid%22%3A%22-812225846%22%2C%22token%22%3A%22e4c4ee3f0dac6cc5f85b1d0de06dcd8ae1b724e233b6fa540d76666f190928f74a6fada389ed51e7bf5d05f4179bf496ffc4b31fe78e18dba2825b0f6614a3d1%22%2C%22order%22%3A%7B%22id%22%3A0%2C%22userId%22%3A0%2C%22time%22%3Anull%2C%22totalPriceInCents%22%3A0%2C%22addressName%22%3Anull%2C%22address1%22%3Anull%2C%22address2%22%3Anull%2C%22creditCardCompany%22%3Anull%2C%22creditCardNumber%22%3Anull%2C%22creditCardExpiryDate%22%3Anull%7D%2C%22orderItems%22%3A%5B%7B%22id%22%3A0%2C%22productId%22%3A42%2C%22orderId%22%3A0%2C%22quantity%22%3A1%2C%22unitPriceInCents%22%3A5125%7D%5D%2C%22message%22%3Anull%7D; teastoreMessageCookie=Product_42_is_added_to_cart!"
+        headers["Cookie"] = "sessionBlob=REDACTED_EPHEMERAL_SESSION_TOKEN; teastoreMessageCookie=Product_42_is_added_to_cart!"
         headers['Accept'] = "*/*"
         res_0 = requests \
                 .get(self.baseUrlOfSut + "/tools.descartes.teastore.persistence/rest/products?" + 
@@ -372,7 +372,7 @@ class EM_TS_control_faults_Test(unittest.TestCase):
         
         # Fault101. Received A Response From API With A Structure/Data That Is Not Matching Its Schema. Type: validation.response.status.unknown Response status 404 not defined for path '/tools.descartes.teastore.persistence/rest/products'.
         headers = {}
-        headers["Cookie"] = "sessionBlob=%7B%22uid%22%3A523%2C%22sid%22%3A%22-812225846%22%2C%22token%22%3A%22e4c4ee3f0dac6cc5f85b1d0de06dcd8ae1b724e233b6fa540d76666f190928f74a6fada389ed51e7bf5d05f4179bf496ffc4b31fe78e18dba2825b0f6614a3d1%22%2C%22order%22%3A%7B%22id%22%3A0%2C%22userId%22%3A0%2C%22time%22%3Anull%2C%22totalPriceInCents%22%3A0%2C%22addressName%22%3Anull%2C%22address1%22%3Anull%2C%22address2%22%3Anull%2C%22creditCardCompany%22%3Anull%2C%22creditCardNumber%22%3Anull%2C%22creditCardExpiryDate%22%3Anull%7D%2C%22orderItems%22%3A%5B%7B%22id%22%3A0%2C%22productId%22%3A42%2C%22orderId%22%3A0%2C%22quantity%22%3A1%2C%22unitPriceInCents%22%3A5125%7D%5D%2C%22message%22%3Anull%7D; teastoreMessageCookie=Product_42_is_added_to_cart!"
+        headers["Cookie"] = "sessionBlob=REDACTED_EPHEMERAL_SESSION_TOKEN; teastoreMessageCookie=Product_42_is_added_to_cart!"
         headers['Accept'] = "*/*"
         res_0 = requests \
                 .get(self.baseUrlOfSut + "/tools.descartes.teastore.persistence/rest/products?" + 
@@ -392,7 +392,7 @@ class EM_TS_control_faults_Test(unittest.TestCase):
         
         # Fault101. Received A Response From API With A Structure/Data That Is Not Matching Its Schema. Type: validation.response.status.unknown Response status 404 not defined for path '/tools.descartes.teastore.persistence/rest/products'.
         headers = {}
-        headers["Cookie"] = "sessionBlob=%7B%22uid%22%3A523%2C%22sid%22%3A%22-812225846%22%2C%22token%22%3A%22e4c4ee3f0dac6cc5f85b1d0de06dcd8ae1b724e233b6fa540d76666f190928f74a6fada389ed51e7bf5d05f4179bf496ffc4b31fe78e18dba2825b0f6614a3d1%22%2C%22order%22%3A%7B%22id%22%3A0%2C%22userId%22%3A0%2C%22time%22%3Anull%2C%22totalPriceInCents%22%3A0%2C%22addressName%22%3Anull%2C%22address1%22%3Anull%2C%22address2%22%3Anull%2C%22creditCardCompany%22%3Anull%2C%22creditCardNumber%22%3Anull%2C%22creditCardExpiryDate%22%3Anull%7D%2C%22orderItems%22%3A%5B%7B%22id%22%3A0%2C%22productId%22%3A42%2C%22orderId%22%3A0%2C%22quantity%22%3A1%2C%22unitPriceInCents%22%3A5125%7D%5D%2C%22message%22%3Anull%7D; teastoreMessageCookie=Product_42_is_added_to_cart!"
+        headers["Cookie"] = "sessionBlob=REDACTED_EPHEMERAL_SESSION_TOKEN; teastoreMessageCookie=Product_42_is_added_to_cart!"
         headers['Accept'] = "*/*"
         res_0 = requests \
                 .get(self.baseUrlOfSut + "/tools.descartes.teastore.persistence/rest/products?" + 
@@ -413,7 +413,7 @@ class EM_TS_control_faults_Test(unittest.TestCase):
         
         # Fault101. Received A Response From API With A Structure/Data That Is Not Matching Its Schema. Type: validation.response.status.unknown Response status 404 not defined for path '/tools.descartes.teastore.persistence/rest/orders'.
         headers = {}
-        headers["Cookie"] = "sessionBlob=%7B%22uid%22%3A523%2C%22sid%22%3A%22-812225846%22%2C%22token%22%3A%22e4c4ee3f0dac6cc5f85b1d0de06dcd8ae1b724e233b6fa540d76666f190928f74a6fada389ed51e7bf5d05f4179bf496ffc4b31fe78e18dba2825b0f6614a3d1%22%2C%22order%22%3A%7B%22id%22%3A0%2C%22userId%22%3A0%2C%22time%22%3Anull%2C%22totalPriceInCents%22%3A0%2C%22addressName%22%3Anull%2C%22address1%22%3Anull%2C%22address2%22%3Anull%2C%22creditCardCompany%22%3Anull%2C%22creditCardNumber%22%3Anull%2C%22creditCardExpiryDate%22%3Anull%7D%2C%22orderItems%22%3A%5B%7B%22id%22%3A0%2C%22productId%22%3A42%2C%22orderId%22%3A0%2C%22quantity%22%3A1%2C%22unitPriceInCents%22%3A5125%7D%5D%2C%22message%22%3Anull%7D; teastoreMessageCookie=Product_42_is_added_to_cart!"
+        headers["Cookie"] = "sessionBlob=REDACTED_EPHEMERAL_SESSION_TOKEN; teastoreMessageCookie=Product_42_is_added_to_cart!"
         headers['Accept'] = "*/*"
         res_0 = requests \
                 .get(self.baseUrlOfSut + "/tools.descartes.teastore.persistence/rest/orders?" + 
@@ -433,7 +433,7 @@ class EM_TS_control_faults_Test(unittest.TestCase):
         
         # Fault101. Received A Response From API With A Structure/Data That Is Not Matching Its Schema. Type: validation.response.status.unknown Response status 404 not defined for path '/tools.descartes.teastore.persistence/rest/products'.
         headers = {}
-        headers["Cookie"] = "sessionBlob=%7B%22uid%22%3A523%2C%22sid%22%3A%22-812225846%22%2C%22token%22%3A%22e4c4ee3f0dac6cc5f85b1d0de06dcd8ae1b724e233b6fa540d76666f190928f74a6fada389ed51e7bf5d05f4179bf496ffc4b31fe78e18dba2825b0f6614a3d1%22%2C%22order%22%3A%7B%22id%22%3A0%2C%22userId%22%3A0%2C%22time%22%3Anull%2C%22totalPriceInCents%22%3A0%2C%22addressName%22%3Anull%2C%22address1%22%3Anull%2C%22address2%22%3Anull%2C%22creditCardCompany%22%3Anull%2C%22creditCardNumber%22%3Anull%2C%22creditCardExpiryDate%22%3Anull%7D%2C%22orderItems%22%3A%5B%7B%22id%22%3A0%2C%22productId%22%3A42%2C%22orderId%22%3A0%2C%22quantity%22%3A1%2C%22unitPriceInCents%22%3A5125%7D%5D%2C%22message%22%3Anull%7D; teastoreMessageCookie=Product_42_is_added_to_cart!"
+        headers["Cookie"] = "sessionBlob=REDACTED_EPHEMERAL_SESSION_TOKEN; teastoreMessageCookie=Product_42_is_added_to_cart!"
         headers['Accept'] = "*/*"
         res_0 = requests \
                 .get(self.baseUrlOfSut + "/tools.descartes.teastore.persistence/rest/products?" + 
@@ -454,7 +454,7 @@ class EM_TS_control_faults_Test(unittest.TestCase):
         
         # Fault101. Received A Response From API With A Structure/Data That Is Not Matching Its Schema. Type: validation.response.status.unknown Response status 404 not defined for path '/tools.descartes.teastore.persistence/rest/orders'.
         headers = {}
-        headers["Cookie"] = "sessionBlob=%7B%22uid%22%3A523%2C%22sid%22%3A%22-812225846%22%2C%22token%22%3A%22e4c4ee3f0dac6cc5f85b1d0de06dcd8ae1b724e233b6fa540d76666f190928f74a6fada389ed51e7bf5d05f4179bf496ffc4b31fe78e18dba2825b0f6614a3d1%22%2C%22order%22%3A%7B%22id%22%3A0%2C%22userId%22%3A0%2C%22time%22%3Anull%2C%22totalPriceInCents%22%3A0%2C%22addressName%22%3Anull%2C%22address1%22%3Anull%2C%22address2%22%3Anull%2C%22creditCardCompany%22%3Anull%2C%22creditCardNumber%22%3Anull%2C%22creditCardExpiryDate%22%3Anull%7D%2C%22orderItems%22%3A%5B%7B%22id%22%3A0%2C%22productId%22%3A42%2C%22orderId%22%3A0%2C%22quantity%22%3A1%2C%22unitPriceInCents%22%3A5125%7D%5D%2C%22message%22%3Anull%7D; teastoreMessageCookie=Product_42_is_added_to_cart!"
+        headers["Cookie"] = "sessionBlob=REDACTED_EPHEMERAL_SESSION_TOKEN; teastoreMessageCookie=Product_42_is_added_to_cart!"
         headers['Accept'] = "*/*"
         res_0 = requests \
                 .get(self.baseUrlOfSut + "/tools.descartes.teastore.persistence/rest/orders?" + 
@@ -474,7 +474,7 @@ class EM_TS_control_faults_Test(unittest.TestCase):
         
         # Fault101. Received A Response From API With A Structure/Data That Is Not Matching Its Schema. Type: validation.response.status.unknown Response status 404 not defined for path '/tools.descartes.teastore.persistence/rest/orders'.
         headers = {}
-        headers["Cookie"] = "sessionBlob=%7B%22uid%22%3A523%2C%22sid%22%3A%22-812225846%22%2C%22token%22%3A%22e4c4ee3f0dac6cc5f85b1d0de06dcd8ae1b724e233b6fa540d76666f190928f74a6fada389ed51e7bf5d05f4179bf496ffc4b31fe78e18dba2825b0f6614a3d1%22%2C%22order%22%3A%7B%22id%22%3A0%2C%22userId%22%3A0%2C%22time%22%3Anull%2C%22totalPriceInCents%22%3A0%2C%22addressName%22%3Anull%2C%22address1%22%3Anull%2C%22address2%22%3Anull%2C%22creditCardCompany%22%3Anull%2C%22creditCardNumber%22%3Anull%2C%22creditCardExpiryDate%22%3Anull%7D%2C%22orderItems%22%3A%5B%7B%22id%22%3A0%2C%22productId%22%3A42%2C%22orderId%22%3A0%2C%22quantity%22%3A1%2C%22unitPriceInCents%22%3A5125%7D%5D%2C%22message%22%3Anull%7D; teastoreMessageCookie=Product_42_is_added_to_cart!"
+        headers["Cookie"] = "sessionBlob=REDACTED_EPHEMERAL_SESSION_TOKEN; teastoreMessageCookie=Product_42_is_added_to_cart!"
         headers["content-type"] = "application/json"
         body = {}
         body = " { " + \
@@ -502,7 +502,7 @@ class EM_TS_control_faults_Test(unittest.TestCase):
     def test_20_post_on_product_hiddenAccessible(self):
         
         headers = {}
-        headers["Cookie"] = "sessionBlob=%7B%22uid%22%3A523%2C%22sid%22%3A%22-812225846%22%2C%22token%22%3A%22e4c4ee3f0dac6cc5f85b1d0de06dcd8ae1b724e233b6fa540d76666f190928f74a6fada389ed51e7bf5d05f4179bf496ffc4b31fe78e18dba2825b0f6614a3d1%22%2C%22order%22%3A%7B%22id%22%3A0%2C%22userId%22%3A0%2C%22time%22%3Anull%2C%22totalPriceInCents%22%3A0%2C%22addressName%22%3Anull%2C%22address1%22%3Anull%2C%22address2%22%3Anull%2C%22creditCardCompany%22%3Anull%2C%22creditCardNumber%22%3Anull%2C%22creditCardExpiryDate%22%3Anull%7D%2C%22orderItems%22%3A%5B%7B%22id%22%3A0%2C%22productId%22%3A42%2C%22orderId%22%3A0%2C%22quantity%22%3A1%2C%22unitPriceInCents%22%3A5125%7D%5D%2C%22message%22%3Anull%7D; teastoreMessageCookie=Product_42_is_added_to_cart!"
+        headers["Cookie"] = "sessionBlob=REDACTED_EPHEMERAL_SESSION_TOKEN; teastoreMessageCookie=Product_42_is_added_to_cart!"
         headers['Accept'] = "*/*"
         res_0 = requests \
                 .options(self.baseUrlOfSut + "/tools.descartes.teastore.persistence/rest/products/218",
@@ -514,7 +514,7 @@ class EM_TS_control_faults_Test(unittest.TestCase):
         
         # Fault210. Hidden Accessible Endpoint.
         headers = {}
-        headers["Cookie"] = "sessionBlob=%7B%22uid%22%3A523%2C%22sid%22%3A%22-812225846%22%2C%22token%22%3A%22e4c4ee3f0dac6cc5f85b1d0de06dcd8ae1b724e233b6fa540d76666f190928f74a6fada389ed51e7bf5d05f4179bf496ffc4b31fe78e18dba2825b0f6614a3d1%22%2C%22order%22%3A%7B%22id%22%3A0%2C%22userId%22%3A0%2C%22time%22%3Anull%2C%22totalPriceInCents%22%3A0%2C%22addressName%22%3Anull%2C%22address1%22%3Anull%2C%22address2%22%3Anull%2C%22creditCardCompany%22%3Anull%2C%22creditCardNumber%22%3Anull%2C%22creditCardExpiryDate%22%3Anull%7D%2C%22orderItems%22%3A%5B%7B%22id%22%3A0%2C%22productId%22%3A42%2C%22orderId%22%3A0%2C%22quantity%22%3A1%2C%22unitPriceInCents%22%3A5125%7D%5D%2C%22message%22%3Anull%7D; teastoreMessageCookie=Product_42_is_added_to_cart!"
+        headers["Cookie"] = "sessionBlob=REDACTED_EPHEMERAL_SESSION_TOKEN; teastoreMessageCookie=Product_42_is_added_to_cart!"
         headers['Accept'] = "*/*"
         res_1 = requests \
                 .post(self.baseUrlOfSut + "/tools.descartes.teastore.persistence/rest/products/218",
@@ -532,7 +532,7 @@ class EM_TS_control_faults_Test(unittest.TestCase):
         
         # Fault101. Received A Response From API With A Structure/Data That Is Not Matching Its Schema. Type: validation.response.body.unexpected No response body is expected but one was found.
         headers = {}
-        headers["Cookie"] = "sessionBlob=%7B%22uid%22%3A523%2C%22sid%22%3A%22-812225846%22%2C%22token%22%3A%22e4c4ee3f0dac6cc5f85b1d0de06dcd8ae1b724e233b6fa540d76666f190928f74a6fada389ed51e7bf5d05f4179bf496ffc4b31fe78e18dba2825b0f6614a3d1%22%2C%22order%22%3A%7B%22id%22%3A0%2C%22userId%22%3A0%2C%22time%22%3Anull%2C%22totalPriceInCents%22%3A0%2C%22addressName%22%3Anull%2C%22address1%22%3Anull%2C%22address2%22%3Anull%2C%22creditCardCompany%22%3Anull%2C%22creditCardNumber%22%3Anull%2C%22creditCardExpiryDate%22%3Anull%7D%2C%22orderItems%22%3A%5B%7B%22id%22%3A0%2C%22productId%22%3A42%2C%22orderId%22%3A0%2C%22quantity%22%3A1%2C%22unitPriceInCents%22%3A5125%7D%5D%2C%22message%22%3Anull%7D; teastoreMessageCookie=Product_42_is_added_to_cart!"
+        headers["Cookie"] = "sessionBlob=REDACTED_EPHEMERAL_SESSION_TOKEN; teastoreMessageCookie=Product_42_is_added_to_cart!"
         headers['Accept'] = "*/*"
         res_0 = requests \
                 .get(self.baseUrlOfSut + "/tools.descartes.teastore.persistence/rest/products/697",
@@ -550,7 +550,7 @@ class EM_TS_control_faults_Test(unittest.TestCase):
         
         # Fault101. Received A Response From API With A Structure/Data That Is Not Matching Its Schema. Type: validation.response.body.unexpected No response body is expected but one was found.
         headers = {}
-        headers["Cookie"] = "sessionBlob=%7B%22uid%22%3A523%2C%22sid%22%3A%22-812225846%22%2C%22token%22%3A%22e4c4ee3f0dac6cc5f85b1d0de06dcd8ae1b724e233b6fa540d76666f190928f74a6fada389ed51e7bf5d05f4179bf496ffc4b31fe78e18dba2825b0f6614a3d1%22%2C%22order%22%3A%7B%22id%22%3A0%2C%22userId%22%3A0%2C%22time%22%3Anull%2C%22totalPriceInCents%22%3A0%2C%22addressName%22%3Anull%2C%22address1%22%3Anull%2C%22address2%22%3Anull%2C%22creditCardCompany%22%3Anull%2C%22creditCardNumber%22%3Anull%2C%22creditCardExpiryDate%22%3Anull%7D%2C%22orderItems%22%3A%5B%7B%22id%22%3A0%2C%22productId%22%3A42%2C%22orderId%22%3A0%2C%22quantity%22%3A1%2C%22unitPriceInCents%22%3A5125%7D%5D%2C%22message%22%3Anull%7D; teastoreMessageCookie=Product_42_is_added_to_cart!"
+        headers["Cookie"] = "sessionBlob=REDACTED_EPHEMERAL_SESSION_TOKEN; teastoreMessageCookie=Product_42_is_added_to_cart!"
         headers['Accept'] = "*/*"
         res_0 = requests \
                 .get(self.baseUrlOfSut + "/tools.descartes.teastore.persistence/rest/products/-4290597032354839737",
@@ -568,7 +568,7 @@ class EM_TS_control_faults_Test(unittest.TestCase):
     def test_23_post_on_user_hiddenAccessible(self):
         
         headers = {}
-        headers["Cookie"] = "sessionBlob=%7B%22uid%22%3A523%2C%22sid%22%3A%22-812225846%22%2C%22token%22%3A%22e4c4ee3f0dac6cc5f85b1d0de06dcd8ae1b724e233b6fa540d76666f190928f74a6fada389ed51e7bf5d05f4179bf496ffc4b31fe78e18dba2825b0f6614a3d1%22%2C%22order%22%3A%7B%22id%22%3A0%2C%22userId%22%3A0%2C%22time%22%3Anull%2C%22totalPriceInCents%22%3A0%2C%22addressName%22%3Anull%2C%22address1%22%3Anull%2C%22address2%22%3Anull%2C%22creditCardCompany%22%3Anull%2C%22creditCardNumber%22%3Anull%2C%22creditCardExpiryDate%22%3Anull%7D%2C%22orderItems%22%3A%5B%7B%22id%22%3A0%2C%22productId%22%3A42%2C%22orderId%22%3A0%2C%22quantity%22%3A1%2C%22unitPriceInCents%22%3A5125%7D%5D%2C%22message%22%3Anull%7D; teastoreMessageCookie=Product_42_is_added_to_cart!"
+        headers["Cookie"] = "sessionBlob=REDACTED_EPHEMERAL_SESSION_TOKEN; teastoreMessageCookie=Product_42_is_added_to_cart!"
         headers['Accept'] = "*/*"
         res_0 = requests \
                 .options(self.baseUrlOfSut + "/tools.descartes.teastore.persistence/rest/orders/user/439",
@@ -580,7 +580,7 @@ class EM_TS_control_faults_Test(unittest.TestCase):
         
         # Fault210. Hidden Accessible Endpoint.
         headers = {}
-        headers["Cookie"] = "sessionBlob=%7B%22uid%22%3A523%2C%22sid%22%3A%22-812225846%22%2C%22token%22%3A%22e4c4ee3f0dac6cc5f85b1d0de06dcd8ae1b724e233b6fa540d76666f190928f74a6fada389ed51e7bf5d05f4179bf496ffc4b31fe78e18dba2825b0f6614a3d1%22%2C%22order%22%3A%7B%22id%22%3A0%2C%22userId%22%3A0%2C%22time%22%3Anull%2C%22totalPriceInCents%22%3A0%2C%22addressName%22%3Anull%2C%22address1%22%3Anull%2C%22address2%22%3Anull%2C%22creditCardCompany%22%3Anull%2C%22creditCardNumber%22%3Anull%2C%22creditCardExpiryDate%22%3Anull%7D%2C%22orderItems%22%3A%5B%7B%22id%22%3A0%2C%22productId%22%3A42%2C%22orderId%22%3A0%2C%22quantity%22%3A1%2C%22unitPriceInCents%22%3A5125%7D%5D%2C%22message%22%3Anull%7D; teastoreMessageCookie=Product_42_is_added_to_cart!"
+        headers["Cookie"] = "sessionBlob=REDACTED_EPHEMERAL_SESSION_TOKEN; teastoreMessageCookie=Product_42_is_added_to_cart!"
         headers['Accept'] = "*/*"
         res_1 = requests \
                 .post(self.baseUrlOfSut + "/tools.descartes.teastore.persistence/rest/orders/user/439",
@@ -598,7 +598,7 @@ class EM_TS_control_faults_Test(unittest.TestCase):
     def test_24_post_on_order_hiddenAccessible(self):
         
         headers = {}
-        headers["Cookie"] = "sessionBlob=%7B%22uid%22%3A523%2C%22sid%22%3A%22-812225846%22%2C%22token%22%3A%22e4c4ee3f0dac6cc5f85b1d0de06dcd8ae1b724e233b6fa540d76666f190928f74a6fada389ed51e7bf5d05f4179bf496ffc4b31fe78e18dba2825b0f6614a3d1%22%2C%22order%22%3A%7B%22id%22%3A0%2C%22userId%22%3A0%2C%22time%22%3Anull%2C%22totalPriceInCents%22%3A0%2C%22addressName%22%3Anull%2C%22address1%22%3Anull%2C%22address2%22%3Anull%2C%22creditCardCompany%22%3Anull%2C%22creditCardNumber%22%3Anull%2C%22creditCardExpiryDate%22%3Anull%7D%2C%22orderItems%22%3A%5B%7B%22id%22%3A0%2C%22productId%22%3A42%2C%22orderId%22%3A0%2C%22quantity%22%3A1%2C%22unitPriceInCents%22%3A5125%7D%5D%2C%22message%22%3Anull%7D; teastoreMessageCookie=Product_42_is_added_to_cart!"
+        headers["Cookie"] = "sessionBlob=REDACTED_EPHEMERAL_SESSION_TOKEN; teastoreMessageCookie=Product_42_is_added_to_cart!"
         headers['Accept'] = "*/*"
         res_0 = requests \
                 .options(self.baseUrlOfSut + "/tools.descartes.teastore.persistence/rest/orderitems/order/298",
@@ -610,7 +610,7 @@ class EM_TS_control_faults_Test(unittest.TestCase):
         
         # Fault210. Hidden Accessible Endpoint.
         headers = {}
-        headers["Cookie"] = "sessionBlob=%7B%22uid%22%3A523%2C%22sid%22%3A%22-812225846%22%2C%22token%22%3A%22e4c4ee3f0dac6cc5f85b1d0de06dcd8ae1b724e233b6fa540d76666f190928f74a6fada389ed51e7bf5d05f4179bf496ffc4b31fe78e18dba2825b0f6614a3d1%22%2C%22order%22%3A%7B%22id%22%3A0%2C%22userId%22%3A0%2C%22time%22%3Anull%2C%22totalPriceInCents%22%3A0%2C%22addressName%22%3Anull%2C%22address1%22%3Anull%2C%22address2%22%3Anull%2C%22creditCardCompany%22%3Anull%2C%22creditCardNumber%22%3Anull%2C%22creditCardExpiryDate%22%3Anull%7D%2C%22orderItems%22%3A%5B%7B%22id%22%3A0%2C%22productId%22%3A42%2C%22orderId%22%3A0%2C%22quantity%22%3A1%2C%22unitPriceInCents%22%3A5125%7D%5D%2C%22message%22%3Anull%7D; teastoreMessageCookie=Product_42_is_added_to_cart!"
+        headers["Cookie"] = "sessionBlob=REDACTED_EPHEMERAL_SESSION_TOKEN; teastoreMessageCookie=Product_42_is_added_to_cart!"
         headers['Accept'] = "*/*"
         res_1 = requests \
                 .post(self.baseUrlOfSut + "/tools.descartes.teastore.persistence/rest/orderitems/order/298",
@@ -628,7 +628,7 @@ class EM_TS_control_faults_Test(unittest.TestCase):
         
         # Fault101. Received A Response From API With A Structure/Data That Is Not Matching Its Schema. Type: validation.response.status.unknown Response status 404 not defined for path '/tools.descartes.teastore.persistence/rest/orderitems/order/{oid}'.
         headers = {}
-        headers["Cookie"] = "sessionBlob=%7B%22uid%22%3A523%2C%22sid%22%3A%22-812225846%22%2C%22token%22%3A%22e4c4ee3f0dac6cc5f85b1d0de06dcd8ae1b724e233b6fa540d76666f190928f74a6fada389ed51e7bf5d05f4179bf496ffc4b31fe78e18dba2825b0f6614a3d1%22%2C%22order%22%3A%7B%22id%22%3A0%2C%22userId%22%3A0%2C%22time%22%3Anull%2C%22totalPriceInCents%22%3A0%2C%22addressName%22%3Anull%2C%22address1%22%3Anull%2C%22address2%22%3Anull%2C%22creditCardCompany%22%3Anull%2C%22creditCardNumber%22%3Anull%2C%22creditCardExpiryDate%22%3Anull%7D%2C%22orderItems%22%3A%5B%7B%22id%22%3A0%2C%22productId%22%3A42%2C%22orderId%22%3A0%2C%22quantity%22%3A1%2C%22unitPriceInCents%22%3A5125%7D%5D%2C%22message%22%3Anull%7D; teastoreMessageCookie=Product_42_is_added_to_cart!"
+        headers["Cookie"] = "sessionBlob=REDACTED_EPHEMERAL_SESSION_TOKEN; teastoreMessageCookie=Product_42_is_added_to_cart!"
         headers['Accept'] = "*/*"
         res_0 = requests \
                 .get(self.baseUrlOfSut + "/tools.descartes.teastore.persistence/rest/orderitems/order/618",
@@ -646,7 +646,7 @@ class EM_TS_control_faults_Test(unittest.TestCase):
         
         # Fault101. Received A Response From API With A Structure/Data That Is Not Matching Its Schema. Type: validation.response.status.unknown Response status 404 not defined for path '/tools.descartes.teastore.persistence/rest/orders/user/{uid}'.
         headers = {}
-        headers["Cookie"] = "sessionBlob=%7B%22uid%22%3A523%2C%22sid%22%3A%22-812225846%22%2C%22token%22%3A%22e4c4ee3f0dac6cc5f85b1d0de06dcd8ae1b724e233b6fa540d76666f190928f74a6fada389ed51e7bf5d05f4179bf496ffc4b31fe78e18dba2825b0f6614a3d1%22%2C%22order%22%3A%7B%22id%22%3A0%2C%22userId%22%3A0%2C%22time%22%3Anull%2C%22totalPriceInCents%22%3A0%2C%22addressName%22%3Anull%2C%22address1%22%3Anull%2C%22address2%22%3Anull%2C%22creditCardCompany%22%3Anull%2C%22creditCardNumber%22%3Anull%2C%22creditCardExpiryDate%22%3Anull%7D%2C%22orderItems%22%3A%5B%7B%22id%22%3A0%2C%22productId%22%3A42%2C%22orderId%22%3A0%2C%22quantity%22%3A1%2C%22unitPriceInCents%22%3A5125%7D%5D%2C%22message%22%3Anull%7D; teastoreMessageCookie=Product_42_is_added_to_cart!"
+        headers["Cookie"] = "sessionBlob=REDACTED_EPHEMERAL_SESSION_TOKEN; teastoreMessageCookie=Product_42_is_added_to_cart!"
         headers['Accept'] = "*/*"
         res_0 = requests \
                 .get(self.baseUrlOfSut + "/tools.descartes.teastore.persistence/rest/orders/user/0",
@@ -664,7 +664,7 @@ class EM_TS_control_faults_Test(unittest.TestCase):
         
         # Fault101. Received A Response From API With A Structure/Data That Is Not Matching Its Schema. Type: validation.response.status.unknown Response status 404 not defined for path '/tools.descartes.teastore.persistence/rest/orderitems/order/{oid}'.
         headers = {}
-        headers["Cookie"] = "sessionBlob=%7B%22uid%22%3A523%2C%22sid%22%3A%22-812225846%22%2C%22token%22%3A%22e4c4ee3f0dac6cc5f85b1d0de06dcd8ae1b724e233b6fa540d76666f190928f74a6fada389ed51e7bf5d05f4179bf496ffc4b31fe78e18dba2825b0f6614a3d1%22%2C%22order%22%3A%7B%22id%22%3A0%2C%22userId%22%3A0%2C%22time%22%3Anull%2C%22totalPriceInCents%22%3A0%2C%22addressName%22%3Anull%2C%22address1%22%3Anull%2C%22address2%22%3Anull%2C%22creditCardCompany%22%3Anull%2C%22creditCardNumber%22%3Anull%2C%22creditCardExpiryDate%22%3Anull%7D%2C%22orderItems%22%3A%5B%7B%22id%22%3A0%2C%22productId%22%3A42%2C%22orderId%22%3A0%2C%22quantity%22%3A1%2C%22unitPriceInCents%22%3A5125%7D%5D%2C%22message%22%3Anull%7D; teastoreMessageCookie=Product_42_is_added_to_cart!"
+        headers["Cookie"] = "sessionBlob=REDACTED_EPHEMERAL_SESSION_TOKEN; teastoreMessageCookie=Product_42_is_added_to_cart!"
         headers['Accept'] = "*/*"
         res_0 = requests \
                 .get(self.baseUrlOfSut + "/tools.descartes.teastore.persistence/rest/orderitems/order/-1527161763",
@@ -682,7 +682,7 @@ class EM_TS_control_faults_Test(unittest.TestCase):
         
         # Fault101. Received A Response From API With A Structure/Data That Is Not Matching Its Schema. Type: validation.response.status.unknown Response status 404 not defined for path '/tools.descartes.teastore.persistence/rest/orders/user/{uid}'.
         headers = {}
-        headers["Cookie"] = "sessionBlob=%7B%22uid%22%3A523%2C%22sid%22%3A%22-812225846%22%2C%22token%22%3A%22e4c4ee3f0dac6cc5f85b1d0de06dcd8ae1b724e233b6fa540d76666f190928f74a6fada389ed51e7bf5d05f4179bf496ffc4b31fe78e18dba2825b0f6614a3d1%22%2C%22order%22%3A%7B%22id%22%3A0%2C%22userId%22%3A0%2C%22time%22%3Anull%2C%22totalPriceInCents%22%3A0%2C%22addressName%22%3Anull%2C%22address1%22%3Anull%2C%22address2%22%3Anull%2C%22creditCardCompany%22%3Anull%2C%22creditCardNumber%22%3Anull%2C%22creditCardExpiryDate%22%3Anull%7D%2C%22orderItems%22%3A%5B%7B%22id%22%3A0%2C%22productId%22%3A42%2C%22orderId%22%3A0%2C%22quantity%22%3A1%2C%22unitPriceInCents%22%3A5125%7D%5D%2C%22message%22%3Anull%7D; teastoreMessageCookie=Product_42_is_added_to_cart!"
+        headers["Cookie"] = "sessionBlob=REDACTED_EPHEMERAL_SESSION_TOKEN; teastoreMessageCookie=Product_42_is_added_to_cart!"
         headers['Accept'] = "*/*"
         res_0 = requests \
                 .get(self.baseUrlOfSut + "/tools.descartes.teastore.persistence/rest/orders/user/-2473629406456775573",

@@ -18,33 +18,51 @@ approval 2026-07-21; the PWS L1 spec-only cells stand untouched as the tool-clas
 
 **Outcome: `NOT_INTERPRETABLE-well-configured` — the PRE-REGISTERED control-gate branch.**
 The gate (control-leg `/rest/orders` durable delta ≥ 1) measured **delta = 0** (191 → 191) after
-the FULL 60-minute budget (3601 s, **3,042,883 evaluated actions / 1,592,718 evaluated tests**,
-covered targets 139, acked-2xx on 2/9 endpoints). Per the pre-registered stop rule the fault leg
-was **NOT run** (no retry-shopping; a fault-leg delta-0 is uninterpretable without a control
-baseline).
+the FULL 60-minute budget (statistics.csv: elapsedSeconds 3601, **3,042,883 evaluated actions /
+1,592,718 evaluated tests**, covered targets 139; **seed 42**; jar sha256
+`7aa06eb6211a4a890805047a964ff0cea388a4c33c43a6413e165f5c28f4772a`; acked-2xx on 2/9 endpoints —
+vs the spec-only L1 run's 1/9: the operator-provisioned session opened exactly one additional
+2xx surface). Per the pre-registered stop rule the fault leg was **NOT run** (no retry-shopping;
+a fault-leg delta-0 is uninterpretable without a control baseline).
 
-**The tool's own fault report is noise-class:** 17 "potential faults" = hiddenAccessible 404
-probes (23 assertions), HTML schema-mismatches (10), two 5xx, one 302 — none order-flow-shaped;
-zero durable writes.
+**The tool's own fault report is noise-class:** 17 distinct potential faults, by the tool's own
+decomposition (run.log): **schema-oracle mismatches (Fault101) ×8, accessible-undeclared-path
+probes (Fault210) ×7, HTTP-5xx (Fault100) ×1, leaked-stack-trace (Fault209) ×1** — none
+order-flow-shaped; zero durable writes. (The generated fault suite carries 36 status assertions
+across those 17 faults — 404×23 / 200×10 / 500×2 / 302×1 — an assertion count, not a fault
+count.)
 
-**Diagnosis of record (three-step, each live-verified):**
-1. **Session alive after the full run** — the prep cookie still returns a logged-in profile
-   (HTTP 200) AFTER the 60 minutes: not cookie expiry, not a tool self-logout.
+**Diagnosis of record (three-step; steps 1-2 durably artifacted post-review):**
+1. **Session alive after the full run** — the prep cookie still returned a logged-in profile
+   (HTTP 200) AFTER the 60 minutes (operator-attested at probe time, and **durably entailed** by
+   step 2's artifact: TeaStore places an order only for a logged-in session): not cookie expiry,
+   not a tool self-logout.
 2. **Pipeline proven live** — a manual full-form confirm through the SAME cookie immediately
-   lands a durable order (191 → 192): auth, session, cart seeding, and persistence all worked.
-3. **Root cause** — in 3.04 M actions the tool never COMPOSED the semantically-valid confirm
-   action: it mutates `cartAction`'s action-discriminator parameters as data fields
-   (`addToCart="D_3IpK"` garbage values mixed with form fields), never emitting the
-   confirm-shaped submission the business flow requires.
+   landed a durable order (191 → 192, `address1=diagprobe1`): auth, session, cart seeding, and
+   persistence all worked. **Durable artifact:** `teastore-auth-control/diagprobe-verification.txt`
+   — the diagprobe1 row re-read from the PVC-backed database on a FRESH bring-up after teardown
+   (192 rows, diagprobe1 count 1; also records the 191-vs-192 sequencing: leg-summary's after=191
+   was measured BEFORE the diagnostic confirm, so the run-attributable delta is 0).
+3. **Root cause** — in 3.04 M actions the tool never composed a **VALID** confirm action: it
+   mutates `cartAction`'s action-discriminator parameters as data fields (`addToCart="D_3IpK"`
+   garbage values mixed with form fields; `confirm=` did appear garbage-valued and
+   addToCart-shadowed, e.g. the generated `test_7`), so no semantically-valid confirm-shaped
+   submission was ever emitted.
 
-**The finding (strengthens, does not contradict, PWS L1):** the reachability barrier SURVIVES
-auth and state provisioning — it is **action-semantics composition**, a tool-class property one
-level deeper than L1's spec-only barrier. The honest paper sentence this buys: *"even with
-operator-provisioned authentication and seeded state — with the same session verified to place
-orders end-to-end by a manual probe — a 60-minute, 3-million-action black-box run never composes
-the multi-field business action; its 17 reported faults are 404/schema/5xx noise."* The
-EvoMaster MISS cell stays **vacuous-and-disclosed** (no acked baseline from the tool's own
-traffic); MIST's corpus cell sits alongside as context, never pooled (the separate-table rail).
+**The finding (strengthens, does not contradict, PWS L1):** on this run, the reachability
+barrier SURVIVED auth and state provisioning — the blocking layer is **action-semantics
+composition**, one level deeper than L1's spec-only barrier. **Scope (disclosed): a single
+60-minute run, single SUT (TeaStore), single seed (42)** — the 3.04 M-action volume defuses
+"more tries would have composed it" WITHIN the run, and the tool-class reading rests on the
+MECHANISM (action-discriminator params mutated as data fields — a representation property of
+spec-driven black-box generation), not on cross-SUT/cross-seed replication, which was not run.
+The honest paper sentence this buys: *"even with operator-provisioned authentication and seeded
+state — with the same session verified to place orders end-to-end by a durably-artifacted manual
+probe — a 60-minute, 3-million-action black-box run (one SUT, one seed) never composes the
+multi-field business action; its 17 reported faults are schema/path-probe/5xx noise."* The
+EvoMaster cell stays a **vacuous / not-evaluable cell, disclosed** — it is NOT a detection-miss
+claim (no acked baseline exists from the tool's own traffic to miss against); MIST's corpus cell
+sits alongside as context, never pooled (the separate-table rail).
 
 **Cell:** `b4/pws/evomaster/teastore-auth-cell.json` · artifacts in
 `b4/pws/evomaster/teastore-auth-control/` (run.log, prep, leg-summary, generated tests,
@@ -68,6 +86,27 @@ async-visibility as binding preconditions).
    scripts must be re-copied.
 2. The background leg wrapper was externally killed mid-run (the documented detached-client
    class); the java child SURVIVED and completed its full budget; post-measurements were
-   collected by `runners/livetool/collect_leg.sh` (budget integrity verified from run.log
-   timestamps: 16:33:46 → 17:33:49). A first process-exit monitor false-fired (a PowerShell
-   exit-code probe bug) and was re-armed with a validated `tasklist` probe.
+   collected by `runners/livetool/collect_leg.sh`. **Budget integrity:** statistics.csv
+   `elapsedSeconds 3601` + the run.log end timestamp `17:33:49` (the run.log carries no start
+   timestamp; the 16:33:46 start was the operator-observed process StartTime, consistent with
+   end − 3601 s). A first process-exit monitor false-fired (a PowerShell exit-code probe bug)
+   and was re-armed with a validated `tasklist` probe.
+
+## Post-review fold (3-cold result review, same day)
+
+`REVIEW-h2hresult-{A,B,C}` = 3× ACCEPT-WITH-FIXES, zero REJECT; all fixes folded in place:
+- **A1/B4** the two diagnosis probes were prose-only → the PVC re-read durable artifact
+  (`diagprobe-verification.txt`) + the operator-attested/durable-entailment labeling above.
+- **A2** "never emitting the confirm-shaped submission" precision → "never composed a VALID
+  confirm" (confirm= appeared garbage-valued/addToCart-shadowed).
+- **A3** full jar sha256 now in this RESULT. **A4/B1** the fault census re-labeled to the tool's
+  own decomposition (101×8 / 210×7 / 100×1 / 209×1 = 17 faults; 36 assertions ≠ 17 faults; the
+  earlier "hiddenAccessible 404 probes" label was cross-wired).
+- **B2** the session token was STILL cleartext in 4 committed tool artifacts (both generated
+  test suites, low-code-index.html, statistics.csv) → redacted in place
+  (`REDACTED_EPHEMERAL_SESSION_TOKEN`, 47 occurrences, 0 residual) — the artifacts' evidentiary
+  structure (assertions/counts) is unchanged; disclosed here.
+- **B3** the start-timestamp source stated (above). **C1/C2** single-run/single-SUT/single-seed
+  scoping + mechanism-based tool-class reading + seed 42 disclosed. **C3** "MISS cell" reworded
+  to vacuous/not-evaluable (no silent n_e→miss upgrade). **C4** the 2/9-vs-1/9 acked-2xx clause
+  added.
