@@ -35,42 +35,61 @@ BANNED_IN_SHIP = ["MIST", "mist", "[INTERNAL]", "detector", "stratum", "wild-fla
 
 START_HERE = """# START HERE — rater packet
 
-Thank you for taking part. Work through this packet in order:
+Thank you for taking part. This is a paid, short-term labelling study: for each case you are shown a
+short sequence of API requests made against one open-source microservice system, the system's
+response(s), and the durable state observed afterward. Your job is to decide, using ONLY the
+reference material provided in this packet, whether the outcome is a **genuine defect**, a
+**by-design / benign** behavior, or **underspecified** (not decidable from the material given). You
+are not debugging or fixing anything — only labelling what you are shown, against the documentation
+provided as the reference.
 
-1. **`01-brief.md`** — what the task is and what you are being asked to do.
-2. **`02-consent.md`** — the consent form (your administrator confirms the compensation details).
-3. **`03-rubric.md`** — the labelling rubric (genuine / benign / underspecified). This is the core of
-   the task; read it carefully. **`04-ballot.md`** shows the exact fields you record for each case.
-4. **`docs-bundles/`** — the ONLY reference sources you may use, one folder per system. Each case uses
-   exactly one system's bundle.
-5. **`eligibility/`** — do the short eligibility exercise (`instructions.md`): two practice cases
-   (`SCREEN-1/`, `SCREEN-2/`) and two spec-reading questions (`spec-answers.yaml`). Return the two
-   practice ballots + `spec-answers.yaml` to your administrator.
+Work through this packet in this order:
 
-After you pass the eligibility exercise and are assigned, you will receive the rating cases — same
-`case.md` + `ballot.yaml` format as the practice cases. Use ONLY the materials in this packet: no web
-search, no other repositories, no discussing cases with anyone.
+1. **[`01-brief.md`](01-brief.md)** — what the task is, who it's for, timing, and pay.
+2. **[`02-consent.md`](02-consent.md)** — the consent form (your administrator confirms the
+   compensation details before you sign).
+3. **[`03-rubric.md`](03-rubric.md)** — the labelling rubric (genuine / benign / underspecified) plus
+   worked examples. This is the core of the task; read it carefully, more than once.
+4. **[`04-ballot.md`](04-ballot.md)** — the exact fields you record for every case (label, grounding
+   citation, confidence, rationale, time spent).
+5. **[`docs-bundles/`](docs-bundles/)** — the ONLY reference sources you may use. One folder per
+   system (`bookinfo/`, `oteldemo/`, `sockshop/`, `teastore/`, `trainticket/`); each case tells you
+   which single system's bundle applies. Skim each system's `README.md` / `BEHAVIOR.md` now, so you
+   know where to look once you're assigned cases.
+6. **[`eligibility/instructions.md`](eligibility/instructions.md)** — a short, unpaid exercise that
+   confirms fit before the paid work begins: two practice cases
+   (`eligibility/SCREEN-1/`, `eligibility/SCREEN-2/`) labelled the same way, plus two spec-reading
+   questions answered in `eligibility/spec-answers.yaml`. Return both practice ballots and the
+   spec-answers sheet to your administrator — you will not see these two cases again.
+
+After you pass the eligibility exercise and are assigned, you will receive the rating cases as
+additional `case.md` + `ballot.yaml` folders in this same format (same as the practice cases) —
+roughly 18 cases, about 15–45 minutes each; your administrator states the exact set, pace, and total
+in your assignment email.
+
+Use ONLY the materials in this packet for every judgment: no web search, no other repositories, no
+outside tools, and no discussing cases with anyone (including other raters) until the study closes.
 """
 
 ELIG_INSTRUCTIONS = """## Eligibility exercise (about 20 minutes, unpaid — stated up front)
 
 Before the paid work begins, this short exercise confirms the study is a good fit. It has two parts.
-It is done once, on your own, using ONLY the materials in this packet (the rubric, the ballot format,
-and the `docs-bundles/` reference sources). No web search, no other repositories, no discussing it
-with anyone.
+It is done once, on your own, using ONLY the materials in this packet ([`../03-rubric.md`](../03-rubric.md),
+[`../04-ballot.md`](../04-ballot.md), and the [`../docs-bundles/`](../docs-bundles/) reference sources).
+No web search, no other repositories, no discussing it with anyone.
 
-**Part 1 — two practice cases.** The folders `SCREEN-1/` and `SCREEN-2/` each contain a `case.md`
-(what was done to the system and what was observed) and a `ballot.yaml`. Judge each case exactly as
-described in the rubric — derive the intended behavior from the documentation bundle, compare it to
-what the case shows, and fill in the `ballot.yaml` (same fields as a study ballot). Expect roughly
-5–10 minutes per case.
+**Part 1 — two practice cases.** The folders [`SCREEN-1/`](SCREEN-1/) and [`SCREEN-2/`](SCREEN-2/)
+each contain a `case.md` (what was done to the system and what was observed) and a `ballot.yaml`.
+Judge each case exactly as described in the rubric — derive the intended behavior from the
+documentation bundle, compare it to what the case shows, and fill in the `ballot.yaml` (same fields
+as a study ballot). Expect roughly 5–10 minutes per case.
 
 **Part 2 — two spec-reading questions.** Below. Answer them from the documentation bundle alone, and
-record each answer in `spec-answers.yaml`.
+record each answer in [`spec-answers.yaml`](spec-answers.yaml).
 
-Return your two completed practice ballots (`SCREEN-1/ballot.yaml`, `SCREEN-2/ballot.yaml`) and
-`spec-answers.yaml` to the study administrator. You will not see these two practice cases again
-during the study.
+Return your two completed practice ballots ([`SCREEN-1/ballot.yaml`](SCREEN-1/ballot.yaml),
+[`SCREEN-2/ballot.yaml`](SCREEN-2/ballot.yaml)) and [`spec-answers.yaml`](spec-answers.yaml) to the
+study administrator. You will not see these two practice cases again during the study.
 """
 
 SPEC_CHECK = """
@@ -80,11 +99,12 @@ SPEC_CHECK = """
 After the flow completes, which service's database is the **system of record for the created User
 entity**? Name the service and cite the class + method that persists it.
 
-**Q2 (does it persist?).** Read `ts-auth-service/.../service/impl/TokenServiceImpl.java`, method
-`getToken` (the login flow). Does a successful call to this method **create or modify any durable
-record**? Answer yes/no and justify in one sentence from the source.
+**Q2 (does it persist?).** Read
+[`../docs-bundles/trainticket/ts-auth-service/src/main/java/auth/service/impl/TokenServiceImpl.java`](../docs-bundles/trainticket/ts-auth-service/src/main/java/auth/service/impl/TokenServiceImpl.java),
+method `getToken` (the login flow). Does a successful call to this method **create or modify any
+durable record**? Answer yes/no and justify in one sentence from the source.
 
-Record each answer in `spec-answers.yaml` (the fields are provided there).
+Record each answer in [`spec-answers.yaml`](spec-answers.yaml) (the fields are provided there).
 """
 
 SPEC_ANSWERS_SHEET = """# Spec-reading answers (eligibility Part 2) — fill in and return with your two practice ballots.
