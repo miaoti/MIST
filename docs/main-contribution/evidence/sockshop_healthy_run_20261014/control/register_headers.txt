@@ -1,0 +1,10 @@
+HTTP/1.1 200 OK
+X-Powered-By: Express
+set-cookie: logged_in=REDACTED; Max-Age=3600; Path=/; Expires=Wed, 14 Oct 2026 06:54:30 GMT
+set-cookie: md.sid=REDACTED; Path=/; HttpOnly
+Content-Type: application/json; charset=utf-8
+Content-Length: 33
+ETag: W/"21-G8J9TasEXwLLAhcL7Cl0vLnWCBc"
+Date: Wed, 14 Oct 2026 05:54:30 GMT
+Connection: keep-alive
+

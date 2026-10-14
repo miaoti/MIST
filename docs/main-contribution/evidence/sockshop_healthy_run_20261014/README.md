@@ -56,6 +56,16 @@ in the paper.
 Manual reproduction (`manual/`): one `curl` each to `POST /addresses` and `POST /cards` with a
 plausible body and no session returns `HTTP/1.1 200 OK` with the same error body.
 
+## Logged-in control (`control/`, 2026-10-14 00:54 CDT)
+
+With only the front-end, user, session-db, catalogue and their databases running, one user was
+registered through the front-end (`POST /register`, 200 with an id and a session cookie). With
+that cookie, `POST /addresses` and `POST /cards` answered 200 with the stored object's id, and
+`GET /addresses` listed addresses; Jaeger shows the user service answering those calls with 200.
+The same `POST /addresses` without the cookie, a minute later, answered 200 with the
+`Invalid Id Hex` error body and a user-service 500. So the swallowed 500 is specific to
+session-less requests, and a logged-in request succeeds.
+
 ## Caveats, recorded here and not in the paper
 
 1. The front-end does not propagate the trace context it receives, so a test's trace has no
