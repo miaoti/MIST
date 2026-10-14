@@ -1,0 +1,10 @@
+{
+  "rootApiKey": "POST /addresses",
+  "passed": false,
+  "outcomes": [
+    { "kind": "SPAN_TREE_SHAPE", "passed": true, "severity": "ERROR", "detail": "" },
+    { "kind": "STATUS_PROPAGATION", "passed": true, "severity": "ERROR", "detail": "" },
+    { "kind": "RESPONSE_ENVELOPE", "passed": true, "severity": "ERROR", "detail": "" },
+    { "kind": "HIDDEN_DOWNSTREAM_FAILURE", "passed": false, "severity": "ERROR", "detail": "2 swallowed downstream call(s): user.sock-shop ──▶ user.sock-shop.svc.cluster.local:80/* (http=500 otel=ERROR); front-end.sock-shop ──▶ user.sock-shop.svc.cluster.local:80/* (http=500 otel=ERROR)" }
+  ]
+}

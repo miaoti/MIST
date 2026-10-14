@@ -1,0 +1,17 @@
+🔧 BASIC ANALYSIS (LLM unavailable)
+═══════════════════════════════════════════════════════════════════════════════
+
+🔍 ROOT CAUSE:
+   Failed Service: user.sock-shop
+   Failed Operation: user.sock-shop.svc.cluster.local:80/*
+
+🔧 FIX RECOMMENDATIONS:
+
+📊 IMPACT ASSESSMENT:
+   • 1 additional services failed due to error propagation
+   • Fix the root cause above to resolve all failures
+
+🎯 DEBUGGING GUIDANCE:
+   • Focus on the exact failure location shown above
+   • Check the specific operation that threw the exception
+   • For detailed AI analysis, configure LLM service

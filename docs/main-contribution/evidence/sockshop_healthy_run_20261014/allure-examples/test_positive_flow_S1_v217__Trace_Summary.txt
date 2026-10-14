@@ -1,0 +1,18 @@
+🎯 TRACE SUMMARY
+═══════════════
+
+📊 API Call Statistics:
+   Total API Calls: 2
+   ✅ Successful: 0
+   ❌ Failed: 2
+   🏢 Services Involved: 2
+
+⏱️ Performance Metrics:
+   Total Duration: 1.5ms
+   Average Duration: 752μs
+   Fastest Call: 509μs
+   Slowest Call: 996μs
+
+🏢 Services in Trace:
+   • user.sock-shop
+   • front-end.sock-shop

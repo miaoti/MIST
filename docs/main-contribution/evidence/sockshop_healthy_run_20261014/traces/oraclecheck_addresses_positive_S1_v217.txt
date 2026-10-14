@@ -1,0 +1,7 @@
+
+=== trace 9d10a94f5bfa5bf8ed15cdd210c7bcae  (2 spans) ===
+  client-facing ROOT : unknown  user.sock-shop.svc.cluster.local:80/*  http=500 otel=ERROR
+  downstream ERROR   : unknown  user.sock-shop.svc.cluster.local:80/*  http=500 otel=ERROR
+  downstream ERROR   : unknown  user.sock-shop.svc.cluster.local:80/*  http=500 otel=ERROR
+  --> RESPONSE-LEVEL oracle (status/schema/soft-error sees the client response): would flag
+  --> TRACE oracle HIDDEN_DOWNSTREAM_FAILURE: pass  severity=ERROR

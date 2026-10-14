@@ -1,0 +1,152 @@
+🔍 Jaeger Query Debug Info:
+Target Service: front-end.sock-shop
+Method: POST
+Path: /addresses
+Operation: POST /addresses
+Request Start (μs): 1791954080394000
+Search Window: 1791954070394000 to 1791954110394000 (μs)
+Time Window: 40 seconds
+🔎 Lookup: marker-first exact-ID (W3C traceparent), then broad time-window + target-service
+⏱️ Test Separation: 2-second delay enforced between executions for unique traces
+🔄 Trace Propagation: 3-second delay after execution for Jaeger indexing
+🔄 Retry Strategy: Multiple attempts to find current execution trace
+
+🎯 Marker-first query: http://localhost:16686/jaeger/api/traces/e0049de70bd7428c80e14f9c163d737f
+⚠️ Marker query exhausted; falling back to time-window heuristic
+Query 1: http://localhost:16686/jaeger/api/traces?limit=200&start=1791954070394000&end=1791954110394000
+Response Status: 400
+HTTP Error: 400
+
+Query 2: http://localhost:16686/jaeger/api/traces?limit=50&service=front-end.sock-shop&operation=POST+%2Faddresses&start=1791954070394000&end=1791954110394000
+Response Status: 200
+Response Body Length: 56
+Traces Found: 0
+No traces found in response
+Query 2 failed, trying next...
+
+Query 3: http://localhost:16686/jaeger/api/traces?limit=50&service=front-end.sock-shop&operation=POST&start=1791954070394000&end=1791954110394000
+Response Status: 200
+Response Body Length: 56
+Traces Found: 0
+No traces found in response
+Query 3 failed, trying next...
+
+Query 4: http://localhost:16686/jaeger/api/traces?limit=100&service=front-end.sock-shop&start=1791954070394000&end=1791954110394000
+Response Status: 200
+Response Body Length: 18982
+Traces Found: 4
+Analyzing 4 traces for API calls...
+Trace 0: score=1500, APIs=0, hasTarget=true, timeDiff=5544214μs, spans=2
+  Operations: user.sock-shop.svc.cluster...., user.sock-shop.svc.cluster....
+Trace 1: score=0, APIs=0, hasTarget=false, timeDiff=N/A, spans=2
+  Operations: catalogue.sock-shop.svc.clu..., catalogue.sock-shop.svc.clu...
+Trace 2: score=0, APIs=0, hasTarget=false, timeDiff=N/A, spans=2
+  Operations: catalogue.sock-shop.svc.clu..., catalogue.sock-shop.svc.clu...
+Trace 3: score=0, APIs=0, hasTarget=false, timeDiff=N/A, spans=2
+  Operations: user.sock-shop.svc.cluster...., user.sock-shop.svc.cluster....
+
+Selected trace 0 with score 1500 (matched but not current - possibly previous execution)
+
+🔄 Fetching complete trace for ID: afcc2b38612555335f77602836b47c3b
+✅ Complete trace fetched with 2 spans
+✅ Updated global best trace (score: 1500, timeDiff: 5.544214s)
+⏭️ Continuing to search for more recent trace...
+Query 4 failed, trying next...
+
+Query 5: http://localhost:16686/jaeger/api/traces?limit=200&lookback=10m
+Response Status: 400
+HTTP Error: 400
+
+
+🔄 RETRY 1: Searching again for current execution trace...
+Query 1: http://localhost:16686/jaeger/api/traces?limit=200&start=1791954070394000&end=1791954110394000
+Response Status: 400
+HTTP Error: 400
+
+Query 2: http://localhost:16686/jaeger/api/traces?limit=50&service=front-end.sock-shop&operation=POST+%2Faddresses&start=1791954070394000&end=1791954110394000
+Response Status: 200
+Response Body Length: 56
+Traces Found: 0
+No traces found in response
+Query 2 failed, trying next...
+
+Query 3: http://localhost:16686/jaeger/api/traces?limit=50&service=front-end.sock-shop&operation=POST&start=1791954070394000&end=1791954110394000
+Response Status: 200
+Response Body Length: 56
+Traces Found: 0
+No traces found in response
+Query 3 failed, trying next...
+
+Query 4: http://localhost:16686/jaeger/api/traces?limit=100&service=front-end.sock-shop&start=1791954070394000&end=1791954110394000
+Response Status: 200
+Response Body Length: 18982
+Traces Found: 4
+Analyzing 4 traces for API calls...
+Trace 0: score=1500, APIs=0, hasTarget=true, timeDiff=5544214μs, spans=2
+  Operations: user.sock-shop.svc.cluster...., user.sock-shop.svc.cluster....
+Trace 1: score=0, APIs=0, hasTarget=false, timeDiff=N/A, spans=2
+  Operations: catalogue.sock-shop.svc.clu..., catalogue.sock-shop.svc.clu...
+Trace 2: score=0, APIs=0, hasTarget=false, timeDiff=N/A, spans=2
+  Operations: catalogue.sock-shop.svc.clu..., catalogue.sock-shop.svc.clu...
+Trace 3: score=0, APIs=0, hasTarget=false, timeDiff=N/A, spans=2
+  Operations: user.sock-shop.svc.cluster...., user.sock-shop.svc.cluster....
+
+Selected trace 0 with score 1500 (matched but not current - possibly previous execution)
+⏭️ Continuing to search for more recent trace...
+Query 4 failed, trying next...
+
+Query 5: http://localhost:16686/jaeger/api/traces?limit=200&lookback=10m
+Response Status: 400
+HTTP Error: 400
+
+
+🔄 RETRY 2: Searching again for current execution trace...
+Query 1: http://localhost:16686/jaeger/api/traces?limit=200&start=1791954070394000&end=1791954110394000
+Response Status: 400
+HTTP Error: 400
+
+Query 2: http://localhost:16686/jaeger/api/traces?limit=50&service=front-end.sock-shop&operation=POST+%2Faddresses&start=1791954070394000&end=1791954110394000
+Response Status: 200
+Response Body Length: 56
+Traces Found: 0
+No traces found in response
+Query 2 failed, trying next...
+
+Query 3: http://localhost:16686/jaeger/api/traces?limit=50&service=front-end.sock-shop&operation=POST&start=1791954070394000&end=1791954110394000
+Response Status: 200
+Response Body Length: 56
+Traces Found: 0
+No traces found in response
+Query 3 failed, trying next...
+
+Query 4: http://localhost:16686/jaeger/api/traces?limit=100&service=front-end.sock-shop&start=1791954070394000&end=1791954110394000
+Response Status: 200
+Response Body Length: 37892
+Traces Found: 8
+Analyzing 8 traces for API calls...
+Trace 0: score=0, APIs=0, hasTarget=false, timeDiff=N/A, spans=2
+  Operations: catalogue.sock-shop.svc.clu..., catalogue.sock-shop.svc.clu...
+Trace 1: score=6000, APIs=0, hasTarget=true, timeDiff=531415μs, spans=2
+  Operations: user.sock-shop.svc.cluster...., user.sock-shop.svc.cluster....
+Trace 2: score=0, APIs=0, hasTarget=false, timeDiff=N/A, spans=2
+  Operations: catalogue.sock-shop.svc.clu..., catalogue.sock-shop.svc.clu...
+Trace 3: score=0, APIs=0, hasTarget=false, timeDiff=N/A, spans=2
+  Operations: user.sock-shop.svc.cluster...., user.sock-shop.svc.cluster....
+Trace 4: score=1500, APIs=0, hasTarget=true, timeDiff=5544214μs, spans=2
+  Operations: user.sock-shop.svc.cluster...., user.sock-shop.svc.cluster....
+Trace 5: score=0, APIs=0, hasTarget=false, timeDiff=N/A, spans=2
+  Operations: catalogue.sock-shop.svc.clu..., catalogue.sock-shop.svc.clu...
+Trace 6: score=0, APIs=0, hasTarget=false, timeDiff=N/A, spans=2
+  Operations: catalogue.sock-shop.svc.clu..., catalogue.sock-shop.svc.clu...
+Trace 7: score=0, APIs=0, hasTarget=false, timeDiff=N/A, spans=2
+  Operations: user.sock-shop.svc.cluster...., user.sock-shop.svc.cluster....
+
+Selected trace 1 with score 6000 (CURRENT EXECUTION - perfect match!)
+
+🔄 Fetching complete trace for ID: 9d10a94f5bfa5bf8ed15cdd210c7bcae
+✅ Complete trace fetched with 2 spans
+✅ Updated global best trace (score: 6000, timeDiff: 0.531415s)
+✅ Found current execution trace - stopping search
+✅ Found current execution trace, stopping retries.
+
+✅ Using best trace found (score: 6000, timeDiff: 0.531415s)

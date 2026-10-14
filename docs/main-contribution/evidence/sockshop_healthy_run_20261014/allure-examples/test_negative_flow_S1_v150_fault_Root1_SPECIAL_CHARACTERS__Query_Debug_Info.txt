@@ -1,0 +1,52 @@
+🔍 Jaeger Query Debug Info:
+Target Service: front-end.sock-shop
+Method: POST
+Path: /addresses
+Operation: POST /addresses
+Request Start (μs): 1791954557209000
+Search Window: 1791954547209000 to 1791954587209000 (μs)
+Time Window: 40 seconds
+🔎 Lookup: marker-first exact-ID (W3C traceparent), then broad time-window + target-service
+⏱️ Test Separation: 2-second delay enforced between executions for unique traces
+🔄 Trace Propagation: 3-second delay after execution for Jaeger indexing
+🔄 Retry Strategy: Multiple attempts to find current execution trace
+
+🎯 Marker-first query: http://localhost:16686/jaeger/api/traces/e783be5e670745fc9e3a9e23f36659b3
+⚠️ Marker query exhausted; falling back to time-window heuristic
+Query 1: http://localhost:16686/jaeger/api/traces?limit=200&start=1791954547209000&end=1791954587209000
+Response Status: 400
+HTTP Error: 400
+
+Query 2: http://localhost:16686/jaeger/api/traces?limit=50&service=front-end.sock-shop&operation=POST+%2Faddresses&start=1791954547209000&end=1791954587209000
+Response Status: 200
+Response Body Length: 56
+Traces Found: 0
+No traces found in response
+Query 2 failed, trying next...
+
+Query 3: http://localhost:16686/jaeger/api/traces?limit=50&service=front-end.sock-shop&operation=POST&start=1791954547209000&end=1791954587209000
+Response Status: 200
+Response Body Length: 56
+Traces Found: 0
+No traces found in response
+Query 3 failed, trying next...
+
+Query 4: http://localhost:16686/jaeger/api/traces?limit=100&service=front-end.sock-shop&start=1791954547209000&end=1791954587209000
+Response Status: 200
+Response Body Length: 9677
+Traces Found: 2
+Analyzing 2 traces for API calls...
+Trace 0: score=2500, APIs=0, hasTarget=true, timeDiff=2850260μs, spans=2
+  Operations: user.sock-shop.svc.cluster...., user.sock-shop.svc.cluster....
+Trace 1: score=1500, APIs=0, hasTarget=true, timeDiff=9067716μs, spans=2
+  Operations: user.sock-shop.svc.cluster...., user.sock-shop.svc.cluster....
+
+Selected trace 0 with score 2500 (CURRENT EXECUTION - perfect match!)
+
+🔄 Fetching complete trace for ID: e9155595f71cde16932b13c1c8cf7d62
+✅ Complete trace fetched with 2 spans
+✅ Updated global best trace (score: 2500, timeDiff: 2.85026s)
+✅ Found current execution trace - stopping search
+✅ Found current execution trace, stopping retries.
+
+✅ Using best trace found (score: 2500, timeDiff: 2.85026s)
