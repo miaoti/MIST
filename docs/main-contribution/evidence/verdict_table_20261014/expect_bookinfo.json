@@ -1,0 +1,1 @@
+{"^/api/v1/products$": [], "^/api/v1/products/[^/]+$": ["details"], "^/api/v1/products/[^/]+/reviews$": ["reviews", "ratings"], "^/api/v1/products/[^/]+/ratings$": ["ratings"], "^/productpage": ["details", "reviews", "ratings"]}

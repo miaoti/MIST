@@ -1,0 +1,1083 @@
+testConfiguration:
+  services:
+    ts-admin-basic-info-service:
+    - expectedResponse: 200
+      method: get
+      operationId: ts-admin-basic-info-service_getAllContactsUsingGET
+      testPath: /api/v1/adminbasicservice/adminbasic/contacts
+      testParameters: null
+    - expectedResponse: 200
+      method: put
+      operationId: ts-admin-basic-info-service_modifyContactsUsingPUT
+      testPath: /api/v1/adminbasicservice/adminbasic/contacts
+      testParameters:
+      - name: accountId
+        in: formData
+        weight: null
+        description: null
+        type: string
+        required: false
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: length
+            values:
+            - '10'
+      - name: documentNumber
+        in: formData
+        weight: null
+        description: null
+        type: string
+        required: false
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: length
+            values:
+            - '10'
+      - name: documentType
+        in: formData
+        weight: null
+        description: null
+        type: integer
+        format: int32
+        required: false
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: type
+            values:
+            - integer
+          - name: min
+            values:
+            - '1'
+          - name: max
+            values:
+            - '100'
+      - name: id
+        in: formData
+        weight: null
+        description: null
+        type: string
+        required: false
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: length
+            values:
+            - '10'
+      - name: name
+        in: formData
+        weight: null
+        description: null
+        type: string
+        required: false
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: length
+            values:
+            - '10'
+      - name: phoneNumber
+        in: formData
+        weight: null
+        description: null
+        type: string
+        required: false
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: length
+            values:
+            - '10'
+    - expectedResponse: 200
+      method: post
+      operationId: ts-admin-basic-info-service_addContactsUsingPOST
+      testPath: /api/v1/adminbasicservice/adminbasic/contacts
+      testParameters:
+      - name: accountId
+        in: formData
+        weight: null
+        description: null
+        type: string
+        required: false
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: length
+            values:
+            - '10'
+      - name: documentNumber
+        in: formData
+        weight: null
+        description: null
+        type: string
+        required: false
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: length
+            values:
+            - '10'
+      - name: documentType
+        in: formData
+        weight: null
+        description: null
+        type: integer
+        format: int32
+        required: false
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: type
+            values:
+            - integer
+          - name: min
+            values:
+            - '1'
+          - name: max
+            values:
+            - '100'
+      - name: id
+        in: formData
+        weight: null
+        description: null
+        type: string
+        required: false
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: length
+            values:
+            - '10'
+      - name: name
+        in: formData
+        weight: null
+        description: null
+        type: string
+        required: false
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: length
+            values:
+            - '10'
+      - name: phoneNumber
+        in: formData
+        weight: null
+        description: null
+        type: string
+        required: false
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: length
+            values:
+            - '10'
+    - expectedResponse: 200
+      method: delete
+      operationId: ts-admin-basic-info-service_deleteContactsUsingDELETE
+      testPath: /api/v1/adminbasicservice/adminbasic/contacts/{contactsId}
+      testParameters:
+      - name: contactsId
+        in: path
+        weight: null
+        description: contactsId
+        type: string
+        required: true
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: length
+            values:
+            - '10'
+    - expectedResponse: 200
+      method: get
+      operationId: ts-admin-basic-info-service_getAllStationsUsingGET
+      testPath: /api/v1/adminbasicservice/adminbasic/stations
+      testParameters: null
+    - expectedResponse: 200
+      method: put
+      operationId: ts-admin-basic-info-service_modifyStationUsingPUT
+      testPath: /api/v1/adminbasicservice/adminbasic/stations
+      testParameters:
+      - name: id
+        in: formData
+        weight: null
+        description: null
+        type: string
+        required: false
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: length
+            values:
+            - '10'
+      - name: name
+        in: formData
+        weight: null
+        description: null
+        type: string
+        required: false
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: length
+            values:
+            - '10'
+      - name: stayTime
+        in: formData
+        weight: null
+        description: null
+        type: integer
+        format: int32
+        required: false
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: type
+            values:
+            - integer
+          - name: min
+            values:
+            - '1'
+          - name: max
+            values:
+            - '100'
+    - expectedResponse: 200
+      method: post
+      operationId: ts-admin-basic-info-service_addStationUsingPOST
+      testPath: /api/v1/adminbasicservice/adminbasic/stations
+      testParameters:
+      - name: id
+        in: formData
+        weight: null
+        description: null
+        type: string
+        required: false
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: length
+            values:
+            - '10'
+      - name: name
+        in: formData
+        weight: null
+        description: null
+        type: string
+        required: false
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: length
+            values:
+            - '10'
+      - name: stayTime
+        in: formData
+        weight: null
+        description: null
+        type: integer
+        format: int32
+        required: false
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: type
+            values:
+            - integer
+          - name: min
+            values:
+            - '1'
+          - name: max
+            values:
+            - '100'
+    - expectedResponse: 200
+      method: delete
+      operationId: ts-admin-basic-info-service_deleteStationUsingDELETE
+      testPath: /api/v1/adminbasicservice/adminbasic/stations/{id}
+      testParameters:
+      - name: id
+        in: path
+        weight: null
+        description: id
+        type: string
+        required: true
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: length
+            values:
+            - '10'
+    ts-admin-route-service:
+    - expectedResponse: 200
+      method: get
+      operationId: ts-admin-route-service_getAllRoutesUsingGET
+      testPath: /api/v1/adminrouteservice/adminroute
+      testParameters: null
+    - expectedResponse: 200
+      method: post
+      operationId: ts-admin-route-service_addRouteUsingPOST
+      testPath: /api/v1/adminrouteservice/adminroute
+      testParameters:
+      - name: distanceList
+        in: formData
+        weight: null
+        description: Comma-separated list of distances (e.g., "12.5,8.2,15.7")
+        type: string
+        required: false
+        example: 12.5,8.2,15.7,22.1,5.9
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: length
+            values:
+            - '10'
+      - name: endStation
+        in: formData
+        weight: null
+        description: null
+        type: string
+        required: false
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: length
+            values:
+            - '10'
+      - name: id
+        in: formData
+        weight: null
+        description: null
+        type: string
+        required: false
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: length
+            values:
+            - '10'
+      - name: loginId
+        in: formData
+        weight: null
+        description: null
+        type: string
+        required: false
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: length
+            values:
+            - '10'
+      - name: startStation
+        in: formData
+        weight: null
+        description: null
+        type: string
+        required: false
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: length
+            values:
+            - '10'
+      - name: stationList
+        in: formData
+        weight: null
+        description: Comma-separated list of station names (e.g., "Shanghai,Beijing,Nanjing")
+        type: string
+        required: false
+        example: Grand Central Terminal,Penn Station,Union Station,Times Square Station,Broadway
+          Station
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: length
+            values:
+            - '10'
+    - expectedResponse: 200
+      method: delete
+      operationId: ts-admin-route-service_deleteRouteUsingDELETE
+      testPath: /api/v1/adminrouteservice/adminroute/{routeId}
+      testParameters:
+      - name: routeId
+        in: path
+        weight: null
+        description: routeId
+        type: string
+        required: true
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: length
+            values:
+            - '10'
+    - expectedResponse: 200
+      method: get
+      operationId: ts-admin-route-service_homeUsingGET
+      testPath: /api/v1/adminrouteservice/welcome
+      testParameters: null
+    ts-contacts-service:
+    - expectedResponse: 200
+      method: get
+      operationId: ts-contacts-service_getAllContactsUsingGET
+      testPath: /api/v1/contactservice/contacts
+      testParameters: null
+    - expectedResponse: 200
+      method: put
+      operationId: ts-contacts-service_modifyContactsUsingPUT
+      testPath: /api/v1/contactservice/contacts
+      testParameters:
+      - name: accountId
+        in: formData
+        weight: null
+        description: null
+        type: string
+        required: false
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: length
+            values:
+            - '10'
+      - name: documentNumber
+        in: formData
+        weight: null
+        description: null
+        type: string
+        required: false
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: length
+            values:
+            - '10'
+      - name: documentType
+        in: formData
+        weight: null
+        description: null
+        type: integer
+        format: int32
+        required: false
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: type
+            values:
+            - integer
+          - name: min
+            values:
+            - '1'
+          - name: max
+            values:
+            - '100'
+      - name: id
+        in: formData
+        weight: null
+        description: null
+        type: string
+        required: false
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: length
+            values:
+            - '10'
+      - name: name
+        in: formData
+        weight: null
+        description: null
+        type: string
+        required: false
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: length
+            values:
+            - '10'
+      - name: phoneNumber
+        in: formData
+        weight: null
+        description: null
+        type: string
+        required: false
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: length
+            values:
+            - '10'
+    - expectedResponse: 200
+      method: post
+      operationId: ts-contacts-service_createNewContactsUsingPOST
+      testPath: /api/v1/contactservice/contacts
+      testParameters:
+      - name: accountId
+        in: formData
+        weight: null
+        description: null
+        type: string
+        required: false
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: length
+            values:
+            - '10'
+      - name: documentNumber
+        in: formData
+        weight: null
+        description: null
+        type: string
+        required: false
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: length
+            values:
+            - '10'
+      - name: documentType
+        in: formData
+        weight: null
+        description: null
+        type: integer
+        format: int32
+        required: false
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: type
+            values:
+            - integer
+          - name: min
+            values:
+            - '1'
+          - name: max
+            values:
+            - '100'
+      - name: id
+        in: formData
+        weight: null
+        description: null
+        type: string
+        required: false
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: length
+            values:
+            - '10'
+      - name: name
+        in: formData
+        weight: null
+        description: null
+        type: string
+        required: false
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: length
+            values:
+            - '10'
+      - name: phoneNumber
+        in: formData
+        weight: null
+        description: null
+        type: string
+        required: false
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: length
+            values:
+            - '10'
+    - expectedResponse: 200
+      method: get
+      operationId: ts-contacts-service_findContactsByAccountIdUsingGET
+      testPath: /api/v1/contactservice/contacts/account/{accountId}
+      testParameters:
+      - name: accountId
+        in: path
+        weight: null
+        description: accountId
+        type: string
+        required: true
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: length
+            values:
+            - '10'
+    - expectedResponse: 200
+      method: post
+      operationId: ts-contacts-service_createNewContactsAdminUsingPOST
+      testPath: /api/v1/contactservice/contacts/admin
+      testParameters:
+      - name: accountId
+        in: formData
+        weight: null
+        description: null
+        type: string
+        required: false
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: length
+            values:
+            - '10'
+      - name: documentNumber
+        in: formData
+        weight: null
+        description: null
+        type: string
+        required: false
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: length
+            values:
+            - '10'
+      - name: documentType
+        in: formData
+        weight: null
+        description: null
+        type: integer
+        format: int32
+        required: false
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: type
+            values:
+            - integer
+          - name: min
+            values:
+            - '1'
+          - name: max
+            values:
+            - '100'
+      - name: id
+        in: formData
+        weight: null
+        description: null
+        type: string
+        required: false
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: length
+            values:
+            - '10'
+      - name: name
+        in: formData
+        weight: null
+        description: null
+        type: string
+        required: false
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: length
+            values:
+            - '10'
+      - name: phoneNumber
+        in: formData
+        weight: null
+        description: null
+        type: string
+        required: false
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: length
+            values:
+            - '10'
+    - expectedResponse: 200
+      method: get
+      operationId: ts-contacts-service_homeUsingGET
+      testPath: /api/v1/contactservice/contacts/welcome
+      testParameters: null
+    - expectedResponse: 200
+      method: delete
+      operationId: ts-contacts-service_deleteContactsUsingDELETE
+      testPath: /api/v1/contactservice/contacts/{contactsId}
+      testParameters:
+      - name: contactsId
+        in: path
+        weight: null
+        description: contactsId
+        type: string
+        required: true
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: length
+            values:
+            - '10'
+    - expectedResponse: 200
+      method: get
+      operationId: ts-contacts-service_getContactsByContactsIdUsingGET
+      testPath: /api/v1/contactservice/contacts/{id}
+      testParameters:
+      - name: id
+        in: path
+        weight: null
+        description: id
+        type: string
+        required: true
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: length
+            values:
+            - '10'
+    ts-route-service:
+    - expectedResponse: 200
+      method: get
+      operationId: ts-route-service_queryAllUsingGET
+      testPath: /api/v1/routeservice/routes
+      testParameters: null
+    - expectedResponse: 200
+      method: post
+      operationId: ts-route-service_createAndModifyRouteUsingPOST
+      testPath: /api/v1/routeservice/routes
+      testParameters:
+      - name: distanceList
+        in: formData
+        weight: null
+        description: Comma-separated list of distances (e.g., "12.5,8.2,15.7")
+        type: string
+        required: false
+        example: 12.5,8.2,15.7,22.1,5.9
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: length
+            values:
+            - '10'
+      - name: endStation
+        in: formData
+        weight: null
+        description: null
+        type: string
+        required: false
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: length
+            values:
+            - '10'
+      - name: id
+        in: formData
+        weight: null
+        description: null
+        type: string
+        required: false
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: length
+            values:
+            - '10'
+      - name: startStation
+        in: formData
+        weight: null
+        description: null
+        type: string
+        required: false
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: length
+            values:
+            - '10'
+      - name: stationList
+        in: formData
+        weight: null
+        description: Comma-separated list of station names (e.g., "Shanghai,Beijing,Nanjing")
+        type: string
+        required: false
+        example: Shanghai,Hangzhou,Nanjing,Beijing
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: length
+            values:
+            - '10'
+    - expectedResponse: 200
+      method: post
+      operationId: ts-route-service_queryByIdsUsingPOST
+      testPath: /api/v1/routeservice/routes/byIds
+      testParameters:
+      - name: body
+        in: body
+        weight: null
+        description: routeIds
+        type: array
+        required: true
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: length
+            values:
+            - '10'
+    - expectedResponse: 200
+      method: get
+      operationId: ts-route-service_queryByIdUsingGET
+      testPath: /api/v1/routeservice/routes/{routeId}
+      testParameters:
+      - name: routeId
+        in: path
+        weight: null
+        description: routeId
+        type: string
+        required: true
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: length
+            values:
+            - '10'
+    - expectedResponse: 200
+      method: delete
+      operationId: ts-route-service_deleteRouteUsingDELETE
+      testPath: /api/v1/routeservice/routes/{routeId}
+      testParameters:
+      - name: routeId
+        in: path
+        weight: null
+        description: routeId
+        type: string
+        required: true
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: length
+            values:
+            - '10'
+    - expectedResponse: 200
+      method: get
+      operationId: ts-route-service_queryByStartAndTerminalUsingGET
+      testPath: /api/v1/routeservice/routes/{start}/{end}
+      testParameters:
+      - name: start
+        in: path
+        weight: null
+        description: start
+        type: string
+        required: true
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: length
+            values:
+            - '10'
+      - name: end
+        in: path
+        weight: null
+        description: end
+        type: string
+        required: true
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: length
+            values:
+            - '10'
+    - expectedResponse: 200
+      method: get
+      operationId: ts-route-service_homeUsingGET
+      testPath: /api/v1/routeservice/welcome
+      testParameters: null
+    ts-station-service:
+    - expectedResponse: 200
+      method: get
+      operationId: ts-station-service_queryUsingGET
+      testPath: /api/v1/stationservice/stations
+      testParameters: null
+    - expectedResponse: 200
+      method: put
+      operationId: ts-station-service_updateUsingPUT
+      testPath: /api/v1/stationservice/stations
+      testParameters:
+      - name: id
+        in: formData
+        weight: null
+        description: null
+        type: string
+        required: false
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: length
+            values:
+            - '10'
+      - name: name
+        in: formData
+        weight: null
+        description: null
+        type: string
+        required: false
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: length
+            values:
+            - '10'
+      - name: stayTime
+        in: formData
+        weight: null
+        description: null
+        type: integer
+        format: int32
+        required: false
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: type
+            values:
+            - integer
+          - name: min
+            values:
+            - '1'
+          - name: max
+            values:
+            - '100'
+    - expectedResponse: 200
+      method: post
+      operationId: ts-station-service_createUsingPOST
+      testPath: /api/v1/stationservice/stations
+      testParameters:
+      - name: id
+        in: formData
+        weight: null
+        description: null
+        type: string
+        required: false
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: length
+            values:
+            - '10'
+      - name: name
+        in: formData
+        weight: null
+        description: null
+        type: string
+        required: false
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: length
+            values:
+            - '10'
+      - name: stayTime
+        in: formData
+        weight: null
+        description: null
+        type: integer
+        format: int32
+        required: false
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: type
+            values:
+            - integer
+          - name: min
+            values:
+            - '1'
+          - name: max
+            values:
+            - '100'
+    - expectedResponse: 200
+      method: get
+      operationId: ts-station-service_queryForStationIdUsingGET
+      testPath: /api/v1/stationservice/stations/id/{stationNameForId}
+      testParameters:
+      - name: stationNameForId
+        in: path
+        weight: null
+        description: stationNameForId
+        type: string
+        required: true
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: length
+            values:
+            - '10'
+    - expectedResponse: 200
+      method: post
+      operationId: ts-station-service_queryForIdBatchUsingPOST
+      testPath: /api/v1/stationservice/stations/idlist
+      testParameters:
+      - name: body
+        in: body
+        weight: null
+        description: stationNameList
+        type: array
+        required: true
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: length
+            values:
+            - '10'
+    - expectedResponse: 200
+      method: get
+      operationId: ts-station-service_queryByIdUsingGET
+      testPath: /api/v1/stationservice/stations/name/{stationIdForName}
+      testParameters:
+      - name: stationIdForName
+        in: path
+        weight: null
+        description: stationIdForName
+        type: string
+        required: true
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: length
+            values:
+            - '10'
+    - expectedResponse: 200
+      method: post
+      operationId: ts-station-service_queryForNameBatchUsingPOST
+      testPath: /api/v1/stationservice/stations/namelist
+      testParameters:
+      - name: body
+        in: body
+        weight: null
+        description: stationIdList
+        type: array
+        required: true
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: length
+            values:
+            - '10'
+    - expectedResponse: 200
+      method: delete
+      operationId: ts-station-service_deleteUsingDELETE
+      testPath: /api/v1/stationservice/stations/{stationsId}
+      testParameters:
+      - name: stationsId
+        in: path
+        weight: null
+        description: stationsId
+        type: string
+        required: true
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: length
+            values:
+            - '10'
+    - expectedResponse: 200
+      method: get
+      operationId: ts-station-service_homeUsingGET
+      testPath: /api/v1/stationservice/welcome
+      testParameters: null

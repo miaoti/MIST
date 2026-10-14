@@ -1,0 +1,8 @@
+[11:45:28] driver start
+[11:45:28] port-forward pids: jaeger 41060, dashboard 28164
+[11:45:41] login probe ok=True
+[11:45:41] jaeger services: 200, 819 bytes
+[11:45:41] MIST run starts
+[12:23:25] mist exit: 0
+[12:23:28] copied 3951 result files
+[12:23:28] driver done

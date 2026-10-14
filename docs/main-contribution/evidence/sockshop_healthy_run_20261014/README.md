@@ -50,8 +50,10 @@ The cause is the missing customer id of a session-less request, which the user s
 to parse as a Mongo ObjectId ("Invalid Id Hex") and answers with 500 instead of 400 or 401; the
 front-end then answers the client with 200 and the error in the body. The Sniper values play no
 part: the positive tests fail the same way. The 503s (14 on `/cards`, 2 on `/catalogue`) are
-sidecar-level upstream errors under the run's load, also swallowed into a 200, and not counted
-in the paper.
+sidecar-level upstream errors under the run's load, also swallowed into a 200. Since round 9 the
+paper counts them: the 14 on `/cards` sit inside the 352 writes ("500, or 503 on 14 of them") and
+the two reads over a 503 are the extra two of the verdict table's Hidden 354
+(`../verdict_table_20261014/`).
 
 Manual reproduction (`manual/`): one `curl` each to `POST /addresses` and `POST /cards` with a
 plausible body and no session returns `HTTP/1.1 200 OK` with the same error body.
