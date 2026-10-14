@@ -1,0 +1,9 @@
+[12:41:42] driver start
+[12:41:43] port-forward pids: jaeger 44576, ingress 42296
+[12:41:51] reviews probe 200, body: {"id": "0", "podname": "reviews-v3-77f747dc48-wl28r", "clustername": "null", "reviews": [{"reviewer": "Reviewer1", "text": "An extremely entertaining play by Sh
+[12:41:51] ratings probe: 503 (expected 503 under the outage)
+[12:41:51] jaeger services: 200, 819 bytes
+[12:41:51] MIST run starts
+[12:55:26] mist exit: 0
+[12:55:26] copied 841 result files
+[12:55:26] driver done
