@@ -1,5 +1,6 @@
 % =============================================================================
-% Bibliography for the MIST tool-demo paper, ISSTA 2026 Tool Demonstrations.
+% Bibliography for the MIST tool-demo paper (SANER 2027 Tool Demo Track; shared
+% with the archived ISSTA 2026 submission main_issta.tex).
 % Comparator/benchmark/standard entries verified against ACM DL / IEEE Xplore
 % (2026-06-02). Recent tool/NIER entries carry publisher metadata where issued.
 % =============================================================================
@@ -8,7 +9,7 @@
 
 @article{Arcuri2019EvoMasterTOSEM,
   author    = {Andrea Arcuri},
-  title     = {{RESTful} {API} Automated Test Case Generation with EvoMaster},
+  title     = {{RESTful} {API} Automated Test Case Generation with {EvoMaster}},
   journal   = {ACM Transactions on Software Engineering and Methodology},
   volume    = {28},
   number    = {1},
@@ -113,7 +114,7 @@
   author       = {{Cloud Native Computing Foundation}},
   title        = {{OpenTelemetry}: A {CNCF} Observability Framework},
   howpublished = {\url{https://opentelemetry.io}},
-  note         = {Accessed: 2026-05-08},
+  note         = {Accessed 13 Oct. 2026},
   year         = {2026}
 }
 
@@ -149,7 +150,6 @@
   author        = {Ke Zhang and Chenxi Zhang and Chong Wang and Chi Zhang and YaChen Wu and Zhenchang Xing and Yang Liu and Qingshan Li and Xin Peng},
   title         = {{LogiAgent}: Automated Logical Testing for {REST} Systems with {LLM}-Based Multi-Agents},
   year          = {2025},
-  month         = mar,
   eprint        = {2503.15079},
   archivePrefix = {arXiv},
   primaryClass  = {cs.SE},
@@ -166,7 +166,7 @@
   archivePrefix = {arXiv},
   primaryClass  = {cs.SE},
   url           = {https://arxiv.org/abs/2512.08706},
-  note          = {ICSE 2026 Demonstrations}
+  note          = {{ICSE} 2026 Demonstrations}
 }
 
 % SATORI (ASE'25): LLM-inferred response-field test oracles from the OpenAPI spec.
@@ -216,5 +216,133 @@
   title        = {{Tracetest}: Trace-based Testing with {OpenTelemetry}},
   howpublished = {\url{https://tracetest.io}},
   year         = {2024},
-  note         = {Open-source trace-assertion testing tool; accessed 2026}
+  note         = {Open-source trace-assertion testing tool; accessed 13 Oct. 2026}
+}
+
+% Oracle-generation line and mutation references asked for by the ISSTA 2026 reviewers
+% (added 2026-10-13; metadata from Crossref).
+@inproceedings{Alonso2023AGORA,
+  author    = {Juan C. Alonso and Sergio Segura and Antonio Ruiz-Cort{\'e}s},
+  title     = {{AGORA}: Automated Generation of Test Oracles for {REST} {APIs}},
+  booktitle = {Proceedings of the 32nd {ACM} {SIGSOFT} International Symposium on Software Testing and Analysis ({ISSTA})},
+  pages     = {1018--1030},
+  publisher = {{ACM}},
+  year      = {2023},
+  doi       = {10.1145/3597926.3598114}
+}
+
+% TOSEM 35(1), pages 1-37, online 11 Dec. 2025, issue dated Jan. 2026 (Crossref).
+@article{Alonso2026TOSEMOracles,
+  author  = {Juan C. Alonso and Michael D. Ernst and Sergio Segura and Antonio Ruiz-Cort{\'e}s},
+  title   = {Test Oracle Generation for {REST} {APIs}},
+  journal = {ACM Transactions on Software Engineering and Methodology},
+  volume  = {35},
+  number  = {1},
+  pages   = {1--37},
+  year    = {2026},
+  doi     = {10.1145/3726524}
+}
+
+@article{Jia2011MutationSurvey,
+  author  = {Yue Jia and Mark Harman},
+  title   = {An Analysis and Survey of the Development of Mutation Testing},
+  journal = {{IEEE} Transactions on Software Engineering},
+  volume  = {37},
+  number  = {5},
+  pages   = {649--678},
+  year    = {2011},
+  doi     = {10.1109/TSE.2010.62}
+}
+
+@inproceedings{Salva2024Mutation,
+  author    = {S{\'e}bastien Salva and Jarod Sue},
+  title     = {Security Testing of {RESTful} {APIs} with Test Case Mutation},
+  booktitle = {Proceedings of the 19th International Conference on Evaluation of Novel Approaches to Software Engineering ({ENASE})},
+  pages     = {582--589},
+  publisher = {{SCITEPRESS}},
+  year      = {2024},
+  doi       = {10.5220/0012698600003687}
+}
+
+% Record-and-replay and trace-assertion neighbours named in Related Work (added 2026-10-13).
+% Keploy: site tagline verified 2026-10-13 ("Turn real application traffic into tests and
+% dependency sandboxes"); core record-and-replay is Apache-2.0 at github.com/keploy/keploy.
+@misc{Keploy,
+  author       = {{Keploy}},
+  title        = {Keploy: Turn Real Application Traffic into Tests and Dependency Sandboxes},
+  howpublished = {\url{https://keploy.io}},
+  note         = {Accessed 13 Oct. 2026},
+  year         = {2026}
+}
+
+% Malabi: GitHub About line "Tracing Based JavaScript Assertions"; README calls it an
+% OpenTelemetry based test framework; repository archived by the owner on 31 Oct. 2024.
+@misc{Malabi,
+  author       = {{Aspecto}},
+  title        = {Malabi: Tracing Based {JavaScript} Assertions},
+  howpublished = {\url{https://github.com/aspecto-io/malabi}},
+  note         = {Repository archived 31 Oct. 2024; accessed 13 Oct. 2026},
+  year         = {2024}
+}
+
+% ---------- Added 2026-10-13 for the SANER 2027 revision ----------
+
+% RestTestGen framework tool paper. Metadata from Crossref (10.1109/icsme55016.2022.00068),
+% IEEE Xplore document 9978261, pages 504-508.
+@inproceedings{Corradini2022RestTestGen,
+  author    = {Davide Corradini and Amedeo Zampieri and Michele Pasqua and Mariano Ceccato},
+  title     = {{RestTestGen}: An Extensible Framework for Automated Black-box Testing of {RESTful} {APIs}},
+  booktitle = {2022 {IEEE} International Conference on Software Maintenance and Evolution ({ICSME})},
+  pages     = {504--508},
+  publisher = {{IEEE}},
+  year      = {2022},
+  doi       = {10.1109/ICSME55016.2022.00068}
+}
+
+% Field survey used for the black-box definition (specification and responses).
+% Metadata from Crossref: TOSEM 33(1), pages 1-41, online 24 Nov 2023, print Jan 2024.
+@article{Golmohammadi2024Survey,
+  author  = {Amid Golmohammadi and Man Zhang and Andrea Arcuri},
+  title   = {Testing {RESTful} {APIs}: A Survey},
+  journal = {ACM Transactions on Software Engineering and Methodology},
+  volume  = {33},
+  number  = {1},
+  pages   = {1--41},
+  year    = {2024},
+  doi     = {10.1145/3617175}
+}
+
+% Systems under test (first body mention carries the citation).
+@misc{IstioBookinfo,
+  author       = {{Istio Authors}},
+  title        = {Bookinfo Application},
+  howpublished = {\url{https://istio.io/latest/docs/examples/bookinfo/}},
+  note         = {Accessed 13 Oct. 2026},
+  year         = {2026}
+}
+
+% Attribution verified from the owning GitHub organization record, whose
+% description reads "A generic microservices application, built at Weaveworks".
+@misc{SockShop,
+  author       = {{Weaveworks}},
+  title        = {{Sock Shop}: A Microservice Demo Application},
+  howpublished = {\url{https://github.com/microservices-demo/microservices-demo}},
+  note         = {Repository marked deprecated; accessed 13 Oct. 2026},
+  year         = {2026}
+}
+
+@misc{OnlineBoutique,
+  author       = {{Google Cloud Platform}},
+  title        = {Online Boutique: A Cloud-First Microservices Demo Application},
+  howpublished = {\url{https://github.com/GoogleCloudPlatform/microservices-demo}},
+  note         = {Accessed 13 Oct. 2026},
+  year         = {2026}
+}
+
+@misc{Jaeger,
+  author       = {{Jaeger Authors}},
+  title        = {Jaeger: Open Source, Distributed Tracing Platform},
+  howpublished = {\url{https://www.jaegertracing.io}},
+  note         = {Accessed 13 Oct. 2026},
+  year         = {2026}
 }

@@ -1,0 +1,1437 @@
+* [34m
+ _____          ___  ___          _
+|  ___|         |  \/  |         | |
+| |____   _____ | .  . | __ _ ___| |_ ___ _ __
+|  __\ \ / / _ \| |\/| |/ _` / __| __/ _ \ '__|
+| |___\ V / (_) | |  | | (_| \__ \ ||  __/ |
+\____/ \_/ \___/\_|  |_/\__,_|___/\__\___|_|
+
+                    [0m
+* EvoMaster version: 6.2.0
+* [31mWARNING: You are doing Black-Box testing, but you did not specify the 'problemType'. The system will default to RESTful API testing.[0m
+* [31mWARNING: You are doing Black-Box testing, but you did not specify the 'outputFormat'. The system will default to PYTHON_UNITTEST.[0m
+* [31mWARNING: You have not setup 'ratePerMinute'. If you are doing testing of a remote service which you do not own, you might want to put a rate-limiter to prevent EvoMaster from bombarding such service with HTTP requests. EvoMaster automatically honors 429 responses, and waits accordingly based on the returned Retry-After header. Still, you might also want to use 'ratePerMinute' if you are just testing EvoMaster out on some public APIs.[0m
+* Going to create configuration file at: C:\Users\miaot\AppData\Local\Temp\claude\C--Users-miaot-Github-MIST\ff587ce8-520f-4e42-8877-69e8a53396b6\scratchpad\baselines-outage-productpage\evomaster\em.yaml
+* [31mWARNING: [33mYou are modifying the value of some internal settings. In general, this is not recommended, especially if it is first time you use EvoMaster, unless you are an experienced user. Involved features: [bbSwaggerUrl, bbTargetUrl, seed, writeStatistics]. Especially for beginners, you should only modify the 'important' settings:[0m[34m [base, blackBox, configPath, dtoForRequestPayload, endpointExclude, endpointFocus, endpointPrefix, endpointTagFilter, fieldsToSkipInAssertions, header0, header1, header2, maxTestsPerTestSuite, maxTime, outputFilePrefix, outputFileSuffix, outputFolder, outputFormat, overlay, overlayFileSuffixes, overlayLenient, overrideOpenAPIUrl, prematureStop, ratePerMinute, schema, sutControllerHost, sutControllerPort, testTimeout].[0m[33m For more information, see the documentation at:[0m[34m https://github.com/WebFuzzing/EvoMaster/blob/master/docs/options.md[0m[0m
+* Loading configuration file from: C:\Users\miaot\AppData\Local\Temp\claude\C--Users-miaot-Github-MIST\ff587ce8-520f-4e42-8877-69e8a53396b6\scratchpad\baselines-outage-productpage\evomaster\em.yaml
+* Initializing...
+* [31mWARNING: No authentication info was provided. Unless you are testing an example API, you should setup some authentication info for different users. If this is the first time you are using EvoMaster, and you just want to get a feeling of how it works, then ignore this warning. However, to get better results, you will need setup authentication info, eventually. More info is currently available at [34mhttps://github.com/WebFuzzing/EvoMaster/blob/master/docs/auth.md[0m[0m
+* There is only 1 usable RESTful API endpoint defined in the schema configuration
+* [33m[WARNING] [0m[33mSome experimental settings have been activated. Those might not work as expected, or simply straight out crash. Furthermore, they might simply be incomplete features still under development. Activated experimental settings: [enableStaticFlakyInference, skipAIModelUpdateWhenResponseIsNot2xxOr400][0m
+* Starting phase SEARCH
+* Starting to generate test cases
+[2K* Consumed search budget: 0.244%
+[2K* Covered targets: 0
+[2K* Time per test: 439.0ms (1.0 actions)
+[2K* Time since last improvement: 0s
+[1A[1A[1A[1A[2K* Consumed search budget: 0.527%
+[2K* Covered targets: 0
+[2K* Time per test: 71.6ms (1.4 actions)
+[2K* Time since last improvement: 0s
+[1A[1A[1A[1A[2K* Consumed search budget: 0.812%
+[2K* Covered targets: 0
+[2K* Time per test: 62.4ms (1.5 actions)
+[2K* Time since last improvement: 1s
+[1A[1A[1A[1A[2K* Consumed search budget: 1.101%
+[2K* Covered targets: 4
+[2K* Time per test: 45.2ms (1.3 actions)
+[2K* Time since last improvement: 1s
+[1A[1A[1A[1A[2K* Consumed search budget: 1.381%
+[2K* Covered targets: 4
+[2K* Time per test: 38.7ms (1.2 actions)
+[2K* Time since last improvement: 2s
+[1A[1A[1A[1A[2K* Consumed search budget: 1.726%
+[2K* Covered targets: 4
+[2K* Time per test: 38.2ms (1.2 actions)
+[2K* Time since last improvement: 2s
+[1A[1A[1A[1A[2K* Consumed search budget: 2.016%
+[2K* Covered targets: 4
+[2K* Time per test: 29.9ms (1.2 actions)
+[2K* Time since last improvement: 3s
+[1A[1A[1A[1A[2K* Consumed search budget: 2.302%
+[2K* Covered targets: 4
+[2K* Time per test: 25.6ms (1.1 actions)
+[2K* Time since last improvement: 3s
+[1A[1A[1A[1A[2K* Consumed search budget: 2.580%
+[2K* Covered targets: 4
+[2K* Time per test: 26.0ms (1.2 actions)
+[2K* Time since last improvement: 4s
+[1A[1A[1A[1A[2K* Consumed search budget: 2.862%
+[2K* Covered targets: 4
+[2K* Time per test: 22.8ms (1.2 actions)
+[2K* Time since last improvement: 4s
+[1A[1A[1A[1A[2K* Consumed search budget: 3.146%
+[2K* Covered targets: 4
+[2K* Time per test: 21.9ms (1.1 actions)
+[2K* Time since last improvement: 5s
+[1A[1A[1A[1A[2K* Consumed search budget: 3.432%
+[2K* Covered targets: 4
+[2K* Time per test: 23.5ms (1.2 actions)
+[2K* Time since last improvement: 5s
+[1A[1A[1A[1A[2K* Consumed search budget: 3.717%
+[2K* Covered targets: 4
+[2K* Time per test: 19.8ms (1.1 actions)
+[2K* Time since last improvement: 6s
+[1A[1A[1A[1A[2K* Consumed search budget: 4.003%
+[2K* Covered targets: 4
+[2K* Time per test: 22.5ms (1.3 actions)
+[2K* Time since last improvement: 6s
+[1A[1A[1A[1A[2K* Consumed search budget: 4.284%
+[2K* Covered targets: 4
+[2K* Time per test: 21.8ms (1.3 actions)
+[2K* Time since last improvement: 7s
+[1A[1A[1A[1A[2K* Consumed search budget: 4.564%
+[2K* Covered targets: 4
+[2K* Time per test: 21.3ms (1.3 actions)
+[2K* Time since last improvement: 7s
+[1A[1A[1A[1A[2K* Consumed search budget: 4.854%
+[2K* Covered targets: 4
+[2K* Time per test: 22.4ms (1.3 actions)
+[2K* Time since last improvement: 8s
+[1A[1A[1A[1A[2K* Consumed search budget: 5.137%
+[2K* Covered targets: 4
+[2K* Time per test: 21.8ms (1.3 actions)
+[2K* Time since last improvement: 8s
+[1A[1A[1A[1A[2K* Consumed search budget: 5.459%
+[2K* Covered targets: 4
+[2K* Time per test: 23.5ms (1.3 actions)
+[2K* Time since last improvement: 9s
+[1A[1A[1A[1A[2K* Consumed search budget: 5.739%
+[2K* Covered targets: 4
+[2K* Time per test: 23.9ms (1.2 actions)
+[2K* Time since last improvement: 9s
+[1A[1A[1A[1A[2K* Consumed search budget: 6.034%
+[2K* Covered targets: 4
+[2K* Time per test: 26.2ms (1.2 actions)
+[2K* Time since last improvement: 10s
+[1A[1A[1A[1A[2K* Consumed search budget: 6.325%
+[2K* Covered targets: 4
+[2K* Time per test: 28.4ms (1.2 actions)
+[2K* Time since last improvement: 10s
+[1A[1A[1A[1A[2K* Consumed search budget: 6.613%
+[2K* Covered targets: 4
+[2K* Time per test: 29.7ms (1.3 actions)
+[2K* Time since last improvement: 11s
+[1A[1A[1A[1A[2K* Consumed search budget: 6.898%
+[2K* Covered targets: 4
+[2K* Time per test: 25.6ms (1.2 actions)
+[2K* Time since last improvement: 11s
+[1A[1A[1A[1A[2K* Consumed search budget: 7.179%
+[2K* Covered targets: 4
+[2K* Time per test: 26.6ms (1.3 actions)
+[2K* Time since last improvement: 12s
+[1A[1A[1A[1A[2K* Consumed search budget: 7.461%
+[2K* Covered targets: 4
+[2K* Time per test: 23.8ms (1.3 actions)
+[2K* Time since last improvement: 12s
+[1A[1A[1A[1A[2K* Consumed search budget: 7.821%
+[2K* Covered targets: 4
+[2K* Time per test: 21.1ms (1.3 actions)
+[2K* Time since last improvement: 13s
+[1A[1A[1A[1A[2K* Consumed search budget: 8.119%
+[2K* Covered targets: 4
+[2K* Time per test: 21.6ms (1.4 actions)
+[2K* Time since last improvement: 14s
+[1A[1A[1A[1A[2K* Consumed search budget: 8.400%
+[2K* Covered targets: 4
+[2K* Time per test: 17.8ms (1.2 actions)
+[2K* Time since last improvement: 14s
+[1A[1A[1A[1A[2K* Consumed search budget: 8.719%
+[2K* Covered targets: 4
+[2K* Time per test: 19.2ms (1.3 actions)
+[2K* Time since last improvement: 15s
+[1A[1A[1A[1A[2K* Consumed search budget: 8.999%
+[2K* Covered targets: 4
+[2K* Time per test: 16.9ms (1.2 actions)
+[2K* Time since last improvement: 15s
+[1A[1A[1A[1A[2K* Consumed search budget: 9.279%
+[2K* Covered targets: 4
+[2K* Time per test: 17.2ms (1.2 actions)
+[2K* Time since last improvement: 16s
+[1A[1A[1A[1A[2K* Consumed search budget: 9.584%
+[2K* Covered targets: 4
+[2K* Time per test: 17.4ms (1.2 actions)
+[2K* Time since last improvement: 16s
+[1A[1A[1A[1A[2K* Consumed search budget: 9.874%
+[2K* Covered targets: 4
+[2K* Time per test: 18.7ms (1.3 actions)
+[2K* Time since last improvement: 17s
+[1A[1A[1A[1A[2K* Consumed search budget: 10.153%
+[2K* Covered targets: 4
+[2K* Time per test: 20.1ms (1.4 actions)
+[2K* Time since last improvement: 17s
+[1A[1A[1A[1A[2K* Consumed search budget: 10.432%
+[2K* Covered targets: 4
+[2K* Time per test: 19.9ms (1.4 actions)
+[2K* Time since last improvement: 18s
+[1A[1A[1A[1A[2K* Consumed search budget: 10.716%
+[2K* Covered targets: 4
+[2K* Time per test: 19.3ms (1.3 actions)
+[2K* Time since last improvement: 18s
+[1A[1A[1A[1A[2K* Consumed search budget: 11.002%
+[2K* Covered targets: 4
+[2K* Time per test: 18.8ms (1.3 actions)
+[2K* Time since last improvement: 19s
+[1A[1A[1A[1A[2K* Consumed search budget: 11.281%
+[2K* Covered targets: 4
+[2K* Time per test: 21.0ms (1.4 actions)
+[2K* Time since last improvement: 19s
+[1A[1A[1A[1A[2K* Consumed search budget: 11.566%
+[2K* Covered targets: 4
+[2K* Time per test: 21.4ms (1.4 actions)
+[2K* Time since last improvement: 20s
+[1A[1A[1A[1A[2K* Consumed search budget: 11.847%
+[2K* Covered targets: 4
+[2K* Time per test: 21.4ms (1.4 actions)
+[2K* Time since last improvement: 20s
+[1A[1A[1A[1A[2K* Consumed search budget: 12.128%
+[2K* Covered targets: 4
+[2K* Time per test: 19.2ms (1.3 actions)
+[2K* Time since last improvement: 21s
+[1A[1A[1A[1A[2K* Consumed search budget: 12.422%
+[2K* Covered targets: 4
+[2K* Time per test: 18.1ms (1.3 actions)
+[2K* Time since last improvement: 21s
+[1A[1A[1A[1A[2K* Consumed search budget: 12.704%
+[2K* Covered targets: 4
+[2K* Time per test: 17.4ms (1.2 actions)
+[2K* Time since last improvement: 22s
+[1A[1A[1A[1A[2K* Consumed search budget: 12.998%
+[2K* Covered targets: 4
+[2K* Time per test: 18.6ms (1.2 actions)
+[2K* Time since last improvement: 22s
+[1A[1A[1A[1A[2K* Consumed search budget: 13.289%
+[2K* Covered targets: 4
+[2K* Time per test: 18.5ms (1.2 actions)
+[2K* Time since last improvement: 23s
+[1A[1A[1A[1A[2K* Consumed search budget: 13.623%
+[2K* Covered targets: 4
+[2K* Time per test: 19.1ms (1.3 actions)
+[2K* Time since last improvement: 24s
+[1A[1A[1A[1A[2K* Consumed search budget: 13.907%
+[2K* Covered targets: 4
+[2K* Time per test: 18.3ms (1.2 actions)
+[2K* Time since last improvement: 24s
+[1A[1A[1A[1A[2K* Consumed search budget: 14.192%
+[2K* Covered targets: 4
+[2K* Time per test: 18.5ms (1.3 actions)
+[2K* Time since last improvement: 25s
+[1A[1A[1A[1A[2K* Consumed search budget: 14.471%
+[2K* Covered targets: 4
+[2K* Time per test: 16.4ms (1.2 actions)
+[2K* Time since last improvement: 25s
+[1A[1A[1A[1A[2K* Consumed search budget: 14.752%
+[2K* Covered targets: 4
+[2K* Time per test: 16.8ms (1.2 actions)
+[2K* Time since last improvement: 26s
+[1A[1A[1A[1A[2K* Consumed search budget: 15.034%
+[2K* Covered targets: 4
+[2K* Time per test: 15.5ms (1.0 actions)
+[2K* Time since last improvement: 26s
+[1A[1A[1A[1A[2K* Consumed search budget: 15.336%
+[2K* Covered targets: 4
+[2K* Time per test: 17.7ms (1.2 actions)
+[2K* Time since last improvement: 27s
+[1A[1A[1A[1A[2K* Consumed search budget: 15.617%
+[2K* Covered targets: 4
+[2K* Time per test: 18.4ms (1.2 actions)
+[2K* Time since last improvement: 27s
+[1A[1A[1A[1A[2K* Consumed search budget: 15.898%
+[2K* Covered targets: 4
+[2K* Time per test: 17.0ms (1.2 actions)
+[2K* Time since last improvement: 28s
+[1A[1A[1A[1A[2K* Consumed search budget: 16.236%
+[2K* Covered targets: 4
+[2K* Time per test: 16.0ms (1.1 actions)
+[2K* Time since last improvement: 28s
+[1A[1A[1A[1A[2K* Consumed search budget: 16.518%
+[2K* Covered targets: 4
+[2K* Time per test: 15.3ms (1.1 actions)
+[2K* Time since last improvement: 29s
+[1A[1A[1A[1A[2K* Consumed search budget: 16.802%
+[2K* Covered targets: 4
+[2K* Time per test: 15.2ms (1.1 actions)
+[2K* Time since last improvement: 29s
+[1A[1A[1A[1A[2K* Consumed search budget: 17.099%
+[2K* Covered targets: 4
+[2K* Time per test: 15.4ms (1.1 actions)
+[2K* Time since last improvement: 30s
+[1A[1A[1A[1A[2K* Consumed search budget: 17.381%
+[2K* Covered targets: 4
+[2K* Time per test: 15.6ms (1.1 actions)
+[2K* Time since last improvement: 30s
+[1A[1A[1A[1A[2K* Consumed search budget: 17.665%
+[2K* Covered targets: 4
+[2K* Time per test: 15.4ms (1.1 actions)
+[2K* Time since last improvement: 31s
+[1A[1A[1A[1A[2K* Consumed search budget: 17.944%
+[2K* Covered targets: 4
+[2K* Time per test: 14.1ms (1.0 actions)
+[2K* Time since last improvement: 31s
+[1A[1A[1A[1A[2K* Consumed search budget: 18.229%
+[2K* Covered targets: 4
+[2K* Time per test: 15.6ms (1.1 actions)
+[2K* Time since last improvement: 32s
+[1A[1A[1A[1A[2K* Consumed search budget: 18.577%
+[2K* Covered targets: 4
+[2K* Time per test: 17.3ms (1.2 actions)
+[2K* Time since last improvement: 32s
+[1A[1A[1A[1A[2K* Consumed search budget: 18.856%
+[2K* Covered targets: 4
+[2K* Time per test: 17.5ms (1.2 actions)
+[2K* Time since last improvement: 33s
+[1A[1A[1A[1A[2K* Consumed search budget: 19.158%
+[2K* Covered targets: 4
+[2K* Time per test: 19.5ms (1.4 actions)
+[2K* Time since last improvement: 34s
+[1A[1A[1A[1A[2K* Consumed search budget: 19.436%
+[2K* Covered targets: 4
+[2K* Time per test: 19.9ms (1.4 actions)
+[2K* Time since last improvement: 34s
+[1A[1A[1A[1A[2K* Consumed search budget: 19.720%
+[2K* Covered targets: 4
+[2K* Time per test: 18.4ms (1.3 actions)
+[2K* Time since last improvement: 35s
+[1A[1A[1A[1A[2K* Consumed search budget: 19.998%
+[2K* Covered targets: 4
+[2K* Time per test: 17.9ms (1.3 actions)
+[2K* Time since last improvement: 35s
+[1A[1A[1A[1A[2K* Consumed search budget: 20.282%
+[2K* Covered targets: 4
+[2K* Time per test: 17.7ms (1.2 actions)
+[2K* Time since last improvement: 36s
+[1A[1A[1A[1A[2K* Consumed search budget: 20.562%
+[2K* Covered targets: 4
+[2K* Time per test: 18.1ms (1.2 actions)
+[2K* Time since last improvement: 36s
+[1A[1A[1A[1A[2K* Consumed search budget: 20.841%
+[2K* Covered targets: 4
+[2K* Time per test: 19.1ms (1.3 actions)
+[2K* Time since last improvement: 37s
+[1A[1A[1A[1A[2K* Consumed search budget: 21.156%
+[2K* Covered targets: 4
+[2K* Time per test: 18.5ms (1.2 actions)
+[2K* Time since last improvement: 37s
+[1A[1A[1A[1A[2K* Consumed search budget: 21.441%
+[2K* Covered targets: 4
+[2K* Time per test: 19.4ms (1.3 actions)
+[2K* Time since last improvement: 38s
+[1A[1A[1A[1A[2K* Consumed search budget: 21.724%
+[2K* Covered targets: 4
+[2K* Time per test: 18.1ms (1.3 actions)
+[2K* Time since last improvement: 38s
+[1A[1A[1A[1A[2K* Consumed search budget: 22.034%
+[2K* Covered targets: 4
+[2K* Time per test: 17.6ms (1.2 actions)
+[2K* Time since last improvement: 39s
+[1A[1A[1A[1A[2K* Consumed search budget: 22.318%
+[2K* Covered targets: 4
+[2K* Time per test: 16.6ms (1.2 actions)
+[2K* Time since last improvement: 39s
+[1A[1A[1A[1A[2K* Consumed search budget: 22.599%
+[2K* Covered targets: 4
+[2K* Time per test: 16.0ms (1.2 actions)
+[2K* Time since last improvement: 40s
+[1A[1A[1A[1A[2K* Consumed search budget: 22.926%
+[2K* Covered targets: 4
+[2K* Time per test: 17.3ms (1.3 actions)
+[2K* Time since last improvement: 40s
+[1A[1A[1A[1A[2K* Consumed search budget: 23.206%
+[2K* Covered targets: 4
+[2K* Time per test: 15.4ms (1.1 actions)
+[2K* Time since last improvement: 41s
+[1A[1A[1A[1A[2K* Consumed search budget: 23.510%
+[2K* Covered targets: 4
+[2K* Time per test: 16.2ms (1.2 actions)
+[2K* Time since last improvement: 41s
+[1A[1A[1A[1A[2K* Consumed search budget: 23.793%
+[2K* Covered targets: 4
+[2K* Time per test: 16.6ms (1.2 actions)
+[2K* Time since last improvement: 42s
+[1A[1A[1A[1A[2K* Consumed search budget: 24.072%
+[2K* Covered targets: 4
+[2K* Time per test: 16.5ms (1.2 actions)
+[2K* Time since last improvement: 42s
+[1A[1A[1A[1A[2K* Consumed search budget: 24.351%
+[2K* Covered targets: 4
+[2K* Time per test: 19.1ms (1.3 actions)
+[2K* Time since last improvement: 43s
+[1A[1A[1A[1A[2K* Consumed search budget: 24.649%
+[2K* Covered targets: 4
+[2K* Time per test: 19.6ms (1.3 actions)
+[2K* Time since last improvement: 43s
+[1A[1A[1A[1A[2K* Consumed search budget: 24.934%
+[2K* Covered targets: 4
+[2K* Time per test: 18.9ms (1.3 actions)
+[2K* Time since last improvement: 44s
+[1A[1A[1A[1A[2K* Consumed search budget: 25.257%
+[2K* Covered targets: 4
+[2K* Time per test: 19.7ms (1.3 actions)
+[2K* Time since last improvement: 45s
+[1A[1A[1A[1A[2K* Consumed search budget: 25.536%
+[2K* Covered targets: 4
+[2K* Time per test: 18.1ms (1.2 actions)
+[2K* Time since last improvement: 45s
+[1A[1A[1A[1A[2K* Consumed search budget: 25.824%
+[2K* Covered targets: 4
+[2K* Time per test: 17.9ms (1.1 actions)
+[2K* Time since last improvement: 46s
+[1A[1A[1A[1A[2K* Consumed search budget: 26.108%
+[2K* Covered targets: 4
+[2K* Time per test: 18.9ms (1.2 actions)
+[2K* Time since last improvement: 46s
+[1A[1A[1A[1A[2K* Consumed search budget: 26.388%
+[2K* Covered targets: 4
+[2K* Time per test: 16.6ms (1.1 actions)
+[2K* Time since last improvement: 47s
+[1A[1A[1A[1A[2K* Consumed search budget: 26.667%
+[2K* Covered targets: 4
+[2K* Time per test: 17.2ms (1.2 actions)
+[2K* Time since last improvement: 47s
+[1A[1A[1A[1A[2K* Consumed search budget: 26.951%
+[2K* Covered targets: 4
+[2K* Time per test: 18.4ms (1.3 actions)
+[2K* Time since last improvement: 48s
+[1A[1A[1A[1A[2K* Consumed search budget: 27.239%
+[2K* Covered targets: 4
+[2K* Time per test: 18.7ms (1.3 actions)
+[2K* Time since last improvement: 48s
+[1A[1A[1A[1A[2K* Consumed search budget: 27.524%
+[2K* Covered targets: 4
+[2K* Time per test: 20.5ms (1.3 actions)
+[2K* Time since last improvement: 49s
+[1A[1A[1A[1A[2K* Consumed search budget: 27.803%
+[2K* Covered targets: 4
+[2K* Time per test: 22.6ms (1.4 actions)
+[2K* Time since last improvement: 49s
+[1A[1A[1A[1A[2K* Consumed search budget: 28.088%
+[2K* Covered targets: 4
+[2K* Time per test: 23.3ms (1.4 actions)
+[2K* Time since last improvement: 50s
+[1A[1A[1A[1A[2K* Consumed search budget: 28.371%
+[2K* Covered targets: 4
+[2K* Time per test: 25.4ms (1.5 actions)
+[2K* Time since last improvement: 50s
+[1A[1A[1A[1A[2K* Consumed search budget: 28.654%
+[2K* Covered targets: 4
+[2K* Time per test: 25.9ms (1.4 actions)
+[2K* Time since last improvement: 51s
+[1A[1A[1A[1A[2K* Consumed search budget: 28.936%
+[2K* Covered targets: 4
+[2K* Time per test: 25.1ms (1.4 actions)
+[2K* Time since last improvement: 51s
+[1A[1A[1A[1A[2K* Consumed search budget: 29.262%
+[2K* Covered targets: 4
+[2K* Time per test: 25.9ms (1.5 actions)
+[2K* Time since last improvement: 52s
+[1A[1A[1A[1A[2K* Consumed search budget: 29.655%
+[2K* Covered targets: 4
+[2K* Time per test: 27.4ms (1.6 actions)
+[2K* Time since last improvement: 52s
+[1A[1A[1A[1A[2K* Consumed search budget: 29.946%
+[2K* Covered targets: 4
+[2K* Time per test: 24.0ms (1.5 actions)
+[2K* Time since last improvement: 53s
+[1A[1A[1A[1A[2K* Consumed search budget: 30.228%
+[2K* Covered targets: 4
+[2K* Time per test: 24.5ms (1.5 actions)
+[2K* Time since last improvement: 53s
+[1A[1A[1A[1A[2K* Consumed search budget: 30.524%
+[2K* Covered targets: 4
+[2K* Time per test: 22.4ms (1.3 actions)
+[2K* Time since last improvement: 54s
+[1A[1A[1A[1A[2K* Consumed search budget: 30.805%
+[2K* Covered targets: 4
+[2K* Time per test: 19.9ms (1.2 actions)
+[2K* Time since last improvement: 55s
+[1A[1A[1A[1A[2K* Consumed search budget: 31.088%
+[2K* Covered targets: 4
+[2K* Time per test: 19.0ms (1.1 actions)
+[2K* Time since last improvement: 55s
+[1A[1A[1A[1A[2K* Consumed search budget: 31.373%
+[2K* Covered targets: 4
+[2K* Time per test: 18.4ms (1.2 actions)
+[2K* Time since last improvement: 56s
+[1A[1A[1A[1A[2K* Consumed search budget: 31.653%
+[2K* Covered targets: 4
+[2K* Time per test: 17.9ms (1.2 actions)
+[2K* Time since last improvement: 56s
+[1A[1A[1A[1A[2K* Consumed search budget: 31.949%
+[2K* Covered targets: 4
+[2K* Time per test: 17.7ms (1.1 actions)
+[2K* Time since last improvement: 57s
+[1A[1A[1A[1A[2K* Consumed search budget: 32.292%
+[2K* Covered targets: 4
+[2K* Time per test: 20.8ms (1.2 actions)
+[2K* Time since last improvement: 57s
+[1A[1A[1A[1A[2K* Consumed search budget: 32.571%
+[2K* Covered targets: 4
+[2K* Time per test: 21.3ms (1.1 actions)
+[2K* Time since last improvement: 58s
+[1A[1A[1A[1A[2K* Consumed search budget: 32.859%
+[2K* Covered targets: 4
+[2K* Time per test: 23.4ms (1.2 actions)
+[2K* Time since last improvement: 58s
+[1A[1A[1A[1A[2K* Consumed search budget: 33.242%
+[2K* Covered targets: 4
+[2K* Time per test: 25.7ms (1.3 actions)
+[2K* Time since last improvement: 59s
+[1A[1A[1A[1A[2K* Consumed search budget: 33.527%
+[2K* Covered targets: 4
+[2K* Time per test: 26.0ms (1.3 actions)
+[2K* Time since last improvement: 59s
+[1A[1A[1A[1A[2K* Consumed search budget: 33.813%
+[2K* Covered targets: 4
+[2K* Time per test: 23.9ms (1.3 actions)
+[2K* Time since last improvement: 60s
+[1A[1A[1A[1A[2K* Consumed search budget: 34.096%
+[2K* Covered targets: 4
+[2K* Time per test: 21.5ms (1.2 actions)
+[2K* Time since last improvement: 60s
+[1A[1A[1A[1A[2K* Consumed search budget: 34.377%
+[2K* Covered targets: 4
+[2K* Time per test: 20.2ms (1.2 actions)
+[2K* Time since last improvement: 61s
+[1A[1A[1A[1A[2K* Consumed search budget: 34.661%
+[2K* Covered targets: 4
+[2K* Time per test: 18.1ms (1.1 actions)
+[2K* Time since last improvement: 61s
+[1A[1A[1A[1A[2K* Consumed search budget: 34.942%
+[2K* Covered targets: 4
+[2K* Time per test: 18.2ms (1.1 actions)
+[2K* Time since last improvement: 62s
+[1A[1A[1A[1A[2K* Consumed search budget: 35.227%
+[2K* Covered targets: 4
+[2K* Time per test: 20.0ms (1.2 actions)
+[2K* Time since last improvement: 62s
+[1A[1A[1A[1A[2K* Consumed search budget: 35.510%
+[2K* Covered targets: 4
+[2K* Time per test: 19.5ms (1.1 actions)
+[2K* Time since last improvement: 63s
+[1A[1A[1A[1A[2K* Consumed search budget: 35.790%
+[2K* Covered targets: 4
+[2K* Time per test: 20.8ms (1.2 actions)
+[2K* Time since last improvement: 63s
+[1A[1A[1A[1A[2K* Consumed search budget: 36.070%
+[2K* Covered targets: 4
+[2K* Time per test: 20.8ms (1.2 actions)
+[2K* Time since last improvement: 64s
+[1A[1A[1A[1A[2K* Consumed search budget: 36.382%
+[2K* Covered targets: 4
+[2K* Time per test: 22.5ms (1.2 actions)
+[2K* Time since last improvement: 65s
+[1A[1A[1A[1A[2K* Consumed search budget: 36.660%
+[2K* Covered targets: 4
+[2K* Time per test: 20.7ms (1.1 actions)
+[2K* Time since last improvement: 65s
+[1A[1A[1A[1A[2K* Consumed search budget: 36.989%
+[2K* Covered targets: 4
+[2K* Time per test: 21.6ms (1.2 actions)
+[2K* Time since last improvement: 66s
+[1A[1A[1A[1A[2K* Consumed search budget: 37.273%
+[2K* Covered targets: 4
+[2K* Time per test: 22.9ms (1.2 actions)
+[2K* Time since last improvement: 66s
+[1A[1A[1A[1A[2K* Consumed search budget: 37.552%
+[2K* Covered targets: 4
+[2K* Time per test: 23.8ms (1.2 actions)
+[2K* Time since last improvement: 67s
+[1A[1A[1A[1A[2K* Consumed search budget: 37.835%
+[2K* Covered targets: 4
+[2K* Time per test: 24.4ms (1.2 actions)
+[2K* Time since last improvement: 67s
+[1A[1A[1A[1A[2K* Consumed search budget: 38.118%
+[2K* Covered targets: 4
+[2K* Time per test: 27.8ms (1.3 actions)
+[2K* Time since last improvement: 68s
+[1A[1A[1A[1A[2K* Consumed search budget: 38.401%
+[2K* Covered targets: 4
+[2K* Time per test: 30.3ms (1.3 actions)
+[2K* Time since last improvement: 68s
+[1A[1A[1A[1A[2K* Consumed search budget: 38.679%
+[2K* Covered targets: 4
+[2K* Time per test: 31.9ms (1.3 actions)
+[2K* Time since last improvement: 69s
+[1A[1A[1A[1A[2K* Consumed search budget: 38.965%
+[2K* Covered targets: 4
+[2K* Time per test: 32.5ms (1.4 actions)
+[2K* Time since last improvement: 69s
+[1A[1A[1A[1A[2K* Consumed search budget: 39.246%
+[2K* Covered targets: 4
+[2K* Time per test: 32.0ms (1.4 actions)
+[2K* Time since last improvement: 70s
+[1A[1A[1A[1A[2K* Consumed search budget: 39.529%
+[2K* Covered targets: 4
+[2K* Time per test: 26.9ms (1.3 actions)
+[2K* Time since last improvement: 70s
+[1A[1A[1A[1A[2K* Consumed search budget: 39.811%
+[2K* Covered targets: 4
+[2K* Time per test: 17.9ms (1.1 actions)
+[2K* Time since last improvement: 71s
+[1A[1A[1A[1A[2K* Consumed search budget: 40.089%
+[2K* Covered targets: 4
+[2K* Time per test: 15.7ms (1.1 actions)
+[2K* Time since last improvement: 71s
+[1A[1A[1A[1A[2K* Consumed search budget: 40.372%
+[2K* Covered targets: 4
+[2K* Time per test: 17.2ms (1.2 actions)
+[2K* Time since last improvement: 72s
+[1A[1A[1A[1A[2K* Consumed search budget: 40.672%
+[2K* Covered targets: 4
+[2K* Time per test: 18.1ms (1.3 actions)
+[2K* Time since last improvement: 72s
+[1A[1A[1A[1A[2K* Consumed search budget: 40.957%
+[2K* Covered targets: 4
+[2K* Time per test: 18.2ms (1.4 actions)
+[2K* Time since last improvement: 73s
+[1A[1A[1A[1A[2K* Consumed search budget: 41.241%
+[2K* Covered targets: 4
+[2K* Time per test: 21.1ms (1.5 actions)
+[2K* Time since last improvement: 73s
+[1A[1A[1A[1A[2K* Consumed search budget: 41.555%
+[2K* Covered targets: 4
+[2K* Time per test: 21.0ms (1.4 actions)
+[2K* Time since last improvement: 74s
+[1A[1A[1A[1A[2K* Consumed search budget: 41.838%
+[2K* Covered targets: 4
+[2K* Time per test: 20.2ms (1.4 actions)
+[2K* Time since last improvement: 74s
+[1A[1A[1A[1A[2K* Consumed search budget: 42.117%
+[2K* Covered targets: 4
+[2K* Time per test: 20.4ms (1.4 actions)
+[2K* Time since last improvement: 75s
+[1A[1A[1A[1A[2K* Consumed search budget: 42.401%
+[2K* Covered targets: 4
+[2K* Time per test: 16.9ms (1.3 actions)
+[2K* Time since last improvement: 75s
+[1A[1A[1A[1A[2K* Consumed search budget: 42.681%
+[2K* Covered targets: 4
+[2K* Time per test: 14.4ms (1.1 actions)
+[2K* Time since last improvement: 76s
+[1A[1A[1A[1A[2K* Consumed search budget: 42.962%
+[2K* Covered targets: 4
+[2K* Time per test: 15.9ms (1.2 actions)
+[2K* Time since last improvement: 76s
+[1A[1A[1A[1A[2K* Consumed search budget: 43.285%
+[2K* Covered targets: 4
+[2K* Time per test: 17.2ms (1.2 actions)
+[2K* Time since last improvement: 77s
+[1A[1A[1A[1A[2K* Consumed search budget: 43.569%
+[2K* Covered targets: 4
+[2K* Time per test: 18.0ms (1.3 actions)
+[2K* Time since last improvement: 77s
+[1A[1A[1A[1A[2K* Consumed search budget: 43.902%
+[2K* Covered targets: 4
+[2K* Time per test: 21.6ms (1.3 actions)
+[2K* Time since last improvement: 78s
+[1A[1A[1A[1A[2K* Consumed search budget: 44.192%
+[2K* Covered targets: 4
+[2K* Time per test: 22.1ms (1.2 actions)
+[2K* Time since last improvement: 79s
+[1A[1A[1A[1A[2K* Consumed search budget: 44.485%
+[2K* Covered targets: 4
+[2K* Time per test: 25.5ms (1.4 actions)
+[2K* Time since last improvement: 79s
+[1A[1A[1A[1A[2K* Consumed search budget: 44.764%
+[2K* Covered targets: 4
+[2K* Time per test: 27.5ms (1.4 actions)
+[2K* Time since last improvement: 80s
+[1A[1A[1A[1A[2K* Consumed search budget: 45.044%
+[2K* Covered targets: 4
+[2K* Time per test: 28.7ms (1.5 actions)
+[2K* Time since last improvement: 80s
+[1A[1A[1A[1A[2K* Consumed search budget: 45.331%
+[2K* Covered targets: 4
+[2K* Time per test: 29.1ms (1.4 actions)
+[2K* Time since last improvement: 81s
+[1A[1A[1A[1A[2K* Consumed search budget: 45.620%
+[2K* Covered targets: 4
+[2K* Time per test: 26.2ms (1.5 actions)
+[2K* Time since last improvement: 81s
+[1A[1A[1A[1A[2K* Consumed search budget: 45.904%
+[2K* Covered targets: 4
+[2K* Time per test: 24.4ms (1.4 actions)
+[2K* Time since last improvement: 82s
+[1A[1A[1A[1A[2K* Consumed search budget: 46.189%
+[2K* Covered targets: 4
+[2K* Time per test: 25.7ms (1.5 actions)
+[2K* Time since last improvement: 82s
+[1A[1A[1A[1A[2K* Consumed search budget: 46.468%
+[2K* Covered targets: 4
+[2K* Time per test: 24.7ms (1.4 actions)
+[2K* Time since last improvement: 83s
+[1A[1A[1A[1A[2K* Consumed search budget: 46.749%
+[2K* Covered targets: 4
+[2K* Time per test: 24.6ms (1.4 actions)
+[2K* Time since last improvement: 83s
+[1A[1A[1A[1A[2K* Consumed search budget: 47.034%
+[2K* Covered targets: 4
+[2K* Time per test: 24.1ms (1.4 actions)
+[2K* Time since last improvement: 84s
+[1A[1A[1A[1A[2K* Consumed search budget: 47.318%
+[2K* Covered targets: 4
+[2K* Time per test: 20.0ms (1.2 actions)
+[2K* Time since last improvement: 84s
+[1A[1A[1A[1A[2K* Consumed search budget: 47.596%
+[2K* Covered targets: 4
+[2K* Time per test: 18.9ms (1.2 actions)
+[2K* Time since last improvement: 85s
+[1A[1A[1A[1A[2K* Consumed search budget: 47.881%
+[2K* Covered targets: 4
+[2K* Time per test: 19.7ms (1.3 actions)
+[2K* Time since last improvement: 85s
+[1A[1A[1A[1A[2K* Consumed search budget: 48.174%
+[2K* Covered targets: 4
+[2K* Time per test: 19.8ms (1.2 actions)
+[2K* Time since last improvement: 86s
+[1A[1A[1A[1A[2K* Consumed search budget: 48.502%
+[2K* Covered targets: 4
+[2K* Time per test: 21.8ms (1.4 actions)
+[2K* Time since last improvement: 86s
+[1A[1A[1A[1A[2K* Consumed search budget: 48.782%
+[2K* Covered targets: 4
+[2K* Time per test: 22.6ms (1.4 actions)
+[2K* Time since last improvement: 87s
+[1A[1A[1A[1A[2K* Consumed search budget: 49.065%
+[2K* Covered targets: 4
+[2K* Time per test: 24.2ms (1.5 actions)
+[2K* Time since last improvement: 87s
+[1A[1A[1A[1A[2K* Consumed search budget: 49.349%
+[2K* Covered targets: 4
+[2K* Time per test: 23.4ms (1.4 actions)
+[2K* Time since last improvement: 88s
+[1A[1A[1A[1A[2K* Consumed search budget: 49.634%
+[2K* Covered targets: 4
+[2K* Time per test: 24.3ms (1.5 actions)
+[2K* Time since last improvement: 88s
+[1A[1A[1A[1A[2K* Consumed search budget: 49.914%
+[2K* Covered targets: 4
+[2K* Time per test: 22.4ms (1.4 actions)
+[2K* Time since last improvement: 89s
+[1A[1A[1A[1A[2K* Consumed search budget: 50.238%
+[2K* Covered targets: 4
+[2K* Time per test: 20.8ms (1.3 actions)
+[2K* Time since last improvement: 89s
+[1A[1A[1A[1A[2K* Consumed search budget: 50.517%
+[2K* Covered targets: 4
+[2K* Time per test: 23.2ms (1.5 actions)
+[2K* Time since last improvement: 90s
+[1A[1A[1A[1A[2K* Consumed search budget: 50.796%
+[2K* Covered targets: 4
+[2K* Time per test: 21.4ms (1.4 actions)
+[2K* Time since last improvement: 90s
+[1A[1A[1A[1A[2K* Consumed search budget: 51.081%
+[2K* Covered targets: 4
+[2K* Time per test: 20.5ms (1.4 actions)
+[2K* Time since last improvement: 91s
+[1A[1A[1A[1A[2K* Consumed search budget: 51.367%
+[2K* Covered targets: 4
+[2K* Time per test: 21.1ms (1.4 actions)
+[2K* Time since last improvement: 92s
+[1A[1A[1A[1A[2K* Consumed search budget: 51.647%
+[2K* Covered targets: 4
+[2K* Time per test: 18.2ms (1.1 actions)
+[2K* Time since last improvement: 92s
+[1A[1A[1A[1A[2K* Consumed search budget: 51.964%
+[2K* Covered targets: 4
+[2K* Time per test: 19.8ms (1.2 actions)
+[2K* Time since last improvement: 93s
+[1A[1A[1A[1A[2K* Consumed search budget: 52.274%
+[2K* Covered targets: 4
+[2K* Time per test: 21.8ms (1.3 actions)
+[2K* Time since last improvement: 93s
+[1A[1A[1A[1A[2K* Consumed search budget: 52.555%
+[2K* Covered targets: 4
+[2K* Time per test: 20.9ms (1.3 actions)
+[2K* Time since last improvement: 94s
+[1A[1A[1A[1A[2K* Consumed search budget: 52.834%
+[2K* Covered targets: 4
+[2K* Time per test: 20.7ms (1.4 actions)
+[2K* Time since last improvement: 94s
+[1A[1A[1A[1A[2K* Consumed search budget: 53.114%
+[2K* Covered targets: 4
+[2K* Time per test: 18.7ms (1.3 actions)
+[2K* Time since last improvement: 95s
+[1A[1A[1A[1A[2K* Consumed search budget: 53.394%
+[2K* Covered targets: 4
+[2K* Time per test: 15.7ms (1.1 actions)
+[2K* Time since last improvement: 95s
+[1A[1A[1A[1A[2K* Consumed search budget: 53.673%
+[2K* Covered targets: 4
+[2K* Time per test: 16.3ms (1.1 actions)
+[2K* Time since last improvement: 96s
+[1A[1A[1A[1A[2K* Consumed search budget: 54.001%
+[2K* Covered targets: 4
+[2K* Time per test: 18.1ms (1.3 actions)
+[2K* Time since last improvement: 96s
+[1A[1A[1A[1A[2K* Consumed search budget: 54.280%
+[2K* Covered targets: 4
+[2K* Time per test: 17.8ms (1.3 actions)
+[2K* Time since last improvement: 97s
+[1A[1A[1A[1A[2K* Consumed search budget: 54.567%
+[2K* Covered targets: 4
+[2K* Time per test: 17.2ms (1.2 actions)
+[2K* Time since last improvement: 97s
+[1A[1A[1A[1A[2K* Consumed search budget: 54.848%
+[2K* Covered targets: 4
+[2K* Time per test: 18.3ms (1.3 actions)
+[2K* Time since last improvement: 98s
+[1A[1A[1A[1A[2K* Consumed search budget: 55.148%
+[2K* Covered targets: 4
+[2K* Time per test: 17.4ms (1.2 actions)
+[2K* Time since last improvement: 98s
+[1A[1A[1A[1A[2K* Consumed search budget: 55.427%
+[2K* Covered targets: 4
+[2K* Time per test: 18.4ms (1.2 actions)
+[2K* Time since last improvement: 99s
+[1A[1A[1A[1A[2K* Consumed search budget: 55.712%
+[2K* Covered targets: 4
+[2K* Time per test: 18.1ms (1.2 actions)
+[2K* Time since last improvement: 99s
+[1A[1A[1A[1A[2K* Consumed search budget: 55.991%
+[2K* Covered targets: 4
+[2K* Time per test: 18.2ms (1.2 actions)
+[2K* Time since last improvement: 100s
+[1A[1A[1A[1A[2K* Consumed search budget: 56.274%
+[2K* Covered targets: 4
+[2K* Time per test: 18.7ms (1.2 actions)
+[2K* Time since last improvement: 100s
+[1A[1A[1A[1A[2K* Consumed search budget: 56.559%
+[2K* Covered targets: 4
+[2K* Time per test: 17.4ms (1.1 actions)
+[2K* Time since last improvement: 101s
+[1A[1A[1A[1A[2K* Consumed search budget: 56.844%
+[2K* Covered targets: 4
+[2K* Time per test: 18.2ms (1.2 actions)
+[2K* Time since last improvement: 101s
+[1A[1A[1A[1A[2K* Consumed search budget: 57.128%
+[2K* Covered targets: 4
+[2K* Time per test: 16.8ms (1.2 actions)
+[2K* Time since last improvement: 102s
+[1A[1A[1A[1A[2K* Consumed search budget: 57.419%
+[2K* Covered targets: 4
+[2K* Time per test: 17.4ms (1.2 actions)
+[2K* Time since last improvement: 102s
+[1A[1A[1A[1A[2K* Consumed search budget: 57.697%
+[2K* Covered targets: 4
+[2K* Time per test: 17.6ms (1.1 actions)
+[2K* Time since last improvement: 103s
+[1A[1A[1A[1A[2K* Consumed search budget: 57.978%
+[2K* Covered targets: 4
+[2K* Time per test: 18.7ms (1.2 actions)
+[2K* Time since last improvement: 103s
+[1A[1A[1A[1A[2K* Consumed search budget: 58.257%
+[2K* Covered targets: 4
+[2K* Time per test: 18.0ms (1.2 actions)
+[2K* Time since last improvement: 104s
+[1A[1A[1A[1A[2K* Consumed search budget: 58.567%
+[2K* Covered targets: 4
+[2K* Time per test: 19.2ms (1.3 actions)
+[2K* Time since last improvement: 104s
+[1A[1A[1A[1A[2K* Consumed search budget: 58.848%
+[2K* Covered targets: 4
+[2K* Time per test: 20.4ms (1.4 actions)
+[2K* Time since last improvement: 105s
+[1A[1A[1A[1A[2K* Consumed search budget: 59.132%
+[2K* Covered targets: 4
+[2K* Time per test: 19.9ms (1.3 actions)
+[2K* Time since last improvement: 105s
+[1A[1A[1A[1A[2K* Consumed search budget: 59.412%
+[2K* Covered targets: 4
+[2K* Time per test: 19.8ms (1.3 actions)
+[2K* Time since last improvement: 106s
+[1A[1A[1A[1A[2K* Consumed search budget: 59.693%
+[2K* Covered targets: 4
+[2K* Time per test: 17.1ms (1.2 actions)
+[2K* Time since last improvement: 107s
+[1A[1A[1A[1A[2K* Consumed search budget: 59.974%
+[2K* Covered targets: 4
+[2K* Time per test: 15.7ms (1.1 actions)
+[2K* Time since last improvement: 107s
+[1A[1A[1A[1A[2K* Consumed search budget: 60.259%
+[2K* Covered targets: 4
+[2K* Time per test: 16.6ms (1.1 actions)
+[2K* Time since last improvement: 108s
+[1A[1A[1A[1A[2K* Consumed search budget: 60.541%
+[2K* Covered targets: 4
+[2K* Time per test: 15.6ms (1.1 actions)
+[2K* Time since last improvement: 108s
+[1A[1A[1A[1A[2K* Consumed search budget: 60.821%
+[2K* Covered targets: 4
+[2K* Time per test: 15.9ms (1.1 actions)
+[2K* Time since last improvement: 109s
+[1A[1A[1A[1A[2K* Consumed search budget: 61.154%
+[2K* Covered targets: 4
+[2K* Time per test: 16.6ms (1.1 actions)
+[2K* Time since last improvement: 109s
+[1A[1A[1A[1A[2K* Consumed search budget: 61.459%
+[2K* Covered targets: 4
+[2K* Time per test: 18.9ms (1.3 actions)
+[2K* Time since last improvement: 110s
+[1A[1A[1A[1A[2K* Consumed search budget: 61.740%
+[2K* Covered targets: 4
+[2K* Time per test: 21.0ms (1.4 actions)
+[2K* Time since last improvement: 110s
+[1A[1A[1A[1A[2K* Consumed search budget: 62.022%
+[2K* Covered targets: 4
+[2K* Time per test: 21.6ms (1.5 actions)
+[2K* Time since last improvement: 111s
+[1A[1A[1A[1A[2K* Consumed search budget: 62.306%
+[2K* Covered targets: 4
+[2K* Time per test: 22.5ms (1.6 actions)
+[2K* Time since last improvement: 111s
+[1A[1A[1A[1A[2K* Consumed search budget: 62.584%
+[2K* Covered targets: 4
+[2K* Time per test: 16.8ms (1.2 actions)
+[2K* Time since last improvement: 112s
+[1A[1A[1A[1A[2K* Consumed search budget: 62.864%
+[2K* Covered targets: 4
+[2K* Time per test: 17.8ms (1.2 actions)
+[2K* Time since last improvement: 112s
+[1A[1A[1A[1A[2K* Consumed search budget: 63.147%
+[2K* Covered targets: 4
+[2K* Time per test: 15.8ms (1.1 actions)
+[2K* Time since last improvement: 113s
+[1A[1A[1A[1A[2K* Consumed search budget: 63.431%
+[2K* Covered targets: 4
+[2K* Time per test: 16.1ms (1.1 actions)
+[2K* Time since last improvement: 113s
+[1A[1A[1A[1A[2K* Consumed search budget: 63.715%
+[2K* Covered targets: 4
+[2K* Time per test: 15.2ms (1.1 actions)
+[2K* Time since last improvement: 114s
+[1A[1A[1A[1A[2K* Consumed search budget: 63.997%
+[2K* Covered targets: 4
+[2K* Time per test: 15.8ms (1.1 actions)
+[2K* Time since last improvement: 114s
+[1A[1A[1A[1A[2K* Consumed search budget: 64.289%
+[2K* Covered targets: 4
+[2K* Time per test: 17.3ms (1.2 actions)
+[2K* Time since last improvement: 115s
+[1A[1A[1A[1A[2K* Consumed search budget: 64.574%
+[2K* Covered targets: 4
+[2K* Time per test: 19.0ms (1.3 actions)
+[2K* Time since last improvement: 115s
+[1A[1A[1A[1A[2K* Consumed search budget: 64.861%
+[2K* Covered targets: 4
+[2K* Time per test: 19.9ms (1.3 actions)
+[2K* Time since last improvement: 116s
+[1A[1A[1A[1A[2K* Consumed search budget: 65.144%
+[2K* Covered targets: 4
+[2K* Time per test: 20.0ms (1.2 actions)
+[2K* Time since last improvement: 116s
+[1A[1A[1A[1A[2K* Consumed search budget: 65.433%
+[2K* Covered targets: 4
+[2K* Time per test: 18.3ms (1.2 actions)
+[2K* Time since last improvement: 117s
+[1A[1A[1A[1A[2K* Consumed search budget: 65.713%
+[2K* Covered targets: 4
+[2K* Time per test: 18.5ms (1.1 actions)
+[2K* Time since last improvement: 117s
+[1A[1A[1A[1A[2K* Consumed search budget: 66.004%
+[2K* Covered targets: 4
+[2K* Time per test: 18.6ms (1.2 actions)
+[2K* Time since last improvement: 118s
+[1A[1A[1A[1A[2K* Consumed search budget: 66.288%
+[2K* Covered targets: 4
+[2K* Time per test: 18.9ms (1.2 actions)
+[2K* Time since last improvement: 118s
+[1A[1A[1A[1A[2K* Consumed search budget: 66.594%
+[2K* Covered targets: 4
+[2K* Time per test: 19.7ms (1.3 actions)
+[2K* Time since last improvement: 119s
+[1A[1A[1A[1A[2K* Consumed search budget: 66.876%
+[2K* Covered targets: 4
+[2K* Time per test: 20.0ms (1.3 actions)
+[2K* Time since last improvement: 119s
+[1A[1A[1A[1A[2K* Consumed search budget: 67.159%
+[2K* Covered targets: 4
+[2K* Time per test: 22.4ms (1.5 actions)
+[2K* Time since last improvement: 120s
+[1A[1A[1A[1A[2K* Consumed search budget: 67.442%
+[2K* Covered targets: 4
+[2K* Time per test: 21.5ms (1.4 actions)
+[2K* Time since last improvement: 120s
+[1A[1A[1A[1A[2K* Consumed search budget: 67.726%
+[2K* Covered targets: 4
+[2K* Time per test: 22.4ms (1.5 actions)
+[2K* Time since last improvement: 121s
+[1A[1A[1A[1A[2K* Consumed search budget: 68.011%
+[2K* Covered targets: 4
+[2K* Time per test: 21.1ms (1.5 actions)
+[2K* Time since last improvement: 121s
+[1A[1A[1A[1A[2K* Consumed search budget: 68.296%
+[2K* Covered targets: 4
+[2K* Time per test: 18.7ms (1.4 actions)
+[2K* Time since last improvement: 122s
+[1A[1A[1A[1A[2K* Consumed search budget: 68.578%
+[2K* Covered targets: 4
+[2K* Time per test: 20.0ms (1.4 actions)
+[2K* Time since last improvement: 122s
+[1A[1A[1A[1A[2K* Consumed search budget: 68.860%
+[2K* Covered targets: 4
+[2K* Time per test: 16.5ms (1.2 actions)
+[2K* Time since last improvement: 123s
+[1A[1A[1A[1A[2K* Consumed search budget: 69.199%
+[2K* Covered targets: 4
+[2K* Time per test: 18.2ms (1.3 actions)
+[2K* Time since last improvement: 124s
+[1A[1A[1A[1A[2K* Consumed search budget: 69.501%
+[2K* Covered targets: 4
+[2K* Time per test: 17.8ms (1.3 actions)
+[2K* Time since last improvement: 124s
+[1A[1A[1A[1A[2K* Consumed search budget: 69.782%
+[2K* Covered targets: 4
+[2K* Time per test: 18.5ms (1.4 actions)
+[2K* Time since last improvement: 125s
+[1A[1A[1A[1A[2K* Consumed search budget: 70.067%
+[2K* Covered targets: 4
+[2K* Time per test: 20.5ms (1.5 actions)
+[2K* Time since last improvement: 125s
+[1A[1A[1A[1A[2K* Consumed search budget: 70.345%
+[2K* Covered targets: 4
+[2K* Time per test: 17.6ms (1.3 actions)
+[2K* Time since last improvement: 126s
+[1A[1A[1A[1A[2K* Consumed search budget: 70.638%
+[2K* Covered targets: 4
+[2K* Time per test: 16.3ms (1.2 actions)
+[2K* Time since last improvement: 126s
+[1A[1A[1A[1A[2K* Consumed search budget: 70.922%
+[2K* Covered targets: 4
+[2K* Time per test: 15.6ms (1.1 actions)
+[2K* Time since last improvement: 127s
+[1A[1A[1A[1A[2K* Consumed search budget: 71.203%
+[2K* Covered targets: 4
+[2K* Time per test: 15.9ms (1.1 actions)
+[2K* Time since last improvement: 127s
+[1A[1A[1A[1A[2K* Consumed search budget: 71.541%
+[2K* Covered targets: 4
+[2K* Time per test: 18.2ms (1.2 actions)
+[2K* Time since last improvement: 128s
+[1A[1A[1A[1A[2K* Consumed search budget: 71.826%
+[2K* Covered targets: 4
+[2K* Time per test: 20.3ms (1.4 actions)
+[2K* Time since last improvement: 128s
+[1A[1A[1A[1A[2K* Consumed search budget: 72.107%
+[2K* Covered targets: 4
+[2K* Time per test: 21.4ms (1.4 actions)
+[2K* Time since last improvement: 129s
+[1A[1A[1A[1A[2K* Consumed search budget: 72.386%
+[2K* Covered targets: 4
+[2K* Time per test: 22.2ms (1.5 actions)
+[2K* Time since last improvement: 129s
+[1A[1A[1A[1A[2K* Consumed search budget: 72.668%
+[2K* Covered targets: 4
+[2K* Time per test: 18.6ms (1.3 actions)
+[2K* Time since last improvement: 130s
+[1A[1A[1A[1A[2K* Consumed search budget: 72.948%
+[2K* Covered targets: 4
+[2K* Time per test: 14.8ms (1.1 actions)
+[2K* Time since last improvement: 130s
+[1A[1A[1A[1A[2K* Consumed search budget: 73.233%
+[2K* Covered targets: 4
+[2K* Time per test: 14.0ms (1.0 actions)
+[2K* Time since last improvement: 131s
+[1A[1A[1A[1A[2K* Consumed search budget: 73.516%
+[2K* Covered targets: 4
+[2K* Time per test: 15.1ms (1.1 actions)
+[2K* Time since last improvement: 131s
+[1A[1A[1A[1A[2K* Consumed search budget: 73.798%
+[2K* Covered targets: 4
+[2K* Time per test: 15.8ms (1.1 actions)
+[2K* Time since last improvement: 132s
+[1A[1A[1A[1A[2K* Consumed search budget: 74.092%
+[2K* Covered targets: 4
+[2K* Time per test: 17.9ms (1.3 actions)
+[2K* Time since last improvement: 132s
+[1A[1A[1A[1A[2K* Consumed search budget: 74.372%
+[2K* Covered targets: 4
+[2K* Time per test: 17.5ms (1.2 actions)
+[2K* Time since last improvement: 133s
+[1A[1A[1A[1A[2K* Consumed search budget: 74.658%
+[2K* Covered targets: 4
+[2K* Time per test: 17.2ms (1.2 actions)
+[2K* Time since last improvement: 133s
+[1A[1A[1A[1A[2K* Consumed search budget: 74.939%
+[2K* Covered targets: 4
+[2K* Time per test: 15.2ms (1.1 actions)
+[2K* Time since last improvement: 134s
+[1A[1A[1A[1A[2K* Consumed search budget: 75.224%
+[2K* Covered targets: 4
+[2K* Time per test: 16.5ms (1.1 actions)
+[2K* Time since last improvement: 134s
+[1A[1A[1A[1A[2K* Consumed search budget: 75.510%
+[2K* Covered targets: 4
+[2K* Time per test: 17.3ms (1.2 actions)
+[2K* Time since last improvement: 135s
+[1A[1A[1A[1A[2K* Consumed search budget: 75.789%
+[2K* Covered targets: 4
+[2K* Time per test: 18.0ms (1.2 actions)
+[2K* Time since last improvement: 135s
+[1A[1A[1A[1A[2K* Consumed search budget: 76.076%
+[2K* Covered targets: 4
+[2K* Time per test: 19.6ms (1.3 actions)
+[2K* Time since last improvement: 136s
+[1A[1A[1A[1A[2K* Consumed search budget: 76.357%
+[2K* Covered targets: 4
+[2K* Time per test: 19.2ms (1.3 actions)
+[2K* Time since last improvement: 136s
+[1A[1A[1A[1A[2K* Consumed search budget: 76.639%
+[2K* Covered targets: 4
+[2K* Time per test: 18.1ms (1.3 actions)
+[2K* Time since last improvement: 137s
+[1A[1A[1A[1A[2K* Consumed search budget: 76.921%
+[2K* Covered targets: 4
+[2K* Time per test: 17.2ms (1.2 actions)
+[2K* Time since last improvement: 138s
+[1A[1A[1A[1A[2K* Consumed search budget: 77.203%
+[2K* Covered targets: 4
+[2K* Time per test: 18.3ms (1.2 actions)
+[2K* Time since last improvement: 138s
+[1A[1A[1A[1A[2K* Consumed search budget: 77.483%
+[2K* Covered targets: 4
+[2K* Time per test: 19.3ms (1.3 actions)
+[2K* Time since last improvement: 139s
+[1A[1A[1A[1A[2K* Consumed search budget: 77.765%
+[2K* Covered targets: 4
+[2K* Time per test: 19.8ms (1.3 actions)
+[2K* Time since last improvement: 139s
+[1A[1A[1A[1A[2K* Consumed search budget: 78.045%
+[2K* Covered targets: 4
+[2K* Time per test: 19.8ms (1.3 actions)
+[2K* Time since last improvement: 140s
+[1A[1A[1A[1A[2K* Consumed search budget: 78.323%
+[2K* Covered targets: 4
+[2K* Time per test: 18.9ms (1.3 actions)
+[2K* Time since last improvement: 140s
+[1A[1A[1A[1A[2K* Consumed search budget: 78.607%
+[2K* Covered targets: 4
+[2K* Time per test: 18.0ms (1.3 actions)
+[2K* Time since last improvement: 141s
+[1A[1A[1A[1A[2K* Consumed search budget: 78.888%
+[2K* Covered targets: 4
+[2K* Time per test: 17.8ms (1.2 actions)
+[2K* Time since last improvement: 141s
+[1A[1A[1A[1A[2K* Consumed search budget: 79.173%
+[2K* Covered targets: 4
+[2K* Time per test: 17.5ms (1.2 actions)
+[2K* Time since last improvement: 142s
+[1A[1A[1A[1A[2K* Consumed search budget: 79.458%
+[2K* Covered targets: 4
+[2K* Time per test: 17.7ms (1.2 actions)
+[2K* Time since last improvement: 142s
+[1A[1A[1A[1A[2K* Consumed search budget: 79.793%
+[2K* Covered targets: 4
+[2K* Time per test: 18.7ms (1.3 actions)
+[2K* Time since last improvement: 143s
+[1A[1A[1A[1A[2K* Consumed search budget: 80.076%
+[2K* Covered targets: 4
+[2K* Time per test: 17.5ms (1.2 actions)
+[2K* Time since last improvement: 143s
+[1A[1A[1A[1A[2K* Consumed search budget: 80.361%
+[2K* Covered targets: 4
+[2K* Time per test: 17.3ms (1.2 actions)
+[2K* Time since last improvement: 144s
+[1A[1A[1A[1A[2K* Consumed search budget: 80.687%
+[2K* Covered targets: 4
+[2K* Time per test: 18.8ms (1.3 actions)
+[2K* Time since last improvement: 144s
+[1A[1A[1A[1A[2K* Consumed search budget: 80.970%
+[2K* Covered targets: 4
+[2K* Time per test: 17.3ms (1.2 actions)
+[2K* Time since last improvement: 145s
+[1A[1A[1A[1A[2K* Consumed search budget: 81.256%
+[2K* Covered targets: 4
+[2K* Time per test: 16.7ms (1.2 actions)
+[2K* Time since last improvement: 145s
+[1A[1A[1A[1A[2K* Consumed search budget: 81.541%
+[2K* Covered targets: 4
+[2K* Time per test: 15.0ms (1.0 actions)
+[2K* Time since last improvement: 146s
+[1A[1A[1A[1A[2K* Consumed search budget: 81.821%
+[2K* Covered targets: 4
+[2K* Time per test: 15.5ms (1.0 actions)
+[2K* Time since last improvement: 146s
+[1A[1A[1A[1A[2K* Consumed search budget: 82.099%
+[2K* Covered targets: 4
+[2K* Time per test: 17.8ms (1.2 actions)
+[2K* Time since last improvement: 147s
+[1A[1A[1A[1A[2K* Consumed search budget: 82.384%
+[2K* Covered targets: 4
+[2K* Time per test: 17.9ms (1.2 actions)
+[2K* Time since last improvement: 147s
+[1A[1A[1A[1A[2K* Consumed search budget: 82.663%
+[2K* Covered targets: 4
+[2K* Time per test: 17.7ms (1.2 actions)
+[2K* Time since last improvement: 148s
+[1A[1A[1A[1A[2K* Consumed search budget: 82.948%
+[2K* Covered targets: 4
+[2K* Time per test: 16.6ms (1.1 actions)
+[2K* Time since last improvement: 148s
+[1A[1A[1A[1A[2K* Consumed search budget: 83.228%
+[2K* Covered targets: 4
+[2K* Time per test: 16.5ms (1.1 actions)
+[2K* Time since last improvement: 149s
+[1A[1A[1A[1A[2K* Consumed search budget: 83.515%
+[2K* Covered targets: 4
+[2K* Time per test: 16.7ms (1.2 actions)
+[2K* Time since last improvement: 149s
+[1A[1A[1A[1A[2K* Consumed search budget: 83.820%
+[2K* Covered targets: 4
+[2K* Time per test: 19.4ms (1.3 actions)
+[2K* Time since last improvement: 150s
+[1A[1A[1A[1A[2K* Consumed search budget: 84.102%
+[2K* Covered targets: 4
+[2K* Time per test: 19.3ms (1.3 actions)
+[2K* Time since last improvement: 150s
+[1A[1A[1A[1A[2K* Consumed search budget: 84.383%
+[2K* Covered targets: 4
+[2K* Time per test: 18.7ms (1.3 actions)
+[2K* Time since last improvement: 151s
+[1A[1A[1A[1A[2K* Consumed search budget: 84.669%
+[2K* Covered targets: 4
+[2K* Time per test: 17.9ms (1.2 actions)
+[2K* Time since last improvement: 151s
+[1A[1A[1A[1A[2K* Consumed search budget: 84.949%
+[2K* Covered targets: 4
+[2K* Time per test: 16.8ms (1.2 actions)
+[2K* Time since last improvement: 152s
+[1A[1A[1A[1A[2K* Consumed search budget: 85.233%
+[2K* Covered targets: 4
+[2K* Time per test: 20.0ms (1.4 actions)
+[2K* Time since last improvement: 152s
+[1A[1A[1A[1A[2K* Consumed search budget: 85.515%
+[2K* Covered targets: 4
+[2K* Time per test: 21.1ms (1.5 actions)
+[2K* Time since last improvement: 153s
+[1A[1A[1A[1A[2K* Consumed search budget: 85.794%
+[2K* Covered targets: 4
+[2K* Time per test: 20.3ms (1.4 actions)
+[2K* Time since last improvement: 153s
+[1A[1A[1A[1A[2K* Consumed search budget: 86.076%
+[2K* Covered targets: 4
+[2K* Time per test: 20.8ms (1.5 actions)
+[2K* Time since last improvement: 154s
+[1A[1A[1A[1A[2K* Consumed search budget: 86.357%
+[2K* Covered targets: 4
+[2K* Time per test: 17.8ms (1.3 actions)
+[2K* Time since last improvement: 154s
+[1A[1A[1A[1A[2K* Consumed search budget: 86.635%
+[2K* Covered targets: 4
+[2K* Time per test: 18.7ms (1.3 actions)
+[2K* Time since last improvement: 155s
+[1A[1A[1A[1A[2K* Consumed search budget: 86.941%
+[2K* Covered targets: 4
+[2K* Time per test: 19.4ms (1.3 actions)
+[2K* Time since last improvement: 156s
+[1A[1A[1A[1A[2K* Consumed search budget: 87.223%
+[2K* Covered targets: 4
+[2K* Time per test: 17.9ms (1.2 actions)
+[2K* Time since last improvement: 156s
+[1A[1A[1A[1A[2K* Consumed search budget: 87.504%
+[2K* Covered targets: 4
+[2K* Time per test: 17.8ms (1.2 actions)
+[2K* Time since last improvement: 157s
+[1A[1A[1A[1A[2K* Consumed search budget: 87.787%
+[2K* Covered targets: 4
+[2K* Time per test: 17.6ms (1.2 actions)
+[2K* Time since last improvement: 157s
+[1A[1A[1A[1A[2K* Consumed search budget: 88.072%
+[2K* Covered targets: 4
+[2K* Time per test: 16.7ms (1.2 actions)
+[2K* Time since last improvement: 158s
+[1A[1A[1A[1A[2K* Consumed search budget: 88.393%
+[2K* Covered targets: 4
+[2K* Time per test: 17.4ms (1.2 actions)
+[2K* Time since last improvement: 158s
+[1A[1A[1A[1A[2K* Consumed search budget: 88.672%
+[2K* Covered targets: 4
+[2K* Time per test: 18.8ms (1.3 actions)
+[2K* Time since last improvement: 159s
+[1A[1A[1A[1A[2K* Consumed search budget: 88.958%
+[2K* Covered targets: 4
+[2K* Time per test: 18.0ms (1.3 actions)
+[2K* Time since last improvement: 159s
+[1A[1A[1A[1A[2K* Consumed search budget: 89.241%
+[2K* Covered targets: 4
+[2K* Time per test: 19.3ms (1.4 actions)
+[2K* Time since last improvement: 160s
+[1A[1A[1A[1A[2K* Consumed search budget: 89.522%
+[2K* Covered targets: 4
+[2K* Time per test: 18.0ms (1.3 actions)
+[2K* Time since last improvement: 160s
+[1A[1A[1A[1A[2K* Consumed search budget: 89.803%
+[2K* Covered targets: 4
+[2K* Time per test: 18.2ms (1.3 actions)
+[2K* Time since last improvement: 161s
+[1A[1A[1A[1A[2K* Consumed search budget: 90.082%
+[2K* Covered targets: 4
+[2K* Time per test: 19.5ms (1.3 actions)
+[2K* Time since last improvement: 161s
+[1A[1A[1A[1A[2K* Consumed search budget: 90.361%
+[2K* Covered targets: 4
+[2K* Time per test: 19.2ms (1.4 actions)
+[2K* Time since last improvement: 162s
+[1A[1A[1A[1A[2K* Consumed search budget: 90.643%
+[2K* Covered targets: 4
+[2K* Time per test: 18.3ms (1.3 actions)
+[2K* Time since last improvement: 162s
+[1A[1A[1A[1A[2K* Consumed search budget: 90.922%
+[2K* Covered targets: 4
+[2K* Time per test: 17.2ms (1.2 actions)
+[2K* Time since last improvement: 163s
+[1A[1A[1A[1A[2K* Consumed search budget: 91.208%
+[2K* Covered targets: 4
+[2K* Time per test: 15.7ms (1.1 actions)
+[2K* Time since last improvement: 163s
+[1A[1A[1A[1A[2K* Consumed search budget: 91.492%
+[2K* Covered targets: 4
+[2K* Time per test: 16.1ms (1.1 actions)
+[2K* Time since last improvement: 164s
+[1A[1A[1A[1A[2K* Consumed search budget: 91.778%
+[2K* Covered targets: 4
+[2K* Time per test: 16.8ms (1.2 actions)
+[2K* Time since last improvement: 164s
+[1A[1A[1A[1A[2K* Consumed search budget: 92.059%
+[2K* Covered targets: 4
+[2K* Time per test: 18.6ms (1.3 actions)
+[2K* Time since last improvement: 165s
+[1A[1A[1A[1A[2K* Consumed search budget: 92.339%
+[2K* Covered targets: 4
+[2K* Time per test: 17.1ms (1.2 actions)
+[2K* Time since last improvement: 165s
+[1A[1A[1A[1A[2K* Consumed search budget: 92.668%
+[2K* Covered targets: 4
+[2K* Time per test: 18.3ms (1.3 actions)
+[2K* Time since last improvement: 166s
+[1A[1A[1A[1A[2K* Consumed search budget: 92.948%
+[2K* Covered targets: 4
+[2K* Time per test: 20.3ms (1.4 actions)
+[2K* Time since last improvement: 166s
+[1A[1A[1A[1A[2K* Consumed search budget: 93.231%
+[2K* Covered targets: 4
+[2K* Time per test: 20.0ms (1.4 actions)
+[2K* Time since last improvement: 167s
+[1A[1A[1A[1A[2K* Consumed search budget: 93.515%
+[2K* Covered targets: 4
+[2K* Time per test: 20.7ms (1.4 actions)
+[2K* Time since last improvement: 167s
+[1A[1A[1A[1A[2K* Consumed search budget: 93.801%
+[2K* Covered targets: 4
+[2K* Time per test: 18.2ms (1.2 actions)
+[2K* Time since last improvement: 168s
+[1A[1A[1A[1A[2K* Consumed search budget: 94.082%
+[2K* Covered targets: 4
+[2K* Time per test: 17.8ms (1.2 actions)
+[2K* Time since last improvement: 168s
+[1A[1A[1A[1A[2K* Consumed search budget: 94.361%
+[2K* Covered targets: 4
+[2K* Time per test: 17.8ms (1.2 actions)
+[2K* Time since last improvement: 169s
+[1A[1A[1A[1A[2K* Consumed search budget: 94.642%
+[2K* Covered targets: 4
+[2K* Time per test: 19.2ms (1.3 actions)
+[2K* Time since last improvement: 169s
+[1A[1A[1A[1A[2K* Consumed search budget: 94.923%
+[2K* Covered targets: 4
+[2K* Time per test: 18.9ms (1.3 actions)
+[2K* Time since last improvement: 170s
+[1A[1A[1A[1A[2K* Consumed search budget: 95.206%
+[2K* Covered targets: 4
+[2K* Time per test: 19.7ms (1.4 actions)
+[2K* Time since last improvement: 170s
+[1A[1A[1A[1A[2K* Consumed search budget: 95.489%
+[2K* Covered targets: 4
+[2K* Time per test: 20.0ms (1.5 actions)
+[2K* Time since last improvement: 171s
+[1A[1A[1A[1A[2K* Consumed search budget: 95.774%
+[2K* Covered targets: 4
+[2K* Time per test: 19.4ms (1.4 actions)
+[2K* Time since last improvement: 171s
+[1A[1A[1A[1A[2K* Consumed search budget: 96.056%
+[2K* Covered targets: 4
+[2K* Time per test: 18.4ms (1.3 actions)
+[2K* Time since last improvement: 172s
+[1A[1A[1A[1A[2K* Consumed search budget: 96.336%
+[2K* Covered targets: 4
+[2K* Time per test: 16.4ms (1.2 actions)
+[2K* Time since last improvement: 172s
+[1A[1A[1A[1A[2K* Consumed search budget: 96.621%
+[2K* Covered targets: 4
+[2K* Time per test: 15.0ms (1.0 actions)
+[2K* Time since last improvement: 173s
+[1A[1A[1A[1A[2K* Consumed search budget: 96.907%
+[2K* Covered targets: 4
+[2K* Time per test: 15.5ms (1.0 actions)
+[2K* Time since last improvement: 173s
+[1A[1A[1A[1A[2K* Consumed search budget: 97.192%
+[2K* Covered targets: 4
+[2K* Time per test: 15.9ms (1.0 actions)
+[2K* Time since last improvement: 174s
+[1A[1A[1A[1A[2K* Consumed search budget: 97.476%
+[2K* Covered targets: 4
+[2K* Time per test: 16.4ms (1.1 actions)
+[2K* Time since last improvement: 175s
+[1A[1A[1A[1A[2K* Consumed search budget: 97.766%
+[2K* Covered targets: 4
+[2K* Time per test: 16.2ms (1.1 actions)
+[2K* Time since last improvement: 175s
+[1A[1A[1A[1A[2K* Consumed search budget: 98.053%
+[2K* Covered targets: 4
+[2K* Time per test: 18.4ms (1.2 actions)
+[2K* Time since last improvement: 176s
+[1A[1A[1A[1A[2K* Consumed search budget: 98.335%
+[2K* Covered targets: 4
+[2K* Time per test: 19.9ms (1.4 actions)
+[2K* Time since last improvement: 176s
+[1A[1A[1A[1A[2K* Consumed search budget: 98.617%
+[2K* Covered targets: 4
+[2K* Time per test: 19.7ms (1.4 actions)
+[2K* Time since last improvement: 177s
+[1A[1A[1A[1A[2K* Consumed search budget: 98.905%
+[2K* Covered targets: 4
+[2K* Time per test: 20.8ms (1.4 actions)
+[2K* Time since last improvement: 177s
+[1A[1A[1A[1A[2K* Consumed search budget: 99.188%
+[2K* Covered targets: 4
+[2K* Time per test: 18.9ms (1.3 actions)
+[2K* Time since last improvement: 178s
+[1A[1A[1A[1A[2K* Consumed search budget: 99.473%
+[2K* Covered targets: 4
+[2K* Time per test: 18.8ms (1.2 actions)
+[2K* Time since last improvement: 178s
+[1A[1A[1A[1A[2K* Consumed search budget: 99.806%
+[2K* Covered targets: 4
+[2K* Time per test: 17.9ms (1.2 actions)
+[2K* Time since last improvement: 179s
+[1A[1A[1A[1A[2K* Consumed search budget: 99.806%
+[2K* Covered targets: 4
+[2K* Time per test: 16.6ms (1.2 actions)
+[2K* Time since last improvement: 179s
+* Evaluated tests: 9290
+* Evaluated actions: 11552
+* Needed budget: 0%
+* Passed time (seconds): 180
+* Execution time per test (ms): Avg=19.20 , min=8.00 , max=439.00
+* Execution time per action (ms): Avg=15.51 , min=8.00 , max=439.00
+* Computation overhead between tests (ms): Avg=0.17 , min=0.00 , max=5.00
+* Phase SEARCH lasted: 0h 3m 0s
+* Starting phase MINIMIZATION
+* Recomputing full coverage for 1 tests
+* No test to minimize
+* Phase MINIMIZATION lasted: 0h 0m 0s
+* Starting phase SECURITY
+* Starting to apply HTTP oracle detection
+* Phase SECURITY lasted: 0h 0m 0s
+* Starting phase ADDITIONAL_ORACLES
+* Phase ADDITIONAL_ORACLES lasted: 0h 0m 0s
+* Starting phase WRITE_OUTPUT
+* Going to save 3 tests to em-out
+20:51:22.435 [main] WARN  o.e.c.o.service.HttpWsTestCaseWriter - Currently no assertions are generated for response type: text/html;charset=utf-8
+* Potential faults: 1
+* Successfully executed (HTTP code 2xx) 1 endpoints out of 1 (100%)
+* Phase WRITE_OUTPUT lasted: 0h 0m 0s
+* Fuzzing session has finished
+* EvoMaster process has completed successfully
+* Use [32m--help[0m and visit [34mhttps://www.evomaster.org[0m to learn more about available options
+evomaster exit: 0

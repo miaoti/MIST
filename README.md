@@ -8,8 +8,8 @@
 > per-fault attribution, over an Adaptive Fault Taxonomy that mines
 > SUT-specific categories on top of 9 built-in ones), and the *Trace
 > Shape Oracle* (a learner + oracle that promotes a Jaeger trace into a
-> checkable assertion across four invariant families). Submitted to
-> **ISSTA 2026 Tool Demonstrations**.
+> checkable assertion across four invariant families). A tool demonstration
+> paper is submitted to the **SANER 2027 Tool Demo Track**.
 
 ---
 
@@ -507,7 +507,7 @@ swapped without touching the core.
 @misc{MIST,
   title  = {{MIST: Trace-Driven, LLM-Assisted Multi-Service Test Generation}},
   author = {<authors>},
-  note   = {Submitted to ISSTA 2026 Tool Demonstrations.
+  note   = {Submitted to the SANER 2027 Tool Demo Track.
             Citation to be filled in on acceptance.},
   year   = {2026}
 }

@@ -1,0 +1,8 @@
+testConfiguration:
+  services:
+    page:
+    - expectedResponse: 200
+      method: get
+      operationId: getProductPage
+      testPath: /productpage
+      testParameters: null

@@ -1,0 +1,198 @@
+================================================================================
+                    FAULT DETECTION SUMMARY REPORT
+================================================================================
+
+Experiment:         bookinfo_hidden_downstream_1791939061994
+Generated:          2026-10-13 19:53:16
+Tracking Started:   2026-10-13 19:51:01
+Total Test Cases:   108
+
+================================================================================
+FAULT COVERAGE SUMMARY
+================================================================================
+
+Total Injected Faults:    0
+Detected Faults:          0 (0.0%)
+Undetected Faults:        0 (100.0%)
+
+Detection Progress:
+[░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░] 0.0%
+
+================================================================================
+ORACLE ANOMALIES (5 distinct, 19 hits)
+================================================================================
+
+These are TraceShapeOracle invariant violations the tool detected.
+They are tool-detected trace-shape deviations, NOT confirmed bugs —
+an upper-bound bug-finding signal. Entries also matching an injected
+fault name appear in the DETECTED FAULTS section above.
+
+Attribution roll-up (target = SUT-confirmed bug-detection event):
+  NO_ATTRIBUTION:        6
+  UPSTREAM_REJECTION:    7
+  WRONG_PARAM_REJECTION: 2
+
+1. HIDDEN_DOWNSTREAM_FAILURE  |  GET /api/v1/products/0/reviews
+   Severity:      ERROR
+   Violation:     reviews.default ──▶ ratings.default.svc.cluster.local:9080/* (http=503 otel=ERROR)
+   Hits:          13 time(s)
+   First seen:    2026-10-13 19:51:19
+   Last seen:     2026-10-13 19:53:07
+   Attribution:   NO_ATTRIBUTION: 5, UPSTREAM_REJECTION: 7
+   Example test:  bookinfo_hidden_downstream.BookinfoTest_1791939061994.Flow_Scenario_60.test_negative_flow_S60_v24_fault_Root1_TYPE_MISMATCH
+   Example trace: 9bb539d397e8409798c98985d1be7588
+
+2. HIDDEN_DOWNSTREAM_FAILURE  |  GET /api/v1/products/0
+   Severity:      ERROR
+   Violation:     4 swallowed downstream call(s): istio-ingressgateway.istio-system ──▶ productpage.default.svc.cluster.local:9080/api/v1/products* (http=503 otel=ERROR); istio-ingressgateway.istio-system ──▶ router outbound|9080||productpage.default.svc.cluster.local; egress (http=503 otel=ERROR); productpage.default ──▶ productpage.default.svc.cluster.local:9080/api/v1/products* (http=503 otel=ERROR); productpage.default ──▶ ratings.default.svc.cluster.local:9080/* (http=503 otel=ERROR)
+   Hits:          3 time(s)
+   First seen:    2026-10-13 19:52:55
+   Last seen:     2026-10-13 19:53:11
+   Attribution:   WRONG_PARAM_REJECTION: 2
+   Example test:  bookinfo_hidden_downstream.BookinfoTest_1791939061994.Flow_Scenario_2.test_negative_flow_S2_v1_fault_Root1_OVERFLOW_explore_404
+   Example trace: 5a37c738bee14331a65e350db504a943
+
+3. HIDDEN_DOWNSTREAM_FAILURE  |  GET /api/v1/products/0
+   Severity:      ERROR
+   Violation:     reviews.default ──▶ ratings.default.svc.cluster.local:9080/* (http=503 otel=ERROR)
+   Hits:          1 time(s)
+   First seen:    2026-10-13 19:51:20
+   Last seen:     2026-10-13 19:51:20
+   Attribution:   NO_ATTRIBUTION: 1
+   Example test:  bookinfo_hidden_downstream.BookinfoTest_1791939061994.Flow_Scenario_2.test_negative_flow_S2_v16_fault_Root1_OVERFLOW
+   Example trace: 552862579c3e4ff79f2a135e29b91b31
+
+4. HIDDEN_DOWNSTREAM_FAILURE  |  GET /api/v1/products/0
+   Severity:      ERROR
+   Violation:     2 swallowed downstream call(s): productpage.default ──▶ ratings.default.svc.cluster.local:9080/* (http=503 otel=ERROR); productpage.default ──▶ productpage.default.svc.cluster.local:9080/api/v1/products* (http=503 otel=ERROR)
+   Hits:          1 time(s)
+   First seen:    2026-10-13 19:52:28
+   Last seen:     2026-10-13 19:52:28
+   Example test:  bookinfo_hidden_downstream.BookinfoTest_1791939061994.Flow_Scenario_2.test_negative_flow_S2_v3_fault_Root1_OVERFLOW_explore_403
+   Example trace: 5eada3e6a07248bd96a4588d2a6a9463
+
+5. HIDDEN_DOWNSTREAM_FAILURE  |  GET /api/v1/products/0
+   Severity:      ERROR
+   Violation:     2 swallowed downstream call(s): productpage.default ──▶ productpage.default.svc.cluster.local:9080/api/v1/products* (http=503 otel=ERROR); productpage.default ──▶ ratings.default.svc.cluster.local:9080/* (http=503 otel=ERROR)
+   Hits:          1 time(s)
+   First seen:    2026-10-13 19:53:13
+   Last seen:     2026-10-13 19:53:13
+   Example test:  bookinfo_hidden_downstream.BookinfoTest_1791939061994.Flow_Scenario_2.test_positive_flow_S2_v27
+   Example trace: de10632c68f547138dfbcaf3e83447ec
+
+================================================================================
+TEST CASES EXECUTED (108)
+================================================================================
+
+1. bookinfo_hidden_downstream.BookinfoTest_1791939061994.Flow_Scenario_1.test_positive_flow_S1_v1
+2. bookinfo_hidden_downstream.BookinfoTest_1791939061994.Flow_Scenario_2.test_negative_flow_S2_v10_fault_Root1_SEMANTIC_MISMATCH
+3. bookinfo_hidden_downstream.BookinfoTest_1791939061994.Flow_Scenario_2.test_negative_flow_S2_v11_fault_Root1_SEMANTIC_MISMATCH
+4. bookinfo_hidden_downstream.BookinfoTest_1791939061994.Flow_Scenario_2.test_negative_flow_S2_v12_fault_Root1_NULL_INPUT
+5. bookinfo_hidden_downstream.BookinfoTest_1791939061994.Flow_Scenario_2.test_negative_flow_S2_v13_fault_Root1_SEMANTIC_MISMATCH
+6. bookinfo_hidden_downstream.BookinfoTest_1791939061994.Flow_Scenario_2.test_negative_flow_S2_v14_fault_Root1_SEMANTIC_MISMATCH
+7. bookinfo_hidden_downstream.BookinfoTest_1791939061994.Flow_Scenario_2.test_negative_flow_S2_v15_fault_Root1_TYPE_MISMATCH
+8. bookinfo_hidden_downstream.BookinfoTest_1791939061994.Flow_Scenario_2.test_negative_flow_S2_v16_fault_Root1_OVERFLOW
+9. bookinfo_hidden_downstream.BookinfoTest_1791939061994.Flow_Scenario_2.test_negative_flow_S2_v17_fault_Root1_NULL_INPUT
+10. bookinfo_hidden_downstream.BookinfoTest_1791939061994.Flow_Scenario_2.test_negative_flow_S2_v18_fault_Root1_NULL_INPUT
+11. bookinfo_hidden_downstream.BookinfoTest_1791939061994.Flow_Scenario_2.test_negative_flow_S2_v19_fault_Root1_TYPE_MISMATCH
+12. bookinfo_hidden_downstream.BookinfoTest_1791939061994.Flow_Scenario_2.test_negative_flow_S2_v1_fault_Root1_OVERFLOW
+13. bookinfo_hidden_downstream.BookinfoTest_1791939061994.Flow_Scenario_2.test_negative_flow_S2_v1_fault_Root1_OVERFLOW_explore_400
+14. bookinfo_hidden_downstream.BookinfoTest_1791939061994.Flow_Scenario_2.test_negative_flow_S2_v1_fault_Root1_OVERFLOW_explore_404
+15. bookinfo_hidden_downstream.BookinfoTest_1791939061994.Flow_Scenario_2.test_negative_flow_S2_v20_fault_Root1_TYPE_MISMATCH
+16. bookinfo_hidden_downstream.BookinfoTest_1791939061994.Flow_Scenario_2.test_negative_flow_S2_v21_fault_Root1_TYPE_MISMATCH
+17. bookinfo_hidden_downstream.BookinfoTest_1791939061994.Flow_Scenario_2.test_negative_flow_S2_v22_fault_Root1_SEMANTIC_MISMATCH
+18. bookinfo_hidden_downstream.BookinfoTest_1791939061994.Flow_Scenario_2.test_negative_flow_S2_v23_fault_Root1_SEMANTIC_MISMATCH
+19. bookinfo_hidden_downstream.BookinfoTest_1791939061994.Flow_Scenario_2.test_negative_flow_S2_v24_fault_Root1_TYPE_MISMATCH
+20. bookinfo_hidden_downstream.BookinfoTest_1791939061994.Flow_Scenario_2.test_negative_flow_S2_v25_fault_Root1_NULL_INPUT
+21. bookinfo_hidden_downstream.BookinfoTest_1791939061994.Flow_Scenario_2.test_negative_flow_S2_v2_fault_Root1_NULL_INPUT
+22. bookinfo_hidden_downstream.BookinfoTest_1791939061994.Flow_Scenario_2.test_negative_flow_S2_v2_fault_Root1_NULL_INPUT_explore_401
+23. bookinfo_hidden_downstream.BookinfoTest_1791939061994.Flow_Scenario_2.test_negative_flow_S2_v2_fault_Root1_NULL_INPUT_explore_405
+24. bookinfo_hidden_downstream.BookinfoTest_1791939061994.Flow_Scenario_2.test_negative_flow_S2_v2_fault_Root1_NULL_INPUT_explore_406
+25. bookinfo_hidden_downstream.BookinfoTest_1791939061994.Flow_Scenario_2.test_negative_flow_S2_v3_fault_Root1_OVERFLOW
+26. bookinfo_hidden_downstream.BookinfoTest_1791939061994.Flow_Scenario_2.test_negative_flow_S2_v3_fault_Root1_OVERFLOW_explore_403
+27. bookinfo_hidden_downstream.BookinfoTest_1791939061994.Flow_Scenario_2.test_negative_flow_S2_v3_fault_Root1_OVERFLOW_explore_429
+28. bookinfo_hidden_downstream.BookinfoTest_1791939061994.Flow_Scenario_2.test_negative_flow_S2_v3_fault_Root1_OVERFLOW_explore_500
+29. bookinfo_hidden_downstream.BookinfoTest_1791939061994.Flow_Scenario_2.test_negative_flow_S2_v4_fault_Root1_SEMANTIC_MISMATCH
+30. bookinfo_hidden_downstream.BookinfoTest_1791939061994.Flow_Scenario_2.test_negative_flow_S2_v4_fault_Root1_SEMANTIC_MISMATCH_explore_502
+31. bookinfo_hidden_downstream.BookinfoTest_1791939061994.Flow_Scenario_2.test_negative_flow_S2_v4_fault_Root1_SEMANTIC_MISMATCH_explore_503
+32. bookinfo_hidden_downstream.BookinfoTest_1791939061994.Flow_Scenario_2.test_negative_flow_S2_v4_fault_Root1_SEMANTIC_MISMATCH_explore_504
+33. bookinfo_hidden_downstream.BookinfoTest_1791939061994.Flow_Scenario_2.test_negative_flow_S2_v5_fault_Root1_OVERFLOW
+34. bookinfo_hidden_downstream.BookinfoTest_1791939061994.Flow_Scenario_2.test_negative_flow_S2_v6_fault_Root1_OVERFLOW
+35. bookinfo_hidden_downstream.BookinfoTest_1791939061994.Flow_Scenario_2.test_negative_flow_S2_v7_fault_Root1_TYPE_MISMATCH
+36. bookinfo_hidden_downstream.BookinfoTest_1791939061994.Flow_Scenario_2.test_negative_flow_S2_v8_fault_Root1_TYPE_MISMATCH
+37. bookinfo_hidden_downstream.BookinfoTest_1791939061994.Flow_Scenario_2.test_negative_flow_S2_v9_fault_Root1_TYPE_MISMATCH
+38. bookinfo_hidden_downstream.BookinfoTest_1791939061994.Flow_Scenario_2.test_positive_flow_S2_v26
+39. bookinfo_hidden_downstream.BookinfoTest_1791939061994.Flow_Scenario_2.test_positive_flow_S2_v27
+40. bookinfo_hidden_downstream.BookinfoTest_1791939061994.Flow_Scenario_2.test_positive_flow_S2_v28
+41. bookinfo_hidden_downstream.BookinfoTest_1791939061994.Flow_Scenario_2.test_positive_flow_S2_v29
+42. bookinfo_hidden_downstream.BookinfoTest_1791939061994.Flow_Scenario_31.test_negative_flow_S31_v10_fault_Root1_OVERFLOW
+43. bookinfo_hidden_downstream.BookinfoTest_1791939061994.Flow_Scenario_31.test_negative_flow_S31_v11_fault_Root1_NULL_INPUT
+44. bookinfo_hidden_downstream.BookinfoTest_1791939061994.Flow_Scenario_31.test_negative_flow_S31_v12_fault_Root1_NULL_INPUT
+45. bookinfo_hidden_downstream.BookinfoTest_1791939061994.Flow_Scenario_31.test_negative_flow_S31_v13_fault_Root1_SEMANTIC_MISMATCH
+46. bookinfo_hidden_downstream.BookinfoTest_1791939061994.Flow_Scenario_31.test_negative_flow_S31_v14_fault_Root1_SEMANTIC_MISMATCH
+47. bookinfo_hidden_downstream.BookinfoTest_1791939061994.Flow_Scenario_31.test_negative_flow_S31_v15_fault_Root1_TYPE_MISMATCH
+48. bookinfo_hidden_downstream.BookinfoTest_1791939061994.Flow_Scenario_31.test_negative_flow_S31_v16_fault_Root1_TYPE_MISMATCH
+49. bookinfo_hidden_downstream.BookinfoTest_1791939061994.Flow_Scenario_31.test_negative_flow_S31_v17_fault_Root1_SEMANTIC_MISMATCH
+50. bookinfo_hidden_downstream.BookinfoTest_1791939061994.Flow_Scenario_31.test_negative_flow_S31_v18_fault_Root1_TYPE_MISMATCH
+51. bookinfo_hidden_downstream.BookinfoTest_1791939061994.Flow_Scenario_31.test_negative_flow_S31_v19_fault_Root1_NULL_INPUT
+52. bookinfo_hidden_downstream.BookinfoTest_1791939061994.Flow_Scenario_31.test_negative_flow_S31_v1_fault_Root1_SEMANTIC_MISMATCH
+53. bookinfo_hidden_downstream.BookinfoTest_1791939061994.Flow_Scenario_31.test_negative_flow_S31_v20_fault_Root1_TYPE_MISMATCH
+54. bookinfo_hidden_downstream.BookinfoTest_1791939061994.Flow_Scenario_31.test_negative_flow_S31_v21_fault_Root1_NULL_INPUT
+55. bookinfo_hidden_downstream.BookinfoTest_1791939061994.Flow_Scenario_31.test_negative_flow_S31_v22_fault_Root1_OVERFLOW
+56. bookinfo_hidden_downstream.BookinfoTest_1791939061994.Flow_Scenario_31.test_negative_flow_S31_v23_fault_Root1_SEMANTIC_MISMATCH
+57. bookinfo_hidden_downstream.BookinfoTest_1791939061994.Flow_Scenario_31.test_negative_flow_S31_v24_fault_Root1_TYPE_MISMATCH
+58. bookinfo_hidden_downstream.BookinfoTest_1791939061994.Flow_Scenario_31.test_negative_flow_S31_v25_fault_Root1_SEMANTIC_MISMATCH
+59. bookinfo_hidden_downstream.BookinfoTest_1791939061994.Flow_Scenario_31.test_negative_flow_S31_v2_fault_Root1_NULL_INPUT
+60. bookinfo_hidden_downstream.BookinfoTest_1791939061994.Flow_Scenario_31.test_negative_flow_S31_v3_fault_Root1_TYPE_MISMATCH
+61. bookinfo_hidden_downstream.BookinfoTest_1791939061994.Flow_Scenario_31.test_negative_flow_S31_v4_fault_Root1_SEMANTIC_MISMATCH
+62. bookinfo_hidden_downstream.BookinfoTest_1791939061994.Flow_Scenario_31.test_negative_flow_S31_v5_fault_Root1_TYPE_MISMATCH
+63. bookinfo_hidden_downstream.BookinfoTest_1791939061994.Flow_Scenario_31.test_negative_flow_S31_v6_fault_Root1_OVERFLOW
+64. bookinfo_hidden_downstream.BookinfoTest_1791939061994.Flow_Scenario_31.test_negative_flow_S31_v7_fault_Root1_TYPE_MISMATCH
+65. bookinfo_hidden_downstream.BookinfoTest_1791939061994.Flow_Scenario_31.test_negative_flow_S31_v8_fault_Root1_OVERFLOW
+66. bookinfo_hidden_downstream.BookinfoTest_1791939061994.Flow_Scenario_31.test_negative_flow_S31_v9_fault_Root1_OVERFLOW
+67. bookinfo_hidden_downstream.BookinfoTest_1791939061994.Flow_Scenario_31.test_positive_flow_S31_v26
+68. bookinfo_hidden_downstream.BookinfoTest_1791939061994.Flow_Scenario_31.test_positive_flow_S31_v26_explore_200
+69. bookinfo_hidden_downstream.BookinfoTest_1791939061994.Flow_Scenario_31.test_positive_flow_S31_v26_explore_400
+70. bookinfo_hidden_downstream.BookinfoTest_1791939061994.Flow_Scenario_31.test_positive_flow_S31_v26_explore_404
+71. bookinfo_hidden_downstream.BookinfoTest_1791939061994.Flow_Scenario_31.test_positive_flow_S31_v27
+72. bookinfo_hidden_downstream.BookinfoTest_1791939061994.Flow_Scenario_31.test_positive_flow_S31_v27_explore_401
+73. bookinfo_hidden_downstream.BookinfoTest_1791939061994.Flow_Scenario_31.test_positive_flow_S31_v27_explore_403
+74. bookinfo_hidden_downstream.BookinfoTest_1791939061994.Flow_Scenario_31.test_positive_flow_S31_v27_explore_405
+75. bookinfo_hidden_downstream.BookinfoTest_1791939061994.Flow_Scenario_31.test_positive_flow_S31_v28
+76. bookinfo_hidden_downstream.BookinfoTest_1791939061994.Flow_Scenario_31.test_positive_flow_S31_v28_explore_429
+77. bookinfo_hidden_downstream.BookinfoTest_1791939061994.Flow_Scenario_31.test_positive_flow_S31_v28_explore_500
+78. bookinfo_hidden_downstream.BookinfoTest_1791939061994.Flow_Scenario_31.test_positive_flow_S31_v28_explore_502
+79. bookinfo_hidden_downstream.BookinfoTest_1791939061994.Flow_Scenario_31.test_positive_flow_S31_v29
+80. bookinfo_hidden_downstream.BookinfoTest_1791939061994.Flow_Scenario_60.test_negative_flow_S60_v10_fault_Root1_NULL_INPUT
+81. bookinfo_hidden_downstream.BookinfoTest_1791939061994.Flow_Scenario_60.test_negative_flow_S60_v11_fault_Root1_TYPE_MISMATCH
+82. bookinfo_hidden_downstream.BookinfoTest_1791939061994.Flow_Scenario_60.test_negative_flow_S60_v12_fault_Root1_OVERFLOW
+83. bookinfo_hidden_downstream.BookinfoTest_1791939061994.Flow_Scenario_60.test_negative_flow_S60_v13_fault_Root1_NULL_INPUT
+84. bookinfo_hidden_downstream.BookinfoTest_1791939061994.Flow_Scenario_60.test_negative_flow_S60_v14_fault_Root1_TYPE_MISMATCH
+85. bookinfo_hidden_downstream.BookinfoTest_1791939061994.Flow_Scenario_60.test_negative_flow_S60_v15_fault_Root1_SEMANTIC_MISMATCH
+86. bookinfo_hidden_downstream.BookinfoTest_1791939061994.Flow_Scenario_60.test_negative_flow_S60_v16_fault_Root1_TYPE_MISMATCH
+87. bookinfo_hidden_downstream.BookinfoTest_1791939061994.Flow_Scenario_60.test_negative_flow_S60_v17_fault_Root1_TYPE_MISMATCH
+88. bookinfo_hidden_downstream.BookinfoTest_1791939061994.Flow_Scenario_60.test_negative_flow_S60_v18_fault_Root1_SEMANTIC_MISMATCH
+89. bookinfo_hidden_downstream.BookinfoTest_1791939061994.Flow_Scenario_60.test_negative_flow_S60_v19_fault_Root1_SEMANTIC_MISMATCH
+90. bookinfo_hidden_downstream.BookinfoTest_1791939061994.Flow_Scenario_60.test_negative_flow_S60_v1_fault_Root1_TYPE_MISMATCH
+91. bookinfo_hidden_downstream.BookinfoTest_1791939061994.Flow_Scenario_60.test_negative_flow_S60_v20_fault_Root1_TYPE_MISMATCH
+92. bookinfo_hidden_downstream.BookinfoTest_1791939061994.Flow_Scenario_60.test_negative_flow_S60_v21_fault_Root1_SEMANTIC_MISMATCH
+93. bookinfo_hidden_downstream.BookinfoTest_1791939061994.Flow_Scenario_60.test_negative_flow_S60_v22_fault_Root1_OVERFLOW
+94. bookinfo_hidden_downstream.BookinfoTest_1791939061994.Flow_Scenario_60.test_negative_flow_S60_v23_fault_Root1_OVERFLOW
+95. bookinfo_hidden_downstream.BookinfoTest_1791939061994.Flow_Scenario_60.test_negative_flow_S60_v24_fault_Root1_TYPE_MISMATCH
+96. bookinfo_hidden_downstream.BookinfoTest_1791939061994.Flow_Scenario_60.test_negative_flow_S60_v25_fault_Root1_SEMANTIC_MISMATCH
+97. bookinfo_hidden_downstream.BookinfoTest_1791939061994.Flow_Scenario_60.test_negative_flow_S60_v2_fault_Root1_SEMANTIC_MISMATCH
+98. bookinfo_hidden_downstream.BookinfoTest_1791939061994.Flow_Scenario_60.test_negative_flow_S60_v3_fault_Root1_NULL_INPUT
+99. bookinfo_hidden_downstream.BookinfoTest_1791939061994.Flow_Scenario_60.test_negative_flow_S60_v4_fault_Root1_NULL_INPUT
+100. bookinfo_hidden_downstream.BookinfoTest_1791939061994.Flow_Scenario_60.test_negative_flow_S60_v5_fault_Root1_NULL_INPUT
+101. bookinfo_hidden_downstream.BookinfoTest_1791939061994.Flow_Scenario_60.test_negative_flow_S60_v6_fault_Root1_TYPE_MISMATCH
+102. bookinfo_hidden_downstream.BookinfoTest_1791939061994.Flow_Scenario_60.test_negative_flow_S60_v7_fault_Root1_OVERFLOW
+103. bookinfo_hidden_downstream.BookinfoTest_1791939061994.Flow_Scenario_60.test_negative_flow_S60_v8_fault_Root1_OVERFLOW
+104. bookinfo_hidden_downstream.BookinfoTest_1791939061994.Flow_Scenario_60.test_negative_flow_S60_v9_fault_Root1_SEMANTIC_MISMATCH
+105. bookinfo_hidden_downstream.BookinfoTest_1791939061994.Flow_Scenario_60.test_positive_flow_S60_v26
+106. bookinfo_hidden_downstream.BookinfoTest_1791939061994.Flow_Scenario_60.test_positive_flow_S60_v27
+107. bookinfo_hidden_downstream.BookinfoTest_1791939061994.Flow_Scenario_60.test_positive_flow_S60_v28
+108. bookinfo_hidden_downstream.BookinfoTest_1791939061994.Flow_Scenario_60.test_positive_flow_S60_v29
+
+================================================================================
+                          END OF REPORT
+================================================================================

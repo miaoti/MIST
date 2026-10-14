@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
+<testsuites errors="0" failures="5" skipped="0" tests="5" time="10.790861">
+  <testsuite name="schemathesis" hostname="Mew" errors="0" failures="5" skipped="0" tests="5" time="10.790861">
+    <testcase name="GET /products" time="0.141218">
+      <failure type="failure">1. Test Case ID: UxsdqG
+
+- Unsupported methods
+
+    Unsupported method QUERY returned 400, expected 405 Method Not Allowed
+
+    Return 405 for methods not listed in the OpenAPI spec
+
+[400] Bad Request:
+
+    `Bad Request`
+
+Reproduce with:
+
+    curl -X QUERY http://localhost:8080/api/v1/products</failure>
+    </testcase>
+    <testcase name="GET /products/{id}" time="1.315933">
+      <failure type="failure">1. Test Case ID: mmhYyi
+
+- Unsupported methods
+
+    Unsupported method QUERY returned 400, expected 405 Method Not Allowed
+
+    Return 405 for methods not listed in the OpenAPI spec
+
+[400] Bad Request:
+
+    `Bad Request`
+
+Reproduce with:
+
+    curl -X QUERY http://localhost:8080/api/v1/products/-2147483648</failure>
+    </testcase>
+    <testcase name="GET /products/{id}/ratings" time="0.031051">
+      <failure type="failure">1. Test Case ID: 067611
+
+- Unsupported methods
+
+    Unsupported method QUERY returned 400, expected 405 Method Not Allowed
+
+    Return 405 for methods not listed in the OpenAPI spec
+
+[400] Bad Request:
+
+    `Bad Request`
+
+Reproduce with:
+
+    curl -X QUERY http://localhost:8080/api/v1/products/-2147483648/ratings</failure>
+      <failure type="failure">1. Test Case ID: H870bP
+
+- Server error
+
+- Undocumented HTTP status code
+
+    Received: 503
+    Documented: 200, 400
+
+[503] Service Unavailable:
+
+    `{"error": "Sorry, product ratings are currently unavailable for this book."}`
+
+Reproduce with:
+
+    curl -X GET http://localhost:8080/api/v1/products/2147483623/ratings</failure>
+    </testcase>
+    <testcase name="GET /products/{id}/reviews" time="0.030734">
+      <failure type="failure">1. Test Case ID: ZR15gW
+
+- Unsupported methods
+
+    Unsupported method QUERY returned 400, expected 405 Method Not Allowed
+
+    Return 405 for methods not listed in the OpenAPI spec
+
+[400] Bad Request:
+
+    `Bad Request`
+
+Reproduce with:
+
+    curl -X QUERY http://localhost:8080/api/v1/products/-2147483648/reviews</failure>
+      <failure type="failure">1. Test Case ID: S1Lhay
+
+- Response violates schema (2 violations)
+
+    "0" is not of type "integer"
+
+    Validated against the response schema for status code 200.
+
+    Schema at /definitions/ProductReviews/properties/id:
+
+        {
+            "type": "integer",
+            "format": "int32",
+            "description": "Product id"
+        }
+
+    Value:
+
+        "0"
+
+    "stars" is a required property
+
+    Validated against the response schema for status code 200.
+
+    Schema at /definitions/Rating:
+
+        {
+            "required": [
+                "stars",
+                "color"
+            ],
+            "type": "object",
+            "description": "Rating of a product",
+            "properties": {
+                "stars": {
+                    "type": "integer",
+                    "format": "int32",
+                    "minimum": 1,
+                    "maximum": 5,
+                    "description": "Number of stars"
+                },
+                "color": {
+                    "type": "string",
+                    "enum": [
+                        "red",
+            // Output truncated...
+        }
+
+    Value:
+
+        {
+            "error": "Ratings service is currently unavailable"
+        }
+
+[200] OK:
+
+    `{"id": "0", "podname": "reviews-v3-77f747dc48-ppk99", "clustername": "null", "reviews": [{"reviewer": "Reviewer1", "text": "An extremely entertaining play by Shakespeare. The slapstick humour is refreshing!", "rating": {"error": "Ratings service is currently unavailable"}}, {"reviewer": "Reviewer2", "text": "Absolutely fun and entertaining. The play lacks thematic depth when compared to other plays by Shakespeare.", "rating": {"error": "Ratings service is currently unavailable"}}]}`
+
+Reproduce with:
+
+    curl -X GET http://localhost:8080/api/v1/products/0/reviews</failure>
+    </testcase>
+    <testcase name="Stateful tests" time="9.271924">
+      <failure type="failure">1. Test Case ID: aYG4Bn
+
+- API accepted schema-violating request
+
+    Invalid data should have been rejected
+    Expected: 400, 401, 403, 404, 405, 406, 409, 422, 428, 5xx
+    Invalid component: parameter `id` in path - violates `minimum` at /properties/id
+
+[200] OK:
+
+    `{"id": -2818619811328238276, "author": "William Shakespeare", "year": 1595, "type": "paperback", "pages": 200, "publisher": "PublisherA", "language": "English", "ISBN-10": "1234567890", "ISBN-13": "123-1234567890"}`
+
+Reproduce with:
+
+    curl -X GET http://localhost:8080/api/v1/products
+    curl -X GET http://localhost:8080/api/v1/products/-2818619811328238276</failure>
+    </testcase>
+  </testsuite>
+</testsuites>

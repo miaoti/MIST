@@ -1,0 +1,239 @@
+% =============================================================================
+% ACTIVE -- SANER 2027 Tool Demo Track.
+% 34th IEEE International Conference on Software Analysis, Evolution and
+% Reengineering (SANER 2027), Richmond, Virginia, USA, March 9-12, 2027.
+% =============================================================================
+% Track URL:
+%   https://conf.researchr.org/track/saner-2027/saner-2027-tool-demo-track
+% Dates (AoE): optional abstract Mon 19 Oct 2026; paper Fri 23 Oct 2026;
+%   notification Tue 8 Dec 2026; camera-ready + author registration Fri 8 Jan 2027.
+% Submission: https://easychair.org/conferences/?conf=saner27tracks
+%   ("Make a New Submission" -> Other Tracks -> Tool Demo Track).
+% Format: IEEE conference proceedings style, \documentclass[10pt,conference]{IEEEtran}
+%   (no compsoc option); MAXIMUM 5 PAGES INCLUDING REFERENCES; PDF; English.
+% Review: single anonymous (author names visible to the PC); at least 3 reviews.
+% Must have: a URL where the latest tool version can be downloaded or accessed.
+% Optional: a 3-5 minute demo video (YouTube or the tool's website), URL in the
+%   abstract. Not eligible: tools already published as a tool paper; commercial
+%   products.
+%
+% History: `main_issta.tex` is the acmart version submitted to the SPLASH/ISSTA
+% 2026 Tool Demonstrations track (June 2026, rejected). This file was ported from
+% it on 2026-10-13 and then revised for SANER (plan and records under
+% debug/tool-demo/saner2027/). `main.tex` is a stale ICSME/ICSE IEEEtran variant
+% that predates the ISSTA submission; do not build it. `figures/*.tex` and
+% `refs.bib` are shared by all variants; edit them once.
+% =============================================================================
+
+\documentclass[10pt,conference]{IEEEtran}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+% IEEEtran defaults to Times (ptm) with Helvetica and Courier; the template's text
+% fonts stand. Only the monospace face is Latin Modern Mono: Courier at 10pt widens
+% every identifier token.
+\renewcommand{\ttdefault}{lmtt}
+\usepackage{cite}
+\usepackage{amsmath,amssymb}
+\usepackage{graphicx}
+\usepackage{textcomp}
+\usepackage{xcolor}
+\usepackage{booktabs}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,fit,backgrounds,shapes.geometric}
+\usepackage{listings}
+\usepackage{url}
+\usepackage[hidelinks]{hyperref}
+
+% --- Author-facing TODO macro (visible in PDF, easy to grep) ---
+\newcommand{\todo}[1]{\textcolor{red}{\textbf{[TODO: #1]}}}
+
+% --- Invariant names: small caps with discretionary breaks at the word joints ---
+\newcommand{\HDF}{\textsc{Hidden\-Downstream\-Failure}}
+\newcommand{\RE}{\textsc{Response\-Envelope}}
+
+% --- Listing style: fullflexible columns so that a copy from the PDF yields the
+%     typed characters (fixed columns insert spaces between letters). ---
+\lstset{
+  basicstyle=\footnotesize\ttfamily,
+  columns=fullflexible, keepspaces=true,
+  numbers=none,
+  keywordstyle=\bfseries, commentstyle=\itshape\color{gray!70!black},
+  showstringspaces=false, breaklines=false, frame=single, framerule=0.4pt,
+  xleftmargin=4pt, xrightmargin=2pt, aboveskip=3pt, belowskip=3pt
+}
+
+% --- Compact float/caption spacing (5-page limit including references) ---
+\setlength{\textfloatsep}{6pt plus 2pt minus 2pt}
+\setlength{\dbltextfloatsep}{6pt plus 2pt minus 2pt}
+\setlength{\floatsep}{4pt plus 1pt minus 1pt}
+\setlength{\intextsep}{4pt plus 1pt minus 1pt}
+\setlength{\abovecaptionskip}{3pt}
+\setlength{\belowcaptionskip}{1pt}
+% Let LaTeX stretch lines to avoid overfull boxes from long \texttt identifiers
+% (e.g. ENUM_VIOLATION, otel.status_code=ERROR) in the narrow columns.
+\emergencystretch=3em
+\hfuzz=1.5pt
+
+\begin{document}
+
+\title{MIST: A Trace-Driven Tool for Multi-Service\\REST API Test Generation with Trace Shape Oracles}
+
+% Single-anonymous track: the author block is visible.
+\author{%
+  \IEEEauthorblockN{Tingshuo Miao, Asif Imtiaz Shaafi, Eunjee Song\textsuperscript{*}}%
+  \IEEEauthorblockA{%
+    Department of Computer Science, Baylor University, Waco, TX, USA\\
+    \{tingshuo\_miao2, asifimtiaz\_shaafi1, eunjee\_song\}@baylor.edu\\
+    \textsuperscript{*}Corresponding author%
+  }%
+}
+
+\maketitle
+
+\begin{abstract}
+REST API test generators sample requests from an OpenAPI document and judge each response by its status code and schema. In a microservice system, two failures pass that check: a soft error, a 2xx response whose body reports a failure, and a hidden downstream failure, a 2xx entry response that masks a failed call deeper in the system. MIST (Microservice Integration and Scenario Tester) is an open-source tool that generates cross-service REST tests from the OpenAPI document and the OpenTelemetry traces a system already exports, and checks every test run against the trace it produced. Its Root API Mode drives only the entry points a client can reach, its Sniper Strategy puts exactly one invalid input into each negative test, and the central invariant of its Trace Shape Oracle fires when a 2xx hides a failed call deeper in the system, with no labelled traces, no learned baseline and no language model. On TrainTicket it generates 15,036 tests whose runs trigger all ten defects we planted in the system. On Istio Bookinfo and Online Boutique, under induced outages, it flags failed calls hidden behind 2xx responses from the trace alone, and those verdicts replay offline from traces checked into the repository. Source: \url{https://github.com/miaoti/MIST/}. Video: \url{https://youtu.be/T2AePcbFT6E}.
+\end{abstract}
+
+\begin{IEEEkeywords}
+REST API testing, microservices, distributed tracing, test oracles, test generation
+\end{IEEEkeywords}
+
+% =============================================================================
+\section{Introduction}\label{sec:intro}
+
+A team that runs a microservice system behind a REST API usually has two assets before any test is written: an OpenAPI document for the public operations, and a tracing pipeline such as OpenTelemetry~\cite{OpenTelemetry} that records each request as a tree of spans, one span per call in one service~\cite{Sigelman2010Dapper}. MIST (Microservice Integration and Scenario Tester) turns these two assets into runnable cross-service tests and uses the trace of every test run as its oracle, the check that decides whether the run passed. It is built for the developer or tester who wants generated tests to notice what a status code hides, without writing assertions by hand.
+
+Specification-based generators such as EvoMaster~\cite{Arcuri2019EvoMasterTOSEM}, RESTler~\cite{Atlidakis2019RESTler} and RESTest~\cite{MartinLopez2021RESTest} derive requests from the OpenAPI document and judge each response by its status class and schema, and their learning-based successors ARAT-RL~\cite{Kim2023ARATRL} and AutoRestTest~\cite{Stennett2025AutoRestTest} change how inputs are chosen but keep that oracle. LogiAgent~\cite{Zhang2025LogiAgent}, RESTifAI~\cite{Kogler2025RESTifAI} and SATORI~\cite{Alonso2025SATORI} move the oracle into the response body or the specification. MACROHIVE~\cite{Giamattei2022MACROHIVE} looks inside a microservice system through a proxy deployed beside every service, and Tracetest~\cite{Tracetest}, an industrial tool, checks assertions over spans that a person wrote for each test. None of them uses the trace a system already exports both to generate tests and to judge them.
+
+MIST reads the OpenAPI document and the traces the system already exports to Jaeger~\cite{Jaeger}, a tracing backend. It needs no source code, no bytecode and no instrumentation of its own: with respect to the code it is black-box in the sense of the REST testing literature~\cite{Golmohammadi2024Survey}, and the one input it adds, the trace, is what the services already emit. The services must already export their spans to a Jaeger endpoint or to files MIST can read. MIST uses the trace twice: captured traces tell it which entry calls (calls a client makes from outside) to re-issue, and the trace of each generated test tells the oracle what happened behind the response.
+
+\textbf{Contributions.} We contribute (1) \emph{Root API Mode}, which drives only the entry points of a system that a client can reach and observes the internal services through the trace, so the generator never has to invent the state an internal endpoint expects (Section~\ref{sec:rootmode}); (2) the \emph{Sniper Strategy}, which puts exactly one invalid input into one parameter of the first entry call of a negative test, so that every anomaly in its trace has one cause (Section~\ref{sec:sniper}); and (3) the \emph{Trace Shape Oracle}, a set of invariants over the span tree of a test run, each a rule a healthy trace is expected to satisfy, whose \HDF{} invariant fires when a 2xx entry response hides a server-errored span and needs no labelled traces, no learned baseline and no model (Section~\ref{sec:traceoracle}). MIST ships as three Maven modules and comes with input bundles for TrainTicket~\cite{Zhou2018BenchTraintAnalysisSurvey}, Istio Bookinfo~\cite{IstioBookinfo}, Sock Shop~\cite{SockShop} and Online Boutique~\cite{OnlineBoutique}, and every per-system artifact is an input, so its own code never changes.
+
+Section~\ref{sec:motiv} shows two failures that pass a status-and-schema check and one generator pitfall, Section~\ref{sec:tool} the tool and a session with it, Section~\ref{sec:case} the case studies, Section~\ref{sec:rw} related tools, and Section~\ref{sec:concl} concludes.
+
+\begin{figure*}[t]
+  \centering
+  \resizebox{\textwidth}{!}{\input{figures/trace_oracle.tex}}
+  \caption{A trace of \texttt{GET /productpage} on Istio Bookinfo under a \texttt{ratings} outage (checked-in trace, \texttt{details} call not drawn). The page returns \texttt{200} while the call to \texttt{ratings} failed with \texttt{503}, and only the trace shows the failed call.}
+  \label{fig:trace}
+\end{figure*}
+
+% =============================================================================
+\section{Motivating Examples}\label{sec:motiv}
+
+Two failures and one generator pitfall motivate MIST. The failures pass any oracle that reads only the status of the client's response, and the pitfall makes a generator report defects that are not there.
+
+\textbf{Hidden downstream failure.} Fig.~\ref{fig:trace} shows a trace from Istio Bookinfo under a \texttt{ratings} outage (the service scaled to zero). The entry call \texttt{GET /productpage} returns \texttt{200} because \texttt{reviews} degrades gracefully when \texttt{ratings} is down: the page comes back with its reviews and without stars. The trace holds the call from \texttt{reviews} to \texttt{ratings} as a span recorded on the caller's side (the absent \texttt{ratings} emits nothing) with HTTP \texttt{503} and the span status \texttt{ERROR} (the \texttt{otel.status\_code} attribute), which \texttt{reviews} swallowed: it answered \texttt{200} anyway. A status oracle records a pass, and a schema oracle has nothing to check on an HTML page. The body only notes that ratings are unavailable, and the \texttt{503} itself appears nowhere but in the trace. We call this a \emph{hidden downstream failure}: a 2xx entry response that masks a server error in a deeper span. The same shape appears over gRPC on Online Boutique when \texttt{adservice} is scaled to zero (no instance running): \texttt{frontend} still answers \texttt{200} while the failed call is an \texttt{ERROR} span.
+
+\textbf{Soft error.} On TrainTicket, the admin route operation \texttt{POST /api/v1/adminrouteservice/adminroute} answers \texttt{HTTP 200} with the body \texttt{\{"status":0,\allowbreak{} "msg":"start or end station not include in stationList.",\allowbreak{} "data":null\}} when it rejects a route. The status class says success and only the body says failure. We call this a \emph{soft error}.
+
+\textbf{Fabricated state.} Internal endpoints presuppose state that only earlier calls create, such as an \texttt{orderId} the database knows. A generator that drives them directly must invent that state, and the rejection of an invented value looks like a defect.
+
+% =============================================================================
+\section{The MIST Tool}\label{sec:tool}
+
+\begin{figure*}[t]
+  \centering
+  \resizebox{\textwidth}{!}{\input{figures/architecture.tex}}
+  \caption{MIST's three Maven modules and the five stages of \texttt{mist-core}. The dashed arrow brings each step's trace back from the system under test.}
+  \label{fig:arch}
+\end{figure*}
+
+\subsection{Architecture}\label{sec:arch}
+
+MIST is a Maven reactor of three modules (Fig.~\ref{fig:arch}). \texttt{mist-core} holds the pipeline. \texttt{mist-cli} ships the launcher \texttt{mist.jar}, the JUnit test writer (over the REST-Assured HTTP library) and the test executor. \texttt{mist-llm} calls a language model and caches the answers. Several features call it when a model is configured, among them the \RE{} classifier of Section~\ref{sec:traceoracle}, which reads response bodies, the fault miner named below, the smart mode of invalid-input generation and a model-written note on each step's trace. The invariant of Section~\ref{sec:traceoracle} never calls it.
+
+The pipeline has five stages, one per question a generator must answer: which operations exist, where real parameter values come from, which calls to make and in what order, how to turn a test negative, and how to judge a run. Stage (i), the Spec Ingestor, parses one OpenAPI document into MIST's configuration. The bundled TrainTicket document carries 265 operations across 37 services. Stage (ii), the Semantic Dependency Registry, records, for every identifier-like parameter (a name ending in \texttt{Id}, \texttt{ID} or \texttt{uuid}), which earlier operation and response field produced such a value in the captured traces. Stage (iii), the Sequence Generator, turns each captured trace into a scenario (its calls in their observed order), merges scenarios that share calls, and writes one JUnit step per call to be re-issued. Root API Mode (Section~\ref{sec:rootmode}) decides which calls those are. Stage (iv), the Fault Injector, turns positive tests (requests the system should accept) into negative ones (requests it should reject): with the Sniper Strategy (Section~\ref{sec:sniper}) it puts one invalid input from nine categories (type mismatch, regular-expression mismatch, semantic mismatch, overflow, empty input, null input, special characters, boundary violation, enum violation) into a request, each category applied only to the parameter types it fits, and nothing is injected into the system. An opt-in fault miner adds categories learned from the specification's descriptions and from observed 4xx and 5xx bodies. Stage (v), the Trace Checker, pulls the Jaeger trace after every executed step and evaluates the Trace Shape Oracle's invariants (Section~\ref{sec:traceoracle}) on it. For \texttt{GET /api/v1/products/\{id\}/reviews} on Bookinfo, the stages read the document, record where its \texttt{id} values came from, re-issue the entry call, derive a negative test with one invalid id, and check the resulting trace.
+
+\subsection{Root API Mode}\label{sec:rootmode}
+
+Root API Mode keeps, from each captured trace, the one call a client made from outside: the parentless span that remains after skipping the spans of the gateway and service mesh that only route it. MIST re-issues that call from outside and observes the internal services through the trace the call produces. With the mode off, MIST also drives the internal calls directly. The mode is on by default, because it avoids the generator pitfall of Section~\ref{sec:motiv}: the system creates its own internal state while it serves the entry call.
+\subsection{Sniper Strategy}\label{sec:sniper}
+
+Mutating several parameters at once leaves the oracle unable to blame an anomaly on any one of them, and an invalid input in a later call sits behind other, possibly mutated, values. The Sniper Strategy removes both ambiguities: in the first entry call of a negative test it sets exactly one parameter, picked round-robin, to one applicable category of invalid input and one value, and fills every other parameter with a real value taken from earlier responses, so the targeted parameter is the only invalid input in the request. A parameter is identified by its name and location, so same-named parameters in different locations are mutated independently. When no earlier response supplies a real value for a parameter, MIST fills it with a made-up one and marks the test negative in advance, so the system's rejection of that value is not reported as a defect.
+
+\subsection{Trace Shape Oracle}\label{sec:traceoracle}
+
+The Trace Shape Oracle evaluates the trace of each executed step against invariants. \HDF{} is the central one. It fires when the entry call returned 2xx while a deeper span server-errored, with an HTTP status of 500 or more or a span status of \texttt{ERROR}. A deeper 4xx is benign, because a negative test expects a rejection somewhere along the call chain. An HTTP 5xx swallow fails the test at severity \textsc{error}, and a span-status-only error, the gRPC case, raises a \textsc{warn} that is reported without failing the test. The invariant needs no labelled traces, no learned baseline and no model, and it ships opt-in, so that a team decides whether a swallowed error counts as a defect.
+
+Three further families compare a trace with a seed corpus of known-good runs: \textsc{SpanTreeShape} (a missing internal call), \textsc{StatusPropagation} (a status not seen at that depth before) and \textsc{TimingEnvelope} (latency outside the learned range). They are implemented but need a per-system corpus, and the runs of Section~\ref{sec:case} do not use them. \RE{} targets the soft error: it classifies the first unseen value of a response body's status field (such as \texttt{status:0}) with one language-model call, caches the answer, and then fails a \texttt{status:0, data:null} body without further calls.
+
+\subsection{Using MIST}\label{sec:usage}
+
+A session takes three steps. First, the user writes one properties file: the OpenAPI document, the trace source (a Jaeger URL or a directory of captured traces), the base URL of the system, and the switches (Root API Mode, invalid-input categories, invariants, execution). Out of the box, Root API Mode, the nine categories, and the Trace Shape Oracle with \textsc{SpanTreeShape} and \textsc{StatusPropagation} (silent until a seed corpus exists) are on, and \HDF{}, \textsc{TimingEnvelope}, the \RE{} classifier and the fault miner are off. The bundled properties files turn the classifier on, and the runs of Section~\ref{sec:case} also set \texttt{mst.oracle.shape.\allowbreak invariants.\allowbreak hidden\_downstream\_failure.\allowbreak enabled} to \texttt{true}. Second, the user runs \texttt{java -jar mist.jar <file>} on a JDK (version 21, because the tests are compiled in-process). MIST generates, compiles and executes the JUnit classes in the same JVM, pulls the trace of every step, and writes three outputs: the classes, Allure test results with every step's request, response and trace (the Allure command line renders them as an HTML report), and a fault-detection report. Third, the user reads the Allure report, where a \HDF{} finding (Fig.~\ref{fig:allure}) names the swallowed span and its status, and the fault-detection report, which lists every planted defect and the tests that triggered it. Adding a system needs the same inputs and no adapter code (examples under \texttt{evaluation/suts/}).
+
+A fresh clone replays the Bookinfo verdict and generates TrainTicket tests without a running system or a model:
+\par\noindent\begin{minipage}{\columnwidth}
+\begin{lstlisting}[basicstyle=\scriptsize\ttfamily,frame=none]
+$ mvn -DskipTests install
+$ JAR=mist-cli/target/mist.jar
+$ C=mist-cli/src/main/resources/My-Example
+$ java -jar $JAR $C/trainticket-demo-noexec.properties
+$ D=docs/main-contribution/evidence/bookinfo_html_entry_20261013
+$ T=$D/traces/outage_productpage.json
+$ java -cp $JAR evaluation/suts/bookinfo/OracleCheck.java \
+    $T "GET /productpage"
+\end{lstlisting}
+\end{minipage}
+The \texttt{java -jar} line generates TrainTicket tests offline. The \texttt{OracleCheck} line replays the invariant on a committed (checked-in) Bookinfo outage trace and prints the verdict that a status or schema oracle would miss. A third harness repeats the classifier's check against the model (it needs a DeepSeek key, and the transcript is checked in).
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=\columnwidth]{figures/allure_finding.png}
+  \caption{A failed test in the Allure report (Bookinfo, run of 13 Oct. 2026): the entry call returned \texttt{200}, and the sub-step names the call from \texttt{reviews} to \texttt{ratings} that failed with \texttt{503}.}
+  \label{fig:allure}
+\end{figure}
+
+% =============================================================================
+\section{Case Studies}\label{sec:case}
+
+We report four systems. Three were run from their own OpenAPI document, properties file and captured traces, and on the fourth, Sock Shop, we captured a soft error directly. All four exported their traces to Jaeger.
+
+\textbf{TrainTicket: generation at scale.} For this benchmark run we planted ten input-validation defects in TrainTicket's services. A list names the planted defects, the planted code reports a defect's name in its response, and MIST records which tests triggered it. On that build (seed 42, committed report), MIST generated and executed 15,036 test cases in a run of about 6.5 hours. Seven of the nine invalid-input categories produced tests, and regular-expression mismatch and enum violation none. The executions triggered all ten defects. This is a generation and scale result: the planted code's own report, not the trace oracle, confirms each defect. A committed live check runs \RE{}'s classifier directly: it fails the \texttt{status:0} body of Section~\ref{sec:motiv} and passes a \texttt{status:1} success body.
+
+\textbf{Istio Bookinfo: the hidden 503.} With \texttt{ratings} scaled to zero, one in-process run generated and executed 166 tests, and \HDF{} fired at \textsc{error} on the \texttt{ratings} call masked behind the \texttt{/reviews} entry and failed those tests (committed report). On the page of Fig.~\ref{fig:trace}, MIST generated one test from a captured trace, and the invariant fired at \textsc{error} on the same swallowed call (committed logs and traces). Run against the same outage, EvoMaster 6.2.0 (black-box) and Schemathesis 4.23.0~\cite{HatfieldDodds2022Schemathesis} pass its \texttt{200} response, which breaks no schema (committed runs). Table~\ref{tab:bookinfo} shows five controlled executions: the invariant fires only where the trace hides a failure and stays silent on the operation that never calls \texttt{ratings} (\texttt{/products}), on the loud \texttt{503} the status oracle already catches, and on the healthy control.
+
+\begin{table}[t]
+\centering
+\caption{Bookinfo: the status oracle against \HDF{} on five executions of generated tests, four under a \texttt{ratings} outage and one healthy (API paths under \texttt{/api/v1}, the page at the root).}
+\label{tab:bookinfo}
+\scriptsize\setlength{\tabcolsep}{4pt}
+\begin{tabular}{@{}llccc@{}}
+\toprule
+\textbf{Endpoint} & \texttt{ratings} & \textbf{HTTP} & \textbf{Status oracle} & \textbf{Trace oracle} \\
+\midrule
+\texttt{/products}                & outage  & 200 & pass            & silent  \\
+\texttt{/products/\{id\}/reviews} & outage  & 200 & \textbf{pass (miss)} & \textbf{FIRES}    \\
+\texttt{/productpage}             & outage  & 200 & \textbf{pass (miss)} & \textbf{FIRES}    \\
+\texttt{/products/\{id\}/ratings} & outage  & 503 & fail            & silent  \\
+\texttt{/products/\{id\}/reviews} & healthy & 200 & pass            & silent  \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\textbf{Online Boutique: the same failure over gRPC.} With \texttt{adservice} scaled to zero, an in-process run generated and executed 579 tests, and the invariant raised \textsc{warn} on the swallowed \texttt{frontend} to \texttt{adservice} call, whose gRPC status is 14, unavailable, while its HTTP status attribute reads a misleading \texttt{200} (committed report). As a warning, it failed no test. Replayed offline over a captured set, 24 of 40 outage traces fire, each an entry \texttt{200} with a swallowed \texttt{adservice} error, and 0 of 30 healthy ones. How many traces reach \texttt{adservice} depends on the workload mix, so that ratio is not a detection rate. The home page body is a clean \texttt{200} with no error text, so only the trace exposes the failure.
+
+\textbf{Sock Shop: a soft error the classifier misses.} A \texttt{catalogue-db} outage makes \texttt{GET /catalogue} return \texttt{200} with a \texttt{\{status\_code:500\}} body (committed capture). The status oracle passes it, and the classifier misses it while failing TrainTicket's \texttt{status:0} body, so soft-error detection stays the model-dependent, lower-assurance part of the oracle.
+
+\textbf{Summary.} The four systems show two things: MIST generates and executes tests at scale, and on the two systems whose outages produced a hidden downstream failure, over HTTP and over gRPC, its label-free invariant flagged what the status oracle passed, on Bookinfo's page what a schema oracle passes too, and on Online Boutique what a body check passes too. The planted TrainTicket defects play the part of mutants in mutation testing~\cite{Jia2011MutationSurvey}: seeded faults whose triggering measures the generated inputs.
+
+\textbf{Limitations.} MIST sees only what the system exports: uninstrumented services are invisible, and a swallowed failure that leaves no errored span is missed. The hidden downstream failure was shown under induced outages rather than crafted inputs, so eliciting it from inputs is future work. \HDF{} encodes a policy, since the same trace can be intended graceful degradation, and a call that errored and then succeeded on retry still fires. \RE{} carries the model's own error.
+
+% =============================================================================
+\section{Related Work}\label{sec:rw}
+
+\textbf{REST API test generators.} EvoMaster~\cite{Arcuri2019EvoMasterTOSEM}, RESTler~\cite{Atlidakis2019RESTler}, RESTest~\cite{MartinLopez2021RESTest}, RestTestGen~\cite{Corradini2022RestTestGen}, Schemathesis~\cite{HatfieldDodds2022Schemathesis} and Morest~\cite{Liu2022MoRest} generate requests from the OpenAPI document, and ARAT-RL~\cite{Kim2023ARATRL} and AutoRestTest~\cite{Stennett2025AutoRestTest,Kim2025AutoRestTestSPDG} add reinforcement learning over operations, parameters and values. All of them judge a response mainly by its status class and schema. A soft error whose body keeps its usual shape passes both, and so does a hidden downstream failure whenever the degraded response breaks no schema, as on Bookinfo's page and on Online Boutique (Section~\ref{sec:case}).
+
+\textbf{Oracles beyond the status code.} AGORA~\cite{Alonso2023AGORA} and its journal extension~\cite{Alonso2026TOSEMOracles} infer invariants over responses from API executions, SATORI~\cite{Alonso2025SATORI} infers response-field oracles statically from the specification, LogiAgent~\cite{Zhang2025LogiAgent} has a language model read each response body, and RESTifAI~\cite{Kogler2025RESTifAI} derives expected 2xx and 4xx outcomes from generated happy paths. All of them read the response or the specification and never the cross-service trace, so a clean-body swallowed failure stays invisible to them. Salva and Sue~\cite{Salva2024Mutation} mutate recorded REST test cases for security testing, while the Sniper Strategy mutates one parameter of a generated test.
+
+\textbf{Inside the system.} MACROHIVE~\cite{Giamattei2022MACROHIVE} watches the inter-service calls through a proxy deployed beside every service, while MIST sees the same calls in the trace the services already export. Tracetest~\cite{Tracetest} and Malabi~\cite{Malabi}, an archived OpenTelemetry assertion library, assert over spans but need a person to write each assertion, and neither generates tests nor mines traces. Record-and-replay tools such as Keploy~\cite{Keploy} turn captured traffic into tests and compare responses on replay, never the span tree. TraceRCA~\cite{Li2021TraceRCA} and Nezha~\cite{Yu2023Nezha} explain an incident after the fact from production traces, whereas MIST uses the trace during testing, as an oracle on a generated test. To our knowledge, MIST is the first open-source REST API test generator that uses a system's own distributed trace both as a generation input and as a functional oracle.
+
+% =============================================================================
+\section{Conclusion}\label{sec:concl}
+
+MIST turns the OpenAPI document and the traces a microservice system already exports into cross-service tests, checks each run against its own trace, and its \HDF{} invariant flags the failed call that the status oracle passes. The source code is at \url{https://github.com/miaoti/MIST/} under LGPL-3.0, with the system bundles, traces and run reports. A snapshot of the repository is archived at \url{https://doi.org/10.5281/zenodo.20514985}.
+
+\bibliographystyle{IEEEtran}
+\bibliography{refs}
+
+\end{document}

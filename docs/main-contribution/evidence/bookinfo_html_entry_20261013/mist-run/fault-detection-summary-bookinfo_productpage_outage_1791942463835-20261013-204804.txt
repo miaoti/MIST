@@ -1,0 +1,47 @@
+================================================================================
+                    FAULT DETECTION SUMMARY REPORT
+================================================================================
+
+Experiment:         bookinfo_productpage_outage_1791942463835
+Generated:          2026-10-13 20:48:04
+Tracking Started:   2026-10-13 20:47:43
+Total Test Cases:   1
+
+================================================================================
+FAULT COVERAGE SUMMARY
+================================================================================
+
+Total Injected Faults:    0
+Detected Faults:          0 (0.0%)
+Undetected Faults:        0 (100.0%)
+
+Detection Progress:
+[░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░] 0.0%
+
+================================================================================
+ORACLE ANOMALIES (1 distinct, 2 hits)
+================================================================================
+
+These are TraceShapeOracle invariant violations the tool detected.
+They are tool-detected trace-shape deviations, NOT confirmed bugs —
+an upper-bound bug-finding signal. Entries also matching an injected
+fault name appear in the DETECTED FAULTS section above.
+
+1. HIDDEN_DOWNSTREAM_FAILURE  |  GET /productpage
+   Severity:      ERROR
+   Violation:     reviews.default ──▶ ratings.default.svc.cluster.local:9080/* (http=503 otel=ERROR)
+   Hits:          2 time(s)
+   First seen:    2026-10-13 20:47:50
+   Last seen:     2026-10-13 20:48:04
+   Example test:  bookinfo_productpage_outage.BookinfoTest_1791942463835.Flow_Scenario_1.test_positive_flow_S1_v1
+   Example trace: e5bbdae6106044bdba5040d1b0c953b6
+
+================================================================================
+TEST CASES EXECUTED (1)
+================================================================================
+
+1. bookinfo_productpage_outage.BookinfoTest_1791942463835.Flow_Scenario_1.test_positive_flow_S1_v1
+
+================================================================================
+                          END OF REPORT
+================================================================================

@@ -1,0 +1,200 @@
+Schemathesis v4.23.0
+━━━━━━━━━━━━━━━━━━━━
+
+
+ ✅  Loaded specification from                                                 
+ C:/Users/miaot/Github/MIST/evaluation/suts/bookinfo/openapi/bookinfo-swagger. 
+ yaml (in 0.21s)                                                               
+
+     Base URL:         http://localhost:8080/api/v1                            
+     Specification:    Open API 2.0                                            
+     Operations:       4 selected / 4 total                                    
+
+
+ ✅  API capabilities:                                                         
+
+     Supports NULL byte in headers:                            ✘               
+     Accepts backslash and control characters in URL paths:    ✓               
+
+ ⏭   Examples (in 0.11s)                                                       
+                                                                               
+     ⏭  4 skipped                                                              
+
+ ❌  Coverage (in 0.94s)                                                       
+                                                                               
+     ❌ 4 failed                                                               
+
+ ❌  Fuzzing (in 1.39s)                                                        
+                                                                               
+     ✅ 2 passed  ❌ 2 failed                                                  
+
+ ❌  Stateful (in 16.12s)                                                      
+
+     Scenarios:    879                                                         
+     API Links:    3 covered / 3 selected / 3 total (3 inferred)               
+
+     ✅ 877 passed  ❌ 2 failed                                                
+
+=================================== FAILURES ===================================
+__________________________ GET /products/{id}/ratings __________________________
+1. Test Case ID: efs5tI
+
+- Response violates schema
+
+    5 is not of type "string"
+
+    Validated against the response schema for status code 200.
+
+    Schema at /properties/ratings/additionalProperties:
+
+        {
+            "type": "string"
+        }
+
+    Value:
+
+        5
+
+[200] OK:
+
+    `{"id": 1, "ratings": {"Reviewer1": 5, "Reviewer2": 4}}`
+
+Reproduce with:
+
+    curl -X GET http://localhost:8080/api/v1/products/1/ratings
+    
+    st replay efs5tI
+
+__________________________ GET /products/{id}/reviews __________________________
+1. Test Case ID: zjB4Kx
+
+- Response violates schema
+
+    "0" is not of type "integer"
+
+    Validated against the response schema for status code 200.
+
+    Schema at /definitions/ProductReviews/properties/id:
+
+        {
+            "type": "integer",
+            "format": "int32",
+            "description": "Product id"
+        }
+
+    Value:
+
+        "0"
+
+[200] OK:
+
+    `{"id": "0", "podname": "reviews-v3-77f747dc48-ppk99", "clustername": "null", "reviews": [{"reviewer": "Reviewer1", "text": "An extremely entertaining play by Shakespeare. The slapstick humour is refreshing!", "rating": {"stars": 5, "color": "red"}}, {"reviewer": "Reviewer2", "text": "Absolutely fun and entertaining. The play lacks thematic depth when compared to other plays by Shakespeare.", "rating": {"stars": 4, "color": "red"}}]}`
+
+Reproduce with:
+
+    curl -X GET http://localhost:8080/api/v1/products/0/reviews
+    
+    st replay zjB4Kx
+
+_______________________________ QUERY /products ________________________________
+1. Test Case ID: 1JVXsO
+
+- Unsupported methods
+
+    Unsupported method QUERY returned 400, expected 405 Method Not Allowed
+
+    Return 405 for methods not listed in the OpenAPI spec
+
+[400] Bad Request:
+
+    `Bad Request`
+
+Reproduce with:
+
+    curl -X QUERY http://localhost:8080/api/v1/products
+    
+    st replay 1JVXsO
+
+_____________________________ QUERY /products/{id} _____________________________
+1. Test Case ID: XoJOvq
+
+- Unsupported methods
+
+    Unsupported method QUERY returned 400, expected 405 Method Not Allowed
+
+    Return 405 for methods not listed in the OpenAPI spec
+
+[400] Bad Request:
+
+    `Bad Request`
+
+Reproduce with:
+
+    curl -X QUERY http://localhost:8080/api/v1/products/-2147483648
+    
+    st replay XoJOvq
+
+_________________________ QUERY /products/{id}/ratings _________________________
+1. Test Case ID: QmZypw
+
+- Unsupported methods
+
+    Unsupported method QUERY returned 400, expected 405 Method Not Allowed
+
+    Return 405 for methods not listed in the OpenAPI spec
+
+[400] Bad Request:
+
+    `Bad Request`
+
+Reproduce with:
+
+    curl -X QUERY http://localhost:8080/api/v1/products/-2147483648/ratings
+    
+    st replay QmZypw
+
+_________________________ QUERY /products/{id}/reviews _________________________
+1. Test Case ID: XwWDaT
+
+- Unsupported methods
+
+    Unsupported method QUERY returned 400, expected 405 Method Not Allowed
+
+    Return 405 for methods not listed in the OpenAPI spec
+
+[400] Bad Request:
+
+    `Bad Request`
+
+Reproduce with:
+
+    curl -X QUERY http://localhost:8080/api/v1/products/-2147483648/reviews
+    
+    st replay XwWDaT
+
+=================================== SUMMARY ====================================
+
+API Operations:
+  Selected: 4/4
+  Tested: 4
+
+Test Phases:
+  ⏭  Examples
+  ❌ Coverage
+  ❌ Fuzzing
+  ❌ Stateful
+
+Failures:
+  ❌ Response violates schema: 2
+  ❌ Unsupported methods: 4
+
+Test cases:
+  2269 generated, 6 found 6 unique failures, 43 skipped
+
+Reports:
+  - JUNIT: report\junit-20261013T203837Z.xml
+
+Seed: 235961657479623093999152664583250982795
+
+============================= 6 failures in 18.62s =============================
+schemathesis exit: 1

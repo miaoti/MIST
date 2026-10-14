@@ -1,0 +1,75 @@
+Schemathesis v4.23.0
+━━━━━━━━━━━━━━━━━━━━
+
+
+ ✅  Loaded specification from                                                 
+ C:/Users/miaot/Github/MIST/evaluation/suts/bookinfo/openapi/bookinfo-productp 
+ age-swagger.yaml (in 0.34s)                                                   
+
+     Base URL:         http://localhost:8080                                   
+     Specification:    Open API 2.0                                            
+     Operations:       1 selected / 1 total                                    
+
+
+ ✅  API capabilities:                                                         
+
+     Supports NULL byte in headers:                            ✘               
+     Accepts backslash and control characters in URL paths:    ✓               
+
+ ⏭   Examples (in 0.12s)                                                       
+                                                                               
+     ⏭  1 skipped                                                              
+
+ ❌  Coverage (in 0.28s)                                                       
+                                                                               
+     ❌ 1 failed                                                               
+
+ ✅  Fuzzing (in 0.70s)                                                        
+                                                                               
+     ✅ 1 passed                                                               
+
+=================================== FAILURES ===================================
+______________________________ QUERY /productpage ______________________________
+1. Test Case ID: dRrb2n
+
+- Unsupported methods
+
+    Unsupported method QUERY returned 400, expected 405 Method Not Allowed
+
+    Return 405 for methods not listed in the OpenAPI spec
+
+[400] Bad Request:
+
+    `Bad Request`
+
+Reproduce with:
+
+    curl -X QUERY http://localhost:8080/productpage
+    
+    st replay dRrb2n
+
+=================================== SUMMARY ====================================
+
+API Operations:
+  Selected: 1/1
+  Tested: 1
+
+Test Phases:
+  ⏭  Examples
+  ❌ Coverage
+  ✅ Fuzzing
+  ⏭  Stateful (not applicable)
+
+Failures:
+  ❌ Unsupported methods: 1
+
+Test cases:
+  3 generated, 1 found 1 unique failures
+
+Reports:
+  - JUNIT: report\junit-20261013T205241Z.xml
+
+Seed: 293375257235936501257573390268507394190
+
+============================== 1 failure in 1.24s ==============================
+schemathesis exit: 1

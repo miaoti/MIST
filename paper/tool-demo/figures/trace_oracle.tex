@@ -1,10 +1,14 @@
-% Figure 2: Captured Jaeger trace of GET /api/v1/products/{id}/reviews on Istio
+% Figure 1 (SANER 2027 order; Figure 2 in the ISSTA version): captured Jaeger trace of GET /productpage on Istio
 % Bookinfo under a real `ratings` outage (ratings scaled to 0). The client-facing
-% entry returns HTTP 200 (reviews degrades gracefully), yet a deeper ratings span
-% server-errored (503 / otel=ERROR) and was swallowed -- a HiddenDownstreamFailure.
-% Source (committed): docs/main-contribution/evidence/bookinfo_e2e_traces/
-%   masked_reviews_ratings_outage.json  (6 spans; productpage 200 -> reviews 200
-%   -> ratings 503 otel=ERROR). Reproduced by evaluation/suts/bookinfo/run-oracle-e2e.sh.
+% entry returns HTTP 200 (reviews degrades gracefully; the page renders without stars),
+% yet a deeper ratings span server-errored (503 / otel=ERROR) and was swallowed -- a
+% HiddenDownstreamFailure.
+% Source (committed): docs/main-contribution/evidence/bookinfo_html_entry_20261013/traces/
+%   outage_productpage.json (trace e5bbdae6106044bdba5040d1b0c953b6, 8 spans: ingress 200 ->
+%   productpage 200 -> details 200, reviews 200 -> ratings 503 otel=ERROR). The ingress
+%   spans and the details call are not drawn. Replayed by evaluation/suts/bookinfo/OracleCheck.java.
+% Timings drawn from the trace: productpage server span 55 ms; reviews server span starts
+%   +10.7 ms, 41 ms; reviews->ratings client span (503) starts +41.8 ms, 0.26 ms.
 %
 % Layout: Gantt-style timeline + tabular metadata, the standard for distributed-
 % trace figures (cf. Sigelman et al., Dapper; Jaeger UI; Mace et al., Pivot
@@ -41,73 +45,73 @@
   % --- Bottom-row boxes ---
   vbox/.style    ={draw=gray!55, line width=0.5pt, rounded corners=2pt,
                    fill=gray!5, align=left, inner sep=5pt,
-                   font=\footnotesize, text width=9.6cm},
+                   font=\footnotesize, text width=10cm},
   bodybox/.style ={draw=red!55!black, line width=0.6pt, rounded corners=2pt,
                    fill=red!5, align=left, inner sep=5pt,
                    font=\scriptsize\ttfamily, text width=5.6cm}
 ]
 
-% =============================================================
+% =============================================================================
 % Header row
-% =============================================================
+% =============================================================================
 \node[hdrlbl] at (0.00, 0.55) {Span (parent\,$\to$\,child)};
 \node[hdrlbl] at (6.00, 0.55) {Service};
 \node[hdrlbl, anchor=base] at (9.75, 0.55) {HTTP};
 \node[hdrlbl] at (10.10, 0.55)
-  {Timeline\quad\textit{\scriptsize(10\,ms\,$\approx$\,0.56\,cm)}};
+  {Timeline};
 \node[hdrlbl, anchor=base east] at (16.95, 0.55) {Duration};
 \draw[gray!45, line width=0.3pt] (-0.05, 0.30) -- (16.98, 0.30);
 
-% =============================================================
+% =============================================================================
 % Span rows (productpage -> reviews -> ratings), real outage trace.
-%   timeline bar col   x in [10.10, 14.95]   (10 ms = 0.56 cm)
-% =============================================================
+%   timeline bar col   x in [10.10, 14.95]   (10 ms = 0.865 cm)
+% =============================================================================
 
-% Row A : GET /api/v1/products/0/reviews  @ productpage   85 ms, 200  (client-facing entry)
-\node[spanlbl] at (0.18,  0.00) {\textbf{GET /api/v1/products/0/reviews}};
-\node[svclbl]  at (6.00,  0.00) {productpage.default};
+% Row A : GET /productpage  @ productpage   55 ms, 200  (client-facing entry)
+\node[spanlbl] at (0.18,  0.00) {\textbf{GET /productpage}};
+\node[svclbl]  at (6.00,  0.00) {productpage};
 \node[statlbl] at (9.75,  0.00) {200};
 \node[bargw, minimum width=4.760cm] at (10.100,  0.08) {};
-\node[durlbl]  at (16.95, 0.00) {85\,ms};
+\node[durlbl]  at (16.95, 0.00) {55\,ms};
 
-% Row B : GET reviews  @ reviews   80 ms, 200  (productpage -> reviews; swallows the failure)
+% Row B : GET reviews  @ reviews   41 ms, 200  (the reviews server span, starts +10.7 ms; swallows the failure)
 \node[spanlbl] at (0.50, -0.55) {GET /reviews/0  (productpage\,$\to$\,reviews)};
-\node[svclbl]  at (6.00, -0.55) {reviews.default};
+\node[svclbl]  at (6.00, -0.55) {reviews};
 \node[statlbl] at (9.75, -0.55) {200};
-\node[bargw, minimum width=4.480cm] at (10.300, -0.47) {};
-\node[durlbl]  at (16.95, -0.55) {80\,ms};
+\node[bargw, minimum width=3.580cm] at (11.030, -0.47) {};
+\node[durlbl]  at (16.95, -0.55) {41\,ms};
 
-% Row C : GET ratings  @ ratings   0.2 ms, 503 + otel=ERROR  [highlighted: swallowed downstream failure]
+% Row C : GET ratings  @ ratings   0.3 ms, 503 + otel=ERROR  [highlighted: swallowed downstream failure]
 \node[spanlbl] at (0.82, -1.10) {\textbf{GET /ratings/0}  (reviews\,$\to$\,ratings)};
-\node[svclbl]  at (6.00, -1.10) {ratings.default};
+\node[svclbl]  at (6.00, -1.10) {reviews (caller's span)};
 \node[staterr] at (9.75, -1.10) {503};
-\node[barhi, minimum width=0.120cm] at (14.700, -1.02) {};
+\node[barhi, minimum width=0.120cm] at (13.720, -1.02) {};
 \node[anchor=base west, font=\scriptsize\bfseries, text=red!70!black, inner sep=1pt]
-      (errtag) at (14.95, -1.10) {503 / otel=ERROR \;(swallowed)};
+      (errtag) at (13.95, -1.10) {503 / otel=ERROR \;(swallowed)};
 
 % --- Hierarchical tree connectors in the left margin.
 \draw[treeln] (0.06, -0.08) -- (0.06, -0.55) -- (0.14, -0.55);
 \draw[treeln] (0.38, -0.63) -- (0.38, -1.10) -- (0.46, -1.10);
 
-% =============================================================
+% =============================================================================
 % Trace Shape Oracle verdict (bottom-left)
-% =============================================================
+% =============================================================================
 \node[vbox, anchor=north west] (vrd) at (-0.05, -1.55) {%
-\textbf{Trace Shape Oracle verdict.}\\[2pt]
+\textbf{Oracle verdicts.}\\[2pt]
 \begin{tabular}{@{}l@{\hspace{0.7em}}p{6.4cm}@{}}
-\textbf{Response-level} & \emph{passes / misses}: the \texttt{HTTP 200} entry reads as success to status-, schema-, and body-only oracles. \\
-\textbf{HiddenDownstreamFailure} & \emph{fires} (\textsc{error}): the \texttt{200} entry hides a \texttt{ratings} span at \texttt{503}/\texttt{otel.status\_code=ERROR}, swallowed by \texttt{reviews}. Label-free, no LLM. \\
+\textbf{Status/schema oracles} & \emph{pass, failure missed}: the page is \texttt{HTTP 200} with no schema to break, so both record a success. \\
+\textbf{HiddenDownstreamFailure} & \emph{fires} (\textsc{error}): the \texttt{200} entry hides the \texttt{503}/\texttt{otel.status\_code=ERROR} call to \texttt{ratings} that \texttt{reviews} swallowed. \\
 \end{tabular}};
 
-% =============================================================
+% =============================================================================
 % Client response callout (bottom-right)
-% =============================================================
+% =============================================================================
 \node[bodybox, anchor=north east] (body) at (16.95, -1.55) {%
 \textnormal{\footnotesize\textbf{Client response}} (HTTP 200):\\[2pt]
-reviews rendered \textbf{without} ratings\\
-(graceful degradation). The swallowed\\
-\texttt{503} is \textbf{not} in the client\\
-response, only in the trace.};
+the page, with its reviews and \textbf{without}\\
+stars (graceful degradation). The body only\\
+says ratings are unavailable, and the\\
+\texttt{503} itself is \textbf{only} in the trace.};
 
 % --- Arrow: swallowed tag drops to the response callout ---
 \draw[->, thick, red!65!black]

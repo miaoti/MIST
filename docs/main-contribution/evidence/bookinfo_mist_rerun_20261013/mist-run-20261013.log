@@ -1,0 +1,62 @@
+WARNING: sun.reflect.Reflection.getCallerClass is not supported. This will impact performance.
+WARN  MstConfig: unknown property 'mst.report.oracle.anomalies.enabled' (typo?). Strict mode = false
+  ╔════════════════════════════════════════════════════════════╗
+  ║                                                            ║
+  ║     ███╗   ███╗██╗███████╗████████╗                        ║
+  ║     ████╗ ████║██║██╔════╝╚══██╔══╝                        ║
+  ║     ██╔████╔██║██║███████╗   ██║                           ║
+  ║     ██║╚██╔╝██║██║╚════██║   ██║                           ║
+  ║     ██║ ╚═╝ ██║██║███████║   ██║                           ║
+  ║     ╚═╝     ╚═╝╚═╝╚══════╝   ╚═╝                           ║
+  ║                                                            ║
+  ║     Microservice Integration & Scenario Tester             ║
+  ║     v1.6.0-SNAPSHOT                                       ║
+  ║                                                            ║
+  ╚════════════════════════════════════════════════════════════╝
+WARN  [MIST] ablation profile: [oracle:on (span,status,response | timing:off) bandit:on faultmining:off]
+WARN  🧬 Trace Shape Oracle: skipping seed-corpus training (labels=C:\Users\miaot\Github\MIST\evaluation\suts\bookinfo\.runtime\mist-core\src\main\resources\mist\seed-trace-labels.json, corpus=C:\Users\miaot\Github\MIST\evaluation\suts\bookinfo\.runtime\mist-cli\src\main\resources\My-Example\trainticket\test-trace) — empty store written
+WARN  Trace 11111111111111111111111111110001: Parent span 0000000000000001 not found for span 312a6e44a99a0c34. Treating as root in scenario.
+WARN  Trace 22222222222222222222222222220002: Parent span 0000000000000001 not found for span d834cfc4d33ba3dd. Treating as root in scenario.
+WARN  Trace 44444444444444444444444444440004: Parent span 0000000000000001 not found for span 1026b29e83c3f960. Treating as root in scenario.
+WARN  Trace 33333333333333333333333333330003: Parent span 0000000000000001 not found for span dc6ed32388d3f352. Treating as root in scenario.
+WARN  SUT preflight: ⚠ SUT preflight: 6/7 endpoints reachable, 1 unhealthy (unauthenticated)
+WARN    ✗ GET http://localhost:8080/api/v1/products/0/ratings — HTTP 503 (64ms)
+WARN    Scenarios touching these endpoints may drop silently. Inspect SUT logs before relying on this run's detection counts.
+WARN  ❌ Smart Input Fetching is DISABLED - enable it by setting smart.input.fetch.enabled=true in the MST configuration file
+WARN  ❌ Smart input fetching is DISABLED (smart.input.fetch.enabled=false)
+WARN     Enable it by setting smart.input.fetch.enabled=true in your properties file
+▶ Step 1/5: Pool Gen (5 items)
+▶ Step 2/5: Faulty Pools (5 items)
+▶ Step 3/5: Variants (5 items)
+WARN  Aborting scenario 1 after 10 consecutive dedup-exhausted variants — fingerprint pool is drained; 9 remaining variant slots will be skipped.
+▶ Step 4/5: Writing (4 items)
+▶ Step 5/5: Enhance (5 items)
+WARN  LLMConfig: Overriding modelType OPENAI_COMPATIBLE -> OLLAMA based on enabled providers to ensure a valid configuration
+WARN  Failed to parse LLM response, using defaults
+WARN  Cannot mark triggered: API io.mist.core.spec.Operation@5db6b845 /api/v1/products/0 not registered
+WARN  Cannot move to end: API io.mist.core.spec.Operation@7e446d92 /api/v1/products/0/ratings not registered
+WARN  Cannot mark triggered: API io.mist.core.spec.Operation@7e446d92 /api/v1/products/0/ratings not registered
+==================================================================
+  MIST findings — 5 anomalies across 108 executed test case(s)
+  ------------------------------------------------------------
+  ERROR 5         [HIDDEN]   Hidden downstream failure  (a 2xx hid a swallowed downstream error)
+  ------------------------------------------------------------
+  > ERROR GET /api/v1/products/0/reviews  ->  reviews.default ──▶ ratings.default.svc.cluster.local:9080/* (http=...   (13x, trace 9bb539d3)
+  > ERROR GET /api/v1/products/0  ->  4 swallowed downstream call(s): istio-ingressgateway.istio-system ─...   (3x, trace 5a37c738)
+  > ERROR GET /api/v1/products/0  ->  reviews.default ──▶ ratings.default.svc.cluster.local:9080/* (http=...   (1x, trace 55286257)
+  > ERROR GET /api/v1/products/0  ->  2 swallowed downstream call(s): productpage.default ──▶ ratings.def...   (1x, trace 5eada3e6)
+  > ERROR GET /api/v1/products/0  ->  2 swallowed downstream call(s): productpage.default ──▶ productpage...   (1x, trace de10632c)
+  ------------------------------------------------------------
+  5 ERROR | 0 WARN | 0 INFO   (5 unique findings, 19 occurrences)
+  ERROR findings fail the test (red); WARN/INFO are reported but do NOT fail it.
+  > detail: logs/fault-detection-reports/
+  > Allure: allure serve target/allure-results
+==================================================================
+==================================================================
+  MIST outputs (this run: BookinfoTest_1791939061994)
+  ------------------------------------------------------------
+  - generated tests : mist-cli/src/test/java/bookinfo_hidden_downstream/BookinfoTest_1791939061994/
+  - Allure results  : target/allure-results/   (render: allure serve target/allure-results)
+  - fault report    : logs/fault-detection-reports/
+  - CSV stats       : target/test-data/
+==================================================================

@@ -1,5 +1,9 @@
 # MIST tool-demo — ISSTA 2026 review + change plan
 
+> **Status 2026-10-13:** record of the ISSTA 2026 submission, which was
+> rejected. The paper now targets the SANER 2027 Tool Demo Track; the active
+> file is `main_saner.tex` (see `README.md`). Nothing below was updated.
+
 > Consolidated review of `paper/main_issta.tex` for **ISSTA 2026 Posters & Tool
 > Demonstrations**. Date: 2026-05-30. Evidence base: a skeptical-PC-reviewer
 > agent pass, a venue/bar web-research pass, and direct code/artifact grounding.

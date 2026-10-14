@@ -1,0 +1,31 @@
+swagger: "2.0"
+info:
+  description: "The HTML entry point of the Istio BookInfo sample application (the page that productpage renders from details, reviews and ratings). Companion to bookinfo-swagger.yaml, which describes the JSON API under /api/v1; this document has basePath / because the page lives at the root."
+  version: "1.0.0"
+  title: "BookInfo product page"
+  license:
+    name: "Apache 2.0"
+    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
+basePath: "/"
+tags:
+- name: "page"
+  description: "The rendered product page"
+externalDocs:
+  description: "Learn more about the Istio BookInfo application"
+  url: "https://istio.io/docs/samples/bookinfo.html"
+paths:
+  /productpage:
+    get:
+      tags:
+      - "page"
+      summary: "Render the product page"
+      description: "Renders the product page as HTML. productpage calls details and reviews; reviews calls ratings."
+      operationId: "getProductPage"
+      produces:
+      - "text/html"
+      parameters: []
+      responses:
+        200:
+          description: "the rendered page"
+          schema:
+            type: "string"

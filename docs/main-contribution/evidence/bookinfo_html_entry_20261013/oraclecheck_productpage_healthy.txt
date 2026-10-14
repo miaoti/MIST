@@ -1,0 +1,6 @@
+Loaded 1 trace(s) from healthy_productpage_9cad9c1cfa0d8b369e28c5619c62f8b0.json
+
+=== trace 9cad9c1cfa0d8b369e28c5619c62f8b0  (9 spans) ===
+  client-facing ROOT : istio-ingressgateway.istio-system  productpage.default.svc.cluster.local:9080/productpage  http=200 otel=null
+  --> RESPONSE-LEVEL oracle (status/schema/soft-error sees the client response): PASS  (root is 2xx — looks successful, MISSES the failure)
+  --> TRACE oracle HIDDEN_DOWNSTREAM_FAILURE: pass  severity=ERROR

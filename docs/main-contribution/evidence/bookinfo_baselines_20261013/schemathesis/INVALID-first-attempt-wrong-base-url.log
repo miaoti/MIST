@@ -1,0 +1,234 @@
+Schemathesis v4.23.0
+━━━━━━━━━━━━━━━━━━━━
+
+
+ ✅  Loaded specification from                                                 
+ C:/Users/miaot/Github/MIST/evaluation/suts/bookinfo/openapi/bookinfo-swagger. 
+ yaml (in 0.25s)                                                               
+
+     Base URL:         http://localhost:8080                                   
+     Specification:    Open API 2.0                                            
+     Operations:       4 selected / 4 total                                    
+
+
+ ✅  API capabilities:                                                         
+
+     Supports NULL byte in headers:                            ✘               
+     Accepts backslash and control characters in URL paths:    ✓               
+
+ ⏭   Examples (in 0.12s)                                                       
+                                                                               
+     ⏭  4 skipped                                                              
+
+ ❌  Coverage (in 0.99s)                                                       
+                                                                               
+     ❌ 4 failed                                                               
+
+ ❌  Fuzzing (in 0.26s)                                                        
+                                                                               
+     ❌ 4 failed                                                               
+
+ ❌  Stateful (in 0.89s)                                                       
+
+     Scenarios:    26                                                          
+     API Links:    0 covered / 3 selected / 3 total (3 inferred)               
+
+     ✅ 25 passed  ❌ 1 failed                                                 
+
+=================================== FAILURES ===================================
+________________________________ GET /products _________________________________
+1. Test Case ID: wnURQt
+
+- Missing Content-Type header
+
+    The following media types are documented in the schema:
+    - `application/json`
+
+- Undocumented HTTP status code
+
+    Received: 404
+    Documented: 200
+
+[404] Not Found:
+
+    <EMPTY>
+
+Reproduce with:
+
+    curl -X GET http://localhost:8080/products
+    
+    st replay wnURQt
+
+______________________________ GET /products/{id} ______________________________
+1. Test Case ID: SxV6CS
+
+- Missing Content-Type header
+
+    The following media types are documented in the schema:
+    - `application/json`
+
+- Undocumented HTTP status code
+
+    Received: 404
+    Documented: 200, 400
+
+[404] Not Found:
+
+    <EMPTY>
+
+Reproduce with:
+
+    curl -X GET http://localhost:8080/products/1
+    
+    st replay SxV6CS
+
+__________________________ GET /products/{id}/ratings __________________________
+1. Test Case ID: oAkmYx
+
+- Missing Content-Type header
+
+    The following media types are documented in the schema:
+    - `application/json`
+
+- Undocumented HTTP status code
+
+    Received: 404
+    Documented: 200, 400
+
+[404] Not Found:
+
+    <EMPTY>
+
+Reproduce with:
+
+    curl -X GET http://localhost:8080/products/1/ratings
+    
+    st replay oAkmYx
+
+__________________________ GET /products/{id}/reviews __________________________
+1. Test Case ID: axOyrK
+
+- Missing Content-Type header
+
+    The following media types are documented in the schema:
+    - `application/json`
+
+- Undocumented HTTP status code
+
+    Received: 404
+    Documented: 200, 400
+
+[404] Not Found:
+
+    <EMPTY>
+
+Reproduce with:
+
+    curl -X GET http://localhost:8080/products/1/reviews
+    
+    st replay axOyrK
+
+_______________________________ TRACE /products ________________________________
+1. Test Case ID: lZuzQf
+
+- Unsupported methods
+
+    Unsupported method TRACE returned 404, expected 405 Method Not Allowed
+
+    Return 405 for methods not listed in the OpenAPI spec
+
+[404] Not Found:
+
+    <EMPTY>
+
+Reproduce with:
+
+    curl -X TRACE http://localhost:8080/products
+    
+    st replay lZuzQf
+
+_____________________________ TRACE /products/{id} _____________________________
+1. Test Case ID: wmCHni
+
+- Unsupported methods
+
+    Unsupported method TRACE returned 404, expected 405 Method Not Allowed
+
+    Return 405 for methods not listed in the OpenAPI spec
+
+[404] Not Found:
+
+    <EMPTY>
+
+Reproduce with:
+
+    curl -X TRACE http://localhost:8080/products/-2147483648
+    
+    st replay wmCHni
+
+_________________________ TRACE /products/{id}/ratings _________________________
+1. Test Case ID: xfzHkU
+
+- Unsupported methods
+
+    Unsupported method TRACE returned 404, expected 405 Method Not Allowed
+
+    Return 405 for methods not listed in the OpenAPI spec
+
+[404] Not Found:
+
+    <EMPTY>
+
+Reproduce with:
+
+    curl -X TRACE http://localhost:8080/products/-2147483648/ratings
+    
+    st replay xfzHkU
+
+_________________________ TRACE /products/{id}/reviews _________________________
+1. Test Case ID: VHl9DP
+
+- Unsupported methods
+
+    Unsupported method TRACE returned 404, expected 405 Method Not Allowed
+
+    Return 405 for methods not listed in the OpenAPI spec
+
+[404] Not Found:
+
+    <EMPTY>
+
+Reproduce with:
+
+    curl -X TRACE http://localhost:8080/products/-2147483648/reviews
+    
+    st replay VHl9DP
+
+=================================== SUMMARY ====================================
+
+API Operations:
+  Selected: 4/4
+  Tested: 4
+
+Test Phases:
+  ⏭  Examples
+  ❌ Coverage
+  ❌ Fuzzing
+  ❌ Stateful
+
+Failures:
+  ❌ Missing Content-Type header: 4
+  ❌ Undocumented HTTP status code: 4
+  ❌ Unsupported methods: 4
+
+Test cases:
+  159 generated, 8 found 12 unique failures
+
+Reports:
+  - JUNIT: report\junit-20261013T195203Z.xml
+  - HAR: report\har-20261013T195203Z.json
+
+Seed: 196329350217711364808174640496874891876
+
+============================= 12 failures in 2.36s =============================
+schemathesis exit: 1

@@ -1,4 +1,12 @@
-# MIST Screencast — Production Script (SPLASH/ISSTA 2026 Tool Demonstrations)
+# MIST Screencast — Production Script (recorded June 2026 for the ISSTA 2026 submission)
+
+**Venue update 2026-10-13:** the ISSTA 2026 tool-demo submission was rejected;
+the paper now targets the **SANER 2027 Tool Demo Track**
+(<https://conf.researchr.org/track/saner-2027/saner-2027-tool-demo-track>),
+where a 3-5 minute demo video is optional and its URL goes in the abstract.
+The recorded cut (<https://youtu.be/T2AePcbFT6E>, target <= 4:45) fits that
+window; re-record only if the SANER revision changes what the tool shows.
+Section 1 below records the ISSTA requirements the recording was made against.
 
 **Status:** every command, output snippet, and wall-clock figure was executed
 and measured on 2026-06-09/10 (see §9 Feasibility ledger and

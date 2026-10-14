@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<testsuites errors="0" failures="1" skipped="0" tests="1" time="0.744142">
+  <testsuite name="schemathesis" hostname="Mew" errors="0" failures="1" skipped="0" tests="1" time="0.744142">
+    <testcase name="GET /productpage" time="0.744142">
+      <failure type="failure">1. Test Case ID: dRrb2n
+
+- Unsupported methods
+
+    Unsupported method QUERY returned 400, expected 405 Method Not Allowed
+
+    Return 405 for methods not listed in the OpenAPI spec
+
+[400] Bad Request:
+
+    `Bad Request`
+
+Reproduce with:
+
+    curl -X QUERY http://localhost:8080/productpage</failure>
+    </testcase>
+  </testsuite>
+</testsuites>
