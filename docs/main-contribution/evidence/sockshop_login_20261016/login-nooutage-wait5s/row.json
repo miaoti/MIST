@@ -1,0 +1,18 @@
+{
+ "run_id": "1792131979895",
+ "tests": 511,
+ "hidden": 72,
+ "fired": 72,
+ "confirmed": 72,
+ "missed": 0,
+ "off_path": 0,
+ "positive_fired": 0,
+ "kinds": {
+  "negative": 493,
+  "positive": 18
+ },
+ "scan": {
+  "QUIET": 439,
+  "TP": 72
+ }
+}

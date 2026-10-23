@@ -505,7 +505,7 @@ swapped without touching the core.
 
 ```bibtex
 @misc{MIST,
-  title  = {{MIST: Trace-Driven, LLM-Assisted Multi-Service Test Generation}},
+  title  = {{MIST: A Trace-Driven Tool for Multi-Service REST API Testing with Trace Shape Oracles}},
   author = {<authors>},
   note   = {Submitted to the SANER 2027 Tool Demo Track.
             Citation to be filled in on acceptance.},

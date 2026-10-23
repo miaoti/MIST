@@ -1,0 +1,13 @@
+2026-10-15 12:37:30 leg bq-c-nooutage start; profile C:\Users\miaot\Github\MIST\evaluation\suts\boutique\boutique-hdf-r11c.properties; wait 5000 ms
+2026-10-15 12:37:31 started Jaeger port-forward
+2026-10-15 12:37:31 started SUT port-forward on 8081
+2026-10-15 12:37:39 probe jaeger 200
+2026-10-15 12:37:40 probe / 200
+2026-10-15 12:37:40 probe /product/OLJCESPC7Z 200
+2026-10-15 12:37:40 moved previous results to target\allure-results-before-bq-c-nooutage-123740
+2026-10-15 13:39:20 mist exit 0; 61.7 minutes
+2026-10-15 13:39:23 copied 2485 result files
+2026-10-15 13:39:23 copied fault-detection-summary-boutique_r11c_1792085862462-20261015-133919.txt
+2026-10-15 13:39:23 stopped wsl.exe 55884
+2026-10-15 13:39:23 stopped wsl.exe 52784
+2026-10-15 13:39:23 leg bq-c-nooutage done

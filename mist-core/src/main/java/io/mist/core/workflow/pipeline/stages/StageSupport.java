@@ -386,6 +386,111 @@ public final class StageSupport {
         return p;
     }
 
+    /**
+     * The value a concrete path carries in the segment the template assigns to {@code {paramName}}
+     * ({@code /products/0/reviews} against {@code /products/{id}/reviews} gives {@code 0}), or
+     * {@code null} when the paths do not match or the template has no such segment.
+     */
+    public static String templateSegmentValue(String concretePath, String templatePath, String paramName) {
+        if (paramName == null || !pathMatchesTemplate(concretePath, templatePath)) {
+            return null;
+        }
+        String[] concreteSeg = normalisePathForMatch(concretePath).split("/", -1);
+        String[] templateSeg = normalisePathForMatch(templatePath).split("/", -1);
+        String placeholder = "{" + paramName + "}";
+        for (int i = 0; i < templateSeg.length && i < concreteSeg.length; i++) {
+            if (templateSeg[i].equals(placeholder)) {
+                return concreteSeg[i];
+            }
+        }
+        return null;
+    }
+
+    /**
+     * An HTML form body ({@code application/x-www-form-urlencoded}) of the given fields in their
+     * order: {@code name=value} pairs joined by {@code &}, both URL-encoded in UTF-8. A form has no
+     * null, so a field whose value is null is left out (an empty value is sent as {@code name=}).
+     */
+    public static String formUrlEncode(Map<String, Object> fields) {
+        StringBuilder sb = new StringBuilder();
+        for (Map.Entry<String, Object> e : fields.entrySet()) {
+            if (e.getValue() == null) {
+                continue;
+            }
+            if (sb.length() > 0) {
+                sb.append('&');
+            }
+            String value = String.valueOf(e.getValue());
+            sb.append(java.net.URLEncoder.encode(e.getKey(), java.nio.charset.StandardCharsets.UTF_8))
+              .append('=')
+              .append(java.net.URLEncoder.encode(value, java.nio.charset.StandardCharsets.UTF_8));
+        }
+        return sb.toString();
+    }
+
+    /**
+     * Keep one test per distinct request sequence: two tests are the same when every step sends the
+     * same method, path, query parameters, headers, cookies and body, and they carry the same fault
+     * target (whose invalid value the writer emits for query, header and cookie locations). The first
+     * occurrence is kept. Tests of other types pass through. Used when
+     * {@code mst.generation.dedup.requests=true}.
+     */
+    public static List<io.mist.core.testcase.TestCase> dropDuplicateRequests(
+            List<io.mist.core.testcase.TestCase> tests) {
+        java.util.Set<String> seen = new java.util.HashSet<>();
+        List<io.mist.core.testcase.TestCase> kept = new ArrayList<>();
+        for (io.mist.core.testcase.TestCase t : tests) {
+            if (!(t instanceof io.mist.core.testcase.MultiServiceTestCase)
+                    || seen.add(requestSignature((io.mist.core.testcase.MultiServiceTestCase) t))) {
+                kept.add(t);
+            }
+        }
+        return kept;
+    }
+
+    static String requestSignature(io.mist.core.testcase.MultiServiceTestCase tc) {
+        StringBuilder sb = new StringBuilder();
+        for (io.mist.core.testcase.MultiServiceTestCase.StepCall s : tc.getSteps()) {
+            sb.append(s.getMethod() != null ? s.getMethod().getMethod() : "").append(' ')
+              .append(s.getPath()).append(' ')
+              .append(new java.util.TreeMap<>(s.getQueryParams())).append(' ')
+              .append(new java.util.TreeMap<>(s.getHeaders())).append(' ')
+              .append(new java.util.TreeMap<>(s.getCookies())).append(' ')
+              .append(s.getBody()).append('\n');
+        }
+        sb.append("fault ").append(tc.getTargetFaultParamLocation()).append(' ').append(tc.getFaultyParameters());
+        return sb.toString();
+    }
+
+    /**
+     * Put {@code value} into the segment of a concrete path that the template assigns to
+     * {@code {paramName}}. A route taken from a span can be concrete
+     * ({@code /products/0/reviews}) while the conf path is templated
+     * ({@code /products/{id}/reviews}); a plain placeholder replace then finds nothing, and a
+     * value meant for that parameter never reaches the request. Same segment rules as
+     * {@link #pathMatchesTemplate}. Returns {@code concretePath} unchanged when the paths do not
+     * match or the template has no whole-segment {@code {paramName}}.
+     */
+    public static String replaceTemplateSegment(String concretePath, String templatePath,
+                                                String paramName, String value) {
+        if (value == null || paramName == null || !pathMatchesTemplate(concretePath, templatePath)) {
+            return concretePath;
+        }
+        int q = concretePath.indexOf('?');
+        String pathPart = q >= 0 ? concretePath.substring(0, q) : concretePath;
+        String suffix = q >= 0 ? concretePath.substring(q) : "";
+        String[] concreteSeg = pathPart.split("/", -1);
+        String[] templateSeg = normalisePathForMatch(templatePath).split("/", -1);
+        String placeholder = "{" + paramName + "}";
+        for (int i = 0; i < templateSeg.length && i < concreteSeg.length; i++) {
+            if (templateSeg[i].equals(placeholder)) {
+                concreteSeg[i] = value;
+                return String.join("/", concreteSeg) + suffix;
+            }
+        }
+        return concretePath;
+    }
+
     /** Build a {@link ParameterInfo} with extended context for richer LLM prompts. */
     static ParameterInfo createParameterInfoWithContext(TestParameter p, String apiName,
                                                        String serviceName, List<String> allParamNames) {

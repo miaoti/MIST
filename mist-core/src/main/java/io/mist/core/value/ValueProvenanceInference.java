@@ -21,9 +21,11 @@ public final class ValueProvenanceInference {
     /**
      * Literal prefixes the generator (and {@code StageSupport}) emit when no
      * resolved value could be obtained. Kept in sync with
-     * {@code typeAwareFallbackValue}, the {@code LLM_EMPTY_*} fallback,
-     * the {@code STEP1_*} disabled-LLM placeholder, and the
-     * {@code VAL_*} ultimate fallback in dependent-step resolution.
+     * {@code typeAwareFallbackValue}, the zero-shot generator's
+     * {@code FALLBACK_test<n>} value when the LLM is unavailable, the
+     * {@code LLM_EMPTY_*} fallback, the {@code STEP1_*} disabled-LLM
+     * placeholder, and the {@code VAL_*} ultimate fallback in dependent-step
+     * resolution.
      */
     static final String[] SYNTHETIC_PREFIXES = {
         "FALLBACK_",

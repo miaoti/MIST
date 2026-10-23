@@ -1,0 +1,116 @@
+================================================================================
+                    FAULT DETECTION SUMMARY REPORT
+================================================================================
+
+Experiment:         bookinfo_r11b_1792053441682
+Generated:          2026-10-15 03:41:27
+Tracking Started:   2026-10-15 03:37:21
+Total Test Cases:   70
+
+================================================================================
+FAULT COVERAGE SUMMARY
+================================================================================
+
+Total Injected Faults:    0
+Detected Faults:          0 (0.0%)
+Undetected Faults:        0 (100.0%)
+
+Detection Progress:
+[░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░] 0.0%
+
+================================================================================
+ORACLE ANOMALIES (1 distinct, 1 hits)
+================================================================================
+
+These are TraceShapeOracle invariant violations the tool detected.
+They are tool-detected trace-shape deviations, NOT confirmed bugs —
+an upper-bound bug-finding signal. Entries also matching an injected
+fault name appear in the DETECTED FAULTS section above.
+
+1. HIDDEN_DOWNSTREAM_FAILURE  |  GET /api/v1/products/0/reviews
+   Severity:      ERROR
+   Violation:     reviews.default ──▶ ratings.default.svc.cluster.local:9080/* (http=503 otel=ERROR)
+   Hits:          1 time(s)
+   First seen:    2026-10-15 03:37:46
+   Last seen:     2026-10-15 03:37:46
+   Example test:  bookinfo_r11b.BookinfoTest_1792053441682.Flow_Scenario_50.test_positive_flow_S50_v24
+   Example trace: bd54e176b30043fd99a60a1a7db46b36
+
+================================================================================
+TEST CASES EXECUTED (70)
+================================================================================
+
+1. bookinfo_r11b.BookinfoTest_1792053441682.Flow_Scenario_1.test_positive_flow_S1_v1
+2. bookinfo_r11b.BookinfoTest_1792053441682.Flow_Scenario_2.test_negative_flow_S2_v10_fault_Root1_SEMANTIC_MISMATCH
+3. bookinfo_r11b.BookinfoTest_1792053441682.Flow_Scenario_2.test_negative_flow_S2_v12_fault_Root1_OVERFLOW
+4. bookinfo_r11b.BookinfoTest_1792053441682.Flow_Scenario_2.test_negative_flow_S2_v13_fault_Root1_NULL_INPUT
+5. bookinfo_r11b.BookinfoTest_1792053441682.Flow_Scenario_2.test_negative_flow_S2_v14_fault_Root1_TYPE_MISMATCH
+6. bookinfo_r11b.BookinfoTest_1792053441682.Flow_Scenario_2.test_negative_flow_S2_v15_fault_Root1_TYPE_MISMATCH
+7. bookinfo_r11b.BookinfoTest_1792053441682.Flow_Scenario_2.test_negative_flow_S2_v16_fault_Root1_SEMANTIC_MISMATCH
+8. bookinfo_r11b.BookinfoTest_1792053441682.Flow_Scenario_2.test_negative_flow_S2_v17_fault_Root1_TYPE_MISMATCH
+9. bookinfo_r11b.BookinfoTest_1792053441682.Flow_Scenario_2.test_negative_flow_S2_v18_fault_Root1_TYPE_MISMATCH
+10. bookinfo_r11b.BookinfoTest_1792053441682.Flow_Scenario_2.test_negative_flow_S2_v19_fault_Root1_TYPE_MISMATCH
+11. bookinfo_r11b.BookinfoTest_1792053441682.Flow_Scenario_2.test_negative_flow_S2_v1_fault_Root1_SEMANTIC_MISMATCH
+12. bookinfo_r11b.BookinfoTest_1792053441682.Flow_Scenario_2.test_negative_flow_S2_v20_fault_Root1_OVERFLOW
+13. bookinfo_r11b.BookinfoTest_1792053441682.Flow_Scenario_2.test_negative_flow_S2_v21_fault_Root1_SEMANTIC_MISMATCH
+14. bookinfo_r11b.BookinfoTest_1792053441682.Flow_Scenario_2.test_negative_flow_S2_v22_fault_Root1_OVERFLOW
+15. bookinfo_r11b.BookinfoTest_1792053441682.Flow_Scenario_2.test_negative_flow_S2_v23_fault_Root1_TYPE_MISMATCH
+16. bookinfo_r11b.BookinfoTest_1792053441682.Flow_Scenario_2.test_negative_flow_S2_v2_fault_Root1_TYPE_MISMATCH
+17. bookinfo_r11b.BookinfoTest_1792053441682.Flow_Scenario_2.test_negative_flow_S2_v3_fault_Root1_OVERFLOW
+18. bookinfo_r11b.BookinfoTest_1792053441682.Flow_Scenario_2.test_negative_flow_S2_v4_fault_Root1_NULL_INPUT
+19. bookinfo_r11b.BookinfoTest_1792053441682.Flow_Scenario_2.test_negative_flow_S2_v5_fault_Root1_OVERFLOW
+20. bookinfo_r11b.BookinfoTest_1792053441682.Flow_Scenario_2.test_negative_flow_S2_v6_fault_Root1_TYPE_MISMATCH
+21. bookinfo_r11b.BookinfoTest_1792053441682.Flow_Scenario_2.test_negative_flow_S2_v7_fault_Root1_NULL_INPUT
+22. bookinfo_r11b.BookinfoTest_1792053441682.Flow_Scenario_2.test_negative_flow_S2_v8_fault_Root1_SEMANTIC_MISMATCH
+23. bookinfo_r11b.BookinfoTest_1792053441682.Flow_Scenario_2.test_negative_flow_S2_v9_fault_Root1_NULL_INPUT
+24. bookinfo_r11b.BookinfoTest_1792053441682.Flow_Scenario_2.test_positive_flow_S2_v24
+25. bookinfo_r11b.BookinfoTest_1792053441682.Flow_Scenario_26.test_negative_flow_S26_v10_fault_Root1_NULL_INPUT
+26. bookinfo_r11b.BookinfoTest_1792053441682.Flow_Scenario_26.test_negative_flow_S26_v11_fault_Root1_OVERFLOW
+27. bookinfo_r11b.BookinfoTest_1792053441682.Flow_Scenario_26.test_negative_flow_S26_v13_fault_Root1_TYPE_MISMATCH
+28. bookinfo_r11b.BookinfoTest_1792053441682.Flow_Scenario_26.test_negative_flow_S26_v14_fault_Root1_TYPE_MISMATCH
+29. bookinfo_r11b.BookinfoTest_1792053441682.Flow_Scenario_26.test_negative_flow_S26_v15_fault_Root1_OVERFLOW
+30. bookinfo_r11b.BookinfoTest_1792053441682.Flow_Scenario_26.test_negative_flow_S26_v16_fault_Root1_SEMANTIC_MISMATCH
+31. bookinfo_r11b.BookinfoTest_1792053441682.Flow_Scenario_26.test_negative_flow_S26_v17_fault_Root1_NULL_INPUT
+32. bookinfo_r11b.BookinfoTest_1792053441682.Flow_Scenario_26.test_negative_flow_S26_v18_fault_Root1_TYPE_MISMATCH
+33. bookinfo_r11b.BookinfoTest_1792053441682.Flow_Scenario_26.test_negative_flow_S26_v19_fault_Root1_TYPE_MISMATCH
+34. bookinfo_r11b.BookinfoTest_1792053441682.Flow_Scenario_26.test_negative_flow_S26_v1_fault_Root1_TYPE_MISMATCH
+35. bookinfo_r11b.BookinfoTest_1792053441682.Flow_Scenario_26.test_negative_flow_S26_v20_fault_Root1_TYPE_MISMATCH
+36. bookinfo_r11b.BookinfoTest_1792053441682.Flow_Scenario_26.test_negative_flow_S26_v21_fault_Root1_SEMANTIC_MISMATCH
+37. bookinfo_r11b.BookinfoTest_1792053441682.Flow_Scenario_26.test_negative_flow_S26_v22_fault_Root1_TYPE_MISMATCH
+38. bookinfo_r11b.BookinfoTest_1792053441682.Flow_Scenario_26.test_negative_flow_S26_v23_fault_Root1_SEMANTIC_MISMATCH
+39. bookinfo_r11b.BookinfoTest_1792053441682.Flow_Scenario_26.test_negative_flow_S26_v2_fault_Root1_NULL_INPUT
+40. bookinfo_r11b.BookinfoTest_1792053441682.Flow_Scenario_26.test_negative_flow_S26_v3_fault_Root1_OVERFLOW
+41. bookinfo_r11b.BookinfoTest_1792053441682.Flow_Scenario_26.test_negative_flow_S26_v4_fault_Root1_OVERFLOW
+42. bookinfo_r11b.BookinfoTest_1792053441682.Flow_Scenario_26.test_negative_flow_S26_v5_fault_Root1_SEMANTIC_MISMATCH
+43. bookinfo_r11b.BookinfoTest_1792053441682.Flow_Scenario_26.test_negative_flow_S26_v6_fault_Root1_TYPE_MISMATCH
+44. bookinfo_r11b.BookinfoTest_1792053441682.Flow_Scenario_26.test_negative_flow_S26_v7_fault_Root1_OVERFLOW
+45. bookinfo_r11b.BookinfoTest_1792053441682.Flow_Scenario_26.test_negative_flow_S26_v8_fault_Root1_SEMANTIC_MISMATCH
+46. bookinfo_r11b.BookinfoTest_1792053441682.Flow_Scenario_26.test_negative_flow_S26_v9_fault_Root1_NULL_INPUT
+47. bookinfo_r11b.BookinfoTest_1792053441682.Flow_Scenario_26.test_positive_flow_S26_v24
+48. bookinfo_r11b.BookinfoTest_1792053441682.Flow_Scenario_50.test_negative_flow_S50_v10_fault_Root1_NULL_INPUT
+49. bookinfo_r11b.BookinfoTest_1792053441682.Flow_Scenario_50.test_negative_flow_S50_v11_fault_Root1_NULL_INPUT
+50. bookinfo_r11b.BookinfoTest_1792053441682.Flow_Scenario_50.test_negative_flow_S50_v12_fault_Root1_TYPE_MISMATCH
+51. bookinfo_r11b.BookinfoTest_1792053441682.Flow_Scenario_50.test_negative_flow_S50_v13_fault_Root1_OVERFLOW
+52. bookinfo_r11b.BookinfoTest_1792053441682.Flow_Scenario_50.test_negative_flow_S50_v14_fault_Root1_NULL_INPUT
+53. bookinfo_r11b.BookinfoTest_1792053441682.Flow_Scenario_50.test_negative_flow_S50_v15_fault_Root1_OVERFLOW
+54. bookinfo_r11b.BookinfoTest_1792053441682.Flow_Scenario_50.test_negative_flow_S50_v16_fault_Root1_OVERFLOW
+55. bookinfo_r11b.BookinfoTest_1792053441682.Flow_Scenario_50.test_negative_flow_S50_v17_fault_Root1_TYPE_MISMATCH
+56. bookinfo_r11b.BookinfoTest_1792053441682.Flow_Scenario_50.test_negative_flow_S50_v18_fault_Root1_SEMANTIC_MISMATCH
+57. bookinfo_r11b.BookinfoTest_1792053441682.Flow_Scenario_50.test_negative_flow_S50_v19_fault_Root1_TYPE_MISMATCH
+58. bookinfo_r11b.BookinfoTest_1792053441682.Flow_Scenario_50.test_negative_flow_S50_v1_fault_Root1_TYPE_MISMATCH
+59. bookinfo_r11b.BookinfoTest_1792053441682.Flow_Scenario_50.test_negative_flow_S50_v20_fault_Root1_SEMANTIC_MISMATCH
+60. bookinfo_r11b.BookinfoTest_1792053441682.Flow_Scenario_50.test_negative_flow_S50_v21_fault_Root1_SEMANTIC_MISMATCH
+61. bookinfo_r11b.BookinfoTest_1792053441682.Flow_Scenario_50.test_negative_flow_S50_v23_fault_Root1_OVERFLOW
+62. bookinfo_r11b.BookinfoTest_1792053441682.Flow_Scenario_50.test_negative_flow_S50_v2_fault_Root1_TYPE_MISMATCH
+63. bookinfo_r11b.BookinfoTest_1792053441682.Flow_Scenario_50.test_negative_flow_S50_v3_fault_Root1_SEMANTIC_MISMATCH
+64. bookinfo_r11b.BookinfoTest_1792053441682.Flow_Scenario_50.test_negative_flow_S50_v4_fault_Root1_TYPE_MISMATCH
+65. bookinfo_r11b.BookinfoTest_1792053441682.Flow_Scenario_50.test_negative_flow_S50_v5_fault_Root1_SEMANTIC_MISMATCH
+66. bookinfo_r11b.BookinfoTest_1792053441682.Flow_Scenario_50.test_negative_flow_S50_v6_fault_Root1_NULL_INPUT
+67. bookinfo_r11b.BookinfoTest_1792053441682.Flow_Scenario_50.test_negative_flow_S50_v7_fault_Root1_TYPE_MISMATCH
+68. bookinfo_r11b.BookinfoTest_1792053441682.Flow_Scenario_50.test_negative_flow_S50_v8_fault_Root1_TYPE_MISMATCH
+69. bookinfo_r11b.BookinfoTest_1792053441682.Flow_Scenario_50.test_negative_flow_S50_v9_fault_Root1_OVERFLOW
+70. bookinfo_r11b.BookinfoTest_1792053441682.Flow_Scenario_50.test_positive_flow_S50_v24
+
+================================================================================
+                          END OF REPORT
+================================================================================

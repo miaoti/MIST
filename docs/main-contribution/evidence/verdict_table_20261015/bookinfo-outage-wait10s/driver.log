@@ -1,0 +1,13 @@
+2026-10-15 00:35:13 leg bk-outage start; profile C:\Users\miaot\Github\MIST\evaluation\suts\bookinfo\bookinfo-hdf-r11.properties; wait 10000 ms
+2026-10-15 00:35:15 started Jaeger port-forward
+2026-10-15 00:35:16 started SUT port-forward on 8080
+2026-10-15 00:35:24 probe jaeger 200
+2026-10-15 00:35:24 probe /api/v1/products/0/reviews 200
+2026-10-15 00:35:24 probe /api/v1/products/0/ratings 503 The remote server returned an error: (503) Server Unavailable.
+2026-10-15 00:35:24 moved previous results to target\allure-results-before-bk-outage-003524
+2026-10-15 01:38:00 mist exit 0; 62.6 minutes
+2026-10-15 01:38:02 copied 2606 result files
+2026-10-15 01:38:02 copied fault-detection-summary-bookinfo_r11_1792042525731-20261015-013800.txt
+2026-10-15 01:38:02 stopped wsl.exe 39584
+2026-10-15 01:38:02 stopped wsl.exe 46212
+2026-10-15 01:38:02 leg bk-outage done

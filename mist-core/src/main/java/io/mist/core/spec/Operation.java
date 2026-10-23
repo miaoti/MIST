@@ -11,6 +11,8 @@ public class Operation {
     private String method;
     private List<TestParameter> testParameters = null;
     private String expectedResponse;
+    /** Media type of the request body; null means a JSON body. */
+    private String requestContentType;
 
     @JsonIgnore
     private io.swagger.v3.oas.models.Operation openApiOperation;
@@ -53,6 +55,21 @@ public class Operation {
 
     public void setExpectedResponse(String expectedResponse) {
         this.expectedResponse = expectedResponse;
+    }
+
+    public String getRequestContentType() {
+        return requestContentType;
+    }
+
+    public void setRequestContentType(String requestContentType) {
+        this.requestContentType = requestContentType;
+    }
+
+    /** True when the request body is sent as an HTML form (application/x-www-form-urlencoded). */
+    @JsonIgnore
+    public boolean isFormRequestBody() {
+        return requestContentType != null
+                && requestContentType.toLowerCase(java.util.Locale.ROOT).startsWith("application/x-www-form-urlencoded");
     }
 
     public io.swagger.v3.oas.models.Operation getOpenApiOperation() {

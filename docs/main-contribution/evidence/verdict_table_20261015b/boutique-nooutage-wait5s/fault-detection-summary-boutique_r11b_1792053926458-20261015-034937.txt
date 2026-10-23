@@ -1,0 +1,92 @@
+================================================================================
+                    FAULT DETECTION SUMMARY REPORT
+================================================================================
+
+Experiment:         boutique_r11b_1792053926458
+Generated:          2026-10-15 03:49:37
+Tracking Started:   2026-10-15 03:45:26
+Total Test Cases:   64
+
+================================================================================
+FAULT COVERAGE SUMMARY
+================================================================================
+
+Total Injected Faults:    0
+Detected Faults:          0 (0.0%)
+Undetected Faults:        0 (100.0%)
+
+Detection Progress:
+[░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░] 0.0%
+
+================================================================================
+TEST CASES EXECUTED (64)
+================================================================================
+
+1. boutique_r11b.BoutiqueTest_1792053926458.Flow_Scenario_1.test_positive_flow_S1_v1
+2. boutique_r11b.BoutiqueTest_1792053926458.Flow_Scenario_131.test_negative_flow_S131_v41_fault_Root1_SEMANTIC_MISMATCH
+3. boutique_r11b.BoutiqueTest_1792053926458.Flow_Scenario_131.test_positive_flow_S131_v43
+4. boutique_r11b.BoutiqueTest_1792053926458.Flow_Scenario_174.test_negative_flow_S174_v20_fault_Root1_SEMANTIC_MISMATCH
+5. boutique_r11b.BoutiqueTest_1792053926458.Flow_Scenario_174.test_positive_flow_S174_v43
+6. boutique_r11b.BoutiqueTest_1792053926458.Flow_Scenario_2.test_negative_flow_S2_v10_fault_Root1_SPECIAL_CHARACTERS
+7. boutique_r11b.BoutiqueTest_1792053926458.Flow_Scenario_2.test_negative_flow_S2_v11_fault_Root1_SPECIAL_CHARACTERS
+8. boutique_r11b.BoutiqueTest_1792053926458.Flow_Scenario_2.test_negative_flow_S2_v12_fault_Root1_SEMANTIC_MISMATCH
+9. boutique_r11b.BoutiqueTest_1792053926458.Flow_Scenario_2.test_negative_flow_S2_v13_fault_Root1_OVERFLOW
+10. boutique_r11b.BoutiqueTest_1792053926458.Flow_Scenario_2.test_negative_flow_S2_v14_fault_Root1_EMPTY_INPUT
+11. boutique_r11b.BoutiqueTest_1792053926458.Flow_Scenario_2.test_negative_flow_S2_v15_fault_Root1_TYPE_MISMATCH
+12. boutique_r11b.BoutiqueTest_1792053926458.Flow_Scenario_2.test_negative_flow_S2_v16_fault_Root1_SPECIAL_CHARACTERS
+13. boutique_r11b.BoutiqueTest_1792053926458.Flow_Scenario_2.test_negative_flow_S2_v17_fault_Root1_SEMANTIC_MISMATCH
+14. boutique_r11b.BoutiqueTest_1792053926458.Flow_Scenario_2.test_negative_flow_S2_v18_fault_Root1_SPECIAL_CHARACTERS
+15. boutique_r11b.BoutiqueTest_1792053926458.Flow_Scenario_2.test_negative_flow_S2_v19_fault_Root1_SPECIAL_CHARACTERS
+16. boutique_r11b.BoutiqueTest_1792053926458.Flow_Scenario_2.test_negative_flow_S2_v1_fault_Root1_OVERFLOW
+17. boutique_r11b.BoutiqueTest_1792053926458.Flow_Scenario_2.test_negative_flow_S2_v20_fault_Root1_TYPE_MISMATCH
+18. boutique_r11b.BoutiqueTest_1792053926458.Flow_Scenario_2.test_negative_flow_S2_v21_fault_Root1_SEMANTIC_MISMATCH
+19. boutique_r11b.BoutiqueTest_1792053926458.Flow_Scenario_2.test_negative_flow_S2_v22_fault_Root1_TYPE_MISMATCH
+20. boutique_r11b.BoutiqueTest_1792053926458.Flow_Scenario_2.test_negative_flow_S2_v23_fault_Root1_SPECIAL_CHARACTERS
+21. boutique_r11b.BoutiqueTest_1792053926458.Flow_Scenario_2.test_negative_flow_S2_v24_fault_Root1_NULL_INPUT
+22. boutique_r11b.BoutiqueTest_1792053926458.Flow_Scenario_2.test_negative_flow_S2_v25_fault_Root1_SPECIAL_CHARACTERS
+23. boutique_r11b.BoutiqueTest_1792053926458.Flow_Scenario_2.test_negative_flow_S2_v26_fault_Root1_EMPTY_INPUT
+24. boutique_r11b.BoutiqueTest_1792053926458.Flow_Scenario_2.test_negative_flow_S2_v27_fault_Root1_SPECIAL_CHARACTERS
+25. boutique_r11b.BoutiqueTest_1792053926458.Flow_Scenario_2.test_negative_flow_S2_v28_fault_Root1_SPECIAL_CHARACTERS
+26. boutique_r11b.BoutiqueTest_1792053926458.Flow_Scenario_2.test_negative_flow_S2_v29_fault_Root1_SPECIAL_CHARACTERS
+27. boutique_r11b.BoutiqueTest_1792053926458.Flow_Scenario_2.test_negative_flow_S2_v2_fault_Root1_TYPE_MISMATCH
+28. boutique_r11b.BoutiqueTest_1792053926458.Flow_Scenario_2.test_negative_flow_S2_v30_fault_Root1_TYPE_MISMATCH
+29. boutique_r11b.BoutiqueTest_1792053926458.Flow_Scenario_2.test_negative_flow_S2_v31_fault_Root1_SEMANTIC_MISMATCH
+30. boutique_r11b.BoutiqueTest_1792053926458.Flow_Scenario_2.test_negative_flow_S2_v32_fault_Root1_EMPTY_INPUT
+31. boutique_r11b.BoutiqueTest_1792053926458.Flow_Scenario_2.test_negative_flow_S2_v33_fault_Root1_OVERFLOW
+32. boutique_r11b.BoutiqueTest_1792053926458.Flow_Scenario_2.test_negative_flow_S2_v34_fault_Root1_EMPTY_INPUT
+33. boutique_r11b.BoutiqueTest_1792053926458.Flow_Scenario_2.test_negative_flow_S2_v35_fault_Root1_TYPE_MISMATCH
+34. boutique_r11b.BoutiqueTest_1792053926458.Flow_Scenario_2.test_negative_flow_S2_v36_fault_Root1_TYPE_MISMATCH
+35. boutique_r11b.BoutiqueTest_1792053926458.Flow_Scenario_2.test_negative_flow_S2_v37_fault_Root1_SPECIAL_CHARACTERS
+36. boutique_r11b.BoutiqueTest_1792053926458.Flow_Scenario_2.test_negative_flow_S2_v38_fault_Root1_SPECIAL_CHARACTERS
+37. boutique_r11b.BoutiqueTest_1792053926458.Flow_Scenario_2.test_negative_flow_S2_v39_fault_Root1_SEMANTIC_MISMATCH
+38. boutique_r11b.BoutiqueTest_1792053926458.Flow_Scenario_2.test_negative_flow_S2_v3_fault_Root1_OVERFLOW
+39. boutique_r11b.BoutiqueTest_1792053926458.Flow_Scenario_2.test_negative_flow_S2_v40_fault_Root1_SPECIAL_CHARACTERS
+40. boutique_r11b.BoutiqueTest_1792053926458.Flow_Scenario_2.test_negative_flow_S2_v41_fault_Root1_SPECIAL_CHARACTERS
+41. boutique_r11b.BoutiqueTest_1792053926458.Flow_Scenario_2.test_negative_flow_S2_v42_fault_Root1_SPECIAL_CHARACTERS
+42. boutique_r11b.BoutiqueTest_1792053926458.Flow_Scenario_2.test_negative_flow_S2_v4_fault_Root1_SPECIAL_CHARACTERS
+43. boutique_r11b.BoutiqueTest_1792053926458.Flow_Scenario_2.test_negative_flow_S2_v5_fault_Root1_EMPTY_INPUT
+44. boutique_r11b.BoutiqueTest_1792053926458.Flow_Scenario_2.test_negative_flow_S2_v6_fault_Root1_SEMANTIC_MISMATCH
+45. boutique_r11b.BoutiqueTest_1792053926458.Flow_Scenario_2.test_negative_flow_S2_v7_fault_Root1_EMPTY_INPUT
+46. boutique_r11b.BoutiqueTest_1792053926458.Flow_Scenario_2.test_negative_flow_S2_v8_fault_Root1_SPECIAL_CHARACTERS
+47. boutique_r11b.BoutiqueTest_1792053926458.Flow_Scenario_2.test_negative_flow_S2_v9_fault_Root1_SPECIAL_CHARACTERS
+48. boutique_r11b.BoutiqueTest_1792053926458.Flow_Scenario_2.test_positive_flow_S2_v43
+49. boutique_r11b.BoutiqueTest_1792053926458.Flow_Scenario_217.test_positive_flow_S217_v1
+50. boutique_r11b.BoutiqueTest_1792053926458.Flow_Scenario_218.test_positive_flow_S218_v1
+51. boutique_r11b.BoutiqueTest_1792053926458.Flow_Scenario_219.test_positive_flow_S219_v1
+52. boutique_r11b.BoutiqueTest_1792053926458.Flow_Scenario_220.test_positive_flow_S220_v1
+53. boutique_r11b.BoutiqueTest_1792053926458.Flow_Scenario_221.test_negative_flow_S221_v42_fault_Root1_SEMANTIC_MISMATCH
+54. boutique_r11b.BoutiqueTest_1792053926458.Flow_Scenario_221.test_positive_flow_S221_v43
+55. boutique_r11b.BoutiqueTest_1792053926458.Flow_Scenario_264.test_negative_flow_S264_v14_fault_Root1_SEMANTIC_MISMATCH
+56. boutique_r11b.BoutiqueTest_1792053926458.Flow_Scenario_264.test_positive_flow_S264_v43
+57. boutique_r11b.BoutiqueTest_1792053926458.Flow_Scenario_307.test_negative_flow_S307_v24_fault_Root1_SEMANTIC_MISMATCH
+58. boutique_r11b.BoutiqueTest_1792053926458.Flow_Scenario_307.test_positive_flow_S307_v43
+59. boutique_r11b.BoutiqueTest_1792053926458.Flow_Scenario_350.test_negative_flow_S350_v8_fault_Root1_SEMANTIC_MISMATCH
+60. boutique_r11b.BoutiqueTest_1792053926458.Flow_Scenario_350.test_positive_flow_S350_v43
+61. boutique_r11b.BoutiqueTest_1792053926458.Flow_Scenario_45.test_negative_flow_S45_v30_fault_Root1_SEMANTIC_MISMATCH
+62. boutique_r11b.BoutiqueTest_1792053926458.Flow_Scenario_45.test_positive_flow_S45_v43
+63. boutique_r11b.BoutiqueTest_1792053926458.Flow_Scenario_88.test_negative_flow_S88_v11_fault_Root1_SEMANTIC_MISMATCH
+64. boutique_r11b.BoutiqueTest_1792053926458.Flow_Scenario_88.test_positive_flow_S88_v43
+
+================================================================================
+                          END OF REPORT
+================================================================================

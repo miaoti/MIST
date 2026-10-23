@@ -1,0 +1,36 @@
+2026-10-15 03:45:14 sequence start
+2026-10-15 03:45:15 kubectl get deploy -n boutique --no-headers -> adservice               1/1   1     1     90d
+cartservice             1/1   1     1     90d
+checkoutservice         1/1   1     1     90d
+currencyservice         1/1   1     1     90d
+emailservice            1/1   1     1     90d
+frontend                1/1   1     1     90d
+loadgenerator           0/0   0     0     90d
+paymentservice          1/1   1     1     90d
+productcatalogservice   1/1   1     1     90d
+recommendationservice   1/1   1     1     90d
+redis-cart              1/1   1     1     90d
+shippingservice         1/1   1     1     90d
+2026-10-15 03:49:39 no-outage leg returned
+2026-10-15 03:49:39 kubectl scale deploy/adservice -n boutique --replicas=0 -> deployment.apps/adservice scaled
+2026-10-15 03:49:45 kubectl wait --for=delete pod -l app=adservice -n boutique --timeout=180s -> pod/adservice-5c5cb6fd89-tc6d8 condition met
+2026-10-15 03:49:55 kubectl get pods -n boutique -l app=adservice --no-headers -> wsl.exe : No resources found in boutique namespace.
+At <run dir>\run_boutique_r11b.ps1:7 char:36
++ ... e([string[]]$a) { $o = & wsl.exe -d Ubuntu -- kubectl @a 2>&1 | Out-S ...
++                            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (No resources fo...ique namespace.:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+2026-10-15 03:54:19 outage leg returned
+2026-10-15 03:54:19 kubectl scale deploy --all -n boutique --replicas=0 -> deployment.apps/adservice scaled
+deployment.apps/cartservice scaled
+deployment.apps/checkoutservice scaled
+deployment.apps/currencyservice scaled
+deployment.apps/emailservice scaled
+deployment.apps/frontend scaled
+deployment.apps/loadgenerator scaled
+deployment.apps/paymentservice scaled
+deployment.apps/productcatalogservice scaled
+deployment.apps/recommendationservice scaled
+deployment.apps/redis-cart scaled
+deployment.apps/shippingservice scaled
+2026-10-15 03:54:19 sequence done

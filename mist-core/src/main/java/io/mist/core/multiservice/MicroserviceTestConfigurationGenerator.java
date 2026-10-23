@@ -21,6 +21,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -102,8 +103,13 @@ public class MicroserviceTestConfigurationGenerator {
                     }
                 }
 
-                if (resolvedRb.getContent() != null && resolvedRb.getContent().containsKey("application/json")) {
-                    MediaType mt = resolvedRb.getContent().get("application/json");
+                // A JSON body is read as before. A body sent only as an HTML form (a Swagger
+                // 2.0 formData operation after conversion) is read the same way, and the
+                // operation records its media type so the generator and writer send a form.
+                String bodyMediaType = bodyMediaType(resolvedRb);
+                boolean formBody = bodyMediaType != null && !"application/json".equals(bodyMediaType);
+                if (bodyMediaType != null) {
+                    MediaType mt = resolvedRb.getContent().get(bodyMediaType);
                     Schema<?> schema = mt.getSchema();
 
                     if (schema != null) {
@@ -127,9 +133,13 @@ public class MicroserviceTestConfigurationGenerator {
                                             requiredProps.contains(propName));
                                     paramConfigs.add(toTestParam(bodyParam));
                                 }
+                                if (formBody) {
+                                    opConfig.setRequestContentType(bodyMediaType);
+                                }
                             }
-                            // Handle NON-OBJECT schemas (arrays, primitives, etc.).
-                            else {
+                            // Handle NON-OBJECT schemas (arrays, primitives, etc.); a form body
+                            // is always an object of named fields.
+                            else if (!formBody) {
                                 String bodyParamName = "body";
                                 String description = resolvedRb.getDescription();
                                 if (description == null || description.isEmpty()) {
@@ -164,6 +174,26 @@ public class MicroserviceTestConfigurationGenerator {
         }
         writeYamlFile(multiConfig, outputYamlPath);
         return multiConfig;
+    }
+
+    /**
+     * The request body's media type MIST reads: {@code application/json} when present,
+     * else the {@code application/x-www-form-urlencoded} key (parameters such as a
+     * charset kept), else {@code null}.
+     */
+    static String bodyMediaType(RequestBody rb) {
+        if (rb == null || rb.getContent() == null) {
+            return null;
+        }
+        if (rb.getContent().containsKey("application/json")) {
+            return "application/json";
+        }
+        for (String key : rb.getContent().keySet()) {
+            if (key != null && key.toLowerCase(Locale.ROOT).startsWith("application/x-www-form-urlencoded")) {
+                return key;
+            }
+        }
+        return null;
     }
 
     /**
@@ -390,6 +420,9 @@ public class MicroserviceTestConfigurationGenerator {
                 opMap.put("method", oc.getMethod());
                 opMap.put("operationId", oc.getOperationId());
                 opMap.put("testPath", oc.getTestPath());
+                if (oc.getRequestContentType() != null) {
+                    opMap.put("requestContentType", oc.getRequestContentType());
+                }
 
                 if (oc.getTestParameters() != null) {
                     List<Map<String, Object>> params = new ArrayList<>();

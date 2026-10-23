@@ -1009,9 +1009,18 @@ public class ZeroShotLLMGenerator {
         // Simple placeholder when the LLM is unavailable. The number is drawn
         // from a seeded RNG so two runs with the same `-Drandom.seed` produce
         // the same sequence of fallback values.
-        String fallback = "test" + fallbackRandom.nextInt(1000);
+        String fallback = fallbackPlaceholder(fallbackRandom.nextInt(1000));
         System.out.println("*** FALLBACK VALUE GENERATED: " + fallback);
         return fallback;
+    }
+
+    /**
+     * The invented value used when the LLM is unavailable. It carries the FALLBACK_ prefix that
+     * {@link io.mist.core.value.ValueProvenanceInference} recognizes, so a test that sends it is
+     * marked negative in advance like any other invented value.
+     */
+    static String fallbackPlaceholder(int n) {
+        return "FALLBACK_test" + n;
     }
 
     private String extractFromGeminiResponse(String responseJson) {

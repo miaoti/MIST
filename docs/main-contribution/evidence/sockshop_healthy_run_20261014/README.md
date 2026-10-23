@@ -87,3 +87,38 @@ session-less requests, and a logged-in request succeeds.
 5. Schema oracles would flag this body too (the document types the 200 response as an Address
    or a Card). The paper claims the status oracle passes it and that the classifier of
    `ResponseEnvelope` misses a body of that shape (`../responseenvelope_live_3case.txt`, case 4).
+
+## Correction (2026-10-15, records audit of the paper's round 11)
+
+Three statements above are contradicted by the run's own response bodies
+(`../verdict_table_20261014/sockshop-healthy-20261014/allure-results.zip`); the text above is left
+as written and this section supersedes it.
+
+1. Not all 352 write responses carried `Invalid Id Hex`: 283 did, 56 carried
+   `json: cannot unmarshal <type> into Go value of type string`, and the remaining 13 an Envoy
+   upstream reset. All 56 unmarshal bodies belong to TYPE_MISMATCH negative tests: the generated
+   value broke the user service's parser, which answered 500 behind the front-end's 200. So the
+   Sniper values do play a part in 56 responses, and "The Sniper values play no part" is wrong.
+2. The two flagged reads over a 503 (`GET /catalogue`, tests S353_v36 and S353_v81, both
+   OVERFLOW) are exactly the two requests whose `size` was out of range (`-2147483649` and
+   `-9223372036854775808`). Those 503s were triggered by the generated input; "under the run's
+   load" is not shown by the data.
+3. All 511 tests found their trace through the time-window fallback (`Marker query exhausted` in
+   every result), so a test may carry a neighbouring request's trace: 23 `GET /catalogue` tests
+   carry a trace whose only URL is `/catalogue/size`. Caveat 2 above states the pairing risk; its
+   conclusion holds for the two write operations, where every request failed.
+
+## Correction (2026-10-15, records audit of the paper's round 12)
+
+Item 2 of the correction above is wrong in one point. The two flagged reads over a 503
+(`GET /catalogue`, S353_v36 and S353_v81) sent an out-of-range `size`, but they are not the only such
+requests: five GET tests sent a `size` outside int32 (S353_v12, v33, v36, v74, v81) and five a `page`
+outside int32 (S353_v26, v40, v44, v66, v78), all OVERFLOW negative tests. By their own response
+bodies, five of these ten got 200 over an Envoy upstream reset: v36 and v81, which the invariant
+flagged, and v33, v40 and v74. Those three carry other requests' traces (every Sock Shop lookup used
+the time-window fallback, item 3), so the trace each attached holds no failed span and the invariant
+passed it. Under the paper's definition of a hidden test (the trace it attached holds a failed span),
+they are not hidden and Missed stays 0; counted by the tests' own response bodies, three more tests
+had a swallowed failure. Of the 352 write tests, 13 response bodies are Envoy resets while 14
+attached traces show a sidecar 503 (a records audit of the paper traces the difference to seven
+tests whose attached traces began before the test), so the paper no longer states that count.

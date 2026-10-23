@@ -1,0 +1,13 @@
+2026-10-15 01:51:59 leg bq-outage start; profile C:\Users\miaot\Github\MIST\evaluation\suts\boutique\boutique-hdf-r11.properties; wait 5000 ms
+2026-10-15 01:52:01 started Jaeger port-forward
+2026-10-15 01:52:01 started SUT port-forward on 8081
+2026-10-15 01:52:09 probe jaeger 200
+2026-10-15 01:52:10 probe / 200
+2026-10-15 01:52:10 probe /product/OLJCESPC7Z 200
+2026-10-15 01:52:10 moved previous results to target\allure-results-before-bq-outage-015210
+2026-10-15 02:36:00 mist exit 0; 43.8 minutes
+2026-10-15 02:36:04 copied 5063 result files
+2026-10-15 02:36:04 copied fault-detection-summary-boutique_r11_1792047131740-20261015-023558.txt
+2026-10-15 02:36:04 stopped wsl.exe 30656
+2026-10-15 02:36:04 stopped wsl.exe 50208
+2026-10-15 02:36:04 leg bq-outage done

@@ -1925,13 +1925,17 @@ public class MultiServiceRESTAssuredWriter {
                             // 🔥 FIX: Always set Content-Type to application/json for requests with bodies
                             String requestBody = step.getBody() != null ? step.getBody() : "";
                             if (!requestBody.isEmpty()) {
-                                pw.println("                        // 🔥 FIX: Set Content-Type to application/json for requests with bodies");
-                                pw.println("                        req = req.contentType(\"application/json\");");
+                                // An HTML-form operation sends its form-encoded body with the form
+                                // media type; every other body is JSON.
+                                boolean __formBody = step.getMethod() != null && step.getMethod().isFormRequestBody();
+                                String __bodyContentType = __formBody ? step.getMethod().getRequestContentType() : "application/json";
+                                pw.println("                        // 🔥 FIX: Set Content-Type for requests with bodies");
+                                pw.println("                        req = req.contentType(\"" + escape(__bodyContentType) + "\");");
                                 pw.println("                        String requestBody" + stepIdx + " = \"" + escape(requestBody) + "\";");
                                 pw.println("                        req = req.body(requestBody" + stepIdx + ");");
                                 pw.println("                        ");
                                 pw.println("                        // Add request body as attachment (AllureRestAssured filter disabled to avoid duplication)");
-                                pw.println("                        Allure.addAttachment(\"📤 Request Body\", \"application/json\", requestBody" + stepIdx + ");");
+                                pw.println("                        Allure.addAttachment(\"📤 Request Body\", \"" + (__formBody ? "text/plain" : "application/json") + "\", requestBody" + stepIdx + ");");
                             }
                             
                             // Auth header: delegates to MstAuthHandler.applyAuth which honours

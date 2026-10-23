@@ -4,9 +4,11 @@
 generator that turns OpenTelemetry/Jaeger traces + OpenAPI specs into runnable
 cross-service workflow tests and checks them with a **trace-shape oracle**. This guide
 lets a reviewer reproduce the paper's headline results. Source:
-<https://github.com/miaoti/MIST/>. Screencast: see §9. Paper: `paper/main_issta.tex`.
+<https://github.com/miaoti/MIST/>. Screencast: see §9. Paper: `paper/tool-demo/main_saner.tex`.
 
 ## 0. TL;DR for reviewers (start here)
+- **SANER 2027 tool-demo paper:** §7.1 maps each row of Table I and each case study to its
+  evidence folder and the properties file of its run.
 - **Zero-infra path (≈10 min, no SUT, no cluster):** the shipped trace oracle reproduces
   both headline detections directly from **committed traces** — `HiddenDownstreamFailure`
   on Bookinfo/Online-Boutique and `ResponseEnvelope` (soft error) on TrainTicket. This is
@@ -259,6 +261,27 @@ ratings outage, healthy Jaeger) executed the byte-identical generated test under
 each with exactly 1 executed test case — the double-count is gone end-to-end, not just in unit
 tests (`FaultDetectionTracker*` suites: 27/27 green).
 
+### 7.1 SANER 2027 tool demo: Table I and the case studies
+
+Every path below is under `docs/main-contribution/evidence/`. Each folder's README gives the run, the
+profile, the window and the per-test tables. Section IV of the paper defines the columns (Hidden, Fired,
+On path, Missed), and the Method section of `verdict_table_20261014/README.md` describes the scripts that
+compute them.
+
+| Paper claim | Evidence | Profile and inputs |
+|---|---|---|
+| Table I, Bookinfo: no outage 70 tests, 0 flags; `ratings` down 70/1/1/1/0 | `verdict_table_20261015b/` (`bookinfo-nooutage-wait10s/`, `bookinfo-outage-wait10s/`) | `evaluation/suts/bookinfo/bookinfo-hdf-r11b.properties` |
+| Table I, Online Boutique: no outage 543 tests, 0 flags; `adservice` down 543/10/10 (WARN)/10/0 | `verdict_table_20261015c/` (`boutique-nooutage-wait5s/`, `boutique-outage-wait5s/`) | `evaluation/suts/boutique/boutique-hdf-r11c.properties`, `real-system-conf.yaml`, `traces-r11b/` |
+| Table I, Sock Shop without a login: 511/354/354/354/0 | `verdict_table_20261014/sockshop-healthy-20261014/`, `sockshop_healthy_run_20261014/` | `evaluation/suts/sockshop/sockshop-hdf-probe.properties` |
+| Table I, Sock Shop logged in: no outage 511/72/72/72/0; `catalogue` down 511/228/228/228/0 | `sockshop_login_20261016/` (`login-nooutage-wait5s/`, `login-catalogue-down-wait5s/`; `ANALYSIS.txt`) | `evaluation/suts/sockshop/sockshop-hdf-login.properties` |
+| Table I, TrainTicket on eight services: 445 tests, 0 flags | `verdict_table_20261014/trainticket-g1-healthy/` | `evaluation/suts/trainticket/trainticket-g1-probe.properties`, `real-system-conf-g1.yaml` |
+| Every test of every Table I run sends a distinct request | `verdict_table_20261015b/source_distinct.py` and the generated sources in each leg's `generated-tests.zip` (Sock Shop and TrainTicket rows: `verdict_table_20261015b/rows-of-record/`) | |
+| Walkthrough of Section III-A: the `/reviews` positive test's 200 over the 503 of the call to `ratings`; the overflow negative gets 404 | `verdict_table_20261015b/bookinfo-outage-wait10s/verdicts.csv` (`test_positive_flow_S50_v24`, `test_negative_flow_S50_v15_fault_Root1_OVERFLOW`) | `evaluation/suts/bookinfo/bookinfo-hdf-r11b.properties`, captured traces `evaluation/suts/bookinfo/traces/` |
+| Fig. 1, the offline replay and the separate MIST run on the product page: its 200 over the swallowed 503, the invariant at ERROR | `bookinfo_html_entry_20261013/` (`traces/outage_productpage.json`, `oraclecheck_productpage_outage.txt`, `mist-run/`, `mist-run-v2/`) | `evaluation/suts/bookinfo/OracleCheck.java`, `evaluation/suts/bookinfo/bookinfo-productpage.properties` |
+| EvoMaster 6.2.0 (black-box) and Schemathesis 4.23.0 pass the product page's 200 under the same outage | `bookinfo_html_entry_20261013/` (`evomaster-outage/`, `schemathesis-outage/`; the README's baseline table) | `evaluation/suts/bookinfo/openapi/bookinfo-productpage-swagger.yaml` |
+| Table I totals: 3,204 tests and 665 flags, every flag on path, Missed 0 in every row | the eight rows above, each from its folder's row table | |
+| TrainTicket benchmark: 15,036 tests trigger all ten planted defects | `trainticket_10fault_fault-detection-10of10.txt` | |
+
 ## 8. LLM determinism & variance
 Value synthesis + the soft-error classifier use an LLM, so generated test *values* and the exact
 fault-detection *count* vary run to run (`run22` is a representative **10/10** run). The §5 oracle
@@ -306,7 +329,7 @@ A 3–5 min screencast of the bundled demo: **https://youtu.be/T2AePcbFT6E**
 
 ## 11. License & citation
 - License: see `LICENSE` (**LGPL-3.0**).
-- Archived snapshot (the **Available** badge): the paper cites the reserved DOI
-  <https://doi.org/10.5281/zenodo.20514985>. The deposit must be **published** from the
-  final evaluated commit before submission — a reserved-but-unpublished DOI resolves to 404.
-- Cite the paper (`paper/tool-demo/main_issta.tex`) and the repository.
+- Archived snapshots (the **Available** badge): Zenodo record
+  <https://doi.org/10.5281/zenodo.20514985> and its later versions; tag `v1.4-saner2027` is the
+  snapshot behind the SANER 2027 tool-demo paper.
+- Cite the paper (`paper/tool-demo/main_saner.tex`) and the repository.

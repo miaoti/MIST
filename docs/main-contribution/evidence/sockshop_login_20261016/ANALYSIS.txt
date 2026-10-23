@@ -1,0 +1,515 @@
+# Outputs of the analysis scripts on the four legs (run directories unzipped from allure-results.zip)
+
+######## login-nooutage-wait0
+## analyze_leg.py (Table I definitions)
+off-path among fired: 0  rule-should-fire: 0  fired: 65
+   GET /catalogue                                 n= 114  QUIET 110  TP 4
+   GET /catalogue/03fef6ac-1896-4ce8-bd69-b798f85c6e0b n=   1  QUIET 1
+   GET /catalogue/size                            n=  43  QUIET 43
+   GET /tags                                      n=   1  QUIET 1
+  POST /addresses                                 n= 219  QUIET 184  TP 35
+  POST /cards                                     n= 133  QUIET 107  TP 26
+ROW tests=511 hidden=65 fired=65 confirmed=65 missed=0 off_path=0
+kinds: {'negative': 493, 'positive': 18} | scan: {'QUIET': 446, 'TP': 65}
+## e_pairing.py
+tests: 511 | marker matches: 0
+body failed / fired: {'ok-body/quiet': 421, 'ok-body/fired': 15, 'fail-body/quiet': 25, 'fail-body/fired': 50}
+ok-body but fired      n=  15  trace start minus request start (s): min -2.25 median -1.17 max -0.97; within +-0.5 s: 0
+fail-body but quiet    n=  25  trace start minus request start (s): min -2.35 median -1.18 max -0.19; within +-0.5 s: 1
+fail-body and fired    n=  50  trace start minus request start (s): min -2.38 median +0.04 max +0.16; within +-0.5 s: 48
+ok-body and quiet      n= 421  trace start minus request start (s): min -2.95 median -0.03 max +0.24; within +-0.5 s: 295
+## e_breakdown.py
+tests: 511
+  /addresses         negative body=error:json: cannot unmarshal array into Go val fired=no  n=1
+  /addresses         negative body=error:json: cannot unmarshal array into Go val fired=yes n=4
+  /addresses         negative body=error:json: cannot unmarshal bool into Go valu fired=no  n=2
+  /addresses         negative body=error:json: cannot unmarshal bool into Go valu fired=yes n=8
+  /addresses         negative body=error:json: cannot unmarshal number into Go va fired=no  n=5
+  /addresses         negative body=error:json: cannot unmarshal number into Go va fired=yes n=10
+  /addresses         negative body=error:json: cannot unmarshal object into Go va fired=no  n=1
+  /addresses         negative body=error:json: cannot unmarshal object into Go va fired=yes n=4
+  /addresses         negative body=stored-id                fired=no  n=171
+  /addresses         negative body=stored-id                fired=yes n=9
+  /addresses         positive body=stored-id                fired=no  n=4
+  /cards             negative body=envoy-reset              fired=no  n=8
+  /cards             negative body=envoy-reset              fired=yes n=5
+  /cards             negative body=error:json: cannot unmarshal array into Go val fired=no  n=2
+  /cards             negative body=error:json: cannot unmarshal array into Go val fired=yes n=1
+  /cards             negative body=error:json: cannot unmarshal bool into Go valu fired=yes n=6
+  /cards             negative body=error:json: cannot unmarshal number into Go va fired=no  n=1
+  /cards             negative body=error:json: cannot unmarshal number into Go va fired=yes n=8
+  /cards             negative body=error:json: cannot unmarshal object into Go va fired=no  n=2
+  /cards             negative body=error:json: cannot unmarshal object into Go va fired=yes n=1
+  /cards             negative body=stored-id                fired=no  n=90
+  /cards             negative body=stored-id                fired=yes n=5
+  /cards             positive body=stored-id                fired=no  n=4
+  /catalogue         negative body=envoy-reset              fired=no  n=3
+  /catalogue         negative body=envoy-reset              fired=yes n=3
+  /catalogue         negative body=json-ok                  fired=no  n=100
+  /catalogue         negative body=json-ok                  fired=yes n=1
+  /catalogue         negative body=other:null               fired=no  n=3
+  /catalogue         positive body=json-ok                  fired=no  n=3
+  /catalogue         positive body=other:null               fired=no  n=1
+  /catalogue/size    negative body=json-ok                  fired=no  n=39
+  /catalogue/size    positive body=json-ok                  fired=no  n=4
+  /catalogue/{id}    positive body=stored-id                fired=no  n=1
+  /tags              positive body=json-ok                  fired=no  n=1
+fired tests by category and failed-span statuses:
+  /addresses         EMPTY_INPUT          body=stored-id                spans=500        n=2
+  /addresses         OVERFLOW             body=stored-id                spans=500        n=2
+  /addresses         SEMANTIC_MISMATCH    body=stored-id                spans=500        n=1
+  /addresses         SPECIAL_CHARACTERS   body=stored-id                spans=500        n=4
+  /addresses         TYPE_MISMATCH        body=error:json: cannot unmarshal array into Go val spans=500        n=4
+  /addresses         TYPE_MISMATCH        body=error:json: cannot unmarshal bool into Go valu spans=500        n=8
+  /addresses         TYPE_MISMATCH        body=error:json: cannot unmarshal number into Go va spans=500        n=10
+  /addresses         TYPE_MISMATCH        body=error:json: cannot unmarshal object into Go va spans=500        n=4
+  /cards             EMPTY_INPUT          body=envoy-reset              spans=500        n=1
+  /cards             EMPTY_INPUT          body=envoy-reset              spans=503        n=1
+  /cards             NULL_INPUT           body=envoy-reset              spans=503        n=1
+  /cards             SEMANTIC_MISMATCH    body=envoy-reset              spans=503        n=2
+  /cards             SPECIAL_CHARACTERS   body=stored-id                spans=500        n=2
+  /cards             SPECIAL_CHARACTERS   body=stored-id                spans=503        n=3
+  /cards             TYPE_MISMATCH        body=error:json: cannot unmarshal array into Go val spans=500        n=1
+  /cards             TYPE_MISMATCH        body=error:json: cannot unmarshal bool into Go valu spans=500        n=6
+  /cards             TYPE_MISMATCH        body=error:json: cannot unmarshal number into Go va spans=500        n=7
+  /cards             TYPE_MISMATCH        body=error:json: cannot unmarshal number into Go va spans=503        n=1
+  /cards             TYPE_MISMATCH        body=error:json: cannot unmarshal object into Go va spans=500        n=1
+  /catalogue         OVERFLOW             body=envoy-reset              spans=503        n=3
+  /catalogue         SPECIAL_CHARACTERS   body=json-ok                  spans=503        n=1
+positive tests:
+   ('/addresses', 'positive', '-', '200', 'stored-id', 'no', '', 'failed')
+   ('/addresses', 'positive', '-', '200', 'stored-id', 'no', '', 'failed')
+   ('/addresses', 'positive', '-', '200', 'stored-id', 'no', '', 'failed')
+   ('/addresses', 'positive', '-', '200', 'stored-id', 'no', '', 'failed')
+   ('/cards', 'positive', '-', '200', 'stored-id', 'no', '', 'failed')
+   ('/cards', 'positive', '-', '200', 'stored-id', 'no', '', 'failed')
+   ('/cards', 'positive', '-', '200', 'stored-id', 'no', '', 'failed')
+   ('/cards', 'positive', '-', '200', 'stored-id', 'no', '', 'failed')
+   ('/catalogue', 'positive', '-', '200', 'json-ok', 'no', '', 'failed')
+   ('/catalogue', 'positive', '-', '200', 'json-ok', 'no', '', 'failed')
+   ('/catalogue', 'positive', '-', '200', 'json-ok', 'no', '', 'failed')
+   ('/catalogue', 'positive', '-', '200', 'other:null', 'no', '', 'failed')
+   ('/catalogue/03fef6ac-1896-4ce8-bd69-b798f85c6e0b', 'positive', '-', '200', 'stored-id', 'no', '', 'passed')
+   ('/catalogue/size', 'positive', '-', '200', 'json-ok', 'no', '', 'failed')
+   ('/catalogue/size', 'positive', '-', '200', 'json-ok', 'no', '', 'failed')
+   ('/catalogue/size', 'positive', '-', '200', 'json-ok', 'no', '', 'failed')
+   ('/catalogue/size', 'positive', '-', '200', 'json-ok', 'no', '', 'failed')
+   ('/tags', 'positive', '-', '200', 'json-ok', 'no', '', 'passed')
+## e_misses.py
+== test_negative_flow_S1_v179_fault_Root1_TYPE_MISMATCH /addresses client 200
+   body: {"error":"json: cannot unmarshal bool into Go value of type string","status_code":500,"status_text":"Internal Server Error"}
+   span front-end.sock-shop          user.sock-shop.svc.cluster.local:80/*            http=200 otel=None flags=- kind=client
+   span user.sock-shop               user.sock-shop.svc.cluster.local:80/*            http=200 otel=None flags=- kind=server
+== test_negative_flow_S220_v52_fault_Root1_TYPE_MISMATCH /cards client 200
+   body: {"error":"json: cannot unmarshal object into Go value of type string","status_code":500,"status_text":"Internal Server Error"}
+   span front-end.sock-shop          user.sock-shop.svc.cluster.local:80/*            http=200 otel=None flags=- kind=client
+   span user.sock-shop               user.sock-shop.svc.cluster.local:80/*            http=200 otel=None flags=- kind=server
+== test_negative_flow_S353_v59_fault_Root1_OVERFLOW /catalogue client 200
+   body: upstream connect error or disconnect/reset before headers. reset reason: connection termination
+   span front-end.sock-shop          catalogue.sock-shop.svc.cluster.local:80/*       http=200 otel=None flags=- kind=client
+== test_negative_flow_S220_v22_fault_Root1_EMPTY_INPUT /cards client 200
+   body: "upstream connect error or disconnect/reset before headers. reset reason: connection termination"
+   span front-end.sock-shop          user.sock-shop.svc.cluster.local:80/*            http=200 otel=None flags=- kind=client
+   span user.sock-shop               user.sock-shop.svc.cluster.local:80/*            http=200 otel=None flags=- kind=server
+== test_negative_flow_S1_v24_fault_Root1_TYPE_MISMATCH /addresses client 200
+   body: {"error":"json: cannot unmarshal number into Go value of type string","status_code":500,"status_text":"Internal Server Error"}
+   span front-end.sock-shop          user.sock-shop.svc.cluster.local:80/*            http=200 otel=None flags=- kind=client
+   span user.sock-shop               user.sock-shop.svc.cluster.local:80/*            http=200 otel=None flags=- kind=server
+== test_negative_flow_S1_v11_fault_Root1_TYPE_MISMATCH /addresses client 200
+   body: {"error":"json: cannot unmarshal array into Go value of type string","status_code":500,"status_text":"Internal Server Error"}
+   span front-end.sock-shop          user.sock-shop.svc.cluster.local:80/*            http=200 otel=None flags=- kind=client
+   span user.sock-shop               user.sock-shop.svc.cluster.local:80/*            http=200 otel=None flags=- kind=server
+== test_negative_flow_S1_v160_fault_Root1_TYPE_MISMATCH /addresses client 200
+   body: {"error":"json: cannot unmarshal bool into Go value of type string","status_code":500,"status_text":"Internal Server Error"}
+   span front-end.sock-shop          user.sock-shop.svc.cluster.local:80/*            http=200 otel=None flags=- kind=client
+   span user.sock-shop               user.sock-shop.svc.cluster.local:80/*            http=200 otel=None flags=- kind=server
+== test_negative_flow_S220_v124_fault_Root1_SEMANTIC_MISMATCH /cards client 200
+   body: "upstream connect error or disconnect/reset before headers. reset reason: connection termination"
+   span front-end.sock-shop          user.sock-shop.svc.cluster.local:80/*            http=200 otel=None flags=- kind=client
+== test_negative_flow_S220_v78_fault_Root1_TYPE_MISMATCH /cards client 200
+   body: {"error":"json: cannot unmarshal array into Go value of type string","status_code":500,"status_text":"Internal Server Error"}
+   span front-end.sock-shop          user.sock-shop.svc.cluster.local:80/*            http=200 otel=None flags=- kind=client
+== test_negative_flow_S220_v66_fault_Root1_EMPTY_INPUT /cards client 200
+   body: "upstream connect error or disconnect/reset before headers. reset reason: connection termination"
+   span front-end.sock-shop          user.sock-shop.svc.cluster.local:80/*            http=200 otel=None flags=- kind=client
+== test_negative_flow_S220_v63_fault_Root1_TYPE_MISMATCH /cards client 200
+   body: {"error":"json: cannot unmarshal object into Go value of type string","status_code":500,"status_text":"Internal Server Error"}
+   span front-end.sock-shop          user.sock-shop.svc.cluster.local:80/*            http=200 otel=None flags=- kind=client
+   span user.sock-shop               user.sock-shop.svc.cluster.local:80/*            http=200 otel=None flags=- kind=server
+== test_negative_flow_S220_v123_fault_Root1_TYPE_MISMATCH /cards client 200
+   body: {"error":"json: cannot unmarshal number into Go value of type string","status_code":500,"status_text":"Internal Server Error"}
+   span front-end.sock-shop          user.sock-shop.svc.cluster.local:80/*            http=200 otel=None flags=- kind=client
+   span user.sock-shop               user.sock-shop.svc.cluster.local:80/*            http=200 otel=None flags=- kind=server
+== test_negative_flow_S220_v91_fault_Root1_SEMANTIC_MISMATCH /cards client 200
+   body: "upstream connect error or disconnect/reset before headers. reset reason: connection termination"
+   span front-end.sock-shop          user.sock-shop.svc.cluster.local:80/*            http=200 otel=None flags=- kind=client
+   span user.sock-shop               user.sock-shop.svc.cluster.local:80/*            http=200 otel=None flags=- kind=server
+== test_negative_flow_S353_v10_fault_Root1_OVERFLOW /catalogue client 200
+   body: upstream connect error or disconnect/reset before headers. reset reason: connection termination
+   span front-end.sock-shop          catalogue.sock-shop.svc.cluster.local:80/*       http=200 otel=None flags=- kind=client
+== test_negative_flow_S220_v34_fault_Root1_SPECIAL_CHARACTERS /cards client 200
+   body: "upstream connect error or disconnect/reset before headers. reset reason: connection termination"
+   span front-end.sock-shop          user.sock-shop.svc.cluster.local:80/*            http=200 otel=None flags=- kind=client
+   span user.sock-shop               user.sock-shop.svc.cluster.local:80/*            http=200 otel=None flags=- kind=server
+== test_negative_flow_S1_v71_fault_Root1_TYPE_MISMATCH /addresses client 200
+   body: {"error":"json: cannot unmarshal object into Go value of type string","status_code":500,"status_text":"Internal Server Error"}
+   span front-end.sock-shop          user.sock-shop.svc.cluster.local:80/*            http=200 otel=None flags=- kind=client
+== test_negative_flow_S353_v40_fault_Root1_OVERFLOW /catalogue client 200
+   body: upstream connect error or disconnect/reset before headers. reset reason: connection termination
+   span front-end.sock-shop          catalogue.sock-shop.svc.cluster.local:80/*       http=200 otel=None flags=- kind=client
+== test_negative_flow_S1_v14_fault_Root1_TYPE_MISMATCH /addresses client 200
+   body: {"error":"json: cannot unmarshal number into Go value of type string","status_code":500,"status_text":"Internal Server Error"}
+   span front-end.sock-shop          user.sock-shop.svc.cluster.local:80/*            http=200 otel=None flags=- kind=client
+   span user.sock-shop               user.sock-shop.svc.cluster.local:80/*            http=200 otel=None flags=- kind=server
+== test_negative_flow_S220_v17_fault_Root1_EMPTY_INPUT /cards client 200
+   body: "upstream connect error or disconnect/reset before headers. reset reason: connection termination"
+   span front-end.sock-shop          user.sock-shop.svc.cluster.local:80/*            http=200 otel=None flags=- kind=client
+   span user.sock-shop               user.sock-shop.svc.cluster.local:80/*            http=200 otel=None flags=- kind=server
+== test_negative_flow_S1_v51_fault_Root1_TYPE_MISMATCH /addresses client 200
+   body: {"error":"json: cannot unmarshal number into Go value of type string","status_code":500,"status_text":"Internal Server Error"}
+   span front-end.sock-shop          user.sock-shop.svc.cluster.local:80/*            http=200 otel=None flags=- kind=client
+   span user.sock-shop               user.sock-shop.svc.cluster.local:80/*            http=200 otel=None flags=- kind=server
+== test_negative_flow_S220_v75_fault_Root1_SEMANTIC_MISMATCH /cards client 200
+   body: "upstream connect error or disconnect/reset before headers. reset reason: connection termination"
+   span front-end.sock-shop          user.sock-shop.svc.cluster.local:80/*            http=200 otel=None flags=- kind=client
+   span user.sock-shop               user.sock-shop.svc.cluster.local:80/*            http=200 otel=None flags=- kind=server
+== test_negative_flow_S220_v116_fault_Root1_TYPE_MISMATCH /cards client 200
+   body: {"error":"json: cannot unmarshal array into Go value of type string","status_code":500,"status_text":"Internal Server Error"}
+   span front-end.sock-shop          user.sock-shop.svc.cluster.local:80/*            http=200 otel=None flags=- kind=client
+   span user.sock-shop               user.sock-shop.svc.cluster.local:80/*            http=200 otel=None flags=- kind=server
+== test_negative_flow_S220_v106_fault_Root1_EMPTY_INPUT /cards client 200
+   body: "upstream connect error or disconnect/reset before headers. reset reason: connection termination"
+   span front-end.sock-shop          user.sock-shop.svc.cluster.local:80/*            http=200 otel=None flags=- kind=client
+   span user.sock-shop               user.sock-shop.svc.cluster.local:80/*            http=200 otel=None flags=- kind=server
+== test_negative_flow_S1_v133_fault_Root1_TYPE_MISMATCH /addresses client 200
+   body: {"error":"json: cannot unmarshal number into Go value of type string","status_code":500,"status_text":"Internal Server Error"}
+   span front-end.sock-shop          user.sock-shop.svc.cluster.local:80/*            http=200 otel=None flags=- kind=client
+== test_negative_flow_S1_v2_fault_Root1_TYPE_MISMATCH /addresses client 200
+   body: {"error":"json: cannot unmarshal number into Go value of type string","status_code":500,"status_text":"Internal Server Error"}
+   span front-end.sock-shop          user.sock-shop.svc.cluster.local:80/*            http=200 otel=None flags=- kind=client
+
+######## login-catalogue-down-wait0
+## analyze_leg.py (Table I definitions)
+off-path among fired: 0  rule-should-fire: 159  fired: 233
+   GET /catalogue                                 n= 114  TP 114
+   GET /catalogue/03fef6ac-1896-4ce8-bd69-b798f85c6e0b n=   1  TP 1
+   GET /catalogue/size                            n=  43  TP 43
+   GET /tags                                      n=   1  TP 1
+  POST /addresses                                 n= 219  QUIET 181  TP 38
+  POST /cards                                     n= 133  QUIET 97  TP 36
+ROW tests=511 hidden=233 fired=233 confirmed=233 missed=0 off_path=0
+kinds: {'negative': 493, 'positive': 18} | scan: {'QUIET': 278, 'TP': 233}
+## e_pairing.py
+tests: 511 | marker matches: 0
+body failed / fired: {'ok-body/quiet': 264, 'ok-body/fired': 19, 'fail-body/quiet': 14, 'fail-body/fired': 214}
+ok-body but fired      n=  19  trace start minus request start (s): min -2.30 median -1.13 max -1.05; within +-0.5 s: 0
+fail-body but quiet    n=  14  trace start minus request start (s): min -2.34 median -1.17 max -1.07; within +-0.5 s: 0
+fail-body and fired    n= 214  trace start minus request start (s): min -2.35 median -0.02 max +0.54; within +-0.5 s: 151
+ok-body and quiet      n= 264  trace start minus request start (s): min -2.36 median -0.00 max +0.08; within +-0.5 s: 204
+## e_breakdown.py
+tests: 511
+  /addresses         negative body=error:json: cannot unmarshal array into Go val fired=yes n=5
+  /addresses         negative body=error:json: cannot unmarshal bool into Go valu fired=no  n=2
+  /addresses         negative body=error:json: cannot unmarshal bool into Go valu fired=yes n=8
+  /addresses         negative body=error:json: cannot unmarshal number into Go va fired=no  n=4
+  /addresses         negative body=error:json: cannot unmarshal number into Go va fired=yes n=11
+  /addresses         negative body=error:json: cannot unmarshal object into Go va fired=no  n=1
+  /addresses         negative body=error:json: cannot unmarshal object into Go va fired=yes n=4
+  /addresses         negative body=stored-id                fired=no  n=170
+  /addresses         negative body=stored-id                fired=yes n=10
+  /addresses         positive body=stored-id                fired=no  n=4
+  /cards             negative body=envoy-reset              fired=no  n=3
+  /cards             negative body=envoy-reset              fired=yes n=10
+  /cards             negative body=error:json: cannot unmarshal array into Go val fired=yes n=3
+  /cards             negative body=error:json: cannot unmarshal bool into Go valu fired=yes n=6
+  /cards             negative body=error:json: cannot unmarshal number into Go va fired=no  n=3
+  /cards             negative body=error:json: cannot unmarshal number into Go va fired=yes n=6
+  /cards             negative body=error:json: cannot unmarshal object into Go va fired=no  n=1
+  /cards             negative body=error:json: cannot unmarshal object into Go va fired=yes n=2
+  /cards             negative body=stored-id                fired=no  n=86
+  /cards             negative body=stored-id                fired=yes n=9
+  /cards             positive body=stored-id                fired=no  n=4
+  /catalogue         negative body=no-healthy-upstream      fired=yes n=110
+  /catalogue         positive body=no-healthy-upstream      fired=yes n=4
+  /catalogue/size    negative body=no-healthy-upstream      fired=yes n=39
+  /catalogue/size    positive body=no-healthy-upstream      fired=yes n=4
+  /catalogue/{id}    positive body=no-healthy-upstream      fired=yes n=1
+  /tags              positive body=no-healthy-upstream      fired=yes n=1
+fired tests by category and failed-span statuses:
+  /addresses         EMPTY_INPUT          body=stored-id                spans=500        n=3
+  /addresses         OVERFLOW             body=stored-id                spans=500        n=1
+  /addresses         SEMANTIC_MISMATCH    body=stored-id                spans=500        n=1
+  /addresses         SPECIAL_CHARACTERS   body=stored-id                spans=500        n=5
+  /addresses         TYPE_MISMATCH        body=error:json: cannot unmarshal array into Go val spans=500        n=5
+  /addresses         TYPE_MISMATCH        body=error:json: cannot unmarshal bool into Go valu spans=500        n=8
+  /addresses         TYPE_MISMATCH        body=error:json: cannot unmarshal number into Go va spans=500        n=11
+  /addresses         TYPE_MISMATCH        body=error:json: cannot unmarshal object into Go va spans=500        n=4
+  /cards             EMPTY_INPUT          body=envoy-reset              spans=503        n=5
+  /cards             EMPTY_INPUT          body=stored-id                spans=500        n=1
+  /cards             EMPTY_INPUT          body=stored-id                spans=503        n=1
+  /cards             NULL_INPUT           body=envoy-reset              spans=503        n=1
+  /cards             OVERFLOW             body=stored-id                spans=503        n=1
+  /cards             SEMANTIC_MISMATCH    body=envoy-reset              spans=503        n=4
+  /cards             SEMANTIC_MISMATCH    body=stored-id                spans=503        n=1
+  /cards             SPECIAL_CHARACTERS   body=stored-id                spans=500        n=4
+  /cards             SPECIAL_CHARACTERS   body=stored-id                spans=503        n=1
+  /cards             TYPE_MISMATCH        body=error:json: cannot unmarshal array into Go val spans=500        n=3
+  /cards             TYPE_MISMATCH        body=error:json: cannot unmarshal bool into Go valu spans=500        n=6
+  /cards             TYPE_MISMATCH        body=error:json: cannot unmarshal number into Go va spans=500        n=5
+  /cards             TYPE_MISMATCH        body=error:json: cannot unmarshal number into Go va spans=503        n=1
+  /cards             TYPE_MISMATCH        body=error:json: cannot unmarshal object into Go va spans=500        n=2
+  /catalogue         -                    body=no-healthy-upstream      spans=503        n=4
+  /catalogue         BOUNDARY_VIOLATION   body=no-healthy-upstream      spans=503        n=2
+  /catalogue         OVERFLOW             body=no-healthy-upstream      spans=503        n=18
+  /catalogue         SEMANTIC_MISMATCH    body=no-healthy-upstream      spans=503        n=22
+  /catalogue         SPECIAL_CHARACTERS   body=no-healthy-upstream      spans=503        n=38
+  /catalogue         TYPE_MISMATCH        body=no-healthy-upstream      spans=503        n=30
+  /catalogue/size    -                    body=no-healthy-upstream      spans=503        n=4
+  /catalogue/size    BOUNDARY_VIOLATION   body=no-healthy-upstream      spans=503        n=2
+  /catalogue/size    OVERFLOW             body=no-healthy-upstream      spans=503        n=4
+  /catalogue/size    SEMANTIC_MISMATCH    body=no-healthy-upstream      spans=503        n=6
+  /catalogue/size    SPECIAL_CHARACTERS   body=no-healthy-upstream      spans=503        n=20
+  /catalogue/size    TYPE_MISMATCH        body=no-healthy-upstream      spans=503        n=7
+  /catalogue/{id}    -                    body=no-healthy-upstream      spans=503        n=1
+  /tags              -                    body=no-healthy-upstream      spans=503        n=1
+positive tests:
+   ('/addresses', 'positive', '-', '200', 'stored-id', 'no', '', 'failed')
+   ('/addresses', 'positive', '-', '200', 'stored-id', 'no', '', 'failed')
+   ('/addresses', 'positive', '-', '200', 'stored-id', 'no', '', 'failed')
+   ('/addresses', 'positive', '-', '200', 'stored-id', 'no', '', 'failed')
+   ('/cards', 'positive', '-', '200', 'stored-id', 'no', '', 'failed')
+   ('/cards', 'positive', '-', '200', 'stored-id', 'no', '', 'failed')
+   ('/cards', 'positive', '-', '200', 'stored-id', 'no', '', 'failed')
+   ('/cards', 'positive', '-', '200', 'stored-id', 'no', '', 'failed')
+   ('/catalogue', 'positive', '-', '200', 'no-healthy-upstream', 'yes', '503', 'failed')
+   ('/catalogue', 'positive', '-', '200', 'no-healthy-upstream', 'yes', '503', 'failed')
+   ('/catalogue', 'positive', '-', '200', 'no-healthy-upstream', 'yes', '503', 'failed')
+   ('/catalogue', 'positive', '-', '200', 'no-healthy-upstream', 'yes', '503', 'failed')
+   ('/catalogue/03fef6ac-1896-4ce8-bd69-b798f85c6e0b', 'positive', '-', '200', 'no-healthy-upstream', 'yes', '503', 'failed')
+   ('/catalogue/size', 'positive', '-', '200', 'no-healthy-upstream', 'yes', '503', 'failed')
+   ('/catalogue/size', 'positive', '-', '200', 'no-healthy-upstream', 'yes', '503', 'failed')
+   ('/catalogue/size', 'positive', '-', '200', 'no-healthy-upstream', 'yes', '503', 'failed')
+   ('/catalogue/size', 'positive', '-', '200', 'no-healthy-upstream', 'yes', '503', 'failed')
+   ('/tags', 'positive', '-', '200', 'no-healthy-upstream', 'yes', '503', 'failed')
+## e_misses.py
+== test_negative_flow_S220_v97_fault_Root1_EMPTY_INPUT /cards client 200
+   body: "upstream connect error or disconnect/reset before headers. reset reason: connection termination"
+   span front-end.sock-shop          user.sock-shop.svc.cluster.local:80/*            http=200 otel=None flags=- kind=client
+   span user.sock-shop               user.sock-shop.svc.cluster.local:80/*            http=200 otel=None flags=- kind=server
+== test_negative_flow_S1_v179_fault_Root1_TYPE_MISMATCH /addresses client 200
+   body: {"error":"json: cannot unmarshal number into Go value of type string","status_code":500,"status_text":"Internal Server Error"}
+   span front-end.sock-shop          user.sock-shop.svc.cluster.local:80/*            http=200 otel=None flags=- kind=client
+   span user.sock-shop               user.sock-shop.svc.cluster.local:80/*            http=200 otel=None flags=- kind=server
+== test_negative_flow_S1_v150_fault_Root1_TYPE_MISMATCH /addresses client 200
+   body: {"error":"json: cannot unmarshal number into Go value of type string","status_code":500,"status_text":"Internal Server Error"}
+   span front-end.sock-shop          user.sock-shop.svc.cluster.local:80/*            http=200 otel=None flags=- kind=client
+   span user.sock-shop               user.sock-shop.svc.cluster.local:80/*            http=200 otel=None flags=- kind=server
+== test_negative_flow_S1_v86_fault_Root1_TYPE_MISMATCH /addresses client 200
+   body: {"error":"json: cannot unmarshal bool into Go value of type string","status_code":500,"status_text":"Internal Server Error"}
+   span front-end.sock-shop          user.sock-shop.svc.cluster.local:80/*            http=200 otel=None flags=- kind=client
+== test_negative_flow_S220_v32_fault_Root1_TYPE_MISMATCH /cards client 200
+   body: {"error":"json: cannot unmarshal number into Go value of type string","status_code":500,"status_text":"Internal Server Error"}
+   span front-end.sock-shop          user.sock-shop.svc.cluster.local:80/*            http=200 otel=None flags=- kind=client
+== test_negative_flow_S1_v195_fault_Root1_TYPE_MISMATCH /addresses client 200
+   body: {"error":"json: cannot unmarshal bool into Go value of type string","status_code":500,"status_text":"Internal Server Error"}
+   span front-end.sock-shop          user.sock-shop.svc.cluster.local:80/*            http=200 otel=None flags=- kind=client
+== test_negative_flow_S220_v55_fault_Root1_SEMANTIC_MISMATCH /cards client 200
+   body: "upstream connect error or disconnect/reset before headers. reset reason: connection termination"
+   span front-end.sock-shop          user.sock-shop.svc.cluster.local:80/*            http=200 otel=None flags=- kind=client
+   span user.sock-shop               user.sock-shop.svc.cluster.local:80/*            http=200 otel=None flags=- kind=server
+== test_negative_flow_S1_v118_fault_Root1_TYPE_MISMATCH /addresses client 200
+   body: {"error":"json: cannot unmarshal number into Go value of type string","status_code":500,"status_text":"Internal Server Error"}
+   span front-end.sock-shop          user.sock-shop.svc.cluster.local:80/*            http=200 otel=None flags=- kind=client
+   span user.sock-shop               user.sock-shop.svc.cluster.local:80/*            http=200 otel=None flags=- kind=server
+== test_negative_flow_S1_v40_fault_Root1_TYPE_MISMATCH /addresses client 200
+   body: {"error":"json: cannot unmarshal number into Go value of type string","status_code":500,"status_text":"Internal Server Error"}
+   span front-end.sock-shop          user.sock-shop.svc.cluster.local:80/*            http=200 otel=None flags=- kind=client
+   span user.sock-shop               user.sock-shop.svc.cluster.local:80/*            http=200 otel=None flags=- kind=server
+== test_negative_flow_S1_v170_fault_Root1_TYPE_MISMATCH /addresses client 200
+   body: {"error":"json: cannot unmarshal object into Go value of type string","status_code":500,"status_text":"Internal Server Error"}
+   span front-end.sock-shop          user.sock-shop.svc.cluster.local:80/*            http=200 otel=None flags=- kind=client
+   span user.sock-shop               user.sock-shop.svc.cluster.local:80/*            http=200 otel=None flags=- kind=server
+== test_negative_flow_S220_v75_fault_Root1_SPECIAL_CHARACTERS /cards client 200
+   body: "upstream connect error or disconnect/reset before headers. reset reason: connection termination"
+   span front-end.sock-shop          user.sock-shop.svc.cluster.local:80/*            http=200 otel=None flags=- kind=client
+== test_negative_flow_S220_v112_fault_Root1_TYPE_MISMATCH /cards client 200
+   body: {"error":"json: cannot unmarshal number into Go value of type string","status_code":500,"status_text":"Internal Server Error"}
+   span front-end.sock-shop          user.sock-shop.svc.cluster.local:80/*            http=200 otel=None flags=- kind=client
+   span user.sock-shop               user.sock-shop.svc.cluster.local:80/*            http=200 otel=None flags=- kind=server
+== test_negative_flow_S220_v93_fault_Root1_TYPE_MISMATCH /cards client 200
+   body: {"error":"json: cannot unmarshal object into Go value of type string","status_code":500,"status_text":"Internal Server Error"}
+   span front-end.sock-shop          user.sock-shop.svc.cluster.local:80/*            http=200 otel=None flags=- kind=client
+   span user.sock-shop               user.sock-shop.svc.cluster.local:80/*            http=200 otel=None flags=- kind=server
+== test_negative_flow_S220_v38_fault_Root1_TYPE_MISMATCH /cards client 200
+   body: {"error":"json: cannot unmarshal number into Go value of type string","status_code":500,"status_text":"Internal Server Error"}
+   span front-end.sock-shop          user.sock-shop.svc.cluster.local:80/*            http=200 otel=None flags=- kind=client
+   span user.sock-shop               user.sock-shop.svc.cluster.local:80/*            http=200 otel=None flags=- kind=server
+
+######## login-nooutage-wait5s
+## analyze_leg.py (Table I definitions)
+off-path among fired: 0  rule-should-fire: 0  fired: 72
+   GET /catalogue                                 n= 114  QUIET 111  TP 3
+   GET /catalogue/03fef6ac-1896-4ce8-bd69-b798f85c6e0b n=   1  QUIET 1
+   GET /catalogue/size                            n=  43  QUIET 43
+   GET /tags                                      n=   1  QUIET 1
+  POST /addresses                                 n= 219  QUIET 184  TP 35
+  POST /cards                                     n= 133  QUIET 99  TP 34
+ROW tests=511 hidden=72 fired=72 confirmed=72 missed=0 off_path=0
+kinds: {'negative': 493, 'positive': 18} | scan: {'QUIET': 439, 'TP': 72}
+## e_pairing.py
+tests: 511 | marker matches: 0
+body failed / fired: {'ok-body/quiet': 437, 'fail-body/quiet': 2, 'fail-body/fired': 72}
+fail-body but quiet    n=   2  trace start minus request start (s): min -0.06 median +0.04 max +0.04; within +-0.5 s: 2
+fail-body and fired    n=  72  trace start minus request start (s): min -0.23 median +0.02 max +0.07; within +-0.5 s: 72
+ok-body and quiet      n= 437  trace start minus request start (s): min -0.17 median +0.02 max +0.09; within +-0.5 s: 437
+## e_breakdown.py
+tests: 511
+  /addresses         negative body=error:json: cannot unmarshal array into Go val fired=yes n=5
+  /addresses         negative body=error:json: cannot unmarshal bool into Go valu fired=yes n=10
+  /addresses         negative body=error:json: cannot unmarshal number into Go va fired=yes n=15
+  /addresses         negative body=error:json: cannot unmarshal object into Go va fired=yes n=5
+  /addresses         negative body=stored-id                fired=no  n=180
+  /addresses         positive body=stored-id                fired=no  n=4
+  /cards             negative body=envoy-reset              fired=yes n=13
+  /cards             negative body=error:json: cannot unmarshal array into Go val fired=yes n=3
+  /cards             negative body=error:json: cannot unmarshal bool into Go valu fired=yes n=6
+  /cards             negative body=error:json: cannot unmarshal number into Go va fired=yes n=9
+  /cards             negative body=error:json: cannot unmarshal object into Go va fired=yes n=3
+  /cards             negative body=stored-id                fired=no  n=95
+  /cards             positive body=stored-id                fired=no  n=4
+  /catalogue         negative body=envoy-reset              fired=no  n=2
+  /catalogue         negative body=envoy-reset              fired=yes n=3
+  /catalogue         negative body=json-ok                  fired=no  n=101
+  /catalogue         negative body=other:null               fired=no  n=4
+  /catalogue         positive body=json-ok                  fired=no  n=4
+  /catalogue/size    negative body=json-ok                  fired=no  n=39
+  /catalogue/size    positive body=json-ok                  fired=no  n=4
+  /catalogue/{id}    positive body=stored-id                fired=no  n=1
+  /tags              positive body=json-ok                  fired=no  n=1
+fired tests by category and failed-span statuses:
+  /addresses         TYPE_MISMATCH        body=error:json: cannot unmarshal array into Go val spans=500        n=5
+  /addresses         TYPE_MISMATCH        body=error:json: cannot unmarshal bool into Go valu spans=500        n=10
+  /addresses         TYPE_MISMATCH        body=error:json: cannot unmarshal number into Go va spans=500        n=15
+  /addresses         TYPE_MISMATCH        body=error:json: cannot unmarshal object into Go va spans=500        n=5
+  /cards             EMPTY_INPUT          body=envoy-reset              spans=503        n=6
+  /cards             NULL_INPUT           body=envoy-reset              spans=503        n=1
+  /cards             SEMANTIC_MISMATCH    body=envoy-reset              spans=503        n=5
+  /cards             SPECIAL_CHARACTERS   body=envoy-reset              spans=503        n=1
+  /cards             TYPE_MISMATCH        body=error:json: cannot unmarshal array into Go val spans=500        n=3
+  /cards             TYPE_MISMATCH        body=error:json: cannot unmarshal bool into Go valu spans=500        n=6
+  /cards             TYPE_MISMATCH        body=error:json: cannot unmarshal number into Go va spans=500        n=9
+  /cards             TYPE_MISMATCH        body=error:json: cannot unmarshal object into Go va spans=500        n=3
+  /catalogue         OVERFLOW             body=envoy-reset              spans=503        n=3
+positive tests:
+   ('/addresses', 'positive', '-', '200', 'stored-id', 'no', '', 'failed')
+   ('/addresses', 'positive', '-', '200', 'stored-id', 'no', '', 'failed')
+   ('/addresses', 'positive', '-', '200', 'stored-id', 'no', '', 'failed')
+   ('/addresses', 'positive', '-', '200', 'stored-id', 'no', '', 'failed')
+   ('/cards', 'positive', '-', '200', 'stored-id', 'no', '', 'failed')
+   ('/cards', 'positive', '-', '200', 'stored-id', 'no', '', 'failed')
+   ('/cards', 'positive', '-', '200', 'stored-id', 'no', '', 'failed')
+   ('/cards', 'positive', '-', '200', 'stored-id', 'no', '', 'failed')
+   ('/catalogue', 'positive', '-', '200', 'json-ok', 'no', '', 'failed')
+   ('/catalogue', 'positive', '-', '200', 'json-ok', 'no', '', 'failed')
+   ('/catalogue', 'positive', '-', '200', 'json-ok', 'no', '', 'failed')
+   ('/catalogue', 'positive', '-', '200', 'json-ok', 'no', '', 'failed')
+   ('/catalogue/03fef6ac-1896-4ce8-bd69-b798f85c6e0b', 'positive', '-', '200', 'stored-id', 'no', '', 'passed')
+   ('/catalogue/size', 'positive', '-', '200', 'json-ok', 'no', '', 'failed')
+   ('/catalogue/size', 'positive', '-', '200', 'json-ok', 'no', '', 'failed')
+   ('/catalogue/size', 'positive', '-', '200', 'json-ok', 'no', '', 'failed')
+   ('/catalogue/size', 'positive', '-', '200', 'json-ok', 'no', '', 'failed')
+   ('/tags', 'positive', '-', '200', 'json-ok', 'no', '', 'passed')
+## e_misses.py
+== test_negative_flow_S353_v89_fault_Root1_OVERFLOW /catalogue client 200
+   body: upstream connect error or disconnect/reset before headers. reset reason: connection termination
+   span front-end.sock-shop          catalogue.sock-shop.svc.cluster.local:80/*       http=200 otel=None flags=- kind=client
+   span catalogue.sock-shop          catalogue.sock-shop.svc.cluster.local:80/*       http=200 otel=None flags=- kind=server
+== test_negative_flow_S353_v87_fault_Root1_OVERFLOW /catalogue client 200
+   body: upstream connect error or disconnect/reset before headers. reset reason: connection termination
+   span front-end.sock-shop          catalogue.sock-shop.svc.cluster.local:80/*       http=200 otel=None flags=- kind=client
+   span catalogue.sock-shop          catalogue.sock-shop.svc.cluster.local:80/*       http=200 otel=None flags=- kind=server
+
+######## login-catalogue-down-wait5s
+## analyze_leg.py (Table I definitions)
+off-path among fired: 0  rule-should-fire: 159  fired: 228
+   GET /catalogue                                 n= 114  TP 114
+   GET /catalogue/03fef6ac-1896-4ce8-bd69-b798f85c6e0b n=   1  TP 1
+   GET /catalogue/size                            n=  43  TP 43
+   GET /tags                                      n=   1  TP 1
+  POST /addresses                                 n= 219  QUIET 184  TP 35
+  POST /cards                                     n= 133  QUIET 99  TP 34
+ROW tests=511 hidden=228 fired=228 confirmed=228 missed=0 off_path=0
+kinds: {'negative': 493, 'positive': 18} | scan: {'TP': 228, 'QUIET': 283}
+## e_pairing.py
+tests: 511 | marker matches: 0
+body failed / fired: {'ok-body/quiet': 283, 'fail-body/fired': 228}
+fail-body and fired    n= 228  trace start minus request start (s): min -0.11 median +0.03 max +0.24; within +-0.5 s: 228
+ok-body and quiet      n= 283  trace start minus request start (s): min -0.11 median +0.02 max +0.18; within +-0.5 s: 283
+## e_breakdown.py
+tests: 511
+  /addresses         negative body=error:json: cannot unmarshal array into Go val fired=yes n=5
+  /addresses         negative body=error:json: cannot unmarshal bool into Go valu fired=yes n=10
+  /addresses         negative body=error:json: cannot unmarshal number into Go va fired=yes n=15
+  /addresses         negative body=error:json: cannot unmarshal object into Go va fired=yes n=5
+  /addresses         negative body=stored-id                fired=no  n=180
+  /addresses         positive body=stored-id                fired=no  n=4
+  /cards             negative body=envoy-reset              fired=yes n=13
+  /cards             negative body=error:json: cannot unmarshal array into Go val fired=yes n=3
+  /cards             negative body=error:json: cannot unmarshal bool into Go valu fired=yes n=6
+  /cards             negative body=error:json: cannot unmarshal number into Go va fired=yes n=9
+  /cards             negative body=error:json: cannot unmarshal object into Go va fired=yes n=3
+  /cards             negative body=stored-id                fired=no  n=95
+  /cards             positive body=stored-id                fired=no  n=4
+  /catalogue         negative body=no-healthy-upstream      fired=yes n=110
+  /catalogue         positive body=no-healthy-upstream      fired=yes n=4
+  /catalogue/size    negative body=no-healthy-upstream      fired=yes n=39
+  /catalogue/size    positive body=no-healthy-upstream      fired=yes n=4
+  /catalogue/{id}    positive body=no-healthy-upstream      fired=yes n=1
+  /tags              positive body=no-healthy-upstream      fired=yes n=1
+fired tests by category and failed-span statuses:
+  /addresses         TYPE_MISMATCH        body=error:json: cannot unmarshal array into Go val spans=500        n=5
+  /addresses         TYPE_MISMATCH        body=error:json: cannot unmarshal bool into Go valu spans=500        n=10
+  /addresses         TYPE_MISMATCH        body=error:json: cannot unmarshal number into Go va spans=500        n=15
+  /addresses         TYPE_MISMATCH        body=error:json: cannot unmarshal object into Go va spans=500        n=5
+  /cards             EMPTY_INPUT          body=envoy-reset              spans=503        n=6
+  /cards             NULL_INPUT           body=envoy-reset              spans=503        n=1
+  /cards             SEMANTIC_MISMATCH    body=envoy-reset              spans=503        n=5
+  /cards             SPECIAL_CHARACTERS   body=envoy-reset              spans=503        n=1
+  /cards             TYPE_MISMATCH        body=error:json: cannot unmarshal array into Go val spans=500        n=3
+  /cards             TYPE_MISMATCH        body=error:json: cannot unmarshal bool into Go valu spans=500        n=6
+  /cards             TYPE_MISMATCH        body=error:json: cannot unmarshal number into Go va spans=500        n=9
+  /cards             TYPE_MISMATCH        body=error:json: cannot unmarshal object into Go va spans=500        n=3
+  /catalogue         -                    body=no-healthy-upstream      spans=503        n=4
+  /catalogue         BOUNDARY_VIOLATION   body=no-healthy-upstream      spans=503        n=2
+  /catalogue         OVERFLOW             body=no-healthy-upstream      spans=503        n=18
+  /catalogue         SEMANTIC_MISMATCH    body=no-healthy-upstream      spans=503        n=22
+  /catalogue         SPECIAL_CHARACTERS   body=no-healthy-upstream      spans=503        n=38
+  /catalogue         TYPE_MISMATCH        body=no-healthy-upstream      spans=503        n=30
+  /catalogue/size    -                    body=no-healthy-upstream      spans=503        n=4
+  /catalogue/size    BOUNDARY_VIOLATION   body=no-healthy-upstream      spans=503        n=2
+  /catalogue/size    OVERFLOW             body=no-healthy-upstream      spans=503        n=4
+  /catalogue/size    SEMANTIC_MISMATCH    body=no-healthy-upstream      spans=503        n=6
+  /catalogue/size    SPECIAL_CHARACTERS   body=no-healthy-upstream      spans=503        n=20
+  /catalogue/size    TYPE_MISMATCH        body=no-healthy-upstream      spans=503        n=7
+  /catalogue/{id}    -                    body=no-healthy-upstream      spans=503        n=1
+  /tags              -                    body=no-healthy-upstream      spans=503        n=1
+positive tests:
+   ('/addresses', 'positive', '-', '200', 'stored-id', 'no', '', 'failed')
+   ('/addresses', 'positive', '-', '200', 'stored-id', 'no', '', 'failed')
+   ('/addresses', 'positive', '-', '200', 'stored-id', 'no', '', 'failed')
+   ('/addresses', 'positive', '-', '200', 'stored-id', 'no', '', 'failed')
+   ('/cards', 'positive', '-', '200', 'stored-id', 'no', '', 'failed')
+   ('/cards', 'positive', '-', '200', 'stored-id', 'no', '', 'failed')
+   ('/cards', 'positive', '-', '200', 'stored-id', 'no', '', 'failed')
+   ('/cards', 'positive', '-', '200', 'stored-id', 'no', '', 'failed')
+   ('/catalogue', 'positive', '-', '200', 'no-healthy-upstream', 'yes', '503', 'failed')
+   ('/catalogue', 'positive', '-', '200', 'no-healthy-upstream', 'yes', '503', 'failed')
+   ('/catalogue', 'positive', '-', '200', 'no-healthy-upstream', 'yes', '503', 'failed')
+   ('/catalogue', 'positive', '-', '200', 'no-healthy-upstream', 'yes', '503', 'failed')
+   ('/catalogue/03fef6ac-1896-4ce8-bd69-b798f85c6e0b', 'positive', '-', '200', 'no-healthy-upstream', 'yes', '503', 'failed')
+   ('/catalogue/size', 'positive', '-', '200', 'no-healthy-upstream', 'yes', '503', 'failed')
+   ('/catalogue/size', 'positive', '-', '200', 'no-healthy-upstream', 'yes', '503', 'failed')
+   ('/catalogue/size', 'positive', '-', '200', 'no-healthy-upstream', 'yes', '503', 'failed')
+   ('/catalogue/size', 'positive', '-', '200', 'no-healthy-upstream', 'yes', '503', 'failed')
+   ('/tags', 'positive', '-', '200', 'no-healthy-upstream', 'yes', '503', 'failed')
+## e_misses.py

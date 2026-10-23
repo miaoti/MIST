@@ -20,12 +20,201 @@ testConfiguration:
       method: post
       operationId: addToCart
       testPath: /cart
-      testParameters: null
+      requestContentType: application/x-www-form-urlencoded
+      testParameters:
+      - name: product_id
+        in: formData
+        weight: null
+        description: product id to add
+        type: string
+        required: true
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: length
+            values:
+            - '10'
+      - name: quantity
+        in: formData
+        weight: null
+        description: quantity to add
+        type: integer
+        format: int32
+        minimum: !!float '1'
+        maximum: !!float '10'
+        required: true
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: type
+            values:
+            - integer
+          - name: min
+            values:
+            - '1'
+          - name: max
+            values:
+            - '100'
     - expectedResponse: 200
       method: post
       operationId: placeOrder
       testPath: /cart/checkout
-      testParameters: null
+      requestContentType: application/x-www-form-urlencoded
+      testParameters:
+      - name: email
+        in: formData
+        weight: null
+        description: buyer email
+        type: string
+        required: true
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: length
+            values:
+            - '10'
+      - name: street_address
+        in: formData
+        weight: null
+        description: null
+        type: string
+        required: true
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: length
+            values:
+            - '10'
+      - name: zip_code
+        in: formData
+        weight: null
+        description: null
+        type: integer
+        format: int32
+        required: true
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: type
+            values:
+            - integer
+          - name: min
+            values:
+            - '1'
+          - name: max
+            values:
+            - '100'
+      - name: city
+        in: formData
+        weight: null
+        description: null
+        type: string
+        required: true
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: length
+            values:
+            - '10'
+      - name: state
+        in: formData
+        weight: null
+        description: null
+        type: string
+        required: true
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: length
+            values:
+            - '10'
+      - name: country
+        in: formData
+        weight: null
+        description: null
+        type: string
+        required: true
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: length
+            values:
+            - '10'
+      - name: credit_card_number
+        in: formData
+        weight: null
+        description: 16-digit card number
+        type: string
+        required: true
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: length
+            values:
+            - '10'
+      - name: credit_card_expiration_month
+        in: formData
+        weight: null
+        description: null
+        type: integer
+        format: int32
+        minimum: !!float '1'
+        maximum: !!float '12'
+        required: true
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: type
+            values:
+            - integer
+          - name: min
+            values:
+            - '1'
+          - name: max
+            values:
+            - '100'
+      - name: credit_card_expiration_year
+        in: formData
+        weight: null
+        description: null
+        type: integer
+        format: int32
+        minimum: !!float '2024'
+        maximum: !!float '2039'
+        required: true
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: type
+            values:
+            - integer
+          - name: min
+            values:
+            - '1'
+          - name: max
+            values:
+            - '100'
+      - name: credit_card_cvv
+        in: formData
+        weight: null
+        description: null
+        type: integer
+        format: int32
+        minimum: !!float '100'
+        maximum: !!float '9999'
+        required: true
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: type
+            values:
+            - integer
+          - name: min
+            values:
+            - '1'
+          - name: max
+            values:
+            - '100'
     - expectedResponse: 200
       method: post
       operationId: emptyCart
@@ -57,4 +246,24 @@ testConfiguration:
       method: post
       operationId: setCurrency
       testPath: /setCurrency
-      testParameters: null
+      requestContentType: application/x-www-form-urlencoded
+      testParameters:
+      - name: currency_code
+        in: formData
+        weight: null
+        description: ISO currency code
+        type: string
+        enumValues:
+        - USD
+        - EUR
+        - GBP
+        - CAD
+        - JPY
+        - TRY
+        required: true
+        generators:
+        - type: LLMParameterGenerator
+          genParameters:
+          - name: length
+            values:
+            - '10'

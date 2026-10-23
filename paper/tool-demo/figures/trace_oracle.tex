@@ -99,8 +99,8 @@
 \node[vbox, anchor=north west] (vrd) at (-0.05, -1.55) {%
 \textbf{Oracle verdicts.}\\[2pt]
 \begin{tabular}{@{}l@{\hspace{0.7em}}p{6.4cm}@{}}
-\textbf{Status/schema oracles} & \emph{pass, failure missed}: the page is \texttt{HTTP 200} with no schema to break, so both record a success. \\
-\textbf{HiddenDownstreamFailure} & \emph{fires} (\textsc{error}): the \texttt{200} entry hides the \texttt{503}/\texttt{otel.status\_code=ERROR} call to \texttt{ratings} that \texttt{reviews} swallowed. \\
+\textbf{Status/schema oracles} & \emph{pass, failure missed}: the page is \texttt{HTTP 200} and breaks no schema, so both record a success. \\
+\textbf{Hidden-failure invariant} & \emph{fires} (\textsc{error}): the \texttt{200} entry hides the \texttt{503}/\texttt{otel.status\_code=ERROR} call to \texttt{ratings} that \texttt{reviews} swallowed. \\
 \end{tabular}};
 
 % =============================================================================

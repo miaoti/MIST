@@ -1,0 +1,191 @@
+================================================================================
+                    FAULT DETECTION SUMMARY REPORT
+================================================================================
+
+Experiment:         boutique_r11b_1792054206748
+Generated:          2026-10-15 03:54:17
+Tracking Started:   2026-10-15 03:50:06
+Total Test Cases:   64
+
+================================================================================
+FAULT COVERAGE SUMMARY
+================================================================================
+
+Total Injected Faults:    0
+Detected Faults:          0 (0.0%)
+Undetected Faults:        0 (100.0%)
+
+Detection Progress:
+[░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░] 0.0%
+
+================================================================================
+ORACLE ANOMALIES (10 distinct, 10 hits)
+================================================================================
+
+These are TraceShapeOracle invariant violations the tool detected.
+They are tool-detected trace-shape deviations, NOT confirmed bugs —
+an upper-bound bug-finding signal. Entries also matching an injected
+fault name appear in the DETECTED FAULTS section above.
+
+1. HIDDEN_DOWNSTREAM_FAILURE  |  GET /
+   Severity:      WARN
+   Violation:     frontend.boutique ──▶ adservice.boutique.svc.cluster.local:9555/* (http=200 otel=ERROR)
+   Hits:          1 time(s)
+   First seen:    2026-10-15 03:50:30
+   Last seen:     2026-10-15 03:50:30
+   Example test:  boutique_r11b.BoutiqueTest_1792054206748.Flow_Scenario_218.test_positive_flow_S218_v1
+   Example trace: 296e2b56c80e4a0ead456d9ab2d92298
+
+2. HIDDEN_DOWNSTREAM_FAILURE  |  GET /product/L9ECAV7KIM
+   Severity:      WARN
+   Violation:     frontend.boutique ──▶ adservice.boutique.svc.cluster.local:9555/* (http=200 otel=ERROR)
+   Hits:          1 time(s)
+   First seen:    2026-10-15 03:50:20
+   Last seen:     2026-10-15 03:50:20
+   Example test:  boutique_r11b.BoutiqueTest_1792054206748.Flow_Scenario_174.test_positive_flow_S174_v43
+   Example trace: 49dec08922324778bb342f5604399e76
+
+3. HIDDEN_DOWNSTREAM_FAILURE  |  GET /product/OLJCESPC7Z
+   Severity:      WARN
+   Violation:     frontend.boutique ──▶ adservice.boutique.svc.cluster.local:9555/* (http=200 otel=ERROR)
+   Hits:          1 time(s)
+   First seen:    2026-10-15 03:50:56
+   Last seen:     2026-10-15 03:50:56
+   Example test:  boutique_r11b.BoutiqueTest_1792054206748.Flow_Scenario_88.test_positive_flow_S88_v43
+   Example trace: e34548b0ec704f61a761f0abc557f617
+
+4. HIDDEN_DOWNSTREAM_FAILURE  |  GET /product/0PUK6V6EV0
+   Severity:      WARN
+   Violation:     frontend.boutique ──▶ adservice.boutique.svc.cluster.local:9555/* (http=200 otel=ERROR)
+   Hits:          1 time(s)
+   First seen:    2026-10-15 03:54:12
+   Last seen:     2026-10-15 03:54:12
+   Example test:  boutique_r11b.BoutiqueTest_1792054206748.Flow_Scenario_2.test_positive_flow_S2_v43
+   Example trace: bd7a48fdeddd43d0bb05cd17eebe4355
+
+5. HIDDEN_DOWNSTREAM_FAILURE  |  GET /product/66VCHSJNUP
+   Severity:      WARN
+   Violation:     frontend.boutique ──▶ adservice.boutique.svc.cluster.local:9555/* (http=200 otel=ERROR)
+   Hits:          1 time(s)
+   First seen:    2026-10-15 03:50:40
+   Last seen:     2026-10-15 03:50:40
+   Example test:  boutique_r11b.BoutiqueTest_1792054206748.Flow_Scenario_264.test_positive_flow_S264_v43
+   Example trace: 6e36685c606f4d1ea56d0d2959c4f1a6
+
+6. HIDDEN_DOWNSTREAM_FAILURE  |  GET /product/9SIQT8TOJO
+   Severity:      WARN
+   Violation:     frontend.boutique ──▶ adservice.boutique.svc.cluster.local:9555/* (http=200 otel=ERROR)
+   Hits:          1 time(s)
+   First seen:    2026-10-15 03:50:51
+   Last seen:     2026-10-15 03:50:51
+   Example test:  boutique_r11b.BoutiqueTest_1792054206748.Flow_Scenario_45.test_positive_flow_S45_v43
+   Example trace: 37584e7ffc55420897f4ad6c59a478fd
+
+7. HIDDEN_DOWNSTREAM_FAILURE  |  GET /product/1YMWWN1N4O
+   Severity:      WARN
+   Violation:     frontend.boutique ──▶ adservice.boutique.svc.cluster.local:9555/* (http=200 otel=ERROR)
+   Hits:          1 time(s)
+   First seen:    2026-10-15 03:50:51
+   Last seen:     2026-10-15 03:50:51
+   Example test:  boutique_r11b.BoutiqueTest_1792054206748.Flow_Scenario_350.test_positive_flow_S350_v43
+   Example trace: 75de731916844818901e43afa59f14f9
+
+8. HIDDEN_DOWNSTREAM_FAILURE  |  GET /product/2ZYFJ3GM2N
+   Severity:      WARN
+   Violation:     frontend.boutique ──▶ adservice.boutique.svc.cluster.local:9555/* (http=200 otel=ERROR)
+   Hits:          1 time(s)
+   First seen:    2026-10-15 03:50:45
+   Last seen:     2026-10-15 03:50:45
+   Example test:  boutique_r11b.BoutiqueTest_1792054206748.Flow_Scenario_307.test_positive_flow_S307_v43
+   Example trace: b71d99fe60e240b6beb44eb118ce81e9
+
+9. HIDDEN_DOWNSTREAM_FAILURE  |  GET /product/LS4PSXUNUM
+   Severity:      WARN
+   Violation:     frontend.boutique ──▶ adservice.boutique.svc.cluster.local:9555/* (http=200 otel=ERROR)
+   Hits:          1 time(s)
+   First seen:    2026-10-15 03:50:25
+   Last seen:     2026-10-15 03:50:25
+   Example test:  boutique_r11b.BoutiqueTest_1792054206748.Flow_Scenario_131.test_positive_flow_S131_v43
+   Example trace: d8e299e9b15041588ab8ffa7eb8bfb16
+
+10. HIDDEN_DOWNSTREAM_FAILURE  |  GET /product/6E92ZMYYFZ
+   Severity:      WARN
+   Violation:     frontend.boutique ──▶ adservice.boutique.svc.cluster.local:9555/* (http=200 otel=ERROR)
+   Hits:          1 time(s)
+   First seen:    2026-10-15 03:50:35
+   Last seen:     2026-10-15 03:50:35
+   Example test:  boutique_r11b.BoutiqueTest_1792054206748.Flow_Scenario_221.test_positive_flow_S221_v43
+   Example trace: 6f9b5d2db5c84a518ea84db9c3f3a5b7
+
+================================================================================
+TEST CASES EXECUTED (64)
+================================================================================
+
+1. boutique_r11b.BoutiqueTest_1792054206748.Flow_Scenario_1.test_positive_flow_S1_v1
+2. boutique_r11b.BoutiqueTest_1792054206748.Flow_Scenario_131.test_negative_flow_S131_v28_fault_Root1_SEMANTIC_MISMATCH
+3. boutique_r11b.BoutiqueTest_1792054206748.Flow_Scenario_131.test_positive_flow_S131_v43
+4. boutique_r11b.BoutiqueTest_1792054206748.Flow_Scenario_174.test_negative_flow_S174_v35_fault_Root1_SEMANTIC_MISMATCH
+5. boutique_r11b.BoutiqueTest_1792054206748.Flow_Scenario_174.test_positive_flow_S174_v43
+6. boutique_r11b.BoutiqueTest_1792054206748.Flow_Scenario_2.test_negative_flow_S2_v10_fault_Root1_OVERFLOW
+7. boutique_r11b.BoutiqueTest_1792054206748.Flow_Scenario_2.test_negative_flow_S2_v11_fault_Root1_SPECIAL_CHARACTERS
+8. boutique_r11b.BoutiqueTest_1792054206748.Flow_Scenario_2.test_negative_flow_S2_v12_fault_Root1_EMPTY_INPUT
+9. boutique_r11b.BoutiqueTest_1792054206748.Flow_Scenario_2.test_negative_flow_S2_v13_fault_Root1_SEMANTIC_MISMATCH
+10. boutique_r11b.BoutiqueTest_1792054206748.Flow_Scenario_2.test_negative_flow_S2_v14_fault_Root1_SPECIAL_CHARACTERS
+11. boutique_r11b.BoutiqueTest_1792054206748.Flow_Scenario_2.test_negative_flow_S2_v15_fault_Root1_SPECIAL_CHARACTERS
+12. boutique_r11b.BoutiqueTest_1792054206748.Flow_Scenario_2.test_negative_flow_S2_v16_fault_Root1_SPECIAL_CHARACTERS
+13. boutique_r11b.BoutiqueTest_1792054206748.Flow_Scenario_2.test_negative_flow_S2_v17_fault_Root1_EMPTY_INPUT
+14. boutique_r11b.BoutiqueTest_1792054206748.Flow_Scenario_2.test_negative_flow_S2_v18_fault_Root1_TYPE_MISMATCH
+15. boutique_r11b.BoutiqueTest_1792054206748.Flow_Scenario_2.test_negative_flow_S2_v19_fault_Root1_TYPE_MISMATCH
+16. boutique_r11b.BoutiqueTest_1792054206748.Flow_Scenario_2.test_negative_flow_S2_v1_fault_Root1_SPECIAL_CHARACTERS
+17. boutique_r11b.BoutiqueTest_1792054206748.Flow_Scenario_2.test_negative_flow_S2_v20_fault_Root1_SPECIAL_CHARACTERS
+18. boutique_r11b.BoutiqueTest_1792054206748.Flow_Scenario_2.test_negative_flow_S2_v21_fault_Root1_TYPE_MISMATCH
+19. boutique_r11b.BoutiqueTest_1792054206748.Flow_Scenario_2.test_negative_flow_S2_v22_fault_Root1_NULL_INPUT
+20. boutique_r11b.BoutiqueTest_1792054206748.Flow_Scenario_2.test_negative_flow_S2_v23_fault_Root1_SEMANTIC_MISMATCH
+21. boutique_r11b.BoutiqueTest_1792054206748.Flow_Scenario_2.test_negative_flow_S2_v24_fault_Root1_SPECIAL_CHARACTERS
+22. boutique_r11b.BoutiqueTest_1792054206748.Flow_Scenario_2.test_negative_flow_S2_v25_fault_Root1_SPECIAL_CHARACTERS
+23. boutique_r11b.BoutiqueTest_1792054206748.Flow_Scenario_2.test_negative_flow_S2_v26_fault_Root1_EMPTY_INPUT
+24. boutique_r11b.BoutiqueTest_1792054206748.Flow_Scenario_2.test_negative_flow_S2_v27_fault_Root1_EMPTY_INPUT
+25. boutique_r11b.BoutiqueTest_1792054206748.Flow_Scenario_2.test_negative_flow_S2_v28_fault_Root1_SPECIAL_CHARACTERS
+26. boutique_r11b.BoutiqueTest_1792054206748.Flow_Scenario_2.test_negative_flow_S2_v29_fault_Root1_SEMANTIC_MISMATCH
+27. boutique_r11b.BoutiqueTest_1792054206748.Flow_Scenario_2.test_negative_flow_S2_v2_fault_Root1_EMPTY_INPUT
+28. boutique_r11b.BoutiqueTest_1792054206748.Flow_Scenario_2.test_negative_flow_S2_v30_fault_Root1_SPECIAL_CHARACTERS
+29. boutique_r11b.BoutiqueTest_1792054206748.Flow_Scenario_2.test_negative_flow_S2_v31_fault_Root1_SEMANTIC_MISMATCH
+30. boutique_r11b.BoutiqueTest_1792054206748.Flow_Scenario_2.test_negative_flow_S2_v32_fault_Root1_OVERFLOW
+31. boutique_r11b.BoutiqueTest_1792054206748.Flow_Scenario_2.test_negative_flow_S2_v33_fault_Root1_SPECIAL_CHARACTERS
+32. boutique_r11b.BoutiqueTest_1792054206748.Flow_Scenario_2.test_negative_flow_S2_v34_fault_Root1_TYPE_MISMATCH
+33. boutique_r11b.BoutiqueTest_1792054206748.Flow_Scenario_2.test_negative_flow_S2_v35_fault_Root1_SPECIAL_CHARACTERS
+34. boutique_r11b.BoutiqueTest_1792054206748.Flow_Scenario_2.test_negative_flow_S2_v36_fault_Root1_SPECIAL_CHARACTERS
+35. boutique_r11b.BoutiqueTest_1792054206748.Flow_Scenario_2.test_negative_flow_S2_v37_fault_Root1_OVERFLOW
+36. boutique_r11b.BoutiqueTest_1792054206748.Flow_Scenario_2.test_negative_flow_S2_v38_fault_Root1_SEMANTIC_MISMATCH
+37. boutique_r11b.BoutiqueTest_1792054206748.Flow_Scenario_2.test_negative_flow_S2_v39_fault_Root1_SPECIAL_CHARACTERS
+38. boutique_r11b.BoutiqueTest_1792054206748.Flow_Scenario_2.test_negative_flow_S2_v3_fault_Root1_SPECIAL_CHARACTERS
+39. boutique_r11b.BoutiqueTest_1792054206748.Flow_Scenario_2.test_negative_flow_S2_v40_fault_Root1_EMPTY_INPUT
+40. boutique_r11b.BoutiqueTest_1792054206748.Flow_Scenario_2.test_negative_flow_S2_v41_fault_Root1_SPECIAL_CHARACTERS
+41. boutique_r11b.BoutiqueTest_1792054206748.Flow_Scenario_2.test_negative_flow_S2_v42_fault_Root1_OVERFLOW
+42. boutique_r11b.BoutiqueTest_1792054206748.Flow_Scenario_2.test_negative_flow_S2_v4_fault_Root1_TYPE_MISMATCH
+43. boutique_r11b.BoutiqueTest_1792054206748.Flow_Scenario_2.test_negative_flow_S2_v5_fault_Root1_SPECIAL_CHARACTERS
+44. boutique_r11b.BoutiqueTest_1792054206748.Flow_Scenario_2.test_negative_flow_S2_v6_fault_Root1_SEMANTIC_MISMATCH
+45. boutique_r11b.BoutiqueTest_1792054206748.Flow_Scenario_2.test_negative_flow_S2_v7_fault_Root1_TYPE_MISMATCH
+46. boutique_r11b.BoutiqueTest_1792054206748.Flow_Scenario_2.test_negative_flow_S2_v8_fault_Root1_SPECIAL_CHARACTERS
+47. boutique_r11b.BoutiqueTest_1792054206748.Flow_Scenario_2.test_negative_flow_S2_v9_fault_Root1_TYPE_MISMATCH
+48. boutique_r11b.BoutiqueTest_1792054206748.Flow_Scenario_2.test_positive_flow_S2_v43
+49. boutique_r11b.BoutiqueTest_1792054206748.Flow_Scenario_217.test_positive_flow_S217_v1
+50. boutique_r11b.BoutiqueTest_1792054206748.Flow_Scenario_218.test_positive_flow_S218_v1
+51. boutique_r11b.BoutiqueTest_1792054206748.Flow_Scenario_219.test_positive_flow_S219_v1
+52. boutique_r11b.BoutiqueTest_1792054206748.Flow_Scenario_220.test_positive_flow_S220_v1
+53. boutique_r11b.BoutiqueTest_1792054206748.Flow_Scenario_221.test_negative_flow_S221_v16_fault_Root1_SEMANTIC_MISMATCH
+54. boutique_r11b.BoutiqueTest_1792054206748.Flow_Scenario_221.test_positive_flow_S221_v43
+55. boutique_r11b.BoutiqueTest_1792054206748.Flow_Scenario_264.test_negative_flow_S264_v4_fault_Root1_SEMANTIC_MISMATCH
+56. boutique_r11b.BoutiqueTest_1792054206748.Flow_Scenario_264.test_positive_flow_S264_v43
+57. boutique_r11b.BoutiqueTest_1792054206748.Flow_Scenario_307.test_negative_flow_S307_v10_fault_Root1_SEMANTIC_MISMATCH
+58. boutique_r11b.BoutiqueTest_1792054206748.Flow_Scenario_307.test_positive_flow_S307_v43
+59. boutique_r11b.BoutiqueTest_1792054206748.Flow_Scenario_350.test_negative_flow_S350_v39_fault_Root1_SEMANTIC_MISMATCH
+60. boutique_r11b.BoutiqueTest_1792054206748.Flow_Scenario_350.test_positive_flow_S350_v43
+61. boutique_r11b.BoutiqueTest_1792054206748.Flow_Scenario_45.test_negative_flow_S45_v26_fault_Root1_SEMANTIC_MISMATCH
+62. boutique_r11b.BoutiqueTest_1792054206748.Flow_Scenario_45.test_positive_flow_S45_v43
+63. boutique_r11b.BoutiqueTest_1792054206748.Flow_Scenario_88.test_negative_flow_S88_v41_fault_Root1_SEMANTIC_MISMATCH
+64. boutique_r11b.BoutiqueTest_1792054206748.Flow_Scenario_88.test_positive_flow_S88_v43
+
+================================================================================
+                          END OF REPORT
+================================================================================

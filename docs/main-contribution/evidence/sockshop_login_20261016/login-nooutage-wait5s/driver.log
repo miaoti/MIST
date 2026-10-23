@@ -1,0 +1,11 @@
+2026-10-16 01:25:55 leg ss-login-nooutage-wait5s start; profile C:\Users\miaot\Github\MIST\evaluation\suts\sockshop\sockshop-hdf-login.properties; wait 5000 ms
+2026-10-16 01:25:56 Jaeger port 16686 already listening
+2026-10-16 01:25:56 SUT port 8080 already listening
+2026-10-16 01:26:04 probe jaeger 200
+2026-10-16 01:26:04 probe /catalogue?size=1 200
+2026-10-16 01:26:05 probe /tags 200
+2026-10-16 01:26:05 moved previous results to target\allure-results-before-ss-login-nooutage-wait5s-012605
+2026-10-16 02:11:36 mist exit 0; 45.5 minutes
+2026-10-16 02:11:40 copied 4808 result files
+2026-10-16 02:11:40 copied fault-detection-summary-sockshop_logged_in_1792131979895-20261016-021135.txt
+2026-10-16 02:11:40 leg ss-login-nooutage-wait5s done

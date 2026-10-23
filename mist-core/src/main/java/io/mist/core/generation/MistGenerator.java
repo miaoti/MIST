@@ -568,6 +568,11 @@ public class MistGenerator {
         // a SUT with diverging trace service names relied on the generalisation.
         log.info("Endpoint-fallback fired {}× this generation run (0 = service-name match always succeeded).",
                 StageSupport.getEndpointFallbackCount());
+        if (Boolean.parseBoolean(System.getProperty("mst.generation.dedup.requests", "false"))) {
+            int before = out.size();
+            out = StageSupport.dropDuplicateRequests(out);
+            log.info("Request dedup (mst.generation.dedup.requests): {} tests generated, {} distinct kept", before, out.size());
+        }
         return out;
     }
 
@@ -1482,7 +1487,28 @@ public class MistGenerator {
                                 log.warn("Failed to URL-encode path parameter '{}' value '{}': {}", p.getName(), val, e.getMessage());
                                 encodedVal = val; // Fall back to original value
                             }
-                            resolvedPath = resolvedPath.replace("{"+p.getName()+"}", encodedVal);
+                            String placeholder = "{" + p.getName() + "}";
+                            if (resolvedPath.contains(placeholder)) {
+                                resolvedPath = resolvedPath.replace(placeholder, encodedVal);
+                            } else if (tc.getFaultyParameters().contains(p.getName() + "=" + val)) {
+                                // Concrete span route (an Envoy span's /products/0/reviews): no
+                                // placeholder, so the Sniper value never reached the request. Put it
+                                // into the segment the conf template assigns to this parameter; the
+                                // other parameters keep their captured values.
+                                resolvedPath = StageSupport.replaceTemplateSegment(
+                                        resolvedPath, opCfg.getTestPath(), p.getName(), encodedVal);
+                            } else {
+                                // The request keeps the captured value, so record that value: a generated
+                                // value that is never sent must not stand in the test's parameters, and an
+                                // unsent placeholder must not mark the test negative in advance.
+                                String captured = StageSupport.templateSegmentValue(
+                                        resolvedPath, opCfg.getTestPath(), p.getName());
+                                if (captured != null) {
+                                    val = captured;
+                                    encodedVal = captured;
+                                    pathParams.put(p.getName(), captured);
+                                }
+                            }
                             if (!val.equals(encodedVal)) {
                                 log.debug("Path parameter '{}' URL-encoded: '{}' -> '{}'", p.getName(), val, encodedVal);
                             }
@@ -3163,6 +3189,12 @@ public class MistGenerator {
      * Otherwise, generates standard JSON object.
      */
     private String generateRequestBody(Map<String, Object> bodyFields, Operation opCfg) {
+        // An HTML-form operation (requestContentType application/x-www-form-urlencoded)
+        // sends its fields as a form, not as JSON.
+        if (opCfg != null && opCfg.isFormRequestBody()) {
+            return StageSupport.formUrlEncode(bodyFields);
+        }
+
         // Single body parameter whose schema type is "array" → emit a top-level JSON array,
         // not an object wrapper. The parameter name is no longer required to be the literal
         // "body" — OpenAPI bodies are commonly named after the resource (e.g., "routes",

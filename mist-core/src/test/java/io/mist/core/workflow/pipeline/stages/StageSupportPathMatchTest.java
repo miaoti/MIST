@@ -248,6 +248,64 @@ public class StageSupportPathMatchTest {
         assertEquals("/products/{id}", hit.getTestPath());
     }
 
+    // ── replaceTemplateSegment: Sniper value into a concrete span route ───────
+
+    @Test
+    public void replaceSegment_bookinfoReviews() {
+        assertEquals("/api/v1/products/%00%01/reviews", StageSupport.replaceTemplateSegment(
+                "/api/v1/products/0/reviews", "/api/v1/products/{id}/reviews", "id", "%00%01"));
+    }
+
+    @Test
+    public void replaceSegment_boutiqueProductAtEnd() {
+        assertEquals("/product/ZZZ", StageSupport.replaceTemplateSegment(
+                "/product/OLJCESPC7Z", "/product/{id}", "id", "ZZZ"));
+    }
+
+    @Test
+    public void replaceSegment_onlyTheNamedParameter() {
+        assertEquals("/a/1/b/X", StageSupport.replaceTemplateSegment(
+                "/a/1/b/2", "/a/{x}/b/{y}", "y", "X"));
+    }
+
+    @Test
+    public void replaceSegment_keepsQueryAndTrailingSlash() {
+        assertEquals("/products/V/?q=1", StageSupport.replaceTemplateSegment(
+                "/products/0/?q=1", "/products/{id}", "id", "V"));
+    }
+
+    @Test
+    public void replaceSegment_unchangedWhenPathsDoNotMatch() {
+        assertEquals("/orders/0", StageSupport.replaceTemplateSegment(
+                "/orders/0", "/products/{id}", "id", "V"));
+    }
+
+    @Test
+    public void replaceSegment_unchangedWhenTemplateLacksParameter() {
+        assertEquals("/products/0", StageSupport.replaceTemplateSegment(
+                "/products/0", "/products/{productId}", "id", "V"));
+    }
+
+    // ── templateSegmentValue: the captured value a concrete route carries ─────
+
+    @Test
+    public void segmentValue_bookinfoReviews() {
+        assertEquals("0", StageSupport.templateSegmentValue(
+                "/api/v1/products/0/reviews", "/api/v1/products/{id}/reviews", "id"));
+    }
+
+    @Test
+    public void segmentValue_boutiqueProduct() {
+        assertEquals("OLJCESPC7Z", StageSupport.templateSegmentValue(
+                "/product/OLJCESPC7Z", "/product/{id}", "id"));
+    }
+
+    @Test
+    public void segmentValue_nullWhenNoMatchOrNoParameter() {
+        assertNull(StageSupport.templateSegmentValue("/orders/0", "/products/{id}", "id"));
+        assertNull(StageSupport.templateSegmentValue("/products/0", "/products/{productId}", "id"));
+    }
+
     // ── helpers ──────────────────────────────────────────────────────────────
 
     private static Operation op(String method, String testPath) {

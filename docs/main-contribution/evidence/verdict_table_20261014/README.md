@@ -97,3 +97,19 @@ neither the summary name nor, apparently, anything else; the run id, the driver 
 (MIST wrote none for that run) and carries `driver.log`, the log of the detached driver that ran it (port-forwards, login
 probe, MIST exit 0, 3,951 result files copied); the TrainTicket pods ran with Istio sidecars so that
 every hop has an Envoy span. No login token appears in the TrainTicket log or results (checked).
+
+## Corrections (2026-10-15, records audit of the paper's round 11)
+
+1. Online Boutique outage, 5 s: the three NO-2XX tests are `POST /cart`, `POST /cart/checkout` and
+   `POST /setCurrency`, all three answered 422 (`verdicts.csv`); "two 422s and setCurrency" above
+   should read "three 422s".
+2. The negative tests of the Bookinfo and Online Boutique legs did not send their invalid path
+   values: all 80 Bookinfo negatives requested `/api/v1/products/0/...` and all 252 Online
+   Boutique negatives requested valid product pages, although each records its injected payload
+   (a path-substitution defect for concrete captured paths). The verdicts above stand, because the
+   invariant judged the requests that were sent; those negatives behaved as positive requests.
+   TrainTicket and Sock Shop negatives did send their invalid values. Superseded for Bookinfo and
+   Online Boutique: `../verdict_table_20261015/` holds the four legs re-run after the fix (commit
+   c4f43d38), in which every negative test sent its invalid value.
+3. The Sock Shop leg's lookups all used the time-window fallback; see the correction section of
+   `../sockshop_healthy_run_20261014/README.md`.

@@ -1,0 +1,14 @@
+2026-10-15 01:39:33 leg bq-nooutage start; profile C:\Users\miaot\Github\MIST\evaluation\suts\boutique\boutique-hdf-r11.properties; wait 0 ms
+2026-10-15 01:39:34 started Jaeger port-forward
+2026-10-15 01:39:34 started SUT port-forward on 8081
+2026-10-15 01:39:42 probe jaeger 200
+2026-10-15 01:39:43 probe / 200
+2026-10-15 01:39:44 probe /product/OLJCESPC7Z 200
+2026-10-15 01:39:44 probe /product/ZZZ 500 The remote server returned an error: (500) Internal Server Error.
+2026-10-15 01:39:44 moved previous results to target\allure-results-before-bq-nooutage-013944
+2026-10-15 01:50:55 mist exit 0; 11.2 minutes
+2026-10-15 01:51:00 copied 4254 result files
+2026-10-15 01:51:00 copied fault-detection-summary-boutique_r11_1792046385522-20261015-015054.txt
+2026-10-15 01:51:00 stopped wsl.exe 50216
+2026-10-15 01:51:00 stopped wsl.exe 30028
+2026-10-15 01:51:00 leg bq-nooutage done

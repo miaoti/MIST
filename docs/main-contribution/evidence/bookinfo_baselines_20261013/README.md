@@ -1,5 +1,9 @@
 # Istio Bookinfo under the `ratings` outage: EvoMaster and Schemathesis runs (2026-10-13)
 
+> Note (2026-10-22): the submitted version of the paper no longer cites these runs. Its sentence on
+> EvoMaster and Schemathesis is about the HTML entry `GET /productpage`, whose record is
+> `../bookinfo_html_entry_20261013/`. The results below stand as recorded.
+
 ## Why these runs exist
 
 The SANER 2027 tool-demo paper (`paper/tool-demo/main_saner.tex`, Section IV, Bookinfo

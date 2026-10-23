@@ -1,0 +1,12 @@
+2026-10-15 00:31:53 leg bk-nooutage start; profile C:\Users\miaot\Github\MIST\evaluation\suts\bookinfo\bookinfo-hdf-r11.properties; wait 0 ms
+2026-10-15 00:31:55 started Jaeger port-forward
+2026-10-15 00:31:55 started SUT port-forward on 8080
+2026-10-15 00:32:04 probe jaeger 200
+2026-10-15 00:32:04 probe /api/v1/products/0/reviews,/api/v1/products/0/ratings 404 The remote server returned an error: (404) Not Found.
+2026-10-15 00:32:04 moved previous results to target\allure-results-before-bk-nooutage-003204
+2026-10-15 00:34:11 mist exit 0; 2.1 minutes
+2026-10-15 00:34:13 copied 2280 result files
+2026-10-15 00:34:13 copied fault-detection-summary-bookinfo_r11_1792042326478-20261015-003410.txt
+2026-10-15 00:34:13 stopped wsl.exe 17420
+2026-10-15 00:34:13 stopped wsl.exe 55924
+2026-10-15 00:34:13 leg bk-nooutage done

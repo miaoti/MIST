@@ -1,0 +1,16 @@
+2026-10-15 03:32:43 sequence start
+2026-10-15 03:32:43 kubectl get deploy ratings-v1 -n default --no-headers -> ratings-v1   1/1   1     1     104d
+2026-10-15 03:36:53 no-outage leg returned
+2026-10-15 03:36:53 kubectl scale deploy/ratings-v1 -n default --replicas=0 -> deployment.apps/ratings-v1 scaled
+2026-10-15 03:36:59 kubectl wait --for=delete pod -l app=ratings -n default --timeout=180s -> pod/ratings-v1-75484f7ffb-qgnh7 condition met
+2026-10-15 03:37:10 kubectl get pods -n default -l app=ratings --no-headers -> wsl.exe : No resources found in default namespace.
+At <run dir>\run_bookinfo_r11b.ps1:6 char:36
++ ... e([string[]]$a) { $o = & wsl.exe -d Ubuntu -- kubectl @a 2>&1; Log (" ...
++                            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (No resources found in default namespace.:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+2026-10-15 03:41:29 outage leg returned
+2026-10-15 03:41:29 kubectl scale deploy/ratings-v1 -n default --replicas=1 -> deployment.apps/ratings-v1 scaled
+2026-10-15 03:41:32 kubectl rollout status deploy/ratings-v1 -n default --timeout=300s -> Waiting for deployment "ratings-v1" rollout to finish: 0 of 1 updated replicas are available...
+deployment "ratings-v1" successfully rolled out
+2026-10-15 03:41:32 sequence done

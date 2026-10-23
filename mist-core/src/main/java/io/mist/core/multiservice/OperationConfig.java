@@ -10,6 +10,7 @@ public class OperationConfig {
     private String method;            // e.g. "get", "post", etc.
     private List<TestParameter> testParameters; // Parameter configurations for this operation
     private Integer expectedResponse; // Expected HTTP status code (e.g. 200)
+    private String requestContentType; // null: a JSON body; else e.g. "application/x-www-form-urlencoded"
 
     // Getters and setters...
     public String getTestPath() { return testPath; }
@@ -22,4 +23,6 @@ public class OperationConfig {
     public void setTestParameters(List<TestParameter> testParameters) { this.testParameters = testParameters; }
     public Integer getExpectedResponse() { return expectedResponse; }
     public void setExpectedResponse(Integer expectedResponse) { this.expectedResponse = expectedResponse; }
+    public String getRequestContentType() { return requestContentType; }
+    public void setRequestContentType(String requestContentType) { this.requestContentType = requestContentType; }
 }

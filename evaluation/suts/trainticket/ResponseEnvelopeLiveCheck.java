@@ -21,7 +21,7 @@ import java.util.Map;
  *   java -cp mist-cli/target/mist.jar \
  *     -Dllm.openai_compatible.enabled=true \
  *     -Dllm.openai_compatible.url=https://api.deepseek.com/v1/chat/completions \
- *     -Dllm.openai_compatible.model=deepseek-chat \
+ *     -Dllm.openai_compatible.model=deepseek-v4-flash \
  *     -Dllm.openai_compatible.api.key=$(cat .api_keys/DEEPSEEK_API_KEY) \
  *     evaluation/ResponseEnvelopeLiveCheck.java
  *

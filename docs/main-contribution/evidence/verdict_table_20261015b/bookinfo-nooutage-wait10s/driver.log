@@ -1,0 +1,13 @@
+2026-10-15 03:32:44 leg bk-nooutage start; profile C:\Users\miaot\Github\MIST\evaluation\suts\bookinfo\bookinfo-hdf-r11b.properties; wait 10000 ms
+2026-10-15 03:32:45 started Jaeger port-forward
+2026-10-15 03:32:46 started SUT port-forward on 8080
+2026-10-15 03:32:54 probe jaeger 200
+2026-10-15 03:32:54 probe /api/v1/products/0/reviews 200
+2026-10-15 03:32:54 probe /api/v1/products/0/ratings 200
+2026-10-15 03:32:54 moved previous results to target\allure-results-before-bk-nooutage-033254
+2026-10-15 03:36:52 mist exit 0; 4 minutes
+2026-10-15 03:36:53 copied 569 result files
+2026-10-15 03:36:53 copied fault-detection-summary-bookinfo_r11b_1792053175714-20261015-033651.txt
+2026-10-15 03:36:53 stopped wsl.exe 33784
+2026-10-15 03:36:53 stopped wsl.exe 51988
+2026-10-15 03:36:53 leg bk-nooutage done
