@@ -258,7 +258,7 @@ MACROHIVE~\cite{Giamattei2022MACROHIVE} exposes masked failures through a proxy 
 
 MIST sees only what the system exports: uninstrumented services are invisible, and a swallowed failure that leaves no errored span is missed. The hidden-failure invariant encodes a policy: the same trace can be intended graceful degradation, and the invariant counts every server-errored span, retried or not. In live checks against the model, the classifier catches TrainTicket's \texttt{status:0} body but misses an error body like the one Sock Shop's front-end returned, so soft-error detection stays the lower-assurance part of the oracle.
 
-MIST turns the OpenAPI document and the traces a microservice system already exports into cross-service tests, and checks each run against the trace it retrieves for that run. In that trace, the hidden-failure invariant flags the failed call that the status oracle passes. The source code is at \url{https://github.com/miaoti/MIST/} under LGPL-3.0. A repository snapshot is archived at \url{https://doi.org/10.5281/zenodo.20514985}.
+MIST turns the OpenAPI document and the traces a microservice system already exports into cross-service tests, and checks each run against the trace it retrieves for that run. In that trace, the hidden-failure invariant flags the failed call that the status oracle passes. The source code is at \url{https://github.com/miaoti/MIST/} under LGPL-3.0. A repository snapshot is archived at \url{https://doi.org/10.5281/zenodo.23359365}.
 \bibliographystyle{IEEEtran}
 \bibliography{refs}
 
