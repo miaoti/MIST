@@ -5,20 +5,18 @@
 > Richmond, Virginia, USA, 9-12 March 2027). Paper deadline **Fri 23 Oct 2026
 > AoE** (optional abstract Mon 19 Oct 2026); notification Tue 8 Dec 2026;
 > camera-ready and author registration Fri 8 Jan 2027. The active paper file
-> is `main_saner.tex`. The ISSTA 2026 submission (`main_issta.tex`, acmart)
-> was rejected and is kept unchanged as the record of what ISSTA reviewed.
+> is `main_saner.tex`. The ISSTA 2026 version (`main_issta.tex`, acmart)
+> is kept unchanged as an archived record.
 
 ## Files
 
 | File | Venue | LaTeX class | Status |
 |---|---|---|---|
 | `main_saner.tex` | **SANER 2027 Tool Demo Track (active)** | `IEEEtran` (10pt, conference) | ported from `main_issta.tex` on 2026-10-13; body text identical to the ISSTA submission until the SANER revision starts |
-| `main_issta.tex` | SPLASH/ISSTA 2026 Posters and Tool Demonstrations | `acmart` (sigconf,screen,review) | submitted June 2026, rejected; archived record, do not edit |
+| `main_issta.tex` | SPLASH/ISSTA 2026 Posters and Tool Demonstrations | `acmart` (sigconf,screen,review) | submitted June 2026; archived record, do not edit |
 | `main.tex` | ICSME 2026 / ICSE 2027 fallback | `IEEEtran` (10pt, conference) | stale: predates the ISSTA submission and carries numbers the ISSTA review removed; do not build |
 | `figures/architecture.tex`, `figures/trace_oracle.tex` | shared | TikZ | canonical figure sources for every variant; edit them once |
 | `refs.bib` | shared | BibTeX | bibliography for every variant |
-| `REVIEW_ISSTA_2026.md` | record | | internal review and change plan of the ISSTA 2026 submission (2026-05-30) |
-| `NOTES_TO_AUTHOR.md` | record | | ICSME-era component-name ledger, partly superseded |
 
 ## SANER 2027 Tool Demo Track requirements (checked 2026-10-13)
 
@@ -108,5 +106,3 @@ document; `figures/*.tex` and `refs.bib` are shared.
   the body text is byte-identical. In `figures/trace_oracle.tex` the verdict
   box's text width went from 9.6 cm to 10 cm because Times bold is wider than
   acmart's Libertine and the first row touched the box border.
-* Differences between the older ICSME variant (`main.tex`) and the ISSTA
-  variant are tracked in `NOTES_TO_AUTHOR.md` under "ISSTA 2026 conversion".
